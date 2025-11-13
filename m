@@ -1,82 +1,54 @@
-Return-Path: <linux-btrfs+bounces-18966-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18967-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73D09C5A440
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Nov 2025 23:04:15 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0C45C5A5AC
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Nov 2025 23:40:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D6C673A5902
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Nov 2025 21:57:36 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 49EFA34B282
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Nov 2025 22:40:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 304F3324B2E;
-	Thu, 13 Nov 2025 21:57:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C80112E1C63;
+	Thu, 13 Nov 2025 22:40:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="e2vRGHtI"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=pj.world@gmx.com header.b="aDcghvs2"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61742322C60
-	for <linux-btrfs@vger.kernel.org>; Thu, 13 Nov 2025 21:57:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 831F14502F
+	for <linux-btrfs@vger.kernel.org>; Thu, 13 Nov 2025 22:40:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763071051; cv=none; b=uRveK7EFckxZpnSaNRlnIXMHAVTow8w/AGZb0HEZry8jZtOmEEoj8XhFINflwKJTH+XdZo5mPi1WYxXu577wJKLnvtPPMXAaOH5iAhDJW2DcKor+rH7LMta/+CXheVx8fr1FE6HtFNjA7AkXeAsqc2wP0v4jBVmb5eFdj8SvcWQ=
+	t=1763073644; cv=none; b=koDXTp+a60ZaJiU+85lhqQR+su8VrEKhkqJ1UmP5r5OHcDL5NbmXhRgkq4dN3F47am1he9FdkVix0FRDlxRLpPyuv4+KMZ3f5dvRxrOJy8JYlq68CPDvh7s0JY+ZmQ4ld7SMIaVSzIpHSu5AsaBoesdqgCYa8KprlymD2GTth0U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763071051; c=relaxed/simple;
-	bh=wYX2Zo0NdQXIFg/9Lzz0uMV6auzcZWOcA6FkEb2xVUQ=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=qHck5EK8AAkNjWg8/NkLpnySFyptcc+pe4yGqnIZQRHcYLD85F4d8lNiczKtNKYdiNoja9CisH3+5HY6kLC+A9q2PBZQi4q7PQEm0/rxH4vWQeIq6avr+jANvsH6x9wrOotnoQrmudbrAt8mxYqjhdNIDUDbCE+auob7qJGq9S4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=e2vRGHtI; arc=none smtp.client-ip=209.85.221.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-42b32a5494dso726770f8f.2
-        for <linux-btrfs@vger.kernel.org>; Thu, 13 Nov 2025 13:57:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1763071048; x=1763675848; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :references:cc:to:from:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=cyhCFAdDK6XVGK2ohsOxlYFeCpQakQBoFcnY2OjNORg=;
-        b=e2vRGHtIBp95camdr8k8Z9guB/xeMSFJP+khD3545W7Lzxudla7D+N64ZMj3YIBtht
-         PpnSmkWXn9vk2g1W55s8wXPo2ZHASnk0xXxblRsxIttTYwFHrr/oZwPBjZhvtyhj9TrW
-         ECBlfBmYtkzD7ToavDcLikUnkc4yiMfTl0S6rr8vU6nqCFLPDaCYyc/jc/1f0wG2O0+B
-         lZiyU1ym9XhZTpNUgr5WBYuaW1glsQs1rsWd0nnAXRy/X0W7kR2lNWyJQ+2xoxlP2SFn
-         MLe/TuoVr0Ti4w4x2Sm0IMl4M6VzKdtJEz0bvhYbavzOCBrQu0nxhoxIWgnqKaM72qoI
-         nnUQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763071048; x=1763675848;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :references:cc:to:from:subject:user-agent:mime-version:date
-         :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cyhCFAdDK6XVGK2ohsOxlYFeCpQakQBoFcnY2OjNORg=;
-        b=BbSpoSI5pgAQn4EgOGkjGn3Sd/ARMya9s9G4e1DuwnXNOtZ1A2hugDfmj+gHJpU5ut
-         4PucF50r4sc8X2uTMAIXuwPmqXE1ub+vVB2Y7proLdZynhjAZASYRUUDdF1D/lrVXg9z
-         dpjTseLHlIDGuXzMQM8F+hV/DrQlm0cUFMVOsONpjT7pO5LdWLIz5UXVp5LKEaFi/lfa
-         kzFR5cLtxmG2gLODq/vLBC61QF0kzOdKl1wBiVvEq1QBGkRoVlnvAoCYz489wwEhzr9h
-         qJwYhMmhzifqsy7X30avPLPuBB8u2zJcjHCaFWYWuIiDfESdkY9Nr+96iH6rrQ9wCSGL
-         iyEA==
-X-Gm-Message-State: AOJu0YzNQmYE9URj5md5qZ/FxCRFZd///3Q9jh2dGb5r18vEK7faFhmH
-	561TDT6CmJ9o1XCFtNsPcaFGfF8KOQc2rvX2l0FEdBPfsD5aZhWS4OhEOY4Owit4nPGpQwQjCn/
-	B9uaR
-X-Gm-Gg: ASbGncuTzYCar9s1Jzwj4RMeF6kU6XBLMSEhoOzBcQQnioz5uZNV3eAmV6dp7gT24yW
-	QltqlP37YUUsmH2bL0JxUzHYbEXvli0UBNmGIAQdubonv3VsVGQpGy5b59hD5TIJv4rSmEvfBVk
-	UyI/I0JYtZ8y21cPLvY5ddwAyhCmS8ENuN6mf3Df2DVBMI8rkpi9WWWJdVCnScO9o/ORrAyUGsc
-	neuCo/jIy1Z1HNQOFObgmL6GlgB3fVUSqK4mPcZNOTvszXSdPyewP9ZJemxRjp8aiyne3mK6XwE
-	TIPoflf4zQEt1uqODGIRGJtNhL3sH43LpGB3jkYRcSaQ/vfKp4RuSYZETy4XKuCAPfIThFDs/Se
-	t1u1fvqAAWDWbtd7YtD/O/xtPr718IY6lxCA/dPUQ3TsteW+WWEnmSCZ+2wkEBZTd8dpQmp8zfQ
-	o69AQlFyw1bpcgbBwrwvxrpXjIIUBF
-X-Google-Smtp-Source: AGHT+IEGLE79WLLoxx+csfGwaq02rvRvIx4iQ4L/7XMSRVFtta9yHU3auZrs3Aedy9ehXhQFy2rn/g==
-X-Received: by 2002:a05:6000:1842:b0:42b:53ad:bbfa with SMTP id ffacd0b85a97d-42b59388826mr818119f8f.53.1763071047625;
-        Thu, 13 Nov 2025 13:57:27 -0800 (PST)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7b92714e298sm3208149b3a.34.2025.11.13.13.57.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 Nov 2025 13:57:27 -0800 (PST)
-Message-ID: <0962852b-61f5-4f3f-9258-ef2625e581f8@suse.com>
-Date: Fri, 14 Nov 2025 08:27:24 +1030
+	s=arc-20240116; t=1763073644; c=relaxed/simple;
+	bh=cAlDAPQDsnaXCwEUcdE7kspludiQEflElGl0JPTNleQ=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=N8d89XzoVERmb4ztuIw6ynecg6gY5rB6UBBiF69+cY1aFUj7tF5stkuQB7qAi3YIaqNIeGFtMWHg8J5fEq8JpC4nSYuXTvzXaRfQK7PtaWYqWVQE76n0J2YiJjZQ1N+AJZYm2mkIs+mPU9xNBVnqK4Cvam2/WoJV1tq/KPddiVM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=pj.world@gmx.com header.b=aDcghvs2; arc=none smtp.client-ip=212.227.17.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1763073640; x=1763678440; i=pj.world@gmx.com;
+	bh=cAlDAPQDsnaXCwEUcdE7kspludiQEflElGl0JPTNleQ=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:From:Subject:
+	 Content-Type:Content-Transfer-Encoding:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=aDcghvs2oqFjxLwV/PkArmE1++hqnBHybuYTn27fiBillQKwZxyJx/8rhFZUsLvz
+	 zwwGCQ63i+yLhPgYSO5wxWgv9iCPnN++tUryFCHhzaUFkSnez6MSG6LlNUUcQaKPh
+	 U0zq/mhOR1fhMSaZPORbxTkHH0UUdpcNfTsNqGfLnkYWQOz5hVykD5uZdK+d8XHl0
+	 NS4Nzkv8EXWgJpr/GbVCSKlfpSGlCW1xnsSmfi6t+wMrDLPVm/ndcshpJIRVsOtO0
+	 8EWgxpIsGqxhIq7rdZrUbZRv/oeYs/N3AMq7duzV9GVe0pMJNRdfK2TgjfAN8ImJ1
+	 Fdf6e7lK88GDrTnCwQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.1.6] ([75.168.199.57]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MeU0q-1vruLk13ES-00gPsN for
+ <linux-btrfs@vger.kernel.org>; Thu, 13 Nov 2025 23:40:40 +0100
+Message-ID: <1c371732-db4f-49ad-bc00-876b3be0fe98@gmx.com>
+Date: Thu, 13 Nov 2025 16:40:38 -0600
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -84,97 +56,170 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: raid56: fix a out-of-boundary access for sub-page
- systems
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Cc: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
-References: <bbd1a41c70c0f37da9e3e82aa89784e831b0e889.1763069997.git.wqu@suse.com>
 Content-Language: en-US
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <bbd1a41c70c0f37da9e3e82aa89784e831b0e889.1763069997.git.wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+From: Paul Graff <pj.world@gmx.com>
+Subject: Stuck subvolume removal:
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:8zUy4issBR71pH8tO/h2gYh+1fyDzFllkn22G83BxwNLtuFp9vN
+ qtWCXWhqfc0pCVlRBVN+XvPNlfMe6sx8k5l22WccdW0iuuoums0nOcAYee1hWlKY5z9luOl
+ tIQP5GIprtYcoOQHf7d9e24p+6kToJFypaQhhGuM3K2C7xrTmXtLC0OeqdUFtBur9TtrB4t
+ p3uF1BT85uXn1SjIEWzFw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:D4foBu7C4xM=;HbbkyTwk6qn9MhE/rzdNIODaXZy
+ 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
+
+Hi, currently there is a dropped subvolume error when running a full=20
+balance on a single SSD.
+
+|:~> sudo btrfs balance start / WARNING: Full balance without filters=20
+requested. This operation is very intense and takes potentially very=20
+long. It is recommended to use the balance filters to narrow down the=20
+scope of balance. Use 'btrfs balance start --full-balance' option to=20
+skip this warning. The operation will start in 10 seconds. Use Ctrl-C to=
+=20
+stop it. 10 9 8 7 6 5 4 3 2 1 Starting balance without any filters.=20
+ERROR: error during balancing '/': Structure needs cleaning There may be=
+=20
+more info in syslog - try dmesg | tail hightower-i5-6600k:~> dmesg |=20
+tail [38576.407681] [ T29728] BTRFS info (device dm-2): found 37170=20
+extents, stage: update data pointers [38584.873805] [ T29728] BTRFS info=
+=20
+(device dm-2): relocating block group 64891125760 flags data=20
+[38607.693519] [ T29728] BTRFS info (device dm-2): found 33194 extents,=20
+stage: move data extents [38641.574032] [ T29728] BTRFS info (device=20
+dm-2): found 33194 extents, stage: update data pointers [38649.812477] [=
+=20
+T29728] BTRFS info (device dm-2): relocating block group 62710087680=20
+flags data [38662.710999] [ T29728] BTRFS info (device dm-2): found=20
+43884 extents, stage: move data extents [38696.292982] [ T29728] BTRFS=20
+info (device dm-2): found 43884 extents, stage: update data pointers=20
+[38708.587669] [ T29728] BTRFS info (device dm-2): relocating block=20
+group 60294168576 flags metadata|dup [38714.889735] [ T29728] BTRFS=20
+error (device dm-2): cannot relocate partially dropped subvolume 490,=20
+drop progress key (853588 108 0) [38723.736887] [ T29728] BTRFS info=20
+(device dm-2): balance: ended with status: -117 hightower-i5-6600k:~>|
+
+After passing,
+
+|:~> sudo btrfs subvolume sync / [sudo] password for root:=20
+hightower-i5-6600k:~> |
+
+the command returned to prompt very, very quickly.
+
+A second balance attempt results with the following output:
+
+|:~> sudo btrfs balance start / WARNING: Full balance without filters=20
+requested. This operation is very intense and takes potentially very=20
+long. It is recommended to use the balance filters to narrow down the=20
+scope of balance. Use 'btrfs balance start --full-balance' option to=20
+skip this warning. The operation will start in 10 seconds. Use Ctrl-C to=
+=20
+stop it. 10 9 8 7 6 5 4 3 2 1 Starting balance without any filters.=20
+ERROR: error during balancing '/': Structure needs cleaning There may be=
+=20
+more info in syslog - try dmesg | tail hightower-i5-6600k:~> |
+
+|:~> dmesg | tail [93689.781162] [ T69656] BTRFS info (device dm-2):=20
+found 16 extents, stage: update data pointers [93690.667290] [ T69656]=20
+BTRFS info (device dm-2): relocating block group 1495819878400 flags=20
+data [93703.323923] [ T69656] BTRFS info (device dm-2): found 33=20
+extents, stage: move data extents [93705.575991] [ T69656] BTRFS info=20
+(device dm-2): found 33 extents, stage: update data pointers=20
+[93706.769453] [ T69656] BTRFS info (device dm-2): relocating block=20
+group 1494746136576 flags data [93725.570642] [ T69656] BTRFS info=20
+(device dm-2): found 39 extents, stage: move data extents [93727.449779]=
+=20
+[ T69656] BTRFS info (device dm-2): found 39 extents, stage: update data=
+=20
+pointers [93728.465650] [ T69656] BTRFS info (device dm-2): relocating=20
+block group 60294168576 flags metadata|dup [93736.722689] [ T69656]=20
+BTRFS error (device dm-2): cannot relocate partially dropped subvolume=20
+490, drop progress key (853588 108 0) [93750.594559] [ T69656] BTRFS=20
+info (device dm-2): balance: ended with status: -117 hightower-i5-6600k:~>=
+ |
+
+Please see the following referenced, prior posting for stuck subvolume=20
+removal similarity.=20
+https://lore.kernel.org/linux-btrfs/9f936d59-d782-1f48-bbb7-dd1c8dae2615@g=
+mail.com/
+
+Is there a patch for btrfsprogs? If so can the patch be merged?|
+|
+
+What are your thoughts on this?
 
 
 
-在 2025/11/14 08:09, Qu Wenruo 写道:
-> [BUG]
-> There is a bug report from IBM that on Power11 the test case btrfs/023
-> crashed.
-> 
-> The call trace itself is not useful as this particular case is a wild
-> memory write, which corrupted the SLUB system.
-> 
-> [CAUSE]
-> Inside index_stripe_sectors() we will update rbio->stripe_paddrs[] array
-> to reflect the latest stripe_pages[].
-> 
-> We use the physical address of the corresponding page, add an offset
-> inside the page to represent the sector.
-> 
-> However in patch "btrfs: raid56: remove sector_ptr structure", the
-> offset is added to the stripe_pages[] array, not the result of
-> page_to_phys().
-> 
-> This makes the stripe_paddrs[] to be hugely incorrect for subpage
-> systems.
-> 
-> [FIX]
-> Fix the calculation by adding the offset after page_to_phys().
-> 
-> Reported-by: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
-> The fix will be folded into the offending patch.
-> ---
->   fs/btrfs/raid56.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
-> index ad3d5e789158..7cb756ac19ba 100644
-> --- a/fs/btrfs/raid56.c
-> +++ b/fs/btrfs/raid56.c
-> @@ -331,8 +331,8 @@ static void index_stripe_sectors(struct btrfs_raid_bio *rbio)
->   		if (!rbio->stripe_pages[page_index])
->   			continue;
->   
-> -		rbio->stripe_paddrs[i] = page_to_phys(rbio->stripe_pages[page_index] +
-> -						      offset_in_page(offset));
-> +		rbio->stripe_paddrs[i] = page_to_phys(rbio->stripe_pages[page_index]) +
-> +						      offset_in_page(offset);
-
-The folded version will have one less indent, so that offset_in_page() 
-is having the same indent at page_to_phys().
-
-Thanks,
-Qu
-
->   	}
->   }
->   
 
 
