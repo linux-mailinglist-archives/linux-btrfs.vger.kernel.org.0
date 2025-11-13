@@ -1,82 +1,82 @@
-Return-Path: <linux-btrfs+bounces-18962-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18963-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54DF8C59F18
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Nov 2025 21:18:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5A05C5A25A
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Nov 2025 22:35:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 3C3E84E7CB0
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Nov 2025 20:16:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B3503B3BC0
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Nov 2025 21:35:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 900F030EF6E;
-	Thu, 13 Nov 2025 20:16:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9018232936C;
+	Thu, 13 Nov 2025 21:33:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="YyvzxPfi"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="HBuvQvGu"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9164629CEB
-	for <linux-btrfs@vger.kernel.org>; Thu, 13 Nov 2025 20:16:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C2FA325714
+	for <linux-btrfs@vger.kernel.org>; Thu, 13 Nov 2025 21:33:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763064990; cv=none; b=TYrZKmvbKjs6tZH4Up2qGh8tvTybL9HgPAFpC3CTj1udTqyKw57m+EoTlQNM2+P7hVxJySzX5jr5W6PxqDYZf0cIBHRBNnqEhHqeyj3eN4fndr563Z2mgwFtTqEwkSYmizQoK7LuD23ufyB7miJ9v9KXAUft/oCrn2r3rUM5f64=
+	t=1763069595; cv=none; b=cKiow/tI5ieMTv+i7MizR52DNUe2j0dqZMkaslvFtpFCXAoixjM6TExZkKzpV/vGt84ZxKYig81vFJ+66MX2PoVbZfzeQbnekcdGYPyJXRHFLd3yv8GQJYK/OiW1GlMxLeaVHxhdnJe9g4BjaIwIRugxCVBCNfkPd4X8V2ah9vo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763064990; c=relaxed/simple;
-	bh=SjKZOFqkfHe+3R5wuy7Vjzpay2DHX4C5h6TFOSQWAj0=;
+	s=arc-20240116; t=1763069595; c=relaxed/simple;
+	bh=np+vk5ny2bYK/J1069dc49GCIMS8AbTomaCxcDLUlqw=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MaSBhaEMVYFG7ya+Oq0o0kCemM1h6FXdc21Qyp5HB9SrTUoNcpqLejjFw1qtjlBHz1ihnKaj93ojDQ3unO9kvq7U2Ni/3uCJH1+tXJnppdFUZfiniSn/HCtc68UrvvE0kaHWT4z4aY8h96AvYTcsP9jPfen0CdkImWogfvjd8dI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=YyvzxPfi; arc=none smtp.client-ip=209.85.128.53
+	 In-Reply-To:Content-Type; b=pS35TGgbaORxTYWuI6N9w+t5x53QZwrWHBj7tJsvuTXs7oXxZ7DAqKyfizMSo/6OxSWVUCOzUUJDNZt/3ssEhlzYCavg0ONvMEAD+gfCbxedrnT8yTwDPldiM3PIhqY7GvIg2z3z04hfaBMBsR4GWqXb11ExkxXxlLkeX0/2wY8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=HBuvQvGu; arc=none smtp.client-ip=209.85.128.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-477775d3728so12570465e9.2
-        for <linux-btrfs@vger.kernel.org>; Thu, 13 Nov 2025 12:16:28 -0800 (PST)
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-4711810948aso9072585e9.2
+        for <linux-btrfs@vger.kernel.org>; Thu, 13 Nov 2025 13:33:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1763064987; x=1763669787; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1763069592; x=1763674392; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=+Md77JygJk49bJhHa1GNdcQcbETs4Y4SUj1qyNYvdOk=;
-        b=YyvzxPfipmRoxb8Pe4Pax2KBUfCWQu7DVKV9BqnqGhcwoppmHCajIhLeUv1iDXuNW+
-         RzqM7ez7+cTCpjWNI77KOLwcMVvBGz3tUAIQcTwo48kNPbwP5hd32ATlYhaPd9o+olqb
-         U9diE/ubJD0cPptxYocopiY2jl12zFLilyJDy5ijPqB/ysv6vLrd0d1nfCFikJYw75cC
-         Twyt8C0/fCq2s4px5X836lzoDpEa25CPK6krSMqqPGzRsl5VUcqns6vrCYecVTUyQVyg
-         hRar/NpUMA/MNDtxhLw/yX+UaN4sFfOoVkjNPSbOidYxkO1MG1AKVamve1UQWtIxwm/t
-         ePPA==
+        bh=82CslIJMH4NtD4yMGdoweloKRKRZzvtMoYx7Z2BxtjY=;
+        b=HBuvQvGunkab3wSma0IWz7bqvrih04nGX83rtv5boJIGIpDf54/SazYl0+v+dLS56k
+         Q+XzvFfTK7BQx3bCPwzh66IaZAsh/IW3vNbgx0Bj0tUfW7rOQL3mF8kRp5kL6myBLgIo
+         i7Yu3GxGzdjX/VOFQ0HAjDobQu0sn4ux80PO+2TI5/WT0XggxQ1lXcucK7Tw/2ttpigA
+         0pV54qLTnlU/MEg/N57R/5lYe9De44iSPWd4Ygpr6hCBE+glOUi1irR3h3fOjPgUkDhJ
+         HjHk1Mrz1N4fXg7ZiENnXwUE4OC7FPorDKL6LmWrv28jnZ5zL3MT98NqnvD/Clcih39Q
+         E9hw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763064987; x=1763669787;
+        d=1e100.net; s=20230601; t=1763069592; x=1763674392;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+Md77JygJk49bJhHa1GNdcQcbETs4Y4SUj1qyNYvdOk=;
-        b=Um3Z5S4GfZEWWu8IzbX/EzvKZOQbUcJjT9kuFVzJLDZ6e7iQXcKoS5mdKZ74VkI9vx
-         VE4lZeLFvoXdLDQU1ujbI1QZyPmeN3sErtEwzMIdZAabaWpm9Wp7e4c9JJd0YGZgJCoa
-         4JqeUh+hIlgVyUdMTCsrveUaNe7i2sFW6o1uwer8X5w0Y7j/g/Qbjy9xCpaFLbaW0RGq
-         HqvRAk2a1TH9TqGniX4fiHOjrUGKZ54yolhh5H7d1NPm1yCc5CTtrMn/pWJlZjDFiou0
-         EyRD2Zq1PGid86vbMkuwZagqpPPI5nrMj/dx8xVDuD2c1O9SgD4z1R549r2WahFaAb+Y
-         z37g==
-X-Forwarded-Encrypted: i=1; AJvYcCVAyxHsrvfqI27PFQ2z0uA7omuStsWPyLDB+mKPg/+wqWq/OED1qErau7WOudSI2WNs40sil5N7PEh1rw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxDS5nqeYHii8zHTfzieDjpUVi6pmdXW0545xKPTgMmaTMC3eDo
-	mW80/shSE5av1ghElOTAwaWkeKdz0WOz3XSakHZmYtNuu8apl6Hg3j+t7qSGLYbim1w=
-X-Gm-Gg: ASbGncsTt26d0x2gpthgwNadIFK1NVl+GHIIKju1RwHsAzcF3MBCgb18kkQXeC2GcAH
-	ylZJMCHTAOsdK9w7YEHKnkOPmQJ+f9i+J4XWB/tox3b8Hx2C++1IIh/efO7/YICsL+E/FCbkeA7
-	qI37/5GoktrtuZX9BOoFQiBluZPVA+19ndCF7DQrz6xab+qLHY/pTRJ4jLslQCks/93zEuK2U8w
-	0p06kuZC/NRyhrK7E3GRG8h2tq9WOptYu5KDxFxeqVDnC/ZNoKP41oYIECMfXSTH7Yf3PjT/xOl
-	YiD5eHaGZpwuLg7yifp+Y90M8kxQfVPT/f+FyX6pmSEmsZVF0hl9Tgig/ZbhSWhxT85YN6pcNyx
-	JvGZIRIYnXa7Iti5kEZ2Nz9Zgf/wzeX+xcCQI6iiVZRmOvg/6fuxCOLGJTyLaZAIeRHDIk+OSxe
-	cKqw+JuvwlANAkT4jv68Q0WGKVV/SxM/yZDcz4ajY=
-X-Google-Smtp-Source: AGHT+IH0yzURWuPv8VW/RjUUl9qa9zt/enWEU1D5SthlED3mzF6tQgAt/2S+5vm9CtTptImNeHaaWA==
-X-Received: by 2002:a05:600c:1d1b:b0:471:115e:624b with SMTP id 5b1f17b1804b1-4778fe679d3mr8062235e9.17.1763064986742;
-        Thu, 13 Nov 2025 12:16:26 -0800 (PST)
+        bh=82CslIJMH4NtD4yMGdoweloKRKRZzvtMoYx7Z2BxtjY=;
+        b=OvpA4LkWedz8nZmpqgRpB/6LslEeP5GhTRAHSMvbSWgDVEq+zG3U6iFNO1GOQmTyID
+         hoQ0N0gPk+jUCmhiaObicYtCClye+jgW5vi8L5sCNQm8A36el6GQ/e3VfpNskrugDXJi
+         FRHDILb0DUPZcfC2CaZaf46uc73bo8LU1rlFTzBUyinKp6Hn6dY/4rQlnf975A1hjt9y
+         uwUGID/ROw1RpXd7Krm3LeNfIBdk2VHZiwGtnl6xtxfQ6Iui+aEnPeqQmS2xyX8b5guS
+         BSnnvdtZcg9yTYl1hPtl+NEJOFXrP6tPxinnRCijagg5QGm0m9bwRi4VvQmigJ9b9fJv
+         aXZg==
+X-Forwarded-Encrypted: i=1; AJvYcCVIEAneuC7Uq6sPgUU2FQKISl7P6gsH1vzsVS4DxJ9suU8wxpugThUCXvci82b3oz1sptHeY7XCQJvsvQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzrmyI+/Zx5ukUXnmN0qNkX1ZbdHwJn5gtBMBwFzhazLedAxk3R
+	O9C4pLdHWk+S6yvcwCST8Jz0JSSWTBlUFeHo1k1CD57qRfsApUvMCsrizMVG9LLXA84=
+X-Gm-Gg: ASbGnctmM5jUq4zkq47we7hXjdjjNKHJY/5nQI9C21Bk+8k9DeGijh+dtEleAdxd17c
+	HDbEeOrkJbXBQhdL6I+9KUV2EDICSiPdF/MMmmYF/BFV/ZEO+4uho8LLwYze6V7ShteUVzZ6arW
+	QTEjgLs6u6XcNPKfgmLV5JiFX4XOzTuP6LMCvmaE2Wnm6Y+r3EGRHFuNpyamANnWJfM7jl/0enJ
+	vysFzsZhIKPkaRzjZ+ak3VrOCZa5BFBkZkBGFxTor3gFyIcOv9Ti7/bOSDxgO8a1rc3YY6h6886
+	D2icwzhXVP+Q/vXA0DSZcHStKMyKfIBxmOqDAeXFkVkPQkc/s6/eAID8KD3FzVIVJ0CMu93ZD79
+	8aj/0+aJB4KwIn11fTfP9S4HtIpwWsW2f2XvE4YrLnzlKdOn3u80xPNSTAKehQMgVU6bn51b+N3
+	XSA0Q+ZyrgRgQpxlUpLMBI8Ze6YizB
+X-Google-Smtp-Source: AGHT+IFL6vHCRHS9O9F/gskdlKph0HMYqCbjuv5R8XS85FM3NQvLnFi3jnD3xcwfhwTJJYI7q85SBg==
+X-Received: by 2002:a05:600c:1d19:b0:476:d494:41d2 with SMTP id 5b1f17b1804b1-4778feadf96mr8736545e9.29.1763069591541;
+        Thu, 13 Nov 2025 13:33:11 -0800 (PST)
 Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-bc377039a55sm2848374a12.32.2025.11.13.12.16.23
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2985c2bf172sm35206785ad.83.2025.11.13.13.33.07
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 13 Nov 2025 12:16:26 -0800 (PST)
-Message-ID: <492ac26f-5eb4-49bf-855a-11f021d9e937@suse.com>
-Date: Fri, 14 Nov 2025 06:46:20 +1030
+        Thu, 13 Nov 2025 13:33:10 -0800 (PST)
+Message-ID: <d84d8a70-bd78-4e49-965f-150a3c231d2a@suse.com>
+Date: Fri, 14 Nov 2025 08:03:05 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -84,15 +84,17 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 3/8] btrfs: add a bio argument to btrfs_csum_one_bio
-To: Daniel Vacek <neelx@suse.com>
-Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
- David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20251112193611.2536093-1-neelx@suse.com>
- <20251112193611.2536093-4-neelx@suse.com>
- <7de34b24-f189-402a-98f9-83e595b53244@suse.com>
- <CAPjX3FfMaOWtCZ8mjVTbBQ9yt0O-mAistyDsVq7Q1aR-65R_hA@mail.gmail.com>
+Subject: Re: [linux-next20251112]Kernel OOPs while running btrfs/023 test case
+To: dsterba@suse.cz, Venkat Rao Bagalkote <venkat88@linux.ibm.com>
+Cc: riteshh@linux.ibm.com, linux-btrfs@vger.kernel.org,
+ Qu Wenruo <quwenruo.btrfs@gmx.com>, David Sterba <dsterba@suse.com>,
+ LKML <linux-kernel@vger.kernel.org>,
+ Madhavan Srinivasan <maddy@linux.ibm.com>,
+ Linux Next Mailing List <linux-next@vger.kernel.org>,
+ Stephen Rothwell <sfr@canb.auug.org.au>
+References: <83749167-c479-46df-a749-e3f65ffc3964@linux.ibm.com>
+ <65b02403-25e5-4ec3-8577-de1409b0a765@linux.ibm.com>
+ <20251113155107.GQ13846@twin.jikos.cz>
 Content-Language: en-US
 From: Qu Wenruo <wqu@suse.com>
 Autocrypt: addr=wqu@suse.com; keydata=
@@ -119,178 +121,168 @@ Autocrypt: addr=wqu@suse.com; keydata=
  /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
  o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
  JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <CAPjX3FfMaOWtCZ8mjVTbBQ9yt0O-mAistyDsVq7Q1aR-65R_hA@mail.gmail.com>
+In-Reply-To: <20251113155107.GQ13846@twin.jikos.cz>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
 
 
-在 2025/11/14 05:37, Daniel Vacek 写道:
-> On Wed, 12 Nov 2025 at 22:02, Qu Wenruo <wqu@suse.com> wrote:
->> 在 2025/11/13 06:06, Daniel Vacek 写道:
->>> From: Josef Bacik <josef@toxicpanda.com>
+在 2025/11/14 02:21, David Sterba 写道:
+> On Thu, Nov 13, 2025 at 06:47:43PM +0530, Venkat Rao Bagalkote wrote:
+>> On 13/11/25 6:21 pm, Venkat Rao Bagalkote wrote:
+>>> Greetings!!!
 >>>
->>> We only ever needed the bbio in btrfs_csum_one_bio, since that has the
->>> bio embedded in it.  However with encryption we'll have a different bio
->>> with the encrypted data in it, and the original bbio.  Update
->>> btrfs_csum_one_bio to take the bio we're going to csum as an argument,
->>> which will allow us to csum the encrypted bio and stuff the csums into
->>> the corresponding bbio to be used later when the IO completes.
->>
->> I'm wondering why we can not do it in a layered bio way.
->>
->> E.g. on device-mapper based solutions, the upper layer send out the bio
->> containing the plaintext data.
->> Then the dm-crypto send out a new bio, containing the encrypted data.
+>>> IBM CI has reported a kernel crash while running btrfs/023 test from
+>>> xfstest suite on IBM Power11 system.
+>>>
+>>>
+>>> Traces:
+>>> [  184.714500] BTRFS: device fsid b8c762d5-3f1a-4020-bca9-2e7e107e5363
+>>> devid 1 transid 8 /dev/loop1 (7:1) scanned by mkfs.btrfs (2697)
+>>> [  184.714612] BTRFS: device fsid b8c762d5-3f1a-4020-bca9-2e7e107e5363
+>>> devid 2 transid 8 /dev/loop2 (7:2) scanned by mkfs.btrfs (2697)
+>>> [  184.714731] BTRFS: device fsid b8c762d5-3f1a-4020-bca9-2e7e107e5363
+>>> devid 3 transid 8 /dev/loop3 (7:3) scanned by mkfs.btrfs (2697)
+>>> [  184.714825] BTRFS: device fsid b8c762d5-3f1a-4020-bca9-2e7e107e5363
+>>> devid 4 transid 8 /dev/loop4 (7:4) scanned by mkfs.btrfs (2697)
+>>> [  184.714918] BTRFS: device fsid b8c762d5-3f1a-4020-bca9-2e7e107e5363
+>>> devid 5 transid 8 /dev/loop5 (7:5) scanned by mkfs.btrfs (2697)
+>>> [  184.720659] BTRFS info (device loop1): first mount of filesystem
+>>> b8c762d5-3f1a-4020-bca9-2e7e107e5363
+>>> [  184.720694] BTRFS info (device loop1): using crc32c (crc32c-lib)
+>>> checksum algorithm
+>>> [  184.720708] BTRFS info (device loop1): forcing free space tree for
+>>> sector size 4096 with page size 65536
+>>> [  184.725011] BTRFS info (device loop1): checking UUID tree
+>>> [  184.725060] BTRFS info (device loop1): enabling ssd optimizations
+>>> [  184.725068] BTRFS info (device loop1): turning on async discard
+>>> [  184.725075] BTRFS info (device loop1): enabling free space tree
+>>> [  184.735050] BUG: Unable to handle kernel data access at
+>>> 0x6696fffdda1ea4c2
+>>> [  184.735072] Faulting instruction address: 0xc0000000007bd030
+>>> [  184.735087] Oops: Kernel access of bad area, sig: 11 [#1]
+>>> [  184.735101] LE PAGE_SIZE=64K MMU=Radix  SMP NR_CPUS=8192 NUMA pSeries
+>>> [  184.735118] Modules linked in: loop nft_fib_inet nft_fib_ipv4
+>>> nft_fib_ipv6 nft_fib nft_reject_inet nf_reject_ipv4 nf_reject_ipv6
+>>> nft_reject nft_ct nft_chain_nat nf_nat nf_conntrack nf_defrag_ipv6
+>>> nf_defrag_ipv4 bonding tls ip_set rfkill nf_tables sunrpc nfnetlink
+>>> pseries_rng vmx_crypto fuse ext4 crc16 mbcache jbd2 sd_mod sg ibmvscsi
+>>> ibmveth scsi_transport_srp pseries_wdt
+>>> [  184.735316] CPU: 22 UID: 0 PID: 1948 Comm: systemd-udevd Kdump:
+>>> loaded Tainted: G    B               6.18.0-rc5-next-20251112 #1
+>>> VOLUNTARY
+>>> [  184.735342] Tainted: [B]=BAD_PAGE
+>>> [  184.735352] Hardware name: IBM,9080-HEX Power11 (architected)
+>>> 0x820200 0xf000007 of:IBM,FW1110.01 (NH1110_069) hv:phyp pSeries
+>>> [  184.735369] NIP:  c0000000007bd030 LR: c0000000007bcef4 CTR:
+>>> c000000000902824
+>>> [  184.735386] REGS: c00000006fdb7910 TRAP: 0380   Tainted: G B
+>>>        (6.18.0-rc5-next-20251112)
+>>> [  184.735404] MSR:  8000000000009033 <SF,EE,ME,IR,DR,RI,LE>  CR:
+>>> 28004402  XER: 20040000
+>>> [  184.735460] CFAR: c0000000007bcf98 IRQMASK: 0
+>>> [  184.735460] GPR00: c0000000007bcef4 c00000006fdb7bb0
+>>> c0000000026aa100 0000000000000000
+>>> [  184.735460] GPR04: 0000000000000cc0 000000013470ff60
+>>> 00000000000006f0 c0000009906ff4f0
+>>> [  184.735460] GPR08: 669164fddb1e9c02 0000000000000800
+>>> 000000098d420000 0000000000000000
+>>> [  184.735460] GPR12: c000000000902824 c000000991e0e700
+>>> 0000000000000000 0000000000000000
+>>> [  184.735460] GPR16: 0000000000000000 0000000000000000
+>>> 0000000000000000 0000000000000000
+>>> [  184.735460] GPR20: 0000000000000000 0000000000000000
+>>> 0000000000000000 0000000000000000
+>>> [  184.735460] GPR24: 00000000000006ef 0000000000001000
+>>> ffffffffffffffff c00c000000402680
+>>> [  184.735460] GPR28: c0000000008f312c 0000000000000cc0
+>>> 6696fffdda1e9cc2 c00000000701e880
+>>> [  184.735688] NIP [c0000000007bd030] kmem_cache_alloc_noprof+0x4ac/0x708
+>>> [  184.735711] LR [c0000000007bcef4] kmem_cache_alloc_noprof+0x370/0x708
+>>> [  184.735729] Call Trace:
+>>> [  184.735738] [c00000006fdb7bb0] [c0000000007bcef4]
+>>> kmem_cache_alloc_noprof+0x370/0x708 (unreliable)
+>>> [  184.735766] [c00000006fdb7c30] [c0000000008f312c]
+>>> getname_flags.part.0+0x54/0x30c
+>>> [  184.735793] [c00000006fdb7c80] [c0000000009028a0]
+>>> sys_unlinkat+0x7c/0xe4
+>>> [  184.735814] [c00000006fdb7cc0] [c000000000039d50]
+>>> system_call_exception+0x1e0/0x450
+>>> [  184.735839] [c00000006fdb7e50] [c00000000000d05c]
+>>> system_call_vectored_common+0x15c/0x2ec
+>>> [  184.735866] ---- interrupt: 3000 at 0x7fff9df366bc
+>>> [  184.735881] NIP:  00007fff9df366bc LR: 00007fff9df366bc CTR:
+>>> 0000000000000000
+>>> [  184.735897] REGS: c00000006fdb7e80 TRAP: 3000   Tainted: G B
+>>>        (6.18.0-rc5-next-20251112)
+>>> [  184.735913] MSR:  800000000280f033
+>>> <SF,VEC,VSX,EE,PR,FP,ME,IR,DR,RI,LE>  CR: 48004402  XER: 00000000
+>>> [  184.735989] IRQMASK: 0
+>>> [  184.735989] GPR00: 0000000000000124 00007fffe0b3a3a0
+>>> 00007fff9e037d00 0000000000000006
+>>> [  184.735989] GPR04: 000000013470ff60 0000000000000000
+>>> 0000000000001000 00007fff9e0314b8
+>>> [  184.735989] GPR08: 0000000000000271 0000000000000000
+>>> 0000000000000000 0000000000000000
+>>> [  184.735989] GPR12: 0000000000000000 00007fff9e8c4ca0
+>>> 00000001161e5a78 00007fffe0b3ab10
+>>> [  184.735989] GPR16: 0000000000000003 0000000000000000
+>>> 00000001161aaed0 00000001161e9750
+>>> [  184.735989] GPR20: 00007fffe0b3a780 00000001161eb260
+>>> 00000001161eb320 0000000000000008
+>>> [  184.735989] GPR24: 00000001347061c0 0000000000000000
+>>> 0000000000000009 00000001347061c0
+>>> [  184.735989] GPR28: 0000000000000006 00007fffe0b3a53c
+>>> 0000000134715740 0000000000100000
+>>> [  184.736216] NIP [00007fff9df366bc] 0x7fff9df366bc
+>>> [  184.736231] LR [00007fff9df366bc] 0x7fff9df366bc
+>>> [  184.736251] ---- interrupt: 3000
+>>> [  184.736262] Code: f8610030 4082fccc 4bfffc28 2c3e0000 4182ff98
+>>> 2c3b0000 4182ff90 60000000 3b40ffff 813f0030 e91f00c0 38d80001
+>>> <7f7e482a> 7d3e4a14 79270022 552ac03e
+>>> [  184.736362] ---[ end trace 0000000000000000 ]---
+>>>
 > 
-> This is similar but fscrypt works on FS level. It gets the original
-> plaintext bio (the btrfs_bio::bio one) and gives us a callback with
-> the encrypted bio to calculate the checksum of the encrypted data. No
-> plaintext bio goes to the storage layer.
+> Thanks for the report.
+> 
+>> Mostly the issue got introduced by one of the below three commits. As
+>> reverting these three, this issue is not seen.
+>>
+>>
+>> 9299051573d9 e8ea54f86241 cd93c0aad7e3
+> 
+> 9299051573d9 btrfs: enable encoded read/write/send for bs > ps cases
+> e8ea54f86241 btrfs: make read verification handle bs > ps cases without large folios
+> cd93c0aad7e3 btrfs: make btrfs_repair_io_failure() handle bs > ps cases without large folios
+> 
 
-Then why put the original bio pointer into the super generic btrfs_bio?
+I located the problem to be the patch "btrfs: raid56: remove sector_ptr 
+structure", where I have a local fix not submitted to the mailing list.
 
-I thought it's more common to put the original plaintext into the 
-encryption specific structure, like what we did for compression.
+And during the recent push into for-next branch, I'm again using the 
+mailing list one, not the local fixed one, resulting 
+btrfs_raid_bio::stripe_paddrs[*] to be assigned way beyond its boundary.
+
+This makes us to randomly corrupt the memory, resulting weird results.
+
+And the fix is pretty straightforward:
+
+Bad:
+
++		rbio->stripe_paddrs[i] = page_to_phys(rbio->stripe_pages[page_index] +
++						      offset_in_page(offset));
+
+Good:
+
++		rbio->stripe_paddrs[i] = page_to_phys(rbio->stripe_pages[page_index]) +
++						      offset_in_page(offset);
+
+Since offset_in_page() is involved, it only affects subpage systems.
+
+I'll fold the fix into the offending patch.
+
+Thanks for the report, and sorry for the bug.
 
 Thanks,
 Qu
-
-> 
-> --nX
-> 
->> The storage layer doesn't need to bother the plaintext bio at all, they
->> just write the encrypted one to disk.
->>
->> And it's the dm-crypto tracking the plaintext bio <-> encrypted bio mapping.
->>
->>
->> So why we can not just create a new bio for the final csum caculation,
->> just like compression?
->>
->> Thanks,
->> Qu
->>
->>>
->>> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
->>> Signed-off-by: Daniel Vacek <neelx@suse.com>
->>> ---
->>> Compared to v5 this needed to adapt to recent async csum changes.
->>> ---
->>>    fs/btrfs/bio.c       |  4 ++--
->>>    fs/btrfs/bio.h       |  1 +
->>>    fs/btrfs/file-item.c | 17 ++++++++---------
->>>    fs/btrfs/file-item.h |  2 +-
->>>    4 files changed, 12 insertions(+), 12 deletions(-)
->>>
->>> diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
->>> index a73652b8724a..a69174b2b6b6 100644
->>> --- a/fs/btrfs/bio.c
->>> +++ b/fs/btrfs/bio.c
->>> @@ -542,9 +542,9 @@ static int btrfs_bio_csum(struct btrfs_bio *bbio)
->>>        if (bbio->bio.bi_opf & REQ_META)
->>>                return btree_csum_one_bio(bbio);
->>>    #ifdef CONFIG_BTRFS_EXPERIMENTAL
->>> -     return btrfs_csum_one_bio(bbio, true);
->>> +     return btrfs_csum_one_bio(bbio, &bbio->bio, true);
->>>    #else
->>> -     return btrfs_csum_one_bio(bbio, false);
->>> +     return btrfs_csum_one_bio(bbio, &bbio->bio, false);
->>>    #endif
->>>    }
->>>
->>> diff --git a/fs/btrfs/bio.h b/fs/btrfs/bio.h
->>> index deaeea3becf4..c5a6c66d51a0 100644
->>> --- a/fs/btrfs/bio.h
->>> +++ b/fs/btrfs/bio.h
->>> @@ -58,6 +58,7 @@ struct btrfs_bio {
->>>                        struct btrfs_ordered_sum *sums;
->>>                        struct work_struct csum_work;
->>>                        struct completion csum_done;
->>> +                     struct bio *csum_bio;
->>>                        struct bvec_iter csum_saved_iter;
->>>                        u64 orig_physical;
->>>                };
->>> diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
->>> index 72be3ede0edf..474949074da8 100644
->>> --- a/fs/btrfs/file-item.c
->>> +++ b/fs/btrfs/file-item.c
->>> @@ -765,21 +765,19 @@ int btrfs_lookup_csums_bitmap(struct btrfs_root *root, struct btrfs_path *path,
->>>        return ret;
->>>    }
->>>
->>> -static void csum_one_bio(struct btrfs_bio *bbio, struct bvec_iter *src)
->>> +static void csum_one_bio(struct btrfs_bio *bbio, struct bio *bio, struct bvec_iter *iter)
->>>    {
->>>        struct btrfs_inode *inode = bbio->inode;
->>>        struct btrfs_fs_info *fs_info = inode->root->fs_info;
->>>        SHASH_DESC_ON_STACK(shash, fs_info->csum_shash);
->>> -     struct bio *bio = &bbio->bio;
->>>        struct btrfs_ordered_sum *sums = bbio->sums;
->>> -     struct bvec_iter iter = *src;
->>>        phys_addr_t paddr;
->>>        const u32 blocksize = fs_info->sectorsize;
->>>        int index = 0;
->>>
->>>        shash->tfm = fs_info->csum_shash;
->>>
->>> -     btrfs_bio_for_each_block(paddr, bio, &iter, blocksize) {
->>> +     btrfs_bio_for_each_block(paddr, bio, iter, blocksize) {
->>>                btrfs_calculate_block_csum(fs_info, paddr, sums->sums + index);
->>>                index += fs_info->csum_size;
->>>        }
->>> @@ -791,19 +789,18 @@ static void csum_one_bio_work(struct work_struct *work)
->>>
->>>        ASSERT(btrfs_op(&bbio->bio) == BTRFS_MAP_WRITE);
->>>        ASSERT(bbio->async_csum == true);
->>> -     csum_one_bio(bbio, &bbio->csum_saved_iter);
->>> +     csum_one_bio(bbio, bbio->csum_bio, &bbio->csum_saved_iter);
->>>        complete(&bbio->csum_done);
->>>    }
->>>
->>>    /*
->>>     * Calculate checksums of the data contained inside a bio.
->>>     */
->>> -int btrfs_csum_one_bio(struct btrfs_bio *bbio, bool async)
->>> +int btrfs_csum_one_bio(struct btrfs_bio *bbio, struct bio *bio, bool async)
->>>    {
->>>        struct btrfs_ordered_extent *ordered = bbio->ordered;
->>>        struct btrfs_inode *inode = bbio->inode;
->>>        struct btrfs_fs_info *fs_info = inode->root->fs_info;
->>> -     struct bio *bio = &bbio->bio;
->>>        struct btrfs_ordered_sum *sums;
->>>        unsigned nofs_flag;
->>>
->>> @@ -822,12 +819,14 @@ int btrfs_csum_one_bio(struct btrfs_bio *bbio, bool async)
->>>        btrfs_add_ordered_sum(ordered, sums);
->>>
->>>        if (!async) {
->>> -             csum_one_bio(bbio, &bbio->bio.bi_iter);
->>> +             struct bvec_iter iter = bio->bi_iter;
->>> +             csum_one_bio(bbio, bio, &iter);
->>>                return 0;
->>>        }
->>>        init_completion(&bbio->csum_done);
->>>        bbio->async_csum = true;
->>> -     bbio->csum_saved_iter = bbio->bio.bi_iter;
->>> +     bbio->csum_bio = bio;
->>> +     bbio->csum_saved_iter = bio->bi_iter;
->>>        INIT_WORK(&bbio->csum_work, csum_one_bio_work);
->>>        schedule_work(&bbio->csum_work);
->>>        return 0;
->>> diff --git a/fs/btrfs/file-item.h b/fs/btrfs/file-item.h
->>> index 5645c5e3abdb..d16fd2144552 100644
->>> --- a/fs/btrfs/file-item.h
->>> +++ b/fs/btrfs/file-item.h
->>> @@ -64,7 +64,7 @@ int btrfs_lookup_file_extent(struct btrfs_trans_handle *trans,
->>>    int btrfs_csum_file_blocks(struct btrfs_trans_handle *trans,
->>>                           struct btrfs_root *root,
->>>                           struct btrfs_ordered_sum *sums);
->>> -int btrfs_csum_one_bio(struct btrfs_bio *bbio, bool async);
->>> +int btrfs_csum_one_bio(struct btrfs_bio *bbio, struct bio *bio, bool async);
->>>    int btrfs_alloc_dummy_sum(struct btrfs_bio *bbio);
->>>    int btrfs_lookup_csums_range(struct btrfs_root *root, u64 start, u64 end,
->>>                             struct list_head *list, int search_commit,
->>
-
 
