@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-18957-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18958-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9F90C595C9
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Nov 2025 19:06:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14866C592AE
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Nov 2025 18:31:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 5E51C540942
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Nov 2025 17:10:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3B7D33A670F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Nov 2025 17:10:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B342235F8BA;
-	Thu, 13 Nov 2025 16:56:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 794D2361DD8;
+	Thu, 13 Nov 2025 16:56:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="miZ4DcWF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NiN1X177"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC91F361DBF
-	for <linux-btrfs@vger.kernel.org>; Thu, 13 Nov 2025 16:56:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B66B1361DCD
+	for <linux-btrfs@vger.kernel.org>; Thu, 13 Nov 2025 16:56:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763053010; cv=none; b=fZx3tesrDsXr9HTaISCCxGO7A1Gvot7TNXLS4VgeDK8/YwTt66xZmur8wEIVQL9tR8fY5Uw5zCfEB4dFTzF7cO0MfRCvUM2iGD39l0hbyJf7/aRBnUNPIKwusWs4EK1Rf8Vpvkl+NjtUyVFvLujV13hhjdCaBaGe1u2V0Egkqxg=
+	t=1763053011; cv=none; b=ckerJxCMvjf5ZiWLeg5+5aepEz03jhAr1yLotFuseXd9kf6PxQhvshZ5O5GmIokcwIPNy72pu7ApezXcl21hBnpyJGRpUnCFTZ64Xb9M41cdvQMm+yZ7JjQ9TX9+DCvzzLwKzKQ+82gdMARs6s5sowj0WFYkKc8RDWiAOJz/2OY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763053010; c=relaxed/simple;
-	bh=4IgITXoNyEvMX3yZ+aWWHD5AFwhpSogCcau0wGHfULc=;
+	s=arc-20240116; t=1763053011; c=relaxed/simple;
+	bh=QSOB/ndm17H7o4xPL65X6POj/NrA2SaWxrIObc/FcQI=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ndDDl0roT15QAF++UotLnB2Ehhl+RGJm/8Bk1HgYHWvQcxkylb6NSj3YzrUyM5wXDV+ck1amBYZrODFO/p4kR8H81+4ZtLJvNQLw3stuHu6pSa4XqrxzYozfHVxmYNCHl9VcH/d1BZJ+FqUrWBImK9sOBy5T9a6u8NjoMVtZm5Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=miZ4DcWF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D409EC19423
-	for <linux-btrfs@vger.kernel.org>; Thu, 13 Nov 2025 16:56:49 +0000 (UTC)
+	 MIME-Version; b=PEgXFoYWXxKQSpiO+0IyMJc4nHludzhPcmExMWCYANOPPjSqWHApKi4TGF3QGqhSVKBeGAPla9p/T1IuDrxnhM572alF01nD2RVSRbVhBLIQnYIXKsPyziO7wE+n7f8wadCi4TP+hhQXOj/2IWrJ86ZgQr3hnz2974QQgLbJuh8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NiN1X177; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5625C4CEF5
+	for <linux-btrfs@vger.kernel.org>; Thu, 13 Nov 2025 16:56:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1763053010;
-	bh=4IgITXoNyEvMX3yZ+aWWHD5AFwhpSogCcau0wGHfULc=;
+	s=k20201202; t=1763053011;
+	bh=QSOB/ndm17H7o4xPL65X6POj/NrA2SaWxrIObc/FcQI=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=miZ4DcWF3VTn03OqDzw10mm01DrFt8t++4PQR7ko4qGReQSci+ouoxcrEq5ebjnKs
-	 K987KxhP0QvFnnqTxLvU9BX3AgYSfKoYKmsPF3PClxsdQ7wU99/D1jT5tExdbOx/YN
-	 Jn7OjXo56z0CGS1sg6+Vk3bcFGTqmn3K0//BbBxkU4jBG5L2pWJ/GBip2A76duboFq
-	 aW/LFuFz17Iirw6VLWvGW7AdYblWoDEscjO/0VScpH1GdDrT732ZdeShsQr5U04sRh
-	 vG6D5Y5hikH3ySgboUD6dTC3/IP8zYMo0MKfYCvEiKDTnnwZzh72VzrPv+JQGyE5yz
-	 HMrSGz7vObEXQ==
+	b=NiN1X1771x69HtHJcDp4lCSJ191MVHSWEoWUQxHEWynhj3KW6nRlPeKc25+4yYP23
+	 C+1WKUlVaTVLAnHo17oLMptHGWkI57DJGBpzdo6XnAbZxBqkh/ALDe2fyFGRkxUZ3q
+	 ABzeGx6YEC4ylplk3ZN0liLfDAlH38kfNClP7P9VLts6lwKks99CCUI+OX4l53spaY
+	 Umavc/aicGWzcz4wRFgtGSSuZkBIAwbQOVyH+reb/4JTcrH+Z8roEfSG6AMMQMPy8w
+	 C9FZCoF7LOsLJwVYeRQyZ764ABk+HZJ7VeqRREjSieaKnoCDs0c6wBARvMFBQWcnua
+	 Ai6ip9fxHLI1g==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 7/8] btrfs: abort transaction on item count overflow in __push_leaf_left()
-Date: Thu, 13 Nov 2025 16:56:38 +0000
-Message-ID: <f747c8600c59c507ba6955057c7c201f1b4f0466.1763052647.git.fdmanana@suse.com>
+Subject: [PATCH 8/8] btrfs: update check_skip variable after unlocking current node
+Date: Thu, 13 Nov 2025 16:56:39 +0000
+Message-ID: <87ef62148060dab687bba9ed8d3a69bb8dfdab09.1763052647.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <cover.1763052647.git.fdmanana@suse.com>
 References: <cover.1763052647.git.fdmanana@suse.com>
@@ -59,40 +59,29 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-If we try to push an item count from the right leaf that is greater than
-the number of items in the leaf, we just emit a warning. This should
-never happen but if it does we get an underflow in the new number of
-items in the right leaf and chaos follows from it. So replace the warning
-with proper error handling, by aborting the transaction and returning
--EUCLEAN, and proper logging by using btrfs_crit() instead of WARN(),
-which gives us proper formatting and information about the filesystem.
+There's no need to update the local variable 'check_skip' to false inside
+the critical section delimited by the lock of the current node, so do it
+after unlocking the node.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/ctree.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+ fs/btrfs/ctree.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index 57b7d09d85cc..8b54daf3d0e7 100644
+index 8b54daf3d0e7..46262939e873 100644
 --- a/fs/btrfs/ctree.c
 +++ b/fs/btrfs/ctree.c
-@@ -3393,9 +3393,13 @@ static noinline int __push_leaf_left(struct btrfs_trans_handle *trans,
- 	btrfs_set_header_nritems(left, old_left_nritems + push_items);
+@@ -1435,8 +1435,8 @@ static noinline void unlock_up(struct btrfs_path *path, int level,
+ 		}
  
- 	/* fixup right node */
--	if (push_items > right_nritems)
--		WARN(1, KERN_CRIT "push items %d nr %u\n", push_items,
--		       right_nritems);
-+	if (unlikely(push_items > right_nritems)) {
-+		ret = -EUCLEAN;
-+		btrfs_abort_transaction(trans, ret);
-+		btrfs_crit(fs_info, "push items (%d) > right leaf items (%u)",
-+			   push_items, right_nritems);
-+		goto out;
-+	}
- 
- 	if (push_items < right_nritems) {
- 		push_space = btrfs_item_offset(right, push_items - 1) -
+ 		if (i >= lowest_unlock && i > skip_level) {
+-			check_skip = false;
+ 			btrfs_tree_unlock_rw(path->nodes[i], path->locks[i]);
++			check_skip = false;
+ 			path->locks[i] = 0;
+ 			if (write_lock_level &&
+ 			    i > min_write_lock_level &&
 -- 
 2.47.2
 
