@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-18954-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18955-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC8E3C590EA
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Nov 2025 18:17:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F533C594A3
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Nov 2025 18:56:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 02C345076A2
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Nov 2025 17:10:34 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 19E78505868
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Nov 2025 17:10:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B59B352934;
-	Thu, 13 Nov 2025 16:56:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 629A335F8AE;
+	Thu, 13 Nov 2025 16:56:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k3eMtNdk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JO6n5SSI"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A786835F8BA
-	for <linux-btrfs@vger.kernel.org>; Thu, 13 Nov 2025 16:56:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98C6A35F8DD
+	for <linux-btrfs@vger.kernel.org>; Thu, 13 Nov 2025 16:56:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763053007; cv=none; b=K9oTGhrYLBDR3R10zJ86yHZcVuB/V1x3wiD3TGkZSFlQRHBeQG9Q22NHt1KnjGi1eAvw2fTNFa6Dn+Udrij2SfCI3WGBBevxq9OCPTl50EmI7l8FOzcu4Z23LgzrxypiD2d6uY1REcjWH2yQKWpJlua6oQtoJW1fRRweo3hPSSA=
+	t=1763053008; cv=none; b=sFA/Ow8WazXVGVMHc4Y6bSfPwstT56wF6U2z0ERYivk4ekW803VZ6bmAEvyX44SOKKot1L6yUFxkhvDFfitOuqJl0hxeQyaVMa7GW5HMTtxU4fj6ejapdpEs9Fw423Mq1VvxxjLKjsDE4gp0OBbPQ5TFnsAiNUdxV4HuwRBwFmY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763053007; c=relaxed/simple;
-	bh=zuzo8jxijw2XOFqxr4nGMJXBFn+jpRNUaWY4a5zw6n4=;
+	s=arc-20240116; t=1763053008; c=relaxed/simple;
+	bh=fXaMxW7oDCN2jjmLa5C+BAk/QInsRZNnZL8Wqa4L25M=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BVFi0nJ1TQHzOJLPo341UaQj4B+9FsqEb4DFHSQDwDdSna8WaHwaPOxf2HGMajB5aaL0Ki+OGRPqbRbf6MUcv5NyMKsyP1hjyvAt/AvI23dtzsEsbRsWLYU+d7ODqx9sq4QJfSmp2unSjZrVqeH0AyECLNvFzNBJ8jUAD49ekug=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k3eMtNdk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0BACEC19424
-	for <linux-btrfs@vger.kernel.org>; Thu, 13 Nov 2025 16:56:46 +0000 (UTC)
+	 MIME-Version; b=hE9GNK5Yw/ekCibnFXWwYSDOzmWx2L8m9IVXra5mgDkgKS2xsdpzQF698zGAwVH2fiGU+NSyxIVFThmhmRRTNdXzGr3NR1y0lupnp0R/rAi97OwvnDQdPGexU2/bLdM4G3cZ0pJc0t3h23gV9TDl+EMZgjvT2xPCVigX/eUpcoo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JO6n5SSI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F38C2C19424
+	for <linux-btrfs@vger.kernel.org>; Thu, 13 Nov 2025 16:56:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1763053007;
-	bh=zuzo8jxijw2XOFqxr4nGMJXBFn+jpRNUaWY4a5zw6n4=;
+	s=k20201202; t=1763053008;
+	bh=fXaMxW7oDCN2jjmLa5C+BAk/QInsRZNnZL8Wqa4L25M=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=k3eMtNdkQhskMX576Mv9stC6txA6nPNd0FEiKlZhjwPyBYEFyB/8Zpj9tuw5SWAgf
-	 2857hQergkrnURRBvBu54ydY58BnYdFRS0K8EzwSoZcFNCng6JWR8V4wMrCsnx5u8M
-	 ZV7vmwEvG3CZL/BMNc5SPQYVtsTgTNhLCIUeELdFUongFKp+KM07amr1YRcvSMrzW5
-	 F8i0gKSNqFLGrk2yKffCm11KgCKqiCdAGwnReRow/mcZJlKMSarq01Uu8WCy9mgHOH
-	 uTiTFcNJ+PIghz70KEgZpv8oVTrYrz978YpFkudBFHmGnR1Loafo0pZde9B7wqKPrV
-	 2GFapt5b/AudA==
+	b=JO6n5SSIloNwQ8A4V4XDNdtR7v/78PvoZ5YCAuUtpfn/Ry2mQHc3oamrSEf43dMrZ
+	 sWXXnee7HktFfkYs0CjG3gDshsabXIwCchOnmaNEqPEOKGVYhJGHPTJH/QaqjADvYm
+	 221lDa3YRZ121q0YUoglopLAwmk0AmqDvObIZ0kXniABf/C4lhz+MzBmM51bLyxquf
+	 WQBb1JuVVmFSU4z5UT5DPwcc5t3StKSKHbm/V3CaAFMuEXquLEy/TIAug8d6uj7jdQ
+	 /QtFc8fMbn45UvzcfQ3vDAUSr0IoJacCdrqgZ7gSFn6jFIcU/Tjv8hGW88aS6numhu
+	 u1tMMp/BJKbXw==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 4/8] btrfs: always use left leaf variable in __push_leaf_right()
-Date: Thu, 13 Nov 2025 16:56:35 +0000
-Message-ID: <5e46cd4c1e62517bb788d9bdabb75aa91cf6960f.1763052647.git.fdmanana@suse.com>
+Subject: [PATCH 5/8] btrfs: remove duplicated leaf dirty status clearing in __push_leaf_right()
+Date: Thu, 13 Nov 2025 16:56:36 +0000
+Message-ID: <94699d0ed6ed7dd70cb2df2b53bdabcb1b81043a.1763052647.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <cover.1763052647.git.fdmanana@suse.com>
 References: <cover.1763052647.git.fdmanana@suse.com>
@@ -59,36 +59,37 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-The 'left' variable points to path->nodes[0] and path->nodes[0] is never
-changed, but some places use 'left' while others refer to path->nodes[0].
-Update all sites to use 'left' as not only it's shorter it's also easier
-to reason since it means the left leaf and avoids any confusion with the
-sibling right leaf.
+We have already called btrfs_clear_buffer_dirty() against the left leaf in
+the code above:
+
+  btrfs_set_header_nritems(left, left_nritems);
+
+  if (left_nritems)
+       btrfs_mark_buffer_dirty(trans, left);
+  else
+       btrfs_clear_buffer_dirty(trans, left);
+
+So remove the second check for a 0 number of items in the left leaf and
+calling again btrfs_clear_buffer_dirty() against the left leaf.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/ctree.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ fs/btrfs/ctree.c | 2 --
+ 1 file changed, 2 deletions(-)
 
 diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index b5cf1b6f5adc..dada50d86731 100644
+index dada50d86731..7265dd661cde 100644
 --- a/fs/btrfs/ctree.c
 +++ b/fs/btrfs/ctree.c
-@@ -3214,10 +3214,10 @@ static noinline int __push_leaf_right(struct btrfs_trans_handle *trans,
+@@ -3214,8 +3214,6 @@ static noinline int __push_leaf_right(struct btrfs_trans_handle *trans,
  	/* then fixup the leaf pointer in the path */
  	if (path->slots[0] >= left_nritems) {
  		path->slots[0] -= left_nritems;
--		if (btrfs_header_nritems(path->nodes[0]) == 0)
--			btrfs_clear_buffer_dirty(trans, path->nodes[0]);
--		btrfs_tree_unlock(path->nodes[0]);
--		free_extent_buffer(path->nodes[0]);
-+		if (btrfs_header_nritems(left) == 0)
-+			btrfs_clear_buffer_dirty(trans, left);
-+		btrfs_tree_unlock(left);
-+		free_extent_buffer(left);
+-		if (btrfs_header_nritems(left) == 0)
+-			btrfs_clear_buffer_dirty(trans, left);
+ 		btrfs_tree_unlock(left);
+ 		free_extent_buffer(left);
  		path->nodes[0] = right;
- 		path->slots[1] += 1;
- 	} else {
 -- 
 2.47.2
 
