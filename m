@@ -1,159 +1,189 @@
-Return-Path: <linux-btrfs+bounces-18936-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18937-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A13BDC56C57
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Nov 2025 11:11:38 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5D00C56CEB
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Nov 2025 11:22:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EEF1B3BBEE3
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Nov 2025 10:07:24 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 195D34E9F88
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Nov 2025 10:17:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B0E42E54A8;
-	Thu, 13 Nov 2025 10:06:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 000512FDC30;
+	Thu, 13 Nov 2025 10:17:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=foxido.dev header.i=@foxido.dev header.b="X24lwnAJ";
-	dkim=permerror (0-bit key) header.d=foxido.dev header.i=@foxido.dev header.b="UFLgDhOn"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="j7uLGewB";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="j7uLGewB"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from m.foxido.dev (m.foxido.dev [81.177.217.87])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FD912E0934;
-	Thu, 13 Nov 2025 10:06:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=81.177.217.87
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE5AA14AD20
+	for <linux-btrfs@vger.kernel.org>; Thu, 13 Nov 2025 10:17:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763028416; cv=none; b=joODGepGxRciYuMhwmytc4twfq9bT8y/LlxCn1ecA9MSN0q84wNcxUOrQFaWRYJcwkzwGXYzUhM3fc1Gte5LTb9CS4J3kbD2yBOcShOaii1o4FJl7BzOmv1dP8bBK4KP/MjEL23pdNk9CBjFulaxPZJ/EymR7tilDMgEvLObhnc=
+	t=1763029061; cv=none; b=sNZ9K+hI0pTKu5BRAfYrjcrlkz+kR+nwGbbpzkmQpdY9TL/vYQo5Ky+Qjr8hXcPkhnfloGILP6xwkj92PTkMgNOvIqnT57+8Kh+SM25ahlkgBFtFP6Gm7uC+HNomDHB204votpdNttf8W63/IjhBgk8dCkWOTqMJjlfL59sSFO8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763028416; c=relaxed/simple;
-	bh=kgZ6/MxvLoUUt2gbJft/I2L5JSuzumUYFb2SvCE27Ck=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QxfvdPu6aSMnvBzBHN4c1ALDD6IOk6E8eDQGqGAOYKJfUu1tPtoVBqen2KgY4krUO4ZaCLoJlK8HmfMVI86lFjwWaueLq6ZHydqQfl4seT1G9AR5YGMQLPIMVyg+Pj3Mxw9b6WgWZgpnXaH7u5O3skqaHaLKcWFnttdxZRBAqj4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=foxido.dev; spf=pass smtp.mailfrom=foxido.dev; dkim=pass (2048-bit key) header.d=foxido.dev header.i=@foxido.dev header.b=X24lwnAJ; dkim=permerror (0-bit key) header.d=foxido.dev header.i=@foxido.dev header.b=UFLgDhOn; arc=none smtp.client-ip=81.177.217.87
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=foxido.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxido.dev
-DKIM-Signature: v=1; a=rsa-sha256; s=202508r; d=foxido.dev; c=relaxed/relaxed;
-	h=From:To:Subject:Date:Message-ID; t=1763028402; bh=C90rv1D0a8JsgNQkGSdEEhi
-	dsm5BQboxDJ3dNubvO2E=; b=X24lwnAJ59M8qdtvILr/ExGWxMUiLTfMDhXxU4UG/q3i+U2DTP
-	3sJ5ZwS9J18EgVSuNAIZ2Q0EZo8RuYQemjZefuA/CxMj7g9cIMdVZhj9nG59AhfSPZLE59hwGCj
-	Au2Vsi1GddYGQxKurqhgLsg1Cfjcv6kcCN/gbIhwqCInQfl4Uga3nYn8mrz0SRJjtsW4/3/pBhU
-	hyIxeT/VIjFTmJIpAg8TFj2tP4E4XljGr2ZMLGz94WpeSn/zuz1E0d3/RI+zl2Uua6vJjYMMx+d
-	D17kAGYoGgKAJHkSHTNW7AZPr5bfUNDsXgW0CFfImKlAXQQYPMmO431Y6PoDkDI1PuQ==;
-DKIM-Signature: v=1; a=ed25519-sha256; s=202508e; d=foxido.dev; c=relaxed/relaxed;
-	h=From:To:Subject:Date:Message-ID; t=1763028402; bh=C90rv1D0a8JsgNQkGSdEEhi
-	dsm5BQboxDJ3dNubvO2E=; b=UFLgDhOnCkoUl0wur1s6ijqLwOSvRaaruXgSQ3HkbKNprfWzog
-	1+Z9NKmV9m2AJBnQcON3nHzlc8/0d5RodEDg==;
-Message-ID: <35e1977e-7cca-4ea3-9df8-0a2b43bc0f85@foxido.dev>
-Date: Thu, 13 Nov 2025 13:06:42 +0300
+	s=arc-20240116; t=1763029061; c=relaxed/simple;
+	bh=pT1+a8UnyQQwWALRqvV+mDSdj+vBXw9UCY9HpsgTIOY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=FBx3ceDxbLjgbrYkPjcB0SO4yxuBmRDdp5sFmAk/MJjq3ug13AZi/juiW+RXO1V1Pc9sKRs64d+O8MOCPj7xL3s/sAnHKqLfVnmQvFrVMAiTEGc7K5ta8Hyg07su7E6uW5eCDbOXWX9KnwSBE8yGH7/Oyzgzu8lurqyGrvlhTMQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=j7uLGewB; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=j7uLGewB; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id EE87C1F80F;
+	Thu, 13 Nov 2025 10:17:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1763029057; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=tu4GchAU3/yHNzR3tzRAq9UZ80NgMWJ7Ch8TO55ZiDo=;
+	b=j7uLGewBRU1WDhewESRiaVrhzcnJkgyfe6YrJvtezh2zH07P97iZFU0gYX2DVBq5tXu48w
+	NBFZhft7qRgO25/LmUIBMmLtgjjwO3I9w0rRT1MMnaFo/Ve4/lJ8VdNL/iZ/zQ48/NWNtg
+	wjFlwTNDtjI155VhG7XtInwZxw+XqnY=
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=j7uLGewB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1763029057; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=tu4GchAU3/yHNzR3tzRAq9UZ80NgMWJ7Ch8TO55ZiDo=;
+	b=j7uLGewBRU1WDhewESRiaVrhzcnJkgyfe6YrJvtezh2zH07P97iZFU0gYX2DVBq5tXu48w
+	NBFZhft7qRgO25/LmUIBMmLtgjjwO3I9w0rRT1MMnaFo/Ve4/lJ8VdNL/iZ/zQ48/NWNtg
+	wjFlwTNDtjI155VhG7XtInwZxw+XqnY=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D214C3EA61;
+	Thu, 13 Nov 2025 10:17:36 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id Z6WUMkCwFWnZJAAAD6G6ig
+	(envelope-from <neelx@suse.com>); Thu, 13 Nov 2025 10:17:36 +0000
+From: Daniel Vacek <neelx@suse.com>
+To: Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>
+Cc: Qu Wenruo <wqu@suse.com>,
+	Daniel Vacek <neelx@suse.com>,
+	linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] btrfs: simplify async csum synchronization
+Date: Thu, 13 Nov 2025 11:17:30 +0100
+Message-ID: <20251113101731.2624000-1-neelx@suse.com>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 4/8] btrfs: simplify function protections with guards
-To: dsterba@suse.cz
-Cc: Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
- linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1762972845.git.foxido@foxido.dev>
- <c7abcfeb7e549bf5ad9861044c97b9a111d64370.1762972845.git.foxido@foxido.dev>
- <20251113084323.GG13846@twin.jikos.cz>
-Content-Language: en-US
-From: Gladyshev Ilya <foxido@foxido.dev>
-In-Reply-To: <20251113084323.GG13846@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Rspamd-Queue-Id: EE87C1F80F
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	MIME_TRACE(0.00)[0:+];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	TO_DN_SOME(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:mid];
+	RCVD_TLS_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	DKIM_TRACE(0.00)[suse.com:+]
+X-Spam-Score: -3.01
 
-On 11/13/25 11:43, David Sterba wrote:
-> On Wed, Nov 12, 2025 at 09:49:40PM +0300, Gladyshev Ilya wrote:
->> Replaces cases like
->>
->> void foo() {
->>      spin_lock(&lock);
->>      ... some code ...
->>      spin_unlock(&lock)
->> }
->>
->> with
->>
->> void foo() {
->>      guard(spinlock)(&lock);
->>      ... some code ...
->> }
->>
->> While it doesn't has any measurable impact,
-> 
-> There is impact, as Daniel mentioned elsewhere, this also adds the
-> variable on stack. It's measuable on the stack meter, one variable is
-> "nothing" but combined wherever the guards are used can add up. We don't
-> mind adding variables where needed, occasional cleanups and stack
-> reduction is done. Here it's a systematic stack use increase, not a
-> reason to reject the guards but still something I cannot just brush off
-I thought it would be optimized out by the compiler in the end, I will 
-probably recheck this
+We don't need the redundant completion csum_done which marks the
+csum work has been executed. We can simply flush_work() instead.
 
->> it makes clear that whole
->> function body is protected under lock and removes future errors with
->> additional cleanup paths.
-> 
-> The pattern above is the one I find problematic the most, namely in
-> longer functions or evolved code. Using your example as starting point
-> a followup change adds code outside of the locked section:
-> 
-> void foo() {
->      spin_lock(&lock);
->      ... some code ...
->      spin_unlock(&lock)
-> 
->      new code;
-> }
-> 
-> with
-> 
-> void foo() {
->      guard(spinlock)(&lock);
->      ... some code ...
-> 
->      new code;
-> }
-> 
-> This will lead to longer critical sections or even incorrect code
-> regarding locking when new code must not run under lock.
-> 
-> The fix is to convert it to scoped locking, with indentation and code
-> churn to unrelated code to the new one.
-> 
-> Suggestions like refactoring to make minimal helpers and functions is
-> another unecessary churn and breaks code reading flow.
+This way we can slim down the btrfs_bio structure by 32 bytes matching
+it's size to what it used to be before introducing the async csums.
+Hence not making any change with respect to the structure size.
+---
+This is a simple fixup for "btrfs: introduce btrfs_bio::async_csum" in
+for-next and can be squashed into it.
 
-What if something like C++ unique_lock existed? So code like this would 
-be possible:
+v2: metadata is not checksummed here so use the endio_workers workqueue
+    unconditionally. Thanks to Qu Wenruo.
+---
+ fs/btrfs/bio.c       | 2 +-
+ fs/btrfs/bio.h       | 1 -
+ fs/btrfs/file-item.c | 4 +---
+ 3 files changed, 2 insertions(+), 5 deletions(-)
 
-void foo() {
-   GUARD = unique_lock(&spin);
+diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
+index a73652b8724a..fd6e4278a62f 100644
+--- a/fs/btrfs/bio.c
++++ b/fs/btrfs/bio.c
+@@ -106,7 +106,7 @@ void btrfs_bio_end_io(struct btrfs_bio *bbio, blk_status_t status)
+ 	ASSERT(in_task());
+ 
+ 	if (bbio->async_csum)
+-		wait_for_completion(&bbio->csum_done);
++		flush_work(&bbio->csum_work);
+ 
+ 	bbio->bio.bi_status = status;
+ 	if (bbio->bio.bi_pool == &btrfs_clone_bioset) {
+diff --git a/fs/btrfs/bio.h b/fs/btrfs/bio.h
+index deaeea3becf4..0b09d9122fa2 100644
+--- a/fs/btrfs/bio.h
++++ b/fs/btrfs/bio.h
+@@ -57,7 +57,6 @@ struct btrfs_bio {
+ 			struct btrfs_ordered_extent *ordered;
+ 			struct btrfs_ordered_sum *sums;
+ 			struct work_struct csum_work;
+-			struct completion csum_done;
+ 			struct bvec_iter csum_saved_iter;
+ 			u64 orig_physical;
+ 		};
+diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
+index 72be3ede0edf..fb7d87da87ea 100644
+--- a/fs/btrfs/file-item.c
++++ b/fs/btrfs/file-item.c
+@@ -792,7 +792,6 @@ static void csum_one_bio_work(struct work_struct *work)
+ 	ASSERT(btrfs_op(&bbio->bio) == BTRFS_MAP_WRITE);
+ 	ASSERT(bbio->async_csum == true);
+ 	csum_one_bio(bbio, &bbio->csum_saved_iter);
+-	complete(&bbio->csum_done);
+ }
+ 
+ /*
+@@ -825,11 +824,10 @@ int btrfs_csum_one_bio(struct btrfs_bio *bbio, bool async)
+ 		csum_one_bio(bbio, &bbio->bio.bi_iter);
+ 		return 0;
+ 	}
+-	init_completion(&bbio->csum_done);
+ 	bbio->async_csum = true;
+ 	bbio->csum_saved_iter = bbio->bio.bi_iter;
+ 	INIT_WORK(&bbio->csum_work, csum_one_bio_work);
+-	schedule_work(&bbio->csum_work);
++	queue_work(fs_info->endio_workers, &bbio->csum_work);
+ 	return 0;
+ }
+ 
+-- 
+2.43.0
 
-   if (a)
-     // No unlocking required -> it will be done automatically
-     return;
-
-   unlock(GUARD);
-
-   ... unlocked code ...
-
-   // Guard undestands that it's unlocked and does nothing
-   return;
-}
-
-It has similar semantics to scoped_guard [however it has weaker 
-protection -- goto from locked section can bypass `unlock` and hold lock 
-until return], but it doesn't introduce diff noise correlated with 
-indentations.
-
-Another approach is allowing scoped_guards to have different indentation 
-codestyle to avoid indentation of internal block [like goto labels for 
-example].
-
-However both of this approaches has their own downsides and are pure 
-proposals
 
