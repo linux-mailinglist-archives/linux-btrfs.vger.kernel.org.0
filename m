@@ -1,208 +1,134 @@
-Return-Path: <linux-btrfs+bounces-18929-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-18930-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D98AFC5540F
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Nov 2025 02:28:27 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60550C56266
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Nov 2025 09:04:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 643B23A601E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Nov 2025 01:28:23 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 9568D34E297
+	for <lists+linux-btrfs@lfdr.de>; Thu, 13 Nov 2025 08:02:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51428265621;
-	Thu, 13 Nov 2025 01:28:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01526330D22;
+	Thu, 13 Nov 2025 08:01:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=colorremedies.com header.i=@colorremedies.com header.b="V4qukhNa";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="zjnUMh6d"
+	dkim=pass (2048-bit key) header.d=foxido.dev header.i=@foxido.dev header.b="qzPyreZY";
+	dkim=permerror (0-bit key) header.d=foxido.dev header.i=@foxido.dev header.b="0wdO3dBu"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fhigh-b8-smtp.messagingengine.com (fhigh-b8-smtp.messagingengine.com [202.12.124.159])
+Received: from m.foxido.dev (m.foxido.dev [81.177.217.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EC6E191F98
-	for <linux-btrfs@vger.kernel.org>; Thu, 13 Nov 2025 01:28:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.159
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D3F5289811;
+	Thu, 13 Nov 2025 08:01:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=81.177.217.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762997298; cv=none; b=d9TiDrbUu8eqVSi7nDyCn2S0peKJaaG9N354nvveMf6XCI6mhTXNxMkeYGAuxx/taQpvnjCZQ9iddr6vrXlK24n2/NwgjCiNFzE5VIsBxTRw4pLpd/TrbX9FCcyA6pJr/8GeYqm4PsyDIKK/PvLoXEJzYD8jahV7X/laABMRA2E=
+	t=1763020889; cv=none; b=NwrjwckUPir4NVrRziyJLI55+hSVeTJFonjKv6WeuVwY7YnudUCf65nta2hZWHQ1v7T+Ac5d7S+Fr3qLs4wCCBohT/1s3e+cpEGdZvlj7IhYW9A2KzeYxkkeantUMvaslb6+w6LDkMvvqQA+NPpApypepPdVEkGRUxI8jSS/CGs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762997298; c=relaxed/simple;
-	bh=HM0K0bMzG9lABc8UsUR6LbAVGGCU+MqLb1bWAG6fr+M=;
-	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=cS2DQhFDNptH6KSN3eDfQ9s/8qxHrMxVM0NVGou4GWIbdn0hqOQW4ozd/eJ6xQTtRBN/RTFMsfDoKhRLkryyulqByb4VcKmIgTyjxuo+IwE3FVQDeFL83DDlZ50IsdL1h92vMeB8PB4ggwewUaWACyCiuAJycsPZ/auCFSMmduM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=colorremedies.com; spf=pass smtp.mailfrom=colorremedies.com; dkim=pass (2048-bit key) header.d=colorremedies.com header.i=@colorremedies.com header.b=V4qukhNa; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=zjnUMh6d; arc=none smtp.client-ip=202.12.124.159
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=colorremedies.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=colorremedies.com
-Received: from phl-compute-01.internal (phl-compute-01.internal [10.202.2.41])
-	by mailfhigh.stl.internal (Postfix) with ESMTP id 7B9697A0101;
-	Wed, 12 Nov 2025 20:28:15 -0500 (EST)
-Received: from phl-imap-01 ([10.202.2.91])
-  by phl-compute-01.internal (MEProxy); Wed, 12 Nov 2025 20:28:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	colorremedies.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1762997295; x=1763083695; bh=r/UnhC9lts
-	cDEO24CooTgQw8ng5i9wVdH35YAV2qnVU=; b=V4qukhNacVDhj/izB1kigo49d4
-	hW5UbA4qnouFP6Lnov9RquctBLUB67zE6SOfD0DxnJi99eywkso0lXj47GNc2krj
-	U7M9ZB8iefR7jHNxk6YCwuyPNNY4KKe/Hb8N8m8GVzc3mPTYroEx9biTBmcA7iBI
-	ZOZyAgMfwtImTDMyiQ0aEU6GI+vieGIXu2SVL83Kwvw0R/bg0NXrjZTd6Arr/ElI
-	2cSOwX4dk+AHlQSYg3cXSugYkJNjoP0DycIywdh3uf0U/XaONxtX9fXtPIk8mPBo
-	+UDWxT96/Y34I1bMzuKVRGR6iysrS1OLN3rFsRPRO1wVUclFY6fhVFE9JNoQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1762997295; x=
-	1763083695; bh=r/UnhC9ltscDEO24CooTgQw8ng5i9wVdH35YAV2qnVU=; b=z
-	jnUMh6dKZW+0AXBjWiR+MiOPFUlkCVBaW0SWPjlnhdP4uN8vYRlhXIVjMKC70W5Y
-	CfYqtScAoEWrVjrp9aX9LgW8/h/gOIKkCeGXmsYhId6TSMEsXs0KG/bkodIrWDmb
-	ewI/th/6R2CtrzcjfE1dCXRnnoEPHCDGdRDu8WuhIm4D3fxZ7/gKYhw4+T4CFOcc
-	RN6er20JNTUKszf1Qzd4pInGzP4CW+h14VvX9offcpOv65zf7BWX7rpwnbO+3B97
-	uWcwS+uRGi9h+osesPZUgyL5w4QYmYQzJOIKKQ4sL0AhReTV7SeDu6tZgyFGz1cw
-	XfzvaRE0U03lAtWoiMObw==
-X-ME-Sender: <xms:LzQVaQIQCl-yEf-3C3mr9m_pBQFoC6xMQMuAxyD5aPUv9zIGcVc0OA>
-    <xme:LzQVaa9wEds0eCTS1d3jjYW-DTMP-CqTFv_HVYFt6qJUCksllhcKXCQ8FmltDSr5b
-    AmU0_ZzvopkXYEBLwYNd_8WCvSxF5hoVsSu7tdY43chMks1ylHkJ00>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggddvtdehieefucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepofggfffhvfevkfgjfhfutgfgsehtqhertdertdejnecuhfhrohhmpedfvehhrhhi
-    shcuofhurhhphhihfdcuoehlihhsthhssegtohhlohhrrhgvmhgvughivghsrdgtohhmqe
-    enucggtffrrghtthgvrhhnpeettdfhudfhhffgjeejuefgtdejvdeihfekhfeuheejgfdu
-    ieejtdfhudeifeegveenucffohhmrghinheplhhinhhugidquhhssgdrohhrghenucevlh
-    hushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehlihhsthhssegt
-    ohhlohhrrhgvmhgvughivghsrdgtohhmpdhnsggprhgtphhtthhopeefpdhmohguvgepsh
-    hmthhpohhuthdprhgtphhtthhopehunhhfrgdttdesghhmrghilhdrtghomhdprhgtphht
-    thhopeifqhhusehsuhhsvgdrtghomhdprhgtphhtthhopehlihhnuhigqdgsthhrfhhsse
-    hvghgvrhdrkhgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:LzQVackt0c8Oc9TShO7EgXmjups-SFB6ustcTB_7jfbSpM9UmF_JEw>
-    <xmx:LzQVaTmYSdcsolN9OemNTi3lDeunq4TAl6D1b0NZHL26-QEcGncG-A>
-    <xmx:LzQVaduBBvZGCg-CXS2AGvrV_yQ2vZFW8Z3ru2bRVoRv_O8iZbu4qg>
-    <xmx:LzQVaWmN5UM_5O8kE07sgoB8ERciyYchoOTuvyO_XA-X6vJe2tzO9Q>
-    <xmx:LzQVaTZE8mxT7Si-_vAaH7Jt61Zpz6GHP5DNjtkStc4RRzBeJPj1Uehq>
-Feedback-ID: i06494636:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id 13BA718C004E; Wed, 12 Nov 2025 20:28:15 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
+	s=arc-20240116; t=1763020889; c=relaxed/simple;
+	bh=g2LbOhUwqSwiWbQJrtcUdsYDcEz2zE/fSkGL/O1Hg9Q=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=WqVoyDBK4C9EiYfMtkQzUt8cU4pW9JMmkCrZDvi0jV5KSzfDSPK5Rail+J6VthvmBGRydRBAgEW+f8eGy9qKKkyoJwYKhIi+HpIeVjzWBwFhTVk+ex9eNAcavaKv7yUq7KGFjlpV9pUZk0WdaWg+KINaOvdh0UBKCcfErm1CKMI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=foxido.dev; spf=pass smtp.mailfrom=foxido.dev; dkim=pass (2048-bit key) header.d=foxido.dev header.i=@foxido.dev header.b=qzPyreZY; dkim=permerror (0-bit key) header.d=foxido.dev header.i=@foxido.dev header.b=0wdO3dBu; arc=none smtp.client-ip=81.177.217.87
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=foxido.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxido.dev
+DKIM-Signature: v=1; a=rsa-sha256; s=202508r; d=foxido.dev; c=relaxed/relaxed;
+	h=From:To:Subject:Date:Message-ID; t=1763020876; bh=VrikCNq8J0aRng6bbkTwcBM
+	z+jW/3xa7sTs49VEz1TQ=; b=qzPyreZYsrW8NYj4n4Lps/fgTLam7kROMN2plVj12KW9Hs0wq7
+	7ooTCBecPO/7gGKhB5nYVHsxxxmq+WFCksknhYJgkrqGVwTHYp9ZvU4LWn7Rw5pXSnERTnrqKP+
+	rbPhjFXZYx/K431r1vdUQdPGRzBcoeKHW7HOzUtL8M/CK2m6v+RqZGK7DBKhW//nC3NGqyNqFJQ
+	ResY+36gGb7DOJfKS9sOADbw1HIrkJdMy9uQkRHnHulVUJtQkE5G9kOwODinC16b/076QGcLlp9
+	LaMPkF82ZsE+JTvZkTsQP40U22ChZksk0yx/Iv8U7O1dxbtNuKiEwjNBq08XjzAz+sA==;
+DKIM-Signature: v=1; a=ed25519-sha256; s=202508e; d=foxido.dev; c=relaxed/relaxed;
+	h=From:To:Subject:Date:Message-ID; t=1763020876; bh=VrikCNq8J0aRng6bbkTwcBM
+	z+jW/3xa7sTs49VEz1TQ=; b=0wdO3dBuZSkx51yX6hO3dWfhQ4VqFi3mgfjZriSZKYEXpdfYK9
+	ct96VVu39MUTH4Ombz6RIZWyjR5Ji+3ltpAg==;
+Message-ID: <39aedcbd-aca9-4963-8131-a3cdb7a4289a@foxido.dev>
+Date: Thu, 13 Nov 2025 11:01:16 +0300
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ThreadId: A9jZGU0JwjF3
-Date: Wed, 12 Nov 2025 20:27:54 -0500
-From: "Chris Murphy" <lists@colorremedies.com>
-To: =?UTF-8?Q?Tobiasz_Karo=C5=84?= <unfa00@gmail.com>
-Cc: "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>, "Qu WenRuo" <wqu@suse.com>
-Message-Id: <1386ac4f-0154-4a3b-bc6f-d29e5296d71a@app.fastmail.com>
-In-Reply-To: 
- <CAOsCCbMUnjo982rkUdjAsG6Q28AChMNQLQf7g1LDK1DNsgLUBg@mail.gmail.com>
-References: 
- <CAOsCCbPNqUkFqn2W_GprROor+ExuturJxWz-kVL_W5QvqAENSg@mail.gmail.com>
- <cd684028-5a7c-47bc-8095-02917fe46d6b@app.fastmail.com>
- <CAOsCCbOH_PRiExWLKPymdrCeNYCtfLgZ6khuGty-_m94MpOuMA@mail.gmail.com>
- <1330fe29-78a9-4628-b295-e3dcf2de15a9@app.fastmail.com>
- <CAOsCCbOeNGTS+MK4ZMDkg+PfVC0D9DR7iRXr+Hy6qK9sHgYjJg@mail.gmail.com>
- <CAOsCCbPRE-kXtBXHLxu179q63_HoRby0a4fZukziMUxjzYRhuQ@mail.gmail.com>
- <dab1f9d3-6b21-4df9-8217-faf1aff7ba0a@app.fastmail.com>
- <CAOsCCbMUnjo982rkUdjAsG6Q28AChMNQLQf7g1LDK1DNsgLUBg@mail.gmail.com>
-Subject: Re: Damaged filesystem - request for support
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 0/8] use cleanup.h in btrfs
+To: Qu Wenruo <wqu@suse.com>
+Cc: Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
+ linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1762972845.git.foxido@foxido.dev>
+ <31b5e88c-0979-44cc-9e7a-1cb3320caf39@suse.com>
+Content-Language: en-US
+From: Gladyshev Ilya <foxido@foxido.dev>
+In-Reply-To: <31b5e88c-0979-44cc-9e7a-1cb3320caf39@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
+On 11/12/25 23:55, Qu Wenruo wrote:
+> 在 2025/11/13 05:19, Gladyshev Ilya 写道:
+>> This series represents my experimentation with refactoring with
+>> cleanup guards. In my opinion, RAII-style locking improves readability
+>> in most cases and also improves code robustness for future code changes,
+>> so I tried to refactor simple cases that really benefits from lock 
+>> guards.
+> 
+> Although I totally agree with the guard usages, it's not yet determined 
+> we will fully embrace guard usages.
+> 
+>>
+>> However readability is a subjective concept, so you can freely disagree
+>> and reject any of those changes, I won't insist on any. Please note that
+>> patches 1-3 can be useful even without lock guards.
+>>
+>> I didn't know how to split this series, mostly because it's just a lot of
+>> small changes... so I tried to split it by types of transformation:
+> 
+> And even if we're determined to go guard path, I doubt if it should be 
+> done in such a rushed way.
+> 
+> There are already some cases where scope based auto-cleanup conversion 
+> led to some regressions, no matter how trivial they seem.
+> Thankfully they are all caught early, but we have to ask one critical 
+> question:
+> 
+>    Have you run the full fstest test cases?
+> 
+> If not, please run it first. Such huge change is not really that easy to 
+> review.
 
+No, because it's RFC only [however I tried to verify that no locking 
+semantics/scopes changed and I tried not to touch any really complex 
+scenarios.]
+> Although I love the new scope based auto cleanup, I still tend to be 
+> more cautious doing the conversion.
+> 
+> Thus my recommendation on the conversion would be:
+> 
+> - Up to the author/expert on the involved field
+>    E.g. if Filipe wants to use guards for send, he is 100% fine to
+>    send out dedicated patches to do the conversion.
+> 
+>    This also ensures reviewablity, as such change will only involve one
+>    functionality.
+> 
+> - During other refactors of the code
+>    This is pretty much the same for any code-style fixups.
+>    We do not accept dedicated patches just fixing up whitespace/code-
+>    style errors.
+>    But if one is refactoring some code, it's recommended to fix any code-
+>    style related problems near the touched part.
 
-On Wed, Nov 12, 2025, at 7:57 AM, Tobiasz Karo=C5=84 wrote:
-> I have been trying various things, also with other drives.
-> I purchased a 20 TB Toshiba drive and I am currently attempting to do
-> a burn-in before using it for backup.
->
-> I see issues with the USB exclosure, where it resets ev en with jsut
-> this one drive in it (so one bay is empty). Dmesg says:
->
-> [Wed Nov 12 11:09:31 2025] sd 2:0:0:0: [sdc] tag#19
-> uas_eh_abort_handler 0 uas-tag 1 inflight: CMD
-> [Wed Nov 12 11:09:31 2025] sd 2:0:0:0: [sdc] tag#19 CDB: ATA command
-> pass through(16) 85 06 0c 00 d4 00 00 00 82 00 4f 00 c2 00 b0 00
-> [Wed Nov 12 11:09:31 2025] scsi host2: uas_eh_device_reset_handler sta=
-rt
-> [Wed Nov 12 11:09:31 2025] usb 4-1.2: reset SuperSpeed USB device
-> number 7 using xhci_hcd
-> [Wed Nov 12 11:09:31 2025] scsi host2: uas_eh_device_reset_handler suc=
-cess
->
-> [Wed Nov 12 11:11:01 2025] sd 2:0:0:0: [sdc] tag#5
-> uas_eh_abort_handler 0 uas-tag 1 inflight: CMD
-> [Wed Nov 12 11:11:01 2025] sd 2:0:0:0: [sdc] tag#5 CDB: ATA command
-> pass through(16) 85 06 0c 00 d4 00 00 00 82 00 4f 00 c2 00 b0 00
-> [Wed Nov 12 11:11:01 2025] scsi host2: uas_eh_device_reset_handler sta=
-rt
-> [Wed Nov 12 11:11:01 2025] usb 4-1.2: reset SuperSpeed USB device
-> number 7 using xhci_hcd
-> [Wed Nov 12 11:11:01 2025] scsi host2: uas_eh_device_reset_handler suc=
-cess
->
-> That happens after a minute wheenver I do:
-> smartctl -l long -C /dev/sdc
->
-> So it seems I can't do a long, captive HDD test through this enclosure.
+Personally I don't like this approach for correctness-sensitive 
+refactoring. When it's something dedicated and standalone, it's easier 
+to focus and verify that all changes are valid
 
-       -C, --captive
-              [ATA] Runs self-tests in captive mode.  This has no effect=
- with '-t offline' or if the '-t' option is not used.
+> So I'm afraid we're not yet at the stage to accept huge conversions yet.
 
-              WARNING: Tests run in captive mode may busy out the drive =
-for the length of the test.  Only run captive tests on drives without an=
-y mounted partitions!
+I would be surprised if such patchset would be accepted as one thing, 
+honestly) For now, it's only purpose is to show how code _can_ be 
+refactored in theory [not _should_]. And then, for example, if there is 
+positive feedback on scoped guards, but not on full-function guards, I 
+will send smaller, fully tested patch with only approved approaches.
 
-
-Maybe use -t long and omit -C
-
-
->
-> I have tested blacklisting the uas driver, but the enclosure would
-> just not show up (should I load an alternative driver for it?)
-
-usb_storage
-
-
-> lsusb says this about the 2-bay disk enclosure:
-> Bus 004 Device 007: ID 174c:55aa ASMedia Technology Inc. ASM1051E SATA
-> 6Gb/s bridge, ASM1053E SATA 6Gb/s bridge, ASM1153 SATA 3Gb/s bridge,
-> ASM1153E SATA 6Gb/s bridge
->
-> I wonder if there's something that can be done about this enclosure in
-> terms of patching the driver or something?
-> Should I contact a different mailing list?
-
-linux-usb@vger.kernel.org
-
-http://www.linux-usb.org
-
-
-> About write cache disabling, I was unable to do it persistently with
-> hdparm, but I found that there's a way to disable write caching
-> persistently with smartclt. It's also possible to disable write cache
-> reordering, which I suppose could be more dangerous fro Btrfs.=20
-
-I'm not sure about that. Btrfs has no optimizations for write order base=
-d on device topology whereas the drive firmware knows things about that =
-topology and can acceptably do out of order writes for performance reaso=
-ns that are quite safe.=20
-
-Granted, the code for these settings is not available fo us to inspect.=20
-
-
->
-> Same with short self-test. I wonder if I can use this disk in the
-> enclosure at all if this keeps happening...
-
-I just wouldn't use the captive test.
-
-
-
---=20
-Chris Murphy
+Probably I should've been more clear on that in the cover letter, sorry...
 
