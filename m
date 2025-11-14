@@ -1,47 +1,47 @@
-Return-Path: <linux-btrfs+bounces-19020-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19021-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F514C5F17D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Nov 2025 20:49:56 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55575C5F13C
+	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Nov 2025 20:45:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 0EF9C3593E9
-	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Nov 2025 19:45:09 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 2EE094E055D
+	for <lists+linux-btrfs@lfdr.de>; Fri, 14 Nov 2025 19:45:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87258336EC9;
-	Fri, 14 Nov 2025 19:45:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 744642561AE;
+	Fri, 14 Nov 2025 19:45:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=swemel.ru header.i=@swemel.ru header.b="bY66F0hi"
+	dkim=pass (1024-bit key) header.d=swemel.ru header.i=@swemel.ru header.b="vzjuzpLP"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mx.swemel.ru (mx.swemel.ru [95.143.211.150])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FC1B220F5D;
-	Fri, 14 Nov 2025 19:44:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA6FD31AF36;
+	Fri, 14 Nov 2025 19:44:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.143.211.150
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763149500; cv=none; b=uMjYtHwgsjSgDzIWFsJT3pZ8nLC+z4ceNoaWInSreuO88JWUAHHkjyhGCRmwoL98Ch4hp7lHEOGx1hIyQ064vQAsa1GvYT4sMwP0X7ethB1g2febW86AZrmvk2/UV3Vj/gmMH4Od3HtnJcEeWsCfOzACgR2ujsAmJfqTMOWYNDg=
+	t=1763149503; cv=none; b=QTt5lAH8UFtnX1zcIkjrQFflDGcJU0093SFzz03SadvS5T2l9m/9bhSsP1c2bsqNeTuzxOUwlPwU57xkLdTb8Tpq3F8KytEkmB5hEvdIhJFo1g1QxQnzVKg8VtlUYNsPbNrdE/cuScQ9X/W4t5i+FJzRkkFTfgiCO+F7aS4VWIE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763149500; c=relaxed/simple;
-	bh=XKpveSL5Z6b34jCGpd7cXJXs6RMhq2ZxNsMDNGu09FU=;
+	s=arc-20240116; t=1763149503; c=relaxed/simple;
+	bh=0zK3xdevFrR/nuXLq9IeclzSR7v7wNKSTGNicejY3aU=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=P60mjexoaMS5XaqPNzWIr9BZIhfZUph/SEWZmQUUF31gsajxPV57r+HuacyPKQhvBlOQRULfNHb8lfJ2ZjOfF76J0PR4pSPnxk8Cxnv9gMerGmW1S9ctJ2PqgfTMKRTXVGo2Wvxq0KYdRt3Qu5YcLf5Y4kY26p9RcVZie4f4fxc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=swemel.ru; spf=pass smtp.mailfrom=swemel.ru; dkim=pass (1024-bit key) header.d=swemel.ru header.i=@swemel.ru header.b=bY66F0hi; arc=none smtp.client-ip=95.143.211.150
+	 MIME-Version; b=eJBYkkyH2rsrQM3dAi4T2bkar2EWh47b2+pdXmQsFoSfKhEUb7XdxjIdm29V/XF41pIMLGHwAO76GxWIKYhZ2Q8RfD9na2WKgm+WoireEBf6GtGKWY0la4OohNpNyf+vIsjugFoqiLTLUw+jUzvJXIUhU1WHDmwrCVvIXa7ptA8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=swemel.ru; spf=pass smtp.mailfrom=swemel.ru; dkim=pass (1024-bit key) header.d=swemel.ru header.i=@swemel.ru header.b=vzjuzpLP; arc=none smtp.client-ip=95.143.211.150
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=swemel.ru
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=swemel.ru
 From: Andrey Kalachev <kalachev@swemel.ru>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=swemel.ru; s=mail;
-	t=1763149487;
+	t=1763149492;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=uatAyZLBs/ZlMsqeIpgTbVbbr0fqmjX5V3sr8+oQxJo=;
-	b=bY66F0hiDgaE+bzgseUcxJtwCkHwSQ0y1Esjz0C70VQA2XPP6l5ArBPJnpSccm17LPLHyx
-	d33HVdpyDomG1afYCJgAie4VsZYv+vS20rmh5k5knsYWdYm9NzMaCkQFoQeoMwubO/ehoW
-	+7xkHzZ7/3iuyOr6l5aPmxkYJUJEr6A=
+	bh=se0+/gPrDCi8+Y1E4zBtNeMVWEdwmKWFg6EuOog7LSk=;
+	b=vzjuzpLPBXCZpT8PY2JPuyjgzMGlIZnoaNmI1BVgxu0Esgtt47F4NwhlTY9DUXgrcaZ2Wb
+	sgGlaAt0bTQqxtPWS2nffrPBiIjgw5UmZ1M4A6Pb2OZwJNEX7vr+fvxpjrX6H4Fkw6Us/U
+	CEI0tLcpCzSs3fyD0bjz2HYIeWYkUIs=
 To: linux-btrfs@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	fdmanana@suse.com,
@@ -50,9 +50,9 @@ To: linux-btrfs@vger.kernel.org,
 Cc: stable@vger.kernel.org,
 	kalachev@swemel.ru,
 	lvc-project@linuxtesting.org
-Subject: [PATCH 6.1.y v2 2/6] btrfs: fix race between ordered extent completion and fiemap
-Date: Fri, 14 Nov 2025 22:44:34 +0300
-Message-Id: <20251114194438.5694-3-kalachev@swemel.ru>
+Subject: [PATCH 6.1.y v2 3/6] btrfs: ensure fiemap doesn't race with writes when FIEMAP_FLAG_SYNC is given
+Date: Fri, 14 Nov 2025 22:44:35 +0300
+Message-Id: <20251114194438.5694-4-kalachev@swemel.ru>
 In-Reply-To: <20251114194438.5694-1-kalachev@swemel.ru>
 References: <20251030131254.9225-1-kalachev@swemel.ru>
  <20251114194438.5694-1-kalachev@swemel.ru>
@@ -66,266 +66,157 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-[ Upstream commit a1a4a9ca77f143c00fce69c1239887ff8b813bec ]
+[ Upstream commit 418b09027743d9a9fb39116bed46a192f868a3c3 ]
 
-For fiemap we recently stopped locking the target extent range for the
-whole duration of the fiemap call, in order to avoid a deadlock in a
-scenario where the fiemap buffer happens to be a memory mapped range of
-the same file. This use case is very unlikely to be useful in practice but
-it may be triggered by fuzz testing (syzbot, etc).
+When FIEMAP_FLAG_SYNC is given to fiemap the expectation is that that
+are no concurrent writes and we get a stable view of the inode's extent
+layout.
 
-However by not locking the target extent range for the whole duration of
-the fiemap call we can race with an ordered extent. This happens like
-this:
-
-1) The fiemap task finishes processing a file extent item that covers
-   the file range [512K, 1M[, and that file extent item is the last item
-   in the leaf currently being processed;
-
-2) And ordered extent for the file range [768K, 2M[, in COW mode,
-   completes (btrfs_finish_one_ordered()) and the file extent item
-   covering the range [512K, 1M[ is trimmed to cover the range
-   [512K, 768K[ and then a new file extent item for the range [768K, 2M[
-   is inserted in the inode's subvolume tree;
-
-3) The fiemap task calls fiemap_next_leaf_item(), which then calls
-   btrfs_next_leaf() to find the next leaf / item. This finds that the
-   the next key following the one we previously processed (its type is
-   BTRFS_EXTENT_DATA_KEY and its offset is 512K), is the key corresponding
-   to the new file extent item inserted by the ordered extent, which has
-   a type of BTRFS_EXTENT_DATA_KEY and an offset of 768K;
-
-4) Later the fiemap code ends up at emit_fiemap_extent() and triggers
-   the warning:
-
-      if (cache->offset + cache->len > offset) {
-               WARN_ON(1);
-               return -EINVAL;
-      }
-
-   Since we get 1M > 768K, because the previously emitted entry for the
-   old extent covering the file range [512K, 1M[ ends at an offset that
-   is greater than the new extent's start offset (768K). This makes fiemap
-   fail with -EINVAL besides triggering the warning that produces a stack
-   trace like the following:
-
-     [1621.677651] ------------[ cut here ]------------
-     [1621.677656] WARNING: CPU: 1 PID: 204366 at fs/btrfs/extent_io.c:2492 emit_fiemap_extent+0x84/0x90 [btrfs]
-     [1621.677899] Modules linked in: btrfs blake2b_generic (...)
-     [1621.677951] CPU: 1 PID: 204366 Comm: pool Not tainted 6.8.0-rc5-btrfs-next-151+ #1
-     [1621.677954] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.2-0-gea1b7a073390-prebuilt.qemu.org 04/01/2014
-     [1621.677956] RIP: 0010:emit_fiemap_extent+0x84/0x90 [btrfs]
-     [1621.678033] Code: 2b 4c 89 63 (...)
-     [1621.678035] RSP: 0018:ffffab16089ffd20 EFLAGS: 00010206
-     [1621.678037] RAX: 00000000004fa000 RBX: ffffab16089ffe08 RCX: 0000000000009000
-     [1621.678039] RDX: 00000000004f9000 RSI: 00000000004f1000 RDI: ffffab16089ffe90
-     [1621.678040] RBP: 00000000004f9000 R08: 0000000000001000 R09: 0000000000000000
-     [1621.678041] R10: 0000000000000000 R11: 0000000000001000 R12: 0000000041d78000
-     [1621.678043] R13: 0000000000001000 R14: 0000000000000000 R15: ffff9434f0b17850
-     [1621.678044] FS:  00007fa6e20006c0(0000) GS:ffff943bdfa40000(0000) knlGS:0000000000000000
-     [1621.678046] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-     [1621.678048] CR2: 00007fa6b0801000 CR3: 000000012d404002 CR4: 0000000000370ef0
-     [1621.678053] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-     [1621.678055] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-     [1621.678056] Call Trace:
-     [1621.678074]  <TASK>
-     [1621.678076]  ? __warn+0x80/0x130
-     [1621.678082]  ? emit_fiemap_extent+0x84/0x90 [btrfs]
-     [1621.678159]  ? report_bug+0x1f4/0x200
-     [1621.678164]  ? handle_bug+0x42/0x70
-     [1621.678167]  ? exc_invalid_op+0x14/0x70
-     [1621.678170]  ? asm_exc_invalid_op+0x16/0x20
-     [1621.678178]  ? emit_fiemap_extent+0x84/0x90 [btrfs]
-     [1621.678253]  extent_fiemap+0x766/0xa30 [btrfs]
-     [1621.678339]  btrfs_fiemap+0x45/0x80 [btrfs]
-     [1621.678420]  do_vfs_ioctl+0x1e4/0x870
-     [1621.678431]  __x64_sys_ioctl+0x6a/0xc0
-     [1621.678434]  do_syscall_64+0x52/0x120
-     [1621.678445]  entry_SYSCALL_64_after_hwframe+0x6e/0x76
-
-There's also another case where before calling btrfs_next_leaf() we are
-processing a hole or a prealloc extent and we had several delalloc ranges
-within that hole or prealloc extent. In that case if the ordered extents
-complete before we find the next key, we may end up finding an extent item
-with an offset smaller than (or equals to) the offset in cache->offset.
-
-So fix this by changing emit_fiemap_extent() to address these three
-scenarios like this:
-
-1) For the first case, steps listed above, adjust the length of the
-   previously cached extent so that it does not overlap with the current
-   extent, emit the previous one and cache the current file extent item;
-
-2) For the second case where he had a hole or prealloc extent with
-   multiple delalloc ranges inside the hole or prealloc extent's range,
-   and the current file extent item has an offset that matches the offset
-   in the fiemap cache, just discard what we have in the fiemap cache and
-   assign the current file extent item to the cache, since it's more up
-   to date;
-
-3) For the third case where he had a hole or prealloc extent with
-   multiple delalloc ranges inside the hole or prealloc extent's range
-   and the offset of the file extent item we just found is smaller than
-   what we have in the cache, just skip the current file extent item
-   if its range end at or behind the cached extent's end, because we may
-   have emitted (to the fiemap user space buffer) delalloc ranges that
-   overlap with the current file extent item's range. If the file extent
-   item's range goes beyond the end offset of the cached extent, just
-   emit the cached extent and cache a subrange of the file extent item,
-   that goes from the end offset of the cached extent to the end offset
-   of the file extent item.
-
-Dealing with those cases in those ways makes everything consistent by
-reflecting the current state of file extent items in the btree and
-without emitting extents that have overlapping ranges (which would be
-confusing and violating expectations).
-
-This issue could be triggered often with test case generic/561, and was
-also hit and reported by Wang Yugui.
+When the flag is given we flush all IO (and wait for ordered extents to
+complete) and then lock the inode in shared mode, however that leaves open
+the possibility that a write might happen right after the flushing and
+before locking the inode. So fix this by flushing again after locking the
+inode - we leave the initial flushing before locking the inode to avoid
+holding the lock and blocking other RO operations while waiting for IO
+and ordered extents to complete. The second flushing while holding the
+inode's lock will most of the time do nothing or very little since the
+time window for new writes to have happened is small.
 
 CC: stable@vger.kernel.org # 6.1
-Reported-by: Wang Yugui <wangyugui@e16-tech.com>
-Link: https://lore.kernel.org/linux-btrfs/20240223104619.701F.409509F4@e16-tech.com/
-Fixes: b0ad381fa769 ("btrfs: fix deadlock with fiemap and extent locking")
 Reviewed-by: Josef Bacik <josef@toxicpanda.com>
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 Signed-off-by: David Sterba <dsterba@suse.com>
-[cherry picked from upstream commit]
+[ backport to v6.1.158 ]
 Signed-off-by: Andrey Kalachev <kalachev@swemel.ru>
 ---
- fs/btrfs/extent_io.c | 103 ++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 96 insertions(+), 7 deletions(-)
+ fs/btrfs/extent_io.c | 20 ++++++++------------
+ fs/btrfs/inode.c     | 22 +++++++++++++++++++++-
+ 2 files changed, 29 insertions(+), 13 deletions(-)
 
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 5372a4fa78e9..2c2c66c26869 100644
+index 2c2c66c26869..4f5e5b6380f7 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -3528,6 +3528,7 @@ static int emit_fiemap_extent(struct fiemap_extent_info *fieinfo,
- 				struct fiemap_cache *cache,
- 				u64 offset, u64 phys, u64 len, u32 flags)
+@@ -4050,17 +4050,15 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
+ 	range_end = round_up(start + len, sectorsize);
+ 	prev_extent_end = range_start;
+ 
+-	btrfs_inode_lock(&inode->vfs_inode, BTRFS_ILOCK_SHARED);
+-
+ 	ret = fiemap_find_last_extent_offset(inode, path, &last_extent_end);
+ 	if (ret < 0)
+-		goto out_unlock;
++		goto out;
+ 	btrfs_release_path(path);
+ 
+ 	path->reada = READA_FORWARD;
+ 	ret = fiemap_search_slot(inode, path, range_start);
+ 	if (ret < 0) {
+-		goto out_unlock;
++		goto out;
+ 	} else if (ret > 0) {
+ 		/*
+ 		 * No file extent item found, but we may have delalloc between
+@@ -4105,7 +4103,7 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
+ 						  roots, tmp_ulist,
+ 						  prev_extent_end, hole_end);
+ 			if (ret < 0) {
+-				goto out_unlock;
++				goto out;
+ 			} else if (ret > 0) {
+ 				/* fiemap_fill_next_extent() told us to stop. */
+ 				stopped = true;
+@@ -4162,7 +4160,7 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
+ 								  tmp_ulist,
+ 								  backref_cache);
+ 				if (ret < 0)
+-					goto out_unlock;
++					goto out;
+ 				else if (ret > 0)
+ 					flags |= FIEMAP_EXTENT_SHARED;
+ 			}
+@@ -4173,7 +4171,7 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
+ 		}
+ 
+ 		if (ret < 0) {
+-			goto out_unlock;
++			goto out;
+ 		} else if (ret > 0) {
+ 			/* fiemap_fill_next_extent() told us to stop. */
+ 			stopped = true;
+@@ -4184,12 +4182,12 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
+ next_item:
+ 		if (fatal_signal_pending(current)) {
+ 			ret = -EINTR;
+-			goto out_unlock;
++			goto out;
+ 		}
+ 
+ 		ret = fiemap_next_leaf_item(inode, path);
+ 		if (ret < 0) {
+-			goto out_unlock;
++			goto out;
+ 		} else if (ret > 0) {
+ 			/* No more file extent items for this inode. */
+ 			break;
+@@ -4213,7 +4211,7 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
+ 					  0, 0, 0, roots, tmp_ulist,
+ 					  prev_extent_end, range_end - 1);
+ 		if (ret < 0)
+-			goto out_unlock;
++			goto out;
+ 		prev_extent_end = range_end;
+ 	}
+ 
+@@ -4251,8 +4249,6 @@ int extent_fiemap(struct btrfs_inode *inode, struct fiemap_extent_info *fieinfo,
+ 
+ 	ret = emit_last_fiemap_cache(fieinfo, &cache);
+ 
+-out_unlock:
+-	btrfs_inode_unlock(&inode->vfs_inode, BTRFS_ILOCK_SHARED);
+ out:
+ 	kfree(backref_cache);
+ 	btrfs_free_path(path);
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 78cd7b8ccfc8..a389d0b06fea 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -8269,6 +8269,7 @@ struct iomap_dio *btrfs_dio_write(struct kiocb *iocb, struct iov_iter *iter,
+ static int btrfs_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
+ 			u64 start, u64 len)
  {
-+	u64 cache_end;
- 	int ret = 0;
++	struct btrfs_inode *btrfs_inode = BTRFS_I(inode);
+ 	int	ret;
  
- 	/* Set at the end of extent_fiemap(). */
-@@ -3537,15 +3538,102 @@ static int emit_fiemap_extent(struct fiemap_extent_info *fieinfo,
- 		goto assign;
+ 	ret = fiemap_prep(inode, fieinfo, start, &len, 0);
+@@ -8294,7 +8295,26 @@ static int btrfs_fiemap(struct inode *inode, struct fiemap_extent_info *fieinfo,
+ 			return ret;
+ 	}
  
- 	/*
--	 * Sanity check, extent_fiemap() should have ensured that new
--	 * fiemap extent won't overlap with cached one.
--	 * Not recoverable.
-+	 * When iterating the extents of the inode, at extent_fiemap(), we may
-+	 * find an extent that starts at an offset behind the end offset of the
-+	 * previous extent we processed. This happens if fiemap is called
-+	 * without FIEMAP_FLAG_SYNC and there are ordered extents completing
-+	 * while we call btrfs_next_leaf() (through fiemap_next_leaf_item()).
- 	 *
--	 * NOTE: Physical address can overlap, due to compression
-+	 * For example we are in leaf X processing its last item, which is the
-+	 * file extent item for file range [512K, 1M[, and after
-+	 * btrfs_next_leaf() releases the path, there's an ordered extent that
-+	 * completes for the file range [768K, 2M[, and that results in trimming
-+	 * the file extent item so that it now corresponds to the file range
-+	 * [512K, 768K[ and a new file extent item is inserted for the file
-+	 * range [768K, 2M[, which may end up as the last item of leaf X or as
-+	 * the first item of the next leaf - in either case btrfs_next_leaf()
-+	 * will leave us with a path pointing to the new extent item, for the
-+	 * file range [768K, 2M[, since that's the first key that follows the
-+	 * last one we processed. So in order not to report overlapping extents
-+	 * to user space, we trim the length of the previously cached extent and
-+	 * emit it.
-+	 *
-+	 * Upon calling btrfs_next_leaf() we may also find an extent with an
-+	 * offset smaller than or equals to cache->offset, and this happens
-+	 * when we had a hole or prealloc extent with several delalloc ranges in
-+	 * it, but after btrfs_next_leaf() released the path, delalloc was
-+	 * flushed and the resulting ordered extents were completed, so we can
-+	 * now have found a file extent item for an offset that is smaller than
-+	 * or equals to what we have in cache->offset. We deal with this as
-+	 * described below.
- 	 */
--	if (cache->offset + cache->len > offset) {
--		WARN_ON(1);
--		return -EINVAL;
-+	cache_end = cache->offset + cache->len;
-+	if (cache_end > offset) {
-+		if (offset == cache->offset) {
-+			/*
-+			 * We cached a dealloc range (found in the io tree) for
-+			 * a hole or prealloc extent and we have now found a
-+			 * file extent item for the same offset. What we have
-+			 * now is more recent and up to date, so discard what
-+			 * we had in the cache and use what we have just found.
-+			 */
-+			goto assign;
-+		} else if (offset > cache->offset) {
-+			/*
-+			 * The extent range we previously found ends after the
-+			 * offset of the file extent item we found and that
-+			 * offset falls somewhere in the middle of that previous
-+			 * extent range. So adjust the range we previously found
-+			 * to end at the offset of the file extent item we have
-+			 * just found, since this extent is more up to date.
-+			 * Emit that adjusted range and cache the file extent
-+			 * item we have just found. This corresponds to the case
-+			 * where a previously found file extent item was split
-+			 * due to an ordered extent completing.
-+			 */
-+			cache->len = offset - cache->offset;
-+			goto emit;
-+		} else {
-+			const u64 range_end = offset + len;
+-	return extent_fiemap(BTRFS_I(inode), fieinfo, start, len);
++	btrfs_inode_lock(inode, BTRFS_ILOCK_SHARED);
 +
-+			/*
-+			 * The offset of the file extent item we have just found
-+			 * is behind the cached offset. This means we were
-+			 * processing a hole or prealloc extent for which we
-+			 * have found delalloc ranges (in the io tree), so what
-+			 * we have in the cache is the last delalloc range we
-+			 * found while the file extent item we found can be
-+			 * either for a whole delalloc range we previously
-+			 * emmitted or only a part of that range.
-+			 *
-+			 * We have two cases here:
-+			 *
-+			 * 1) The file extent item's range ends at or behind the
-+			 *    cached extent's end. In this case just ignore the
-+			 *    current file extent item because we don't want to
-+			 *    overlap with previous ranges that may have been
-+			 *    emmitted already;
-+			 *
-+			 * 2) The file extent item starts behind the currently
-+			 *    cached extent but its end offset goes beyond the
-+			 *    end offset of the cached extent. We don't want to
-+			 *    overlap with a previous range that may have been
-+			 *    emmitted already, so we emit the currently cached
-+			 *    extent and then partially store the current file
-+			 *    extent item's range in the cache, for the subrange
-+			 *    going the cached extent's end to the end of the
-+			 *    file extent item.
-+			 */
-+			if (range_end <= cache_end)
-+				return 0;
-+
-+			if (!(flags & (FIEMAP_EXTENT_ENCODED | FIEMAP_EXTENT_DELALLOC)))
-+				phys += cache_end - offset;
-+
-+			offset = cache_end;
-+			len = range_end - cache_end;
-+			goto emit;
++	/*
++	 * We did an initial flush to avoid holding the inode's lock while
++	 * triggering writeback and waiting for the completion of IO and ordered
++	 * extents. Now after we locked the inode we do it again, because it's
++	 * possible a new write may have happened in between those two steps.
++	 */
++	if (fieinfo->fi_flags & FIEMAP_FLAG_SYNC) {
++		ret = btrfs_wait_ordered_range(inode, 0, LLONG_MAX);
++		if (ret) {
++			btrfs_inode_unlock(inode, BTRFS_ILOCK_SHARED);
++			return ret;
 +		}
- 	}
++	}
++
++	ret = extent_fiemap(btrfs_inode, fieinfo, start, len);
++	btrfs_inode_unlock(inode, BTRFS_ILOCK_SHARED);
++
++	return ret;
+ }
  
- 	/*
-@@ -3565,6 +3653,7 @@ static int emit_fiemap_extent(struct fiemap_extent_info *fieinfo,
- 		return 0;
- 	}
- 
-+emit:
- 	/* Not mergeable, need to submit cached one */
- 	ret = fiemap_fill_next_extent(fieinfo, cache->offset, cache->phys,
- 				      cache->len, cache->flags);
+ static int btrfs_writepages(struct address_space *mapping,
 -- 
 2.39.5
 
