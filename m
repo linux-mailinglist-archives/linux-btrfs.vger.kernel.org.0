@@ -1,82 +1,81 @@
-Return-Path: <linux-btrfs+bounces-19033-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19034-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3B3EC60371
-	for <lists+linux-btrfs@lfdr.de>; Sat, 15 Nov 2025 11:45:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D3AE1C60799
+	for <lists+linux-btrfs@lfdr.de>; Sat, 15 Nov 2025 15:52:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id DFBBC4E2B34
-	for <lists+linux-btrfs@lfdr.de>; Sat, 15 Nov 2025 10:45:47 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id DA29D4E7442
+	for <lists+linux-btrfs@lfdr.de>; Sat, 15 Nov 2025 14:52:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F88C2857FA;
-	Sat, 15 Nov 2025 10:45:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E1141F12F8;
+	Sat, 15 Nov 2025 14:52:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="aHLg2KtX"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PnhItb3D"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+Received: from mail-pj1-f67.google.com (mail-pj1-f67.google.com [209.85.216.67])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41D69209F43
-	for <linux-btrfs@vger.kernel.org>; Sat, 15 Nov 2025 10:45:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B70A17993
+	for <linux-btrfs@vger.kernel.org>; Sat, 15 Nov 2025 14:52:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.67
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763203541; cv=none; b=p+5zFj5A7SygiNIkdN9+XIEXzaDKIUfaFo/+p6MRHbk5Hu38EAhX4VhJHxfMt/nCXDvB/x61Y/nhzZgEaxd6lbYo5K0KO7opALe7m109Bp0WJ3v0yfMpE9GGK3yNK8SwCUy7rJDrevuACTuvTeuNQqqNPeS8xk2wYFHXTDEtPMk=
+	t=1763218361; cv=none; b=eqNRD6SjBbiV+r84h+23wRXjXcFa+aLZ9LKU1lJB2blS4St/YSK/VuJrbJjTI+3CqyenqkC/6+1kDlA6Ljf6z2PZPxhOGB6ttnk9CqQ9CLWgaX+acdJA/m2zqlexfUtxFp0eXA/x6Kdp+F2JnF9oqQzEczJQ2b7SRx7lPIF4RBQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763203541; c=relaxed/simple;
-	bh=iNZDk2h6uMjHy0a9bXwtsNQkx/9P8+QfXqLOluZhlq8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=VLVeJKwEceTlp5CDJY5Ce0haSjMG5pCU2T6hS/lqj+Q4eEyr7DP3IMUpI1kpoLmVwpkPPXIjdF+MLXEOnFK43FJPz9qY3j4VOCI2oI4UTDy6BYw9Y8f/KYGDmNDsgURLGmBJQfpJJ04Y0wfwV7yYQhE0uYXYOno1mXX3JpXyimI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=aHLg2KtX; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-47778b23f64so19958995e9.0
-        for <linux-btrfs@vger.kernel.org>; Sat, 15 Nov 2025 02:45:38 -0800 (PST)
+	s=arc-20240116; t=1763218361; c=relaxed/simple;
+	bh=8r4N4n9aRziI41WP0wk+oGpaaogcVqK5YOPxskipzVo=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=c9fX4fdxXeGkExTSe0B3gApSyxDVOc3KJLpaH6bU2f8nMxvI6YFFVIOrsGlVEZa314IvYZkaNZbzbM5k1aP6VXXUch5fKXphemZrZ6zABPWGQ35fuVbaPC9ExxzHT7LiNEosKV2qrc7+nIQYKoPr1H8xvoAUtlk4FTffWgzjp+c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PnhItb3D; arc=none smtp.client-ip=209.85.216.67
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f67.google.com with SMTP id 98e67ed59e1d1-3436b2dbfb9so434051a91.0
+        for <linux-btrfs@vger.kernel.org>; Sat, 15 Nov 2025 06:52:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1763203537; x=1763808337; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=9PwHMfk75WgWavEjGA0SWMT5bIpjt+7iG3v1Ygo3GHA=;
-        b=aHLg2KtXoCu1wA8uBQ6tOmHqgTy89nEAbAatTeyFjSNkhuUrCTblDH3836rQejyI0C
-         uTG7vf/4wwe90oVySZyd5Xpt1YzVU/M/oFnMQwmz4eN5jZfL4kLMZf4knutxEWQx9fPK
-         UeYFkyaOehF4cvnO7+u1+LOHOPJrYRKTfwtBjsrqitxKDiPCfdT+1qFumcove+C8KJlP
-         B6JcVhsMdygVMM09uIEaFwwabKDgUdudxwKLqPf4ww1fTn3ewlpwVkPm6D0Kr0iuzMjQ
-         6c9aA7VvSc2I7o+OPWBmlk0nYZIVSckYxsa6IXaMuXAzlzg3bwesM/JhwLWSGvZDLv+j
-         sDmA==
+        d=gmail.com; s=20230601; t=1763218359; x=1763823159; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=q5RrOOPNY9FX27uyJQ6WdzE31hn3C7FE3w3wZPJnoYU=;
+        b=PnhItb3DNYJ1yRxKGG5XGyb1B3bhsqF/yCf2lImij2ubt97bogaVh5I3epy7FokPSg
+         Bi81OoiBCabfVfj0R9vUR7vMNrANYsHtWY2+HLMRZHb8w924FiMKKUI3TNOmU4e4MJU0
+         wt0aHTCzMXwZ2KDJAMUGZbV/3MJAGnU+xiY36MUYurFSQJVRmoQyaIvsIM0FN0w74zO3
+         klFGQ/ueqzLJSJHCTlIH8U42bIrJuRATAb2YFeGHRejmH1cUVQ2JoP63FSdJwWJpKI6W
+         pB1VVo/K/sID9iStQeR1OHd9pw2LrUmvGaL3t7MQt5Z1OS/uMF/fG/ZMQ4ZyNH57ZU9O
+         Eqqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763203537; x=1763808337;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9PwHMfk75WgWavEjGA0SWMT5bIpjt+7iG3v1Ygo3GHA=;
-        b=DCen9j7h3EfjMZGEtvd2wKm/tpnfftB8fFVDdf2EqW7NIjQjFH+mCUVWfU8PMG+yM/
-         aAB5mhkuW0NqFfBEYe71YcnX98102iGyPSFzA5AfsqUmaxmjGMEeax/qXa+1JlIgGC+B
-         hJv8akMzQ6KOjP7jb5QaFj5MPynGddAlswmS2VOZD47FyryqpDv5nqXGV6xZxdgImhEr
-         JJWBpU5iXO8sYJcZqx/XFTj1VCuEN0J0fIpVzwTpl1WAJSU8HPYH/BLfLhWFLxcb2mFJ
-         Ir1Sntu9i1NIYYU+N/QbZbHY9Q6I1BPHmYyMhpYSGmlNob5wgcTWKJsXltSwONO9iQ40
-         r6pg==
-X-Forwarded-Encrypted: i=1; AJvYcCV9K1kZTcTkxsLbv7yZGi7UMfwIu386kASFNzeDHYoDWq+8cM8p3SlaP+x2x6W58f5mEYUXdnL3Nv1b2A==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwinrwWY72mqKuiqO/RTpY9gYSJV8FGw6TCZxc03ecqKZu6eMng
-	rQOSp5NhYAQij9onJukbO23ZAoztrkwLuYmEx6nL6gGNhNFjbP130aPef0rHtZX2b6k=
-X-Gm-Gg: ASbGncvcjE9qzSWl/unaQyiILfc1g6HW55j9vT72aLkE/UPkz0hiJgoG/5MBo3fZbDd
-	nr8YIxAD4TSZ01IY6cXE6xxQaOFCvsNuH4NFXao3ZgCJRAixCeXDgD9d/cc7Ecsp8AUnM8mjnYC
-	PY6naQEkATE2Ue7hnka3a5hW6aTchQpsJkZgPqlBOKCLZrQzFX5MJ+Qr8yP+AQVQqE3PwSyWVWn
-	2FkRwlmRJsYox5R3OASeBDSWYOVUGwK7qlnWq4mVC0nmvjkzGOKsvwTh7Vl3w92Yo7cjgLnle5O
-	gIWUCkzYM8kFvOasZCWJ6km6sQU2JD0Z8v02eMZ5icO8FTJNa3IMhY5+Rs8nj96yt8Zcr6hzL/+
-	7T5EInz/tDRStrpnJWXs9XmyifqTk0AcHjCvEYn7BGebpkeGW+SUcHYFPpoEiIgCDTLPFuw+iCx
-	B67awjkVr4x7eWeXX1Krja74AjDS1Y
-X-Google-Smtp-Source: AGHT+IFymMBf2gX1uHtPtE5uacff6QWySlBVBh7HFKfWyPjVPRXCOjka7A2nerTS07UUJBVbpYz4vw==
-X-Received: by 2002:a05:600c:6289:b0:477:54cd:200a with SMTP id 5b1f17b1804b1-4778fe50f5emr55881365e9.6.1763203537363;
-        Sat, 15 Nov 2025 02:45:37 -0800 (PST)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2985c2bed5asm83168685ad.88.2025.11.15.02.45.35
+        d=1e100.net; s=20230601; t=1763218359; x=1763823159;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=q5RrOOPNY9FX27uyJQ6WdzE31hn3C7FE3w3wZPJnoYU=;
+        b=h9AKGxQ0lZvonmzloYaADssFkl+sgENFVnz5OR1+Ypsy+qbRPUl48z0UcLLvuTaQiZ
+         muh9s/BpK5WA9pOKCay3/ISJOuIFPFolXfbnZltzdpv1Ka2mzCHmDL5b1PeMGroopOhz
+         xtQG4CAbm1RWF+okfRKSKmkBf7CIV1X5ovUMe5qlnkwAi4sDxSsSLOR6sjSOjO2b1BN2
+         CH4e1tUa5xB1zdEaHc16MUbIop8N5hwfrzwwT6lZJHqSB0QW2Mh924fqoux/9S5D7D1e
+         Be//2oLalmwlkHPlN0pYR7DRcVu7qwO5vok/WqJhwE53MG08WXh7Cwdi+Ww0HBdBk4Dw
+         eMDQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWXUxmdnnaiHMQGtvgh00Fb5uNGfGG+72nSW1ExjXcMK+Fb6c1sfHmOhjOHnP+Rz94UEN45aQl1YwnO3w==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzQ2rsztS+7Fj/gjrEvJE8ZwUgPuKnKqrtXzgBf5q6yHPAyLUrS
+	ejQoFX6R0YiW4rz0VKwJpzcaL25uJgBMt1bT33LPdqJRVIzh/MxgYLMrRyQG22IPEV8=
+X-Gm-Gg: ASbGncu+LHE+0N4w0jGUBtq2Qo7SSnBX72CK21U7LnF5nhNnT5M2VnxhyFpcw0uTU7U
+	xyjWY0ik2Kis40WpkfRSACno6VfmS7NO9DXyL/Qsit4nDUvVQhEctCtT6K0bqini1PqlFGNvPso
+	SYMPSkZ8AfuwlTEFnYTL38wrX+cL61Vg3R5B0SG1s2BiSv/5LXdBq3S3hI0q5g7d8++r1IQhyEc
+	53uSFHmHpCrSIafmInERvaPtDaBCfFrmdbtV7YBRpGHyVDnurO+vlEAhV7KFqiHa6dIf4G1nN2E
+	Vsvlgan1IqYv4a8/8zJthnIF1POAecURCMuZv2kugbiJMZU+9P9fgWS9BFnXLR7CUIPesrjsqof
+	zH3aFB1CqaEmeYVsZ4eNw8cui5CJcALdTa1PmozBVqFudQF3CHyffgSDJZbAAbjDa9lHEo4SiXe
+	TeSCye6ZdbNW3BUn9sZxBupOH9
+X-Google-Smtp-Source: AGHT+IG8TOo7saRYg2QTYnW6iQQd7ciV+YVIiLyjkCnn/EO5IlaWZv2mQFGcM1wOuE11mcXoQrArpw==
+X-Received: by 2002:a17:902:db05:b0:295:2cab:dbc2 with SMTP id d9443c01a7336-2986a72c7fdmr42888575ad.6.1763218359349;
+        Sat, 15 Nov 2025 06:52:39 -0800 (PST)
+Received: from [192.168.1.13] ([104.28.237.193])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2985c2b10b4sm89055325ad.70.2025.11.15.06.52.37
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 15 Nov 2025 02:45:36 -0800 (PST)
-Message-ID: <ae23e676-1a1e-4e12-b23e-9431a14239a2@suse.com>
-Date: Sat, 15 Nov 2025 21:15:32 +1030
+        Sat, 15 Nov 2025 06:52:39 -0800 (PST)
+Message-ID: <18c7ae32-7cfb-427a-be9a-44fa97577359@gmail.com>
+Date: Sat, 15 Nov 2025 22:52:31 +0800
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -84,109 +83,250 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] btrfs-progs: fsck-tests: make test case 066 to be
- repairable
-To: kreijack@inwind.it, linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <cover.1763156743.git.wqu@suse.com>
- <59b21f15f2199cd27233c367457935cb2708e63f.1763156743.git.wqu@suse.com>
- <314461b6-9c30-4f19-aed3-486656db661e@libero.it>
+From: Sun Yangkai <sunk67188@gmail.com>
+Subject: Re: [PATCH v6 10/16] btrfs: handle setting up relocation of block
+ group with remap-tree
+To: mark@harmstone.com
+Cc: boris@bur.io, linux-btrfs@vger.kernel.org
+References: <20251114184745.9304-11-mark@harmstone.com>
 Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <314461b6-9c30-4f19-aed3-486656db661e@libero.it>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20251114184745.9304-11-mark@harmstone.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
+While reading the thread, I noticed the logic that builds the identity_remap
+entries was a bit hard to follow.
+I took the liberty of rewriting the function so that the two high-level cases
+are immediately visible inside a single if/else. The result has no behavioral
+change, and (at least to me) makes it obvious where the head/tail gaps are handled.
+The modified code is shown below; feel free to pick it up if you find it useful.
+Please let me know if I missed anything.
 
-
-在 2025/11/15 20:17, Goffredo Baroncelli 写道:
-> On 14/11/2025 22.46, Qu Wenruo wrote:
->> The test case fsck/066 is only to verify we can detect the missing root
->> orphan item, no repair for it yet.
->>
->> Now the repair ability is added, change the test case to verify the
->> repair is also properly done.
 > 
-> 
-> It seems more that this patch only can removed a test...
-> 
-> May be something was wrong ?
+> +static int create_remap_tree_entries(struct btrfs_trans_handle *trans,
+> +				     struct btrfs_path *path,
+> +				     struct btrfs_block_group *bg)
+> +{
+> +	struct btrfs_fs_info *fs_info = trans->fs_info;
+> +	struct btrfs_free_space_info *fsi;
+> +	struct btrfs_key key, found_key;
+> +	struct extent_buffer *leaf;
+> +	struct btrfs_root *space_root;
+> +	u32 extent_count;
+> +	struct space_run *space_runs = NULL;
+> +	unsigned int num_space_runs = 0;
+> +	struct btrfs_key *entries = NULL;
+> +	unsigned int max_entries, num_entries;
+> +	int ret;
+> +
+> +	mutex_lock(&bg->free_space_lock);
+> +
+> +	if (test_bit(BLOCK_GROUP_FLAG_NEEDS_FREE_SPACE, &bg->runtime_flags)) {
+> +		mutex_unlock(&bg->free_space_lock);
+> +
+> +		ret = btrfs_add_block_group_free_space(trans, bg);
+> +		if (ret)
+> +			return ret;
+> +
+> +		mutex_lock(&bg->free_space_lock);
+> +	}
+> +
+> +	fsi = btrfs_search_free_space_info(trans, bg, path, 0);
+> +	if (IS_ERR(fsi)) {
+> +		mutex_unlock(&bg->free_space_lock);
+> +		return PTR_ERR(fsi);
+> +	}
+> +
+> +	extent_count = btrfs_free_space_extent_count(path->nodes[0], fsi);
+> +
+> +	btrfs_release_path(path);
+> +
+> +	space_runs = kmalloc(sizeof(*space_runs) * extent_count, GFP_NOFS);
+> +	if (!space_runs) {
+> +		mutex_unlock(&bg->free_space_lock);
+> +		return -ENOMEM;
+> +	}
+> +
+> +	key.objectid = bg->start;
+> +	key.type = 0;
+> +	key.offset = 0;
+> +
+> +	space_root = btrfs_free_space_root(bg);
+> +
+> +	ret = btrfs_search_slot(trans, space_root, &key, path, 0, 0);
+> +	if (ret < 0) {
+> +		mutex_unlock(&bg->free_space_lock);
+> +		goto out;
+> +	}
+> +
+> +	ret = 0;
+> +
+> +	while (true) {
+> +		leaf = path->nodes[0];
+> +
+> +		btrfs_item_key_to_cpu(leaf, &found_key, path->slots[0]);
+> +
+> +		if (found_key.objectid >= bg->start + bg->length)
+> +			break;
+> +
+> +		if (found_key.type == BTRFS_FREE_SPACE_EXTENT_KEY) {
+> +			if (num_space_runs != 0 &&
+> +			    space_runs[num_space_runs - 1].end == found_key.objectid) {
+> +				space_runs[num_space_runs - 1].end =
+> +					found_key.objectid + found_key.offset;
+> +			} else {
+> +				BUG_ON(num_space_runs >= extent_count);
+> +
+> +				space_runs[num_space_runs].start = found_key.objectid;
+> +				space_runs[num_space_runs].end =
+> +					found_key.objectid + found_key.offset;
+> +
+> +				num_space_runs++;
+> +			}
+> +		} else if (found_key.type == BTRFS_FREE_SPACE_BITMAP_KEY) {
+> +			void *bitmap;
+> +			unsigned long offset;
+> +			u32 data_size;
+> +
+> +			offset = btrfs_item_ptr_offset(leaf, path->slots[0]);
+> +			data_size = btrfs_item_size(leaf, path->slots[0]);
+> +
+> +			if (data_size != 0) {
+> +				bitmap = kmalloc(data_size, GFP_NOFS);
+> +				if (!bitmap) {
+> +					mutex_unlock(&bg->free_space_lock);
+> +					ret = -ENOMEM;
+> +					goto out;
+> +				}
+> +
+> +				read_extent_buffer(leaf, bitmap, offset,
+> +						   data_size);
+> +
+> +				parse_bitmap(fs_info->sectorsize, bitmap,
+> +					     data_size * BITS_PER_BYTE,
+> +					     found_key.objectid, space_runs,
+> +					     &num_space_runs);
+> +
+> +				BUG_ON(num_space_runs > extent_count);
+> +
+> +				kfree(bitmap);
+> +			}
+> +		}
+> +
+> +		path->slots[0]++;
+> +
+> +		if (path->slots[0] >= btrfs_header_nritems(leaf)) {
+> +			ret = btrfs_next_leaf(space_root, path);
+> +			if (ret != 0) {
+> +				if (ret == 1)
+> +					ret = 0;
+> +				break;
+> +			}
+> +			leaf = path->nodes[0];
+> +		}
+> +	}
+> +
+> +	btrfs_release_path(path);
+> +
+> +	mutex_unlock(&bg->free_space_lock);
+> +
+> +	max_entries = extent_count + 2;
+> +	entries = kmalloc(sizeof(*entries) * max_entries, GFP_NOFS);
+> +	if (!entries) {
+> +		ret = -ENOMEM;
+> +		goto out;
+> +	}
+> +
+> +	num_entries = 0;
+> +
+> +	if (num_space_runs > 0 && space_runs[0].start > bg->start) {
+> +		entries[num_entries].objectid = bg->start;
+> +		entries[num_entries].type = BTRFS_IDENTITY_REMAP_KEY;
+> +		entries[num_entries].offset = space_runs[0].start - bg->start;
+> +		num_entries++;
+> +	}
+> +
+> +	for (unsigned int i = 1; i < num_space_runs; i++) {
+> +		entries[num_entries].objectid = space_runs[i - 1].end;
+> +		entries[num_entries].type = BTRFS_IDENTITY_REMAP_KEY;
+> +		entries[num_entries].offset =
+> +			space_runs[i].start - space_runs[i - 1].end;
+> +		num_entries++;
+> +	}
+> +
+> +	if (num_space_runs == 0) {
+> +		entries[num_entries].objectid = bg->start;
+> +		entries[num_entries].type = BTRFS_IDENTITY_REMAP_KEY;
+> +		entries[num_entries].offset = bg->length;
+> +		num_entries++;
+> +	} else if (space_runs[num_space_runs - 1].end < bg->start + bg->length) {
+> +		entries[num_entries].objectid = space_runs[num_space_runs - 1].end;
+> +		entries[num_entries].type = BTRFS_IDENTITY_REMAP_KEY;
+> +		entries[num_entries].offset =
+> +			bg->start + bg->length - space_runs[num_space_runs - 1].end;
+> +		num_entries++;
+> +	}
+> +
+> +	if (num_entries == 0)
+> +		goto out;
+> +
+> +	bg->identity_remap_count = num_entries;
+> +
+> +	ret = add_remap_tree_entries(trans, path, entries, num_entries);
 
-Nope, it's completely correct.
+We can group the empty and non-empty space_runs cases into an if/else to make
+the two main flows obvious and reduce scattered conditions:
 
-Check run_one_test() from tests/fsck-tests.sh.
+ 	num_entries = 0;
 
-There are tons of examples inside tests/fsck-tests/ where there are only 
-test images without test.sh.
+ 	if (num_space_runs == 0) {
+ 		entries[num_entries].objectid = bg->start;
+ 		entries[num_entries].type = BTRFS_IDENTITY_REMAP_KEY;
+ 		entries[num_entries].offset = bg->length;
+ 		num_entries++;
+ 	} else {
+ 		if (space_runs[0].start > bg->start) {
+ 			entries[num_entries].objectid = bg->start;
+ 			entries[num_entries].type = BTRFS_IDENTITY_REMAP_KEY;
+ 			entries[num_entries].offset = space_runs[0].start - bg->start;
+ 			num_entries++;
+ 		}
+ 		for (unsigned int i = 1; i < num_space_runs; i++) {
+ 			entries[num_entries].objectid = space_runs[i - 1].end;
+ 			entries[num_entries].type = BTRFS_IDENTITY_REMAP_KEY;
+ 			entries[num_entries].offset =
+ 				space_runs[i].start - space_runs[i - 1].end;
+ 			num_entries++;
+ 		}
+ 		if (space_runs[num_space_runs - 1].end < bg->start + bg->length) {
+ 			entries[num_entries].objectid = space_runs[num_space_runs - 1].end;
+ 			entries[num_entries].type = BTRFS_IDENTITY_REMAP_KEY;
+ 			entries[num_entries].offset =
+ 				bg->start + bg->length - space_runs[num_space_runs - 1].end;
+ 			num_entries++;
+ 		}
+ 		if (num_entries == 0)
+ 			goto out;
+ 	}
 
-Test.sh are all utilized to override the existing check_image() which is 
-not the full default check-repair-check run.
+	// I'm not sure if it's necessary but we can free space_runs earlier
+	// since we're also doing allocation in add_remap_tree_entries().
+	// kfree(space_runs);
+	// space_runs = NULL;
 
-Thanks,
-Qu
-> 
-> 
->>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->>   .../.lowmem_repairable                             |  0
->>   .../066-missing-root-orphan-item/test.sh           | 14 --------------
->>   2 files changed, 14 deletions(-)
->>   create mode 100644 tests/fsck-tests/066-missing-root-orphan- 
->> item/.lowmem_repairable
->>   delete mode 100755 tests/fsck-tests/066-missing-root-orphan-item/ 
->> test.sh
->>
->> diff --git a/tests/fsck-tests/066-missing-root-orphan- 
->> item/.lowmem_repairable b/tests/fsck-tests/066-missing-root-orphan- 
->> item/.lowmem_repairable
->> new file mode 100644
->> index 000000000000..e69de29bb2d1
->> diff --git a/tests/fsck-tests/066-missing-root-orphan-item/test.sh b/ 
->> tests/fsck-tests/066-missing-root-orphan-item/test.sh
->> deleted file mode 100755
->> index 9db625714c1f..000000000000
->> --- a/tests/fsck-tests/066-missing-root-orphan-item/test.sh
->> +++ /dev/null
->> @@ -1,14 +0,0 @@
->> -#!/bin/bash
->> -#
->> -# Verify that check can report missing orphan root itemm as an error
->> -
->> -source "$TEST_TOP/common" || exit
->> -
->> -check_prereq btrfs
->> -
->> -check_image() {
->> -    run_mustfail "missing root orphan item not reported as an error" \
->> -        "$TOP/btrfs" check "$1"
->> -}
->> -
->> -check_all_images
-> 
-> 
+ 	bg->identity_remap_count = num_entries;
 
+ 	ret = add_remap_tree_entries(trans, path, entries, num_entries);
+
+
+> +
+> +out:
+> +	kfree(entries);
+> +	kfree(space_runs);
+> +
+> +	return ret;
+> +}
+
+Regards,
+Sun Yangkai
 
