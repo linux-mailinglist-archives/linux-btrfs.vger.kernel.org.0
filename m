@@ -1,250 +1,191 @@
-Return-Path: <linux-btrfs+bounces-19032-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19033-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D0FDC6012C
-	for <lists+linux-btrfs@lfdr.de>; Sat, 15 Nov 2025 08:37:42 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3B3EC60371
+	for <lists+linux-btrfs@lfdr.de>; Sat, 15 Nov 2025 11:45:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id CC47135C6DF
-	for <lists+linux-btrfs@lfdr.de>; Sat, 15 Nov 2025 07:37:41 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id DFBBC4E2B34
+	for <lists+linux-btrfs@lfdr.de>; Sat, 15 Nov 2025 10:45:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A74A20298C;
-	Sat, 15 Nov 2025 07:37:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F88C2857FA;
+	Sat, 15 Nov 2025 10:45:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="eURXKfUO";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="cE3O9eZS"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="aHLg2KtX"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93A9F2B9A4
-	for <linux-btrfs@vger.kernel.org>; Sat, 15 Nov 2025 07:37:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41D69209F43
+	for <linux-btrfs@vger.kernel.org>; Sat, 15 Nov 2025 10:45:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763192256; cv=none; b=p0BbUGKGpg7q+M0Ds8vV3UltEbdVdBQcY+qucdRKi4mboZZ9lSOWSvehISkPa7yWSx61j1toqQ0lfzvNE4wpG3y31EiPqCDgpbqo01qUELMSSbPAgKRGDJrg6jx6kXNdxynAaf6dJsmzq0IuiWsg5rKpF4XQz2kLpwAb+k/A7O0=
+	t=1763203541; cv=none; b=p+5zFj5A7SygiNIkdN9+XIEXzaDKIUfaFo/+p6MRHbk5Hu38EAhX4VhJHxfMt/nCXDvB/x61Y/nhzZgEaxd6lbYo5K0KO7opALe7m109Bp0WJ3v0yfMpE9GGK3yNK8SwCUy7rJDrevuACTuvTeuNQqqNPeS8xk2wYFHXTDEtPMk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763192256; c=relaxed/simple;
-	bh=Q+EJgoV9OGNkgW6m/Rt5higpv0j5DfYxCG92xNr5Ngc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=o5X7dlWuUVaK9VIuoNaeoWukdN4TJSPENHNaT6jBVIlZRrqHKWx8paZmPvUBpF0t4+G0oRN3I9EqRgj2Hac1QztMqx7WTg1eClpWm2xpJwsXI/g2c5T5dQXD/ozHlUUVDHpN35qxvIbNK3VxrqMTvTY/E5inHSHA0fsn4bLZYmI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=eURXKfUO; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=cE3O9eZS; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1763192252;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bpt7AJNJ29x1IN4z7g8Oew2mK6ZG5cMHvoRNgZWqvX4=;
-	b=eURXKfUODhA8i/RtJMJawU70FYhLZFhqABrLpYyHXwAosY42CEkT2E1W3qhzSvsGCgkgAL
-	7Kfz01ribElNUb+D98mfUP+x3fQloa/2J7isMmlm+4peCULhASm8OPA7uxCglWeeUuf9hJ
-	Gv9H+ghM5wyqS6Q6W5DOy6bI/UEVBjQ=
-Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
- [209.85.214.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-83-0DghNHkyM7Wjg9o9hSPTQA-1; Sat, 15 Nov 2025 02:37:31 -0500
-X-MC-Unique: 0DghNHkyM7Wjg9o9hSPTQA-1
-X-Mimecast-MFC-AGG-ID: 0DghNHkyM7Wjg9o9hSPTQA_1763192250
-Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-297e5a18652so30827695ad.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 14 Nov 2025 23:37:30 -0800 (PST)
+	s=arc-20240116; t=1763203541; c=relaxed/simple;
+	bh=iNZDk2h6uMjHy0a9bXwtsNQkx/9P8+QfXqLOluZhlq8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=VLVeJKwEceTlp5CDJY5Ce0haSjMG5pCU2T6hS/lqj+Q4eEyr7DP3IMUpI1kpoLmVwpkPPXIjdF+MLXEOnFK43FJPz9qY3j4VOCI2oI4UTDy6BYw9Y8f/KYGDmNDsgURLGmBJQfpJJ04Y0wfwV7yYQhE0uYXYOno1mXX3JpXyimI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=aHLg2KtX; arc=none smtp.client-ip=209.85.128.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-47778b23f64so19958995e9.0
+        for <linux-btrfs@vger.kernel.org>; Sat, 15 Nov 2025 02:45:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1763192250; x=1763797050; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=bpt7AJNJ29x1IN4z7g8Oew2mK6ZG5cMHvoRNgZWqvX4=;
-        b=cE3O9eZSoESYpfpAgTww4doDkO6jwirzPfzN7KUwETsBjJfui1eK8miB59ZN02HQ/4
-         3T0l1AYGJDBCkD6Ro2LWvB2NAXxwBIGzcfEXfKn8IEzorAquMtDie5Vc1LsYcavllhUv
-         +9AyEOi5Ya0pCduTB3vbbyseMW4DdpxmAnuq1/NVLEiBDBouBeHKwHg4S1/rxPwHO1/p
-         QiJymjI3KxWwAucDS9Rk1Vf9omBJ80UXk4JRExcdrA+HODeZvtOSHGImIhE0949kBdwk
-         VoVmzKjXZqimDoqiO80yJ3juIdKZGg0N+5dVyAT6zMcUtRRz1lh4HQAAkCSfgwuqQF/0
-         jt4w==
+        d=suse.com; s=google; t=1763203537; x=1763808337; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=9PwHMfk75WgWavEjGA0SWMT5bIpjt+7iG3v1Ygo3GHA=;
+        b=aHLg2KtXoCu1wA8uBQ6tOmHqgTy89nEAbAatTeyFjSNkhuUrCTblDH3836rQejyI0C
+         uTG7vf/4wwe90oVySZyd5Xpt1YzVU/M/oFnMQwmz4eN5jZfL4kLMZf4knutxEWQx9fPK
+         UeYFkyaOehF4cvnO7+u1+LOHOPJrYRKTfwtBjsrqitxKDiPCfdT+1qFumcove+C8KJlP
+         B6JcVhsMdygVMM09uIEaFwwabKDgUdudxwKLqPf4ww1fTn3ewlpwVkPm6D0Kr0iuzMjQ
+         6c9aA7VvSc2I7o+OPWBmlk0nYZIVSckYxsa6IXaMuXAzlzg3bwesM/JhwLWSGvZDLv+j
+         sDmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763192250; x=1763797050;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bpt7AJNJ29x1IN4z7g8Oew2mK6ZG5cMHvoRNgZWqvX4=;
-        b=kJiTe1EOj1LxShwsPaJxDaTwsbIpNGalorlsxK+bAqMSrm5yjEaEB0PsAUZljVGWqe
-         F4Hd7HBubWb2ee3V1DF6Gin0LZvuJn52c9ix1wm6N9Pe0q5ft5dlMFT7Tkvc0AC32E3g
-         uJlRd2hutun4MfmOD45FAXkeY/Y7i38Su5LnOd7tKFHdgIqwEnxS0bk58BDT0Y9ZmK8K
-         dDeRNgYXnwLG+iUMq6umAfF8GIsOoLir/II/qdu4yZ+zJhm5CN9lUdn3pBAEma77vq6Z
-         MwwUgui2l+elY800Dv6gQIBW5rhXqPwXSTsfVzqR1pJ9bIOnN3IzANBAMMnRiEL1Gf1J
-         dXlA==
-X-Forwarded-Encrypted: i=1; AJvYcCXoGhZ8IJU8vdiv0NQOlielg+IYGdT47la/3DmMKDNuPUGt6zBOsTXLPQnAMz08FM6aN9rX9ddMGWCFBQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyoC/5pApYnUGdkvbwinWWOliTrLWoCgPqKehbxlGzW0xzs09ke
-	ms5URKksuTE9yDcZOWb9imK646iGN7Dl/moHim3pavjhYSZ1S7UB1LaZEoS8HZmNAEWi89UoRz7
-	yN/QsFymtxsGD25ZdRgWn/gsgaJZah9rA9cX8pSJcpxt1OnStBuaiNNjPJf898CzL
-X-Gm-Gg: ASbGncunN8v79t8QyV/YLvlxSFvfjL2xWbut6WI35MQ4jraj63sqxpsNgKl7zsZduAX
-	BqeRA9PKTxc6BdubwtpTQY5/jvR3isk9ieZQAz10AW4NwKSlAGxCYljRvSk5kGsklmlMb1gkXSb
-	G0eGSrDQEPOlNc/yb20jrAhZp3jZX7Du9jBY9ZtyCpJBtjD+zX2Xjia15dQQqlpU6u/g0pt1dUE
-	7J4L1eDIN0Dsqa8PLuYgXt6JspaM/oGMZG1c4yXbJUW+3DshSVprJhVgRQS6j0CSkWjRY079FL7
-	ODIQGZ/F6eh8dgPVIRNGp2fvqDIbsKuHWkfEFkKgzBUR5+I4Z4kt5PHZfOK7eSlxm3UpV0+ObSm
-	vmE4ZKqQxQZ1uhe6f+k+KAWosJhlQkR2sPIVxCk5rZ+mlb05nbA==
-X-Received: by 2002:a17:902:ef51:b0:267:a1f1:9b23 with SMTP id d9443c01a7336-2986a6d0e8fmr72746235ad.18.1763192249886;
-        Fri, 14 Nov 2025 23:37:29 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IF6hQKUeF6Jq+BIeWcwDmoIem2yUQBwotEdn/Us91MrAC17FzqEJUBOiCoK8CdxwDvRH6Wubg==
-X-Received: by 2002:a17:902:ef51:b0:267:a1f1:9b23 with SMTP id d9443c01a7336-2986a6d0e8fmr72746025ad.18.1763192249369;
-        Fri, 14 Nov 2025 23:37:29 -0800 (PST)
-Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([209.132.188.88])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2985c23849esm77120015ad.5.2025.11.14.23.37.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Nov 2025 23:37:28 -0800 (PST)
-Date: Sat, 15 Nov 2025 15:37:24 +0800
-From: Zorro Lang <zlang@redhat.com>
-To: fdmanana@kernel.org
-Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	Filipe Manana <fdmanana@suse.com>
-Subject: Re: [PATCH] btrfs: test incremental send after deleting directories
- with many hardlinks
-Message-ID: <20251115073724.6qgcuijwutisrtu4@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-References: <8d1b819511b4c93b5ba0b3137090f5c28a952364.1761844883.git.fdmanana@suse.com>
+        d=1e100.net; s=20230601; t=1763203537; x=1763808337;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9PwHMfk75WgWavEjGA0SWMT5bIpjt+7iG3v1Ygo3GHA=;
+        b=DCen9j7h3EfjMZGEtvd2wKm/tpnfftB8fFVDdf2EqW7NIjQjFH+mCUVWfU8PMG+yM/
+         aAB5mhkuW0NqFfBEYe71YcnX98102iGyPSFzA5AfsqUmaxmjGMEeax/qXa+1JlIgGC+B
+         hJv8akMzQ6KOjP7jb5QaFj5MPynGddAlswmS2VOZD47FyryqpDv5nqXGV6xZxdgImhEr
+         JJWBpU5iXO8sYJcZqx/XFTj1VCuEN0J0fIpVzwTpl1WAJSU8HPYH/BLfLhWFLxcb2mFJ
+         Ir1Sntu9i1NIYYU+N/QbZbHY9Q6I1BPHmYyMhpYSGmlNob5wgcTWKJsXltSwONO9iQ40
+         r6pg==
+X-Forwarded-Encrypted: i=1; AJvYcCV9K1kZTcTkxsLbv7yZGi7UMfwIu386kASFNzeDHYoDWq+8cM8p3SlaP+x2x6W58f5mEYUXdnL3Nv1b2A==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwinrwWY72mqKuiqO/RTpY9gYSJV8FGw6TCZxc03ecqKZu6eMng
+	rQOSp5NhYAQij9onJukbO23ZAoztrkwLuYmEx6nL6gGNhNFjbP130aPef0rHtZX2b6k=
+X-Gm-Gg: ASbGncvcjE9qzSWl/unaQyiILfc1g6HW55j9vT72aLkE/UPkz0hiJgoG/5MBo3fZbDd
+	nr8YIxAD4TSZ01IY6cXE6xxQaOFCvsNuH4NFXao3ZgCJRAixCeXDgD9d/cc7Ecsp8AUnM8mjnYC
+	PY6naQEkATE2Ue7hnka3a5hW6aTchQpsJkZgPqlBOKCLZrQzFX5MJ+Qr8yP+AQVQqE3PwSyWVWn
+	2FkRwlmRJsYox5R3OASeBDSWYOVUGwK7qlnWq4mVC0nmvjkzGOKsvwTh7Vl3w92Yo7cjgLnle5O
+	gIWUCkzYM8kFvOasZCWJ6km6sQU2JD0Z8v02eMZ5icO8FTJNa3IMhY5+Rs8nj96yt8Zcr6hzL/+
+	7T5EInz/tDRStrpnJWXs9XmyifqTk0AcHjCvEYn7BGebpkeGW+SUcHYFPpoEiIgCDTLPFuw+iCx
+	B67awjkVr4x7eWeXX1Krja74AjDS1Y
+X-Google-Smtp-Source: AGHT+IFymMBf2gX1uHtPtE5uacff6QWySlBVBh7HFKfWyPjVPRXCOjka7A2nerTS07UUJBVbpYz4vw==
+X-Received: by 2002:a05:600c:6289:b0:477:54cd:200a with SMTP id 5b1f17b1804b1-4778fe50f5emr55881365e9.6.1763203537363;
+        Sat, 15 Nov 2025 02:45:37 -0800 (PST)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2985c2bed5asm83168685ad.88.2025.11.15.02.45.35
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 15 Nov 2025 02:45:36 -0800 (PST)
+Message-ID: <ae23e676-1a1e-4e12-b23e-9431a14239a2@suse.com>
+Date: Sat, 15 Nov 2025 21:15:32 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8d1b819511b4c93b5ba0b3137090f5c28a952364.1761844883.git.fdmanana@suse.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] btrfs-progs: fsck-tests: make test case 066 to be
+ repairable
+To: kreijack@inwind.it, linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <cover.1763156743.git.wqu@suse.com>
+ <59b21f15f2199cd27233c367457935cb2708e63f.1763156743.git.wqu@suse.com>
+ <314461b6-9c30-4f19-aed3-486656db661e@libero.it>
+Content-Language: en-US
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
+ Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
+ fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
+ 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
+ V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
+ rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
+ cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
+ qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
+ /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
+ o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
+ JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+In-Reply-To: <314461b6-9c30-4f19-aed3-486656db661e@libero.it>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, Oct 30, 2025 at 05:22:44PM +0000, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> Test that an incremental send works after we removed directories that have
-> large number of hardlinks for the same file (so that we have extrefs).
-> 
-> This is a regression test for the kernel commit 1fabe43b4e1a ("btrfs:
-> send: fix duplicated rmdir operations when using extrefs").
-> 
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> ---
 
-This patch is good to me, it can reproduce the bug on v6.18-rc1, then test
-passed on v6.18-rc4 (which contains the bug fix). As there's not any review
-point/objection from btrfs list after 2 weeks, I'd like to merge this patch
-in next fstests release.
 
-Reviewed-by: Zorro Lang <zlang@redhat.com>
-
->  tests/btrfs/338     | 93 +++++++++++++++++++++++++++++++++++++++++++++
->  tests/btrfs/338.out |  3 ++
->  2 files changed, 96 insertions(+)
->  create mode 100755 tests/btrfs/338
->  create mode 100644 tests/btrfs/338.out
+在 2025/11/15 20:17, Goffredo Baroncelli 写道:
+> On 14/11/2025 22.46, Qu Wenruo wrote:
+>> The test case fsck/066 is only to verify we can detect the missing root
+>> orphan item, no repair for it yet.
+>>
+>> Now the repair ability is added, change the test case to verify the
+>> repair is also properly done.
 > 
-> diff --git a/tests/btrfs/338 b/tests/btrfs/338
-> new file mode 100755
-> index 00000000..0cc29c7c
-> --- /dev/null
-> +++ b/tests/btrfs/338
-> @@ -0,0 +1,93 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2025 SUSE S.A.  All Rights Reserved.
-> +#
-> +# FS QA Test 338
-> +#
-> +# Test that an incremental send works after we removed directories that have
-> +# large number of hardlinks for the same file (so that we have extrefs).
-> +#
-> +. ./common/preamble
-> +_begin_fstest auto quick send
-> +
-> +_cleanup()
-> +{
-> +	cd /
-> +	rm -fr $tmp.*
-> +	rm -fr $send_files_dir
-> +}
-> +
-> +_require_test
-> +_require_scratch
-> +_require_fssum
-> +
-> +_fixed_by_kernel_commit 1fabe43b4e1a \
-> +	"btrfs: send: fix duplicated rmdir operations when using extrefs"
-> +
-> +send_files_dir=$TEST_DIR/btrfs-test-$seq
-> +
-> +rm -fr $send_files_dir
-> +mkdir $send_files_dir
-> +
-> +first_stream="$send_files_dir/1.send"
-> +second_stream="$send_files_dir/2.send"
-> +first_fssum="$send_files_dir/snap1.fssum"
-> +second_fssum="$send_files_dir/snap2.fssum"
-> +
-> +_scratch_mkfs >> $seqres.full 2>&1 || _fail "first mkfs failed"
-> +_scratch_mount
-> +
-> +# Create two directories which will have many hardlinks for the same file, a
-> +# large number that triggers the use of extrefs. This way we will get many
-> +# extref items in the subvolume tree, with a very high likelyhood that not
-> +# all hardlinks for directory "a" are consecutive in the tree, that they are
-> +# interspersed with extref items for hardlinks to directory "b".
-> +#
-> +# Example:
-> +#
-> +#        item 0 key (259 INODE_EXTREF 2309449) itemoff 16257 itemsize 26
-> +#                index 6925 parent 257 namelen 8 name: foo.6923
-> +#        item 1 key (259 INODE_EXTREF 2311350) itemoff 16231 itemsize 26
-> +#                index 6588 parent 258 namelen 8 name: foo.6587
-> +#        item 2 key (259 INODE_EXTREF 2457395) itemoff 16205 itemsize 26
-> +#                index 6611 parent 257 namelen 8 name: foo.6609
-> +#        (...)
-> +#
-> +# Refer to the kernel commit's changelog for more details.
-> +mkdir $SCRATCH_MNT/a
-> +mkdir $SCRATCH_MNT/b
-> +
-> +touch $SCRATCH_MNT/a/foo
-> +for ((i = 1; i <= 1000; i++)); do
-> +	ln $SCRATCH_MNT/a/foo $SCRATCH_MNT/a/foo.$i
-> +	ln $SCRATCH_MNT/a/foo $SCRATCH_MNT/b/foo.$i
-> +done
-> +
-> +_btrfs subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/snap1
-> +
-> +# Now delete the directories and all the links inside them.
-> +rm -fr $SCRATCH_MNT/a
-> +rm -fr $SCRATCH_MNT/b
-> +
-> +_btrfs subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/snap2
-> +
-> +_btrfs send -f $first_stream $SCRATCH_MNT/snap1
-> +_btrfs send -f $second_stream -p $SCRATCH_MNT/snap1 $SCRATCH_MNT/snap2
-> +
-> +$FSSUM_PROG -A -f -w $first_fssum $SCRATCH_MNT/snap1
-> +$FSSUM_PROG -A -f -w $second_fssum -x $SCRATCH_MNT/snap2/snap1 \
-> +	$SCRATCH_MNT/snap2
-> +
-> +# Create a new fs and apply both send streams.
-> +_scratch_unmount
-> +_scratch_mkfs >> $seqres.full 2>&1 || _fail "second mkfs failed"
-> +_scratch_mount
-> +
-> +_btrfs receive -f $first_stream $SCRATCH_MNT
-> +_btrfs receive -f $second_stream $SCRATCH_MNT
-> +
-> +$FSSUM_PROG -r $first_fssum $SCRATCH_MNT/snap1
-> +$FSSUM_PROG -r $second_fssum $SCRATCH_MNT/snap2
-> +
-> +# success, all done
-> +_exit 0
-> diff --git a/tests/btrfs/338.out b/tests/btrfs/338.out
-> new file mode 100644
-> index 00000000..7ea61817
-> --- /dev/null
-> +++ b/tests/btrfs/338.out
-> @@ -0,0 +1,3 @@
-> +QA output created by 338
-> +OK
-> +OK
-> -- 
-> 2.47.2
+> 
+> It seems more that this patch only can removed a test...
+> 
+> May be something was wrong ?
+
+Nope, it's completely correct.
+
+Check run_one_test() from tests/fsck-tests.sh.
+
+There are tons of examples inside tests/fsck-tests/ where there are only 
+test images without test.sh.
+
+Test.sh are all utilized to override the existing check_image() which is 
+not the full default check-repair-check run.
+
+Thanks,
+Qu
+> 
+> 
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>>   .../.lowmem_repairable                             |  0
+>>   .../066-missing-root-orphan-item/test.sh           | 14 --------------
+>>   2 files changed, 14 deletions(-)
+>>   create mode 100644 tests/fsck-tests/066-missing-root-orphan- 
+>> item/.lowmem_repairable
+>>   delete mode 100755 tests/fsck-tests/066-missing-root-orphan-item/ 
+>> test.sh
+>>
+>> diff --git a/tests/fsck-tests/066-missing-root-orphan- 
+>> item/.lowmem_repairable b/tests/fsck-tests/066-missing-root-orphan- 
+>> item/.lowmem_repairable
+>> new file mode 100644
+>> index 000000000000..e69de29bb2d1
+>> diff --git a/tests/fsck-tests/066-missing-root-orphan-item/test.sh b/ 
+>> tests/fsck-tests/066-missing-root-orphan-item/test.sh
+>> deleted file mode 100755
+>> index 9db625714c1f..000000000000
+>> --- a/tests/fsck-tests/066-missing-root-orphan-item/test.sh
+>> +++ /dev/null
+>> @@ -1,14 +0,0 @@
+>> -#!/bin/bash
+>> -#
+>> -# Verify that check can report missing orphan root itemm as an error
+>> -
+>> -source "$TEST_TOP/common" || exit
+>> -
+>> -check_prereq btrfs
+>> -
+>> -check_image() {
+>> -    run_mustfail "missing root orphan item not reported as an error" \
+>> -        "$TOP/btrfs" check "$1"
+>> -}
+>> -
+>> -check_all_images
 > 
 > 
 
