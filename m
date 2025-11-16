@@ -1,158 +1,152 @@
-Return-Path: <linux-btrfs+bounces-19035-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19036-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C4B9C60C1B
-	for <lists+linux-btrfs@lfdr.de>; Sat, 15 Nov 2025 23:30:55 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id A7748C611BE
+	for <lists+linux-btrfs@lfdr.de>; Sun, 16 Nov 2025 09:23:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B93883B8CAB
-	for <lists+linux-btrfs@lfdr.de>; Sat, 15 Nov 2025 22:30:53 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id A7E694E0640
+	for <lists+linux-btrfs@lfdr.de>; Sun, 16 Nov 2025 08:23:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4979F23AE66;
-	Sat, 15 Nov 2025 22:30:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F11A9285CA4;
+	Sun, 16 Nov 2025 08:23:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=stanfordalumni.org header.i=@stanfordalumni.org header.b="jo6z7Ty5"
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="LAFpYxoi"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8279E3594F
-	for <linux-btrfs@vger.kernel.org>; Sat, 15 Nov 2025 22:30:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2C782641CA
+	for <linux-btrfs@vger.kernel.org>; Sun, 16 Nov 2025 08:23:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763245847; cv=none; b=RJC4bMXd59LTij7ZUd4/Xnp0IablScY6ipP1YXYCNim5pgxlIc9triVIdsyAJvRKkjfWX6i7aOa0HiKIgM6i62BebSggy9j/xzQkajwi0+Zek9fiMcI/BK+I8/1wLHRjOcAIsPUEsB6Cgp1V8yy99fn2nT97krc5VSOrDOhQmcY=
+	t=1763281397; cv=none; b=RgzWbO6M1G8sgcvxY19ocVsMYWpsMukEje0YaxmLni4RraYEeAHxez0K8SXAO8ULzZ0RRAccNAmv7PDIIveGIK0AYCEAq5EpeHtjxg7iO0Zc9YQbEGiVC5yfete4SMH0/ZZTgDSknyzXQtSsPjHQJYL+/mtsTM8G4fpw5icOaqI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763245847; c=relaxed/simple;
-	bh=t4XiGsz9GYGPF/qgwjrA7/6vrD0ZS2Zv8cEumtlufx0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LCFmhMqWisM1y09DPG32k5P1n96jKa3esksxPCnAl4ffVAUOFQvc989ZGa2zCmJhZAPhhrOcq7uwnP0ZwYRAqpUr3C2H499CTtq9BOcbqE0tJ1NPvW0ILNLkFlGs5AtmpXIRVq2oXQ2XylDD2VAJdgN9hhy1vW93vkXpyY2ZfyI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=stanfordalumni.org; spf=pass smtp.mailfrom=alumni.stanford.edu; dkim=pass (1024-bit key) header.d=stanfordalumni.org header.i=@stanfordalumni.org header.b=jo6z7Ty5; arc=none smtp.client-ip=209.85.160.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=stanfordalumni.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alumni.stanford.edu
-Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-4ee1b13a0a5so7941cf.2
-        for <linux-btrfs@vger.kernel.org>; Sat, 15 Nov 2025 14:30:45 -0800 (PST)
+	s=arc-20240116; t=1763281397; c=relaxed/simple;
+	bh=C+JcvFRwZHyavGe7kxRswHzD35IQVhdGIfMoOL9ybQI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=M80tEjPWyAzLDfKD87TY/VrdUrIegBdl9i++rWvH0qkKAwBmalxW6dSl9dzCWU7z+qvSip6iOyb6YVZy27Xn6mSHOvs3lyaIYNhRHaxYF5sZJbYgiUDmdJJU9uZFBYFoUMOVM5yyLAezvtMaCw8U0EbzpjFwsl/B5rUbyN9QmhQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=LAFpYxoi; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-297e982506fso39638385ad.2
+        for <linux-btrfs@vger.kernel.org>; Sun, 16 Nov 2025 00:23:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=stanfordalumni.org; s=google; t=1763245844; x=1763850644; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=XujytQUrZ40RvC43EbRrUC1kYG7IcthtnnSfrMM6aZM=;
-        b=jo6z7Ty55qQARYi7A4IQ3MgGE2ZD0a0x7jsf6BuNBDpfG8T1fGB2t0zcjGVLLqPdGk
-         LVsTGahc6/37I2AYcqzR3qs1J7H+4WTGO+A5h2ryEkaZoWM23Zg6My6m4NQ3sjcDWupR
-         FRmjULRMb4YtB3xnjQzdui/sV7YM8EIB3rMoY=
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1763281395; x=1763886195; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=M4MaMBAoduJmljAfpOLsOwZXGopJOVWqjmgthPn26W4=;
+        b=LAFpYxoiJGcYCTAW2kOg1UFBq9oMMmEaBg4IvoS0x3oCTo4DCvJt3kTJIKB0DB5SL7
+         NJDSdSfhSUy6img3FIkk9DZo93wSfy/IQfxyXAy6nDow269dr8fz2JWVYR2FIsFXjAQ0
+         6SHD9N2jFT5ezuoq/DJaH6tv4TwQfB25O47G/5O+HEeM/r7mF4AIebekDNxdrWcmQ39u
+         NVZ9AS0QiPWLnpgRmkIicMuRk263e5xdrNFcBbAuXJO5c1Qv8Kr2mRr+4x0u/bfpWq65
+         Td07/17O4ZU71mQrPJ/qJtNKqi/9DqB5XVUZhh78859hNaw+PP8r8dqXyw4pnhkA0gvB
+         IvEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763245844; x=1763850644;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XujytQUrZ40RvC43EbRrUC1kYG7IcthtnnSfrMM6aZM=;
-        b=lCxcJFgFY/V+OiqVPyazOM2kX6Rrp3qeUz9hMrRHq3Xz+VefW/Uf7EaaMFQ5WLeoBH
-         dEudQW4yd6vxR1E9pu22XQjycEl0PS+ZpcH0hhYZrsAxRcenw3smRuiZFm7HeJHVvvq0
-         iKwZNtTM6xdt782cOgPYZBEpvLf/b5XyAiRIsQMpauUs0ZpTWqfewUKvZok3lobsRfVF
-         kr3USIX5DOyohRnSVfl79ANExt0g0admvL6X+PcrPbuF5xfHWXC+ypwxnXtNjfGNI+NN
-         x07LAMxKUIkfzH1BJGTlzxlpOEulMCvM89AgMUKHRCugZhsOPcG/vPOVVYJNUgii6DqM
-         eONw==
-X-Forwarded-Encrypted: i=1; AJvYcCXRErqKshaIIpg9FK+7jMSC18BvxXGyWqvBKbBXvYd+rIx3FLhzEOuagPkSqrNtI84z75Yv7RYiPF+gsg==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy/tCNVXFyg59CIQ4XgSQJVJD4MMLCLLVvWXTDN3ecFLlADB9KJ
-	FlsD7vcelu33eSADTaSMb6mXq4tMx5s94wMScSxTqAKtETeY9B2y0/1hDMVWFEoeZHPAIBCFi1Q
-	eWClScKbiCTuRXUWWk+WWvbLPFkVvXh+gEKdg0GTP
-X-Gm-Gg: ASbGnctBIvDYwdJopor7iTGgvQDNLNT8qVkfEIQdXXxf0kMZq9bMrj7EFvj4yT2uNkx
-	OzRzIjc7f5iWQCJrAqL6+367t9CfMIWjUNAbX8L9bFLg5+nM4eL9aLJ6q5MIo+s3sQEYK2zENj9
-	NLqPZhKj9wqUoLKb8S9txOuIN6FJIfeQptLIWUtFgWBfAd0sTZXUl6RR0PI5jdWypmkZ2v0bujA
-	IiKv6/gmYJFp7P54ISVFIKeAdWDjfxSo22FZwE6oT1IIS8/hVpMXI8UmR4y3iFYjg9b6g==
-X-Google-Smtp-Source: AGHT+IENprePcWsemWeIXgHonDbBjqib+1bQlILAPTl2/dRe+tA10ABZ1bJnVdraKWWf4qVn4F1s/V4Az4mqt5P/rpI=
-X-Received: by 2002:a05:622a:244:b0:4e8:85ae:5841 with SMTP id
- d75a77b69052e-4edf206a998mr82388451cf.5.1763245844240; Sat, 15 Nov 2025
- 14:30:44 -0800 (PST)
+        d=1e100.net; s=20230601; t=1763281395; x=1763886195;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=M4MaMBAoduJmljAfpOLsOwZXGopJOVWqjmgthPn26W4=;
+        b=KtQmCJHiRx1OaWHy5BPqiI1eUKCLq/CPiVTha8D6J5CcVnXIsBGSqhydnQJ7n4OFHs
+         GNBdaIPAxb4iC+oa5TDLg9FQ5qbhP+ifPY+6hHqviaeF9nn7ZZvkF9yhRGm98wQhrcCI
+         aryXAysaBGESKgugbUNFdF6OkgPFBS4CdQJpfwfZ0YvJeDU+TsSpmN4mGZMqbP/wzDGM
+         iSrqhHynscJA4oCxm4WSCrxDh67RwI7HeOL0MwRvwkyHbSVM/lbaYXgkvcVSokpGXYD5
+         9XsTCI5jG40yl24qTrZR/TIMGUBxffw+M4h8XWzAa79NR/qZ7EEQ3Y6pQcmMPITEWDY1
+         2DcA==
+X-Forwarded-Encrypted: i=1; AJvYcCXgmiaP3WV7HSNtpohq50kGDdQmDbhvWAXN8CRtq7HRgrTvXbmD8+jjgTZzZPY7rQrq4idFXPrxE6ZIVg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxEgwCYp9dmbjEQT7wwJAnWOYFGaOmhnHC+1jNAQyumXPCldKT8
+	fD2O9/8Y+02aLHXkZukVLjB+Dm5MJUcefTa+1edLZD/llLR/+Y3EO6f3GiLaT3ZFrZU=
+X-Gm-Gg: ASbGncsJ6AizJzQGVAphur2EmZNlixhj5BQjsF1/u61US/pBRh6ribYl7hr5Krmgv2H
+	nuQhLQP6Q7QPDBTrFKbD6NCxNTI/fYpat2SL+4WXKKaq5mq3NcSpFPqHodLTjXj/4PgAQjHaQZR
+	rwYSmJ6u2R59R/OEpZf6oVYtnMCh6qzeWJClvFabjMetIKTDKlwetu3z8kaTNRywsFs/+Ie6pu9
+	ubl2KcvVb94/yeAk5ky8V9oXE1eM3hiGP+K3YZ5e/EQ2l9QzGG3i2Y+ZN5tBrVkgfNleqUIP/lJ
+	eQm/fyvlUhVRPpn9WndSS+4hOa8LDSVD80t7+mkpEEfCzleqcMYepnMz26sHfxmigHyOqqPuAoh
+	SqscKjCCvPe7RdxSDkWCRem6BJ29iUab2VrjAFdXx4SLL8e4wGpVHdhze0jFQ1pwB9vrKUrnD9+
+	BPqJSl3v8uL95v/2IPURaw4fy5SAGAkBL19GPQd0sxGBoqkEmoRaCDP8k3GthfFA==
+X-Google-Smtp-Source: AGHT+IE2kISBEpmbZV/bnZzdrwmOacrEejG6ljtHkn9ZRcGe++TC5tzXGzGVsKaVV/gcvGARY/ZhHw==
+X-Received: by 2002:a17:903:41ca:b0:294:ec7d:969c with SMTP id d9443c01a7336-2986a769988mr112616935ad.49.1763281394800;
+        Sun, 16 Nov 2025 00:23:14 -0800 (PST)
+Received: from dread.disaster.area (pa49-181-58-136.pa.nsw.optusnet.com.au. [49.181.58.136])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29864b00fc9sm79958015ad.40.2025.11.16.00.23.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 16 Nov 2025 00:23:14 -0800 (PST)
+Received: from dave by dread.disaster.area with local (Exim 4.98.2)
+	(envelope-from <david@fromorbit.com>)
+	id 1vKY2R-0000000BUhZ-3a27;
+	Sun, 16 Nov 2025 19:23:11 +1100
+Date: Sun, 16 Nov 2025 19:23:11 +1100
+From: Dave Chinner <david@fromorbit.com>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Christian Brauner <brauner@kernel.org>,
+	Al Viro <viro@zeniv.linux.org.uk>, David Sterba <dsterba@suse.com>,
+	Jan Kara <jack@suse.cz>, Mike Marshall <hubcap@omnibond.com>,
+	Martin Brandenburg <martin@omnibond.com>,
+	Carlos Maiolino <cem@kernel.org>, Stefan Roesch <shr@fb.com>,
+	Jeff Layton <jlayton@kernel.org>, linux-kernel@vger.kernel.org,
+	linux-btrfs@vger.kernel.org, gfs2@lists.linux.dev,
+	io-uring@vger.kernel.org, devel@lists.orangefs.org,
+	linux-unionfs@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-xfs@vger.kernel.org, linux-nfs@vger.kernel.org
+Subject: Re: [PATCH 14/14] xfs: enable non-blocking timestamp updates
+Message-ID: <aRmJ728evgFnBLhn@dread.disaster.area>
+References: <20251114062642.1524837-1-hch@lst.de>
+ <20251114062642.1524837-15-hch@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAK3NTRCBV0jTPrHb_tmWzdrLqx9xnvKpcqA7-_Cxm9TfJAGGSQ@mail.gmail.com>
- <20251028001329.GA3148826@zen.localdomain> <CAK3NTRAhxaHU4Mh3vz9VWnonDS7dFjVvC0fnYhz0kH5Lrqorfg@mail.gmail.com>
- <875xbc5uk2.fsf@vps.thesusis.net>
-In-Reply-To: <875xbc5uk2.fsf@vps.thesusis.net>
-From: Ross Boylan <rossboylan@stanfordalumni.org>
-Date: Sat, 15 Nov 2025 14:30:32 -0800
-X-Gm-Features: AWmQ_bl5ky8lcpQd-Icqvu0wFBjxqHvNy4E5NcU8JcsFGKzhsV_IqTYgxn5YdmI
-Message-ID: <CAK3NTRBdBkg-n5zu7DQhcLme+sJT5=+452haChcapKZLz3nmAw@mail.gmail.com>
-Subject: Re: btrfs fragmentation
-To: phill@thesusis.net, linux-btrfs@vger.kernel.org
-Cc: Boris Burkov <boris@bur.io>, Ross Boylan <rossboylan@stanfordalumni.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251114062642.1524837-15-hch@lst.de>
 
-phill wrote
-> I'm guessing the problem is from writing the file slowly.  Check
-> /proc/sys/vm/dirty_writeback_centisecs.  It defaults to flushing dirty
-> pages to disk after 5 seconds, wich may not be giving enough time to
-> buffer up much data.
+On Fri, Nov 14, 2025 at 07:26:17AM +0100, Christoph Hellwig wrote:
+> The lazytime path using generic_update_time can never block in XFS
+> because there is no ->dirty_inode method that could block.  Allow
+> non-blocking timestamp updates for this case.
+> 
+> Fixes: 66fa3cedf16a ("fs: Add async write file modification handling.")
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  fs/xfs/xfs_iops.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
+> index bd0b7e81f6ab..3d7b89ffacde 100644
+> --- a/fs/xfs/xfs_iops.c
+> +++ b/fs/xfs/xfs_iops.c
+> @@ -1195,9 +1195,6 @@ xfs_vn_update_time(
+>  
+>  	trace_xfs_update_time(ip);
+>  
+> -	if (flags & S_NOWAIT)
+> -		return -EAGAIN;
+> -
+>  	if (inode->i_sb->s_flags & SB_LAZYTIME) {
+>  		if (!((flags & S_VERSION) &&
+>  		      inode_maybe_inc_iversion(inode, false)))
+> @@ -1207,6 +1204,9 @@ xfs_vn_update_time(
+>  		log_flags |= XFS_ILOG_CORE;
+>  	}
+>  
+> +	if (flags & S_NOWAIT)
+> +		return -EAGAIN;
+> +
+>  	error = xfs_trans_alloc(mp, &M_RES(mp)->tr_fsyncts, 0, 0, 0, &tp);
+>  	if (error)
+>  		return error;
 
-Thanks for your help.
+Not sure this is correct - this can now bump iversion and then
+return -EAGAIN. That means S_VERSION likely won't be set on the
+retry, and we'll go straight through the non-blocking path to
+generic_update_time() and skip logging the iversion update....
 
-/proc/sys/vm/dirty_writeback_centisecs does show  500.
-
-I tried an experiment, shown at the bottom, which differed from the
-previous one in 2 ways:
-1. 80MB, 10x previous amount
-2. 2 recordings going to the same partition at the same time.
-
-Together, the 2 recordings are running about 7.5Mbit/s; neither one is
-at as high a rate as the one that produced the big recordings I've
-been focusing on.  For me, this is a pretty high load, and if the
-writes are grabbing space as they go I would expect the multiple
-streams of writes to produce fragmentation within streams.  For a real
-server, though, I would expect things could get much more demanding.
-
-The test did take a surprising amount of time, almost 2 minutes (1:49
-more exactly) which is 22 5s intervals.
-The result was less fragmented, 10 fragments, than either a naive view
-based on time (22 5s intervals -> 22 fragments) or extrapolation
-from the previous results (8MB with 3 fragments suggests 80MB would have 30).
-
-Extrapolating the result for the 80GB file to a fairly typical 5.6GB
-recording suggests 700 fragments, which is better than I usually
-achieve.
-Of course, the recordings do not use dd.
-
-phill wrote
-> I don't know if btrfs tries to reserve some space after a file to have
-> room to continue to append to it without having to allocate space that
-> isn't contiguous.
-
-There might be 2 different issues here, within blocks and across blocks.
-The first refers to whether the file system will fill in a single
-extent all the way, or allocate multiple extents as it fills it.
-The second issue is whether, as it writes to multiple blocks, they are
-adjacent to each other.
-
-A file of 5,600,000,000 bytes (5.6GB) needs 1,367,188 blocks of 4,096
-bytes; since even the highly fragmented files are nowhere near that
-many fragments, the filesystem is clearly managing to clump many of
-them together.
-
-Transcript:
-root@barley:/usr/local/myth26/media26# date; time dd
-if=10501_20251031045900.ts of=test.tst bs=8 count=10000000
-Sat 15 Nov 2025 01:18:41 PM PST
-10000000+0 records in
-10000000+0 records out
-80000000 bytes (80 MB, 76 MiB) copied, 109.449 s, 731 kB/s
-
-real    1m49.452s
-user    0m13.898s
-sys    1m34.968s
-
-root@barley:/usr/local/myth26/media26# compsize test.tst
-Processed 1 file, 10 regular extents (10 refs), 0 inline.
-Type       Perc     Disk Usage   Uncompressed Referenced
-TOTAL      100%       76M          76M          76M
-none       100%       76M          76M          76M
-root@barley:/usr/local/myth26/media26# filefrag !$
-filefrag test.tst
-test.tst: 9 extents found
-
-Ross
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
 
