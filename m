@@ -1,79 +1,79 @@
-Return-Path: <linux-btrfs+bounces-19053-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19058-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id A88B4C62BA2
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Nov 2025 08:31:46 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64FAFC62BAE
+	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Nov 2025 08:32:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 6C8FE35B55E
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Nov 2025 07:31:34 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id A8EF135AF85
+	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Nov 2025 07:31:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74B77318143;
-	Mon, 17 Nov 2025 07:31:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69601319609;
+	Mon, 17 Nov 2025 07:31:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="THX8u33a";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="THX8u33a"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="rjQRDMC7";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="rjQRDMC7"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1F7435CBB7
-	for <linux-btrfs@vger.kernel.org>; Mon, 17 Nov 2025 07:31:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E587B30BF75
+	for <linux-btrfs@vger.kernel.org>; Mon, 17 Nov 2025 07:31:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763364688; cv=none; b=fJ4Z0wgPwJFto7Ct0kppbyRZCcIe0fjopVM71yJRfQk8r0pntVT0lGC4UwIKZxYYx4gWE+NL5aJkEe0yODojFF4OSOqp9/lrzbKpNb+tZmN3X09b8s2MPgVM5J70V37QBIhnDFu7mbSqZhXqXn4JKSnIHtPRAUebyLeQHL1dwME=
+	t=1763364704; cv=none; b=gdxdA6yp4q1EJQWJ2ixIy2nV8uwHV8H5iZA4Rclp4sL43j0qQvTYJnX8NcEfJ8tRJtDSntfgdzP4xz8teaQSefDXDkhL9G8UlWLOPoCZGRmLT6A0aaZjLharZvdgvmSVkiJqfEwoqkcdNuHgpjFSIUsYrec6KrtEmEOPs/1YydU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763364688; c=relaxed/simple;
-	bh=BgwHqu9eQuTbBYjqqujLTHfhY0uFzft34etD7GvWjEI=;
+	s=arc-20240116; t=1763364704; c=relaxed/simple;
+	bh=/eEqEsmc0Gjd1w5QsQN/UeunhlrV9dJRNDnxDRomfTA=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TBMT/+0fPe1zVotsNR5gECT/1EPgCvOhScVWqSeJX4yb9Jt+lBefmg2H02zlDzjLsxL6wLo1wzddCFZm7PEwwxLennoubNIzWJfpBP5662E+BylCdaA0WEhToWQLmJSrvwcIDlQehVzhmD3MxZELSZ13vFEoX8v0hSnjZocOr7Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=THX8u33a; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=THX8u33a; arc=none smtp.client-ip=195.135.223.130
+	 MIME-Version; b=mz9mtpIIj3JruHf2wv8RKWqj2W9QOF3MFx++iqgv7iHMC3cOpEB21uKeX4Bw1uKVadNLxKHndeAxE7Lb3v3oX7zBsQQsTqT4TICehmP515gZWC+jxyW+I1Uh5kztJej2ts+lKHQ4J1xJOB4s5J4aU+SLOoIn/sWOJQs5KmhrfTM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=rjQRDMC7; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=rjQRDMC7; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id C4A17211FC
-	for <linux-btrfs@vger.kernel.org>; Mon, 17 Nov 2025 07:31:17 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 01B541F796
+	for <linux-btrfs@vger.kernel.org>; Mon, 17 Nov 2025 07:31:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1763364677; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1763364679; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=rK0p+fEmdFHLdv+bkEOQGrHjHdl0mcQeTMBZjngScwg=;
-	b=THX8u33ae+4rCymr0kJ/4Q+ZB59FaOB5057yU8E65iXFNIyWgK+DUmWHlNwMpdA84ZxFm8
-	fIZp/gdZqK0TQ5eCZ8QInGDXHDMDZD5qk66Ncwt01D29TvHxeCX1gza/vobtvntS/syvnP
-	NtCCUCxpOQ/ugRWPKwxd5Cd13tUUlLE=
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=THX8u33a
+	bh=2OnsJLVEdDCo4pofwdehDorcWTrHHDkhZjSHJmivasQ=;
+	b=rjQRDMC7HEgMmjXapdcVr/s059dY1j5XNYqMlCuuOs2aSjjA2ZXvdUPTjByeSs/bCSWpQb
+	kMsW67mfph6Q2+hAy4unoGJiydr2QuCKl39NTUKm6aOoEseco5QO0HNYY2NcNkGXRTC787
+	xvcZX6JOvPC6WNaRzFLWtJAZgv10UWI=
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=rjQRDMC7
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1763364677; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1763364679; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=rK0p+fEmdFHLdv+bkEOQGrHjHdl0mcQeTMBZjngScwg=;
-	b=THX8u33ae+4rCymr0kJ/4Q+ZB59FaOB5057yU8E65iXFNIyWgK+DUmWHlNwMpdA84ZxFm8
-	fIZp/gdZqK0TQ5eCZ8QInGDXHDMDZD5qk66Ncwt01D29TvHxeCX1gza/vobtvntS/syvnP
-	NtCCUCxpOQ/ugRWPKwxd5Cd13tUUlLE=
+	bh=2OnsJLVEdDCo4pofwdehDorcWTrHHDkhZjSHJmivasQ=;
+	b=rjQRDMC7HEgMmjXapdcVr/s059dY1j5XNYqMlCuuOs2aSjjA2ZXvdUPTjByeSs/bCSWpQb
+	kMsW67mfph6Q2+hAy4unoGJiydr2QuCKl39NTUKm6aOoEseco5QO0HNYY2NcNkGXRTC787
+	xvcZX6JOvPC6WNaRzFLWtJAZgv10UWI=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 006433EA61
-	for <linux-btrfs@vger.kernel.org>; Mon, 17 Nov 2025 07:31:16 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3B3E43EA61
+	for <linux-btrfs@vger.kernel.org>; Mon, 17 Nov 2025 07:31:17 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id EAPyLETPGmkLIgAAD6G6ig
+	id sLBUO0XPGmkLIgAAD6G6ig
 	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Mon, 17 Nov 2025 07:31:16 +0000
+	for <linux-btrfs@vger.kernel.org>; Mon, 17 Nov 2025 07:31:17 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 05/12] btrfs: prepare verify_one_sector() to support bs > ps cases
-Date: Mon, 17 Nov 2025 18:00:45 +1030
-Message-ID: <a583eec569334060f9eb8fdb8b90011c1327c136.1763361991.git.wqu@suse.com>
+Subject: [PATCH 06/12] btrfs: prepare verify_bio_data_sectors() to support bs > ps cases
+Date: Mon, 17 Nov 2025 18:00:46 +1030
+Message-ID: <91cef07b9d4127b97b23b567bde0674e63ef210f.1763361991.git.wqu@suse.com>
 X-Mailer: git-send-email 2.51.2
 In-Reply-To: <cover.1763361991.git.wqu@suse.com>
 References: <cover.1763361991.git.wqu@suse.com>
@@ -84,7 +84,7 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: C4A17211FC
+X-Rspamd-Queue-Id: 01B541F796
 X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
 X-Spamd-Result: default: False [-3.01 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
@@ -116,21 +116,16 @@ X-Spam-Flag: NO
 X-Spam-Score: -3.01
 X-Spam-Level: 
 
-The function verify_one_sector() assume each fs block can be mapped by
+The function verify_bio_data_sectors() assume each fs block can be mapped by
 one page, blocking bs > ps support for raid56.
 
 Prepare it for bs > ps cases by:
 
-- Introduce helpers to get a paddrs pointer
-  Thankfully all the higher layer bio should still be aligned to fs
-  block size, thus a fs block should still be fully covered by the bio.
+- Make get_bio_sector_nr() to consider bs > ps cases
+  The function is utilized to calculate the sector number of a device
+  bio submitted by btrfs raid56 layer.
 
-  Introduce sector_paddrs_in_rbio() and rbio_stripe_paddrs(), which will
-  return a paddrs pointer inside btrfs_raid_bio::bio_paddrs[] or
-  stripe_paddrs[].
-
-  The pointer can be directly passed to
-  btrfs_calculate_block_csum_pages() to verify the checksum.
+- Assemble a local paddrs[] for checksum calculation
 
 - Open code btrfs_check_block_csum()
   btrfs_check_block_csum() only supports fs blocks backed by large
@@ -144,104 +139,68 @@ Prepare it for bs > ps cases by:
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/raid56.c | 55 +++++++++++++++++++++++++++++++++++++++++------
- 1 file changed, 49 insertions(+), 6 deletions(-)
+ fs/btrfs/raid56.c | 26 ++++++++++++++++++--------
+ 1 file changed, 18 insertions(+), 8 deletions(-)
 
 diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
-index fafd200a2eff..07d452439e37 100644
+index 07d452439e37..6d9d9d494721 100644
 --- a/fs/btrfs/raid56.c
 +++ b/fs/btrfs/raid56.c
-@@ -732,6 +732,13 @@ static phys_addr_t rbio_qstripe_step_paddr(const struct btrfs_raid_bio *rbio,
- 	return rbio_stripe_step_paddr(rbio, rbio->nr_data + 1, sector_nr, step_nr);
- }
+@@ -1620,9 +1620,9 @@ static int get_bio_sector_nr(struct btrfs_raid_bio *rbio, struct bio *bio)
+ 	int i;
  
-+/* Return a paddr pointer into the rbio::stripe_paddrs[] for the specified sector. */
-+static phys_addr_t *rbio_stripe_paddrs(const struct btrfs_raid_bio *rbio,
-+				       unsigned int stripe_nr, unsigned int sector_nr)
-+{
-+	return &rbio->stripe_paddrs[rbio_paddr_index(rbio, stripe_nr, sector_nr, 0)];
-+}
-+
- /*
-  * The first stripe in the table for a logical address
-  * has the lock.  rbios are added in one of three ways:
-@@ -1003,6 +1010,41 @@ static phys_addr_t sector_paddr_in_rbio(struct btrfs_raid_bio *rbio,
- 	return rbio->stripe_paddrs[index];
- }
- 
-+/*
-+ * Get paddr pointer for the sector specified by its @stripe_nr and @sector_nr.
-+ *
-+ * @rbio:               The raid bio
-+ * @stripe_nr:          Stripe number, valid range [0, real_stripe)
-+ * @sector_nr:		Sector number inside the stripe,
-+ *			valid range [0, stripe_nsectors)
-+ * @bio_list_only:      Whether to use sectors inside the bio list only.
-+ *
-+ * The read/modify/write code wants to reuse the original bio page as much
-+ * as possible, and only use stripe_sectors as fallback.
-+ *
-+ * Return NULL if bio_list_only is set but the specified sector has no
-+ * coresponding bio.
-+ */
-+static phys_addr_t *sector_paddrs_in_rbio(struct btrfs_raid_bio *rbio,
-+					  int stripe_nr, int sector_nr,
-+					  bool bio_list_only)
-+{
-+	phys_addr_t *ret = NULL;
-+	const int index = rbio_paddr_index(rbio, stripe_nr, sector_nr, 0);
-+
-+	ASSERT(index >= 0 && index < rbio->nr_sectors * rbio->sector_nsteps);
-+
-+	scoped_guard(spinlock, &rbio->bio_list_lock) {
-+		if (rbio->bio_paddrs[index] != INVALID_PADDR || bio_list_only) {
-+			/* Don't return sector without a valid page pointer */
-+			if (rbio->bio_paddrs[index] != INVALID_PADDR)
-+				ret = &rbio->bio_paddrs[index];
-+			return ret;
-+		}
-+	}
-+	return &rbio->stripe_paddrs[index];
-+}
-+
- /*
-  * Similar to sector_paddr_in_rbio(), but with extra consideration for
-  * bs > ps cases, where we can have multiple steps for a fs block.
-@@ -1832,10 +1874,9 @@ static int verify_one_sector(struct btrfs_raid_bio *rbio,
- 			     int stripe_nr, int sector_nr)
+ 	for (i = 0; i < rbio->nr_sectors; i++) {
+-		if (rbio->stripe_paddrs[i] == bvec_paddr)
++		if (rbio->stripe_paddrs[i * rbio->sector_nsteps] == bvec_paddr)
+ 			break;
+-		if (rbio->bio_paddrs[i] == bvec_paddr)
++		if (rbio->bio_paddrs[i * rbio->sector_nsteps] == bvec_paddr)
+ 			break;
+ 	}
+ 	ASSERT(i < rbio->nr_sectors);
+@@ -1655,7 +1655,11 @@ static void verify_bio_data_sectors(struct btrfs_raid_bio *rbio,
+ 				    struct bio *bio)
  {
  	struct btrfs_fs_info *fs_info = rbio->bioc->fs_info;
--	phys_addr_t paddr;
-+	phys_addr_t *paddrs;
- 	u8 csum_buf[BTRFS_CSUM_SIZE];
- 	u8 *csum_expected;
--	int ret;
++	const u32 step = min(fs_info->sectorsize, PAGE_SIZE);
++	const u32 nr_steps = rbio->sector_nsteps;
+ 	int total_sector_nr = get_bio_sector_nr(rbio, bio);
++	u32 offset = 0;
++	phys_addr_t paddrs[BTRFS_MAX_BLOCKSIZE / PAGE_SIZE];
+ 	phys_addr_t paddr;
  
- 	if (!rbio->csum_bitmap || !rbio->csum_buf)
- 		return 0;
-@@ -1848,16 +1889,18 @@ static int verify_one_sector(struct btrfs_raid_bio *rbio,
- 	 * bio list if possible.
- 	 */
- 	if (rbio->operation == BTRFS_RBIO_READ_REBUILD) {
--		paddr = sector_paddr_in_rbio(rbio, stripe_nr, sector_nr, 0);
-+		paddrs = sector_paddrs_in_rbio(rbio, stripe_nr, sector_nr, 0);
- 	} else {
--		paddr = rbio_stripe_paddr(rbio, stripe_nr, sector_nr);
-+		paddrs = rbio_stripe_paddrs(rbio, stripe_nr, sector_nr);
+ 	/* No data csum for the whole stripe, no need to verify. */
+@@ -1666,18 +1670,24 @@ static void verify_bio_data_sectors(struct btrfs_raid_bio *rbio,
+ 	if (total_sector_nr >= rbio->nr_data * rbio->stripe_nsectors)
+ 		return;
+ 
+-	btrfs_bio_for_each_block_all(paddr, bio, fs_info->sectorsize) {
++	btrfs_bio_for_each_block_all(paddr, bio, step) {
+ 		u8 csum_buf[BTRFS_CSUM_SIZE];
+-		u8 *expected_csum = rbio->csum_buf + total_sector_nr * fs_info->csum_size;
+-		int ret;
++		u8 *expected_csum;
++
++		paddrs[(offset / step) % nr_steps] = paddr;
++		offset += step;
++
++		/* Not yet covering the full fs block, continue to the next step. */
++		if (!IS_ALIGNED(offset, fs_info->sectorsize))
++			continue;
+ 
+ 		/* No csum for this sector, skip to the next sector. */
+ 		if (!test_bit(total_sector_nr, rbio->csum_bitmap))
+ 			continue;
+ 
+-		ret = btrfs_check_block_csum(fs_info, paddr,
+-					     csum_buf, expected_csum);
+-		if (ret < 0)
++		expected_csum = rbio->csum_buf + total_sector_nr * fs_info->csum_size;
++		btrfs_calculate_block_csum_pages(fs_info, paddrs, csum_buf);
++		if (unlikely(memcmp(csum_buf, expected_csum, fs_info->csum_size) != 0))
+ 			set_bit(total_sector_nr, rbio->error_bitmap);
+ 		total_sector_nr++;
  	}
- 
- 	csum_expected = rbio->csum_buf +
- 			(stripe_nr * rbio->stripe_nsectors + sector_nr) *
- 			fs_info->csum_size;
--	ret = btrfs_check_block_csum(fs_info, paddr, csum_buf, csum_expected);
--	return ret;
-+	btrfs_calculate_block_csum_pages(fs_info, paddrs, csum_buf);
-+	if (unlikely(memcmp(csum_buf, csum_expected, fs_info->csum_size) != 0))
-+		return -EIO;
-+	return 0;
- }
- 
- static void recover_vertical_step(struct btrfs_raid_bio *rbio,
 -- 
 2.51.2
 
