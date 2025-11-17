@@ -1,56 +1,83 @@
-Return-Path: <linux-btrfs+bounces-19077-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19078-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39CDEC661C1
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Nov 2025 21:28:49 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3ECFC661CD
+	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Nov 2025 21:31:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sto.lore.kernel.org (Postfix) with ESMTPS id AF6F1242A6
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Nov 2025 20:28:48 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 56BEA4EC03F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Nov 2025 20:31:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCE3D3446AF;
-	Mon, 17 Nov 2025 20:28:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81EF132ED5D;
+	Mon, 17 Nov 2025 20:31:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="OXu2bXdD"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="OfYIpuhM"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 679ED340D92;
-	Mon, 17 Nov 2025 20:28:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57CC531AF06
+	for <linux-btrfs@vger.kernel.org>; Mon, 17 Nov 2025 20:31:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763411312; cv=none; b=kit17otBCGcuJmuNNLgSHth1Wmld6RS3aycOLHLiR1v9+wJO26PSXxJj4x3G9sTVo8uWQzjI+BgL6aJZ7nyh9CJyvYNH9LBYTFu/4nWCSgSAIYQUJpDBQ0szoDl1OXsQwup0l83htcAaOtTkV0PnUjZSeVlkYoFxKx7QjYNHULo=
+	t=1763411469; cv=none; b=JyeoY6RTaCvWuZ0BmNHdy+DtdSznEm44Ym/l+Sh2s/QaHir8KVWYM1XdbN76cvtlZfSjM9RaWRXI1z4QzfIhHSR+//OAoyI1UIKvZP4sKDujbj/OEhqsITtIRbpAqIKfaCxzcQZuTXJ/CxhziH4SOEyQP/jrPAKkdPGgRqMX6Bk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763411312; c=relaxed/simple;
-	bh=IuV+1h4Oq8NbOPKCXqhp07+0KPycf+PJIITiMZP3Nhw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=T56cIX0A2OyNVJVKIp/9WSVsfwlipPU1c3Y4VArWY4nr1Yk9cmvgVHMqQK+ZjEbCtpZAJDhGd1wxgdgbNHt+juB+uDXhQF+ByttCZfBAIRHrRgE/1SAFxttvJqM/19XYkouI3QckOGvFkASdR6znaXcThYZwnEEgGZuxY4Ia8jQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=OXu2bXdD; arc=none smtp.client-ip=212.227.17.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1763411282; x=1764016082; i=quwenruo.btrfs@gmx.com;
-	bh=fgtmX0tU1cSmyhuPHgURHY5hRcOu0zcQXZANAYqnoYM=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=OXu2bXdDV5E1KIz6LHuCO5Gpic3/JvW2KelKiGJwaWOTYpCCRiG6jnpTkmjPtEQw
-	 ss3SB5a1O6eoYR9QDgpqs6isXTDZvb/KvMvWFIsrh5vSdtKc4H412UEPtIBLrMss7
-	 5NcmBtJG6sj7l4lm8hmxLRVWV/oyaowlMpaeZBE4JzmAh+w9EhB8fMoDqf5PUasPJ
-	 6RlN+x8Upgov9uo5oQd5sQb3cOEjqvyDUxXv4rismSCHdRlcFLMCPTtUAj2yODb1r
-	 /o0SucJ88jcTHaTc9h3VUcUwHZJesf14fNiMi0qwob05Taqjau1OY+JfyhFIlHOq0
-	 VZD/xkHX/7MOaQ6HvQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N0Fxf-1w7i6Q2yOd-015I13; Mon, 17
- Nov 2025 21:28:02 +0100
-Message-ID: <2625850d-de30-42ae-bd0d-5f92f7f2f6e7@gmx.com>
-Date: Tue, 18 Nov 2025 06:57:58 +1030
+	s=arc-20240116; t=1763411469; c=relaxed/simple;
+	bh=X6o8p011b2eh4ZJHG/tpphjxmMX16oyZRn65ebpozbM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=crgUZH4wQoyZPv8jWfrmRZ+i1/VW5z7ySrbseN50nbzO/SmQJA0EGjt98zL4JV2h0wAN9d2DYWjop6JHh3LnSde9p+dPUNcxuJwreQ+RtbOBkNmQVDlEsSW8mo0yGS6BAj31T/lfTDNr24nUTN+wD55jQBuBaTEJAXZJwtWHOzw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=OfYIpuhM; arc=none smtp.client-ip=209.85.128.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-477a219dbcaso13456635e9.3
+        for <linux-btrfs@vger.kernel.org>; Mon, 17 Nov 2025 12:31:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1763411464; x=1764016264; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=D0gqGVVc1lq7F18CmzGoGGki4DWLXFl0Mojss7YM3UI=;
+        b=OfYIpuhMZEl7W4El1HGxst79MueNoHu+gq8EdQoyc9O1JcpIbFijgYrCG4Q5RvbI1m
+         +k8ce7WxWYM0zs7/WrSXuwd7rICxS+ZJJLgBCgQynGQVS+LHTyEijhBIo9dEpiL20DiB
+         XF5O1s7LLcAw0ZsohBJEj/iRPmm5eVxWE3Nh8+LLZFrPkl0DQZajD8yzTnbCVL8Ujp2I
+         qH6xHs7LyIpETjVC7OzxNVnpeZFW5hmQ65OjLCmh5ta6FN5Y9O0f0PC9cCPD91nhn9ja
+         d1IdKJazdtuPgrn2XoHNz/KW7hFhrpekhJ3yS3h0lYRvjXRCSCZ3EFq3LreGcIxBnIy0
+         POXA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1763411464; x=1764016264;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=D0gqGVVc1lq7F18CmzGoGGki4DWLXFl0Mojss7YM3UI=;
+        b=a9YwWmC9SW4o6hp7lGYvKCAaCoe9PCoQPmghRM6+riOZ5BOU30LA/Qt+G1jZLvvInJ
+         f4dS+sPe6BcPGw/kUta60PcaoiPXfOBnIdyLij0KbgGLmzwW1LE72ao6gvG58k9vWh/E
+         StrF51IMHPoZyUmZKuXQ7OxsTa9Ocbwx9QH13Fklolw7YyBmkXYXgH9fNx51yv/aL3qT
+         SaSvnfud5oYp7SYBijiw2U2YiFqy45kAJ2+tddaQ9lLljODVCIPrwCs8Fp/+c62/5t0u
+         iM6mDx+lRsW73yRvLn9FOYCCseKsNUY1ODQa0QehgXkt6DBP1JrHhuSbWfPXup4blPUi
+         TRyg==
+X-Forwarded-Encrypted: i=1; AJvYcCX0Talh7hHe7Kzv8ns1+IcZnkL3d+KM6n+A5yYFVH5BDKcOWwCamgulf6pyI/ybjqu9BuOFlj/3C1HCwA==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxt+yecCy0OWzZYAXbqxmHY/1aySy2NWJyRJOr3GI09Y6Hc8M0p
+	T8njHukhxTjYilVfjd4xyHqKn2S+YXx76H64WOgbv74TeVdeZ2iHzX5PB7eq5qDw4n3SsMa5Le9
+	tLLL1
+X-Gm-Gg: ASbGnctlujHMwMRXy+ugvZbUryL+Rg1so6FPb3BPxIyHaDXqYiLzhR7j5dpORsiwRwk
+	qDCXQEjhZ/vCO5WVOxe35jw7UPVuyqDO2VAx3f6t9EYsZr/535o5YgMLsF8Ys0Q7KlB0E2j40fG
+	w/jBoHVeJpyczqK70IIo421H/viClTbWFBmxcW+UYhvrVZfabFxn2v7P1OloeCmYlA0W9A/Fyld
+	LLiFiX4fF+flWfgru34zMqWZlcmFwEIsyxQORLngEUSZrPN3uQ5GZFWH/pMTmor91Dg2l8Fwxx0
+	RzwunHHjxUrhORGvgOt16o5zMDunJd4VBHSxGKpDxUXswUlt0nP/bzJ/DRMGhg+gOK71Om9L5t5
+	x1AVRMcYtPuij4TxJkoWvQyF/sVvC5YmHRlx/m79/kF1H0GpZ3FmdDz16dMCtFTgKBdZN4PnE6f
+	3VBcU8+IriwJAXVXvglV69rVXqdtGD
+X-Google-Smtp-Source: AGHT+IH/3uF+3OY0GEKgeAZmSzo9idEzemNgtL6Kymh7SyD0XSs21jOD7tUKvG0WxjkG76nBxaMYew==
+X-Received: by 2002:a05:600c:a43:b0:477:5af7:6fa with SMTP id 5b1f17b1804b1-4778fea84e4mr114798895e9.32.1763411464536;
+        Mon, 17 Nov 2025 12:31:04 -0800 (PST)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-299daf12fe9sm56266115ad.74.2025.11.17.12.31.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 17 Nov 2025 12:31:04 -0800 (PST)
+Message-ID: <4589428d-1ed3-48a7-b125-9bb4d6c980bf@suse.com>
+Date: Tue, 18 Nov 2025 07:01:00 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,179 +85,65 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: Objtool segfault inside an VM, based on commit 24172e0d7990
-To: Nathan Chancellor <nathan@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
- linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <0b7d3e02-0609-410e-a221-8e68a0bd89b0@gmx.com>
- <cfc6e0f7-8924-4276-b29c-a6a72ebf2300@gmx.com>
- <9cd36c00-b2e0-4d57-94b1-840b084d0a3b@gmx.com>
- <20251117175041.GA703155@ax162>
+Subject: Re: [PATCH 0/2] btrfs: reduce size of struct find_free_extent_ctl
+To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <cover.1763381954.git.fdmanana@suse.com>
 Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
  8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
  1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
  9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
  gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <20251117175041.GA703155@ax162>
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
+ Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
+ fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
+ 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
+ V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
+ rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
+ cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
+ qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
+ /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
+ o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
+ JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+In-Reply-To: <cover.1763381954.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:wCjj0TcUpSma3gIY/gCVJTp96j/ky2UQx6kityDP1R8/li0aEXg
- FTObG/YJkOGcXBasL/TzQqVgxeFVA3Yo6vIsBIQ+vb9/l0GqsgKJeqwFRnGVhbKqtkgxkJs
- aw5NoiYOKZROv6QyCVZFiM3kIkr0yJjgOnn4QOiUQ/FzJ9ENvJCTgmBpM4X1CM2Z4fEhiel
- ChhiJU0hKKRPk+P869dWQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:lsVuFR/rLjM=;Py5lLxy1piWMjzO7mbfNxtonbYa
- fYUK7btuxR6yvgHThP0GmQN/ALTaUjxn2dg5Q2e7aCEYpKP1xG39naqARE/LDX8Os5+1/m3pP
- 8u8NdrZVoszJ3ib+rCtifc26pPtWLnBAvxHKGKNRBasbL8YHWcuccJP2Fp8KqU4f1MaX6rZOW
- k3rlGDAYbLcH5hCcscyGBXoOTu+DplygSMjkIaiONS6Eat1xFaIhhPbMGNxX808IG4ZMT/HR5
- Fxgxi54B/PONaQqN2MsiTXn5X6uUMM8X/TGODxXHcZCx1n8u9ffAXqLtvpOoXmpz1T2U9g+C0
- mFoOSStVtt/nT9/kZ81ickzdzYitfKE+3EE1KHF8mAsWw6UVcODUFG9gQ9Z2GX1wmLisqGcct
- h311zuBZb32MSQ6DvOpxRN98sp9SgusJ4a9L7yLKVO/uCo6j08Jn6piPenfyEdbJafda1mC/w
- 64Rql0j9GcZdA5Tr8077EZnRl4t92L+LO6FHVz9zgsCwCMAT/1/+AqR91tdsASciB4D68ktEu
- jO3lODZpqe8TzPnrj7bwQTNBdoF1q2TcY11ncHGB+oyuBT/rM2VfKcHyIwOgw/nv+4yN2P2eN
- 3PDLRPzafy+5sBpsJyUUm1VPoK9v1KBheUVylDN32Swffl0qS+fJ0zc9gBJ89x97GRMT3mKj3
- y+ip1EwGL+9Q57XsJ9ESUzwhTaHCbuowr3Y3IvrxQqixGdT/4xB7mr3QcDjIyO6Gf7chCs4IV
- ImxewdmR8rDWl7QNiRxjxWVcDHipZfraKEDPDpVKbC8VVQo6QH9DSXlUTkS8k8XKRdTUsa12R
- BAuZ70P7b9nY0+z1CeqjxEk1dflUUT0YS7Je8KDAsu5r3RlxcdbS4jju/43NxWVxuzy9SFm4h
- d0ETU/DdHWlWZGfryQWI7dKIUKp/pK3lg8vuS6y4V26Ya/EuixzzvHq5eXsz4+4XOTic9FXHe
- 072BlEPiiptwjKpdCMEFkMO/b2xzBokOP46JN3bIeKbX8MFMDRFaZjsDIVptIQQDKI17cJGOs
- KxVQresWjsLaChncWsqhdq4tvm+MHLLV7ADwr4wkLdKUiyiVxQJIK/4caaH8wtLF+ahd5fO7T
- pPSn5m8jyd/eHF6fTfEJM75pM5jXjrGzXpJcjRNt4MkU5spZk8xcY7nEzmGZAbPNPjj5EWHCz
- t+vArL5BOTiNmfXczqF3aieKkE2qifvZ8DV+RWZ6FeQFUM2buWgrp6P4xXVdRbx8XhP89RWw0
- 6g2hLwB4o6IpjzF2DTQ0B0QJLoDGF84zcnvjMOIdF+pZxczl5l+7FjKngTQMOyXXER+OIg+Ut
- wbVfSDH0hdKGLo9LnJlMm4qrLJD4hUe8+ZNfPzf0ZJ+3CrTCYEflyD+tvhznODtOrHsBZ6v53
- jd7Ny+nNjsOJACmVAnqLMdi0uDqxXidm+aUMBqqDeO3u9AWLTQxmlAID2k3sa76BMDUCH1K3Q
- hws+cNholFRREAioo5PY5xiw/KIDaLDYLirWlXDvYSj7PJ9jKnaXLe6A1T1tr/NYKiAow6rd2
- mTYO1PssFt9FmHYQPhWY+jTGZNedUBJxlAkHFnhV2H9Nff3DReSvyza9ir0/4AfdYHlTdgqNH
- fqGk+8OLiK/7zgdHioo1CObDcJmek+NxppySYSa61tlSLmqAFMDEOBImWU1EIdTZvWRz3B5RI
- dKDWvKxEMd+TzzcQzWd2jgIRfpR4UNJNWoAqWyjim5bh2e4ak+Cb0xurnNWpNNWfkifOao4bR
- fJjrckJWyRzOQRAUugOjj2mTonJ1OX+9oXF5kAr52ABbSplmO840t1HmP28rLrLaLx+03QoL9
- ozTRjvLWJMiPpnaSh/f+Jwy2hcD+lmPZdfFx/KhOTpnjA5ojd+A++lnHt9j2Jq/zCGFXq0A/A
- 12a4tf1slr4DJEJDX/7likbblaIJ4wbDS8QW3C2epr8uAXZmYdt4T3pKsyliNH/pazbdLu6yC
- 3BpcOPGFPsWJQ456N529u4uAZx+PlBSahTmluD/hHDTr8b9aZoPy3Ugk0jlNqmMtZyNXKMIHM
- IlB1B/y9BcBAyXriVJCAccIJIV5dcu/juVOu6k6UFF58ifh0+9KGvUcCXN07Rh5PtHMMn+Fou
- BrcnbyQeVD0zRrMWTyczoOmvPMcFc1iPvUzg0TZKTDA9ctseXXUmpjad7GBchUov+wxc+Ya5K
- L1KONrqUv8G8dXq+eZ68527OttC/06pvg3HTho+ui7+TzpaV7+365Hd9Cew+f1WcGf8K2Kiz7
- g5vVqTMvCjQpJ2yY84OC3fnAcaM5jUeWJoek2ctIB9JUJf7yYeCBtF6D8dMlbnWzqazE+nMx9
- X1N9rp/hxYh0bSYnm1iwGKG8Lh3u/N/9GAZl4qdSD5w20dyavRydMepBSCsu06zW3gvi1xPqG
- guU+X9gvdBsXMJU/8wXUZhopPV3xWLueu1XCqaCqlbUaXUA+vYZ4+LskXmvmZkr7LWuSP4ZT2
- BGEzX3Cgu5hg8qaxpQuh51xQ5w+UdbHbZPcRTSxTewuv5lMLmLmqBDvUqQ4huhHxjYuUO0xaP
- p3tolpwJqetnhbgmuJwr6jvo2uCMShJx3Bi1FE1Q7YzC4MpWFPmQCyK+99J76hL7gjeimEnb+
- NgN+Z+qg5wq7HOcfQqSwZVLKkOKl8OMhoCAwbmq6jDB0MWbRKN+k/4NxDqBZHZGSahPnaej+o
- 7SzPKAm6V42e70v/I+SK5aLa+R3UurxeBIACOX1+bVCFVSEzr6qE24bImWW3hrXyaLxMP/eHp
- /JlMPixsR3IerS9Oks41Ki+MV28Lmfw02lnujCEzkc3RLQOJ+zLffSHhjKZBwH90E6abbIbnD
- 8HanDvt4ppZzn9Lvih97ogV3gK3kUvw6lJrEh8NjpwlI/AMK2SqWG02lgrlf0tBBWObLM4RsW
- FNBkHpHig+xhiV0ZeB4xPNBOol2+cbKHTDYH3s/PVomHx/m+16A912Bk1j0dCoKrzmCmi5nsD
- AM9oPHp5z+txGA4H9U6FXbKnWri/E7nKEJjMszdhnyKJbwG4Qo9SmvyqK73M11o/poQvxvv0f
- CyTVue6bImM782huGLJtQrhG2u0n2OUjZYyniLF6sgx7EQZUvlc3MuRtOE3x8eVZ7sZRC2KiK
- l7VdKyQzcskfT2IYnBPpqOcTzUX2j4Sb6NKd3fRoPoHujS5kAHqx9Ab7QneyFewRMeJ8x7mO+
- r2WT4vsUGuPATt7++LEOSU6kfHMcBYqI0nDNdHP8ooyjdMFw9hFR6Q6WSktjeqyw+Ov+aq0lu
- d1HQocSJWkT1cRT6K21vXfyG2kcJl+taY8CpfS0WdODG40k/ny1RdT5gdUKYvYQ+IKOFTrucI
- WU63FQIwHGEQXfXzsE9rUSDjwErTb/m5s/LTuZqGj+Hg2198+lA5L79a6xIevxqb2cp1OMfUF
- KtB0d7hJV6qgTGnDyUpCO+arEvzfWLSx1AjS9fbUd2lLDhJOqJZvEcsJmOGXQDd/7Fz3Cz04B
- yq/y6uK0qI9a2FHdVso6TvkF7LX029aMNCKaYpCFdDTRVDz4Tl/L6p6ZuRMmJJu12Aiv3uVnm
- OTkUKLrRzFv2e5iYJfisvOg7xyyk2w/pwRVHWu+Va2ppsBn4+IIdUsLBAV4iI7vYDd/AnIdHK
- +HPTj93F9BjUY6IDamsP/Py2ExcqYSO/yuKgUJsmhrFJGnBiz0d32T637emKU9ObqZJnSHacX
- 74rn09ha4QaPagn7T9ko5XNDxOz2t1kx7h7Ck8it4fEkvmSmBZWamT7ER/nBP2ooJaUWPDyAe
- 4we+ceX0ZeymHHu5WT54EihFZIKAwLuBCF+HF6Eg76zNVAKkk/cONRzPwVzW+UCOSGETBrlcf
- fPFKL0x+VzSFDjnlSmTWAtZYdNsQY2jMaqZXcmEI7mOBuVLG9Kg2JFjQhwvRcEYnDdtQXmnXx
- vqW7QW6zYekbRZFPwzx8Wa7JEPjCYm8YIbWa8xTXJq/jRYi3V1XYlKfnodl7/9RjXeeeogg9x
- cmJGPD0YQlLppTiZ4BwIywQhYVyT3tbALniW1epvEloUzIck6xUC8Z8tdg2HMbmGR0Fp+/4Rh
- JV8dyzhRFykGS6fhdAqxjiCh1ZbYZsMgdDaqgg/IqW1eAXfZs79x+6SfXdzAxzhWtwHfCNVkr
- N/7wlQ4yUWCiBGJ4y4K0lz02b8DpVH65A5u44lV7tRHuAPh3wy2PrQk4oqOlsX6EY/5JZbYQ/
- IkFlEybGSKhG9gbcvihww350j4XqO5j5P0YJ/owtURo2+D2YZjfao+OmrwhlSnY4EALCZxpy5
- jJNczMzsRsj+sv0EPL6K/im3X22txEJl0U9Z0nsNAUwrWakgyi5CqrTnTYWn3hvolDpjEkcR1
- MYDa8c6+6kEFHpdd6QI8GLLSHSDeXvSapYsgTTTKp9idHWsG/F/sHhpWyUoGNWrZnQ0gP3/r1
- pv2rarkpnNrEs4JXkESDgYmtv0I8wPTV3J1GD2zS5hd5l8H/yoSPL/1ef5dR88CUW5edSOK1F
- fDzboSeD3FO0IDZuTHJ0XkZ+D88ayapZkljNqTCrZZ/b7KCBdcHZ76wx7WzB4BmIkA3vgi+7v
- SXH7d9QL0gqsuo5v0h7VtrdWwndqpcd/LJnawt3osX2GyAhwP66b2NSYshN2gfdZqy11OnD9Z
- 4TSherNpvec92KMzOQc1J58SIMWbDofIh1XpGr+xzbZpDj7AYI4qZB2chXUlZ3II4TjQ34PKL
- D/QLAvcpViPhGPVj11QohYSKZo8REnbfvC5A3xIe3FNRkM1ovcKbzLHIFTexFHcUDMQuIOEBx
- Y00BoMED2ZHE/izWWn3FW3sh8aUxMGnt2vKWzeITye692hyds45cPnfvRP7kf/hj1uKeVGMDu
- XNFHPmuvh75FMxSHplvykZ1qtk7EbEC/8DaTWwVFhLt1JFKTVlDz5q9mqu/fk2NmcT7M/vEVV
- wpcy/SInHvZcU9M/PA2R2o43Mh1JmyaNmskJKw5jB4Q/UAU/y5feG1el6nGP20m/8OKFjuN9A
- ZH46dFhAW0yMFSRQ7YZb8lCKOg345SnvxD4sHmht5jIw81FWX4XyX8dqkVa1Kpi/MppyJVz4l
- +xjU9efEWfdnjqi2k8yxnTVZvTc0912h3nziNCpTlqze0fOeaV5YU3NNO5FUswcKw2Mwg==
+Content-Transfer-Encoding: 8bit
 
 
 
-=E5=9C=A8 2025/11/18 04:20, Nathan Chancellor =E5=86=99=E9=81=93:
-> On Mon, Nov 17, 2025 at 03:40:35PM +1030, Qu Wenruo wrote:
->>
->>
->> =E5=9C=A8 2025/11/17 13:33, Qu Wenruo =E5=86=99=E9=81=93:
->>>
->>>
->>> =E5=9C=A8 2025/11/17 13:10, Qu Wenruo =E5=86=99=E9=81=93:
->>>> Hi,
->>>>
->>>> Recently I'm hitting pretty frequent objtool crashes, sometimes
->>>> during module linking (btrfs in my case) sometimes during the
->>>> vmlinux linking.
->>>>
->>>> Unfortunately I don't have a coredump for it.
->>>>
->>>> The only info so far is from dmesg (and obvious the compile failure):
->>>>
->>>> [=C2=A0 625.066787] traps: objtool[46220] general protection fault
->>>> ip:563ab54c6eb0 sp:7ffd9c2ba7c8 error:0 in
->>>> objtool[19eb0,563ab54b2000+1f000]
->>>>
->>>> The involved VM has the following spec:
->>>>
->>>> - Kernel branch
->>>>  =C2=A0=C2=A0 Btrfs' development branch.
->>>>
->>>>  =C2=A0=C2=A0 The base commit is 24172e0d79900908cf5ebf366600616d29c9=
-b417, around
->>>>  =C2=A0=C2=A0 v6.18-rc6.
->>
->> Furthermore, if just compiling on old kernels (in my case, 6.17.8), I
->> haven't yet hit a linking time segfault.
->>
->> So it's something in the v6.18 release cycle.
->>
->> Not sure if it's the recent Zen5 related hassles.
->=20
-> I had similar objtool crashes and David's fix [1] from another bug
-> report thread [2] appears to resolve this for me.
->=20
-> [1]: https://github.com/davidhildenbrand/linux/commit/58e62699f777381887=
-30d489accd01ad8e3cdeeb
-> [2]: https://lore.kernel.org/20251117082023.90176-1-00107082@163.com/
+在 2025/11/17 22:56, fdmanana@kernel.org 写道:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> Reduce the size of struct find_free_extent_ctl and use bool type for
+> some arguments that are defined as int but used as booleans. Details
+> in the change logs.
+> 
 
-Thanks a lot!
-
-Indeed this thread explains why aarch64 doesn't crash and with the patch=
-=20
-applied I haven't yet hit another kernel compiling crash.
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
 Qu
 
->=20
-> Cheers,
-> Nathan
+> Filipe Manana (2):
+>    btrfs: use booleans for delalloc arguments and struct find_free_extent_ctl
+>    btrfs: place all boolean fields together in struct find_free_extent_ctl
+> 
+>   fs/btrfs/block-group.c |  2 +-
+>   fs/btrfs/block-group.h |  2 +-
+>   fs/btrfs/direct-io.c   |  2 +-
+>   fs/btrfs/extent-tree.c | 16 +++++++---------
+>   fs/btrfs/extent-tree.h | 24 ++++++++++++------------
+>   fs/btrfs/inode.c       |  8 ++++----
+>   6 files changed, 26 insertions(+), 28 deletions(-)
+> 
 
 
