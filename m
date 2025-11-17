@@ -1,155 +1,201 @@
-Return-Path: <linux-btrfs+bounces-19039-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19040-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E621C620F9
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Nov 2025 03:09:15 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4CEBC62152
+	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Nov 2025 03:19:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 4F6C74E56FC
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Nov 2025 02:09:13 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 5DA9F3499AD
+	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Nov 2025 02:19:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0195F23BF91;
-	Mon, 17 Nov 2025 02:09:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 740FD236A73;
+	Mon, 17 Nov 2025 02:19:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="I74iOzCV"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from seahorse.cherry.relay.mailchannels.net (seahorse.cherry.relay.mailchannels.net [23.83.223.161])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BF34748F
-	for <linux-btrfs@vger.kernel.org>; Mon, 17 Nov 2025 02:09:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=23.83.223.161
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763345349; cv=pass; b=fcR2TGhd7zEdzJqafMyjmneChffLuc4hXORP8kbgsBEgb/VEgaBNZBA3lCZqveGdVhwI32/mHohu5uaYBCQupZtM+k3K80g5rdz++UQLBssdDd8ziVjt+VpHjY5HazWmUqR7lx/PnJeaGpEMIr/A/x/t/OhCu2wiazeKaql/EX4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763345349; c=relaxed/simple;
-	bh=5F8Toz04yryjOvNb6jVNmculkLf5z9s5LFiqMK8qYxg=;
-	h=Message-ID:Subject:From:To:Date:Content-Type:MIME-Version; b=fUlaxL4QRClpm7xozFfK1fFLlnjN1a67BLE+JP7dhWf1yx7szWa+pMC4bLnlzHQQazDoUIvHPoT63qykCmP98T4c7Uj+76MvCoJThcoY0UCLQ7/OlLM1fZzZAS767FWzSNjX/xPtTe/MCvsIQAP+zRYhDdvyxRV12WI1XexxI18=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=scientia.org; spf=pass smtp.mailfrom=scientia.org; arc=pass smtp.client-ip=23.83.223.161
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=scientia.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=scientia.org
-X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-	by relay.mailchannels.net (Postfix) with ESMTP id 2A2E54421A5
-	for <linux-btrfs@vger.kernel.org>; Mon, 17 Nov 2025 02:09:01 +0000 (UTC)
-Received: from cpanel-007-fra.hostingww.com (100-96-202-58.trex-nlb.outbound.svc.cluster.local [100.96.202.58])
-	(Authenticated sender: instrampxe0y3a)
-	by relay.mailchannels.net (Postfix) with ESMTPA id 442EF4412DA
-	for <linux-btrfs@vger.kernel.org>; Mon, 17 Nov 2025 02:09:00 +0000 (UTC)
-ARC-Seal: i=1; a=rsa-sha256; d=mailchannels.net; s=arc-2022; cv=none;
-	t=1763345340;
-	b=nUD/30nbxhe/6JsT4/Ok4zSABolOoxfj5D0vf/R7gjrsp/nBMfDlpT3kYbyqSzCMQEUB2o
-	vgjx6GviCdrg5K3Y0UcR6cbCcM7UQFVfMBMXqroKeaZSI6V06V7I8zXa5fMCt7IwacGzwf
-	CxWp1AtCOALGufrVy5oCH41DpbU+Zt+7VePLjx4z14oGj2rwQZ/qBsNF7QEM3i7biMxgSw
-	ue+7SUqinmRUZ2cHJejUr4PwGXN81BolLRO1CaotqIgaEDBtn02Xvrh8yVdNB2X+Fjdyd+
-	YzULt0qDawHK5Fx2xyZ0DC/+GZn0E+eWcOjEy7+kqTqQ67fr/xCqA4SQor2n+g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mailchannels.net;
-	s=arc-2022; t=1763345340;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=5F8Toz04yryjOvNb6jVNmculkLf5z9s5LFiqMK8qYxg=;
-	b=J64EVya6esoH8kdZN+YAAlcx5F2qsv9S9rV62jRpnmTVCsQC1/cp7jbQu4jw43vuh2abSR
-	x1Q/iJgxh6S7e//T9o6SH4YpA5HWG/QPE86Fbv7O5H4ERpDP0W4xV9NJc2rslb+VNd7zwo
-	BvbnppAvBqwtH4cDlbNFgDmFO5ZC7b/fKX5gormJ3vbcvuWA7+vReMPQAczUqVImrJ+Cvy
-	ZZEdlz21eLYjdxAOMPlIPfCA/J0cXbZ6KJLTmSFq+pXLE7e157wIbZ+P18iFfY70i8G4+u
-	dLbgxXsPTS5b5E/QyPpvubliK5gprZ63DxF/BrBDlUQToVHghEPEJX0rWhNKCA==
-ARC-Authentication-Results: i=1;
-	rspamd-5664d6b969-2jbwf;
-	auth=pass smtp.auth=instrampxe0y3a smtp.mailfrom=calestyo@scientia.org
-X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
-X-MC-Relay: Neutral
-X-MailChannels-SenderId: instrampxe0y3a|x-authuser|calestyo@scientia.org
-X-MailChannels-Auth-Id: instrampxe0y3a
-X-Harmony-Illegal: 7d2050113a99d183_1763345341012_1419718890
-X-MC-Loop-Signature: 1763345341012:1747677160
-X-MC-Ingress-Time: 1763345341012
-Received: from cpanel-007-fra.hostingww.com (cpanel-007-fra.hostingww.com
- [3.69.87.180])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
-	by 100.96.202.58 (trex/7.1.3);
-	Mon, 17 Nov 2025 02:09:01 +0000
-Received: from p5090fa32.dip0.t-ipconnect.de ([80.144.250.50]:63394 helo=heisenberg.fritz.box)
-	by cpanel-007-fra.hostingww.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.98.2)
-	(envelope-from <calestyo@scientia.org>)
-	id 1vKofq-00000000631-1Nff
-	for linux-btrfs@vger.kernel.org;
-	Mon, 17 Nov 2025 02:08:58 +0000
-Message-ID: <f3574976d7b5bc8f05e42055d85d4b61263bc5c5.camel@scientia.org>
-Subject: We have a space info key for a block group that doesn't exist
-From: Christoph Anton Mitterer <calestyo@scientia.org>
-To: linux-btrfs <linux-btrfs@vger.kernel.org>
-Date: Mon, 17 Nov 2025 03:08:57 +0100
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2-7 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 377AA1E3762
+	for <linux-btrfs@vger.kernel.org>; Mon, 17 Nov 2025 02:18:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1763345941; cv=none; b=rs5JOnDR/dozEJJ9Y5nJZd5NYfp3B+jFitXg+wktQWePU/M7ZtMretvsnM2O9ogpTs/SBI/9reiw1dXjKbfbgPmTguNiyof+/kgMXX8cFFGy03xmR3p9UrEBrP8NzcFzQacdBtPfMEbuqaHzNL1ZDoFT2SfnbhBZmxm8Fpdeec4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1763345941; c=relaxed/simple;
+	bh=eFQZorw9hLct4U9U70IOismjS9PMGKSFxHbJj12RCnA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=QJt9cer4PcU1CGF4IeIYPYbvHVL6cnF3Hme9W5Ojoc6PDKba+ni16MBF0iFfgDgCpmKeaKN2iPJQSQKg07/C4db2DfCCxRfDrSWknuwVaqy7AzPMRPSMmY3lOvXd/unFqiABUZxvqdZhsvs/TjR51gFS9Nzd/tJHxeTB6R91hUQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=I74iOzCV; arc=none smtp.client-ip=209.85.128.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-4775895d69cso20033465e9.0
+        for <linux-btrfs@vger.kernel.org>; Sun, 16 Nov 2025 18:18:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1763345936; x=1763950736; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=5YG+48odt9/OvSpWrPBizyMcdE13jystmluSKta3n2g=;
+        b=I74iOzCVQpi0xzCWmVLMhWJiJ0iy12+tk8qFhl1eCindwxR9GmRBoq1IeL899UvO48
+         h1W1BMWrguSwj9hja1vVORSB0fyK9c3l2skX4XMLHMxIUM0ZtVuyfClOaaXbb/JPud0Q
+         2GL2uUxA+YKaa3MAlpl4jiDYG9U+nYqIQgt554A5a5i2qlxoQzAfiaWRIUYtj6lL0kcE
+         4yID3xXvy1VxGPd4DO3m4NfSLqHawuKLfefd7b0jgRhGnDkSo7SOmxcQVe62DhVttGDx
+         RQTejOpWWklTXNt5ZdfrCcT55mKAdjK5WtF7WOjKtDv+xJsM/k3xDJ+U3yflnkhq9oxw
+         NiIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1763345936; x=1763950736;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5YG+48odt9/OvSpWrPBizyMcdE13jystmluSKta3n2g=;
+        b=miBxsXeaPzQ47r06+HKZ0e54IU1NlbEiPUkWLuKxwZDk3AQ1LE0NuDDU93UTWHII2e
+         F3vye+d27tdhp9c+ZoPqoql09TyNMc0oRn3LBJF+VEoiTOuRhIc2wcBIbCB2RzYBGP/x
+         YYQ4FcBQ2meHKupzk4j7Gi1Ko+AteP+WXGlfHrahpzWkla+lWNVrYJt3TxlJQYhUSWo2
+         Ucjl0MsiNyaVSa7yQXO8w5q620Xf7V1wdSgaIFZPRa8JjdwzpkPaGOJHZdua8ZZ/7lXg
+         Mgw/h5rYDc1Rz2wn+cYdZFaISk6rGpwMkh5hXq22RPB9R5QEj6Ei8Rq8K1ni1SSiZtq4
+         YNTg==
+X-Forwarded-Encrypted: i=1; AJvYcCU0/CUnLPFzrOYuOuJ2ThTvVf2dl4DUC9Ox5+VWvgoop1PAlpgXUzuVaLyDJgwSh98llnaNpGcTuYS4yw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwfiFoOj1NHXi1C8fzfeSSmFxLWrBxUvVznrYyccTBlJnMH3IoS
+	LDLEY+Cdyj2PfEgwGDBX9aCb9G8xAIQz/VOy0FmiKyTCmFcHGOdnEVO7SA3Y52uozZ4=
+X-Gm-Gg: ASbGnctoVRLBOVtbyZVzlCWeg34a9AG6LRgGm9B73TM/yWFcLjFRA7XTdnTzDLP+h3W
+	Hr/4AX9J4rTkpHb+kHkXaWv6xZM/ZYFOWv78zHMCFeqNDf2MB+Rl1oxepfLVw8oJtYXJcF+vl8W
+	5rFUbJFE+lQZjVUqxOKJGbcUUZ2wmIrMwF+mvxYZfQ0u2fvQQAhndxw72FWn/zm/zIIa+poVSpQ
+	XFVNgxHemaZkdyVUZZxhAnJGXCLq8G4iCSLo8TEOh8Fx+yZT0otRq8iZ+ApYOxR6WU1Ae66Wtig
+	gDbRUE95u+0XXnP0CgPfcYcrsHhBUPCCKknIOw5tlFa9yMk+JdOE5D/N3xSXBP8UAWSpVF6CB2s
+	2d3yzNqLDvgbF4Gjxx57DBmAo0fJi1WUAfl53+94IU0L1j33IJIWMb4N3OfQxkqy+O0QziL8XeM
+	tt26GnMoWgO+PAjHAwHgagPUPdMYF13V6TC8fr+Fk=
+X-Google-Smtp-Source: AGHT+IGlpk8o3yUWhEH2SLvoFbGIFK9HKxTwDWpQDEQyliuANKKDpgj00InEK9QYdovYwH3WhrTwKQ==
+X-Received: by 2002:a05:600c:8b42:b0:477:942:7521 with SMTP id 5b1f17b1804b1-4778fe683e1mr87358485e9.14.1763345936204;
+        Sun, 16 Nov 2025 18:18:56 -0800 (PST)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7b924aee8afsm11394027b3a.8.2025.11.16.18.18.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 16 Nov 2025 18:18:55 -0800 (PST)
+Message-ID: <c07b6fde-03a3-4c97-9f59-866c81e78b85@suse.com>
+Date: Mon, 17 Nov 2025 12:48:51 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-AuthUser: calestyo@scientia.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: We have a space info key for a block group that doesn't exist
+To: Christoph Anton Mitterer <calestyo@scientia.org>,
+ linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <f3574976d7b5bc8f05e42055d85d4b61263bc5c5.camel@scientia.org>
+Content-Language: en-US
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
+ Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
+ fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
+ 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
+ V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
+ rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
+ cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
+ qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
+ /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
+ o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
+ JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+In-Reply-To: <f3574976d7b5bc8f05e42055d85d4b61263bc5c5.camel@scientia.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Hey.
 
-With kernel 6.17.8-1 and progs 6.17.1, I suddenly got this on two
-filesystems:
 
-# btrfs check /dev/mapper/data-b-1 ; echo $?
-Opening filesystem to check...
-Checking filesystem on /dev/mapper/data-b-1
-UUID: 42cfffe9-a4fe-44dd-863a-6c02896ab7f3
-[1/8] checking log skipped (none written)
-[2/8] checking root items
-[3/8] checking extents
-[4/8] checking free space tree
-We have a space info key for a block group that doesn't exist
-[5/8] checking fs roots
-[6/8] checking only csums items (without verifying data)
-[7/8] checking root refs
-[8/8] checking quota groups skipped (not enabled on this FS)
-found 13074117332992 bytes used, error(s) found
-total csum bytes: 12754122916
-total tree bytes: 13895467008
-total fs tree bytes: 759627776
-total extent tree bytes: 103284736
-btree space waste bytes: 296939334
-file data blocks allocated: 20763397128192
- referenced 18946684219392
-1
+在 2025/11/17 12:38, Christoph Anton Mitterer 写道:
+> Hey.
+> 
+> With kernel 6.17.8-1 and progs 6.17.1, I suddenly got this on two
+> filesystems:
+> 
+> # btrfs check /dev/mapper/data-b-1 ; echo $?
+> Opening filesystem to check...
+> Checking filesystem on /dev/mapper/data-b-1
+> UUID: 42cfffe9-a4fe-44dd-863a-6c02896ab7f3
+> [1/8] checking log skipped (none written)
+> [2/8] checking root items
+> [3/8] checking extents
+> [4/8] checking free space tree
+> We have a space info key for a block group that doesn't exist
+> [5/8] checking fs roots
+> [6/8] checking only csums items (without verifying data)
+> [7/8] checking root refs
+> [8/8] checking quota groups skipped (not enabled on this FS)
+> found 13074117332992 bytes used, error(s) found
+> total csum bytes: 12754122916
+> total tree bytes: 13895467008
+> total fs tree bytes: 759627776
+> total extent tree bytes: 103284736
+> btree space waste bytes: 296939334
+> file data blocks allocated: 20763397128192
+>   referenced 18946684219392
+> 1
+> 
+> # btrfs check /dev/mapper/data-b-3 ; echo $?
+> Opening filesystem to check...
+> Checking filesystem on /dev/mapper/data-b-3
+> UUID: 8e4d238c-0a69-4f0f-8f35-a16e3c220763
+> [1/8] checking log skipped (none written)
+> [2/8] checking root items
+> [3/8] checking extents
+> [4/8] checking free space tree
+> We have a space info key for a block group that doesn't exist
+> [5/8] checking fs roots
+> [6/8] checking only csums items (without verifying data)
+> [7/8] checking root refs
+> [8/8] checking quota groups skipped (not enabled on this FS)
+> found 13083770884096 bytes used, error(s) found
+> total csum bytes: 12763657764
+> total tree bytes: 13785333760
+> total fs tree bytes: 671154176
+> total extent tree bytes: 106496000
+> btree space waste bytes: 244008214
+> file data blocks allocated: 18338522918912
+>   referenced 17654672998400
+> 1
+> 
+> Don't think that error showed up on earlier versions of btrfs-progs.
+> 
+> Is it something to worry about or a false positive?
 
-# btrfs check /dev/mapper/data-b-3 ; echo $?
-Opening filesystem to check...
-Checking filesystem on /dev/mapper/data-b-3
-UUID: 8e4d238c-0a69-4f0f-8f35-a16e3c220763
-[1/8] checking log skipped (none written)
-[2/8] checking root items
-[3/8] checking extents
-[4/8] checking free space tree
-We have a space info key for a block group that doesn't exist
-[5/8] checking fs roots
-[6/8] checking only csums items (without verifying data)
-[7/8] checking root refs
-[8/8] checking quota groups skipped (not enabled on this FS)
-found 13083770884096 bytes used, error(s) found
-total csum bytes: 12763657764
-total tree bytes: 13785333760
-total fs tree bytes: 671154176
-total extent tree bytes: 106496000
-btree space waste bytes: 244008214
-file data blocks allocated: 18338522918912
- referenced 17654672998400
-1
+Nothing to worry about.
 
-Don't think that error showed up on earlier versions of btrfs-progs.
+> Can it be fixed?
 
-Is it something to worry about or a false positive? Can it be fixed?
-Would you rather recommend to re-create the fs from scratch?
+IIRC a mount time kernel fix has been proposed but no patch yet.
 
+If you want the problem to be gone immediately, mount with 
+"space_cache=v2,clear_cache" should handle it.
+
+> Would you rather recommend to re-create the fs from scratch?
+
+No. That's over-reacting.
 
 Thanks,
-Chris.
+Qu
+
+> 
+> 
+> Thanks,
+> Chris.
+> 
+
 
