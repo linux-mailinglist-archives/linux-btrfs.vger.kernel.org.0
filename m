@@ -1,75 +1,82 @@
-Return-Path: <linux-btrfs+bounces-19050-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19052-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EF1AC62B96
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Nov 2025 08:31:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A858BC62B99
+	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Nov 2025 08:31:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6DCB03AC9CC
-	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Nov 2025 07:31:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 11CF73AE225
+	for <lists+linux-btrfs@lfdr.de>; Mon, 17 Nov 2025 07:31:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AE2731984C;
-	Mon, 17 Nov 2025 07:31:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C5193191BF;
+	Mon, 17 Nov 2025 07:31:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="u1aBaMuR";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="u1aBaMuR"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="f4WQBjz9";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="QBthAaYv"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75DEC318143
-	for <linux-btrfs@vger.kernel.org>; Mon, 17 Nov 2025 07:31:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C661431771B
+	for <linux-btrfs@vger.kernel.org>; Mon, 17 Nov 2025 07:31:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763364675; cv=none; b=tM2t4Q9IzOxg+jqHVlJ+H8V0GBWO/qKweVY5SyLuDH68dVDcnSzk8VkYLXsWpwaOANFyJ4kEktweX2ksXpNMXLxjMxfQt/8rZkiYEsDKTTF0jyNSnfj2CnXrYKkt3XQqQlIWwNQaaFUR3knaMrH8XNgzL6MTvuQg4HsAfv4+dkM=
+	t=1763364684; cv=none; b=Z1+0TykbHDYtKmxKORwLwtGTiSawpF0e2dSU+qwOnYnVwiIsgXWw6X2sC2IXkWb+JmOpbiVrSRWBwjjVT992QhZibuW561V35LyWhQb/ZivMZqdeH2yxx8rNrQhW/HVgbR99d0gJG1xyIvurSkvw5fJLud+GiyqBrJt27GV28iM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763364675; c=relaxed/simple;
-	bh=Ut5V/ERoEbN+skKmbbRpQEBzujClEV1fFhiiKl4vP7Q=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=muKuSYPf+ejIHMK+4lVWXH7VyO+JkTqD9d5WM+9507jTa2rK78InH0x/R5AOBhMnZ22LkyQvbALiQr/0+echgHLXdmJLgtZAwVPXnZEHPsY5WCnAWGjgTB3P2wbEsINEYORoEOzuEihx+eCj3J5T8L+oYmvxf+SBQQvsq7pYLbM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=u1aBaMuR; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=u1aBaMuR; arc=none smtp.client-ip=195.135.223.130
+	s=arc-20240116; t=1763364684; c=relaxed/simple;
+	bh=OehYOa4o+Te4hIYxzDlDu7BNS3XX6FfB0b5sRi8XHLw=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=kzkNiL83ORI3VwEFHUxMYJ0nnZLitve3iH+nYePgs4eC8Toc3UyBpR+EyruZHwUi7uhYYjPGkyV8V7Ehvue7xH0IWFG+W6rF6zamjqXPA5hamEsnQEBQow6kQemB9mH0kangg0IrkvneAKy+rn0S3hM5PvYwO/a4nKMdD72WF5Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=f4WQBjz9; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=QBthAaYv; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 8D8C5211FC
-	for <linux-btrfs@vger.kernel.org>; Mon, 17 Nov 2025 07:31:11 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id C4B8F1F78E
+	for <linux-btrfs@vger.kernel.org>; Mon, 17 Nov 2025 07:31:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1763364671; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=Jz4/lOCVLtbLXMGSKhgaL4TavPow07VYKXMWOtmhnPg=;
-	b=u1aBaMuRi4bBduJGMUU3WKfwgJgbqxe5qy7GP8vkHDbkN0tkaJ+9ndnRkFkqjIEq4gmmeS
-	DIKwT/p6k1UQ1Q4KVSz1q9QIFVpA2fTdEaKqeod9YATh9ea/qOgq3Sa/8SKGCXglgjWMse
-	mworyHEK30tWVbY+cngnsx5DBDDP5Vo=
-Authentication-Results: smtp-out1.suse.de;
-	none
+	t=1763364673; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rd1kQ1UIWecPIxZM0kFp8q+DMRl2CkR3lELdefiBGqA=;
+	b=f4WQBjz9K7k0yzdy1gCdQvPlQbck7LJ5Ao9FN8c6NbvvIWH9NQWDlpbhYs+8ze7LwzITL9
+	6vo22nx+4VPCMOKWf4ZylXBsM+vl2QFDxEAqJATera6AVFKmd9xQABZosTmHswyytnA6Vt
+	y9McSFy70j+WWt3Ua2bTfexTIarS2EA=
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=QBthAaYv
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1763364671; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=Jz4/lOCVLtbLXMGSKhgaL4TavPow07VYKXMWOtmhnPg=;
-	b=u1aBaMuRi4bBduJGMUU3WKfwgJgbqxe5qy7GP8vkHDbkN0tkaJ+9ndnRkFkqjIEq4gmmeS
-	DIKwT/p6k1UQ1Q4KVSz1q9QIFVpA2fTdEaKqeod9YATh9ea/qOgq3Sa/8SKGCXglgjWMse
-	mworyHEK30tWVbY+cngnsx5DBDDP5Vo=
+	t=1763364672; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rd1kQ1UIWecPIxZM0kFp8q+DMRl2CkR3lELdefiBGqA=;
+	b=QBthAaYvcMxaRSenEnjwnzTk7Cd3ed3D8QLXgknn64SPub1WsMIXNaGBRjbxBEfG+YdwD4
+	GMbvWcarFPRQZeL3CtctlPkR2NsxafWdTp0abxyZK+Pb9kAG3I62Zl2eRCQwsTEL0NtPH3
+	Iw8mSznv+Cnbe1FcWrYG0Ng4+vSs77w=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C3BBE3EA61
-	for <linux-btrfs@vger.kernel.org>; Mon, 17 Nov 2025 07:31:10 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0A9A63EA61
+	for <linux-btrfs@vger.kernel.org>; Mon, 17 Nov 2025 07:31:11 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id xXZbID7PGmkLIgAAD6G6ig
+	id UCd3Lz/PGmkLIgAAD6G6ig
 	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Mon, 17 Nov 2025 07:31:10 +0000
+	for <linux-btrfs@vger.kernel.org>; Mon, 17 Nov 2025 07:31:11 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 00/12] btrfs: add raid56 support for bs > ps cases
-Date: Mon, 17 Nov 2025 18:00:40 +1030
-Message-ID: <cover.1763361991.git.wqu@suse.com>
+Subject: [PATCH 01/12] btrfs: add an overview for the btrfs_raid_bio structure
+Date: Mon, 17 Nov 2025 18:00:41 +1030
+Message-ID: <25445b78325e0fef24af4c57cbf5ef088f77e68d.1763361991.git.wqu@suse.com>
 X-Mailer: git-send-email 2.51.2
+In-Reply-To: <cover.1763361991.git.wqu@suse.com>
+References: <cover.1763361991.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -77,147 +84,132 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-2.80 / 50.00];
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Rspamd-Queue-Id: C4B8F1F78E
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-3.01 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
 	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
 	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MX_GOOD(-0.01)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
 	RCPT_COUNT_ONE(0.00)[1];
 	ARC_NA(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
 	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:mid];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.com:+];
 	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
 	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	RCVD_TLS_ALL(0.00)[]
-X-Spam-Flag: NO
-X-Spam-Score: -2.80
-X-Spam-Level: 
+	TO_DN_NONE(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.com:dkim,suse.com:mid,suse.com:email]
+X-Spam-Score: -3.01
 
-[OVERVIEW]
-This series add the missing raid56 support for the experimental bs > ps
-support.
+The structure needs to track both the pages from higher layer bio and
+internal pages, thus it can be a little complex to grash.
 
-The main challenge here is the conflicts between RAID56 RMW/recovery and
-data checksum.
+Add an overview of the structure, especially how we track different
+pages from higher layer bios and internal ones, to save some time for
+future developers.
 
-For RAID56 RMW/recovery, the vertical stripe can only be mapped one page
-one time, as the upper layer can pass bios that are not backed by large
-folios (direct IO, encoded read/write/send).
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/raid56.h | 71 +++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 71 insertions(+)
 
-On the other hand, data checksum requires multiple pages at the same
-time, e.g. btrfs_calculate_block_csum_pages().
-
-To meet both requirements, introduce a new unit, step, which is
-min(PAGE_SIZE, sectorsize), and make the paddrs[] arrays in RAID56 to be
-in step sizes.
-
-So for vertical stripe related works, reduce the map size from
-one sector to one step. For data checksum verification grab the pointer
-from involved paddrs[] array and pass the sub-array into
-btrfs_calculate_block_csum_pages().
-
-So before the patchset, the btrfs_raid_bio paddr pointers looks like
-this:
-
-  16K page size, 4K fs block size (aka, subpage case)
-
-                       0                   16K  ...
-  stripe_pages[]:      |                   |    ...
-  stripe_paddrs[]:     0    1    2    3    4    ...
-  fs blocks            |<-->|<-->|<-->|<-->|    ...
-
-  There are at least one fs block (sector) inside a page, and each
-  paddrs[] entry represents an fs block 1:1.
-
-To the new structure for bs > ps support:
-
-  4K page size, 8K fs block size
-
-                       0    4k   8K   12K   16K  ...
-  stripe_pages[]:      |    |    |    |    |     ...
-  stripe_paddrs[]:     0    1    2    3    4     ...
-  fs blocks            |<------->|<------->|     ...
-
-  Now paddrs[] entry is no longer 1:1 mapped to an fs block, but
-  multiple paddrs mapped to one fs block.
-
-The glue unit between paddrs[] and fs blocks is a step.
-
-One fs blocks can one or more steps, and one step maps to a paddr[]
-entry 1:1.
-
-For bs <= ps cases, one step is the same as an fs block.
-For bs > ps case, one step is just a page.
-
-For RAID56, now we need one extra step iteration loop when handling an
-fs block.
-
-[TESTING]
-I have tested the following combinations:
-
-- bs=4k ps=4k x86_64
-- bs=4k ps=64k arm64
-  The base line to ensure no regression caused by this patchset for bs
-  == ps and bs < ps cases.
-
-- bs=8k ps=4k x86_64
-  The new run for this series.
-
-  The only new failure is related to direct IO read verification, which
-  is a known one caused by no direct IO support for bs > ps cases.
-
-I'm afraid in the long run, the combination matrix will be larger than
-larger, and I'm not sure if my environment can handle all the extra bs/ps
-combinations.
-
-The long term plan is to test bs=4k ps=4k, bs=4k ps=64k, bs=8k ps=4k
-cases only.
-
-[PATCHSET LAYOUT]
-Patch 1 introduces an overview of how btrfs_raid_bio structure
-works.
-Patch 2~10 starts converting t he existing infrastructures to use the
-new step based paddr pointers.
-Patch 11 enables RAID56 for bs > ps cases, which is still an
-experimental feature.
-The last patch removes the "_step" infix which is used as a temporary
-naming during the work.
-
-[ROADMAP FOR BS > PS SUPPORT]
-The remaining feature not yet implemented for bs > ps cases is direct
-IO. The needed patch in iomap is submitted through VFS/iomap tree, and
-the btrfs part is a very tiny patch, will be submitted during v6.19
-cycle.
-
-
-Qu Wenruo (12):
-  btrfs: add an overview for the btrfs_raid_bio structure
-  btrfs: introduce a new parameter to locate a sector
-  btrfs: prepare generate_pq_vertical() for bs > ps cases
-  btrfs: prepare recover_vertical() to support bs > ps cases
-  btrfs: prepare verify_one_sector() to support bs > ps cases
-  btrfs: prepare verify_bio_data_sectors() to support bs > ps cases
-  btrfs: prepare set_bio_pages_uptodate() to support bs > ps cases
-  btrfs: prepare steal_rbio() to support bs > ps cases
-  btrfs: prepare rbio_bio_add_io_paddr() to support bs > ps cases
-  btrfs: prepare finish_parity_scrub() to support bs > ps cases
-  btrfs: enable bs > ps support for raid56
-  btrfs: remove the "_step" infix
-
- fs/btrfs/disk-io.c |   6 -
- fs/btrfs/raid56.c  | 711 ++++++++++++++++++++++++++++-----------------
- fs/btrfs/raid56.h  |  87 ++++++
- 3 files changed, 535 insertions(+), 269 deletions(-)
-
+diff --git a/fs/btrfs/raid56.h b/fs/btrfs/raid56.h
+index 42a45716fb03..87b0c73ee05b 100644
+--- a/fs/btrfs/raid56.h
++++ b/fs/btrfs/raid56.h
+@@ -24,6 +24,77 @@ enum btrfs_rbio_ops {
+ 	BTRFS_RBIO_PARITY_SCRUB,
+ };
+ 
++/*
++ * Overview of btrfs_raid_bio.
++ *
++ * One btrfs_raid_bio represents a full stripe of RAID56, including both data
++ * and P/Q stripes.
++ * For now, each data and P/Q stripe is in fixed length (64K).
++ *
++ * One btrfs_raid_bio can have one or more bios from higher layer, covering
++ * part or all of the data stripes.
++ *
++ * [PAGES FROM HIGHER LAYER BIOS]
++ * Higher layer bios are in the btrfs_raid_bio::bio_list.
++ *
++ * Pages from the bio_list are represented like the following.
++ *
++ *
++ * bio_list:	     |<- Bio 1 ->|             |<- Bio 2 ->|  ...
++ * bio_paddrs:	    [0]   [1]   [2]    [3]    [4]    [5]      ...
++ *
++ * If there is a bio covering a sector (one btrfs fs block), the corresponding
++ * pointer in btrfs_raid_bio::bio_paddrs[] will point to the physical address
++ * (with the offset inside the page) of the corresponding bio.
++ *
++ * If there is no bio covering a sector, then btrfs_raid_bio::bio_paddrs[i] will
++ * be INVALID_PADDR.
++ *
++ * The length of each entry in bio_paddrs[] is sectorsize.
++ *
++ * [PAGES FOR INTERNAL USAGES]
++ * For pages not covered by any bio or belonging to P/Q stripes, they are stored
++ * in btrfs_raid_bio::stripe_pages[] and stripe_paddrs[], like the following:
++ *
++ * stripe_pages:       |<- Page 0 ->|<- Page 1 ->|  ...
++ * stripe_paddrs:     [0]    [1]   [2]    [3]   [4] ...
++ *
++ * stripe_pages[] array stores all the pages covering the full stripe, including
++ * data and P/Q pages.
++ * stripe_pages[0] is the first page of the first data stripe.
++ * stripe_pages[BTRFS_STRIPE_LEN / PAGE_SIZE] is the first page of the second data stripe.
++ *
++ * Some pointers inside stripe_pages[] can be NULL, e.g. for a full stripe write
++ * (the bio covers all data stripes) there is no need to allocate pages for
++ * data stripes (can grab from bio_paddrs[]).
++ *
++ * If the corresponding page of stripe_paddrs[i] is not allocated, the value of
++ * stripe_paddrs[i] will be INVALID_PADDR.
++ *
++ * The length of each entry in stripe_paddrs[] is sectorsize.
++ *
++ * [LOCATING A SECTOR]
++ * To locating a sector for IO, we need the following info:
++ *
++ * - stripe_nr
++ *   Starts from 0 (representing the first data stripe), ends at
++ *   @nr_data (RAID5, P stripe) or @nr_data + 1 (RAID6, Q stripe).
++ *
++ * - sector_nr
++ *   Starts from 0 (representing the first sector of the stripe), ends
++ *   at BTRFS_STRIPE_LEN / sectorsize - 1.
++ *
++ *   All existing bitmaps are based on sector numbers.
++ *
++ * - from which array
++ *   Whether grabbing from stripe_paddrs[] (aka, internal pages) or from the
++ *   bio_paddrs[] (aka, from the higher layer bios).
++ *
++ * For IO, a physical address is returned, so that we can extract the page and
++ * the offset inside the page for IO.
++ * A special value INVALID_PADDR represents the physical address is invalid,
++ * normally meaning there is no page allocated for the specified sector.
++ */
+ struct btrfs_raid_bio {
+ 	struct btrfs_io_context *bioc;
+ 
 -- 
 2.51.2
 
