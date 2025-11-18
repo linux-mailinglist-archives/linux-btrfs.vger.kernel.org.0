@@ -1,185 +1,118 @@
-Return-Path: <linux-btrfs+bounces-19089-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19090-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 036C0C6A75E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Nov 2025 17:00:08 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 765EEC6A7AF
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Nov 2025 17:03:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 7B40734C11E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Nov 2025 15:56:11 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id DD5554F41A3
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Nov 2025 15:59:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D4D5364E98;
-	Tue, 18 Nov 2025 15:56:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C43D369977;
+	Tue, 18 Nov 2025 15:59:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="M8D7nuHX";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="vMjkI3jG";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="M8D7nuHX";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="vMjkI3jG"
+	dkim=pass (2048-bit key) header.d=toxicpanda.com header.i=@toxicpanda.com header.b="ZYjr0bkw"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE2B134F492
-	for <linux-btrfs@vger.kernel.org>; Tue, 18 Nov 2025 15:56:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B4E5368282
+	for <linux-btrfs@vger.kernel.org>; Tue, 18 Nov 2025 15:59:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763481363; cv=none; b=VpxuTnqvx2V1jIjp0bFdf0Xm66H02YJ8X1sWkPkLEFo9JvL4M+0y8pwj/bmDX3DYDc8hzlrHnBpQzycWXmM0/m3Ti1MDAXxIdjWacpLZkPdxqjS+lYhSTFwHjo3qRetRmajppexpMCoH+H4mhD6QdKne4KseQESzk7YlApY+Wu0=
+	t=1763481581; cv=none; b=Zmgc2WXZ6kV+0Thji44bNVzT8fs6TglnJHj6aDaeQK90rDW1cgjftSbwZEN4hwAj6pz2dAsKhp5SfqIASDQkSziu8QeeeCTSCazR1vMO7gDzyV68f0Pj2k1lzJ48OXshjRPRvT5B6qaDeG7vKIQbgzkmcdRAddwqa4Emw2QX6NY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763481363; c=relaxed/simple;
-	bh=dDhvovqB2eJnRUqgNDlQs2jKyPgfvznPdHonqRLfbdI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HExIxNrwZUqeUAuTbFXGdKxpwOzVfPSn5X5wxDM7SZX+A4mcr0EGyrAxr05c5ZCyJyI6WAeIDYBAc4BjAxFQKPUO5kU6RHR1wvgOZG+ap6D84TtEw9JUyr5fONX4tVDJdSc59Q8A6v4Fa8lircQMsQx7675vbstBqqgdZn2JmRI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=M8D7nuHX; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=vMjkI3jG; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=M8D7nuHX; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=vMjkI3jG; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 98C4C1FF70;
-	Tue, 18 Nov 2025 15:55:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1763481358;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=EtMpRmamzi0znrZnl/qGBHKWjlTUQ8M7uSVJn/colcY=;
-	b=M8D7nuHXZ90ZD7bkmoL+lF8W+M23H4flUC5JFUFC/zzsw1YkitbDimseNZQ44cZsOpvrkp
-	ff8XPqSO5GnXb6uX0zAErZsBZ04BC7GmREkMuZgX6UN6Qa6UXTvEx0rjeS02qAHB5Ln0UY
-	WsY1Zya7nBppQK27DOhah9ATeUeYrZ4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1763481358;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=EtMpRmamzi0znrZnl/qGBHKWjlTUQ8M7uSVJn/colcY=;
-	b=vMjkI3jGKywSQT4p5yncbNTUUy+V0MXDeOO5+3jLsT8F8+OXUimz43zO2x9jgB7JALea0X
-	Ya6MbHwcsat9JaAg==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1763481358;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=EtMpRmamzi0znrZnl/qGBHKWjlTUQ8M7uSVJn/colcY=;
-	b=M8D7nuHXZ90ZD7bkmoL+lF8W+M23H4flUC5JFUFC/zzsw1YkitbDimseNZQ44cZsOpvrkp
-	ff8XPqSO5GnXb6uX0zAErZsBZ04BC7GmREkMuZgX6UN6Qa6UXTvEx0rjeS02qAHB5Ln0UY
-	WsY1Zya7nBppQK27DOhah9ATeUeYrZ4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1763481358;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=EtMpRmamzi0znrZnl/qGBHKWjlTUQ8M7uSVJn/colcY=;
-	b=vMjkI3jGKywSQT4p5yncbNTUUy+V0MXDeOO5+3jLsT8F8+OXUimz43zO2x9jgB7JALea0X
-	Ya6MbHwcsat9JaAg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7EFAB3EA61;
-	Tue, 18 Nov 2025 15:55:58 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id c2TBHg6XHGkUVQAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Tue, 18 Nov 2025 15:55:58 +0000
-Date: Tue, 18 Nov 2025 16:55:57 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: scrub: always update
- btrfs_scrub_progress::last_physical
-Message-ID: <20251118155557.GZ13846@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <5e19e3656afeb899f91a1c81367d7e79215bee01.1762136447.git.wqu@suse.com>
+	s=arc-20240116; t=1763481581; c=relaxed/simple;
+	bh=8lICKDxYzudmGWexFW35D9YRbV3Y9AF/h14+XHFUVV4=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=nhk6/uX/rVNzLI/1D/nHLAxgwFLcIkBlS1tdNpy8XsOoBONWtZ7sLmA/rgsAreL3GFBIfepTerAatuF1fvHk3feB/A8qkp8Cg5KtR2vYiBMI/hE9HRf9kwOkX8+iQPGhXg3Y/jc+FSw2hIeTdLSUWbFYjmnhI5gOuR+bh6TLni4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=pass smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda.com header.i=@toxicpanda.com header.b=ZYjr0bkw; arc=none smtp.client-ip=209.85.160.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=toxicpanda.com
+Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-4ed66b5abf7so73222931cf.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 18 Nov 2025 07:59:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda.com; s=google; t=1763481577; x=1764086377; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=S6opeFdWTj8c9DP9PjQD4yprL7npcNPEXWqAX5GQy9o=;
+        b=ZYjr0bkwKBwnakXz6eX7ycdhuvOWOs1+PdKDXNY6HVCOtc5nXEjKgFa60QRK3NRRvq
+         6+SfKu28+MizXn6Qe65+7SEY9szhZZ9ZIs1/hOPiIzkaAi2w8W0RVcTUg3Y3NNzJRDVg
+         Tq9ZXhJTLKbdFoGix+x9x9kv3lSFE+nNI90sjClmsRddYR1xHsrWTavWwyhoO3Z2OgGZ
+         B83x8kYDf6/VkBDMMWRuHV8IRgSMCBbJ5GxllNRlimyyS7BSw/NwKkPWqSWifBjR8K9G
+         yUXZ34hLXnRLx3sJXvTMXiwpHB2tS2A0lxwDAObWoDZs9IQGhZrDKQ0yFx4EOUMNKrOb
+         lbkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1763481577; x=1764086377;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=S6opeFdWTj8c9DP9PjQD4yprL7npcNPEXWqAX5GQy9o=;
+        b=V+1s3j74t7shlwJ3QHgWkx/x5NLvFSLzNzqo3+1QItRmmligPWFZ0lqDKlEY3svMh1
+         Lgde9jGr0pF9LyeftgCv/NunqZRmHGBJ4J2p7cpFYOzbkuTFcwDkiXqyhbstbz/9Xwj/
+         /w6nulXH+e8MOpSe1skQpONxlI+7q66pzmWxGMvetHrwr1UK9GTfWlKewQXesPNweUD0
+         5y6J7NONWEVp6NDda884ax6O6dq2Fp7f2zQEZBErLDFE/XK9ba+gtmUnR5///g+W/A02
+         HJom1dlXOMimOjHZ7gqJjrSu1ALfPUGn883bEIZjo1e2YIr9vp4FVYtSeu+9NednaPFo
+         NlXQ==
+X-Gm-Message-State: AOJu0YxwfAVyHL42skvS2jwWoES2WJq3mFjC7IDZwdnv4xh42lz1X+y4
+	A2vXGuwdCVIYqNtxLF4oxd2lTpCeJ6/RQU1nbdAT4x7xTbII0kqKVos0AUjDzNqQB4jpmbpEdkI
+	zkl3lyytB0g==
+X-Gm-Gg: ASbGnctWhqW7A2yc8CYqr2Ul6jUdiHz6n+tWFnFmvkzaxkNfZ212GhwDUpSOc/An+8D
+	ncTqZaLV8Q10ItWz9myyPP/vbvxqM6+tGeWR+zjtJVOdFGwYqKdg8v0Kx8b5nxOkJw7ysOjEusC
+	kDu14vFmsnMnYU5wllL0R8+O6B5XnJaFY9Fnv94rle9bKThs5bfRcw5GExHNAsTV0oqu2ETb398
+	gNmkiFXQRjYY/VHCKjjg2G2VkmaydBhwKvGUxJQrNBGTwDZwpym0om9GZ9mQuenk0mjsSz/n5VD
+	tHNZK+q+pXL7AwHcO5MP1qWBCZhf8KX5AtbUWNkvYqqpbNfBEFzeXG/6MtJOCD0CLXPD4Gjl/xc
+	wUg1b1S2EXvjJq78r/Eq+JvzCFJoXzI0NVFoQxr7EOrar6VW0QH7/8S0nH+CnSo5Wslf+3XRjGw
+	==
+X-Google-Smtp-Source: AGHT+IHjuE1VEi3apvGj210ljUmbjL6441hLY8VyqJasuMKjKRC01w8PzFag0HO/muMNAariP++CdA==
+X-Received: by 2002:ac8:5ac6:0:b0:4ee:2508:3952 with SMTP id d75a77b69052e-4ee308d881cmr46165591cf.40.1763481577423;
+        Tue, 18 Nov 2025 07:59:37 -0800 (PST)
+Received: from localhost ([2603:6080:7702:ce00:f528:9f2f:44c:2c84])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4ede86b3820sm108666531cf.4.2025.11.18.07.59.36
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 18 Nov 2025 07:59:36 -0800 (PST)
+From: Josef Bacik <josef@toxicpanda.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH 0/2] Fix data race with transaction->state
+Date: Tue, 18 Nov 2025 10:59:27 -0500
+Message-ID: <cover.1763481355.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.51.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5e19e3656afeb899f91a1c81367d7e79215bee01.1762136447.git.wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	NEURAL_HAM_SHORT(-0.20)[-0.999];
-	MIME_GOOD(-0.10)[text/plain];
-	RCPT_COUNT_TWO(0.00)[2];
-	TO_DN_SOME(0.00)[];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	URIBL_BLOCKED(0.00)[twin.jikos.cz:mid,suse.com:email];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,twin.jikos.cz:mid,suse.cz:replyto,imap1.dmz-prg2.suse.org:helo];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
-X-Spam-Flag: NO
-X-Spam-Score: -4.00
+Content-Transfer-Encoding: 8bit
 
-On Mon, Nov 03, 2025 at 12:51:09PM +1030, Qu Wenruo wrote:
-> [BUG]
-> When a scrub failed immediately without any byte scrubbed, the returned
-> btrfs_scrub_progress::last_physical will always be 0, even if there is a
-> non-zero @start passed into btrfs_scrub_dev() for resume cases.
-> 
-> This will reset the progress and make later scrub resume start from the
-> beginning.
-> 
-> [CAUSE]
-> The function btrfs_scrub_dev() accepts a @progress parameter to copy its
-> updated progress to the caller, there are cases where we either don't
-> touch progress::last_physical at all or copy 0 into last_physical:
-> 
-> - last_physical not updated at all
->   If some error happened before scrubbing any super block or chunk, we
->   will not copy the progress, leaving the @last_physical untouched.
-> 
->   E.g. failed to allocate @sctx, scrubbing a missing device or even
->   there is already a running scrub and so on.
-> 
->   All those cases won't touch @progress at all, resulting the
->   last_physical untouched and will be left as 0 for most cases.
-> 
-> - Error out before scrubbing any bytes
->   In those case we allocated @sctx, and sctx->stat.last_physical is all
->   zero (initialized by kvzalloc()).
->   Unfortunately some critical errors happened during
->   scrub_enumerate_chunks() or scrub_supers() before any stripe is really
->   scrubbed.
-> 
->   In that case although we will copy sctx->stat back to @progress, since
->   no byte is really scrubbed, last_physical will be overwritten to 0.
-> 
-> [FIX]
-> Make sure the parameter @progress always has its @last_physical member
-> updated to @start parameter inside btrfs_scrub_dev().
-> 
-> At the very beginning of the function, set @progress->last_physical to
-> @start, so that even if we error out without doing progress copying,
-> last_physical is still at @start.
-> 
-> Then after we got @sctx allocated, set sctx->stat.last_physical to
-> @start, this will make sure even if we didn't get any byte scrubbed, at
-> the progress copying stage the @last_physical is not left as zero.
-> 
-> This should resolve the resume progress reset problem.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+I've been setting up Claude to setup fstests and run vms automatically and I
+kept hitting hangs. This turned out to be a bug with qemu's microvm, but at some
+point I was convinced there was a deadlock with running out of block tags and
+ordered extent completion and transaction commit. This actually wasn't the case,
+however this data race is in fact real. We can easily miss wakeups if we have to
+wait on transaction state to change because we do it outside of a lock and we do
+not have proper barriers around transaction->state. I suspect this explains the
+random hangs that I would see in production while at Meta that would clear up
+eventually (we do call wakeup on the transaction wait thing a lot). In any case
+this is a data race, even if it wasn't my particular bug, we should fix it.
+I've run it through fstests a few times, but obviously spot check it since I'm a
+little rusty with this stuff at the moment. Thanks,
 
-Reviewed-by: David Sterba <dsterba@suse.com>
+Josef
+
+Josef Bacik (2):
+  btrfs: fix data race on transaction->state
+  btrfs: remove useless smp_mb in start_transaction
+
+ fs/btrfs/disk-io.c     |  8 ++++----
+ fs/btrfs/qgroup.c      |  2 +-
+ fs/btrfs/transaction.c | 29 +++++++++++++++--------------
+ fs/btrfs/volumes.c     |  3 ++-
+ 4 files changed, 22 insertions(+), 20 deletions(-)
+
+-- 
+2.51.1
+
 
