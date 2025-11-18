@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-19113-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19114-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id DDD9CC6BAE2
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Nov 2025 22:05:26 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FF1FC6BB09
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Nov 2025 22:11:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 1D8034E3894
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Nov 2025 21:05:25 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id A74353643DC
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Nov 2025 21:11:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2FF82F6590;
-	Tue, 18 Nov 2025 21:05:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6909630CD87;
+	Tue, 18 Nov 2025 21:10:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="TrScWkv5"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="Bw7bdMl+"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 880D61898F8;
-	Tue, 18 Nov 2025 21:05:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C6B31DF261
+	for <linux-btrfs@vger.kernel.org>; Tue, 18 Nov 2025 21:10:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763499916; cv=none; b=BHCnPtoxMzcfzzXTwpDPLV4xjK93PxgSjiKma2i4tNib5tkVtkivtp7vAhCKcttBsQLnaUk0x2YZQQCXO/KgRjIGwi42Li2IIGdaCjqyh6Wcrgy7QsNEvZA9CdIeH2DrS+wIiAIyCMmUG9uQCNn30H0c4qa9CFS6Zn7l81Ke4gU=
+	t=1763500258; cv=none; b=EhxPAvMmTu9ULlMHblV35pJr8fMjQTQhRnzQ1XjwYxl2Y8R4vnp+64ADBcfX0QfF8WuZdds9AQWxt1sxt54PKRWMy0ULgPGVQT4QcrC+w/qTewCm0aBMW42lEBFRUFIUXgU65Vzsjyg9gI9arGihtPh/T6GbVLOKQ9AYtNFP61Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763499916; c=relaxed/simple;
-	bh=tBXclvDOXaCrToxgM3o9myev9MY2XcTjp9ecL8+hFp4=;
+	s=arc-20240116; t=1763500258; c=relaxed/simple;
+	bh=6hAdysOeWPNTK1WY3c5BocGCMTYCtIIbg9Nkrb1rQzs=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jV1YtF3ORhC0Lpvst399bZM6XAPP1F1tGVcH4pQ1BIZzRevc7Gk18ZO2imX730s6SljJuSK1pKqtp+TqPW6SdTRPE0/HPvkD7+OGVQAFOsK1xQ0vLbn65DDGmstwVBdrXwA8KJP+RfDKdCSaSs1kJNEjXbieBUgBRiWsyPU2bYU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=TrScWkv5; arc=none smtp.client-ip=212.227.17.22
+	 In-Reply-To:Content-Type; b=bKoi750Xb4TF0qOGUdm+bBMbvKFY1iF0vbGMzABHbwUR+0q64PWnhUeW+uvkaXPdZmTiXNZF+nHPZpSe9SjCYmcz8lWwGTAZFn9Z2YVCYZwU/MT3md+qsEia7Bipofcq1ehHRnQP/OPBOGPAtPAA+H2hpUyJ1W12X1wLfRNPhN4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=Bw7bdMl+; arc=none smtp.client-ip=212.227.17.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1763499910; x=1764104710; i=quwenruo.btrfs@gmx.com;
-	bh=GEPCBVVNNAPLDX1w1Zs3k3N+A9uPEMnY4P9mTWPw4bg=;
+	s=s31663417; t=1763500254; x=1764105054; i=quwenruo.btrfs@gmx.com;
+	bh=6hAdysOeWPNTK1WY3c5BocGCMTYCtIIbg9Nkrb1rQzs=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=TrScWkv5jlCvzbsP944QxUxfFi+dxfT0iow3NuG34SdrXKJFyusnu9Z9jijMAL5S
-	 ZR3PPZB1deXyAryKkyZ7ofVzza2POvJc7enFe14pX8T6uD1/za8A60SQlrXmNOg55
-	 SEoO16bne5cczeHTQWC9DlKxpDbQBBbflGnxgH+arLGBe2DfFx0e1QjoB/CHDFwWw
-	 MzsbtMLcLSRRUC02DMGFC1sCe+QKN2gSIpBWZg1QCL9fsh7fJrZnhIMtz8SXKZl8w
-	 2zvhvnXY2kqPxGkTXa+V3IPTcohGA6uGZas/azivuYnGXFzG0Bz3JEU7xfDd+lkvp
-	 wk9+Jql59fshgWOH+A==
+	b=Bw7bdMl+7Ul8IMkophXe+MDJ4pEe5dXQykxwHE5yvzFbNpKzsj9TBfRMEGWqXagn
+	 BqzRceZOHblFvxzI4Fh4kJ/Q7A+zB1+d02GtxBCvlhZ2YSaNqxqZJ62gyjgpu+/gS
+	 ZoaKiTbk1OWmx8yV/Cr4JwchJJv6W0EsNSBm24H0y+RHjuJgHd996yThU4AzCSP8B
+	 SfO0/eqRjWDFBYXmr7/8jFxlL5PYXkEo2ClseosAV7A4pZesD3KM4mZ8l2Lr0mMKb
+	 r5luHhOlubR+zRzwty0ow9SJPu5tR6KWXuvhIdtzchPtBztWanJI7CG4agVeCcXC0
+	 ZDsbrYsSu38eFY0FGQ==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MAfYm-1vS5fR1m1o-0036ci; Tue, 18
- Nov 2025 22:05:09 +0100
-Message-ID: <84128576-17f4-460a-9d2f-9e40f43f2ef7@gmx.com>
-Date: Wed, 19 Nov 2025 07:35:04 +1030
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mq2nK-1vzSd52bsQ-00e7vi; Tue, 18
+ Nov 2025 22:10:54 +0100
+Message-ID: <d381f2e2-ee08-4055-b91e-e1e0362d18d6@gmx.com>
+Date: Wed, 19 Nov 2025 07:40:50 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,17 +58,11 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 3/8] btrfs: add a bio argument to btrfs_csum_one_bio
-To: Daniel Vacek <neelx@suse.com>, Qu Wenruo <wqu@suse.com>
-Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
- David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20251112193611.2536093-1-neelx@suse.com>
- <20251112193611.2536093-4-neelx@suse.com>
- <7de34b24-f189-402a-98f9-83e595b53244@suse.com>
- <CAPjX3FfMaOWtCZ8mjVTbBQ9yt0O-mAistyDsVq7Q1aR-65R_hA@mail.gmail.com>
- <492ac26f-5eb4-49bf-855a-11f021d9e937@suse.com>
- <CAPjX3Fec=qAtWjPNvszKdww=giCUEgoMULc1Zvd37k03VUaUmw@mail.gmail.com>
+Subject: Re: [PATCH 00/12] btrfs: add raid56 support for bs > ps cases
+To: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+References: <cover.1763361991.git.wqu@suse.com>
+ <20251118151533.GX13846@twin.jikos.cz>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -95,292 +89,150 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
  +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
  HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <CAPjX3Fec=qAtWjPNvszKdww=giCUEgoMULc1Zvd37k03VUaUmw@mail.gmail.com>
+In-Reply-To: <20251118151533.GX13846@twin.jikos.cz>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:4vrbjR+ojvxK97XDcjxJeCtj3V3MlFdwBPq6g7EZAlqvvmD2k3c
- Ot6jFP3T4SocfsMuzV103256Ver/G0o3HPoTLY8ZQhY9PHy5SxtpQmvkYE1DeIu8EFP/Aj5
- DHRag+T4bPJBEAfkZ+I9VupQmGYXHvOk6XDxnbZxu4UB9PmumEihc6dbZOFchva5QUBodui
- 7MTOiJp2VFXZNwgiGREig==
+X-Provags-ID: V03:K1:U8I/CHetWCfnLA3LPb9RIXnUZhJ22lWQdxoywXHNz51ZURZ1sYo
+ TkwF2GV9ZJ5tn5+c5kHQll1Ul9Iz8RtVCLCneoEdCBdaE7t9Eeytf/VO5AfruUNkM08Kk9o
+ 82FIffrk9dy7E9dCZjCaOY5AXj/eoXH9n9KLqKPrJdxYd064t5lohVdp4vHvQd2xG3VoQ0H
+ OnyTTFw7DxASuWZvAcjBg==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:IjNWd+mRNlY=;J/S7y5IdBPhTroYyOyycj5eaRfS
- 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
- js8qIifuMY3cKLzzk=
+UI-OutboundReport: notjunk:1;M01:P0:zb787d/16aE=;z5+fXBHdesEp0tQdeOZny7+bQ6g
+ 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
+ PAANNG66MM28zWP0g=
 
 
 
-=E5=9C=A8 2025/11/19 00:35, Daniel Vacek =E5=86=99=E9=81=93:
-> On Thu, 13 Nov 2025 at 21:16, Qu Wenruo <wqu@suse.com> wrote:
+=E5=9C=A8 2025/11/19 01:45, David Sterba =E5=86=99=E9=81=93:
 [...]
->> Then why put the original bio pointer into the super generic btrfs_bio?
+>>
+>> The long term plan is to test bs=3D4k ps=3D4k, bs=3D4k ps=3D64k, bs=3D8=
+k ps=3D4k
+>> cases only.
 >=20
-> When encryption is enabled, it's not going to be the original bio but
-> rather the encrypted one.
+> Yes the number of combinations increases, I'd recommend to test those
+> that make sense. The idea is to match what could on one side exist as a
+> native combination and could be used on another host where it would have
+> to be emulated by the bs>ps code. E.g. 16K page and sectorsize on ARM
+> and then used on x86_64. The other size to consider is 64K, e.g. on
+> powerpc.
 >=20
-> But giving it another thought and checking the related fscrypt code,
-> the encrypted bio is allocated in  blk_crypto_fallback_encrypt_bio()
-> and freed in blk_crypto_fallback_encrypt_endio() before calling
-> bio_endio() on our original plaintext bio.
-> This means we have no control over the bounce bio lifetime and we
-> cannot store the pointer and use it asynchronously.
+> In your list the bs=3D8K and ps=3D4K exercises the code but the only har=
+ware
+> taht may still be in use (I know of) and has 8K pages is SPARC. I'd
+> rather pick numbers that still have some contemporary hardware relevance=
+.
 
-Sorry I didn't get the point why we can not calculate the csum async.
+The bs > ps support has a hidden problem, a much higher chance of memory=
+=20
+allocation failure for page cache, thus can lead to false alerts.
 
-Higher layer just submit a btrfs_bio, its content is the encrypted content=
-s.
+E.g. ps =3D 4k bs =3D 64k, the order is 4, beyond the costly order 3, thus=
+=20
+it can fail without retry.
 
-As long as it's still a btrfs_bio, we have all the needed structures to=20
-do async csum.
-We still need to submit the bio for writes, and that means we have=20
-enough time to calculate the csum async, and before the endio function=20
-called, we're able to do whatever we need, the bio won't be suddenly=20
-gone during the submission.
+Maybe that can help us exposing more bugs, but for now I'm sticking to=20
+the safest tests without extra -ENOMEM possibilities.
 
-Unless you mean the encrypted bio is not encapsulated by btrfs_bio, but=20
-a vanilla bio.
+It can be expanded to 16K (order 2) and be more realistic though.
 
-In that case you can not even submit it through btrfs_submit_bbio().
+
+Although bs > ps support will be utilized for possible RAIDZ like=20
+profiles to solve RAID56 write-holes problems, in that case bs > ps=20
+support may see more widely usage, and we may get more adventurous users=
+=20
+to help testing.
 
 Thanks,
 Qu
-
-> We'll need to
-> always compute the checksum synchronously for encrypted bios. In that
-> case we don't need to store it in btrfs_bio::csum_bio at all. For the
-> regular (unencrypted) case we can keep using the &bbio->bio.
 >=20
-> I'll drop the csum_bio for there is no use really.
+>> [PATCHSET LAYOUT]
+>> Patch 1 introduces an overview of how btrfs_raid_bio structure
+>> works.
+>> Patch 2~10 starts converting t he existing infrastructures to use the
+>> new step based paddr pointers.
+>> Patch 11 enables RAID56 for bs > ps cases, which is still an
+>> experimental feature.
+>> The last patch removes the "_step" infix which is used as a temporary
+>> naming during the work.
+>>
+>> [ROADMAP FOR BS > PS SUPPORT]
+>> The remaining feature not yet implemented for bs > ps cases is direct
+>> IO. The needed patch in iomap is submitted through VFS/iomap tree, and
+>> the btrfs part is a very tiny patch, will be submitted during v6.19
+>> cycle.
 >=20
-> --nX
->=20
->> I thought it's more common to put the original plaintext into the
->> encryption specific structure, like what we did for compression.
->>
->> Thanks,
->> Qu
->>
->>>
->>> --nX
->>>
->>>> The storage layer doesn't need to bother the plaintext bio at all, th=
-ey
->>>> just write the encrypted one to disk.
->>>>
->>>> And it's the dm-crypto tracking the plaintext bio <-> encrypted bio m=
-apping.
->>>>
->>>>
->>>> So why we can not just create a new bio for the final csum caculation=
-,
->>>> just like compression?
->>>>
->>>> Thanks,
->>>> Qu
->>>>
->>>>>
->>>>> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
->>>>> Signed-off-by: Daniel Vacek <neelx@suse.com>
->>>>> ---
->>>>> Compared to v5 this needed to adapt to recent async csum changes.
->>>>> ---
->>>>>     fs/btrfs/bio.c       |  4 ++--
->>>>>     fs/btrfs/bio.h       |  1 +
->>>>>     fs/btrfs/file-item.c | 17 ++++++++---------
->>>>>     fs/btrfs/file-item.h |  2 +-
->>>>>     4 files changed, 12 insertions(+), 12 deletions(-)
->>>>>
->>>>> diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
->>>>> index a73652b8724a..a69174b2b6b6 100644
->>>>> --- a/fs/btrfs/bio.c
->>>>> +++ b/fs/btrfs/bio.c
->>>>> @@ -542,9 +542,9 @@ static int btrfs_bio_csum(struct btrfs_bio *bbio=
-)
->>>>>         if (bbio->bio.bi_opf & REQ_META)
->>>>>                 return btree_csum_one_bio(bbio);
->>>>>     #ifdef CONFIG_BTRFS_EXPERIMENTAL
->>>>> -     return btrfs_csum_one_bio(bbio, true);
->>>>> +     return btrfs_csum_one_bio(bbio, &bbio->bio, true);
->>>>>     #else
->>>>> -     return btrfs_csum_one_bio(bbio, false);
->>>>> +     return btrfs_csum_one_bio(bbio, &bbio->bio, false);
->>>>>     #endif
->>>>>     }
->>>>>
->>>>> diff --git a/fs/btrfs/bio.h b/fs/btrfs/bio.h
->>>>> index deaeea3becf4..c5a6c66d51a0 100644
->>>>> --- a/fs/btrfs/bio.h
->>>>> +++ b/fs/btrfs/bio.h
->>>>> @@ -58,6 +58,7 @@ struct btrfs_bio {
->>>>>                         struct btrfs_ordered_sum *sums;
->>>>>                         struct work_struct csum_work;
->>>>>                         struct completion csum_done;
->>>>> +                     struct bio *csum_bio;
->>>>>                         struct bvec_iter csum_saved_iter;
->>>>>                         u64 orig_physical;
->>>>>                 };
->>>>> diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
->>>>> index 72be3ede0edf..474949074da8 100644
->>>>> --- a/fs/btrfs/file-item.c
->>>>> +++ b/fs/btrfs/file-item.c
->>>>> @@ -765,21 +765,19 @@ int btrfs_lookup_csums_bitmap(struct btrfs_roo=
-t *root, struct btrfs_path *path,
->>>>>         return ret;
->>>>>     }
->>>>>
->>>>> -static void csum_one_bio(struct btrfs_bio *bbio, struct bvec_iter *=
-src)
->>>>> +static void csum_one_bio(struct btrfs_bio *bbio, struct bio *bio, s=
-truct bvec_iter *iter)
->>>>>     {
->>>>>         struct btrfs_inode *inode =3D bbio->inode;
->>>>>         struct btrfs_fs_info *fs_info =3D inode->root->fs_info;
->>>>>         SHASH_DESC_ON_STACK(shash, fs_info->csum_shash);
->>>>> -     struct bio *bio =3D &bbio->bio;
->>>>>         struct btrfs_ordered_sum *sums =3D bbio->sums;
->>>>> -     struct bvec_iter iter =3D *src;
->>>>>         phys_addr_t paddr;
->>>>>         const u32 blocksize =3D fs_info->sectorsize;
->>>>>         int index =3D 0;
->>>>>
->>>>>         shash->tfm =3D fs_info->csum_shash;
->>>>>
->>>>> -     btrfs_bio_for_each_block(paddr, bio, &iter, blocksize) {
->>>>> +     btrfs_bio_for_each_block(paddr, bio, iter, blocksize) {
->>>>>                 btrfs_calculate_block_csum(fs_info, paddr, sums->sum=
-s + index);
->>>>>                 index +=3D fs_info->csum_size;
->>>>>         }
->>>>> @@ -791,19 +789,18 @@ static void csum_one_bio_work(struct work_stru=
-ct *work)
->>>>>
->>>>>         ASSERT(btrfs_op(&bbio->bio) =3D=3D BTRFS_MAP_WRITE);
->>>>>         ASSERT(bbio->async_csum =3D=3D true);
->>>>> -     csum_one_bio(bbio, &bbio->csum_saved_iter);
->>>>> +     csum_one_bio(bbio, bbio->csum_bio, &bbio->csum_saved_iter);
->>>>>         complete(&bbio->csum_done);
->>>>>     }
->>>>>
->>>>>     /*
->>>>>      * Calculate checksums of the data contained inside a bio.
->>>>>      */
->>>>> -int btrfs_csum_one_bio(struct btrfs_bio *bbio, bool async)
->>>>> +int btrfs_csum_one_bio(struct btrfs_bio *bbio, struct bio *bio, boo=
-l async)
->>>>>     {
->>>>>         struct btrfs_ordered_extent *ordered =3D bbio->ordered;
->>>>>         struct btrfs_inode *inode =3D bbio->inode;
->>>>>         struct btrfs_fs_info *fs_info =3D inode->root->fs_info;
->>>>> -     struct bio *bio =3D &bbio->bio;
->>>>>         struct btrfs_ordered_sum *sums;
->>>>>         unsigned nofs_flag;
->>>>>
->>>>> @@ -822,12 +819,14 @@ int btrfs_csum_one_bio(struct btrfs_bio *bbio,=
- bool async)
->>>>>         btrfs_add_ordered_sum(ordered, sums);
->>>>>
->>>>>         if (!async) {
->>>>> -             csum_one_bio(bbio, &bbio->bio.bi_iter);
->>>>> +             struct bvec_iter iter =3D bio->bi_iter;
->>>>> +             csum_one_bio(bbio, bio, &iter);
->>>>>                 return 0;
->>>>>         }
->>>>>         init_completion(&bbio->csum_done);
->>>>>         bbio->async_csum =3D true;
->>>>> -     bbio->csum_saved_iter =3D bbio->bio.bi_iter;
->>>>> +     bbio->csum_bio =3D bio;
->>>>> +     bbio->csum_saved_iter =3D bio->bi_iter;
->>>>>         INIT_WORK(&bbio->csum_work, csum_one_bio_work);
->>>>>         schedule_work(&bbio->csum_work);
->>>>>         return 0;
->>>>> diff --git a/fs/btrfs/file-item.h b/fs/btrfs/file-item.h
->>>>> index 5645c5e3abdb..d16fd2144552 100644
->>>>> --- a/fs/btrfs/file-item.h
->>>>> +++ b/fs/btrfs/file-item.h
->>>>> @@ -64,7 +64,7 @@ int btrfs_lookup_file_extent(struct btrfs_trans_ha=
-ndle *trans,
->>>>>     int btrfs_csum_file_blocks(struct btrfs_trans_handle *trans,
->>>>>                            struct btrfs_root *root,
->>>>>                            struct btrfs_ordered_sum *sums);
->>>>> -int btrfs_csum_one_bio(struct btrfs_bio *bbio, bool async);
->>>>> +int btrfs_csum_one_bio(struct btrfs_bio *bbio, struct bio *bio, boo=
-l async);
->>>>>     int btrfs_alloc_dummy_sum(struct btrfs_bio *bbio);
->>>>>     int btrfs_lookup_csums_range(struct btrfs_root *root, u64 start,=
- u64 end,
->>>>>                              struct list_head *list, int search_comm=
-it,
->>>>
->>
+> Sounds good.
 >=20
 
 
