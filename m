@@ -1,188 +1,136 @@
-Return-Path: <linux-btrfs+bounces-19087-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19088-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A8F9C6A60D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Nov 2025 16:47:15 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8387C6A682
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Nov 2025 16:51:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 124F2364E5F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Nov 2025 15:44:44 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 30E0A4F14F0
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Nov 2025 15:46:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9771F35E522;
-	Tue, 18 Nov 2025 15:44:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D09C36826D;
+	Tue, 18 Nov 2025 15:46:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="iKI5kwyK";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="SQPlLJxe";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="iKI5kwyK";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="SQPlLJxe"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Acq7FeXy"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C6B1363C61
-	for <linux-btrfs@vger.kernel.org>; Tue, 18 Nov 2025 15:44:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87C5F302742
+	for <linux-btrfs@vger.kernel.org>; Tue, 18 Nov 2025 15:45:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763480675; cv=none; b=NFRWazSTvxmnuQwbwdi345NV589Zb2ioA+CaMJdHI/iX5bYh+eOswnW80fZRr4IihaFAD1nG/E/c+2dMVy80eusqMKDpdmG0wmAqM5Vrp3ew7JseTUoFwxARYCpcfGVHk2ufQD0MCHJ8TvrTM82NcBsgD66jvAD8dLiAFGOvMfU=
+	t=1763480759; cv=none; b=pkB83URjOKMAIzTnqt74+ziaiM/KxOqY5hzqGerGh7nbO1E7wY5P6It7Coy4KIDnT2UlEhltcHFosmqRW0GMXjbcdHWnYLOg14BQbTCU/hZoZNqQIyNW3imTcAkhvNJSrHDFgRPLOzvbUeYACEWEF8TWveV073WH1yxt9VgK8Bg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763480675; c=relaxed/simple;
-	bh=rO+sYhQeuYK3WrzM+aKLPvyCeiqyfXbYOpWUp64ryjs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=K7uoyxJL9gsg7ClpjxkU1+dtYxwr2aCEwjTiF2aXKnbzI+qkq91tZ2ULIVxdwc9aP0tdLGBJfGbNE5YfyUDv4Dp0MAuaZJFJBLwRnk7AzGKe1y00mZRBuUiNr5TZHb6x6rH7va1zGTUskFnQ87vrU2ea9TWsjtPHqvJXF98z3uE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=iKI5kwyK; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=SQPlLJxe; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=iKI5kwyK; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=SQPlLJxe; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 0878C1FF7B;
-	Tue, 18 Nov 2025 15:44:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1763480672;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UjlWMRgNnTNZLaUjW+gFUy0tJvRmxgomMixTn/QKmyM=;
-	b=iKI5kwyKBw4aABTA5FpSy4h3SdmpLR31jsGx9VNXJKGntTW6dO/BftSDp6PxKH5mBsFERc
-	8UYi+Yk0woKSae6/yQ41uFoqsWV5+ClritV1Ji20C+twk3kO10GNY5ZdbO3+ugEfGtjXpA
-	G0vFRt7XIcB0A3dTLmW0U8OkUmFGaOM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1763480672;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UjlWMRgNnTNZLaUjW+gFUy0tJvRmxgomMixTn/QKmyM=;
-	b=SQPlLJxewgAXtVjYrT25b8ZC3h1ZtXYQpN2P1T170L7r6LF0z2LixQQN9RaAYWg2jkm71k
-	mAk5+FsdmR+lI9CA==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1763480672;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UjlWMRgNnTNZLaUjW+gFUy0tJvRmxgomMixTn/QKmyM=;
-	b=iKI5kwyKBw4aABTA5FpSy4h3SdmpLR31jsGx9VNXJKGntTW6dO/BftSDp6PxKH5mBsFERc
-	8UYi+Yk0woKSae6/yQ41uFoqsWV5+ClritV1Ji20C+twk3kO10GNY5ZdbO3+ugEfGtjXpA
-	G0vFRt7XIcB0A3dTLmW0U8OkUmFGaOM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1763480672;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UjlWMRgNnTNZLaUjW+gFUy0tJvRmxgomMixTn/QKmyM=;
-	b=SQPlLJxewgAXtVjYrT25b8ZC3h1ZtXYQpN2P1T170L7r6LF0z2LixQQN9RaAYWg2jkm71k
-	mAk5+FsdmR+lI9CA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EA7F13EA61;
-	Tue, 18 Nov 2025 15:44:31 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id EBQIOV+UHGnASQAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Tue, 18 Nov 2025 15:44:31 +0000
-Date: Tue, 18 Nov 2025 16:44:22 +0100
-From: David Sterba <dsterba@suse.cz>
-To: fdmanana@kernel.org
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: use bool type for btrfs_path members used as
- booleans
-Message-ID: <20251118154422.GY13846@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <3a03fb6e8f1d35902220f7e8b7b3d0167f6f1bb2.1763136628.git.fdmanana@suse.com>
+	s=arc-20240116; t=1763480759; c=relaxed/simple;
+	bh=NlACXgndMKhrWLW/tjKFuuiK3NbbYsyqY+bgNGOJac0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=AQ2gDpeBAPyE21ash8OV+eT0P1J3RHD6O6IyDdCCpS8Ai94itBMOi7KHMFhueZUfW/ha7wkkGFiqQUH6PHr8tAqCVrMb19Ai0RtDD7ch3MbZzzxpala9b2MbdGKmF6m86/F7j2H3RX5qD79jePXTgQi1XcIi8AE4dxa5UEac09w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Acq7FeXy; arc=none smtp.client-ip=209.85.221.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-42bb288c219so2584667f8f.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 18 Nov 2025 07:45:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1763480755; x=1764085555; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=GrYYI/OqTXala7TyLIbKfkI0NbW4GGCLNByjsQ30o+4=;
+        b=Acq7FeXytrjJOhLUIIkta0YYqLVbGfaT33F123Z8kzLjGVIxubFtWuPn6idI8miiY+
+         aPqE3th5Ibencoca/zsxkeP9YOiFhGR7POPc8TclR08drVp9oOW8LBsAh+GhLjP05DEH
+         77ZQ7Lph8WDqi3wCAI4i0GNRP+cE2i+FifnIA53WjQd4zE8vuLrmwuJ6iGEESqNnyhdr
+         zBnzFhnXT9ijGSKRWWTAfTdHDqR9IB75pQrI5ebHcMCEhzi9Usgv9UWICGsvb7XcEr4e
+         FmP+A/X0vh1YS2T6aTzW0tUA/1XbJLJDjJC1FM35CG5Vpj+ouxr/o1qODPYLuiiPbRO8
+         I4Wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1763480755; x=1764085555;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GrYYI/OqTXala7TyLIbKfkI0NbW4GGCLNByjsQ30o+4=;
+        b=G/JKWq8usVsfAxhoUYhZD5r6P9A4MJsLZMTFEhkJTrOY7h0uaIGpr7waHypiUh3sTK
+         VHea+pOgpO1mYtUeAE9lJ66reGjzdnJSBrVJ9lyxVMeaA5oWUOORU/N0xhAGxIjPgWoy
+         c4ZL7+v6kLjq6O+L/qSud9rPQTkMEIyOgZXzafFWPbjy63K6e4VX/2Cuqw/7xGmza2jc
+         3T9g4fBOZN0BX6pkIKayYMzSfb1XydbnMwOjVXL92VE+3eK2STVTLH5lbcSpFAtVQtd/
+         uAUxmbyFVOw9AQ5qdFo09qEUeoqh5iZJ2cawlWbJyk0CZEp5y8cgnTQ6Raw+1q4zsYua
+         3clA==
+X-Forwarded-Encrypted: i=1; AJvYcCVC/GelynB6R40hW9YMYJ8JCKeQgN7bl0Tyxuk8naN6gp+nyLICFSYQU4OIqf7MHhhEn5iH/p5f+Sgevw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxG2eyU7qfajSeUlku8/96Dd9jWeRtGYCuo/1cm1f1Un8MU/bT7
+	COi9qYlsxTIkJccMInBkIpaevQb6hHxZpkYfYZ+KeBGflCdCqdI+G5dgLp3V41OHTHuSZtUB8CL
+	z9uLNgfXEOhob6F+Iyzq1qmiZ706wnRt9JJYCZhL92w==
+X-Gm-Gg: ASbGncuiXiVAn/twXfsYd6HxjCRRNWazX0ReJMVnq8pv+95PYep9/1iN230TAYxEucm
+	HdCPuhQKYVVDrnWc9K5tILEny60SCeoJs8zaN9brt4uftcBCV+YWELBEhu2Zfi3eYdnxVyC4Kst
+	O2LqDL07ScuofXiMnY19qxwAwYYHSTsevxJ2qzMNestxnLZhDVCbVvID2r2abIgFOQuhNg2ir8h
+	f4sWLcjWzqkVuJfHXgC8aNn8YccPEIZ+USLtGrJQCat0xTYtiQ5KXbjPT5/9KaYRdJvndafGglY
+	oumVSJ6sNg+jvAw0ndv/0GIEc7UxmGe1BCeO9z+Yiw4rDJ0HK+d/ysyy0bXG4pqKMtng
+X-Google-Smtp-Source: AGHT+IHy704c7tC+YfC/nBvJ8eOjLCkRoLMk4LX9Tw1N7w2CxtTZ+9Ah9HjeRlbdpT4hPzuhpwiu/GEFntqtiiPIcdI=
+X-Received: by 2002:a05:6000:2310:b0:42b:3131:5435 with SMTP id
+ ffacd0b85a97d-42b5933e378mr16901065f8f.2.1763480754683; Tue, 18 Nov 2025
+ 07:45:54 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3a03fb6e8f1d35902220f7e8b7b3d0167f6f1bb2.1763136628.git.fdmanana@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCPT_COUNT_TWO(0.00)[2];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	TO_DN_NONE(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
-X-Spam-Flag: NO
-X-Spam-Score: -4.00
+References: <20251112193611.2536093-1-neelx@suse.com> <20251112193611.2536093-4-neelx@suse.com>
+ <7de34b24-f189-402a-98f9-83e595b53244@suse.com> <CAPjX3FfMaOWtCZ8mjVTbBQ9yt0O-mAistyDsVq7Q1aR-65R_hA@mail.gmail.com>
+ <492ac26f-5eb4-49bf-855a-11f021d9e937@suse.com> <CAPjX3Fec=qAtWjPNvszKdww=giCUEgoMULc1Zvd37k03VUaUmw@mail.gmail.com>
+ <aRyL6aw9rxqdVssl@infradead.org>
+In-Reply-To: <aRyL6aw9rxqdVssl@infradead.org>
+From: Daniel Vacek <neelx@suse.com>
+Date: Tue, 18 Nov 2025 16:45:43 +0100
+X-Gm-Features: AWmQ_blXbO-tF6Zo_JyePS1MRCxf5iH0SVXmSG5pqHI2K2evPa8w2PicAXz0C44
+Message-ID: <CAPjX3Fc2p4bU5iWBcb6iyUgLdq3XHuf159GfM0szXbb5idNzqQ@mail.gmail.com>
+Subject: Re: [PATCH v6 3/8] btrfs: add a bio argument to btrfs_csum_one_bio
+To: Christoph Hellwig <hch@infradead.org>
+Cc: Qu Wenruo <wqu@suse.com>, Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, 
+	David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, Nov 14, 2025 at 04:11:29PM +0000, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> Many fields of struct btrfs_path are used as booleans but their type is
-> an unsigned int (of one 1 bit width to save space). Change the type to
-> bool keeping the :1 suffix so that they combine with the previous u8
-> fields in order to save space. This makes the code more clear by using
-> explicit true/false and more in line with the preferred style, preserving
-> the size of the structure.
+On Tue, 18 Nov 2025 at 16:08, Christoph Hellwig <hch@infradead.org> wrote:
+> On Tue, Nov 18, 2025 at 03:05:25PM +0100, Daniel Vacek wrote:
+> > But giving it another thought and checking the related fscrypt code,
+> > the encrypted bio is allocated in  blk_crypto_fallback_encrypt_bio()
+> > and freed in blk_crypto_fallback_encrypt_endio() before calling
+> > bio_endio() on our original plaintext bio.
+>
+> That code is getting major refactoring right now, and allowing the
+> file system to hook into the submission is a possibility.
+>
+> The problem is that I have no idea what you're trying to do as the
+> context is missing.
+>
+> In general prep series should be self contained and at least borderline
+> useful by themselves.  Adding random dead code checks or weird arguments
+> as done here are not useful in a prep series without context, they
+> should be close to the code making use of them to be understandable.
 
-> --- a/fs/btrfs/ctree.h
-> +++ b/fs/btrfs/ctree.h
-> @@ -65,21 +65,21 @@ struct btrfs_path {
->  	 * set by btrfs_split_item, tells search_slot to keep all locks
->  	 * and to force calls to keep space in the nodes
->  	 */
-> -	unsigned int search_for_split:1;
-> +	bool search_for_split:1;
->  	/* Keep some upper locks as we walk down. */
-> -	unsigned int keep_locks:1;
-> -	unsigned int skip_locking:1;
-> -	unsigned int search_commit_root:1;
-> -	unsigned int need_commit_sem:1;
-> -	unsigned int skip_release_on_error:1;
-> +	bool keep_locks:1;
-> +	bool skip_locking:1;
-> +	bool search_commit_root:1;
-> +	bool need_commit_sem:1;
-> +	bool skip_release_on_error:1;
->  	/*
->  	 * Indicate that new item (btrfs_search_slot) is extending already
->  	 * existing item and ins_len contains only the data size and not item
->  	 * header (ie. sizeof(struct btrfs_item) is not included).
->  	 */
-> -	unsigned int search_for_extension:1;
-> +	bool search_for_extension:1;
->  	/* Stop search if any locks need to be taken (for read) */
-> -	unsigned int nowait:1;
-> +	bool nowait:1;
->  };
+Yeah, agreed. It would be better to send this one together with the
+fscrypt changes later. I was suggested by Dave to pick this one ahead
+and I did not argue while I probably should have.
 
-I've looked at the generated assembly and it seems taht with bool:1 it's
-a bit better in some cases but the same in general. The delta on .ko
-size is -133 bytes.
+--nX
 
-I was curious to see the difference compared to full bool type (which
-also increases the size from 112 to 120 bytes) and this is worse, with
-+100 bytes on .ko. The additional instructions calculate the offset of
-the separate bool indicators, while in the bool:1 version it can be
-accessed in the same byte povided that it was already used in the same
-function.
-
-As a conclusion using bool:1 is OK, we could the type updates in
-structures with more than say 4+ bools, so to have some visible effect
-on struct size or code generation.
+On Tue, 18 Nov 2025 at 16:08, Christoph Hellwig <hch@infradead.org> wrote:
+>
+> On Tue, Nov 18, 2025 at 03:05:25PM +0100, Daniel Vacek wrote:
+> > But giving it another thought and checking the related fscrypt code,
+> > the encrypted bio is allocated in  blk_crypto_fallback_encrypt_bio()
+> > and freed in blk_crypto_fallback_encrypt_endio() before calling
+> > bio_endio() on our original plaintext bio.
+>
+> That code is getting major refactoring right now, and allowing the
+> file system to hook into the submission is a possibility.
+>
+> The problem is that I have no idea what you're trying to do as the
+> context is missing.
+>
+> In general prep serious should be self contained and at least borderline
+> useful by themselves.  Adding random dead code checks or weird arguments
+> as done here are not useful in a prep series without context, they
+> should be close to the code making use of them to be understandable.
 
