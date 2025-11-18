@@ -1,100 +1,100 @@
-Return-Path: <linux-btrfs+bounces-19086-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19087-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (unknown [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43EE6C6A495
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Nov 2025 16:23:12 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A8F9C6A60D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Nov 2025 16:47:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 408714F646A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Nov 2025 15:15:51 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 124F2364E5F
+	for <lists+linux-btrfs@lfdr.de>; Tue, 18 Nov 2025 15:44:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C95035C196;
-	Tue, 18 Nov 2025 15:15:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9771F35E522;
+	Tue, 18 Nov 2025 15:44:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="NMj3QcOg";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="624xN6rQ";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="NMj3QcOg";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="624xN6rQ"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="iKI5kwyK";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="SQPlLJxe";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="iKI5kwyK";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="SQPlLJxe"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96C2A324B26
-	for <linux-btrfs@vger.kernel.org>; Tue, 18 Nov 2025 15:15:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C6B1363C61
+	for <linux-btrfs@vger.kernel.org>; Tue, 18 Nov 2025 15:44:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763478943; cv=none; b=lUPskOWFpdVh1RDqdruRMErCVPSejE9x2krhBVyX6WisbvtQqewpW2u3TTNpTg8FCfqyY8zy8V9vY0iICJYnSrlLYWyZoT4LeEstKcavnjGifBmYoqQnxv58ACjKp8+CR516NjKP1wKklS8rnBUOZjkBxErP8OctkfHC9TZavZo=
+	t=1763480675; cv=none; b=NFRWazSTvxmnuQwbwdi345NV589Zb2ioA+CaMJdHI/iX5bYh+eOswnW80fZRr4IihaFAD1nG/E/c+2dMVy80eusqMKDpdmG0wmAqM5Vrp3ew7JseTUoFwxARYCpcfGVHk2ufQD0MCHJ8TvrTM82NcBsgD66jvAD8dLiAFGOvMfU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763478943; c=relaxed/simple;
-	bh=nxOPQDH1zBbqAJw1m9WkxIbgR514SK71m8wIW2+tYtc=;
+	s=arc-20240116; t=1763480675; c=relaxed/simple;
+	bh=rO+sYhQeuYK3WrzM+aKLPvyCeiqyfXbYOpWUp64ryjs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=N/D1kDLgp6Si9/kpwRvx1FQtvzWmpRTzCSHCPBZrVBo8UxOUs30LQyIPQ6dyD0JJS7h6+BwF+E0XFooOPYtlqdMR0UXYGtxP0R0Nv2Lj5aIfadOkUprgx6OpySCP50qLSl/qGv6JxM/s2DBlJ3SGOxQQAYhrUPvb/L7C9Gqked0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=NMj3QcOg; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=624xN6rQ; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=NMj3QcOg; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=624xN6rQ; arc=none smtp.client-ip=195.135.223.130
+	 Content-Type:Content-Disposition:In-Reply-To; b=K7uoyxJL9gsg7ClpjxkU1+dtYxwr2aCEwjTiF2aXKnbzI+qkq91tZ2ULIVxdwc9aP0tdLGBJfGbNE5YfyUDv4Dp0MAuaZJFJBLwRnk7AzGKe1y00mZRBuUiNr5TZHb6x6rH7va1zGTUskFnQ87vrU2ea9TWsjtPHqvJXF98z3uE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=iKI5kwyK; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=SQPlLJxe; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=iKI5kwyK; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=SQPlLJxe; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 512E021172;
-	Tue, 18 Nov 2025 15:15:39 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 0878C1FF7B;
+	Tue, 18 Nov 2025 15:44:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1763478939;
+	t=1763480672;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=f1DeqlplL02d8xqsrhUEtQNcbhxPn8dPZSK35t5W7Qs=;
-	b=NMj3QcOgySGCwJZw1cgjEP1IuC1gG4a26lX++Qu9s9thLVtXSkUCGaZysOA9nPY84BNdvA
-	X2fhjmJMk44jFsWqK3NTmCOAvRgtnXgSAik0P9kEYY73u6UiM48Aijqwv4YiQeQwfx8B/t
-	wTv9fO9TJbQj+gZ/at5PUFasoQ82J6Q=
+	bh=UjlWMRgNnTNZLaUjW+gFUy0tJvRmxgomMixTn/QKmyM=;
+	b=iKI5kwyKBw4aABTA5FpSy4h3SdmpLR31jsGx9VNXJKGntTW6dO/BftSDp6PxKH5mBsFERc
+	8UYi+Yk0woKSae6/yQ41uFoqsWV5+ClritV1Ji20C+twk3kO10GNY5ZdbO3+ugEfGtjXpA
+	G0vFRt7XIcB0A3dTLmW0U8OkUmFGaOM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1763478939;
+	s=susede2_ed25519; t=1763480672;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=f1DeqlplL02d8xqsrhUEtQNcbhxPn8dPZSK35t5W7Qs=;
-	b=624xN6rQxbqXB3gNobHL7YcYdTZOUeJKaZSKversFkv5ONnIxXW785O+t3nOY28pC560XC
-	0GGFAoEsD3xtxpDg==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=NMj3QcOg;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=624xN6rQ
+	bh=UjlWMRgNnTNZLaUjW+gFUy0tJvRmxgomMixTn/QKmyM=;
+	b=SQPlLJxewgAXtVjYrT25b8ZC3h1ZtXYQpN2P1T170L7r6LF0z2LixQQN9RaAYWg2jkm71k
+	mAk5+FsdmR+lI9CA==
+Authentication-Results: smtp-out2.suse.de;
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1763478939;
+	t=1763480672;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=f1DeqlplL02d8xqsrhUEtQNcbhxPn8dPZSK35t5W7Qs=;
-	b=NMj3QcOgySGCwJZw1cgjEP1IuC1gG4a26lX++Qu9s9thLVtXSkUCGaZysOA9nPY84BNdvA
-	X2fhjmJMk44jFsWqK3NTmCOAvRgtnXgSAik0P9kEYY73u6UiM48Aijqwv4YiQeQwfx8B/t
-	wTv9fO9TJbQj+gZ/at5PUFasoQ82J6Q=
+	bh=UjlWMRgNnTNZLaUjW+gFUy0tJvRmxgomMixTn/QKmyM=;
+	b=iKI5kwyKBw4aABTA5FpSy4h3SdmpLR31jsGx9VNXJKGntTW6dO/BftSDp6PxKH5mBsFERc
+	8UYi+Yk0woKSae6/yQ41uFoqsWV5+ClritV1Ji20C+twk3kO10GNY5ZdbO3+ugEfGtjXpA
+	G0vFRt7XIcB0A3dTLmW0U8OkUmFGaOM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1763478939;
+	s=susede2_ed25519; t=1763480672;
 	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
 	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=f1DeqlplL02d8xqsrhUEtQNcbhxPn8dPZSK35t5W7Qs=;
-	b=624xN6rQxbqXB3gNobHL7YcYdTZOUeJKaZSKversFkv5ONnIxXW785O+t3nOY28pC560XC
-	0GGFAoEsD3xtxpDg==
+	bh=UjlWMRgNnTNZLaUjW+gFUy0tJvRmxgomMixTn/QKmyM=;
+	b=SQPlLJxewgAXtVjYrT25b8ZC3h1ZtXYQpN2P1T170L7r6LF0z2LixQQN9RaAYWg2jkm71k
+	mAk5+FsdmR+lI9CA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 251893EA61;
-	Tue, 18 Nov 2025 15:15:39 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EA7F13EA61;
+	Tue, 18 Nov 2025 15:44:31 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id m7DfCJuNHGkbLgAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Tue, 18 Nov 2025 15:15:39 +0000
-Date: Tue, 18 Nov 2025 16:15:33 +0100
+	id EBQIOV+UHGnASQAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Tue, 18 Nov 2025 15:44:31 +0000
+Date: Tue, 18 Nov 2025 16:44:22 +0100
 From: David Sterba <dsterba@suse.cz>
-To: Qu Wenruo <wqu@suse.com>
+To: fdmanana@kernel.org
 Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 00/12] btrfs: add raid56 support for bs > ps cases
-Message-ID: <20251118151533.GX13846@twin.jikos.cz>
+Subject: Re: [PATCH] btrfs: use bool type for btrfs_path members used as
+ booleans
+Message-ID: <20251118154422.GY13846@twin.jikos.cz>
 Reply-To: dsterba@suse.cz
-References: <cover.1763361991.git.wqu@suse.com>
+References: <3a03fb6e8f1d35902220f7e8b7b3d0167f6f1bb2.1763136628.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -103,151 +103,86 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1763361991.git.wqu@suse.com>
+In-Reply-To: <3a03fb6e8f1d35902220f7e8b7b3d0167f6f1bb2.1763136628.git.fdmanana@suse.com>
 User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Rspamd-Queue-Id: 512E021172
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.21 / 50.00];
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.00 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
+	RCPT_COUNT_TWO(0.00)[2];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
 	ARC_NA(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	TO_DN_SOME(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
 	RCVD_TLS_ALL(0.00)[];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
 	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
 	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email];
 	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.cz:dkim,twin.jikos.cz:mid];
+	TO_DN_NONE(0.00)[];
 	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Action: no action
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
 X-Spam-Flag: NO
-X-Spam-Score: -4.21
-X-Spam-Level: 
+X-Spam-Score: -4.00
 
-On Mon, Nov 17, 2025 at 06:00:40PM +1030, Qu Wenruo wrote:
-> [OVERVIEW]
-> This series add the missing raid56 support for the experimental bs > ps
-> support.
+On Fri, Nov 14, 2025 at 04:11:29PM +0000, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> Many fields of struct btrfs_path are used as booleans but their type is
+> an unsigned int (of one 1 bit width to save space). Change the type to
+> bool keeping the :1 suffix so that they combine with the previous u8
+> fields in order to save space. This makes the code more clear by using
+> explicit true/false and more in line with the preferred style, preserving
+> the size of the structure.
 
-Please add it to for-next, it's coveredby experimental config is any
-eventual bugs can be dealt with safely. Thanks.
+> --- a/fs/btrfs/ctree.h
+> +++ b/fs/btrfs/ctree.h
+> @@ -65,21 +65,21 @@ struct btrfs_path {
+>  	 * set by btrfs_split_item, tells search_slot to keep all locks
+>  	 * and to force calls to keep space in the nodes
+>  	 */
+> -	unsigned int search_for_split:1;
+> +	bool search_for_split:1;
+>  	/* Keep some upper locks as we walk down. */
+> -	unsigned int keep_locks:1;
+> -	unsigned int skip_locking:1;
+> -	unsigned int search_commit_root:1;
+> -	unsigned int need_commit_sem:1;
+> -	unsigned int skip_release_on_error:1;
+> +	bool keep_locks:1;
+> +	bool skip_locking:1;
+> +	bool search_commit_root:1;
+> +	bool need_commit_sem:1;
+> +	bool skip_release_on_error:1;
+>  	/*
+>  	 * Indicate that new item (btrfs_search_slot) is extending already
+>  	 * existing item and ins_len contains only the data size and not item
+>  	 * header (ie. sizeof(struct btrfs_item) is not included).
+>  	 */
+> -	unsigned int search_for_extension:1;
+> +	bool search_for_extension:1;
+>  	/* Stop search if any locks need to be taken (for read) */
+> -	unsigned int nowait:1;
+> +	bool nowait:1;
+>  };
 
-> The main challenge here is the conflicts between RAID56 RMW/recovery and
-> data checksum.
-> 
-> For RAID56 RMW/recovery, the vertical stripe can only be mapped one page
-> one time, as the upper layer can pass bios that are not backed by large
-> folios (direct IO, encoded read/write/send).
-> 
-> On the other hand, data checksum requires multiple pages at the same
-> time, e.g. btrfs_calculate_block_csum_pages().
-> 
-> To meet both requirements, introduce a new unit, step, which is
-> min(PAGE_SIZE, sectorsize), and make the paddrs[] arrays in RAID56 to be
-> in step sizes.
-> 
-> So for vertical stripe related works, reduce the map size from
-> one sector to one step. For data checksum verification grab the pointer
-> from involved paddrs[] array and pass the sub-array into
-> btrfs_calculate_block_csum_pages().
-> 
-> So before the patchset, the btrfs_raid_bio paddr pointers looks like
-> this:
-> 
->   16K page size, 4K fs block size (aka, subpage case)
-> 
->                        0                   16K  ...
->   stripe_pages[]:      |                   |    ...
->   stripe_paddrs[]:     0    1    2    3    4    ...
->   fs blocks            |<-->|<-->|<-->|<-->|    ...
-> 
->   There are at least one fs block (sector) inside a page, and each
->   paddrs[] entry represents an fs block 1:1.
-> 
-> To the new structure for bs > ps support:
-> 
->   4K page size, 8K fs block size
-> 
->                        0    4k   8K   12K   16K  ...
->   stripe_pages[]:      |    |    |    |    |     ...
->   stripe_paddrs[]:     0    1    2    3    4     ...
->   fs blocks            |<------->|<------->|     ...
-> 
->   Now paddrs[] entry is no longer 1:1 mapped to an fs block, but
->   multiple paddrs mapped to one fs block.
-> 
-> The glue unit between paddrs[] and fs blocks is a step.
-> 
-> One fs blocks can one or more steps, and one step maps to a paddr[]
-> entry 1:1.
-> 
-> For bs <= ps cases, one step is the same as an fs block.
-> For bs > ps case, one step is just a page.
-> 
-> For RAID56, now we need one extra step iteration loop when handling an
-> fs block.
-> 
-> [TESTING]
-> I have tested the following combinations:
-> 
-> - bs=4k ps=4k x86_64
-> - bs=4k ps=64k arm64
->   The base line to ensure no regression caused by this patchset for bs
->   == ps and bs < ps cases.
-> 
-> - bs=8k ps=4k x86_64
->   The new run for this series.
-> 
->   The only new failure is related to direct IO read verification, which
->   is a known one caused by no direct IO support for bs > ps cases.
-> 
-> I'm afraid in the long run, the combination matrix will be larger than
-> larger, and I'm not sure if my environment can handle all the extra bs/ps
-> combinations.
-> 
-> The long term plan is to test bs=4k ps=4k, bs=4k ps=64k, bs=8k ps=4k
-> cases only.
+I've looked at the generated assembly and it seems taht with bool:1 it's
+a bit better in some cases but the same in general. The delta on .ko
+size is -133 bytes.
 
-Yes the number of combinations increases, I'd recommend to test those
-that make sense. The idea is to match what could on one side exist as a
-native combination and could be used on another host where it would have
-to be emulated by the bs>ps code. E.g. 16K page and sectorsize on ARM
-and then used on x86_64. The other size to consider is 64K, e.g. on
-powerpc.
+I was curious to see the difference compared to full bool type (which
+also increases the size from 112 to 120 bytes) and this is worse, with
++100 bytes on .ko. The additional instructions calculate the offset of
+the separate bool indicators, while in the bool:1 version it can be
+accessed in the same byte povided that it was already used in the same
+function.
 
-In your list the bs=8K and ps=4K exercises the code but the only harware
-taht may still be in use (I know of) and has 8K pages is SPARC. I'd
-rather pick numbers that still have some contemporary hardware relevance.
-
-> [PATCHSET LAYOUT]
-> Patch 1 introduces an overview of how btrfs_raid_bio structure
-> works.
-> Patch 2~10 starts converting t he existing infrastructures to use the
-> new step based paddr pointers.
-> Patch 11 enables RAID56 for bs > ps cases, which is still an
-> experimental feature.
-> The last patch removes the "_step" infix which is used as a temporary
-> naming during the work.
-> 
-> [ROADMAP FOR BS > PS SUPPORT]
-> The remaining feature not yet implemented for bs > ps cases is direct
-> IO. The needed patch in iomap is submitted through VFS/iomap tree, and
-> the btrfs part is a very tiny patch, will be submitted during v6.19
-> cycle.
-
-Sounds good.
+As a conclusion using bool:1 is OK, we could the type updates in
+structures with more than say 4+ bools, so to have some visible effect
+on struct size or code generation.
 
