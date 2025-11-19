@@ -1,208 +1,190 @@
-Return-Path: <linux-btrfs+bounces-19143-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19144-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4638AC6E6C0
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Nov 2025 13:22:40 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B03FC6E99C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Nov 2025 13:53:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sea.lore.kernel.org (Postfix) with ESMTPS id F17D42C4F4
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Nov 2025 12:22:38 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B1D4A4FE80B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Nov 2025 12:41:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88C9935581F;
-	Wed, 19 Nov 2025 12:22:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D25834846D;
+	Wed, 19 Nov 2025 12:36:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sIsnaIGc"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="kgJ3jKEY";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="+dMUfjO2";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="kgJ3jKEY";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="+dMUfjO2"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B168E33E34C
-	for <linux-btrfs@vger.kernel.org>; Wed, 19 Nov 2025 12:22:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1119F1A7AE3
+	for <linux-btrfs@vger.kernel.org>; Wed, 19 Nov 2025 12:36:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763554951; cv=none; b=dWMi5RiXKXt/BefzynrXndr3Ao4u4YnipYVvR9kIyxPHTgqRoMdYQ2X68iXvYE03V7RleC3dQT+q16jZUOQVYSWEbKWOFo1Uf2g5qEifD8NhpsdHRUjmYlkLVN0Qt/CUVwaTNulVA1RdTnZzLZ7MDM99iofbUWKBqnn6kOjeiB8=
+	t=1763555793; cv=none; b=OeYjM1v166KwBIttAzbqsjQkKi/pbtEjUL3HnUjQKsiMQJXyqK7XzfYsI3BqEOoqGfJo5sIjC+H719cSBXCqGP2PtmWEj30sDTwKOG6W8JHOt+IYekFV/Zy0xOwmLuhzo9wfbKSsZkmqJJDX0ceP/Dqk4UqLjkMK+Qku7I55AJw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763554951; c=relaxed/simple;
-	bh=yNkh+FGS8yxloGOK54t9LE/IQxfEVuZ+9Fza/N5k79M=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JwAFos9Xde9sn8l6MwDB8KcxfLnr6ycGlYohR6pob1IiyFp7n+/rT0+NxVXFRA2+Mya/LJQoeJWOOIx6VsPAlI6LvsxVX5Wq+nJuK3owTcm+n+A5D7lquVOti6iV1jXTCr6zhUMtdSBwzjECzRmj8c7aR1hNM2d6u/f4Lf+m0A4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sIsnaIGc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02FB8C2BCB4
-	for <linux-btrfs@vger.kernel.org>; Wed, 19 Nov 2025 12:22:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1763554951;
-	bh=yNkh+FGS8yxloGOK54t9LE/IQxfEVuZ+9Fza/N5k79M=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=sIsnaIGcqXOTHjU5Mc0OUFrYLZE3bFWV7bZBuO9FFpx71MD1pCfBCW9mAfjVO7rJj
-	 rkECaxF/QmJDPgBGiFTK75wbbc76TVLIUVmG/Co3vVPzbm5nXSMT89q+J3xtzzaVeM
-	 wrooJQxSOKab/apm6zjew9BbGRgFMrb0qqoAmIBODV541tgyHFJ5CpuYq6smGwldfs
-	 or4PnJXerV5ubVcA+J2ZNdR5up7jg5mt0VuVOOyJQZ0aZp16yNRgQLgLLAOnh5Lbxu
-	 okhjuwVexGJ2NBtgFG0+KXJnkodq5pbIc9HqH64eboQtu8FewZ5itdOaDvg4T0Ujpk
-	 E9mpH1kCDKW9g==
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-b737c6c13e1so758432266b.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 19 Nov 2025 04:22:30 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUdGHs/6ildiPRFl7+Ag7LOD4p8QIzrKnA0pN3aVcL0i7n1ljpl2Hsy5IZPxNbJBZDlj0tdFyawSNgqgA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzdJqOrdQLj6ov7hFCftlF+F7RrRPo10N1iTqoiPaOdDrBvMzvE
-	uTxc9XsLY2tC3VaKD12TS9BXTL7lPKKikHx6DV9XX85DARxoDRR7CYQ7xi6EnhSTI3yGTmscVrT
-	GCO6ETishxoiSlGk0Ehj9IvLZilDtjb8=
-X-Google-Smtp-Source: AGHT+IGPom92GimBYmeWMqayo6X+8ZokA/qiAlRcgcVuw804bv8iYT664Qm8Q9nK5ibXOLGMlpM1oemDIBSdswBpXr0=
-X-Received: by 2002:a17:906:d1d9:b0:b73:6998:7bce with SMTP id
- a640c23a62f3a-b7369987d75mr1707560566b.33.1763554949092; Wed, 19 Nov 2025
- 04:22:29 -0800 (PST)
+	s=arc-20240116; t=1763555793; c=relaxed/simple;
+	bh=0wMfWNv6PGqEfOTXHs9WuzjqYFUY8tKvZeptPndQ9Ks=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sRIoSy9A5QOZH/iMRXxddd/ZUwNYqaShX1DCSvWJTbbFYZVtXAt5C96PT7JYS9UK2EoX5LC21c2fGgPUk2J2mNIx2VnPUlPEucgiIyfdt7aipe7rwoSHACnG07C1Z0oq+tlvFUeNU2rGOKynfBeAd6D2eAMRJAgTXFUUcXJWaC4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=kgJ3jKEY; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=+dMUfjO2; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=kgJ3jKEY; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=+dMUfjO2; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 1BEE12042B;
+	Wed, 19 Nov 2025 12:36:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1763555790;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=18OCw2FY3zyP//CDPAdkOiD9pcJkdtsMX+1rvczLHAg=;
+	b=kgJ3jKEYkcCzFpXA93+5dSuiEom3PQPfacnswHMrCL6RjlqG2BDzlDYFr1yn+EL8KPLt3v
+	JD/loATn0aqi+qJok++NmDMCdeuZ76BBUdD5ToJoL9OzojZJxsz2GuR9i2wh2XiJ4AwpiM
+	TCSexLquPIlbNgzTswfANQcptfS/Sis=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1763555790;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=18OCw2FY3zyP//CDPAdkOiD9pcJkdtsMX+1rvczLHAg=;
+	b=+dMUfjO2MJEy8Bbf3ucJMa+BzSJcT5DHFueeJ0k6XHtVHktrx4FoShpxRs6IzZger5+AQb
+	VqiGsfizcbdgfIAA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1763555790;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=18OCw2FY3zyP//CDPAdkOiD9pcJkdtsMX+1rvczLHAg=;
+	b=kgJ3jKEYkcCzFpXA93+5dSuiEom3PQPfacnswHMrCL6RjlqG2BDzlDYFr1yn+EL8KPLt3v
+	JD/loATn0aqi+qJok++NmDMCdeuZ76BBUdD5ToJoL9OzojZJxsz2GuR9i2wh2XiJ4AwpiM
+	TCSexLquPIlbNgzTswfANQcptfS/Sis=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1763555790;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=18OCw2FY3zyP//CDPAdkOiD9pcJkdtsMX+1rvczLHAg=;
+	b=+dMUfjO2MJEy8Bbf3ucJMa+BzSJcT5DHFueeJ0k6XHtVHktrx4FoShpxRs6IzZger5+AQb
+	VqiGsfizcbdgfIAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0A5B03EA61;
+	Wed, 19 Nov 2025 12:36:30 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id YUJeAs65HWmDBgAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Wed, 19 Nov 2025 12:36:30 +0000
+Date: Wed, 19 Nov 2025 13:36:28 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Josef Bacik <josef@toxicpanda.com>
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 1/2] btrfs: fix data race on transaction->state
+Message-ID: <20251119123628.GG13846@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1763481355.git.josef@toxicpanda.com>
+ <9db5125d171003458bcf98470f4044c5890fb789.1763481355.git.josef@toxicpanda.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251118160845.3006733-1-neelx@suse.com> <20251118160845.3006733-6-neelx@suse.com>
-In-Reply-To: <20251118160845.3006733-6-neelx@suse.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Wed, 19 Nov 2025 12:21:52 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H5AVVyeNxdXPJyGM9ys7WLncTWnwAciuEtThbWpzZGe2Q@mail.gmail.com>
-X-Gm-Features: AWmQ_bkdS2k-ra-zLwBH59RTYVXAiDits3StdQPQgZCkdORiNKljtxwa0iz-_2M
-Message-ID: <CAL3q7H5AVVyeNxdXPJyGM9ys7WLncTWnwAciuEtThbWpzZGe2Q@mail.gmail.com>
-Subject: Re: [PATCH v7 5/6] btrfs: move inode_to_path higher in backref.c
-To: Daniel Vacek <neelx@suse.com>
-Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, 
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9db5125d171003458bcf98470f4044c5890fb789.1763481355.git.josef@toxicpanda.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_TLS_ALL(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCPT_COUNT_TWO(0.00)[2];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[twin.jikos.cz:mid,suse.cz:replyto,toxicpanda.com:email,imap1.dmz-prg2.suse.org:helo];
+	FROM_HAS_DN(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Score: -4.00
 
-On Tue, Nov 18, 2025 at 4:16=E2=80=AFPM Daniel Vacek <neelx@suse.com> wrote=
-:
->
-> From: Josef Bacik <josef@toxicpanda.com>
->
-> We have a prototype and then the definition lower below, we don't need
-> to do this, simply move the function to where the prototype is.
+On Tue, Nov 18, 2025 at 10:59:28AM -0500, Josef Bacik wrote:
+> Debugging a hang with btrfs on QEMU I discovered a data race with
+> transaction->state. In wait_current_trans we do
+> 
+> wait_event(fs_info->transaction_wait,
+> 	   cur_trans->state>=TRANS_STATE_UNBLOCKED ||
+> 	   TRANS_ABORTED(cur_trans));
+> 
+> however we're doing this outside of the fs_info->trans_lock. This
+> generally isn't super problematic because we hit
+> wake_up(fs_info->transaction_wait) quite a bit, but it could lead to
+> latencies where we miss wakeups, or in the worst case (like the compiler
+> re-orders the load of the ->state outside of the wait_event loop) we
+> could hang completely.
 
-According to our development notes here:
+I doubt that compiler could reorder the read outside of wait_event(),
+this would potentially break any use of the macro. The condition is
+evaluated each time after wake up and there's a barrier implied
+(wait_event -> __wait_event -> prepare_to_wait_event -> spin lock or
+set_task_state).
 
-https://btrfs.readthedocs.io/en/latest/dev/Development-notes.html
+The transaction state changes could cause some missed wakeups though I
+don't see exactly where and how. The ONCE annotations do not affect the
+code, eg before each wake_up() it's a no-op as there's implied barrier.
+Inside the trans_lock section this could potentially bleed out and
+interact with unprotected read of ->state. This is where we should look
+and which could cause the hangs you observe.
 
-Under the "Function declarations" section we have:
+> Fix this by using WRITE_ONCE whenever we update trans->state, and use
+> READ_ONCE everywhere we're not holding fs_info->trans_lock.
 
-"avoid prototypes for static functions, order them in new code in a
-way that does not need it
+As this is about inter process interaction the *_ONCE annotation is not
+the right fix, if we need a wrapper for the unlocked acceess we need to
+use the smp_* barriers.
 
-but don=E2=80=99t move static functions just to get rid of the prototype"
-
-So what's the motivation for moving the function?
-
-
-
->
 > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 > ---
->  fs/btrfs/backref.c | 68 ++++++++++++++++++++++------------------------
->  1 file changed, 32 insertions(+), 36 deletions(-)
->
-> diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
-> index 78da47a3d00e..bd913e3c356f 100644
-> --- a/fs/btrfs/backref.c
-> +++ b/fs/btrfs/backref.c
-> @@ -2574,8 +2574,39 @@ int iterate_inodes_from_logical(u64 logical, struc=
-t btrfs_fs_info *fs_info,
->         return iterate_extent_inodes(&walk_ctx, false, build_ino_list, ct=
-x);
->  }
->
-> +/*
-> + * returns 0 if the path could be dumped (probably truncated)
-> + * returns <0 in case of an error
-> + */
->  static int inode_to_path(u64 inum, u32 name_len, unsigned long name_off,
-> -                        struct extent_buffer *eb, struct inode_fs_paths =
-*ipath);
-> +                        struct extent_buffer *eb, struct inode_fs_paths =
-*ipath)
-> +{
-> +       char *fspath;
-> +       char *fspath_min;
-> +       int i =3D ipath->fspath->elem_cnt;
-> +       const int s_ptr =3D sizeof(char *);
-> +       u32 bytes_left;
-> +
-> +       bytes_left =3D ipath->fspath->bytes_left > s_ptr ? ipath->fspath-=
->bytes_left - s_ptr : 0;
-> +
-> +       fspath_min =3D (char *)ipath->fspath->val + (i + 1) * s_ptr;
-> +       fspath =3D btrfs_ref_to_path(ipath->fs_root, ipath->btrfs_path, n=
-ame_len,
-> +                                  name_off, eb, inum, fspath_min, bytes_=
-left);
-> +       if (IS_ERR(fspath))
-> +               return PTR_ERR(fspath);
-> +
-> +       if (fspath > fspath_min) {
-> +               ipath->fspath->val[i] =3D (u64)(unsigned long)fspath;
-> +               ++ipath->fspath->elem_cnt;
-> +               ipath->fspath->bytes_left =3D fspath - fspath_min;
-> +       } else {
-> +               ++ipath->fspath->elem_missed;
-> +               ipath->fspath->bytes_missing +=3D fspath_min - fspath;
-> +               ipath->fspath->bytes_left =3D 0;
-> +       }
-> +
-> +       return 0;
-> +}
->
->  static int iterate_inode_refs(u64 inum, struct inode_fs_paths *ipath)
->  {
-> @@ -2700,41 +2731,6 @@ static int iterate_inode_extrefs(u64 inum, struct =
-inode_fs_paths *ipath)
->         return ret;
->  }
->
-> -/*
-> - * returns 0 if the path could be dumped (probably truncated)
-> - * returns <0 in case of an error
-> - */
-> -static int inode_to_path(u64 inum, u32 name_len, unsigned long name_off,
-> -                        struct extent_buffer *eb, struct inode_fs_paths =
-*ipath)
-> -{
-> -       char *fspath;
-> -       char *fspath_min;
-> -       int i =3D ipath->fspath->elem_cnt;
-> -       const int s_ptr =3D sizeof(char *);
-> -       u32 bytes_left;
-> -
-> -       bytes_left =3D ipath->fspath->bytes_left > s_ptr ?
-> -                                       ipath->fspath->bytes_left - s_ptr=
- : 0;
-> -
-> -       fspath_min =3D (char *)ipath->fspath->val + (i + 1) * s_ptr;
-> -       fspath =3D btrfs_ref_to_path(ipath->fs_root, ipath->btrfs_path, n=
-ame_len,
-> -                                  name_off, eb, inum, fspath_min, bytes_=
-left);
-> -       if (IS_ERR(fspath))
-> -               return PTR_ERR(fspath);
-> -
-> -       if (fspath > fspath_min) {
-> -               ipath->fspath->val[i] =3D (u64)(unsigned long)fspath;
-> -               ++ipath->fspath->elem_cnt;
-> -               ipath->fspath->bytes_left =3D fspath - fspath_min;
-> -       } else {
-> -               ++ipath->fspath->elem_missed;
-> -               ipath->fspath->bytes_missing +=3D fspath_min - fspath;
-> -               ipath->fspath->bytes_left =3D 0;
-> -       }
-> -
-> -       return 0;
-> -}
-> -
->  /*
->   * this dumps all file system paths to the inode into the ipath struct, =
-provided
->   * is has been created large enough. each path is zero-terminated and ac=
-cessed
-> --
-> 2.51.0
->
->
+>  fs/btrfs/disk-io.c     |  8 ++++----
+>  fs/btrfs/qgroup.c      |  2 +-
+>  fs/btrfs/transaction.c | 28 +++++++++++++++-------------
+>  fs/btrfs/volumes.c     |  3 ++-
+>  4 files changed, 22 insertions(+), 19 deletions(-)
+> 
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index 0aa7e5d1b05f..3859d934f658 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -4795,17 +4795,17 @@ void btrfs_cleanup_one_transaction(struct btrfs_transaction *cur_trans)
+>  
+>  	btrfs_destroy_delayed_refs(cur_trans);
+>  
+> -	cur_trans->state = TRANS_STATE_COMMIT_START;
+> +	WRITE_ONCE(cur_trans->state, TRANS_STATE_COMMIT_START);
+>  	wake_up(&fs_info->transaction_blocked_wait);
+
+Removing the unnecessary annotations like this one will probably show
+the remaining problematic cases.
 
