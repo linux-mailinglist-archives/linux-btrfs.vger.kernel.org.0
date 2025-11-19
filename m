@@ -1,316 +1,192 @@
-Return-Path: <linux-btrfs+bounces-19124-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19125-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD7A8C6D2FC
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Nov 2025 08:41:09 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0345FC6D574
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Nov 2025 09:13:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 0C2634F7F4E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Nov 2025 07:36:47 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTPS id 05DE023EF0
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Nov 2025 08:13:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02D3F325737;
-	Wed, 19 Nov 2025 07:34:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93F3C312801;
+	Wed, 19 Nov 2025 08:13:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="S8IJqCxu"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="CXMMemIK";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="17rxa3QM";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="AMfB2uBx";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="BwpSWKhd"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BBCA2DC764
-	for <linux-btrfs@vger.kernel.org>; Wed, 19 Nov 2025 07:34:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AB7B2E7F1E
+	for <linux-btrfs@vger.kernel.org>; Wed, 19 Nov 2025 08:13:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763537670; cv=none; b=GYP0QnAb786nxn4J6iPbyZbDvNEh0GRr/SPVtD0kUzp3OgnV7FBFtKdOohf4MccG/hSZxivJDzULhG8MAL6AHy8LBOH5S4mLvogtZjO94jT/ZMgDHhcVwxXoylZzLDgohsuUrwioTzkUV45y3W+nj9q9VjvndLFMupmRwIFJscg=
+	t=1763540029; cv=none; b=G9Wd18aDzWpHcN1zVl6AWjhpjQoap+XoPKiYISyFtNg4yBVfPNbGVLGJGRmj3wybS8icHoj/DJlXOLEwIFC53WhFbHgFMOawJ60AYQnYEQ6QnFPRhiLXz35+G9HmlMD5FgeRntAx94N6Ksp0uUzOFE/5yjlxGEh0sUkcxv2cTe0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763537670; c=relaxed/simple;
-	bh=1SoBZt0cYL52372/pp1u0OUymR7UuS5XUtkBFNn2RSE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=MtWNvcRH7XPl7A2bbAI97FBri6NAL4tc2ehtMAF3Qxknvm7/HBmH9XAvush49YB6KSswhQ+RV2ne4+NmJJ0S0Lt2u1HmCgkA31Hk+caBbMEs9x21GPHU2tGX6h9D4gfe3aOGsraLwAx8JEIrGNnZ5rtVsUHiyseLa+FPVUVQwE0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=S8IJqCxu; arc=none smtp.client-ip=209.85.221.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-429c48e05aeso345348f8f.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 18 Nov 2025 23:34:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1763537665; x=1764142465; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5e8ff4S6df/0n7yDxjbIR5wijc4V217M+RhYxscjhVE=;
-        b=S8IJqCxuLfERv1hJkB96H6oNDp16VHabvVO58hxehPL7FR97gUhWaLnZaPGWjmLwr3
-         1LrgiHe89mk0hV0h7ZC+LS2XfxGCMFIHSgdZjsdWA7NKYKwFCx7qPEcPwqDqYjlNtHcW
-         hz0orzzE8k4yoL5RnCUycIPOoBBlhebYdTWHij+tolPSRdJCxYbsrk4DMkbxEA0qkHXE
-         i4/HkrFrU93uFFI3/jOrc6eWk2T8RHjKBMtZi2BQCsVj6vj+kLh4IRpc9ve8qTx6Gyi1
-         qwexjBa+uJkx+SMXM4AkH5JDbr4+Va1rPOoxC0tyvOUcAmcbSHSP+6XOwfk5lWDk5gVn
-         M9GQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763537665; x=1764142465;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=5e8ff4S6df/0n7yDxjbIR5wijc4V217M+RhYxscjhVE=;
-        b=d4mV6dj1Z7x/m808wEi8sCsH0gesuxEmeRxQhwArOna+UbTy18H/Seh/oAoCFY00l9
-         TPUOEhjHQUQ+10Wz1WRd3wV8VJnZVBxtrdghvihbPAWpDXbA1fXfBBMuS32VsMFAV7Um
-         MYz+0M7hmUDpJbWkN0NxzhCv4GRtlvnPnNBiOzA/ZV6Rb3jjz7mXSsjpNEGwiTURMGGR
-         xVjNPS7W5ObeTTPjp/Tb7x1RzQ0HyVTAZsAVMGrVFypzhvrP+UPtQoOU5ZgCbjrotCom
-         v1ehr/bmFTJGv5A8kt4maOJS9z/kOvnO5jjk+7RxFUq1Ix+mbOjm0rZYwtMMyo+Ye/Lg
-         UD9A==
-X-Forwarded-Encrypted: i=1; AJvYcCUNmz+lPJWWpP6pwEtGaHNYSVW1LnEpE8YLYBAUBrMvL3bNk5MUQb9s4GQI2MhTI8NdHBQ3ZPF5M9c7qw==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz9gciLHIkUISEMvcjLmS14it3rUH3ukiKSTHtmih2yu9POkxFo
-	7wpySojzhh8m/0rWegpKJR1ldwtpV/6+1fPsI1Sog1G2tTmH8UHWY2jPF2AplfHc5IFE7rpxaX1
-	vdk47vV5B5AePkoRIMWa7Z6UkcZR6rCD6QOp8J7ohnA==
-X-Gm-Gg: ASbGncth5yfumwhz59p+9RoK25I1XIeULuRtD0OqmhwTrufPBDvg7/uMO90avrF36do
-	10N/UOmoZZN3y/EaTow72ziQehXb+3AvQvtdu8Jv7ZxFBwA93hEw6R4Cn9+ySVTHWrA1rv5tYAB
-	dPq7kCtL37vs3Yf/S9WjGJRZT5UCFE13+ypci0m+HCXBuJh8CbFr5L481q/atMXyPN3mb6Graym
-	b/mUwwbEh+7SRLAmYcFFR+pRn3EnqUqUP6UVpFZzzR0GXGkIfuqvL7WerLZuH5Xf0b132kWKUuj
-	Rvob/3+Kkc8nMhhBCWs89k4RQZkTZMs2DGiIIdgmJl6j5LbF/d+or3GrVmDZDEGp5C2w
-X-Google-Smtp-Source: AGHT+IHB4jBPJtyWa0413RgEfh0Pwc62G6cEVW/OsT7ocnNvJJ7o2C5WkJWMWfgJixlosmcwM1jbtVItJC3PlkR+L4I=
-X-Received: by 2002:a05:6000:2385:b0:429:cc35:7032 with SMTP id
- ffacd0b85a97d-42cb20e1d1dmr1328905f8f.23.1763537664847; Tue, 18 Nov 2025
- 23:34:24 -0800 (PST)
+	s=arc-20240116; t=1763540029; c=relaxed/simple;
+	bh=Jwft+xQj77Y8Yb3OCHRfOocZIFttLJ0VBLLzGUKsgLY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=E6KiPYy3/gRHKA3biLsVgnG5UiAGzTIQQo4/8enGgptAhql54Kbzk6wuFfqI9r8vVq0qwemt6vQKj8xyCngm6Nx4HUiHl44xt6JqTjqQkPw/V9T6SjjrW36fG8pY5ODaNdrjmY1nUGad5WudvDg2wKue/J0pAVidhmoxSMoRYsA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=CXMMemIK; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=17rxa3QM; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=AMfB2uBx; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=BwpSWKhd; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id EA62720320;
+	Wed, 19 Nov 2025 08:13:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1763540026;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Qczyc9c8qkfsToCJ6e12YbnxdnJHVEAHIP4DmP03mLs=;
+	b=CXMMemIKUCAG2iDMcW0Y9aNm2BfI2HG1M7lSWQEYWV7xaCqvvf10jkLBPrYg68rY/hu3mo
+	gjSg3qCX55W/Wbh57FqRJNu9DaiQgTEByBjDXYFngLUvmzbd6A2a69vbO+XkhKX79hpShG
+	0tqLaOS7LBpbBIIKvVgLozRTiv40ciQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1763540026;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Qczyc9c8qkfsToCJ6e12YbnxdnJHVEAHIP4DmP03mLs=;
+	b=17rxa3QMyWjF/f/QDkUqoLEiyOaeoDBuN+jt+5d8oLS1WGPY1Feveq5BdaOH/YJnQUAYyH
+	/vcGT5Xz7YXD8LCw==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=AMfB2uBx;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=BwpSWKhd
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1763540025;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Qczyc9c8qkfsToCJ6e12YbnxdnJHVEAHIP4DmP03mLs=;
+	b=AMfB2uBxPXQBi2wYwvpNgfm0z7vX+U31H7nyffKraqt02icuZMpLvJsXP7g38iM3hmwlKm
+	4hVER9HBhZLPC0hLTJ1kJ0rkX7Eg48aYoCIL6rNWTfJL5Ylxb83eTAkSBuVBRgZmgJrvUA
+	EfYaouOYPOzOHUHgUbn3snKko0mMrqE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1763540025;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Qczyc9c8qkfsToCJ6e12YbnxdnJHVEAHIP4DmP03mLs=;
+	b=BwpSWKhdJdiDW3bSV9X3tQzSvKNik5+1gqHlG3W1Fht/g7VEpgHit9r2zWkvPR043b80Cq
+	AMO4duzYPGfkx6BQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D86CA3EA61;
+	Wed, 19 Nov 2025 08:13:45 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id wgGwNDl8HWnMCAAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Wed, 19 Nov 2025 08:13:45 +0000
+Date: Wed, 19 Nov 2025 09:13:36 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: dsterba@suse.cz, Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 00/12] btrfs: add raid56 support for bs > ps cases
+Message-ID: <20251119081336.GB13846@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1763361991.git.wqu@suse.com>
+ <20251118151533.GX13846@twin.jikos.cz>
+ <d381f2e2-ee08-4055-b91e-e1e0362d18d6@gmx.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251112193611.2536093-1-neelx@suse.com> <20251112193611.2536093-4-neelx@suse.com>
- <7de34b24-f189-402a-98f9-83e595b53244@suse.com> <CAPjX3FfMaOWtCZ8mjVTbBQ9yt0O-mAistyDsVq7Q1aR-65R_hA@mail.gmail.com>
- <492ac26f-5eb4-49bf-855a-11f021d9e937@suse.com> <CAPjX3Fec=qAtWjPNvszKdww=giCUEgoMULc1Zvd37k03VUaUmw@mail.gmail.com>
- <84128576-17f4-460a-9d2f-9e40f43f2ef7@gmx.com>
-In-Reply-To: <84128576-17f4-460a-9d2f-9e40f43f2ef7@gmx.com>
-From: Daniel Vacek <neelx@suse.com>
-Date: Wed, 19 Nov 2025 08:34:13 +0100
-X-Gm-Features: AWmQ_blTB249VwtrI46O7KovsaVIPjYnR23sonc6CfqEYNQbvH4P9N_et08DGVw
-Message-ID: <CAPjX3FedNEUeGr3sROdHaT0iKhHDfsi4V=GQHcmvhx6wEJqUcg@mail.gmail.com>
-Subject: Re: [PATCH v6 3/8] btrfs: add a bio argument to btrfs_csum_one_bio
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: Qu Wenruo <wqu@suse.com>, Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, 
-	David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d381f2e2-ee08-4055-b91e-e1e0362d18d6@gmx.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Rspamd-Queue-Id: EA62720320
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.21 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	TO_DN_SOME(0.00)[];
+	FREEMAIL_TO(0.00)[gmx.com];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	ARC_NA(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmx.com];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
+	RCPT_COUNT_THREE(0.00)[4];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:replyto]
+X-Spam-Score: -4.21
 
-On Tue, 18 Nov 2025 at 22:05, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
-> =E5=9C=A8 2025/11/19 00:35, Daniel Vacek =E5=86=99=E9=81=93:
-> > On Thu, 13 Nov 2025 at 21:16, Qu Wenruo <wqu@suse.com> wrote:
+On Wed, Nov 19, 2025 at 07:40:50AM +1030, Qu Wenruo wrote:
+> 在 2025/11/19 01:45, David Sterba 写道:
 > [...]
-> >> Then why put the original bio pointer into the super generic btrfs_bio=
-?
-> >
-> > When encryption is enabled, it's not going to be the original bio but
-> > rather the encrypted one.
-> >
-> > But giving it another thought and checking the related fscrypt code,
-> > the encrypted bio is allocated in  blk_crypto_fallback_encrypt_bio()
-> > and freed in blk_crypto_fallback_encrypt_endio() before calling
-> > bio_endio() on our original plaintext bio.
-> > This means we have no control over the bounce bio lifetime and we
-> > cannot store the pointer and use it asynchronously.
->
-> Sorry I didn't get the point why we can not calculate the csum async.
->
-> Higher layer just submit a btrfs_bio, its content is the encrypted conten=
-ts.
->
-> As long as it's still a btrfs_bio, we have all the needed structures to
-> do async csum.
-> We still need to submit the bio for writes, and that means we have
-> enough time to calculate the csum async, and before the endio function
-> called, we're able to do whatever we need, the bio won't be suddenly
-> gone during the submission.
->
-> Unless you mean the encrypted bio is not encapsulated by btrfs_bio, but
-> a vanilla bio.
-
-That's the case. The bounce bio is created when you submit the
-original one. The data is encrypted by fscrypt, then the csum hook is
-called and the new bio submitted instead of the original one. Later
-the endio frees the new one and calls endio on the original bio. This
-means we don't have control over the bounce bio and cannot use it
-asynchronously at the moment. The csum needs to be finished directly
-in the hook.
-
-Anyways, the hook changes are not upstreamed yet, so you can only see
-it on the mailing list. And that's also why this patch makes more
-sense to be sent later together with those changes.
-
---nX
-
-> In that case you can not even submit it through btrfs_submit_bbio().
->
-> Thanks,
-> Qu
->
-> > We'll need to
-> > always compute the checksum synchronously for encrypted bios. In that
-> > case we don't need to store it in btrfs_bio::csum_bio at all. For the
-> > regular (unencrypted) case we can keep using the &bbio->bio.
-> >
-> > I'll drop the csum_bio for there is no use really.
-> >
-> > --nX
-> >
-> >> I thought it's more common to put the original plaintext into the
-> >> encryption specific structure, like what we did for compression.
 > >>
-> >> Thanks,
-> >> Qu
-> >>
-> >>>
-> >>> --nX
-> >>>
-> >>>> The storage layer doesn't need to bother the plaintext bio at all, t=
-hey
-> >>>> just write the encrypted one to disk.
-> >>>>
-> >>>> And it's the dm-crypto tracking the plaintext bio <-> encrypted bio =
-mapping.
-> >>>>
-> >>>>
-> >>>> So why we can not just create a new bio for the final csum caculatio=
-n,
-> >>>> just like compression?
-> >>>>
-> >>>> Thanks,
-> >>>> Qu
-> >>>>
-> >>>>>
-> >>>>> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> >>>>> Signed-off-by: Daniel Vacek <neelx@suse.com>
-> >>>>> ---
-> >>>>> Compared to v5 this needed to adapt to recent async csum changes.
-> >>>>> ---
-> >>>>>     fs/btrfs/bio.c       |  4 ++--
-> >>>>>     fs/btrfs/bio.h       |  1 +
-> >>>>>     fs/btrfs/file-item.c | 17 ++++++++---------
-> >>>>>     fs/btrfs/file-item.h |  2 +-
-> >>>>>     4 files changed, 12 insertions(+), 12 deletions(-)
-> >>>>>
-> >>>>> diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
-> >>>>> index a73652b8724a..a69174b2b6b6 100644
-> >>>>> --- a/fs/btrfs/bio.c
-> >>>>> +++ b/fs/btrfs/bio.c
-> >>>>> @@ -542,9 +542,9 @@ static int btrfs_bio_csum(struct btrfs_bio *bbi=
-o)
-> >>>>>         if (bbio->bio.bi_opf & REQ_META)
-> >>>>>                 return btree_csum_one_bio(bbio);
-> >>>>>     #ifdef CONFIG_BTRFS_EXPERIMENTAL
-> >>>>> -     return btrfs_csum_one_bio(bbio, true);
-> >>>>> +     return btrfs_csum_one_bio(bbio, &bbio->bio, true);
-> >>>>>     #else
-> >>>>> -     return btrfs_csum_one_bio(bbio, false);
-> >>>>> +     return btrfs_csum_one_bio(bbio, &bbio->bio, false);
-> >>>>>     #endif
-> >>>>>     }
-> >>>>>
-> >>>>> diff --git a/fs/btrfs/bio.h b/fs/btrfs/bio.h
-> >>>>> index deaeea3becf4..c5a6c66d51a0 100644
-> >>>>> --- a/fs/btrfs/bio.h
-> >>>>> +++ b/fs/btrfs/bio.h
-> >>>>> @@ -58,6 +58,7 @@ struct btrfs_bio {
-> >>>>>                         struct btrfs_ordered_sum *sums;
-> >>>>>                         struct work_struct csum_work;
-> >>>>>                         struct completion csum_done;
-> >>>>> +                     struct bio *csum_bio;
-> >>>>>                         struct bvec_iter csum_saved_iter;
-> >>>>>                         u64 orig_physical;
-> >>>>>                 };
-> >>>>> diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
-> >>>>> index 72be3ede0edf..474949074da8 100644
-> >>>>> --- a/fs/btrfs/file-item.c
-> >>>>> +++ b/fs/btrfs/file-item.c
-> >>>>> @@ -765,21 +765,19 @@ int btrfs_lookup_csums_bitmap(struct btrfs_ro=
-ot *root, struct btrfs_path *path,
-> >>>>>         return ret;
-> >>>>>     }
-> >>>>>
-> >>>>> -static void csum_one_bio(struct btrfs_bio *bbio, struct bvec_iter =
-*src)
-> >>>>> +static void csum_one_bio(struct btrfs_bio *bbio, struct bio *bio, =
-struct bvec_iter *iter)
-> >>>>>     {
-> >>>>>         struct btrfs_inode *inode =3D bbio->inode;
-> >>>>>         struct btrfs_fs_info *fs_info =3D inode->root->fs_info;
-> >>>>>         SHASH_DESC_ON_STACK(shash, fs_info->csum_shash);
-> >>>>> -     struct bio *bio =3D &bbio->bio;
-> >>>>>         struct btrfs_ordered_sum *sums =3D bbio->sums;
-> >>>>> -     struct bvec_iter iter =3D *src;
-> >>>>>         phys_addr_t paddr;
-> >>>>>         const u32 blocksize =3D fs_info->sectorsize;
-> >>>>>         int index =3D 0;
-> >>>>>
-> >>>>>         shash->tfm =3D fs_info->csum_shash;
-> >>>>>
-> >>>>> -     btrfs_bio_for_each_block(paddr, bio, &iter, blocksize) {
-> >>>>> +     btrfs_bio_for_each_block(paddr, bio, iter, blocksize) {
-> >>>>>                 btrfs_calculate_block_csum(fs_info, paddr, sums->su=
-ms + index);
-> >>>>>                 index +=3D fs_info->csum_size;
-> >>>>>         }
-> >>>>> @@ -791,19 +789,18 @@ static void csum_one_bio_work(struct work_str=
-uct *work)
-> >>>>>
-> >>>>>         ASSERT(btrfs_op(&bbio->bio) =3D=3D BTRFS_MAP_WRITE);
-> >>>>>         ASSERT(bbio->async_csum =3D=3D true);
-> >>>>> -     csum_one_bio(bbio, &bbio->csum_saved_iter);
-> >>>>> +     csum_one_bio(bbio, bbio->csum_bio, &bbio->csum_saved_iter);
-> >>>>>         complete(&bbio->csum_done);
-> >>>>>     }
-> >>>>>
-> >>>>>     /*
-> >>>>>      * Calculate checksums of the data contained inside a bio.
-> >>>>>      */
-> >>>>> -int btrfs_csum_one_bio(struct btrfs_bio *bbio, bool async)
-> >>>>> +int btrfs_csum_one_bio(struct btrfs_bio *bbio, struct bio *bio, bo=
-ol async)
-> >>>>>     {
-> >>>>>         struct btrfs_ordered_extent *ordered =3D bbio->ordered;
-> >>>>>         struct btrfs_inode *inode =3D bbio->inode;
-> >>>>>         struct btrfs_fs_info *fs_info =3D inode->root->fs_info;
-> >>>>> -     struct bio *bio =3D &bbio->bio;
-> >>>>>         struct btrfs_ordered_sum *sums;
-> >>>>>         unsigned nofs_flag;
-> >>>>>
-> >>>>> @@ -822,12 +819,14 @@ int btrfs_csum_one_bio(struct btrfs_bio *bbio=
-, bool async)
-> >>>>>         btrfs_add_ordered_sum(ordered, sums);
-> >>>>>
-> >>>>>         if (!async) {
-> >>>>> -             csum_one_bio(bbio, &bbio->bio.bi_iter);
-> >>>>> +             struct bvec_iter iter =3D bio->bi_iter;
-> >>>>> +             csum_one_bio(bbio, bio, &iter);
-> >>>>>                 return 0;
-> >>>>>         }
-> >>>>>         init_completion(&bbio->csum_done);
-> >>>>>         bbio->async_csum =3D true;
-> >>>>> -     bbio->csum_saved_iter =3D bbio->bio.bi_iter;
-> >>>>> +     bbio->csum_bio =3D bio;
-> >>>>> +     bbio->csum_saved_iter =3D bio->bi_iter;
-> >>>>>         INIT_WORK(&bbio->csum_work, csum_one_bio_work);
-> >>>>>         schedule_work(&bbio->csum_work);
-> >>>>>         return 0;
-> >>>>> diff --git a/fs/btrfs/file-item.h b/fs/btrfs/file-item.h
-> >>>>> index 5645c5e3abdb..d16fd2144552 100644
-> >>>>> --- a/fs/btrfs/file-item.h
-> >>>>> +++ b/fs/btrfs/file-item.h
-> >>>>> @@ -64,7 +64,7 @@ int btrfs_lookup_file_extent(struct btrfs_trans_h=
-andle *trans,
-> >>>>>     int btrfs_csum_file_blocks(struct btrfs_trans_handle *trans,
-> >>>>>                            struct btrfs_root *root,
-> >>>>>                            struct btrfs_ordered_sum *sums);
-> >>>>> -int btrfs_csum_one_bio(struct btrfs_bio *bbio, bool async);
-> >>>>> +int btrfs_csum_one_bio(struct btrfs_bio *bbio, struct bio *bio, bo=
-ol async);
-> >>>>>     int btrfs_alloc_dummy_sum(struct btrfs_bio *bbio);
-> >>>>>     int btrfs_lookup_csums_range(struct btrfs_root *root, u64 start=
-, u64 end,
-> >>>>>                              struct list_head *list, int search_com=
-mit,
-> >>>>
-> >>
-> >
->
+> >> The long term plan is to test bs=4k ps=4k, bs=4k ps=64k, bs=8k ps=4k
+> >> cases only.
+> > 
+> > Yes the number of combinations increases, I'd recommend to test those
+> > that make sense. The idea is to match what could on one side exist as a
+> > native combination and could be used on another host where it would have
+> > to be emulated by the bs>ps code. E.g. 16K page and sectorsize on ARM
+> > and then used on x86_64. The other size to consider is 64K, e.g. on
+> > powerpc.
+> > 
+> > In your list the bs=8K and ps=4K exercises the code but the only harware
+> > taht may still be in use (I know of) and has 8K pages is SPARC. I'd
+> > rather pick numbers that still have some contemporary hardware relevance.
+> 
+> The bs > ps support has a hidden problem, a much higher chance of memory 
+> allocation failure for page cache, thus can lead to false alerts.
+> 
+> E.g. ps = 4k bs = 64k, the order is 4, beyond the costly order 3, thus 
+> it can fail without retry.
+> 
+> Maybe that can help us exposing more bugs, but for now I'm sticking to 
+> the safest tests without extra -ENOMEM possibilities.
+
+I see, this could make the testing pointless.
+
+> It can be expanded to 16K (order 2) and be more realistic though.
+
+Yes 16K sounds as a good compromise.
+
+> Although bs > ps support will be utilized for possible RAIDZ like 
+> profiles to solve RAID56 write-holes problems, in that case bs > ps 
+> support may see more widely usage, and we may get more adventurous users 
+> to help testing.
+
+In such case we'd have to increase the reliability of allocations by
+some sort of caching or emergency pool for the requests. The memory
+management people maybe have some generic solution as the large folios
+usage is on the rise and I don't think the allocation problems are left
+to everybody as a problem to solve.
 
