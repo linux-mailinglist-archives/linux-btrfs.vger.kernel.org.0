@@ -1,51 +1,51 @@
-Return-Path: <linux-btrfs+bounces-19148-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19149-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C5DFC6EE6F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Nov 2025 14:31:02 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 329E5C6ED41
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Nov 2025 14:22:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 6212634B07C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Nov 2025 13:22:35 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTPS id E297F2E186
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Nov 2025 13:22:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDD0335A953;
-	Wed, 19 Nov 2025 13:19:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3282835A157;
+	Wed, 19 Nov 2025 13:19:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RXesJ7fA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t1utaJH7"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C25C935FF4B
-	for <linux-btrfs@vger.kernel.org>; Wed, 19 Nov 2025 13:19:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08EDD35FF4F
+	for <linux-btrfs@vger.kernel.org>; Wed, 19 Nov 2025 13:19:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763558372; cv=none; b=TtDExE8lGb6H0XBvVqes7Pgd9fWVG0Dh4CD5qmtVHDXWFqMg9yIypbbfE2wiaHP0p/TF/Z+4mVS088mB7Q9yOlQHrqZ9P3FEKiyAEBLB/aOoIr9IuwMkb5FuAfeJyfmYPYZwSYroUrOkTXHeHKI/aY0wa9UVP5ZLTclaH3S3SaQ=
+	t=1763558374; cv=none; b=UeCex4PfUcQAX+WU35aqZr1HstfcerOa38fIdJW4ucq/Iba/dXa0f8sHLHem0SW2t1RV+rMgHjIKJH3z+Grx9KQrVh7TWsTztNboFI7lms3/HcFrpzQ6S2MG9lPpC/v/FYN23n+1xRbNhYqCewGuZw4yVSBNByqx9XeQV4QhZjI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763558372; c=relaxed/simple;
-	bh=UNeusGO6MP/KL2juv+632/mfTrzqcAqAf7Amzyw9kz0=;
+	s=arc-20240116; t=1763558374; c=relaxed/simple;
+	bh=g/6vFKTDacLf7faNEeBYPy1QOF7W7pEu5pRleI/W/jY=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=kFkKsAB54CwYk8YZBfeOmPKS1VbtDP4pjkhkW02XQ54Dp1uOPNDtgU45o18XspenzBMMK5c+Jhm2RWdU00tBDVScfgzzUAhvOTLDcxBhQMzvnTARie3JKJX65AKisw2EkK4rbCGJMirnG2MDvMkt8WnYmHcmrnedCiP80za6Mh4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RXesJ7fA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 90083C2BCFA
-	for <linux-btrfs@vger.kernel.org>; Wed, 19 Nov 2025 13:19:31 +0000 (UTC)
+	 MIME-Version; b=Dx3UMGxswS7R8p40bdnxurZetMiIDj1YqNPOGm3Q8vyezlJZzrdUgOhQfLYuvVRA5USQxfQGGs9fiDfe+fdt4d2Vm3LOHTOFJtK8lRajLUDI4cfJmx07zs3rQVDw0SHSKoe3b+8xTIfG4WnK9mxlNq3gYybU/n/7QYYVNL7efSA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=t1utaJH7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A563BC4AF09
+	for <linux-btrfs@vger.kernel.org>; Wed, 19 Nov 2025 13:19:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1763558372;
-	bh=UNeusGO6MP/KL2juv+632/mfTrzqcAqAf7Amzyw9kz0=;
+	s=k20201202; t=1763558373;
+	bh=g/6vFKTDacLf7faNEeBYPy1QOF7W7pEu5pRleI/W/jY=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=RXesJ7fAQwWjKgsPeQujkEfwVdFA6hElTG8Fu6Re/WFz26krGCiiiQ63OGk5F/LG9
-	 GXFL89AMppPBTvJtqDt8O0l66DvwXLFEmteWcsHqOZCleKJzniCTLjle03j/J0izkJ
-	 d8EqPiEq1jzVvzbrGo2IVSokDarLdwl84zHFRF6FtyhKLipODlqQizbiksp9/g5da9
-	 DkWBH1JKFFQBdVcivv7sW5YprcimiqQiGW6MZfbgLxdbqOMDvrq3zJRIHUev24VrCS
-	 qO3cmYM/krTEQ0jgUfFdVA51WNu15nbWoXPGzQnJawFI34Ob4KCmSUSkgarOZkt+Fr
-	 GuowAjsYfaPnA==
+	b=t1utaJH7pBPKgtUiwEu7/q3tx9CroJnZ1kbSUW2dARmmi2EU6ZqaUeLzosCjEP6er
+	 5id5NUVAEeTkw595xQM2f7fyWZWPfozmKJvhNNnfer6Fz+O/ZaSizIUQwM9e4Jt2MH
+	 5R71Q2XRfTc0pjJHrjO9jlZmIymZhtHZd+URLMzoFKo4e+GXf23riR+hEnpOTqNC/Z
+	 BwNpGUdflxvLKIe+p0yPT2mqRfo2qV9DuEsBnFTjupYP9VEm0Hwnk3bw1DR/2TfWxG
+	 oKLwQTbrOfx1wQGmIRvDCuBK5MMEumL3eMZYCe/X9YUxbqTu4cnFO7xJ8lzS4voviP
+	 3pwGiuGSxX/Iw==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 1/2] btrfs: remove root argument from btrfs_del_dir_entries_in_log()
-Date: Wed, 19 Nov 2025 13:19:07 +0000
-Message-ID: <87035f445363dbac0f1d5cc5717fc0f520a273e4.1763557872.git.fdmanana@suse.com>
+Subject: [PATCH 2/2] btrfs: reduce arguments to btrfs_del_inode_ref_in_log()
+Date: Wed, 19 Nov 2025 13:19:08 +0000
+Message-ID: <2554a0143124ec3451e0486a8a36d29a6a80e902.1763557872.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <cover.1763557872.git.fdmanana@suse.com>
 References: <cover.1763557872.git.fdmanana@suse.com>
@@ -59,57 +59,80 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-There's no need to pass the root as we can extract it from the directory
-inode, so remove it.
+Instead of passing a root and the objectid of the parent directory, just
+pass the directory inode, as like that we can extract both the root and
+the objectid, reducing the number of arguments by one. It also makes the
+function more consistent with other log tree functions in the sense that
+we pass the inode and not only its objectid.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/inode.c    | 2 +-
- fs/btrfs/tree-log.c | 2 +-
- fs/btrfs/tree-log.h | 1 -
- 3 files changed, 2 insertions(+), 3 deletions(-)
+ fs/btrfs/inode.c    |  2 +-
+ fs/btrfs/tree-log.c | 10 +++++-----
+ fs/btrfs/tree-log.h |  4 ++--
+ 3 files changed, 8 insertions(+), 8 deletions(-)
 
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index f71a5f7f55b9..16d416fe536b 100644
+index 16d416fe536b..8ace17f3eb42 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -4359,7 +4359,7 @@ static int __btrfs_unlink_inode(struct btrfs_trans_handle *trans,
+@@ -4358,7 +4358,7 @@ static int __btrfs_unlink_inode(struct btrfs_trans_handle *trans,
+ 	 * operations on the log tree, increasing latency for applications.
  	 */
  	if (!rename_ctx) {
- 		btrfs_del_inode_ref_in_log(trans, root, name, inode, dir_ino);
--		btrfs_del_dir_entries_in_log(trans, root, name, dir, index);
-+		btrfs_del_dir_entries_in_log(trans, name, dir, index);
+-		btrfs_del_inode_ref_in_log(trans, root, name, inode, dir_ino);
++		btrfs_del_inode_ref_in_log(trans, name, inode, dir);
+ 		btrfs_del_dir_entries_in_log(trans, name, dir, index);
  	}
  
- 	/*
 diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index cc27f87c4904..c2e45e64ab6c 100644
+index c2e45e64ab6c..42c9327e0c12 100644
 --- a/fs/btrfs/tree-log.c
 +++ b/fs/btrfs/tree-log.c
-@@ -3900,10 +3900,10 @@ static int del_logged_dentry(struct btrfs_trans_handle *trans,
-  * or the entire directory.
-  */
- void btrfs_del_dir_entries_in_log(struct btrfs_trans_handle *trans,
--				  struct btrfs_root *root,
- 				  const struct fscrypt_str *name,
- 				  struct btrfs_inode *dir, u64 index)
+@@ -3938,11 +3938,11 @@ void btrfs_del_dir_entries_in_log(struct btrfs_trans_handle *trans,
+ 
+ /* see comments for btrfs_del_dir_entries_in_log */
+ void btrfs_del_inode_ref_in_log(struct btrfs_trans_handle *trans,
+-				struct btrfs_root *root,
+ 				const struct fscrypt_str *name,
+-				struct btrfs_inode *inode, u64 dirid)
++				struct btrfs_inode *inode,
++				struct btrfs_inode *dir)
  {
+-	struct btrfs_root *log;
 +	struct btrfs_root *root = dir->root;
- 	BTRFS_PATH_AUTO_FREE(path);
  	int ret;
  
+ 	ret = inode_logged(trans, inode, NULL);
+@@ -3957,10 +3957,10 @@ void btrfs_del_inode_ref_in_log(struct btrfs_trans_handle *trans,
+ 	ASSERT(ret == 0, "join_running_log_trans() ret=%d", ret);
+ 	if (WARN_ON(ret))
+ 		return;
+-	log = root->log_root;
+ 	mutex_lock(&inode->log_mutex);
+ 
+-	ret = btrfs_del_inode_ref(trans, log, name, btrfs_ino(inode), dirid, NULL);
++	ret = btrfs_del_inode_ref(trans, root->log_root, name, btrfs_ino(inode),
++				  btrfs_ino(dir), NULL);
+ 	mutex_unlock(&inode->log_mutex);
+ 	if (ret < 0 && ret != -ENOENT)
+ 		btrfs_set_log_full_commit(trans);
 diff --git a/fs/btrfs/tree-log.h b/fs/btrfs/tree-log.h
-index 4f149d7d4fde..a0aeec2448c0 100644
+index a0aeec2448c0..41e47fda036d 100644
 --- a/fs/btrfs/tree-log.h
 +++ b/fs/btrfs/tree-log.h
-@@ -79,7 +79,6 @@ int btrfs_log_dentry_safe(struct btrfs_trans_handle *trans,
- 			  struct dentry *dentry,
- 			  struct btrfs_log_ctx *ctx);
- void btrfs_del_dir_entries_in_log(struct btrfs_trans_handle *trans,
--				  struct btrfs_root *root,
+@@ -82,9 +82,9 @@ void btrfs_del_dir_entries_in_log(struct btrfs_trans_handle *trans,
  				  const struct fscrypt_str *name,
  				  struct btrfs_inode *dir, u64 index);
  void btrfs_del_inode_ref_in_log(struct btrfs_trans_handle *trans,
+-				struct btrfs_root *root,
+ 				const struct fscrypt_str *name,
+-				struct btrfs_inode *inode, u64 dirid);
++				struct btrfs_inode *inode,
++				struct btrfs_inode *dir);
+ void btrfs_end_log_trans(struct btrfs_root *root);
+ void btrfs_pin_log_trans(struct btrfs_root *root);
+ void btrfs_record_unlink_dir(struct btrfs_trans_handle *trans,
 -- 
 2.47.2
 
