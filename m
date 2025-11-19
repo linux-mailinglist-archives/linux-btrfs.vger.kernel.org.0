@@ -1,83 +1,46 @@
-Return-Path: <linux-btrfs+bounces-19163-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19164-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEC38C712CF
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Nov 2025 22:42:30 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5881BC71314
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Nov 2025 22:51:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sin.lore.kernel.org (Postfix) with ESMTPS id 60A2B29964
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Nov 2025 21:42:27 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 01C493495E4
+	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Nov 2025 21:51:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14BC32FFF91;
-	Wed, 19 Nov 2025 21:42:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC0A2309DAB;
+	Wed, 19 Nov 2025 21:51:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="WHJlszu/"
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="yLOQQZvu"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 262802FB97B
-	for <linux-btrfs@vger.kernel.org>; Wed, 19 Nov 2025 21:42:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB3BC2D063E;
+	Wed, 19 Nov 2025 21:51:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.118
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763588541; cv=none; b=mmqZxsHwDSoWrPp25qDoIOdh6Bl7xWqeJnYrFfELO5GYdZ/MuDVhSWyPAtKU+Dl0iJ7IsZAABKpOoDXCCF3J/ukoxW/iJMvpkByb/6BEM8GyXF9+SJwkEh1IdNc3J3czD2rRWJtMOqqja3Oq9fPGuJTVVVQkvNr7cFpy3gyVJuo=
+	t=1763589076; cv=none; b=f1KdzgcmjlNd6CnAx5ahUOXxSYcCLSjsrVLcq9dnbneiHLa1ZJQJqS76tAuj1laB8Edn+0ZSD7R5H7h8523T6B4ROlz68WYeBuS9x7hbkYsJi3uPI76M4eA9XAfNN01lyHSpQcGQNvpGDiwWSZ4ysK0hFV/Ro0zUvp6vJenuedY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763588541; c=relaxed/simple;
-	bh=KUR1Vcd1SRB4bMrl+7M42pbm6uW93YkAszkHJw4SesM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=o/Qc5w0cW6Q8uW45jrcocnPqlYTnudsyy4xLCxfa/Ps4QtXlUTwnoUApEWXE8BWWCtL8KaSBQgk0eFDRY+Y+wN8WvW0S8nW8y4ZoXIQfvKXJgiTW0GwWEI7YlxdJwtDKVaG/RzRb9TDLXjbrreR/2LQ04EU/kk4I/OFivbheXc0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=WHJlszu/; arc=none smtp.client-ip=209.85.128.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-47796a837c7so1502225e9.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 19 Nov 2025 13:42:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1763588537; x=1764193337; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=FVVF6vUiq09i6ibXWF9MuS5POlmSlGLKyIrYgAcKbpo=;
-        b=WHJlszu/Q+o4FmevTqkFsJL0nCY/dKNwR6VZiYOZJiYmuyqo0iBQkCxanIRMT6WQ07
-         5UdJF48+YXm2kW20Sn2JfmMmume5wE3sUYRJocteYwJ7vK0VeUGAFfh/GuzFHhgOXhNU
-         oZp4CRgzuLIZrSHYjhHVi8QBkF9muUSC4nTkbbkBtnA9guUo0r39xTQOrQurYtOH8Zfa
-         ovrKqaSd1fKc7Ro4L1+jIaI3Hwl+xuP44WEOk1a+hYPG/Cj34bt+Yzd2rC3F2QpvR/xc
-         pgVvPrVseCJJuoJQPns6UBBA8mM4LA17jIFK/G+E5Bj9awa1fh7P6Lo4U961MwgEpN3q
-         W7IA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763588537; x=1764193337;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FVVF6vUiq09i6ibXWF9MuS5POlmSlGLKyIrYgAcKbpo=;
-        b=svnENgUjy+dco1lgGGTGkiXCNcvMuym1O9Z22m4j0/cvpM+kpKHlqzGnXIsKdWv/hr
-         X8mjkDZQrNuaaP3JxrU7uIw0jlsesocbgdWazneR551iQJRAyiV+6UH5+Ga9QDlB0DWf
-         g/rD1gQte+rGGjQkkhxWMj4Xs9XM7XDWYASp97niBxVcSmD6Z+cIzNngh5NcFT5Wf0QL
-         AFDdmMub6kpaGKn+53zXWBrh+hRB18GidsYQxT/CR/AejJI4GzbsDF7v6TAKkA1pAEMr
-         y7TSjHuuIASYIEKObSZDi+4wBpxTwwKKMgsYr3R1MM4dkMevMy3iOLCGEKM1+NqWHPSP
-         51qw==
-X-Forwarded-Encrypted: i=1; AJvYcCUJCMKNPILnrgKsA8uL2JaV+Vzs5StwbKvbaojTXGLLw5bwfYWK8hLbE8vitb2HPARyUuMZuwbQUwbIpg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzS1jT1Vg5a+QOV37ukakAsCdjjqk0rKmzvTDR9LeWKzhtRV1vv
-	uY6N9rf7yWrCTsCLBaJq2i+/E/PM9l+Mpc1VcgtknNeJ0tetqjO3WC1gD+zzlf+/CqayLOvPdxz
-	dzHd+
-X-Gm-Gg: ASbGnctCcbRz4wlrWBuTFeZh+0tWrXxJVHNJbFMGhlEdHswPpCIypeCT85I5eXhZriW
-	+jtTksxVOgFwNvCLvcPCdkLq5apG/fY8h+VIRA/y2UqcOrRJR4tGLZGSrlCMfd6aLQgEqPJNYv7
-	AqWtLvVILXyqtdaIoqKTfJcbWrVg6IJnLuOlPLP/L9fmD89VzodbM3EljSqlt+wrsJfRSyyI1x3
-	yfrB4BvuNZo2jemSmiNVwsR1HgvJJd5asC0Lc+TS/p5N/6rtrA1UQmndmOO36LEfaCbWFiZMdYd
-	UMQTtJYSBNVqN7vrERaedJF8rhZ6QoVRXYsr2SOnyd6m12tsH8fasw/BaxLwRVAZAd9FgR/8ibn
-	57OjF0HPvlPFdCXDVTxsx3LlwkHyCr6LIDWACtJ6NmercR1iASjdDhlEK+nMI6H2rKLz8Yw3eLu
-	PM/jLwDevLo7VbLNcqfHTxBQodv4VbcnkMCXVw7mI=
-X-Google-Smtp-Source: AGHT+IEsAyLZx5j2nlmxXiW8Sqj4M90PmJRMF88A/diOVea5AxD9pe5XVrW19uhSgY+jffw3I24NKw==
-X-Received: by 2002:a05:600c:3550:b0:477:7f4a:44b4 with SMTP id 5b1f17b1804b1-477b9dc2086mr884185e9.1.1763588537303;
-        Wed, 19 Nov 2025 13:42:17 -0800 (PST)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7c3ea4322a7sm355989b3a.0.2025.11.19.13.42.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Nov 2025 13:42:16 -0800 (PST)
-Message-ID: <caf816ae-d72b-436c-a5dd-9fb1f63eb88a@suse.com>
-Date: Thu, 20 Nov 2025 08:12:12 +1030
+	s=arc-20240116; t=1763589076; c=relaxed/simple;
+	bh=rjO8/EIU0uGA9VyCRUHGKIFo2Cfr0MckSaPfGU8kzbA=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=WFCLIFObOH1+oc6KSgHJL1yq91ZOsj/Bow/kKIpxfVIMB38sv9QwcvsJtBhaLsghx4GTCsUylK51TIIhbXRFfndMpjBFmbOhFUzeZoWT8pVgj/jsUmeOfZi6NdP0bbT78Ycl2s7yYBLEsu/9FYidi9jEvoZZtIXikYE3LkZrMl0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=yLOQQZvu; arc=none smtp.client-ip=115.124.30.118
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=linux.alibaba.com; s=default;
+	t=1763589069; h=Message-ID:Date:MIME-Version:Subject:From:To:Content-Type;
+	bh=a2ebXqu2wMZ+a9A6Ssx3+/b3Gpxusqda3SSXvC7SSQ8=;
+	b=yLOQQZvutSRbuB9Ucuc14XqT2mgHARH9ug/oJGPBc3n8xJVFZdd+Xis/eA/4gIitrYtanHgyVngLIGQ0yFZW3XJxlZAwgmTNn3grOWTitv2hQzHI9W7DKbVC9w8/K2/Jd+ZnQVMS17YjU427Xqru4ziFqiLC5WbhJTT7l9yYJLg=
+Received: from 30.170.82.147(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0WsqMdLV_1763589067 cluster:ay36)
+          by smtp.aliyun-inc.com;
+          Thu, 20 Nov 2025 05:51:08 +0800
+Message-ID: <1be4cb25-50e2-46fa-ba86-d6342e997e63@linux.alibaba.com>
+Date: Thu, 20 Nov 2025 05:51:07 +0800
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -85,133 +48,88 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: send: add unlikely to all unexpected overflow
- checks
-To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <70cee567e5423a6c87196db3ff6622ef9b5c2ccb.1763570949.git.fdmanana@suse.com>
-Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <70cee567e5423a6c87196db3ff6622ef9b5c2ccb.1763570949.git.fdmanana@suse.com>
+Subject: Re: [PATCHSET v6 4/8] fuse: allow servers to use iomap for better
+ file IO performance
+From: Gao Xiang <hsiangkao@linux.alibaba.com>
+To: "Darrick J. Wong" <djwong@kernel.org>,
+ Demi Marie Obenour <demiobenour@gmail.com>
+Cc: bernd@bsbernd.com, joannelkoong@gmail.com, linux-ext4@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, miklos@szeredi.hu, neal@gompa.dev,
+ linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ zfs-devel@list.zfsonlinux.org
+References: <176169810144.1424854.11439355400009006946.stgit@frogsfrogsfrogs>
+ <d0a122b8-3b25-44e6-8c60-538c81b35228@gmail.com>
+ <20251119180449.GS196358@frogsfrogsfrogs>
+ <af9a8030-cd19-457c-8c15-cb63e8140dfc@linux.alibaba.com>
+In-Reply-To: <af9a8030-cd19-457c-8c15-cb63e8140dfc@linux.alibaba.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
 
 
-在 2025/11/20 03:22, fdmanana@kernel.org 写道:
-> From: Filipe Manana <fdmanana@suse.com>
+On 2025/11/20 05:00, Gao Xiang wrote:
 > 
-> There are several checks for unexpected overflows of buffers and path
-> lengths that makes us fail the send operation with an error if for some
-> highly unexpected reason they happen. So add the unlikely tag to those
-> checks to hint the compiler to generate better code, while also making
-> it more explicit in the source that it's highly unexpected.
 > 
-> With gcc 14.2.0-19 from Debian on x86_64, I also got a small reduction
-> the text size of the btrfs module.
+> On 2025/11/20 02:04, Darrick J. Wong wrote:
+>> On Wed, Nov 19, 2025 at 04:19:36AM -0500, Demi Marie Obenour wrote:
+>>>> By keeping the I/O path mostly within the kernel, we can dramatically
+>>>> increase the speed of disk-based filesystems.
+>>>
+>>> ZFS, BTRFS, and bcachefs all support compression, checksumming,
+>>> and RAID.  ZFS and bcachefs also support encryption, and f2fs and
+>>> ext4 support fscrypt.
+>>>
+>>> Will this patchset be able to improve FUSE implementations of these
+>>> filesystems?  I'd rather not be in the situation where one can have
+>>> a FUSE filesystem that is fast, but only if it doesn't support modern
+>>> data integrity or security features.
+>>
+>> Not on its own, no.
+>>
+>>> I'm not a filesystem developer, but here are some ideas (that you
+>>> can take or leave):
+>>>
+>>> 1. Keep the compression, checksumming, and/or encryption in-kernel,
+>>>     and have userspace tell the kernel what algorithm and/or encryption
+>>>     key to use.  These algorithms are generally well-known and secure
+>>>     against malicious input.  It might be necessary to make an extra
+>>>     data copy, but ideally that copy could just stay within the
+>>>     CPU caches.
+>>
+>> I think this is easily doable for fscrypt and compression since (IIRC)
+>> the kernel filesystems already know how to transform data for I/O, and
+>> nowadays iomap allows hooking of bios before submission and/or after
+>> endio.  Obviously you'd have to store encryption keys in the kernel
+>> somewhere.
 > 
-> Before:
+> I think it depends, since (this way) it tries to reuse some of the
+> existing kernel filesystem implementations (and assuming the code is
+> safe), so at least it still needs to load a dedicated kernel module
+> for such usage at least.
 > 
->    $ size fs/btrfs/btrfs.ko
->       text	   data	    bss	    dec	    hex	filename
->    1936917	 162723	  15592	2115232	 2046a0	fs/btrfs/btrfs.ko
-> 
-> After:
-> 
->    $ size fs/btrfs/btrfs.ko
->       text	   data	    bss	    dec	    hex	filename
->    1936789	 162723	  15592	2115104	 204620	fs/btrfs/btrfs.ko
-> 
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> I think it's not an issue for userspace ext4 of course (because ext4
+> and fscrypt is almost builtin for all kernels), but for out-of-tree
+> fses even pure userspace fses, I'm not sure it's doable to load the
+> module in a container context.
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+Two examples for reference:
 
-Thanks,
-Qu
+  - For compression, in-tree f2fs already has a compression header
+    in data of each compressed extent:
+    https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/fs/f2fs/f2fs.h?h=v6.17#n1497
 
-> ---
->   fs/btrfs/send.c | 16 ++++++++--------
->   1 file changed, 8 insertions(+), 8 deletions(-)
+    while other fs may store additional metadata in extent metadata
+    or other place.
+
+  - gocryptfs (a pure userspace FUSE fs) uses a different format
+    from fscrypt (encrypted data seems even unaligned on disk):
+    https://github.com/rfjakob/gocryptfs/blob/master/Documentation/file-format.md
+
 > 
-> diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-> index 3d437024e8bc..ebb5a74500f4 100644
-> --- a/fs/btrfs/send.c
-> +++ b/fs/btrfs/send.c
-> @@ -1134,12 +1134,12 @@ static int iterate_dir_item(struct btrfs_root *root, struct btrfs_path *path,
->   		btrfs_dir_item_key_to_cpu(eb, di, &di_key);
->   
->   		if (btrfs_dir_ftype(eb, di) == BTRFS_FT_XATTR) {
-> -			if (name_len > XATTR_NAME_MAX) {
-> +			if (unlikely(name_len > XATTR_NAME_MAX)) {
->   				ret = -ENAMETOOLONG;
->   				goto out;
->   			}
-> -			if (name_len + data_len >
-> -					BTRFS_MAX_XATTR_SIZE(root->fs_info)) {
-> +			if (unlikely(name_len + data_len >
-> +				     BTRFS_MAX_XATTR_SIZE(root->fs_info))) {
->   				ret = -E2BIG;
->   				goto out;
->   			}
-> @@ -1147,7 +1147,7 @@ static int iterate_dir_item(struct btrfs_root *root, struct btrfs_path *path,
->   			/*
->   			 * Path too long
->   			 */
-> -			if (name_len + data_len > PATH_MAX) {
-> +			if (unlikely(name_len + data_len > PATH_MAX)) {
->   				ret = -ENAMETOOLONG;
->   				goto out;
->   			}
-> @@ -5173,14 +5173,14 @@ static int put_data_header(struct send_ctx *sctx, u32 len)
->   		 * Since v2, the data attribute header doesn't include a length,
->   		 * it is implicitly to the end of the command.
->   		 */
-> -		if (sctx->send_max_size - sctx->send_size < sizeof(__le16) + len)
-> +		if (unlikely(sctx->send_max_size - sctx->send_size < sizeof(__le16) + len))
->   			return -EOVERFLOW;
->   		put_unaligned_le16(BTRFS_SEND_A_DATA, sctx->send_buf + sctx->send_size);
->   		sctx->send_size += sizeof(__le16);
->   	} else {
->   		struct btrfs_tlv_header *hdr;
->   
-> -		if (sctx->send_max_size - sctx->send_size < sizeof(*hdr) + len)
-> +		if (unlikely(sctx->send_max_size - sctx->send_size < sizeof(*hdr) + len))
->   			return -EOVERFLOW;
->   		hdr = (struct btrfs_tlv_header *)(sctx->send_buf + sctx->send_size);
->   		put_unaligned_le16(BTRFS_SEND_A_DATA, &hdr->tlv_type);
-> @@ -5580,8 +5580,8 @@ static int send_encoded_extent(struct send_ctx *sctx, struct btrfs_path *path,
->   	 * between the beginning of the command and the file data.
->   	 */
->   	data_offset = PAGE_ALIGN(sctx->send_size);
-> -	if (data_offset > sctx->send_max_size ||
-> -	    sctx->send_max_size - data_offset < disk_num_bytes) {
-> +	if (unlikely(data_offset > sctx->send_max_size ||
-> +		     sctx->send_max_size - data_offset < disk_num_bytes)) {
->   		ret = -EOVERFLOW;
->   		goto out;
->   	}
+> Maybe eBPF is useful for this area, but it's still not quite
+> flexible compared to native kernel filesystems.
+> 
+> Thanks,
+> Gao Xiang
 
 
