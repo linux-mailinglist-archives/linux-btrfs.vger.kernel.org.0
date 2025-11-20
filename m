@@ -1,69 +1,69 @@
-Return-Path: <linux-btrfs+bounces-19226-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19227-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78C8EC75FBA
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Nov 2025 19:58:32 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47E4AC75FEB
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Nov 2025 20:03:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sin.lore.kernel.org (Postfix) with ESMTPS id 59F8228A8C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Nov 2025 18:58:30 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 81E5635BE89
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Nov 2025 19:02:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66F8733D6E6;
-	Thu, 20 Nov 2025 18:58:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18C92368296;
+	Thu, 20 Nov 2025 19:01:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="iALQ1mav";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="zH3BXKtr"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="asVfwJ4g";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="GkUb0fLq"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from fout-b1-smtp.messagingengine.com (fout-b1-smtp.messagingengine.com [202.12.124.144])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3F94248880
-	for <linux-btrfs@vger.kernel.org>; Thu, 20 Nov 2025 18:58:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 096D03644D3
+	for <linux-btrfs@vger.kernel.org>; Thu, 20 Nov 2025 19:01:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.144
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763665103; cv=none; b=InhGWpPg0wO12qyOG94SRzxWbLSpbn8eltBrfz8IQWjrGW01OKFvZEREUVGX60zZVBpe3UaEcDq4fXafjxfl5fw2mnW8pKhPlPci7NU/p8lj/vW9F0zk362ZxTXakMUz8Tzqlip3SvygmdjUOo6YQ2NW83Cw9WeKgU9YUbwUiW8=
+	t=1763665308; cv=none; b=DnLBlBGy3NbhDvJ5qL6wILtjqCXUMBTPQrrisnK0SxZjMZr7exoT8bPaQuipNfW1Mh0ksl4ryabXdW8XmjEcnxv9vFk5RUUgyDTsZKJLQbBV6z5ULp8jLcEgEJg0omxnRfny3Y9lHdXVpv9nsQvHoo8x7Etj+l2F4rft4+V/ToM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763665103; c=relaxed/simple;
-	bh=OdywFzfFIo14bmLRibrc7rNkqXNbWPHiGfy+lMXLk3I=;
+	s=arc-20240116; t=1763665308; c=relaxed/simple;
+	bh=hEMGs9a5BLNTinbqQP2VxY3nituShkZldl6aA1pHRhA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HsOFQ8Lo7cSOCLzt5dDPf3zwSfdQIx6PKCV6s7QlFwjlrJa4HSrTkdOcWQZ7qvTWE/PW7kNH6FSshviRseauRRmxLjuZVFsmuGi+oTagMRuRDub91xmJtYm9JQvyi3mcLRyDPY7I8GfKy5aTfirJpvhH5t7zlA7/N1eJh8PcHAE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=iALQ1mav; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=zH3BXKtr; arc=none smtp.client-ip=202.12.124.144
+	 Content-Type:Content-Disposition:In-Reply-To; b=MAgqWBUOtq4YU+Mcteg3qashSZhOmntM4wyxHuVA8DAjuYG4EkIevsKrie3NMKXkEuK9v6kXhcQBDYSn8/G94mFUPoZu/PgmCJ71hzuhN+oHRj2oCAIp2d4i1edvJyGSfOly+Sa4aLsvwXD4Q7DH+Majx1Wiu86mHKVhAT/C+sc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=asVfwJ4g; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=GkUb0fLq; arc=none smtp.client-ip=202.12.124.144
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-05.internal (phl-compute-05.internal [10.202.2.45])
-	by mailfout.stl.internal (Postfix) with ESMTP id B2AD81D00287;
-	Thu, 20 Nov 2025 13:58:19 -0500 (EST)
-Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-05.internal (MEProxy); Thu, 20 Nov 2025 13:58:19 -0500
+Received: from phl-compute-11.internal (phl-compute-11.internal [10.202.2.51])
+	by mailfout.stl.internal (Postfix) with ESMTP id 096BB1D0018E;
+	Thu, 20 Nov 2025 14:01:43 -0500 (EST)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-11.internal (MEProxy); Thu, 20 Nov 2025 14:01:43 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
 	:content-type:content-type:date:date:from:from:in-reply-to
 	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1763665099; x=1763751499; bh=noNLJtTo+z
-	pNK4NaDtnTTHSrvToBWieJMzrZQPqEmnU=; b=iALQ1mavJqHhdCsCJIeqjPMupG
-	/hco9j1pIuGvw++ebkrBGVbreVmo6zdrBjCwt7ZFb1AunikJ/eaMogS7bRfXA/ux
-	rl1zgjmMVdmEr7vu3PyESRgiEPlMkgurox5l/FfX9HnaBbyOndLAD7ujCA5MRxLS
-	CKNFqSMyf62PlOvW9TMnzGykzzH0q+JB7uJFSP7NPiVU/SiTVCfWOuxA1NqyLfeR
-	dxzRoovEt2K1+vV6hobLVZMLYuuwGsohFSHP4nkhC1sGhGywINoWulSvwvt8w4Eq
-	bt5WIFzlAmff94f0QoUfe6CrR0b6BJS+yo235AyacSX9Y+27qiXjMkovhbkw==
+	:subject:to:to; s=fm1; t=1763665302; x=1763751702; bh=ZB5vkGbXNu
+	hKWhrh9T6aJA2pojiihpYem6U8igMbtkY=; b=asVfwJ4g0Z5TE+GeBWHWdkh6tM
+	3+9gGHAn7ZTwT1BNsJocapkSD+G/rKaw/QmCfexW1HoBGCcQMck3am5S34Ax/b0w
+	SZ83MpjS4dSp2bXi4jY9hTfXE+clgg+R4G1deiHhLna74SFJ4l0EW9y+Azm5sEMo
+	oh0AOg3CbUo/STUieznWRgG+ywgWjdq8sif05Te8Xl9DPWX3fdtIdItMXUT3vaYh
+	GnSo/Ec5RLFLf8MkO0wj0dQ9E2puIf8wRt4pJieO9h1ddqXqF2FPSZWra2xRuvTZ
+	BEyh7QsdyRjR3YiA5vLzW3L5hAJ8Mcxo+FGNTO8+uZxwzmExas2+PsLLOpSw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-type:content-type:date:date
 	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
 	:message-id:mime-version:references:reply-to:subject:subject:to
 	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-	1763665099; x=1763751499; bh=noNLJtTo+zpNK4NaDtnTTHSrvToBWieJMzr
-	ZQPqEmnU=; b=zH3BXKtrnhX34DRJOeR75jhYI9hdlParPb8Msrl9oahymyvjHYu
-	10AmLqMFx7on3GK1wKrHbjn4pNUA+EE3dxQIoDJh9WW24/v14dln9TS427CjkxiL
-	djupBILnQA5N75kl+dmIEpB6qGzod9L6CtZehsIVzkTkjmAyhh+Vf3Gkrjyyi/VB
-	Z22KsRJ5UMqpAAWZ/IDy5tJOeuHJvUkakUvOlsOFvvRKPUc5vTTo7YFnHlcom+4J
-	I7QeBUAK/CUFYmtpIw1EAipvXw8IO9kzBO2nRFS4mocKeEzRqpZJK8SkuNgc0FHW
-	ghFO17En5+9S+mHyw9Mtz+mhjtqyW1KifUA==
-X-ME-Sender: <xms:y2QfaZkwA1hLTKZLWJFEWikiOTMcfTnBZHryaao8EC0IXOoLPof9Vg>
-    <xme:y2Qfaa3GpKpk65MU1W-gvCpaSxI_ModhQdr6sa7uHWfO9kmshslR2ZsKsjg1W4Q6u
-    G2Rdn8OlynWypR5Ovg98lpU2QpEGSADAEojVIlTmuM-7saswWdOpqg>
-X-ME-Received: <xmr:y2QfadT7bBQzfPU9I5mXZTAa8XiiJLj3jZowxtTtHwCF__QoJjXqi--S7VjhF5xOnsKdT636Ayns7ukVurlX077DjaU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggddvvdejkeeiucetufdoteggodetrf
+	1763665302; x=1763751702; bh=ZB5vkGbXNuhKWhrh9T6aJA2pojiihpYem6U
+	8igMbtkY=; b=GkUb0fLqvVABOhqon9XAYMWltJYo5PskJzG8+q8KU7z/KwWYvGN
+	5+nctYkwc0nJMNNAvi1aV2ZfwJIKHohIOS1hR5X+oQV+WlU/rQKrDmzL1QV86jte
+	VpydMltYnd5yZQiyuAfbzA/pdMeT7KuuUUyVFqvg1SjYhbvrHz4sJRMxO4uSm6dO
+	M7hcrSBXptUql95zliCOqqdBkKePvTosix8o6QArZNs7QZ9RTCDQQeO5hnr/ZjY5
+	8nFPV9Z12dCl6IoPYi3R+yc/tZN9WDo7Ly33ncoOKcX2VZQH3JCKzGYWcDEIIMLZ
+	EZyoVzwTNygh6B2AtABCQjUWSxeJcTJXYIQ==
+X-ME-Sender: <xms:lmUfaRmqE5uGP9BbCT_wcKEzLqx2SW9iWXFKjBYcVQTIyCvyM7N0Yg>
+    <xme:lmUfaS2C0QdtjoAisvXWNJ3ekqPXS_9tNMKHTFdkpbE5iA0WFavtPXEVl6dkTnaWz
+    vbkP3LXFaTHdGCfnMYOf41ijofxYndJbhy45uAIJaXxZWBityduL-I>
+X-ME-Received: <xmr:lmUfaVTR7cpBzieWrZdBH3m7q20RO_weID54DAhB0fUl6F9R4bTfaXowj2P8Lvik63AItoSRVv2FVkNT05cnOgb_aZw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggddvvdejkeejucetufdoteggodetrf
     dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
     rghilhhouhhtmecufedttdenucenucfjughrpeffhffvvefukfhfgggtuggjsehttdertd
     dttddvnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhi
@@ -73,22 +73,22 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggddvvdejkeeiucetufdote
     guvgepshhmthhpohhuthdprhgtphhtthhopehsuhhnkheijedukeeksehgmhgrihhlrdgt
     ohhmpdhrtghpthhtoheplhhinhhugidqsghtrhhfshesvhhgvghrrdhkvghrnhgvlhdroh
     hrgh
-X-ME-Proxy: <xmx:y2QfaUv68cO00wK_g0mp_tehowWc-W96fMS2QOasb5__SMhej2w_ig>
-    <xmx:y2QfaaZx0YWMN1iFaR939jQ23HnmtQvxwZNDdTVsI1yB4osAXceohg>
-    <xmx:y2QfaRtz6HzOrY8UM_KDlgpcsStEEtGEvyqX6jIeRpk_I5iSpGn--g>
-    <xmx:y2QfaUH322hZ-cN1OZeAYVfk-TznkEYoMn8DMazPfjPEPnzmeEgm3w>
-    <xmx:y2QfaSXNSY2gpeycCQq09hB6JlHDJhn5RBWWlEBt7RQuZI62EN913PvG>
+X-ME-Proxy: <xmx:lmUfacvhnQqS_LepjmI31zNMmaSz-jCIEgCVxCdmrVMKsJZEBgCPHg>
+    <xmx:lmUfaSYDAHmaGviBQ-KoWIOLbymf3e1iMb2puxypli-4ytz5c1kvZw>
+    <xmx:lmUfaZtmdQDK6a50bpM0sYNLs91_dJBvx0qu6GpNsthf8sMJXikOGw>
+    <xmx:lmUfacGkpIiQF248gDHhJZ3WJ8cuMp1nqchGtOPUmWOptZSC8kBMzA>
+    <xmx:lmUfaaXeJTeR20uMIv9HK7u2pQPHI-3_8H0QxM_n_pTTT636qXkdyVxh>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 20 Nov 2025 13:58:18 -0500 (EST)
-Date: Thu, 20 Nov 2025 10:57:32 -0800
+ 20 Nov 2025 14:01:42 -0500 (EST)
+Date: Thu, 20 Nov 2025 11:00:56 -0800
 From: Boris Burkov <boris@bur.io>
 To: Sun YangKai <sunk67188@gmail.com>
 Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/2] btrfs: drop premature generation setting in
- btrfs_init_new_buffer()
-Message-ID: <20251120185732.GA2899191@zen.localdomain>
-References: <20251120140030.2770-2-sunk67188@gmail.com>
+Subject: Re: [PATCH 0/2] btrfs: use true/false and simplify boolean
+ parameters in btrfs_{inc,dec}_ref
+Message-ID: <20251120190056.GB2899191@zen.localdomain>
+References: <20251120141948.5323-1-sunk67188@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -97,28 +97,43 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251120140030.2770-2-sunk67188@gmail.com>
+In-Reply-To: <20251120141948.5323-1-sunk67188@gmail.com>
 
-On Thu, Nov 20, 2025 at 09:57:02PM +0800, Sun YangKai wrote:
-> In btrfs_init_new_buffer(), we set the buffer's generation just for the check in
-> btrfs_clear_buffer_dirty(). So just pass NULL to skip the check and we don't need
-> to set the generation before erasing the buffer.
+On Thu, Nov 20, 2025 at 10:19:12PM +0800, Sun YangKai wrote:
+> This tiny series removes the last 0/1 integer literals passed to
+> btrfs_inc_ref() / btrfs_dec_ref() and replaces the open-coded
+> if/else blocks with concise boolean expressions.
 > 
-> No functional change.
+> Patch 1 switches the callsites to the self-documenting true/false
+> constants, eliminating the implicit bool <-> int mixing.
 > 
-> See commit messages for details.
+> Patch 2 folds the remaining if/else ladders into a single line
+> using the condition directly, which shrinks the code and makes the
+> intent obvious.
 
-Looks good, thanks
+Nice improvement on patch 2. It's much better already, but I am also
+sort of curious how you feel about giving the bool a name to make it
+more self-documenting.
+
+e.g.,
+bool full_backref = btrfs_root_id(root) == BTRFS_TREE_RELOC_OBJECTID;
+btrfs_inc_ref(trans, root, cow, full_backref);
+
+Just a thought, definitely not a blocker. Either way you decide, please
+feel free to add
+
 Reviewed-by: Boris Burkov <boris@bur.io>
 
 > 
-> Sun YangKai (2):
->   btrfs: add comment for btrfs_clear_buffer_dirty
->   btrfs: drop premature generation setting in btrfs_init_new_buffer()
+> No functional change.
 > 
->  fs/btrfs/extent-tree.c |  6 ++----
->  fs/btrfs/extent_io.c   | 20 ++++++++++++++++++++
->  2 files changed, 22 insertions(+), 4 deletions(-)
+> Sun YangKai (2):
+>   btrfs: use true/false for boolean parameters in btrfs_{inc,dec}_ref
+>   btrfs: simplify boolean argument for btrfs_{inc,dec}_ref
+> 
+>  fs/btrfs/ctree.c       | 33 +++++++++++----------------------
+>  fs/btrfs/extent-tree.c | 21 +++++++--------------
+>  2 files changed, 18 insertions(+), 36 deletions(-)
 > 
 > -- 
 > 2.51.2
