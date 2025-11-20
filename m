@@ -1,145 +1,136 @@
-Return-Path: <linux-btrfs+bounces-19167-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19168-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33D3BC7169B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Nov 2025 00:04:46 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB3ADC717E1
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Nov 2025 01:05:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by tor.lore.kernel.org (Postfix) with ESMTPS id 295B121565
-	for <lists+linux-btrfs@lfdr.de>; Wed, 19 Nov 2025 23:04:45 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTPS id 3643829756
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Nov 2025 00:05:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99852329392;
-	Wed, 19 Nov 2025 23:04:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD3B93C2F;
+	Thu, 20 Nov 2025 00:04:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="jaV+kdA/";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="MNo/7rCP"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="KSjBMKu7";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="KSjBMKu7"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fhigh-a8-smtp.messagingengine.com (fhigh-a8-smtp.messagingengine.com [103.168.172.159])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0FF132571A
-	for <linux-btrfs@vger.kernel.org>; Wed, 19 Nov 2025 23:04:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.159
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F309C186A
+	for <linux-btrfs@vger.kernel.org>; Thu, 20 Nov 2025 00:04:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763593477; cv=none; b=u+Do/wrL+GCTL6Mn88ZZqfa8Lfz2fy55d1idX/cnoJK3GvXIP5OnuNPdNG0veIKSXa4wbpO5/ydMt3t1CnbYMMcWTT8gaXuuP3ayyeYDyF+EZ7W5wG/lJkb1RyGzLGD1Rl9U6J/ZbG6HEH+KQvUwt6gM7RJiXQHYOJplMdq9Mds=
+	t=1763597096; cv=none; b=cwUpSg0O2REK61C7oFPvxj2h45pieihO9nys/Sx0V96/B6butRlHboHc3Hvr7vMKXrijIOJsITdE/sZX9Lja4dhrmq7B9zHdHQXTigPWB9CCSnC6VmYfm2A65GFXJkcUlvADHCydys3FrcWkjoPLzB4e6VNxReWSHHYLk2vwDkQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763593477; c=relaxed/simple;
-	bh=WhbVLaNVlB0Nm7Wdwe//KyYe6OrgkhwLdxUPBaKI/fA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fUS8i86M0IVuBkw875+P7Uj4t8qulyMGSwvIvDfI4pI4ILLaiuJt9mnaA5vbNbODocTiCe+A41PxaU95B8/ACkKWVdZnyh6/kQME69QSUxyg8mGjkffoPtmutZz89abivvK2cfxOWME/SVpNa+oPbePHMuIfN7Llz4jTCMtIL50=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=jaV+kdA/; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=MNo/7rCP; arc=none smtp.client-ip=103.168.172.159
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id F3A3D140020C;
-	Wed, 19 Nov 2025 18:04:34 -0500 (EST)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-04.internal (MEProxy); Wed, 19 Nov 2025 18:04:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1763593474; x=1763679874; bh=TFUvV7I77S
-	jlEMOSAnDQHfSCQdwj6ZjgKiYtPZiB1jI=; b=jaV+kdA/Jex9m4RVjXo7MPNmj6
-	m0pfBmngTijjUFYjrYVwxNPuAemmY/8GZGEe06DDGfFyiWf+H7Zt/29LOcTuza0f
-	eG6vAd5YiUjXnfo84UKzhnfXcSh2M8np+2O21Y5Q3cj5FMk65VPis+p9cOBKM95N
-	j+iHTSjyUh5bZF4Y/aHFHeiwsN6j+vVs5RkAccRskJhS7IfzSrVMol/rOAPmIK5w
-	qgu/0g9203B8C+SngG5te8x+DNbaazuHuMob+85CxqQOmSOdaLrheREWOMEhEqjV
-	sseGlbHMH6LFZZBwaSe+fTZ9WGpHGjAQsO6N4a/bpm8EiLfclyUU+ZrEzdGQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-	1763593474; x=1763679874; bh=TFUvV7I77SjlEMOSAnDQHfSCQdwj6ZjgKiY
-	tPZiB1jI=; b=MNo/7rCPgMKOpOfY+nj9cXvmwwoffkRH/G64dX762r04b7sGUg+
-	KrnaKoWPlP7ZbXbMuiZZf4LEoX6jA8rCN6yBonnINu/UWpawew4gmLWZJHtAROrs
-	DzCJYjzs5AU+Gv6r+K7U8weIjeo8/eq7eaNPEuJ5tRyYCzeUCjF5PKSWv0Emgrto
-	1/fUFMUSEQnZlAWocONCUVmguD+Na6VV2uORAKPKJLXqPYA2Lrv/bMllBsFvB/4h
-	bOpUYYdhPwhMJC9jkRAlONfTqTfqTzW+dIUpwEwM9CEjnZWcKR+QtPe7k9RonLkS
-	/vH1Nj1mo/T8B1h8FOWJBiCOQbDWpnJO+CA==
-X-ME-Sender: <xms:Ak0eaUCzXiEq5XMdKPQD2zDsaDOrEh6Kuy2sczCax6_27xZKlKHzLA>
-    <xme:Ak0eachx8eG8LKDhZifclTXtjRmxdl5bpwxMIddHv1MsspnhqFjozkRFklmp-Aoyh
-    puN0Iaz4lDwvV8798ZJLjO4sVCFoYSMc4Ri7f4rtS8hMfVDCT92GvY>
-X-ME-Received: <xmr:Ak0eaVMYsKi2bsatgHE2omhpFjxvyyKRtdyebXKaUe6Mna6_SZImweINFl9O8YGTErkosDWffPPoHG-QnYBFyIL7mQA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggddvvdehgeejucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhishcu
-    uehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpeekvd
-    ekffejleelhfevhedvjeduhfejtdfhvdevieeiiedugfeugfdtjefgfeeljeenucevlhhu
-    shhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuh
-    hrrdhiohdpnhgspghrtghpthhtohepvddpmhhouggvpehsmhhtphhouhhtpdhrtghpthht
-    ohepfihquhesshhushgvrdgtohhmpdhrtghpthhtoheplhhinhhugidqsghtrhhfshesvh
-    hgvghrrdhkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:Ak0eaV42M5fS6gvxdg_fGhwh4KgRz4vFQxOL2eFHV7-OLO3SjiwHhQ>
-    <xmx:Ak0eab0XFfAJ7srdClYqbDQOf495KYCybep4jGO06ytdWHV5HeJgVg>
-    <xmx:Ak0eaebUIpI_VG9RawsjXLpc2IEv3QkMIaLNMp15AWp77bAQDLYL7A>
-    <xmx:Ak0eabD8txdaHbXimrvAdmm3CLBmBDKA-rRS_GIvX4izYHE1fs-67w>
-    <xmx:Ak0eaeMsb2JKXFGGJMLn6cGGRZU-RdN0TmzAC1kAx9UJJuPMFk5CYLvo>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 19 Nov 2025 18:04:34 -0500 (EST)
-Date: Wed, 19 Nov 2025 15:03:49 -0800
-From: Boris Burkov <boris@bur.io>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 2/2] btrfs-progs: fsck-tests: make test case 066 to be
- repairable
-Message-ID: <20251119230349.GC2475306@zen.localdomain>
-References: <cover.1763156743.git.wqu@suse.com>
- <59b21f15f2199cd27233c367457935cb2708e63f.1763156743.git.wqu@suse.com>
+	s=arc-20240116; t=1763597096; c=relaxed/simple;
+	bh=ekH7F3zJN/hK5k35pTy6Q+U57Oh8WLEhbd5YlusejSw=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=EJBCS9Bvuqsr26+bcScJwby8RGXa9frigc2UEjdhtEo54vWLUPUaJQ8xk5zql6IxHVCFGTbMMsVFP3MKm1PkNKg/72k4KYQKAgkrG9ZyqD0+A3IRE/wAk/cyLNFWjpZnLQtqyb6+mdvCNa2/DO3xEZwECStZL4p+fDCjyf5v580=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=KSjBMKu7; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=KSjBMKu7; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id CF54F20732
+	for <linux-btrfs@vger.kernel.org>; Thu, 20 Nov 2025 00:04:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1763597091; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=PNFx1aGArvYOWrOA3BkfWw14ka5tdelkRAueLs4nPOA=;
+	b=KSjBMKu7y5+r4KZ1irQLXKBctVEFPNc6jUbUHL0T2MRwh1NyGHQ5QOpR6tDNl7Ztr8hMHS
+	s8xO0y7HOrITthiD4G0M16SW67qVY0Y/t76RwhicvlhObXcV+55ATklH6cVv7OcJmSrNAm
+	OFjqMeetxkkkPTlzc091/DNUG5dPTNU=
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1763597091; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=PNFx1aGArvYOWrOA3BkfWw14ka5tdelkRAueLs4nPOA=;
+	b=KSjBMKu7y5+r4KZ1irQLXKBctVEFPNc6jUbUHL0T2MRwh1NyGHQ5QOpR6tDNl7Ztr8hMHS
+	s8xO0y7HOrITthiD4G0M16SW67qVY0Y/t76RwhicvlhObXcV+55ATklH6cVv7OcJmSrNAm
+	OFjqMeetxkkkPTlzc091/DNUG5dPTNU=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 081323EA61
+	for <linux-btrfs@vger.kernel.org>; Thu, 20 Nov 2025 00:04:50 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id fbcDLyJbHmkwFgAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Thu, 20 Nov 2025 00:04:50 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH 0/4] btrfs: reduce btrfs_get_extent() calls for buffered write path
+Date: Thu, 20 Nov 2025 10:34:29 +1030
+Message-ID: <cover.1763596717.git.wqu@suse.com>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <59b21f15f2199cd27233c367457935cb2708e63f.1763156743.git.wqu@suse.com>
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [0.22 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_SPAM_SHORT(2.82)[0.939];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	MIME_GOOD(-0.10)[text/plain];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_ONE(0.00)[1];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:mid];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	RCVD_TLS_ALL(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Score: 0.22
+X-Spam-Level: 
 
-On Sat, Nov 15, 2025 at 08:16:00AM +1030, Qu Wenruo wrote:
-> The test case fsck/066 is only to verify we can detect the missing root
-> orphan item, no repair for it yet.
-> 
-> Now the repair ability is added, change the test case to verify the
-> repair is also properly done.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-Reviewed-by: Boris Burkov <boris@bur.io>
-> ---
->  .../.lowmem_repairable                             |  0
->  .../066-missing-root-orphan-item/test.sh           | 14 --------------
->  2 files changed, 14 deletions(-)
->  create mode 100644 tests/fsck-tests/066-missing-root-orphan-item/.lowmem_repairable
->  delete mode 100755 tests/fsck-tests/066-missing-root-orphan-item/test.sh
-> 
-> diff --git a/tests/fsck-tests/066-missing-root-orphan-item/.lowmem_repairable b/tests/fsck-tests/066-missing-root-orphan-item/.lowmem_repairable
-> new file mode 100644
-> index 000000000000..e69de29bb2d1
-> diff --git a/tests/fsck-tests/066-missing-root-orphan-item/test.sh b/tests/fsck-tests/066-missing-root-orphan-item/test.sh
-> deleted file mode 100755
-> index 9db625714c1f..000000000000
-> --- a/tests/fsck-tests/066-missing-root-orphan-item/test.sh
-> +++ /dev/null
-> @@ -1,14 +0,0 @@
-> -#!/bin/bash
-> -#
-> -# Verify that check can report missing orphan root itemm as an error
-> -
-> -source "$TEST_TOP/common" || exit
-> -
-> -check_prereq btrfs
-> -
-> -check_image() {
-> -	run_mustfail "missing root orphan item not reported as an error" \
-> -		"$TOP/btrfs" check "$1"
-> -}
-> -
-> -check_all_images
-> -- 
-> 2.51.2
-> 
+Although btrfs has bs < ps support for a long time, and the larger data
+folios support is also going to be graduate from experimental features
+soon, the write path is still iterating each fs block and call
+btrfs_get_extent() on each fs block.
+
+What makes the situation worse is that, for the write path we do not
+have any cached extent map, meaning even with large folios and we got a
+continuous range that can be submitted in one go, we still call
+btrfs_get_extent() many times and get the same range extent map again
+and again.
+
+This series will reduce the duplicated btrfs_get_extent() calls by only
+call it once for each range, other than for each fs block.
+
+The first 3 patches are just minor cleanups/refactors, the last patch
+is the real optimization.
+
+I don't expect there will be much difference in the real world though.
+
+Qu Wenruo (4):
+  btrfs: integrate the error handling of submit_one_sector()
+  btrfs: use bitmap_set() to replace set_bit() in a loop
+  btrfs: extract the io finishing code into a helper
+  btrfs: reduce extent map lookup during writes
+
+ fs/btrfs/extent_io.c | 243 ++++++++++++++++++++++++-------------------
+ 1 file changed, 134 insertions(+), 109 deletions(-)
+
+-- 
+2.52.0
+
 
