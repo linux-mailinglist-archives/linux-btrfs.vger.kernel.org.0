@@ -1,82 +1,56 @@
-Return-Path: <linux-btrfs+bounces-19178-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19179-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D142C71A89
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Nov 2025 02:10:41 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBBCFC71AA1
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Nov 2025 02:12:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id D53CA4E2E3E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Nov 2025 01:10:39 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 00EFE349EE7
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Nov 2025 01:12:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 248F523F27B;
-	Thu, 20 Nov 2025 01:10:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3ACE23504B;
+	Thu, 20 Nov 2025 01:11:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZyKfH2IW"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="bGDEctcq"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yx1-f46.google.com (mail-yx1-f46.google.com [74.125.224.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB34A23AE9A
-	for <linux-btrfs@vger.kernel.org>; Thu, 20 Nov 2025 01:10:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC664244684
+	for <linux-btrfs@vger.kernel.org>; Thu, 20 Nov 2025 01:11:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763601027; cv=none; b=WT5zv9A2AqDl/VFcchWQvvKkGEo5lpEPEdq39ciLpY10ZKgJJ8svjhkv7L7hytMt36C4ksuGSJxhuNKSK8EwjavcqWwDnfLlt4LuhbA9iGLMe05TjkOF7JmuZ8FyUmwtKQYkE+0Iu5pA079GRuLQULxKkmcH1apdCNxI2ooAhAw=
+	t=1763601091; cv=none; b=hVmPbvGb2LHxB7oOVGStHE5HEVctMMx5Rbuo7D1zrtfwmTKIiIXVZE7jH33LIfLwkdoPIov2tsa/BX6pdhYRaYf0oaTtu6nVIJs3+e5MIcjGFVZa4LtsY0/p3uWM7Z/ZOoMZ2ZiVtRYqSr52USnG9Ao/I37rMgjNE4pdEtjB3uY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763601027; c=relaxed/simple;
-	bh=AagjkzoAXk8/NgFgBGBdDQ6FH6q/TjeFv07vIObom44=;
+	s=arc-20240116; t=1763601091; c=relaxed/simple;
+	bh=mR1N16h3RD/wpVKbOUqvoi4xA3Q9DHp4KIRAc2Uyd1o=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NX5msUL90q2DTxiJEWZK2tgn+MPJXWGKB+tKLXGG2uLxkCFjlidaoOSQ89GJOi+CzXUXporDuEfP812aSB2X/XS/ymce8eRb86lSWdagCjThF9IHtChPSkwpiZw1sQ6FBRfm2PUcZh9wwzMt/YUkmb3R2pRIA84034PvmsR3fss=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZyKfH2IW; arc=none smtp.client-ip=74.125.224.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yx1-f46.google.com with SMTP id 956f58d0204a3-63fc6d9fde5so269455d50.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 19 Nov 2025 17:10:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763601025; x=1764205825; darn=vger.kernel.org;
-        h=in-reply-to:autocrypt:from:content-language:references:cc:to
-         :subject:user-agent:mime-version:date:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=4TN9WlxM7bEYhdovOZdXK5qjiJkEcDO7wUY7EQtQg7s=;
-        b=ZyKfH2IWYoGtZ6E0/iCtKW+BgsZhjAeTqQ6Pf1df4Jl87zcA0YVI4RuPH59nqgngub
-         XwaGqeJ9btfkSCbHvcXUiHVYogXmaG15Gp9fRJfwY4SrRO23eBrZjoFkDvRDrBKxacPa
-         EkYqluiqBw01P31Mh82OPhf3VywsZy9x+FC5yaZsGynk2/A1BsawIpg9n0m0feNrDGx7
-         oWPrrD508p+OGWbtaEQ0eouLu49c68iZQHWKgdqkr4z3nbGt38j8yR8atZWsUWImiiuH
-         0aTIwfiErofhgTgMKD9vo/V0Qg1HtEMkWRXEhEquNENIyoG8mXT8HNTRFZIXA5Lj260z
-         w13w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763601025; x=1764205825;
-        h=in-reply-to:autocrypt:from:content-language:references:cc:to
-         :subject:user-agent:mime-version:date:message-id:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4TN9WlxM7bEYhdovOZdXK5qjiJkEcDO7wUY7EQtQg7s=;
-        b=jy/Pcdbhr/tsz3CXpX9gCmsRVNjiw4/Gd/xEfMa2M0f2E0lMOrDuiX6UV55fYpKhAO
-         wLFBrfNq+gYZBr0S3OPW8AQjmEbQSfqw03mW4fcEAyZjOWKt/botNGo53rCUh57XFIBp
-         9XLf+ubjSuGs5XAfgyuiQvQTsvJQP2Q6U8nD1QDRI1iK3e+cw2kmexhmQzAdqkAMDTEd
-         GmD5Tgj7heTJudDJuyV86fsnMTTqGSyiHb0dfBBTKGFpz2upS0Y5jUZV18byfgkkVxoc
-         sE3OQLid6QlXGUqecy2s7rlC3xYmXYhgClpimmT/SekJUDdlX0nIkzxC/2P7MadA+ceo
-         GBVg==
-X-Forwarded-Encrypted: i=1; AJvYcCXaNDcGlNqeudt+co6p/xbeQZTGGxp+t5MYAeq2G4krhSWgwDbuQiwe9YVstQ8/19ivGxGGmGjn5iXyfQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzV1bQosuwBTzmmtfZH1y6A6AhpYk8kNmaUWQXi8lHGrCCiXtKT
-	1gqOmlCkyQubd3aO75ZLt3VwiNfDZzLZYHhTaxfdzIZRhv2xUXLUz9Rx
-X-Gm-Gg: ASbGnctx2aTI32XG3KcdWlW2cWE4k84zFjSkYlSckB4/JSSJBkfYd4xsnWuxYyouZJ6
-	SbUGWOZuAcQmc1lct+RdYzhmvxCFWOCzwrWDo8OOtyvX9dfZ2SJXcEsCiy2xuOq30VkZUGes5y1
-	I6/j4CfqQXbHseHB+ClUNGirdYaXAfe7d0rJyXgrivVS6t6mKvZfNjIcWXSTl0cV8BWvuSAD1v2
-	grIXnmu+ENHKPhHpGx7B/8v5ea+ouxfCzpLFuHvqwS3dA6p9svVPI2AWCW+TxLfI2IXtJI2Sc4t
-	6oF3Non1Ooo8mXJHXX5qrd+hZgp+nmRZdJW+ZvUqbv1TDJY5YUQWZu63IObDbVg45z63+2hy5Mo
-	hzuauaS7yQWcxqyb/QqYdV8VXmVGhbAukwWsVFk5h03qYvmJCComYs3x4wAHCnbbXiDSPpSE/Lg
-	PxXYelqWwtyJpAZxPNfcAbUy9R7pYLhVqrivDvSNXISTWiTAyNRRY571aBIM9ljSEoP1pZIYk4/
-	DkHqKdbh1uVkIVlPVFJGFZpS9FmtmZFwF/B4Q==
-X-Google-Smtp-Source: AGHT+IGQ8ljlFgaIQ8fqCKhYqANuvQVeoGitfzglNxi5dCSgv+OYhOYNNFR1D71mL+SWjWaT3VejIQ==
-X-Received: by 2002:a05:690e:16a1:b0:63f:ad90:ad45 with SMTP id 956f58d0204a3-642f778d6femr1012066d50.1.1763601024388;
-        Wed, 19 Nov 2025 17:10:24 -0800 (PST)
-Received: from [10.138.34.110] (h96-60-249-169.cncrtn.broadband.dynamic.tds.net. [96.60.249.169])
-        by smtp.gmail.com with ESMTPSA id 956f58d0204a3-642f7048d7esm375063d50.4.2025.11.19.17.10.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 19 Nov 2025 17:10:23 -0800 (PST)
-Message-ID: <aaf98238-e8f6-472d-bfb9-7f8ddbab8e02@gmail.com>
-Date: Wed, 19 Nov 2025 20:10:19 -0500
+	 In-Reply-To:Content-Type; b=IOWSltdiWAFBvY/CXVJdB3g5HjoKfEaBkoMKwYjMqTPXLVgwvXOVgpuulVpUDzEHVMVCr2Y41sPMr31C28rE5fdIyCyLa9n1Fu0QqXRj5mPd5K7WCBmWvnqhnGAGY9qNcjKfek4Ot5FAmxenfejs1ff+nCtKlOxh0mIK3F860Jk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=bGDEctcq; arc=none smtp.client-ip=212.227.17.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1763601086; x=1764205886; i=quwenruo.btrfs@gmx.com;
+	bh=beVrf44o/Gd0Mdiy5nmpXQcLPQ+sOwDa2MmXJb6Tw0Q=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=bGDEctcqHYlN5WXRvkE6cLaXHRxAa34k98GTdhseOtEZQptyqW5ksPa+7oy++phR
+	 /U7sAXyS+X7F2pb/+TxjC60F3Wu15BOpCW5bhi8OdqFk8izFyRjSF9F+LVqgX0gWO
+	 UtWfIhcAOupynnixURYAsjXVRCbdiGq+TSZCFkS8OXN07kM6cwWlIEhsyug6aDpxE
+	 +suvgTAS/z8g0b2oHnnIFJYOLdlPWcQba+u1wDMs9blr8t5BlG9onSdmeCxQYVSvR
+	 RnylxnuPjKt//GI2SHWye5g/ZuidFHGqIao7oihi+zJvBEnh9WdB9e88SHSOqlXvV
+	 qzqVeJBnDO7LFkDPZw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MAwbp-1vSiov2Xub-008rEB; Thu, 20
+ Nov 2025 02:11:26 +0100
+Message-ID: <df5b9f51-67cf-4ba9-9027-e8b6d05a0b80@gmx.com>
+Date: Thu, 20 Nov 2025 11:41:20 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -84,308 +58,269 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCHSET v6 4/8] fuse: allow servers to use iomap for better
- file IO performance
-To: Gao Xiang <hsiangkao@linux.alibaba.com>,
- "Darrick J. Wong" <djwong@kernel.org>
-Cc: bernd@bsbernd.com, joannelkoong@gmail.com, linux-ext4@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, miklos@szeredi.hu, neal@gompa.dev,
- linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
- zfs-devel@list.zfsonlinux.org
-References: <176169810144.1424854.11439355400009006946.stgit@frogsfrogsfrogs>
- <d0a122b8-3b25-44e6-8c60-538c81b35228@gmail.com>
- <20251119180449.GS196358@frogsfrogsfrogs>
- <af9a8030-cd19-457c-8c15-cb63e8140dfc@linux.alibaba.com>
+Subject: Re: [PATCH 3/4] btrfs: extract the io finishing code into a helper
+To: Boris Burkov <boris@bur.io>, Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+References: <cover.1763596717.git.wqu@suse.com>
+ <bd044ad0afecc8d8f65700800cf45939f7bb2d88.1763596717.git.wqu@suse.com>
+ <20251120005924.GA2522273@zen.localdomain>
 Content-Language: en-US
-From: Demi Marie Obenour <demiobenour@gmail.com>
-Autocrypt: addr=demiobenour@gmail.com; keydata=
- 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
- +MYSfkEjBz0E8CLOcAw7JIwAaeBT
-In-Reply-To: <af9a8030-cd19-457c-8c15-cb63e8140dfc@linux.alibaba.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------u4y7Z4Hxdq0nvazIG660CKHU"
-
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------u4y7Z4Hxdq0nvazIG660CKHU
-Content-Type: multipart/mixed; boundary="------------4bo0nskHQ08B9HKd7s0YguKR";
- protected-headers="v1"
-From: Demi Marie Obenour <demiobenour@gmail.com>
-To: Gao Xiang <hsiangkao@linux.alibaba.com>,
- "Darrick J. Wong" <djwong@kernel.org>
-Cc: bernd@bsbernd.com, joannelkoong@gmail.com, linux-ext4@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, miklos@szeredi.hu, neal@gompa.dev,
- linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
- zfs-devel@list.zfsonlinux.org
-Message-ID: <aaf98238-e8f6-472d-bfb9-7f8ddbab8e02@gmail.com>
-Subject: Re: [PATCHSET v6 4/8] fuse: allow servers to use iomap for better
- file IO performance
-References: <176169810144.1424854.11439355400009006946.stgit@frogsfrogsfrogs>
- <d0a122b8-3b25-44e6-8c60-538c81b35228@gmail.com>
- <20251119180449.GS196358@frogsfrogsfrogs>
- <af9a8030-cd19-457c-8c15-cb63e8140dfc@linux.alibaba.com>
-In-Reply-To: <af9a8030-cd19-457c-8c15-cb63e8140dfc@linux.alibaba.com>
-
---------------4bo0nskHQ08B9HKd7s0YguKR
-Content-Type: multipart/mixed; boundary="------------ryUl7YI5BrtmXg85hUqSfXT0"
-
---------------ryUl7YI5BrtmXg85hUqSfXT0
-Content-Type: text/plain; charset=UTF-8
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
+ sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
+ xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
+ naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
+ tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
+ 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
+ VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
+ CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
+ B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
+ Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
+ +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
+ HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
+In-Reply-To: <20251120005924.GA2522273@zen.localdomain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:JCVGjTg4jIXyjMsNXwjVFPh+ql+VlUrUH5jF10WxiUbpxPHx7O+
+ wiyeDhtyAqMLmZV7Pn4soM9lFhm2Gd58NvIXATpKgzhLVOhU7My0ajTzKSG7Kf+WuKu48ev
+ b6fpt/0qkO0E5G/Vmvrl69rIeFPcugJnRNXRDw+bsFzLo/hUqKpFtfKzV6OQhPTIDapaZXU
+ SXVT1nMvNxDerBj6NcrjQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:5uf/drQmlXs=;sIbPKXE2ddv95Z75GfnH71vGMS+
+ 8reSwCur8aS2eDPTTNwRq+DPKK3NiHDUv6Hk8B6gfUbBNPlJIwW56R8nDIhdTUOghOlMlEs6z
+ rgWda2za+1rI5Mcd8VjGOf8I5CvEXOlDd9SpsEbvVsUAD3tJXk2PGcN00tivD28/X32U82hrC
+ U9cFy6ZE7Ic6Iaof67wvln0eHJwfnY4z8ODaS1obiwtwBEj/aiZg9i0AKx7zlPozjmtEW2nm6
+ UHjauIh46aZ4VFnhLZszSldOS7t81QgmQ+ruvQNZROoec6L7YisFpQZSohzVR1TiZ3N++1ADc
+ SmInx94C0z8sH2Wm4MhUXmcVxMmROkyQw2A3c4K6fjgrKmLBjbeIPR4EWdAjbwip9xl+3nnSp
+ 8I1lKFXW35z8fa/D+ozb2aQBm7vvClSpihdi7DTutsTcGpaP6OZE2C9OKkNeBdU+7aOOwSl3F
+ L/MARI/yWMYXSyRHs7/mdnXqVn/QKlFxC0OFeQjkhLsN9nk8XqO//GxcJ4fMC+YTHaCZuQOHN
+ 44xwKZk0zPS7gmYwDhiS+6fzYHFKL1wm0QNicRM+2mwBdNH28fo9IS1djGZLegIvjY/8MpVsE
+ 9AwXwu7mM02Amr368jUi7/OMPgh6EVH5kGdkyp2V23OiCfvMWrc23BZJmjeEgVDbawui1v/o1
+ en98uLf+tw7yBI0tRRi/EesAq4yC7l7+jrxbYKk1bGafuUGHdNVJjfQ1DQgUaBfsk1d7F59EW
+ z2HLlfAqW05xLnML6kUlXGcOnkR85AvTkIl56/jzfa7UgbpBTOzXbViq6B9R0JWhZhhlh6R0s
+ SeePFhzXhgXcZhSkWokkEYJ30tAHPmyEhh6fgTrP+Pd5bIhJQDMRwLAWJdnlOdD1U8v1gNzxU
+ Ucg+jcYq4vvFCGyi559jKIEN9Oe0VYISPLYAyqDBkjXCRjsjP8G4TPjT6tIQ8tVQS/g8yA/Pk
+ rroSAuLPw+s8KkQGTdJdct/Gqii1qww0o/zmFd8sJZm1RSUtlOTpaOh0ll74PL8puiMOz45nE
+ J5xDKxp36WdA4MdC1pb5vgXFwomXx5few4pE0YblC2cHpAmvGAjj2brAfinnsScS09FrFnYBN
+ G0sGz209YfkMGHiJBj7YLVTBn1fUw7TQgNkY/b2By+c9/w77D9RpmN/9Dak2yQ2bOfmLu0qhO
+ 5OHGlnFlOhtxwcrku2n7kjGfUrVwG/j0qQaP4v+/Bj38qI8adfse8yALJXai+xZ9Jac/ms5pp
+ bNgLlwmzyHGaK3RWuhXClRV/khQNNSRmSkgJ6arjxBs6CXED+b+Az2RCkWpSb/DT+uzziR8oE
+ ru/xz9GDp6+wspO8zOR6oo116RL70B8VID0P6AbpjT8VX1HEvzxTcbHDF26nNDRUpPkShpKXO
+ 2vhSvnMszfIxosvFmnlS04Wx6+fITCBmvNDxOfQfJFlJcC4CIYM8PQqy1NHleZk/rKtS2h+Ew
+ 5+1KXUw2YAK5w1gNAYZxC4dtQL85ldiL2FrjxzWnIUuiLsOC1Ow9PNT0TCubzb7UbdLPiAydJ
+ IwxPq/93NIXG4MxVM+lgfycEBUXxTH1YZwgxfRMYuHYK4VmeMXpj3FM1wP68JREEPOranV9At
+ ocOFZUcZRrbgR8fU5wBObc0AOtYduQHY65cTBmPhGEJmNuXV4XwKwyq1N7bbNc+JgL2+qj8i8
+ 3uMulgXYIxFjwKhh8Hv1/92xNvYx2rGpSrpS3n2H0uyvd29EFbVwBzMf4Pabcu9nzdpmcH8BN
+ K0m4dv0zq1tz3ndqObOqOxYsfTm89LysDgBJ1SsODMDiIdy0sTGBJuOQTzoJxZW+i3TMf3gRN
+ IhOgJYOQ+nKpOq80hCGTmfRKkF4gHMiSWGPCcshFNmtqF1RUiADppfJo8AUmLqKs9GPqfhW0v
+ u+SGhwgSRHNq5zNc5gZyZJNLY92HDz0fcqVIwjZNDWVZ5HK5fmazSGlrdvCTeyX3tf5zWxIMT
+ V9jrjdfliDqHPILVyZy2VvrAS70SFy1D8V7ZU272FMsZwht6Dg5jcVn/ANDI/3666isjayKtP
+ CC79NjBwWW6S0s/I/3DoNzjbXEc6/SMd7Wu3C9EVCd28O3SX8aLZsW2I5BVddTF78yrj+Y53X
+ XrZa35sz63Ylrrcf9QN5SNC3Xg8lbjiGavXQfomoPhAa29ye4tQ2PN99bWHqdil4X/fOGzV5A
+ 7cW+yTGVrvG4nwRWUIudNkZTHSCpZDfVmFxQOs1FhIxB3YPGickgO9+AngF3YzgUPlvZDt1VK
+ cq9tkcEcfHyckci+vbpeJPktJkwHceDzf++GHsDuxKwuYxvKzQRYMo/s84spK06QHWHoItU5X
+ xtEgo3u0f+SeTD+BcYOCpeUzZthfildIqmtKIVltuSAD3u1Mdz4HmayKxX13qqyMIiQCs2WL3
+ T1hrUSDv2B8Har1dO4m29LMfqKE2nZ3u+X7epECV9O08m5in4Ys5N6rN13SYCQeKqCye71MRH
+ rgUP+GAVKgDsTLeUpHQ4DhQ63ZDNqhJ7LYVp/uOxe9SZQSYUfVBWc84YiUE6eh5HSHyMlck4d
+ SOnH77pZ83b95NtR2kv3WzHH6dYtfdYPPHh99j8z8BR6gCVtZAGeH4BCibdT4A3EEkN2LaTYj
+ kjfS1YXK2TXbYBfm5Xf7p+cCQFLNK0/cdk4txBEpN+hh1EYxMVZt/ATcjCnwAcBvZI6SVKAvv
+ M2E9qaytYwSIHFyAr6SQLQOlegnS6dXnanlccEJX463u/20E4SmXdiL47mVZDZJ2WYlKoI0H4
+ bgbS2dDJ2PlJEV88E8qtECGlkGWxVhVGxW8nqzk6j4OM7pNVvN8bQ/6c8MczKh5gi3DscBRYz
+ +iqTkzAnewc9lTP1VsurURv2GILGmeOQ0D++Pg0pVo30uzjTHEx+5FywAznwRIrQs2U26U6m2
+ dAUMrJUNXPsvYetz56mBN2rplUzzDGU05NEDgxzqs9r1FS56+UTb7uiUczAgnj9IMpW2I/ZdZ
+ q61hKE6rtUKu5niU4LRfI42+hznQPG3uFYDGrDfyngFfvWIfPf5NB/JYVtwkdxMCfA+IgUc8H
+ pZeDe9HABjGYijQldBjdtD8DEEt5UCuQBopjkDVZcLJ9bUoD1XhRKClAkHY+Fcy4VeiAFwvXc
+ ElI4kWnMlsgf6Wgazwh+LytHl5Jd7lL6vTWxOt+ypQ4D52Nm7Hb61YmBrLKgElMbFa4T8Pb9E
+ qlHrNJSgOEfjPZfpU/EnGSxAWB2d+ANz9mg7tHfnQK1gO5bqobe3LwsItsZJwy3zuAyODIK5A
+ N3ToFbHNqUjRmRc/OPdjSisDwezCg/IUm8jvV8YJepW91qxq4EsvwpgrTz7Vo1vgyk/tzZFdW
+ fpFqh29kUjMRpf0FwvTJFBGTDGmhOW3Jg2TWu471YnPJufFo/kn0Rwr9MVtsPlRD+r8/KqF5v
+ nr8uZYlSRZIuPbu4r966yPN8xNumGjx8kWC0fjeUAQzremyEzW0zxq+LHxdLp/s1S1PRmsPip
+ 5U7BMk3Yf/C3bpnct7xuTw1GGrZq6f4ncxxrcWeIJ2zzHfXtcw+LiiijAeBJ1Q1hKkt9MEo+F
+ RdHN0iXt/p1XIqwkZtGDMO1TVvfq7sBuvJ0bK2LChfBi29S/gtxs5k3Grakl8+/MNJxi7bQHx
+ g8kzdfMuReA8DzQHtkovpTyjdfLNwna4yM0JOGwu4ILNtXOGCOmNEkfE1tcit6Q2P0SqSKTA6
+ CRm1KlHUcfs/xRD3WQzbHeZWE7hlQWnfSsaCcWcPb2MnZ6jB8LHSEwIL5dE0oQAGsSO8QZCYl
+ oSzhhxN21zy94qlRoq9NRKzsAVkYrnqtfWSW2tFjmVfAFVEu0aN3q5TPAruQPuclxYiF0hB9W
+ 2uvhLJZgRO9AaP/wk8oc166Nqt5aOvDWYoxAndSC0FkXrzq1WB7FpscHI3y3oYNDW4feuId+O
+ PgaO01zD829Cygpn/6XgDU2LFCqmFOcvnwQMbKAssk2F87F7R8BrzkzqGdrXwfZx/siTqeZK5
+ +usJTqa+UNTN2lAZUTaNKkI0BxptoMV/FRlnQ7gXb4OtElgdaRWJKD4kGYNvQPvCIp3zGGrIo
+ K5/ybrejcb37ubioUK3Zoe4WiKiyygG5Ae7kQc+fRcubuEGPnDtUUuDUzcFqv1kVuFyanGLBS
+ 0X56mv9ASRJkNOO5qgx97BOrPHCZQDGf7yoZHYcgCf2pboHtXRYreP90MhQqvjIQ3tJLzUq7+
+ sF+CVXz3Bk1+ovb4bDO7BB03MypxJsev4//U/7/7CEVUWv9e16MiR8DNPWgieAQpDz98tMloS
+ n4EqnuknpxKUE0vpsA4utu33CORbWudOE+07jwKdBpg4NH6HrA4BFNOg1QsIUljC3yfpAvrRN
+ sJ1kFaJqWlsfN5tvUcUoj2YKHPRDROfKqVk7RXyJxhCqYsLzK34mDZBmKUxNsCC9qLW/lZHue
+ LsXi7jYAwDw1rMNa3vKXSL1IULWtniJTZZP9TV2nXM0GDSxfxk9GiyOprRHvjOQj63za/YQWr
+ jEt8Awf8JslYasPPYMSGgmfjEd/j+XuyQ/Wq7k4EmcWBM6lHKOf3DqCuXRPxmtm+3AmSOIIl3
+ EXbtStX6U82c8A1EYAadHMaC1olI/tF+4mUWd63OnII/QbqqrdAdBGoF8zhGwZS/+Ka9vCVGj
+ tuAZLhUILh+HGy9qIny+7jHgHjNIrjSIHhQCqVp9wW2RH1hYBwGTU90jn0NcgU86x/vfOiqsD
+ wvf6cz46FzNqQxKnxYrQxWIpzrVAp60Gt9XkrK4sR03ir//pmrKQjAJtjTf/IWKgMPfaqloFr
+ GBvm9dqB+ijKdCwFQvPO3Jnj04xlAX+H7ZNPLFXZRiSjMi09lCR/NCDDXnJW9DA1U/jidkxGE
+ ra0mu3wcVqK76PJsriBmiPjNNbEMjFWvj/iAf5c/CJl8sd1ksonyM7LsVWJMu8hnQAB0Nr3Td
+ RaXH4zHGQ9kXWphYZt+IF9VeoBp3nEdVpwV4/p7FbmKM11zXQ33Hlxn1ocIUlFYbv0lSNxsHW
+ Q3weVOCP8DNZHu486bP/jwO3+wmLwzb2694ZjNL/ZA+jbSfTCvkvYzxIqxSsbwGtQpIA3P+Du
+ CqwPchf/3TDJxi8rsFMmVM5QJDCKXqMRFdKxEmb9cCAYwXEvq8E+Vl0Ue6A5feEZplpomCVWr
+ a1/gSGjgLYScVFst7ygRhYHwqmD+ok+XVkLvIs
 
-On 11/19/25 16:00, Gao Xiang wrote:
->=20
->=20
-> On 2025/11/20 02:04, Darrick J. Wong wrote:
->> On Wed, Nov 19, 2025 at 04:19:36AM -0500, Demi Marie Obenour wrote:
->>>> By keeping the I/O path mostly within the kernel, we can dramaticall=
-y
->>>> increase the speed of disk-based filesystems.
->>>
->>> ZFS, BTRFS, and bcachefs all support compression, checksumming,
->>> and RAID.  ZFS and bcachefs also support encryption, and f2fs and
->>> ext4 support fscrypt.
->>>
->>> Will this patchset be able to improve FUSE implementations of these
->>> filesystems?  I'd rather not be in the situation where one can have
->>> a FUSE filesystem that is fast, but only if it doesn't support modern=
 
->>> data integrity or security features.
+
+=E5=9C=A8 2025/11/20 11:29, Boris Burkov =E5=86=99=E9=81=93:
+> On Thu, Nov 20, 2025 at 10:34:32AM +1030, Qu Wenruo wrote:
+>> Currently we have a code block, which finishes IO for a range beyond
+>> i_size, deep inside the loop of extent_writepage_io().
 >>
->> Not on its own, no.
+>> Extract it into a helper, finish_io_beyond_eof(), to reduce the level
+>> of indents.
 >>
->>> I'm not a filesystem developer, but here are some ideas (that you
->>> can take or leave):
->>>
->>> 1. Keep the compression, checksumming, and/or encryption in-kernel,
->>>     and have userspace tell the kernel what algorithm and/or encrypti=
-on
->>>     key to use.  These algorithms are generally well-known and secure=
-
->>>     against malicious input.  It might be necessary to make an extra
->>>     data copy, but ideally that copy could just stay within the
->>>     CPU caches.
->>
->> I think this is easily doable for fscrypt and compression since (IIRC)=
-
->> the kernel filesystems already know how to transform data for I/O, and=
-
->> nowadays iomap allows hooking of bios before submission and/or after
->> endio.  Obviously you'd have to store encryption keys in the kernel
->> somewhere.
+>> Furthermore slightly change the parameter passed into the helper,
+>> currently we fully finish the IO for the range beyond EOF, but that
+>> range may be beyond the range [start, start + len), that means we may
+>> finish the IO for ranges which we should not touch.
 >=20
-> I think it depends, since (this way) it tries to reuse some of the
-> existing kernel filesystem implementations (and assuming the code is
-> safe), so at least it still needs to load a dedicated kernel module
-> for such usage at least.
-
-My hope is that these modules could be generic library code.
-Compression, checksumming, and encryption algorithms aren't specific
-to any particular filesystem, and the kernel might well be using them
-already for other purposes.
-
-Of course, it's still the host admin's job to make sure the relevant
-modules are loaded, unless they are autoloaded.
-
-> I think it's not an issue for userspace ext4 of course (because ext4
-> and fscrypt is almost builtin for all kernels), but for out-of-tree
-> fses even pure userspace fses, I'm not sure it's doable to load the
-> module in a container context.
+> I'm a little confused about this. I can't see any changes to the
+> effective parameters to anything but btrfs_lookup_first_ordered_range()
+> but that is getting the first ordered_extent
 >=20
-> Maybe eBPF is useful for this area, but it's still not quite
-> flexible compared to native kernel filesystems.
+> So allowing more past [cur, end] via [cur, folio_end] shouldn't change
+> what ordered_extent we get, as we are asserting that we get one with
+> the narrower search, and we are getting the first one.
+>=20
+> the params to min(), btrfs_mark_ordered_io_finished(), and
+> btrfs_clear_folio_dirty() seem unchanged.
+
+My bad, I was reading the original code wrong, assuming it's clearing=20
+the IO to @folio_end not @end.
+
+So this part is not changed.
+
+
+On the other hand, we can not rely on btrfs_lookup_first_ordered_range()=
+=20
+to catch all OEs for a range.
+That part only works if there is only one OE for the range.
+If there are multiple ones, the remaining OEs are not truncated.
+
+Will update the commit message and the handling of=20
+finish_io_beyond_eof() to ensure all involved OEs are properly truncated.
+(This also affects  the old code though).
+
+Thanks,
+Qu
+
+>=20
+> What am I missing?
 >=20
 > Thanks,
-> Gao Xiang
-Thank you for the feedback!
---=20
-Sincerely,
-Demi Marie Obenour (she/her/hers)
---------------ryUl7YI5BrtmXg85hUqSfXT0
-Content-Type: application/pgp-keys; name="OpenPGP_0xB288B55FFF9C22C1.asc"
-Content-Disposition: attachment; filename="OpenPGP_0xB288B55FFF9C22C1.asc"
-Content-Description: OpenPGP public key
-Content-Transfer-Encoding: quoted-printable
+> Boris
+>=20
+>>
+>> So call the finish_io_beyond_eof() only for the range we should touch.
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>>   fs/btrfs/extent_io.c | 62 +++++++++++++++++++++++++------------------=
+-
+>>   1 file changed, 35 insertions(+), 27 deletions(-)
+>>
+>> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+>> index 4fc3b3d776ee..cbee93a929f3 100644
+>> --- a/fs/btrfs/extent_io.c
+>> +++ b/fs/btrfs/extent_io.c
+>> @@ -1684,6 +1684,40 @@ static int submit_one_sector(struct btrfs_inode =
+*inode,
+>>   	return 0;
+>>   }
+>>  =20
+>> +static void finish_io_beyond_eof(struct btrfs_inode *inode, struct fol=
+io *folio, > +				 u64 start, u32 len, loff_t i_size)
+>> +{
+>> +	struct btrfs_fs_info *fs_info =3D inode->root->fs_info;
+>> +	struct btrfs_ordered_extent *ordered;
+>> +
+>> +	ASSERT(start >=3D i_size);
+>> +
+>> +	ordered =3D btrfs_lookup_first_ordered_range(inode, start, len);
+>> +
+>> +	/*
+>> +	 * We have just run delalloc before getting here, so
+>> +	 * there must be an ordered extent.
+>> +	 */
+>> +	ASSERT(ordered !=3D NULL);
+>> +	spin_lock(&inode->ordered_tree_lock);
+>> +	set_bit(BTRFS_ORDERED_TRUNCATED, &ordered->flags);
+>> +	ordered->truncated_len =3D min(ordered->truncated_len,
+>> +				     start - ordered->file_offset);
+>> +	spin_unlock(&inode->ordered_tree_lock);
+>> +	btrfs_put_ordered_extent(ordered);
+>> +
+>> +	btrfs_mark_ordered_io_finished(inode, folio, start, len, true);
+>> +	/*
+>> +	 * This range is beyond i_size, thus we don't need to
+>> +	 * bother writing back.
+>> +	 * But we still need to clear the dirty subpage bit, or
+>> +	 * the next time the folio gets dirtied, we will try to
+>> +	 * writeback the sectors with subpage dirty bits,
+>> +	 * causing writeback without ordered extent.
+>> +	 */
+>> +	btrfs_folio_clear_dirty(fs_info, folio, start, len);
+>> +}
+>> +
+>>   /*
+>>    * Helper for extent_writepage().  This calls the writepage start hoo=
+ks,
+>>    * and does the loop to map the page into extents and bios.
+>> @@ -1739,33 +1773,7 @@ static noinline_for_stack int extent_writepage_i=
+o(struct btrfs_inode *inode,
+>>   		cur =3D folio_pos(folio) + (bit << fs_info->sectorsize_bits);
+>>  =20
+>>   		if (cur >=3D i_size) {
+>> -			struct btrfs_ordered_extent *ordered;
+>> -
+>> -			ordered =3D btrfs_lookup_first_ordered_range(inode, cur,
+>> -								   folio_end - cur);
+>> -			/*
+>> -			 * We have just run delalloc before getting here, so
+>> -			 * there must be an ordered extent.
+>> -			 */
+>> -			ASSERT(ordered !=3D NULL);
+>> -			spin_lock(&inode->ordered_tree_lock);
+>> -			set_bit(BTRFS_ORDERED_TRUNCATED, &ordered->flags);
+>> -			ordered->truncated_len =3D min(ordered->truncated_len,
+>> -						     cur - ordered->file_offset);
+>> -			spin_unlock(&inode->ordered_tree_lock);
+>> -			btrfs_put_ordered_extent(ordered);
+>> -
+>> -			btrfs_mark_ordered_io_finished(inode, folio, cur,
+>> -						       end - cur, true);
+>> -			/*
+>> -			 * This range is beyond i_size, thus we don't need to
+>> -			 * bother writing back.
+>> -			 * But we still need to clear the dirty subpage bit, or
+>> -			 * the next time the folio gets dirtied, we will try to
+>> -			 * writeback the sectors with subpage dirty bits,
+>> -			 * causing writeback without ordered extent.
+>> -			 */
+>> -			btrfs_folio_clear_dirty(fs_info, folio, cur, end - cur);
+>> +			finish_io_beyond_eof(inode, folio, cur, start + len - cur, i_size);
+>=20
+> AFAICT, start + len is still end here, why not do end - cur?
+>=20
+>>   			break;
+>>   		}
+>>   		ret =3D submit_one_sector(inode, folio, cur, bio_ctrl, i_size);
+>> --=20
+>> 2.52.0
+>>
+>=20
 
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xsFNBFp+A0oBEADffj6anl9/BHhUSxGTICeVl2tob7hPDdhHNgPR4C8xlYt5q49y
-B+l2nipdaq+4Gk6FZfqC825TKl7eRpUjMriwle4r3R0ydSIGcy4M6eb0IcxmuPYf
-bWpr/si88QKgyGSVZ7GeNW1UnzTdhYHuFlk8dBSmB1fzhEYEk0RcJqg4AKoq6/3/
-UorR+FaSuVwT7rqzGrTlscnTDlPWgRzrQ3jssesI7sZLm82E3pJSgaUoCdCOlL7M
-MPCJwI8JpPlBedRpe9tfVyfu3euTPLPxwcV3L/cfWPGSL4PofBtB8NUU6QwYiQ9H
-zx4xOyn67zW73/G0Q2vPPRst8LBDqlxLjbtx/WLR6h3nBc3eyuZ+q62HS1pJ5EvU
-T1vjyJ1ySrqtUXWQ4XlZyoEFUfpJxJoN0A9HCxmHGVckzTRl5FMWo8TCniHynNXs
-BtDQbabt7aNEOaAJdE7to0AH3T/Bvwzcp0ZJtBk0EM6YeMLtotUut7h2Bkg1b//r
-6bTBswMBXVJ5H44Qf0+eKeUg7whSC9qpYOzzrm7+0r9F5u3qF8ZTx55TJc2g656C
-9a1P1MYVysLvkLvS4H+crmxA/i08Tc1h+x9RRvqba4lSzZ6/Tmt60DPM5Sc4R0nS
-m9BBff0Nm0bSNRS8InXdO1Aq3362QKX2NOwcL5YaStwODNyZUqF7izjK4QARAQAB
-zTxEZW1pIE9iZW5vdXIgKElUTCBFbWFpbCBLZXkpIDxhdGhlbmFAaW52aXNpYmxl
-dGhpbmdzbGFiLmNvbT7CwY4EEwEIADgWIQR2h02fEza6IlkHHHGyiLVf/5wiwQUC
-X6YJvQIbAwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgAAKCRCyiLVf/5wiwWRhD/0Y
-R+YYC5Kduv/2LBgQJIygMsFiRHbR4+tWXuTFqgrxxFSlMktZ6gQrQCWe38WnOXkB
-oY6n/5lSJdfnuGd2UagZ/9dkaGMUkqt+5WshLFly4BnP7pSsWReKgMP7etRTwn3S
-zk1OwFx2lzY1EnnconPLfPBc6rWG2moA6l0WX+3WNR1B1ndqpl2hPSjT2jUCBWDV
-rGOUSX7r5f1WgtBeNYnEXPBCUUM51pFGESmfHIXQrqFDA7nBNiIVFDJTmQzuEqIy
-Jl67pKNgooij5mKzRhFKHfjLRAH4mmWZlB9UjDStAfFBAoDFHwd1HL5VQCNQdqEc
-/9lZDApqWuCPadZN+pGouqLysesIYsNxUhJ7dtWOWHl0vs7/3qkWmWun/2uOJMQh
-ra2u8nA9g91FbOobWqjrDd6x3ZJoGQf4zLqjmn/P514gb697788e573WN/MpQ5XI
-Fl7aM2d6/GJiq6LC9T2gSUW4rbPBiqOCeiUx7Kd/sVm41p9TOA7fEG4bYddCfDsN
-xaQJH6VRK3NOuBUGeL+iQEVF5Xs6Yp+U+jwvv2M5Lel3EqAYo5xXTx4ls0xaxDCu
-fudcAh8CMMqx3fguSb7Mi31WlnZpk0fDuWQVNKyDP7lYpwc4nCCGNKCj622ZSocH
-AcQmX28L8pJdLYacv9pU3jPy4fHcQYvmTavTqowGnM08RGVtaSBNYXJpZSBPYmVu
-b3VyIChsb3ZlciBvZiBjb2RpbmcpIDxkZW1pb2Jlbm91ckBnbWFpbC5jb20+wsF4
-BBMBAgAiBQJafgNKAhsDBgsJCAcDAgYVCAIJCgsEFgIDAQIeAQIXgAAKCRCyiLVf
-/5wiwYa/EACv8a2+MMou9cSCNoZBQaU+fTmyzft9hUE+0d5W2UY1RY3OsjFIzm9R
-/4SVccfsqOYLEo+S0vQMIIIqFEq3FCpXXwPzyimotps05VA8U3Bd7yseojFygOgK
-sAMOAee2RCaDDOnoJue01dfZMzzHPO/TVdp3OvnpWipfv5G1Xg96rwbhMLE3tg6N
-xwAHa31Bv4/Xq8CJOoIWvx6fcmZQpz01/lSvsYn0KrfEbTKkuUf0vM9JrCTCP2oz
-VNN5BYzqaq2M4r+jmSyeXLim922VOWqGkUEQ85BSEemqrRS06IU6NtEMsF8EWt/b
-hWjk/9GDKTcnpdJHTrMxTspExBiNrvpI2t+YPU5B/dJJAUxvmhFrbSIbdB8umBZs
-I3AMYrEmpAbh5x7jEjoskUC7uN3o9vpg1oCLS2ePDLtAtyBtbHnkA4xGD7ar8mem
-xpH9lY/i+sC6CyyIUWcUDnnagKyJP0m9ks0GLsTeOCA0bft2XA6rD6aaCnMUsndT
-ctrab42CV5XypjmC4U1rPJ8JQJUh1/3P48/8sMH+3krxpJ06KNWNFaUbaMTGiltZ
-7x9DngklSYrX0T+2G4kVXNmjaljwkoLahwLla2gUWwBSyofXdqyhQdwZsp01KXNQ
-UCyT/Pg+aDcm/E7OMV3d4lf7g/CSxiX2GSEe6BlhSz+Lmd7ZJ3g32M1ARGVtaSBN
-YXJpZSBPYmVub3VyIChJVEwgRW1haWwgS2V5KSA8ZGVtaUBpbnZpc2libGV0aGlu
-Z3NsYWIuY29tPsLBjgQTAQgAOBYhBHaHTZ8TNroiWQcccbKItV//nCLBBQJgOEV+
-AhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAAoJELKItV//nCLBKwoP/1WSnFdv
-SAD0g7fD0WlF+oi7ISFT7oqJnchFLOwVHK4Jg0e4hGn1ekWsF3Ha5tFLh4V/7UUu
-obYJpTfBAA2CckspYBqLtKGjFxcaqjjpO1I2W/jeNELVtSYuCOZICjdNGw2Hl9yH
-KRZiBkqc9u8lQcHDZKq4LIpVJj6ZQV/nxttDX90ax2No1nLLQXFbr5wb465LAPpU
-lXwunYDij7xJGye+VUASQh9datye6orZYuJvNo8Tr3mAQxxkfR46LzWgxFCPEAZJ
-5P56Nc0IMHdJZj0Uc9+1jxERhOGppp5jlLgYGK7faGB/jTV6LaRQ4Ad+xiqokDWp
-mUOZsmA+bMbtPfYjDZBz5mlyHcIRKIFpE1l3Y8F7PhJuzzMUKkJi90CYakCV4x/a
-Zs4pzk5E96c2VQx01RIEJ7fzHF7lwFdtfTS4YsLtAbQFsKayqwkGcVv2B1AHeqdo
-TMX+cgDvjd1ZganGlWA8Sv9RkNSMchn1hMuTwERTyFTr2dKPnQdA1F480+jUap41
-ClXgn227WkCIMrNhQGNyJsnwyzi5wS8rBVRQ3BOTMyvGM07j3axUOYaejEpg7wKi
-wTPZGLGH1sz5GljD/916v5+v2xLbOo5606j9dWf5/tAhbPuqrQgWv41wuKDi+dDD
-EKkODF7DHes8No+QcHTDyETMn1RYm7t0RKR4zsFNBFp+A0oBEAC9ynZI9LU+uJkM
-eEJeJyQ/8VFkCJQPQZEsIGzOTlPnwvVna0AS86n2Z+rK7R/usYs5iJCZ55/JISWd
-8xD57ue0eB47bcJvVqGlObI2DEG8TwaW0O0duRhDgzMEL4t1KdRAepIESBEA/iPp
-I4gfUbVEIEQuqdqQyO4GAe+MkD0Hy5JH/0qgFmbaSegNTdQg5iqYjRZ3ttiswalq
-l1/iSyv1WYeC1OAs+2BLOAT2NEggSiVOtxEfgewsQtCWi8H1SoirakIfo45Hz0tk
-/Ad9ZWh2PvOGt97Ka85o4TLJxgJJqGEnqcFUZnJJriwoaRIS8N2C8/nEM53jb1sH
-0gYddMU3QxY7dYNLIUrRKQeNkF30dK7V6JRH7pleRlf+wQcNfRAIUrNlatj9Txwi
-vQrKnC9aIFFHEy/0mAgtrQShcMRmMgVlRoOA5B8RTulRLCmkafvwuhs6dCxN0GNA
-ORIVVFxjx9Vn7OqYPgwiofZ6SbEl0hgPyWBQvE85klFLZLoj7p+joDY1XNQztmfA
-rnJ9x+YV4igjWImINAZSlmEcYtd+xy3Li/8oeYDAqrsnrOjb+WvGhCykJk4urBog
-2LNtcyCjkTs7F+WeXGUo0NDhbd3Z6AyFfqeF7uJ3D5hlpX2nI9no/ugPrrTVoVZA
-grrnNz0iZG2DVx46x913pVKHl5mlYQARAQABwsFfBBgBAgAJBQJafgNKAhsMAAoJ
-ELKItV//nCLBwNIP/AiIHE8boIqReFQyaMzxq6lE4YZCZNj65B/nkDOvodSiwfwj
-jVVE2V3iEzxMHbgyTCGA67+Bo/d5aQGjgn0TPtsGzelyQHipaUzEyrsceUGWYoKX
-YyVWKEfyh0cDfnd9diAm3VeNqchtcMpoehETH8frRHnJdBcjf112PzQSdKC6kqU0
-Q196c4Vp5HDOQfNiDnTf7gZSj0BraHOByy9LEDCLhQiCmr+2E0rW4tBtDAn2HkT9
-uf32ZGqJCn1O+2uVfFhGu6vPE5qkqrbSE8TG+03H8ecU2q50zgHWPdHMOBvy3Ehz
-fAh2VmOSTcRK+tSUe/u3wdLRDPwv/DTzGI36Kgky9MsDC5gpIwNbOJP2G/q1wT1o
-Gkw4IXfWv2ufWiXqJ+k7HEi2N1sree7Dy9KBCqb+ca1vFhYPDJfhP75I/VnzHVss
-Z/rYZ9+51yDoUABoNdJNSGUYl+Yh9Pw9pE3Kt4EFzUlFZWbE4xKL/NPno+z4J9aW
-emLLszcYz/u3XnbOvUSQHSrmfOzX3cV4yfmjM5lewgSstoxGyTx2M8enslgdXhPt
-hZlDnTnOT+C+OTsh8+m5tos8HQjaPM01MKBiAqdPgksm1wu2DrrwUi6ChRVTUBcj
-6+/9IJ81H2P2gJk3Ls3AVIxIffLoY34E+MYSfkEjBz0E8CLOcAw7JIwAaeBTzsFN
-BGbyLVgBEACqClxh50hmBepTSVlan6EBq3OAoxhrAhWZYEwN78k+ENhK68KhqC5R
-IsHzlL7QHW1gmfVBQZ63GnWiraM6wOJqFTL4ZWvRslga9u28FJ5XyK860mZLgYhK
-9BzoUk4s+dat9jVUbq6LpQ1Ot5I9vrdzo2p1jtQ8h9WCIiFxSYy8s8pZ3hHh5T64
-GIj1m/kY7lG3VIdUgoNiREGf/iOMjUFjwwE9ZoJ26j9p7p1U+TkKeF6wgswEB1T3
-J8KCAtvmRtqJDq558IU5jhg5fgN+xHB8cgvUWulgK9FIF9oFxcuxtaf/juhHWKMO
-RtL0bHfNdXoBdpUDZE+mLBUAxF6KSsRrvx6AQyJs7VjgXJDtQVWvH0PUmTrEswgb
-49nNU+dLLZQAZagxqnZ9Dp5l6GqaGZCHERJcLmdY/EmMzSf5YazJ6c0vO8rdW27M
-kn73qcWAplQn5mOXaqbfzWkAUPyUXppuRHfrjxTDz3GyJJVOeMmMrTxH4uCaGpOX
-Z8tN6829J1roGw4oKDRUQsaBAeEDqizXMPRc+6U9vI5FXzbAsb+8lKW65G7JWHym
-YPOGUt2hK4DdTA1PmVo0DxH00eWWeKxqvmGyX+Dhcg+5e191rPsMRGsDlH6KihI6
-+3JIuc0y6ngdjcp6aalbuvPIGFrCRx3tnRtNc7He6cBWQoH9RPwluwARAQABwsOs
-BBgBCgAgFiEEdodNnxM2uiJZBxxxsoi1X/+cIsEFAmbyLVgCGwICQAkQsoi1X/+c
-IsHBdCAEGQEKAB0WIQSilC2pUlbVp66j3+yzNoc6synyUwUCZvItWAAKCRCzNoc6
-synyU85gD/0T1QDtPhovkGwoqv4jUbEMMvpeYQf+oWgm/TjWPeLwdjl7AtY0G9Ml
-ZoyGniYkoHi37Gnn/ShLT3B5vtyI58ap2+SSa8SnGftdAKRLiWFWCiAEklm9FRk8
-N3hwxhmSFF1KR/AIDS4g+HIsZn7YEMubBSgLlZZ9zHl4O4vwuXlREBEW97iL/FSt
-VownU2V39t7PtFvGZNk+DJH7eLO3jmNRYB0PL4JOyyda3NH/J92iwrFmjFWWmmWb
-/Xz8l9DIs+Z59pRCVTTwbBEZhcUc7rVMCcIYL+q1WxBG2e6lMn15OQJ5WfiE6E0I
-sGirAEDnXWx92JNGx5l+mMpdpsWhBZ5iGTtttZesibNkQfd48/eCgFi4cxJUC4PT
-UQwfD9AMgzwSTGJrkI5XGy+XqxwOjL8UA0iIrtTpMh49zw46uV6kwFQCgkf32jZM
-OLwLTNSzclbnA7GRd8tKwezQ/XqeK3dal2n+cOr+o+Eka7yGmGWNUqFbIe8cjj9T
-JeF3mgOCmZOwMI+wIcQYRSf+e5VTMO6TNWH5BI3vqeHSt7HkYuPlHT0pGum88d4a
-pWqhulH4rUhEMtirX1hYx8Q4HlUOQqLtxzmwOYWkhl1C+yPObAvUDNiHCLf9w28n
-uihgEkzHt9J4VKYulyJM9fe3ENcyU6rpXD7iANQqcr87ogKXFxknZ97uEACvSucc
-RbnnAgRqZ7GDzgoBerJ2zrmhLkeREZ08iz1zze1JgyW3HEwdr2UbyAuqvSADCSUU
-GN0vtQHsPzWl8onRc7lOPqPDF8OO+UfN9NAfA4wl3QyChD1GXl9rwKQOkbvdlYFV
-UFx9u86LNi4ssTmU8p9NtHIGpz1SYMVYNoYy9NU7EVqypGMguDCL7gJt6GUmA0sw
-p+YCroXiwL2BJ7RwRqTpgQuFL1gShkA17D5jK4mDPEetq1d8kz9rQYvAR/sTKBsR
-ImC3xSfn8zpWoNTTB6lnwyP5Ng1bu6esS7+SpYprFTe7ZqGZF6xhvBPf1Ldi9UAm
-U2xPN1/eeWxEa2kusidmFKPmN8lcT4miiAvwGxEnY7Oww9CgZlUB+LP4dl5VPjEt
-sFeAhrgxLdpVTjPRRwTd9VQF3/XYl83j5wySIQKIPXgT3sG3ngAhDhC8I8GpM36r
-8WJJ3x2yVzyJUbBPO0GBhWE2xPNIfhxVoU4cGGhpFqz7dPKSTRDGq++MrFgKKGpI
-ZwT3CPTSSKc7ySndEXWkOYArDIdtyxdE1p5/c3aoz4utzUU7NDHQ+vVIwlnZSMiZ
-jek2IJP3SZ+COOIHCVxpUaZ4lnzWT4eDqABhMLpIzw6NmGfg+kLBJhouqz81WITr
-EtJuZYM5blWncBOJCoWMnBEcTEo/viU3GgcVRw=3D=3D
-=3Dx94R
------END PGP PUBLIC KEY BLOCK-----
-
---------------ryUl7YI5BrtmXg85hUqSfXT0--
-
---------------4bo0nskHQ08B9HKd7s0YguKR--
-
---------------u4y7Z4Hxdq0nvazIG660CKHU
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEEopQtqVJW1aeuo9/sszaHOrMp8lMFAmkeanwACgkQszaHOrMp
-8lPrOQ/+P9fdog3wM9BEc4VYbEhDjEmiXEN034RUt2jTN5HPfqISR2/hgIgppcb2
-dYcKjcB1Wp0vqPYouLMrt0J5f6XCJ8PkcLLwsr7sQ9gwJKZyr4r+yPmEnHZnQpB+
-9sgH5Q/SDPkUxTpaeYi8aBwDn6mgc6GDg3/8XqOz24He6sFaGXd0mUHrg+zXhVbh
-H8YFTCrBWNTFt1uXaQWJkhZ8mISV6jZkbwAIjVz29mhZlnKtHJuT7Lc5k0t1XG8P
-WXvQl1xds58l2MjunuGCbTPtBRDJOilXEqVj1ZshtscT3+jTjWTj5UzOLsdofl7q
-RNgCIZkSVsXIFSqeMVriC3hl47z9+DpdJglgTEJrLNo8whqPq0l4IsnzhHSAD01m
-gx8vk3ZCNnAHVnM9VsPzFtGvwNdBj9l1BfF1HrQI3ZvTdHHu4ABEdO1jDeQ6xJN7
-Y67BQXYVbkL4KPRthJssygIjBpgJ8Fytfa1uos+Q7gXsul4eMOrVqBxG392xZ4TB
-aYEtqwzTQ2V6ZowQyMMXxX6eLxs1ENopTNEHS0dkdyeQF8iV5V1e5L92x+DDZU7D
-C1VI/amVcoGS3L5Zr3pR/Uz9Jsm9BncAU6T1vRH2LC6ft04wnsgQTYySFFQkX2fk
-qqhUlTPBGTK8UJB3m9i05DJhUAph+tbbESuQVSMZYXZc5O5KAEE=
-=iARO
------END PGP SIGNATURE-----
-
---------------u4y7Z4Hxdq0nvazIG660CKHU--
 
