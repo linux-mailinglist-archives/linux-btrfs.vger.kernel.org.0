@@ -1,76 +1,75 @@
-Return-Path: <linux-btrfs+bounces-19200-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19201-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36D02C727D0
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Nov 2025 08:03:36 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id C489EC72AA0
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Nov 2025 08:53:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id BBD204EFB88
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Nov 2025 06:56:40 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 438394E83AA
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Nov 2025 07:52:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF4FC3128DA;
-	Thu, 20 Nov 2025 06:51:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CBAD305E27;
+	Thu, 20 Nov 2025 07:52:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="tQLUcQQJ"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="bL+fCCWJ";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="bL+fCCWJ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2ECF031159C;
-	Thu, 20 Nov 2025 06:51:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C19312E03F1
+	for <linux-btrfs@vger.kernel.org>; Thu, 20 Nov 2025 07:52:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763621472; cv=none; b=DNaJQ4ebdkv68Tx9CM4tHGm86IMuCri96inYXuWHuTkkuN7lnozgWryzogILyBZ4C+8wLDxZGeY5IYIc1swG86BEHNnd02JEQoR1fp4dLqzGPSf613S0NTccRYUS9+vB5RuymBvUtghzwoNCxLxbPc0GCNRSFsjgpD5ax20GQZw=
+	t=1763625129; cv=none; b=CefoEpmxPa2cltqIJAlUcQlQTG5DlsYMZlC+X5SXYi9sBNb7b/gZ8XRiD90vcS8gx3Pmhln+fxtSufNMoDPU4zJGjN4REs9ZLDiK0vnSZDqPVTsF9dyJwWJjRBu1Am1tLEgQSRZNFS7LUHdA41IYNeP9wCJDOXP2s3X7Zes3JG0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763621472; c=relaxed/simple;
-	bh=Y6h8Q9TXFwbvRM0+hxO3tgazKBGlWeeY0ClCxxMFfTo=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=RY5aW6Do6LoipSFWiZgciBYerYcPr3xQ1Gu2xz/6OXjxpupJXGJ0YNV55gDkCOgzGiDftAzWjTCK/oLqiJJN/js/jG9M/DBlgbqLQ07CU6jnLK7xpjj+37H76xi5zNYR+rl+mniPg8LAy2/Mq18ThiRkpJZr0rfL0RDMn6kHCJk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=tQLUcQQJ; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender
-	:Reply-To:Content-Type:Content-ID:Content-Description;
-	bh=jL8ppRPVG8qcJHhQmbp4DPmP8cn7AIsquXUk29wQop8=; b=tQLUcQQJ1W2RF4lwvz6c39SYoW
-	oAVJQh8Jg1PWDnuBSdgzA6xSvjrv2cXDB8992dhK/Wo8j5pOz8hONM4DYjQC45rFUIxZ1uh+fS+wA
-	6oz2QgsNVoK4mzrp+wqKNccVYRqqZZVhynU70WUxWXMp5EV8+bQLnE/UgEqU2cT1soIizuUeyHupI
-	55y1T5Mw7+9ML1dowISKgG+mEfS/1b6kTxYWDGDliPfMO04S6cDZkBh3MGUjfcG2R+DJwN2lk76Rb
-	WMZc0sa7XtI/cNZ0i+E/4UPmHBXsMIto+s0O0EnjNrFASI86ptYLRQe3vj2jF4qjXDKmyf1Si2/ii
-	TUdIGUBw==;
-Received: from 2a02-8389-2341-5b80-d601-7564-c2e0-491c.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:d601:7564:c2e0:491c] helo=localhost)
-	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vLyVW-00000006FY3-4B3w;
-	Thu, 20 Nov 2025 06:51:08 +0000
-From: Christoph Hellwig <hch@lst.de>
-To: Christian Brauner <brauner@kernel.org>
-Cc: Al Viro <viro@zeniv.linux.org.uk>,
-	David Sterba <dsterba@suse.com>,
-	Jan Kara <jack@suse.cz>,
-	Mike Marshall <hubcap@omnibond.com>,
-	Martin Brandenburg <martin@omnibond.com>,
-	Carlos Maiolino <cem@kernel.org>,
-	Stefan Roesch <shr@fb.com>,
-	Jeff Layton <jlayton@kernel.org>,
-	linux-kernel@vger.kernel.org,
-	linux-btrfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	gfs2@lists.linux.dev,
-	io-uring@vger.kernel.org,
-	devel@lists.orangefs.org,
-	linux-unionfs@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	linux-xfs@vger.kernel.org,
-	linux-nfs@vger.kernel.org
-Subject: [PATCH 16/16] xfs: enable non-blocking timestamp updates
-Date: Thu, 20 Nov 2025 07:47:37 +0100
-Message-ID: <20251120064859.2911749-17-hch@lst.de>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20251120064859.2911749-1-hch@lst.de>
-References: <20251120064859.2911749-1-hch@lst.de>
+	s=arc-20240116; t=1763625129; c=relaxed/simple;
+	bh=k3pZhxla2EIo8sz3lLf+Ri7+vOMiaxxlGzapu8ccgtE=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=HAjJQaPwkiCagym7kSNCzhD4bFgSWuv8o0YD6J+4I84Tt7UqJ8b9Ls13pQy2j2UmNmwTZPR+jGx7bIyOuOFK+S9T7xhoLvIefiCqYN60D0G3S1wsdiV19SixgdFEM96hmZhM2ToB9QcjdpVpDeG/6ndDKWQ1CbihPOjko2DvEzU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=bL+fCCWJ; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=bL+fCCWJ; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 3BE2D208F3
+	for <linux-btrfs@vger.kernel.org>; Thu, 20 Nov 2025 07:52:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1763625122; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=odqSj+Qo/bYDD06d5ml5r+02qk8Wxt2/GSDfqErQies=;
+	b=bL+fCCWJqIfXojBetURwhbd3wFY2qb1JfRnzOJTd3h+e0b4ZactTPui/2EnLZKhpWpCF+0
+	q/BY+g7XpHXVFK7ykabALEPdfwbubrXEbDRBiJ7miJVe65b3xBmtxZhQyPCjRtfamQ3ojQ
+	nkOwsfAby8jEBFl2opNiZekOvW5k8Kw=
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1763625122; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=odqSj+Qo/bYDD06d5ml5r+02qk8Wxt2/GSDfqErQies=;
+	b=bL+fCCWJqIfXojBetURwhbd3wFY2qb1JfRnzOJTd3h+e0b4ZactTPui/2EnLZKhpWpCF+0
+	q/BY+g7XpHXVFK7ykabALEPdfwbubrXEbDRBiJ7miJVe65b3xBmtxZhQyPCjRtfamQ3ojQ
+	nkOwsfAby8jEBFl2opNiZekOvW5k8Kw=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 760953EA61
+	for <linux-btrfs@vger.kernel.org>; Thu, 20 Nov 2025 07:52:01 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id dFwKDqHIHmmAQwAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Thu, 20 Nov 2025 07:52:01 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH v2 0/4] btrfs: reduce btrfs_get_extent() calls for buffered write path
+Date: Thu, 20 Nov 2025 18:21:39 +1030
+Message-ID: <cover.1763620860.git.wqu@suse.com>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -78,56 +77,73 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	RCVD_TLS_ALL(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Score: -2.80
 
-The lazytime path using the generic helpers can never block in XFS
-because there is no ->dirty_inode method that could block.  Allow
-non-blocking timestamp updates for this case by replacing
-generic_update_times with the open coded version without the S_NOWAIT
-check.
+[CHANGELOG]
+v2:
+- Fix a potential bug where OEs beyond EOF are not truncated properly
+  This replace the original patch to extract the code into a helper.
 
-Fixes: 66fa3cedf16a ("fs: Add async write file modification handling.")
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- fs/xfs/xfs_iops.c | 20 ++++++++++++++------
- 1 file changed, 14 insertions(+), 6 deletions(-)
+- Replace more for_each_set_bit() with for_each_set_bitrange()
 
-diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
-index bd0b7e81f6ab..57ff05be5700 100644
---- a/fs/xfs/xfs_iops.c
-+++ b/fs/xfs/xfs_iops.c
-@@ -1195,16 +1195,24 @@ xfs_vn_update_time(
- 
- 	trace_xfs_update_time(ip);
- 
--	if (flags & S_NOWAIT)
--		return -EAGAIN;
--
- 	if (inode->i_sb->s_flags & SB_LAZYTIME) {
--		if (!((flags & S_VERSION) &&
--		      inode_maybe_inc_iversion(inode, false)))
--			return generic_update_time(inode, flags);
-+		int updated = flags;
-+
-+		error = inode_update_timestamps(inode, &updated);
-+		if (error)
-+			return error;
-+
-+		if (!(updated & S_VERSION)) {
-+			if (updated)
-+				mark_inode_dirty_time(inode, updated);
-+			return 0;
-+		}
- 
- 		/* Capture the iversion update that just occurred */
- 		log_flags |= XFS_ILOG_CORE;
-+	} else {
-+		if (flags & S_NOWAIT)
-+			return -EAGAIN;
- 	}
- 
- 	error = xfs_trans_alloc(mp, &M_RES(mp)->tr_fsyncts, 0, 0, 0, &tp);
+- Fix several copy-n-pasted incorrect range inside submit_range()
+
+
+Although btrfs has bs < ps support for a long time, and the larger data
+folios support is also going to be graduate from experimental features
+soon, the write path is still iterating each fs block and call
+btrfs_get_extent() on each fs block.
+
+What makes the situation worse is that, for the write path we do not
+have any cached extent map, meaning even with large folios and we got a
+continuous range that can be submitted in one go, we still call
+btrfs_get_extent() many times and get the same range extent map again
+and again.
+
+This series will reduce the duplicated btrfs_get_extent() calls by only
+call it once for each range, other than for each fs block.
+
+The first one is a potential bug inspired by Boris' review.
+Patch 2~3 are minor cleanups.
+Patch 4 is the core of the optimization.
+
+Although I don't expect there will be much difference in the real world though.
+
+Qu Wenruo (4):
+  btrfs: make sure all ordered extents beyond EOF is properly truncated
+  btrfs: integrate the error handling of submit_one_sector()
+  btrfs: replace for_each_set_bit() with for_each_set_bitmap()
+  btrfs: reduce extent map lookup during writes
+
+ fs/btrfs/extent_io.c    | 236 +++++++++++++++++++++-------------------
+ fs/btrfs/ordered-data.c |  38 +++++++
+ fs/btrfs/ordered-data.h |   2 +
+ 3 files changed, 162 insertions(+), 114 deletions(-)
+
 -- 
-2.47.3
+2.52.0
 
 
