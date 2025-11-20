@@ -1,384 +1,207 @@
-Return-Path: <linux-btrfs+bounces-19204-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19206-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B4A3C72A91
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Nov 2025 08:52:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5988CC72EF2
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Nov 2025 09:42:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 14F97345475
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Nov 2025 07:52:39 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 7822E347CE9
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Nov 2025 08:42:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDA383093DF;
-	Thu, 20 Nov 2025 07:52:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F74A309F12;
+	Thu, 20 Nov 2025 08:42:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="bw8WXUNR";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="bw8WXUNR"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="AprvbwVN";
+	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="bG7PYQuS"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from esa1.hgst.iphmx.com (esa1.hgst.iphmx.com [68.232.141.245])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0DF5308F0B
-	for <linux-btrfs@vger.kernel.org>; Thu, 20 Nov 2025 07:52:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763625137; cv=none; b=RgjgCnQJK3gfiZLBUN7xfdQwCeVojbD5nsXpM6YFrWGdwHFizAqRA6zrJl1McoQYHlVTEZxPdfmeInzhRFRfq+BiEk9kwUijXtSPva1zQm2s9Mdft5khaZaItqAf0zP0triWFXNiHV+wnDl2tQKl/0zdg2bO0xltUoMQXqlXovE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763625137; c=relaxed/simple;
-	bh=W8MPeVHgoF2qjE9CMOlJJ1gIakuYr54QCXvkQLR9fhY=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nTjLDTu+cn9xYkUfbFkgR78L8Oq/WHvBEmxCKfAvwJITva7UymMoETcUChdLP+1Qn3ELkYBTpj1a0znhUT25P9yAKb1PGubSCLXTQSmlitRlGvUq8CvYZwSTcxoHSZ96MUBLEZw3D04yT/Mc1+MP8D79oug635LuSa4VggROB6A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=bw8WXUNR; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=bw8WXUNR; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 0F5652174C
-	for <linux-btrfs@vger.kernel.org>; Thu, 20 Nov 2025 07:52:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1763625127; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sbPsx4TCJItB99g3VXeT+vCSYe6QI8Ccb9tuDJRUc/Q=;
-	b=bw8WXUNR9UBaIS3z65hPIMslGs6lKlcmfwfqxss5as8fHwqV/Jz5hNMeX9/JfwAMPYyxAp
-	OFJFWvJKKPtEcekpTw5eCQpHk/nWtehF6SGomYzACERQtp4V0Ge0zPOzSkJh/lFhRYDpCO
-	uX7pYs+HhTmiVpMmY3nvo12GKRXxEmM=
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=bw8WXUNR
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1763625127; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sbPsx4TCJItB99g3VXeT+vCSYe6QI8Ccb9tuDJRUc/Q=;
-	b=bw8WXUNR9UBaIS3z65hPIMslGs6lKlcmfwfqxss5as8fHwqV/Jz5hNMeX9/JfwAMPYyxAp
-	OFJFWvJKKPtEcekpTw5eCQpHk/nWtehF6SGomYzACERQtp4V0Ge0zPOzSkJh/lFhRYDpCO
-	uX7pYs+HhTmiVpMmY3nvo12GKRXxEmM=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4EDD73EA61
-	for <linux-btrfs@vger.kernel.org>; Thu, 20 Nov 2025 07:52:06 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id EM3wBKbIHmmAQwAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Thu, 20 Nov 2025 07:52:06 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 4/4] btrfs: reduce extent map lookup during writes
-Date: Thu, 20 Nov 2025 18:21:43 +1030
-Message-ID: <0b53ad2ee1fd3476fe90ed689f6544dd306f64d8.1763620860.git.wqu@suse.com>
-X-Mailer: git-send-email 2.52.0
-In-Reply-To: <cover.1763620860.git.wqu@suse.com>
-References: <cover.1763620860.git.wqu@suse.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51B082EACF9
+	for <linux-btrfs@vger.kernel.org>; Thu, 20 Nov 2025 08:42:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=68.232.141.245
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1763628149; cv=fail; b=EUFh74NrJzqXTdZs0sI1E8z2hYCcAj7ZTK5ljWvgrdXZIXCZU271R0wVYWqKI/yLbqz/n+2zxCCQvZxjSwthHFyQgwX+1U8Cso4JrR1mYBi9+cEzIScms9JW39PMx0vOewdjdg84oxJTEt2HbEoYZOqgwqkby1ra87gNwEFOU5c=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1763628149; c=relaxed/simple;
+	bh=f+z6ql9M5JhawzkmfcJJBxApS2D5ls0dv54BOWw8ja8=;
+	h=From:To:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=MPWjr9iYxSzZwO/2S3ePucOSfARy47mH8Clt/21iqfK5L2RTb+lKjpLztkUrWcqtAUwIvjTIbPjdwJrcZGJrdH9I4PCrDP/sDRu4UhpA5JljY3UJbwBdQD+CcBR7QXbA04/0HLONM7TMKyBWZd3yj/4Fr0hD4+N+/oxI+oh2KCU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=AprvbwVN; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=bG7PYQuS; arc=fail smtp.client-ip=68.232.141.245
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1763628147; x=1795164147;
+  h=from:to:subject:date:message-id:references:in-reply-to:
+   content-id:content-transfer-encoding:mime-version;
+  bh=f+z6ql9M5JhawzkmfcJJBxApS2D5ls0dv54BOWw8ja8=;
+  b=AprvbwVN2eQBC8kldUBpSsq3GOKoTzzGiro1Rcb2dF4RuSGeQY8b+MD5
+   ZnX9kVDSUOedo/lafhWjoxsLrD9w37fWY/+E1TD7D9XQFL3jB8m6x4UW8
+   P1zpURGZjMrYVAZiiEwSa35b3mySTRsriQtnApcSU81ik0E1ZiTGM+zOw
+   oyKo6NfaTn8wnHCVvy3ZYrTSxhsM7fi5TpswAnzDYeJ+lPpAlhQ7OPMSZ
+   OGmaJUZ2qlZgR16x8bdmLWu1mf9Y9gY2CN/2Gj7xsLLdfjwJg+UDRow+m
+   xJSVLS1ApGxuDlCZWfYd6XJQ+Qd5z7sziZRejln3+a9eEC8NVoopzaT6P
+   A==;
+X-CSE-ConnectionGUID: CEDZCBMMTmW2Khbt+ADUGw==
+X-CSE-MsgGUID: nh1LUpCfT6mGYOY96d14tQ==
+X-IronPort-AV: E=Sophos;i="6.19,317,1754928000"; 
+   d="scan'208";a="135452739"
+Received: from mail-southcentralusazon11012014.outbound.protection.outlook.com (HELO SN4PR2101CU001.outbound.protection.outlook.com) ([40.93.195.14])
+  by ob1.hgst.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 20 Nov 2025 16:42:26 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=Hqx91JRjImnzbOTJlDxDkQRIEAZLTDpNXqMCwBl+CPlVgIsz0RvgbcVIQ6iAzO93zuHasm+E00fzMCTP9unH/FuxwGdVccVieVeWahC6cFalM1CrEvSaNWdt70PwDUWUJSYuOJafxq1SmKZfafqd2QRmNrZot0ZjRFc5pi7Fa0M4sBnbNfGKPpJ/N5irXvwIlDlx8xW0yZBnV/tkSe8SIqflVTNnnim22/R5uSqYMwLH7A8P0/ztpyXBDc78FXeQ8sVhyvB9eSqG6X9mnehSS78itPpmnpjgOH4AtKPmV8Y3f6ZC9pRcKRRHN42A2RYEaRyQ8jrTsG0jGRuKYhl/IQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=f+z6ql9M5JhawzkmfcJJBxApS2D5ls0dv54BOWw8ja8=;
+ b=ipvyqUC13CGUSwyir6T6ssf/kwFzfywumnKqt1paIjHlrjtRsTQ3bhD/rz8zzt2mAqeJpKA0IKStxMOWflcyV5cBqmKA7YqZZlI+4o5yS2ldATIGV9bUN4Y3lOKyOsOQ8QCIhPf9HHrG/I35nx64sH98pNM6pNWJlasibRCrhx1vXuf/9nmUmC6MDR0dja66yFLb0ahrdbalbn4GCPjl8fxZzrBHC7eccQRq9M4gkEL9AFfS6oe4a0Xsln43jMpLfkAuVc83NaoOsl96yiVe9vDruB4OsKNyxbCVuzYXRf8syY20LR5BwOVB9kprS1Ft4iWSRoQ99sDGH8JGpwkjHg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=f+z6ql9M5JhawzkmfcJJBxApS2D5ls0dv54BOWw8ja8=;
+ b=bG7PYQuS8ceICkZGnpegk3j7dmePnfxvLYk6h6riQylNOpnYn+sc+jRwR2tQmGtrjdaJNCzNonX6AEKKuvP0EjkBF69pl78vRT1pwhfE+LlKlSK/tnJC4IvqUqIgee5cAIpm9GAs1RzWX5a0erM7Ixz+5yHhwsGO2H4YpRdAS+8=
+Received: from SA0PR04MB7418.namprd04.prod.outlook.com (2603:10b6:806:e7::18)
+ by SA6PR04MB9375.namprd04.prod.outlook.com (2603:10b6:806:442::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9343.10; Thu, 20 Nov
+ 2025 08:42:24 +0000
+Received: from SA0PR04MB7418.namprd04.prod.outlook.com
+ ([fe80::17f4:5aba:f655:afe9]) by SA0PR04MB7418.namprd04.prod.outlook.com
+ ([fe80::17f4:5aba:f655:afe9%3]) with mapi id 15.20.9320.021; Thu, 20 Nov 2025
+ 08:42:24 +0000
+From: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To: "fdmanana@kernel.org" <fdmanana@kernel.org>, "linux-btrfs@vger.kernel.org"
+	<linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH 0/2] btrfs: cleanups for a couple log tree functions
+Thread-Topic: [PATCH 0/2] btrfs: cleanups for a couple log tree functions
+Thread-Index: AQHcWVejhAOJo4ruUEeFfyV7astYvbT7QH8A
+Date: Thu, 20 Nov 2025 08:42:24 +0000
+Message-ID: <1b5b3937-89b4-487d-ac89-fc5fd579f4fd@wdc.com>
+References: <cover.1763557872.git.fdmanana@suse.com>
+In-Reply-To: <cover.1763557872.git.fdmanana@suse.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Mozilla Thunderbird
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SA0PR04MB7418:EE_|SA6PR04MB9375:EE_
+x-ms-office365-filtering-correlation-id: cb139420-371c-410c-0af3-08de2810ba9c
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|376014|19092799006|10070799003|1800799024|366016|38070700021;
+x-microsoft-antispam-message-info:
+ =?utf-8?B?S2ltZHc4OXpBQjErSDh3alBLT2MrWGRvV0RaREJQdVNQandSVXFLWmd0T3ds?=
+ =?utf-8?B?M3BGcHV2d2pxaCtDZk1vRHlwTVVrSlU0Y1hvK2JSS1IzNlNTWWJiR3BNKzAv?=
+ =?utf-8?B?eWVyK1g4eXppaGkyQXBac296cFJHdnNCQ0NpWS95cWZtUWJDYWlzQytmRW5j?=
+ =?utf-8?B?R0RQeDUrMDFQNS92VFRCalBiMnNxSlIyYWRxRDMyWHluTnl5T2V0Tm5NUWVm?=
+ =?utf-8?B?NkQ0Nnh1VTlPU0xybk5HRGxVcVdMNEFpU2dYMVJkRmg1M2M1ZnVxMHJSRmxQ?=
+ =?utf-8?B?cjlRLy9NNDI5K3lNbDZjb2VqV1pjQzUwZnZPWFRXZEQ0QTVUMWRteVJkNjQ5?=
+ =?utf-8?B?Uk1ZcGF1K1dvZUVYM2NzejQ4azBwMXhHeWlmbXNVaURtZXNQSWpwcWZRZWFj?=
+ =?utf-8?B?MHhtUU8vT3pHR3ZtR2FFTHhwakQxc29URlhEVWJBSGtBdk10KzN2Qmh0NlRL?=
+ =?utf-8?B?R3BNWnBOQi9UanhlTTdncExpYy9FVGR3dVI2V3NPclF2MHQ4UVhvdXhlNE1T?=
+ =?utf-8?B?b0h5QnN0djNiZlliUHU0aWJzZEtKdGNpcnEvcnNBYVJsbVZhSXF3TmtwR0Z0?=
+ =?utf-8?B?eldOVE02MXY0bm5UNGN5VEh0RWhPQmRsdDhvUXorSVJOUmpQMEQrdzdJR3Fv?=
+ =?utf-8?B?VVJ2UmpNZHVrbXBjT1RSQ28rSjNaY1ptbnVSak92R1ZxWVNlWGxaelM3Y05s?=
+ =?utf-8?B?d3E4QUZqVEFCKzBwRVp2SVZZUUVGRU1HZW1wb3dhb2gvOTVHSnNRM0ZrY1di?=
+ =?utf-8?B?VlE3Q0ZGVW81alo4YitXY1prKzFRQm9PQldKcXdYSDM4Y0VqUjFVYXIxZUJv?=
+ =?utf-8?B?RmN4NlNKellQQjMzYk9udkZhT0ZFS2pmYzZQekN4N1FSdmpVNklsWlNaZFli?=
+ =?utf-8?B?dUpyWmxYdTNCd2trVVNmZnpuOW5xWXdzQWJPd3Q0OWZhdmxCU2M2a1QwOWh2?=
+ =?utf-8?B?L0dGY0wxMlRtSVNuNUpIaFR2S0pQNjAxUm5XbDd4dkxZR2o2VGdEdFBlV1BC?=
+ =?utf-8?B?RmtaYWRtbDRKcFNwbUVhQXNscGhJbmdmZVBOQWZYNEtvNTRpZUJxdU1kTnVi?=
+ =?utf-8?B?VDcybU95dlJLWXU2WHdSWE92cFNpeVlqZk5mUmdvdldlaGlYR09aNk1qZCtJ?=
+ =?utf-8?B?b0UzdkRkdi81UjAzSjhNY0Q1MEY0dVdNVTFId3VzRlJRY0RVQ1B4YnhXc1Yz?=
+ =?utf-8?B?TlBLd3hjQzAycjZxR3hrZk5ZNzdHZFpJMkUvL1E1SVBheE8xZXFUVTZkdXZh?=
+ =?utf-8?B?QzVpVGp0TXNFd2p3a25Uc3RUZlVzMmFnOW8wb0pBeUkvemJwcGZ1dENwUENN?=
+ =?utf-8?B?NEtNRkhpeE4vcDBkSHZ2S3RLbmcrSmY1Zms3VGd1dUlROHU2QmdvYkFRaE0w?=
+ =?utf-8?B?ZnhkSTA1ellSRFVXa0pCQzU2cTlTL2o2c0x1c1Uzd2NITHBHRTFLdVg3ZXZj?=
+ =?utf-8?B?ZW5FQmRYZlUwOFNISzBlT0FtbUVlOSs3M0R2aXEwVi9KQWZ6NVhwaHBydSs0?=
+ =?utf-8?B?RDkzaTRhSi9zRGZTUC9mTFVHNldGclVRWnhhZ2hJOXpOSVhXZndDMUVzN3Yv?=
+ =?utf-8?B?SENLNlB2TmQwM2ZTU3NmK0ZDTC9EeEdhelJDbmxrYzA3TGF6cjd4U0dCOEJG?=
+ =?utf-8?B?TnpCQUgzeDJqd3hZd2xhNFV0T0tVRGFHbTVWQ0EwdFcwSkRYditDWXd1cEtT?=
+ =?utf-8?B?bnZMM3RpVUJRKzI0UzFXNTNBb2dqYzBaZnp4Vm1KbW4zNHFNTTY1Uy9taVZI?=
+ =?utf-8?B?Yis5Rm1FeSs3dEk5dWdUd1E3R0s2TjNTUmdUNk11eCtZTmsxTmd3TUJpUGJi?=
+ =?utf-8?B?emNqY2pJN1VhOEZNQWtwV085eWtNcE8rT2NtR0lmNlhlaXc0ajFNMXhINmhJ?=
+ =?utf-8?B?ZXByVXZ6Q0dMY0JDNkZiLzd5NDRFTUtuQTFiZ2RCQ0lvSFFuWFhQazBISXJp?=
+ =?utf-8?B?OHM0RmFVZ2tZZjBPazhuV2l0aWhGSDBRMU5wd3R0dFJvRDNHbFhrYnlqeE83?=
+ =?utf-8?B?UjEvcXZJOFlxeXovV29MOW5xVk1qUHMyTXFqSkFyY2M5UnRNZDVpSzdyOHd0?=
+ =?utf-8?Q?aei105?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA0PR04MB7418.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(19092799006)(10070799003)(1800799024)(366016)(38070700021);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?a0FrbXV6MFZ4WGNtQ1daVFpwM1IvMWpuVmIxZnVYTUZ3aURpQWY0Y29Rekdu?=
+ =?utf-8?B?dnVEVnI0U3puNU1sdUZCL1pNZkZFNFFHQ016MzE3ZkphZm5JU3RvM01DMlZi?=
+ =?utf-8?B?SzR1ek90Tmg5VlRUK1lSVTFDTTV0Mkh3Q3d2Rk9FMDNPMktYQndMRTN6SHV1?=
+ =?utf-8?B?dFVRcnpXRUlWbmF5N3ZvNmVSUzBGT09pL0tZeWxhYzlUUmZBWkUwWkJuUWZn?=
+ =?utf-8?B?NisyQ25IdWtjdVdkWm9qa21maXh1MVUrS2ZhQmRiYXFGNVNYUVVVakRyb2ht?=
+ =?utf-8?B?dFZLVDIzc0Z4eS9OaGVsNEtxamk1aHNVVmM2QnhVTDlkWW9Ocjd6a0g5M09p?=
+ =?utf-8?B?T0trU0VKYWFDbzlrOWJsWml5dGlSOVBLQnhtQXVpdU5hbUtwWFdBaHdNS0NC?=
+ =?utf-8?B?VVY1QVBnWFozSmx1VHN0ZHBRcFU0MjZsRlZRa2xRNEI1bGVVcm13ZXdQNkV0?=
+ =?utf-8?B?YWJ3WTlscmFNZDI4NlQvSDdCaEZKWm5EOTUzRGErTmVXSTlGV1NhRFBtRStp?=
+ =?utf-8?B?OWo4c1lvRHZ5R2p3Zi9RZElGcWMyTVhmME82VVRSREdhNGowenptcGRVbGQw?=
+ =?utf-8?B?NGdKd3ZEZXVRYktRaFFlQWFjRHc4cnZHVHlmdmV3TnM2ZnN0ZkkzOXd0Rmlx?=
+ =?utf-8?B?eE4rbGJIUCtVNjQ2bFZvWjRzck52UnBGV2t5SlU2QkpQNDhjc29rSjgyUzQ0?=
+ =?utf-8?B?bHhQUDZVOTJZMWtUSG85RVJiMEVMcWFDb0xkTUx4cjVKUjl3VGI5aEoxcjgx?=
+ =?utf-8?B?Y1d1djNuOG9tR0pRREY0c2N4MlJ3VGN5Q21Da2s1RkozV0JPYk84dWRLY3Zv?=
+ =?utf-8?B?em1zMkUyQmw0T1d2NFY4cklTTUVzbnVPaTBkMHdtVEFTUGR4RjhsSE0rTERh?=
+ =?utf-8?B?SjZlVnhxQkJGM1ZDSVFXZWZzVW9NZkU1RmpXQ2pZMUIrM0hZTnc3Tlhwb2U4?=
+ =?utf-8?B?L2E4c3ZDQ0R4UXdoem9tQTNTUVVrMlZkS1B2OFJIVmhYOUFYRVhjNnFKU0FD?=
+ =?utf-8?B?K1FUbzl1d3htdGFkZWY2bUR1V0pwUDk1WXkwVDl4cmhNYWhkZVVJNjBOa1dh?=
+ =?utf-8?B?SnRRZ3hnMmtIUi8rTHJCdnNkd01Wa1JuaG1tRW91eFVGcXorNXhHd0VkVnMv?=
+ =?utf-8?B?dFlNZm5aWW95cTMwYkNrY2FFWVpLV3VKYWQyZm9xdFBTbmJtanovV2pNSnV5?=
+ =?utf-8?B?T25hVHdwc2x6aVpjTnNxNzEyclcvMU9IVTVoY01zaTBQV0NjdE5vN2daM2o3?=
+ =?utf-8?B?WWVsY1dKdndVdFlxY3QyY3Zaem1Uc1hFQ25FL0hlajk5aVBTaElrUW5jZzNX?=
+ =?utf-8?B?L284MUF6MEVxVjR5dUJzbzBMSTZuNitRYVQ3Sm9VUCtHNUdxSkdZRE9YZnlm?=
+ =?utf-8?B?WUhQSlNERjR0OWpublVwT1IvMHVBbXlnUHlCTlNKVFRCQjFVL3hSS2tSRWR6?=
+ =?utf-8?B?bDNhdUtSU2lhWWpjc2N2am5RVkFZZmVQZUFWV3JTNDhGVEh6aDFpaS9ncmtW?=
+ =?utf-8?B?eitOMVJFZCtKQW42d09iaitVS1hldHhyaU1qWnB2VzN1dWRjRXRsdW5lWDZp?=
+ =?utf-8?B?UlRkTE14TEczWW9QNzE1VUhoRGtuQ3cxUThTSlFPUThCTlVyRmo0VjhmdUpR?=
+ =?utf-8?B?d0pvUkRZYm1NRTQ5MGxsN1FJeldCRkxIRlZVZG1Ebmg5TjVCYVJybGhyTU41?=
+ =?utf-8?B?SWtndnNoR3kzV3RsUHBBS2FVSEQva01mMER3N0t4eWR3eWJFcUljNTR1QWJ1?=
+ =?utf-8?B?R2hqdy95amJIemZuUWNML29sZDdOR3BZOHY0aTYrWU5aODVvaVBlZnRBTUkw?=
+ =?utf-8?B?UWM0aC9HQ2N4VnNQVHA1NTJNOGFKTTRmMkxIL3VmMVd6cWJJNWVTV2hISkNu?=
+ =?utf-8?B?RzFwaXhFRm1ObkNMRmtpYmhMQ0E5LzRreW04RzZMOSsvUzM0aHNESlo1UDUv?=
+ =?utf-8?B?emdiUlpqb0JZQUdEeVZKZzNDUGJrdWJRZTVtKzJCeUE4WlFYc1g3bHhheWhB?=
+ =?utf-8?B?R2xIaGpKeVF5MndBZGpyaS9VOWI3MGFlZXBpczNzUExDc3FWMmx3QnNCa2xl?=
+ =?utf-8?B?Tkk0c0dqR2ZmakFRL1FPTTIwdUhxNW1zdHNuZ1RaeDBmK1FDWlhGWGJ6empr?=
+ =?utf-8?B?MGhnemlvb2NLTzVGNnlEeDQ5RUtkeUxaNWVNL1graUxjWitGRWk0QUZtWnRQ?=
+ =?utf-8?B?aEpqVEZFb1Q4OWxOVmJlaWxtMGJEQVZBK3ArM2VKdWlxTGE0WnVMWk1yNDVC?=
+ =?utf-8?B?S2MzZFF2d2pLOWNHN01vb2lKaDJRPT0=?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <14F969A70541CE4C89642EF8DB796C01@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Rspamd-Queue-Id: 0F5652174C
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	FROM_EQ_ENVFROM(0.00)[];
-	ARC_NA(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	RCVD_TLS_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:mid,suse.com:email];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	TO_DN_NONE(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[suse.com:+]
-X-Spam-Score: -3.01
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	6PfenOww0jVLykinSpRiErvZkmqy7WmIwl1WCNWFVECirDE/KYVPLjkCJELccH2nSYGOG2+I+3FA6fgvRpQYBCSVf7DhXvVREsCkWuZGzrkJ1pnW5pTfIJiTPXniRM3qa3O4GHsFk2GCVCUgikwidPFwOz2OXxBFQfqERcJ/oSY3m8CLbgS3OjWEwL1luggnvSdbZyGPHix371dTdodxkjS3Yx986jKWndSNVM3NB75UZUKujZ1TrkeiHIWn5uB9q+CwLemnKJCVyTBLFchegHd72ZA3oqcvxy1/0VmkxKGVtXoSOre43fH5nyNz7KaX2i4gOXF70rm4btHvCvJayw6sa65lS7DgQNHQnnZ/kmH1zve9zuhf3gBZjgaxMcLMjIATgGWWpjqLn6emrax33TScnHeU30LNaPivDeTDNYpYqf4CEaAcMzxEs00GJMdD7nmn+eHdNXLd47FQiP2B0CiobspQXUWslZN5hNGd+XwsHF1Zz4CYMbRM4PWmITo6Dz+Ql4vu1UxyJQhrwys5StGfVYsOGeFBnozJjk1Yb6da4RJ+SvP1iC1AHOdrSDGb4bdFCXl3bRLJUzraYGYIDBM76MGHTaCMt/oQzHVR6ghL0aSTLx71IpZhDcs7lVat
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA0PR04MB7418.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cb139420-371c-410c-0af3-08de2810ba9c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Nov 2025 08:42:24.8384
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: u/cV98BuYS0/OXzXIdF0ePWRvxNTNRUlaosPhpcklc801EGr0TW9r1IFEYwZ/Ner/dMGPu1YcYxWAL1lhV/dWnNJtC3KXO75GF99Qgj7hgs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA6PR04MB9375
 
-With large data folios supports, even on x86_64 we can hit a folio that
-contains several fs blocks.
-
-In that case, we still need to call btrfs_get_extent() for each block,
-as our submission path is still iterating each fs block and submit them
-one by one. This reduces the benefit of large folios.
-
-Change the behavior to submit the whole range when possible, this is
-done by:
-
-- Use for_each_set_bitrange() instead of for_each_set_bit()
-  Now we can get a contiguous range to submit instead of a single fs
-  block.
-
-- Handle blocks beyond EOF in one go
-  This is pretty much the same as the old behavior, but for a range
-  crossing i_size, we finish the range beyond i_size first, then submit
-  the remaining.
-
-- Submit the contiguous range in one go
-  Although we still need to consider the extent map boundary.
-
-- Remove submit_one_sector()
-  As it's no longer utilized.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/extent_io.c | 188 ++++++++++++++++++++++++-------------------
- 1 file changed, 103 insertions(+), 85 deletions(-)
-
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 87bf5ce17264..99cda33b7c43 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -1602,91 +1602,100 @@ static noinline_for_stack int writepage_delalloc(struct btrfs_inode *inode,
- 	return 0;
- }
- 
-+
- /*
-- * Return 0 if we have submitted or queued the sector for submission.
-- * Return <0 for critical errors, and the involved sector will be cleaned up.
-+ * Return 0 if we have submitted or queued the range for submission.
-+ * Return <0 for critical errors, and the involved blocks will be cleaned up.
-  *
-- * Caller should make sure filepos < i_size and handle filepos >= i_size case.
-+ * Caller should make sure the range doesn't go beyond the last block of the inode.
-  */
--static int submit_one_sector(struct btrfs_inode *inode,
--			     struct folio *folio,
--			     u64 filepos, struct btrfs_bio_ctrl *bio_ctrl,
--			     loff_t i_size)
-+static int submit_range(struct btrfs_inode *inode, struct folio *folio,
-+			u64 start, u32 len, struct btrfs_bio_ctrl *bio_ctrl)
- {
- 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
--	struct extent_map *em;
--	u64 block_start;
--	u64 disk_bytenr;
--	u64 extent_offset;
--	u64 em_end;
- 	const u32 sectorsize = fs_info->sectorsize;
-+	u64 cur = start;
- 
--	ASSERT(IS_ALIGNED(filepos, sectorsize));
-+	ASSERT(IS_ALIGNED(start, sectorsize));
-+	ASSERT(IS_ALIGNED(len, sectorsize));
-+	ASSERT(start + len <= folio_end(folio));
- 
--	/* @filepos >= i_size case should be handled by the caller. */
--	ASSERT(filepos < i_size);
--
--	em = btrfs_get_extent(inode, NULL, filepos, sectorsize);
--	if (IS_ERR(em)) {
--		/*
--		 * bio_ctrl may contain a bio crossing several folios.
--		 * Submit it immediately so that the bio has a chance
--		 * to finish normally, other than marked as error.
--		 */
--		submit_one_bio(bio_ctrl);
-+	while (cur < start + len) {
-+		struct extent_map *em;
-+		u64 block_start;
-+		u64 disk_bytenr;
-+		u64 extent_offset;
-+		u64 em_end;
-+		u32 cur_len = start + len - cur;
- 
- 		/*
--		 * When submission failed, we should still clear the folio dirty.
--		 * Or the folio will be written back again but without any
--		 * ordered extent.
-+		 * Here we call btrfs_get_extent() with sectorsize as @len
-+		 * intentionally.
-+		 * This allows us to catch any unexpected HOLE extent map
-+		 * inside the range.
- 		 */
--		btrfs_folio_clear_dirty(fs_info, folio, filepos, sectorsize);
--		btrfs_folio_set_writeback(fs_info, folio, filepos, sectorsize);
--		btrfs_folio_clear_writeback(fs_info, folio, filepos, sectorsize);
-+		em = btrfs_get_extent(inode, NULL, cur, sectorsize);
-+		if (IS_ERR(em)) {
-+			/*
-+			 * bio_ctrl may contain a bio crossing several folios.
-+			 * Submit it immediately so that the bio has a chance
-+			 * to finish normally, other than marked as error.
-+			 */
-+			submit_one_bio(bio_ctrl);
-+
-+			/*
-+			 * When submission failed, we should still clear the folio dirty.
-+			 * Or the folio will be written back again but without any
-+			 * ordered extent.
-+			 */
-+			btrfs_folio_clear_dirty(fs_info, folio, cur, cur_len);
-+			btrfs_folio_set_writeback(fs_info, folio, cur, cur_len);
-+			btrfs_folio_clear_writeback(fs_info, folio, cur, cur_len);
-+
-+			/*
-+			 * Since there is no bio submitted to finish the ordered
-+			 * extent, we have to manually finish this range.
-+			 */
-+			btrfs_mark_ordered_io_finished(inode, folio, cur, cur_len, false);
-+			return PTR_ERR(em);
-+		}
-+		extent_offset = cur - em->start;
-+		em_end = btrfs_extent_map_end(em);
-+		ASSERT(cur <= em_end);
-+		ASSERT(IS_ALIGNED(em->start, sectorsize));
-+		ASSERT(IS_ALIGNED(em->len, sectorsize));
-+
-+		block_start = btrfs_extent_map_block_start(em);
-+		disk_bytenr = btrfs_extent_map_block_start(em) + extent_offset;
-+
-+		ASSERT(!btrfs_extent_map_is_compressed(em));
-+		ASSERT(block_start != EXTENT_MAP_HOLE);
-+		ASSERT(block_start != EXTENT_MAP_INLINE);
-+
-+		cur_len = min(cur_len, em_end - cur);
-+		btrfs_free_extent_map(em);
-+		em = NULL;
- 
- 		/*
--		 * Since there is no bio submitted to finish the ordered
--		 * extent, we have to manually finish this sector.
-+		 * Although the PageDirty bit is cleared before entering this
-+		 * function, subpage dirty bit is not cleared.
-+		 * So clear subpage dirty bit here so next time we won't submit
-+		 * a folio for a range already written to disk.
- 		 */
--		btrfs_mark_ordered_io_finished(inode, folio, filepos,
--					       fs_info->sectorsize, false);
--		return PTR_ERR(em);
-+		btrfs_folio_clear_dirty(fs_info, folio, cur, cur_len);
-+		btrfs_folio_set_writeback(fs_info, folio, cur, cur_len);
-+		/*
-+		 * Above call should set the whole folio with writeback flag, even
-+		 * just for a single subpage block.
-+		 * As long as the folio is properly locked and the range is correct,
-+		 * we should always get the folio with writeback flag.
-+		 */
-+		ASSERT(folio_test_writeback(folio));
-+
-+		submit_extent_folio(bio_ctrl, disk_bytenr, folio,
-+				    cur_len, cur - folio_pos(folio), 0);
-+		cur += cur_len;
- 	}
--
--	extent_offset = filepos - em->start;
--	em_end = btrfs_extent_map_end(em);
--	ASSERT(filepos <= em_end);
--	ASSERT(IS_ALIGNED(em->start, sectorsize));
--	ASSERT(IS_ALIGNED(em->len, sectorsize));
--
--	block_start = btrfs_extent_map_block_start(em);
--	disk_bytenr = btrfs_extent_map_block_start(em) + extent_offset;
--
--	ASSERT(!btrfs_extent_map_is_compressed(em));
--	ASSERT(block_start != EXTENT_MAP_HOLE);
--	ASSERT(block_start != EXTENT_MAP_INLINE);
--
--	btrfs_free_extent_map(em);
--	em = NULL;
--
--	/*
--	 * Although the PageDirty bit is cleared before entering this
--	 * function, subpage dirty bit is not cleared.
--	 * So clear subpage dirty bit here so next time we won't submit
--	 * a folio for a range already written to disk.
--	 */
--	btrfs_folio_clear_dirty(fs_info, folio, filepos, sectorsize);
--	btrfs_folio_set_writeback(fs_info, folio, filepos, sectorsize);
--	/*
--	 * Above call should set the whole folio with writeback flag, even
--	 * just for a single subpage sector.
--	 * As long as the folio is properly locked and the range is correct,
--	 * we should always get the folio with writeback flag.
--	 */
--	ASSERT(folio_test_writeback(folio));
--
--	submit_extent_folio(bio_ctrl, disk_bytenr, folio,
--			    sectorsize, filepos - folio_pos(folio), 0);
- 	return 0;
- }
- 
-@@ -1712,8 +1721,9 @@ static noinline_for_stack int extent_writepage_io(struct btrfs_inode *inode,
- 	const u64 folio_start = folio_pos(folio);
- 	const u64 folio_end = folio_start + folio_size(folio);
- 	const unsigned int blocks_per_folio = btrfs_blocks_per_folio(fs_info, folio);
--	u64 cur;
--	int bit;
-+	unsigned int start_bit;
-+	unsigned int end_bit;
-+	const u64 rounded_isize = round_up(i_size, fs_info->sectorsize);
- 	int ret = 0;
- 
- 	ASSERT(start >= folio_start, "start=%llu folio_start=%llu", start, folio_start);
-@@ -1741,23 +1751,31 @@ static noinline_for_stack int extent_writepage_io(struct btrfs_inode *inode,
- 
- 	bio_ctrl->end_io_func = end_bbio_data_write;
- 
--	for_each_set_bit(bit, &bio_ctrl->submit_bitmap, blocks_per_folio) {
--		cur = folio_pos(folio) + (bit << fs_info->sectorsize_bits);
-+	for_each_set_bitrange(start_bit, end_bit, &bio_ctrl->submit_bitmap, blocks_per_folio) {
-+		const u64 cur_start = folio_pos(folio) + (start_bit << fs_info->sectorsize_bits);
-+		u32 cur_len = (end_bit - start_bit) << fs_info->sectorsize_bits;
- 
--		if (cur >= i_size) {
--			btrfs_mark_ordered_io_truncated(inode, folio, cur, end - cur);
-+		if (cur_start > rounded_isize) {
- 			/*
--			 * This range is beyond i_size, thus we don't need to
--			 * bother writing back.
--			 * But we still need to clear the dirty subpage bit, or
--			 * the next time the folio gets dirtied, we will try to
--			 * writeback the sectors with subpage dirty bits,
--			 * causing writeback without ordered extent.
-+			 * The whole range is beyond EOF.
-+			 *
-+			 * Just finish the IO and skip to the next range.
- 			 */
--			btrfs_folio_clear_dirty(fs_info, folio, cur, end - cur);
--			break;
-+			btrfs_mark_ordered_io_truncated(inode, folio, cur_start, cur_len);
-+			btrfs_folio_clear_dirty(fs_info, folio, cur_start, cur_len);
-+			continue;
- 		}
--		ret = submit_one_sector(inode, folio, cur, bio_ctrl, i_size);
-+		if (cur_start + cur_len > rounded_isize) {
-+			u32 truncate_len = cur_start + cur_len - rounded_isize;
-+
-+			/* The tailing part of the range is beyond EOF. */
-+			btrfs_mark_ordered_io_truncated(inode, folio, rounded_isize, truncate_len);
-+			btrfs_folio_clear_dirty(fs_info, folio, rounded_isize, truncate_len);
-+			/* Shrink the range inside the EOF. */
-+			cur_len = rounded_isize - cur_start;
-+		}
-+
-+		ret = submit_range(inode, folio, cur_start, cur_len, bio_ctrl);
- 		if (unlikely(ret < 0)) {
- 			if (!found_error)
- 				found_error = ret;
--- 
-2.52.0
-
+TG9va3MgZ29vZCwNCg0KUmV2aWV3ZWQtYnk6IEpvaGFubmVzIFRodW1zaGlybiA8am9oYW5uZXMu
+dGh1bXNoaXJuQHdkYy5jb20+DQoNCg==
 
