@@ -1,79 +1,79 @@
-Return-Path: <linux-btrfs+bounces-19205-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19204-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F28FC72A94
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Nov 2025 08:52:45 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B4A3C72A91
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Nov 2025 08:52:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 5820F34B36B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Nov 2025 07:52:43 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 14F97345475
+	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Nov 2025 07:52:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 839343064A9;
-	Thu, 20 Nov 2025 07:52:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDA383093DF;
+	Thu, 20 Nov 2025 07:52:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="XB2KbH22";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="XB2KbH22"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="bw8WXUNR";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="bw8WXUNR"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2E40308F18
-	for <linux-btrfs@vger.kernel.org>; Thu, 20 Nov 2025 07:52:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0DF5308F0B
+	for <linux-btrfs@vger.kernel.org>; Thu, 20 Nov 2025 07:52:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763625142; cv=none; b=Nd1fH5pfw4bbFTFqsY0RxYNckh270bCLEetiMX/5uBlWG5ou31w46obxijt92IPbMPfgkOqCjks49jjbBYaCC/n2clVr7Nu097xR85e3MFzya5vYpebjlHQ5vI0EJWSLrNWKSpusA6Dv6qiF72GU/8VoQhFSs9D8OQsOHEdC2yg=
+	t=1763625137; cv=none; b=RgjgCnQJK3gfiZLBUN7xfdQwCeVojbD5nsXpM6YFrWGdwHFizAqRA6zrJl1McoQYHlVTEZxPdfmeInzhRFRfq+BiEk9kwUijXtSPva1zQm2s9Mdft5khaZaItqAf0zP0triWFXNiHV+wnDl2tQKl/0zdg2bO0xltUoMQXqlXovE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763625142; c=relaxed/simple;
-	bh=23kQmplAhMlyf9LbIq+DbdvRWx0huUdpkFiY3Nl7syw=;
+	s=arc-20240116; t=1763625137; c=relaxed/simple;
+	bh=W8MPeVHgoF2qjE9CMOlJJ1gIakuYr54QCXvkQLR9fhY=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qJilNqQHlgbFVKMBvGl8RgF7KrhnBRE/yD50gvtR+875TR5U35zqXXD3f+gzr/msKwn1gNhTEbT2eRL4pZaLIbhZ1tEwFeXIeXOrpHrq2DstwipCXuNNVarl5ppqC6tL1/rFwH03rIQsQGRFnK6t9NTVrsEmqP0VewjkXGNur2o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=XB2KbH22; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=XB2KbH22; arc=none smtp.client-ip=195.135.223.131
+	 MIME-Version; b=nTjLDTu+cn9xYkUfbFkgR78L8Oq/WHvBEmxCKfAvwJITva7UymMoETcUChdLP+1Qn3ELkYBTpj1a0znhUT25P9yAKb1PGubSCLXTQSmlitRlGvUq8CvYZwSTcxoHSZ96MUBLEZw3D04yT/Mc1+MP8D79oug635LuSa4VggROB6A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=bw8WXUNR; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=bw8WXUNR; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id D1DF2208F6
-	for <linux-btrfs@vger.kernel.org>; Thu, 20 Nov 2025 07:52:05 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 0F5652174C
+	for <linux-btrfs@vger.kernel.org>; Thu, 20 Nov 2025 07:52:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1763625125; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1763625127; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=hoqZ6Gp+3+D7jP13hC9XE+SliGxngOFuPoy1tPWDU/8=;
-	b=XB2KbH22lNbGxvBnksv3cjZUjUQ2q92tvq7qd7pGq0sckm39hjszPEMBlXSG1F1d4+aZ/B
-	jguU10Hy1nY9QHf9prgKVD14PycIMw7aCZrv3tEkYe2sS1LrS94rZcZawyxybnbQM5D2UX
-	40Mm9ogUS0XY2zs+OsJX+o6bW8ZKjNU=
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=XB2KbH22
+	bh=sbPsx4TCJItB99g3VXeT+vCSYe6QI8Ccb9tuDJRUc/Q=;
+	b=bw8WXUNR9UBaIS3z65hPIMslGs6lKlcmfwfqxss5as8fHwqV/Jz5hNMeX9/JfwAMPYyxAp
+	OFJFWvJKKPtEcekpTw5eCQpHk/nWtehF6SGomYzACERQtp4V0Ge0zPOzSkJh/lFhRYDpCO
+	uX7pYs+HhTmiVpMmY3nvo12GKRXxEmM=
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=bw8WXUNR
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1763625125; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1763625127; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=hoqZ6Gp+3+D7jP13hC9XE+SliGxngOFuPoy1tPWDU/8=;
-	b=XB2KbH22lNbGxvBnksv3cjZUjUQ2q92tvq7qd7pGq0sckm39hjszPEMBlXSG1F1d4+aZ/B
-	jguU10Hy1nY9QHf9prgKVD14PycIMw7aCZrv3tEkYe2sS1LrS94rZcZawyxybnbQM5D2UX
-	40Mm9ogUS0XY2zs+OsJX+o6bW8ZKjNU=
+	bh=sbPsx4TCJItB99g3VXeT+vCSYe6QI8Ccb9tuDJRUc/Q=;
+	b=bw8WXUNR9UBaIS3z65hPIMslGs6lKlcmfwfqxss5as8fHwqV/Jz5hNMeX9/JfwAMPYyxAp
+	OFJFWvJKKPtEcekpTw5eCQpHk/nWtehF6SGomYzACERQtp4V0Ge0zPOzSkJh/lFhRYDpCO
+	uX7pYs+HhTmiVpMmY3nvo12GKRXxEmM=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1D2CE3EA61
-	for <linux-btrfs@vger.kernel.org>; Thu, 20 Nov 2025 07:52:04 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4EDD73EA61
+	for <linux-btrfs@vger.kernel.org>; Thu, 20 Nov 2025 07:52:06 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id IC5uNKTIHmmAQwAAD6G6ig
+	id EM3wBKbIHmmAQwAAD6G6ig
 	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Thu, 20 Nov 2025 07:52:04 +0000
+	for <linux-btrfs@vger.kernel.org>; Thu, 20 Nov 2025 07:52:06 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 3/4] btrfs: replace for_each_set_bit() with for_each_set_bitmap()
-Date: Thu, 20 Nov 2025 18:21:42 +1030
-Message-ID: <db57ffaecde7a6c819ba34a0c71935793af682ca.1763620860.git.wqu@suse.com>
+Subject: [PATCH v2 4/4] btrfs: reduce extent map lookup during writes
+Date: Thu, 20 Nov 2025 18:21:43 +1030
+Message-ID: <0b53ad2ee1fd3476fe90ed689f6544dd306f64d8.1763620860.git.wqu@suse.com>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <cover.1763620860.git.wqu@suse.com>
 References: <cover.1763620860.git.wqu@suse.com>
@@ -84,8 +84,11 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: D1DF2208F6
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Rspamd-Queue-Id: 0F5652174C
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Spamd-Result: default: False [-3.01 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
@@ -104,104 +107,277 @@ X-Spamd-Result: default: False [-3.01 / 50.00];
 	RCPT_COUNT_ONE(0.00)[1];
 	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
 	RCVD_TLS_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid,suse.com:dkim];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:mid,suse.com:email];
 	DKIM_SIGNED(0.00)[suse.com:s=susede1];
 	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
 	TO_DN_NONE(0.00)[];
 	RCVD_COUNT_TWO(0.00)[2];
 	MIME_TRACE(0.00)[0:+];
 	DKIM_TRACE(0.00)[suse.com:+]
-X-Rspamd-Action: no action
-X-Spam-Flag: NO
 X-Spam-Score: -3.01
-X-Spam-Level: 
 
-Inside extent_io.c, there are several simple call sites doing things
-like:
+With large data folios supports, even on x86_64 we can hit a folio that
+contains several fs blocks.
 
-	for_each_set_bit(bit, bitmap, bitmap_size) {
-		/* handle one fs block */
-	}
+In that case, we still need to call btrfs_get_extent() for each block,
+as our submission path is still iterating each fs block and submit them
+one by one. This reduces the benefit of large folios.
 
-The workload includes:
+Change the behavior to submit the whole range when possible, this is
+done by:
 
-- set_bit()
-  Inside extent_writepage_io().
+- Use for_each_set_bitrange() instead of for_each_set_bit()
+  Now we can get a contiguous range to submit instead of a single fs
+  block.
 
-  This can be replaced with a bitmap_set().
+- Handle blocks beyond EOF in one go
+  This is pretty much the same as the old behavior, but for a range
+  crossing i_size, we finish the range beyond i_size first, then submit
+  the remaining.
 
-- btrfs_folio_set_lock()
-- btrfs_mark_ordered_io_finished()
-  Inside writepage_delalloc().
+- Submit the contiguous range in one go
+  Although we still need to consider the extent map boundary.
 
-  Instead of calling it multiple times, we can pass a range into the
-  function with one call.
+- Remove submit_one_sector()
+  As it's no longer utilized.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/extent_io.c | 26 ++++++++++++++++----------
- 1 file changed, 16 insertions(+), 10 deletions(-)
+ fs/btrfs/extent_io.c | 188 ++++++++++++++++++++++++-------------------
+ 1 file changed, 103 insertions(+), 85 deletions(-)
 
 diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 0f1bf9a4f0ae..87bf5ce17264 100644
+index 87bf5ce17264..99cda33b7c43 100644
 --- a/fs/btrfs/extent_io.c
 +++ b/fs/btrfs/extent_io.c
-@@ -1426,8 +1426,9 @@ static noinline_for_stack int writepage_delalloc(struct btrfs_inode *inode,
- 	u64 delalloc_start = page_start;
- 	u64 delalloc_end = page_end;
- 	u64 delalloc_to_write = 0;
+@@ -1602,91 +1602,100 @@ static noinline_for_stack int writepage_delalloc(struct btrfs_inode *inode,
+ 	return 0;
+ }
+ 
++
+ /*
+- * Return 0 if we have submitted or queued the sector for submission.
+- * Return <0 for critical errors, and the involved sector will be cleaned up.
++ * Return 0 if we have submitted or queued the range for submission.
++ * Return <0 for critical errors, and the involved blocks will be cleaned up.
+  *
+- * Caller should make sure filepos < i_size and handle filepos >= i_size case.
++ * Caller should make sure the range doesn't go beyond the last block of the inode.
+  */
+-static int submit_one_sector(struct btrfs_inode *inode,
+-			     struct folio *folio,
+-			     u64 filepos, struct btrfs_bio_ctrl *bio_ctrl,
+-			     loff_t i_size)
++static int submit_range(struct btrfs_inode *inode, struct folio *folio,
++			u64 start, u32 len, struct btrfs_bio_ctrl *bio_ctrl)
+ {
+ 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
+-	struct extent_map *em;
+-	u64 block_start;
+-	u64 disk_bytenr;
+-	u64 extent_offset;
+-	u64 em_end;
+ 	const u32 sectorsize = fs_info->sectorsize;
++	u64 cur = start;
+ 
+-	ASSERT(IS_ALIGNED(filepos, sectorsize));
++	ASSERT(IS_ALIGNED(start, sectorsize));
++	ASSERT(IS_ALIGNED(len, sectorsize));
++	ASSERT(start + len <= folio_end(folio));
+ 
+-	/* @filepos >= i_size case should be handled by the caller. */
+-	ASSERT(filepos < i_size);
+-
+-	em = btrfs_get_extent(inode, NULL, filepos, sectorsize);
+-	if (IS_ERR(em)) {
+-		/*
+-		 * bio_ctrl may contain a bio crossing several folios.
+-		 * Submit it immediately so that the bio has a chance
+-		 * to finish normally, other than marked as error.
+-		 */
+-		submit_one_bio(bio_ctrl);
++	while (cur < start + len) {
++		struct extent_map *em;
++		u64 block_start;
++		u64 disk_bytenr;
++		u64 extent_offset;
++		u64 em_end;
++		u32 cur_len = start + len - cur;
+ 
+ 		/*
+-		 * When submission failed, we should still clear the folio dirty.
+-		 * Or the folio will be written back again but without any
+-		 * ordered extent.
++		 * Here we call btrfs_get_extent() with sectorsize as @len
++		 * intentionally.
++		 * This allows us to catch any unexpected HOLE extent map
++		 * inside the range.
+ 		 */
+-		btrfs_folio_clear_dirty(fs_info, folio, filepos, sectorsize);
+-		btrfs_folio_set_writeback(fs_info, folio, filepos, sectorsize);
+-		btrfs_folio_clear_writeback(fs_info, folio, filepos, sectorsize);
++		em = btrfs_get_extent(inode, NULL, cur, sectorsize);
++		if (IS_ERR(em)) {
++			/*
++			 * bio_ctrl may contain a bio crossing several folios.
++			 * Submit it immediately so that the bio has a chance
++			 * to finish normally, other than marked as error.
++			 */
++			submit_one_bio(bio_ctrl);
++
++			/*
++			 * When submission failed, we should still clear the folio dirty.
++			 * Or the folio will be written back again but without any
++			 * ordered extent.
++			 */
++			btrfs_folio_clear_dirty(fs_info, folio, cur, cur_len);
++			btrfs_folio_set_writeback(fs_info, folio, cur, cur_len);
++			btrfs_folio_clear_writeback(fs_info, folio, cur, cur_len);
++
++			/*
++			 * Since there is no bio submitted to finish the ordered
++			 * extent, we have to manually finish this range.
++			 */
++			btrfs_mark_ordered_io_finished(inode, folio, cur, cur_len, false);
++			return PTR_ERR(em);
++		}
++		extent_offset = cur - em->start;
++		em_end = btrfs_extent_map_end(em);
++		ASSERT(cur <= em_end);
++		ASSERT(IS_ALIGNED(em->start, sectorsize));
++		ASSERT(IS_ALIGNED(em->len, sectorsize));
++
++		block_start = btrfs_extent_map_block_start(em);
++		disk_bytenr = btrfs_extent_map_block_start(em) + extent_offset;
++
++		ASSERT(!btrfs_extent_map_is_compressed(em));
++		ASSERT(block_start != EXTENT_MAP_HOLE);
++		ASSERT(block_start != EXTENT_MAP_INLINE);
++
++		cur_len = min(cur_len, em_end - cur);
++		btrfs_free_extent_map(em);
++		em = NULL;
+ 
+ 		/*
+-		 * Since there is no bio submitted to finish the ordered
+-		 * extent, we have to manually finish this sector.
++		 * Although the PageDirty bit is cleared before entering this
++		 * function, subpage dirty bit is not cleared.
++		 * So clear subpage dirty bit here so next time we won't submit
++		 * a folio for a range already written to disk.
+ 		 */
+-		btrfs_mark_ordered_io_finished(inode, folio, filepos,
+-					       fs_info->sectorsize, false);
+-		return PTR_ERR(em);
++		btrfs_folio_clear_dirty(fs_info, folio, cur, cur_len);
++		btrfs_folio_set_writeback(fs_info, folio, cur, cur_len);
++		/*
++		 * Above call should set the whole folio with writeback flag, even
++		 * just for a single subpage block.
++		 * As long as the folio is properly locked and the range is correct,
++		 * we should always get the folio with writeback flag.
++		 */
++		ASSERT(folio_test_writeback(folio));
++
++		submit_extent_folio(bio_ctrl, disk_bytenr, folio,
++				    cur_len, cur - folio_pos(folio), 0);
++		cur += cur_len;
+ 	}
+-
+-	extent_offset = filepos - em->start;
+-	em_end = btrfs_extent_map_end(em);
+-	ASSERT(filepos <= em_end);
+-	ASSERT(IS_ALIGNED(em->start, sectorsize));
+-	ASSERT(IS_ALIGNED(em->len, sectorsize));
+-
+-	block_start = btrfs_extent_map_block_start(em);
+-	disk_bytenr = btrfs_extent_map_block_start(em) + extent_offset;
+-
+-	ASSERT(!btrfs_extent_map_is_compressed(em));
+-	ASSERT(block_start != EXTENT_MAP_HOLE);
+-	ASSERT(block_start != EXTENT_MAP_INLINE);
+-
+-	btrfs_free_extent_map(em);
+-	em = NULL;
+-
+-	/*
+-	 * Although the PageDirty bit is cleared before entering this
+-	 * function, subpage dirty bit is not cleared.
+-	 * So clear subpage dirty bit here so next time we won't submit
+-	 * a folio for a range already written to disk.
+-	 */
+-	btrfs_folio_clear_dirty(fs_info, folio, filepos, sectorsize);
+-	btrfs_folio_set_writeback(fs_info, folio, filepos, sectorsize);
+-	/*
+-	 * Above call should set the whole folio with writeback flag, even
+-	 * just for a single subpage sector.
+-	 * As long as the folio is properly locked and the range is correct,
+-	 * we should always get the folio with writeback flag.
+-	 */
+-	ASSERT(folio_test_writeback(folio));
+-
+-	submit_extent_folio(bio_ctrl, disk_bytenr, folio,
+-			    sectorsize, filepos - folio_pos(folio), 0);
+ 	return 0;
+ }
+ 
+@@ -1712,8 +1721,9 @@ static noinline_for_stack int extent_writepage_io(struct btrfs_inode *inode,
+ 	const u64 folio_start = folio_pos(folio);
+ 	const u64 folio_end = folio_start + folio_size(folio);
+ 	const unsigned int blocks_per_folio = btrfs_blocks_per_folio(fs_info, folio);
+-	u64 cur;
+-	int bit;
 +	unsigned int start_bit;
 +	unsigned int end_bit;
++	const u64 rounded_isize = round_up(i_size, fs_info->sectorsize);
  	int ret = 0;
--	int bit;
  
- 	/* Save the dirty bitmap as our submission bitmap will be a subset of it. */
- 	if (btrfs_is_subpage(fs_info, folio)) {
-@@ -1437,10 +1438,12 @@ static noinline_for_stack int writepage_delalloc(struct btrfs_inode *inode,
- 		bio_ctrl->submit_bitmap = 1;
- 	}
+ 	ASSERT(start >= folio_start, "start=%llu folio_start=%llu", start, folio_start);
+@@ -1741,23 +1751,31 @@ static noinline_for_stack int extent_writepage_io(struct btrfs_inode *inode,
+ 
+ 	bio_ctrl->end_io_func = end_bbio_data_write;
  
 -	for_each_set_bit(bit, &bio_ctrl->submit_bitmap, blocks_per_folio) {
--		u64 start = page_start + (bit << fs_info->sectorsize_bits);
-+	for_each_set_bitrange(start_bit, end_bit, &bio_ctrl->submit_bitmap,
-+			      blocks_per_folio) {
-+		u64 start = page_start + (start_bit << fs_info->sectorsize_bits);
-+		u32 len = (end_bit - start_bit) << fs_info->sectorsize_bits;
+-		cur = folio_pos(folio) + (bit << fs_info->sectorsize_bits);
++	for_each_set_bitrange(start_bit, end_bit, &bio_ctrl->submit_bitmap, blocks_per_folio) {
++		const u64 cur_start = folio_pos(folio) + (start_bit << fs_info->sectorsize_bits);
++		u32 cur_len = (end_bit - start_bit) << fs_info->sectorsize_bits;
  
--		btrfs_folio_set_lock(fs_info, folio, start, fs_info->sectorsize);
-+		btrfs_folio_set_lock(fs_info, folio, start, len);
- 	}
- 
- 	/* Lock all (subpage) delalloc ranges inside the folio first. */
-@@ -1557,10 +1560,13 @@ static noinline_for_stack int writepage_delalloc(struct btrfs_inode *inode,
- 				fs_info->sectorsize_bits,
- 				blocks_per_folio);
- 
--		for_each_set_bit(bit, &bio_ctrl->submit_bitmap, bitmap_size)
--			btrfs_mark_ordered_io_finished(inode, folio,
--				page_start + (bit << fs_info->sectorsize_bits),
--				fs_info->sectorsize, false);
-+		for_each_set_bitrange(start_bit, end_bit, &bio_ctrl->submit_bitmap,
-+				      bitmap_size) {
-+			u64 start = page_start + (start_bit << fs_info->sectorsize_bits);
-+			u32 len = (end_bit - start_bit) << fs_info->sectorsize_bits;
+-		if (cur >= i_size) {
+-			btrfs_mark_ordered_io_truncated(inode, folio, cur, end - cur);
++		if (cur_start > rounded_isize) {
+ 			/*
+-			 * This range is beyond i_size, thus we don't need to
+-			 * bother writing back.
+-			 * But we still need to clear the dirty subpage bit, or
+-			 * the next time the folio gets dirtied, we will try to
+-			 * writeback the sectors with subpage dirty bits,
+-			 * causing writeback without ordered extent.
++			 * The whole range is beyond EOF.
++			 *
++			 * Just finish the IO and skip to the next range.
+ 			 */
+-			btrfs_folio_clear_dirty(fs_info, folio, cur, end - cur);
+-			break;
++			btrfs_mark_ordered_io_truncated(inode, folio, cur_start, cur_len);
++			btrfs_folio_clear_dirty(fs_info, folio, cur_start, cur_len);
++			continue;
+ 		}
+-		ret = submit_one_sector(inode, folio, cur, bio_ctrl, i_size);
++		if (cur_start + cur_len > rounded_isize) {
++			u32 truncate_len = cur_start + cur_len - rounded_isize;
 +
-+			btrfs_mark_ordered_io_finished(inode, folio, start, len, false);
++			/* The tailing part of the range is beyond EOF. */
++			btrfs_mark_ordered_io_truncated(inode, folio, rounded_isize, truncate_len);
++			btrfs_folio_clear_dirty(fs_info, folio, rounded_isize, truncate_len);
++			/* Shrink the range inside the EOF. */
++			cur_len = rounded_isize - cur_start;
 +		}
- 		return ret;
- 	}
- out:
-@@ -1728,8 +1734,8 @@ static noinline_for_stack int extent_writepage_io(struct btrfs_inode *inode,
- 		return ret;
- 	}
- 
--	for (cur = start; cur < end; cur += fs_info->sectorsize)
--		set_bit((cur - folio_start) >> fs_info->sectorsize_bits, &range_bitmap);
-+	bitmap_set(&range_bitmap, (start - folio_pos(folio)) >> fs_info->sectorsize_bits,
-+		   len >> fs_info->sectorsize_bits);
- 	bitmap_and(&bio_ctrl->submit_bitmap, &bio_ctrl->submit_bitmap, &range_bitmap,
- 		   blocks_per_folio);
- 
++
++		ret = submit_range(inode, folio, cur_start, cur_len, bio_ctrl);
+ 		if (unlikely(ret < 0)) {
+ 			if (!found_error)
+ 				found_error = ret;
 -- 
 2.52.0
 
