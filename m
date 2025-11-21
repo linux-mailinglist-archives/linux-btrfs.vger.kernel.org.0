@@ -1,213 +1,156 @@
-Return-Path: <linux-btrfs+bounces-19261-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19262-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE192C7BAFF
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Nov 2025 21:53:23 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4842EC7BF8C
+	for <lists+linux-btrfs@lfdr.de>; Sat, 22 Nov 2025 00:56:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id A3DA03510B2
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Nov 2025 20:52:44 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 56F424E8EA4
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Nov 2025 23:55:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2C622DC349;
-	Fri, 21 Nov 2025 20:52:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TE9j8B6a"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2915030F524;
+	Fri, 21 Nov 2025 23:55:32 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from siberian.tulip.relay.mailchannels.net (siberian.tulip.relay.mailchannels.net [23.83.218.246])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D7C122A4CC
-	for <linux-btrfs@vger.kernel.org>; Fri, 21 Nov 2025 20:52:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763758358; cv=none; b=fXxyry2qNrxtfPJArT1mo0YdC5WcuVzLU2yLBRrtbLXGbwgUIRHbJmb7QW7Asmk1CLoQJdo09WPoSbnhYMXnUda5BbdCvCobQwnv3GPp8J8JaEnGyDJN3OfHIXfsUCF4NCsagqCT5nKqKR4U9KHh6qbrgluIIpifnYZIi8ckru4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763758358; c=relaxed/simple;
-	bh=DoFG0lTfikLuf3OP5IN0e0os6gOYDnEedsrU82bBtdo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WRH/5OBlqM81k1B5c4YVYqF90IpEKxXTPByDwTNwcg5AgGEy1NKc/BGzbpTcsNT9qJ8XOqmXR+syZIke1S9hIA0X+1oVSCxu1j8GXaaAtB+T0B8ProfLDqHFy8b0ATAFO0BFwZDsIBBEroZ9qmOB/v2oFoWUIxBvhE2G4asBwNA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TE9j8B6a; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B58F2C4CEF1
-	for <linux-btrfs@vger.kernel.org>; Fri, 21 Nov 2025 20:52:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1763758357;
-	bh=DoFG0lTfikLuf3OP5IN0e0os6gOYDnEedsrU82bBtdo=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=TE9j8B6akYQ9M9bk22qrn28IQJKWkjMGePMKQMb48K9mHYyCUWdSntjWSMD2Yr18E
-	 /DigTgfiSUHawDc34a1oconUq/zhj4AtbhNy0rktz54Jg0fI0WsWOYdUQ6ti7NahDf
-	 +48euzNJ8yy9ZWVhdC9oW6Zdkcie0KkaXkP3vtAJobbvbSLDGLWRYvzQ8vV5g5h+iB
-	 JDn1VOIpfJPPE11ZPUHldXMztlbWgJ9BRzCJR2514v0BOJUaclVwgqqsj8y+ZLNMUh
-	 3pN1E2fyIG1+u0xuhpKXttKCuG38LXhirdC0lNAq9Pvo9jkIKYQKWcqdbbNBypJeN1
-	 P64/OSDFk/seQ==
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-b762de65c07so373773366b.2
-        for <linux-btrfs@vger.kernel.org>; Fri, 21 Nov 2025 12:52:37 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWKs7FG6zXtiQpU4RqYxAJ0RzIRA9pnfrwg0FLD7QpClHtYi9SWYuuOPn071sNvv3D6IotPT9uVTwdGlw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwGxbNaZoPAMymfDwg9bWpH6fxZXlKK3bLfeli8hON8JFH0Yrv4
-	4cokRA9LBmqb0ADQAVJFzM1kHKaEyUa1vZx7uSukqjGxHArpS335WD5MZIVW7vrIfrwiM/kvQZm
-	V5N/w3Si+eLFQ1yaAlv0gRIpknPXCI1M=
-X-Google-Smtp-Source: AGHT+IE4LqS6gUF9pR0x9D2H0xC26fOOwh2fWFEja9bi15rnygvL5O4DB2Smwi3q90A5RdNoUQF2hPbg+4oxkjsZY4E=
-X-Received: by 2002:a17:907:3da6:b0:b73:32c7:6e6a with SMTP id
- a640c23a62f3a-b76715b3481mr430896366b.25.1763758356338; Fri, 21 Nov 2025
- 12:52:36 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 801FA27CCF0;
+	Fri, 21 Nov 2025 23:55:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=23.83.218.246
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1763769331; cv=pass; b=k33CtYEkuEFb35PhV5eEFgVCwmFzH9pkiagwDO4tqVqLETPYvN8enSY8yKl1G+v306JMbBkIS09UivtrmCU0S6fgD3kswcTjYZgRgRVv0xPRv6wGpPNlu8axsHhkuzsKtn6QELqjsrpSLdQqrzNT6LjZxCGFgPVzLNWJxQ1IiYE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1763769331; c=relaxed/simple;
+	bh=z17GmH1uLAaTfLE3ip08f2ikNL4BOXVzJpjL0o8t3s8=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=Rcvz14I48SCUrhkcMlWSKY6DvWvjZYMj8xVC49pyg42E3dunInloTBlbJF4DEpLvCnDfhkXZ9K1GtJa+QZU3dB9WY5/vnWbP53a9msoEGLy6Ie/4PWl9EPAlqWuS4G2Ic5kua10IfPINiD2KSCPXwHLPx9OLppKzO08wjOLGgQo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=scientia.org; spf=pass smtp.mailfrom=scientia.org; arc=pass smtp.client-ip=23.83.218.246
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=scientia.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=scientia.org
+X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+	by relay.mailchannels.net (Postfix) with ESMTP id C15238C17C2;
+	Fri, 21 Nov 2025 23:55:23 +0000 (UTC)
+Received: from cpanel-007-fra.hostingww.com (trex-green-3.trex.outbound.svc.cluster.local [100.98.30.13])
+	(Authenticated sender: instrampxe0y3a)
+	by relay.mailchannels.net (Postfix) with ESMTPA id 8C43C8C1ECF;
+	Fri, 21 Nov 2025 23:55:22 +0000 (UTC)
+ARC-Seal: i=1; a=rsa-sha256; d=mailchannels.net; s=arc-2022; cv=none;
+	t=1763769323;
+	b=woyqy/tFnnFELA/K5vN7ki9TL9sRJPd3RcToGsafC7d9GxH4HWC/AyqcbSBMl0jXheh6jx
+	Qu3iBCpT1au4UjqFKnneZVbh9UOeXkph27tNxym3QqFM2QX1k/i2QgSPnj6kM6J5fA2UAj
+	DVminN+OBS1UGeukq40nfa3yF/hWCWt+jtzjvn8cghQQPVgFtYje30KwaDRv0xDMNuF4VR
+	sgc3S/PhlW9WylqBRx8jmsk4nypbHl0X7oS8oYNEvYhVKJVzFsuOqeKM3EGdXxJOWvvPez
+	WCCgPSCZP/Yas8LPB4eNLUuAv97mxoYNkNRdJxPDrQoar3FsD0mqRf0956RUSg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mailchannels.net;
+	s=arc-2022; t=1763769323;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=z17GmH1uLAaTfLE3ip08f2ikNL4BOXVzJpjL0o8t3s8=;
+	b=1hCKhqsP9jmRxawGOMIuecGyYO8ZXNqz8Wj5eHEAKyMytVo1EewhLSdfCRyRqb9ykdsv+0
+	XPNsBmG0SxhDM0Y7Ht7SlQBww6SpOVzQuua++ZjVYraylHunSSW3q6vjSUGGHtN5/rQ3+Q
+	5+boioADPcKavjpD4jG4xL8GQ44lfHap3Yhv51LQuUeQ78TfKvKQm73WVInGqsBSqxKvMU
+	ZLT4s9QYeBF88kPWNLlHGVWCrMAbE2oAWprWEjrK52Eq7TbbQ+ZanzQGrmvNPTZspldch8
+	MOD7LDyyounuVpOQiTqLJYFvZtrlbPBYiZGUN9qOQCSDcV4LjDV8jtykFMqvuw==
+ARC-Authentication-Results: i=1;
+	rspamd-66df965b87-89blt;
+	auth=pass smtp.auth=instrampxe0y3a smtp.mailfrom=calestyo@scientia.org
+X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
+X-MC-Relay: Neutral
+X-MailChannels-SenderId: instrampxe0y3a|x-authuser|calestyo@scientia.org
+X-MailChannels-Auth-Id: instrampxe0y3a
+X-Desert-Occur: 71eb861f139222e2_1763769323593_2430568932
+X-MC-Loop-Signature: 1763769323593:3649635591
+X-MC-Ingress-Time: 1763769323593
+Received: from cpanel-007-fra.hostingww.com (cpanel-007-fra.hostingww.com
+ [3.69.87.180])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
+	by 100.98.30.13 (trex/7.1.3);
+	Fri, 21 Nov 2025 23:55:23 +0000
+Received: from tmo-119-69.customers.d1-online.com ([80.187.119.69]:7129 helo=[IPv6:2a01:599:808:f90b:10b3:a6e4:4b02:dff6])
+	by cpanel-007-fra.hostingww.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.98.2)
+	(envelope-from <calestyo@scientia.org>)
+	id 1vMayI-0000000GXPd-2g4V;
+	Fri, 21 Nov 2025 23:55:20 +0000
+Message-ID: <5493c0684cc1014614ae156e9b8888d52857d2bf.camel@scientia.org>
+Subject: Re: [PATCH] btrfs-progs: docs: add warning for btrfs checksum
+ features
+From: Christoph Anton Mitterer <calestyo@scientia.org>
+To: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org, 
+	linux-crypto@vger.kernel.org
+Date: Sat, 22 Nov 2025 00:55:18 +0100
+In-Reply-To: <5495561f-415d-4bb0-9cd4-4543c510f111@suse.com>
+References: 
+	<7458cde1f481c8d8af2786ee64d2bffde5f0386c.1763700989.git.wqu@suse.com>
+	 <9523838F-B99E-4CC5-8434-B34B105FD08B@scientia.org>
+	 <bc5249ba-9c39-42b1-903d-e50375a433d2@suse.com>
+	 <3C200394-F95B-4D1C-9256-3718E331ED34@scientia.org>
+	 <5495561f-415d-4bb0-9cd4-4543c510f111@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2-7 
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1763736921.git.josef@toxicpanda.com> <7a9d970450cb1531d0a0da5d8e8615b06aba9137.1763736921.git.josef@toxicpanda.com>
- <CAL3q7H7phOax9p2s-pcaeGdE4rgpZc7NP1=0Ny+o93fXYKJ-Nw@mail.gmail.com> <bff15ad4-1f67-4733-acb4-cd04686f4ec4@gmx.com>
-In-Reply-To: <bff15ad4-1f67-4733-acb4-cd04686f4ec4@gmx.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Fri, 21 Nov 2025 20:51:59 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H7vCNjkaR9AyTHXNjnk+zZmMeMZ3ePoMtQ99Vkzcpd4OA@mail.gmail.com>
-X-Gm-Features: AWmQ_bmUjKfkvMBClgamM5DH7_jPrcRmhtXXXtrQgNMRxk3JwA9glEIcVWnShoE
-Message-ID: <CAL3q7H7vCNjkaR9AyTHXNjnk+zZmMeMZ3ePoMtQ99Vkzcpd4OA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] btrfs: fix data race on transaction->state
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: Josef Bacik <josef@toxicpanda.com>, linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-AuthUser: calestyo@scientia.org
 
-On Fri, Nov 21, 2025 at 8:29=E2=80=AFPM Qu Wenruo <quwenruo.btrfs@gmx.com> =
-wrote:
->
->
->
-> =E5=9C=A8 2025/11/22 01:59, Filipe Manana =E5=86=99=E9=81=93:
-> > On Fri, Nov 21, 2025 at 3:13=E2=80=AFPM Josef Bacik <josef@toxicpanda.c=
-om> wrote:
-> >>
-> >> Debugging a hang with btrfs on QEMU I discovered a data race with
-> >> transaction->state. In wait_current_trans we do
-> >>
-> >> wait_event(fs_info->transaction_wait,
-> >>             cur_trans->state>=3DTRANS_STATE_UNBLOCKED ||
-> >>             TRANS_ABORTED(cur_trans));
-> >>
-> >> however we're doing this outside of the fs_info->trans_lock. This
-> >> generally isn't super problematic because we hit
-> >> wake_up(fs_info->transaction_wait) quite a bit, but it could lead to
-> >> latencies where we miss wakeups, or in the worst case (like the compil=
-er
-> >> re-orders the load of the ->state outside of the wait_event loop) we
-> >> could hang completely.
-> >>
-> >> Fix this by using a helper that takes the fs_info->trans_lock to do th=
-e
-> >> check safely.
-> >>
-> >> I've added a lockdep_assert for the other helper to make sure nobody
-> >> uses that one without holding the lock.
-> >>
-> >> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> >> ---
-> >>   fs/btrfs/transaction.c | 18 +++++++++++++++---
-> >>   1 file changed, 15 insertions(+), 3 deletions(-)
-> >>
-> >> diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-> >> index 89ae0c7a610a..863e145a3c26 100644
-> >> --- a/fs/btrfs/transaction.c
-> >> +++ b/fs/btrfs/transaction.c
-> >> @@ -509,11 +509,25 @@ int btrfs_record_root_in_trans(struct btrfs_tran=
-s_handle *trans,
-> >>
-> >>   static inline int is_transaction_blocked(struct btrfs_transaction *t=
-rans)
-> >>   {
-> >> +       lockdep_assert_held(&trans->fs_info->trans_lock);
-> >> +
-> >
-> > It seems odd to sneak this in when no other change in the patch
-> > introduces a call to this function.
-> > I would make this a separate patch.
-> >
-> >>          return (trans->state >=3D TRANS_STATE_COMMIT_START &&
-> >>                  trans->state < TRANS_STATE_UNBLOCKED &&
-> >>                  !TRANS_ABORTED(trans));
-> >>   }
-> >>
-> >> +/* Helper to check transaction state under lock for wait_event */
-> >> +static bool trans_unblocked(struct btrfs_transaction *trans)
-> >
-> > This could have a name that is closer to the other helper:
-> > is_transaction_unblocked()
-> >
-> >> +{
-> >> +       struct btrfs_fs_info *fs_info =3D trans->fs_info;
-> >> +       bool ret;
-> >> +
-> >> +       spin_lock(&fs_info->trans_lock);
-> >> +       ret =3D trans->state >=3D TRANS_STATE_UNBLOCKED || TRANS_ABORT=
-ED(trans);
-> >> +       spin_unlock(&fs_info->trans_lock);
-> >> +       return ret;
-> >> +}
-> >> +
-> >>   /* wait for commit against the current transaction to become unblock=
-ed
-> >>    * when this is done, it is safe to start a new transaction, but the=
- current
-> >>    * transaction might not be fully on disk.
-> >> @@ -529,9 +543,7 @@ static void wait_current_trans(struct btrfs_fs_inf=
-o *fs_info)
-> >>                  spin_unlock(&fs_info->trans_lock);
-> >>
-> >>                  btrfs_might_wait_for_state(fs_info, BTRFS_LOCKDEP_TRA=
-NS_UNBLOCKED);
-> >> -               wait_event(fs_info->transaction_wait,
-> >> -                          cur_trans->state >=3D TRANS_STATE_UNBLOCKED=
- ||
-> >> -                          TRANS_ABORTED(cur_trans));
-> >> +               wait_event(fs_info->transaction_wait, trans_unblocked(=
-cur_trans));
-> >
-> > Instead of adding an helper and locking, couldn't this be simply:
-> >
-> > wait_event(fs_info->transaction_wait,
-> > smp_load_acquire(cur_trans->state) >=3D TRANS_STATE_UNBLOCKED ||
-> > TRANS_ABORTED(cur_trans));
->
-> Not an expert on memory barriers, but isn't the key point here that
-> we're accessing two different variables in a non-atomic way?
+On Fri, 2025-11-21 at 17:14 +1030, Qu Wenruo wrote:
+>=20
+> Adding linux-crypto list for more feedback.
 
-So what?
-We can continue accessing the trans aborted case as we did because
-it's not expected to happen, so any latency in the waiting due to a
-transaction abort is fine.
+It would be good if any of them could confirm or reject:
 
->
-> And to be honest, I really do not like introducing low level memory
-> barrier callers, it's really hard to get it right.
+- Whether a filesystem that uses full checksumming (data + meta-data)
+and that is encrypted with dm-crypt,... is effectively integrity
+protected like it would be with an AEAD.
 
-I generally don't like it either. But here it saves quite some code
-and it's for a very rare case anyway.
+In particular also:
 
-Plus there's also this inconsistency with the second patch, which
-favors using smp_load_acquire() instead of taking the lock.
+- Whether this requires a strong cryptographic hash (or as Qu presumed,
+any hash would do) and whether the hashing is needed to be done as a
+Merkle-tree or whether that's not needed
 
-__nfs_lookup_revalidate() uses smp_load_acquire() precisely in the
-same situation,
-in a wait_var_event() condition to read dentry->d_fsdata, which is
-updated under the protection of dentry->d_lock.
+- Whether, if one uses such a fs, AEAD or dm-verity is even
+recommended, or just a waste of resources as the checksumming done by
+the fs would already be enough.
 
 
->
-> Thanks,
-> Qu
->
-> >
-> > Thanks.
-> >
-> >>                  btrfs_put_transaction(cur_trans);
-> >>          } else {
-> >>                  spin_unlock(&fs_info->trans_lock);
-> >> --
-> >> 2.51.1
-> >>
-> >>
-> >
->
+> > The question IMO is, whether a (dm-crypt) encrypted btrfs that uses
+> > a strong hash function for btrfs (i.e. like hash-then-encrypt)
+> > would be effectively integrity protected.
+>=20
+> In that case, I can not give a concrete answer, but I tend to believe
+> it's protected, and no matter what the algorithm is (including
+> CRC32C).
+
+I'd rather not think CRC would be enough... I mean why would all crypto
+use strong hash algos for signatures, if it could also be done with
+fast CRC.
+
+
+> - For metadata
+> =C2=A0=C2=A0 The bytenr will mismatch, thus be rejected.
+>=20
+> =C2=A0=C2=A0 This prevents csum tree from bing modified.
+
+But meta data *is* still checksum protected right (i.e. it doesn'thave
+only the bytenr).
+
+Maybe, if someone from the crypto guys has a look, you could outline
+them how the exact hashing structure looks for btrfs.... like is it a
+full Merkle-tree starting from the super block, what about super block
+copies, etc. pp.=20
+
+
+Thanks,
+Chris.
 
