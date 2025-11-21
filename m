@@ -1,135 +1,157 @@
-Return-Path: <linux-btrfs+bounces-19234-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19235-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE803C77243
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Nov 2025 04:17:21 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id DAFB7C77520
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Nov 2025 06:10:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sto.lore.kernel.org (Postfix) with ESMTPS id 4FAFD29082
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Nov 2025 03:17:21 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id C8CAC4E6BD3
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Nov 2025 05:09:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAF252D595F;
-	Fri, 21 Nov 2025 03:17:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D89E32D3A69;
+	Fri, 21 Nov 2025 05:09:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TJHf0Mt8"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="aGKM0Gp4";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="aGKM0Gp4"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pj1-f65.google.com (mail-pj1-f65.google.com [209.85.216.65])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C3282BF3CC
-	for <linux-btrfs@vger.kernel.org>; Fri, 21 Nov 2025 03:17:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAB3C298CB2
+	for <linux-btrfs@vger.kernel.org>; Fri, 21 Nov 2025 05:09:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763695032; cv=none; b=R1HwQAza1kACuHWePciOyws88I6o4439AL4icSeqKuI6+ak0NpfN94wLs0UTgYJNwtdWIC3EgRZ0BOcgDu9FxDhtYGJj/Ui7AippCSBxbDKHqAVX/mJn6sneA4XtJZTmNsBf/MI+C4A2bI1CprgptnoUcilDytFSIQXFjiV6Imo=
+	t=1763701784; cv=none; b=QfyRGrEkZ+7uHvVZ+6QIQJ4F/YYpHKoCvqANrkfZdC7WR6gX7UxgWxsXBwCpHGHaqvczAYtO2n4j2yh4XB9ywM/kMyLry9OuHFLsfQS2pwnJl0aA79YbmoBKZ7PBo05Yh34b55azKy3VfJqp8OoWMOrGljpY08GYMynhK+8RWJw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763695032; c=relaxed/simple;
-	bh=NfZehcD1Qs7wk2Ohm91A0peV/+sEretojEBGCFbXVGM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rrLbEI4dU34LFJJGFDYBB1bnDiWSKTMe66EHgCmgH0sxvC5pbtVey/lhSgSdnEbvuzCzhsajFAPAGuqNe9lvBlXH21gbWoF2FsvprboarV7WRoAAv2v1/9ydU7dEGuxp97NYVNFfoP/YkdcmSYg78TKgQyUK+QoERzWdb4I8qCI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TJHf0Mt8; arc=none smtp.client-ip=209.85.216.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f65.google.com with SMTP id 98e67ed59e1d1-343e2e1a580so276961a91.3
-        for <linux-btrfs@vger.kernel.org>; Thu, 20 Nov 2025 19:17:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763695028; x=1764299828; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Xou2Sxu4LTzhMpd4VkCC/4Pp+h878hgJeiBbFjpWt54=;
-        b=TJHf0Mt8V08dH9dSPjNLvc+lTJIoWiJx4uM0iN8TG03gFNY+66MaeOrzmY7maVMyit
-         f2w75YXiLV4vz2a7+6s3wHNNg7gjMMVjNFZH2wPREMlO6PWZYyuCmxYTxv1/H6cpPR07
-         MGkUFfgNnWiKSC2+GzNvx1IUV7T6n+R+bKeGTctR3JhniPJiqWdKAiAmdJiIqmhXQ97G
-         648KaJQZwG5YorOrKVaXl9SOeWXbMlF0/cgTGFleurSM3Lgf+GqwJ9NJ30OBol8ss331
-         1Z5hfRjS7PWXzwQuUaETTwtLltxuIRLbL3Uv9dinfpFPceYjROv+nbOG9ot2JI9EXYh0
-         bMWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763695028; x=1764299828;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Xou2Sxu4LTzhMpd4VkCC/4Pp+h878hgJeiBbFjpWt54=;
-        b=fn/b488tx+8mEfcEPwtqASVPgxc50/nqCjVevETKXlGcMJCSoh1K2vrlbZRUHT1/lh
-         TUMdceRUiUV6/F3d6xbQcedUmUYz9xfoKAMqm1HLD85Pe1IJLAAbhi79UILeB47jEbZk
-         rlORg32vcyTQouqU6gTk1crRZ1WJmqWWD0gUkG3/0LyhcdH+teZ56CghtjEUo1GwdGrI
-         gG5xkHZoN8g9IG/TFKfjXjDaly/Jq03bLQx6O5zymkXHLet6rT0Ef4s+D0zCoBKOIQDh
-         kJeYb41s1Ypcz1yWf0Mp5UNQW6D3sNgvr78AA3sqHMK4P6Fqm2cmJ6mywclfRFAleBbA
-         ixUA==
-X-Gm-Message-State: AOJu0Ywt0LzyiVO28zwvJbbs6ZsT1hpH3Z/Gz1NwQNkq2Ly3+QmXDiWl
-	nHPT4fn8k/m88/5VLOnZV/8nZusuyLOQWLeq3GbT/VBN/tvQQtJITqkX
-X-Gm-Gg: ASbGnctdyh+hj1k0UjAJShlkVDkljzc3lBiJv5JJ6r84xkUmYY8o+Tm4kSSHLJ4nXjM
-	7b3yPlDdal3FUXWmYg+Kvb+32reRacjnXJSetVHF9vDzOIB852T+jT38iwyquqZFULsT9PcL+hW
-	JUAevLACiowjswZmMy7yDfhT9GErimuVNf27y35wnH5/G+twEQhEIAfVN2Cfk+yvCJZHTe5y1LU
-	I87KN8PeqTGCG7ojlLUP+wpxmW7NdULsxHoHLCwAM6VHKDjzsp/RzIyyDw3vTSen34K7FR6Z2Le
-	U5Olf+6FkNtIXU+XZZutd0ANdvKgTrmqoKncojma4XpwEIrZrwDbV4kqPrIlwyNxoMhGtpnRD8D
-	QdMlHZb9IspyONRtpvQNBk7/8levjAs7Ch6BOPMO8imll9gucVLpCXfXH8JlFPIWg13B05qyO/X
-	w3/feWAz5aJOS6m/8Nmqnm0xVP
-X-Google-Smtp-Source: AGHT+IHOFX/GStpBYuZU84q3VLt+np0F56omLOImL8BI9D441QT1Yfi9duCdeXDiEUFsxOpLL2JaGQ==
-X-Received: by 2002:a17:903:1b05:b0:295:70b1:edd6 with SMTP id d9443c01a7336-29b6beae519mr6390585ad.3.1763695027665;
-        Thu, 20 Nov 2025 19:17:07 -0800 (PST)
-Received: from [192.168.1.13] ([104.28.237.195])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-bd75b61c29dsm3956018a12.0.2025.11.20.19.17.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Nov 2025 19:17:07 -0800 (PST)
-Message-ID: <6e3d587b-89ed-4b44-ab62-c485b8fdf814@gmail.com>
-Date: Fri, 21 Nov 2025 11:17:02 +0800
+	s=arc-20240116; t=1763701784; c=relaxed/simple;
+	bh=iXXCnCWclUmOL1D7NsFsI5lhuIWCFKXxYTHW0tG618o=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=uhDF36zPtw5NwjQoJ94wUIspJrW1qD/slf/zpHyIBMT2yTfSy7Bxf/eIqj7PmUDRhmnHu6v2hTFLAjeGFvgKIPl01Num9cDoV+l76i6mSoRsAtpo3m0BIJt64EQ2G2KMfo388SbYSogEPtREkqDBkHVJHWXHR2SAjiSaTWM74Lg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=aGKM0Gp4; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=aGKM0Gp4; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 5BE7521285
+	for <linux-btrfs@vger.kernel.org>; Fri, 21 Nov 2025 05:03:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1763701404; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=TvXOfpysiDe9qNObuzQMpEkpkXW8F50+Nrhl1CAGGPQ=;
+	b=aGKM0Gp4sgP2QdYb7KZVwkRXSZs6vfyEIu7OKFO5dA8i4xsm3Qin+bEZL2WrFyT7TLvnc8
+	IARdQW6Gaf3U7UGNRNq/eu39xC+uWquESM/tXnSGjfXJ96TdKU/clIOlZPdaR81KCI4CeC
+	zMCEnapXWKtd24IR9htzVeSaN9b7lM4=
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1763701404; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=TvXOfpysiDe9qNObuzQMpEkpkXW8F50+Nrhl1CAGGPQ=;
+	b=aGKM0Gp4sgP2QdYb7KZVwkRXSZs6vfyEIu7OKFO5dA8i4xsm3Qin+bEZL2WrFyT7TLvnc8
+	IARdQW6Gaf3U7UGNRNq/eu39xC+uWquESM/tXnSGjfXJ96TdKU/clIOlZPdaR81KCI4CeC
+	zMCEnapXWKtd24IR9htzVeSaN9b7lM4=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9841B3EA61
+	for <linux-btrfs@vger.kernel.org>; Fri, 21 Nov 2025 05:03:23 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id z3p1FpvyH2l6ewAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Fri, 21 Nov 2025 05:03:23 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs-progs: docs: add warning for btrfs checksum features
+Date: Fri, 21 Nov 2025 15:33:05 +1030
+Message-ID: <7458cde1f481c8d8af2786ee64d2bffde5f0386c.1763700989.git.wqu@suse.com>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] btrfs: simplify boolean argument for
- btrfs_{inc,dec}_ref
-To: dsterba@suse.cz
-Cc: linux-btrfs@vger.kernel.org, boris@bur.io
-References: <20251120141948.5323-1-sunk67188@gmail.com>
- <20251120141948.5323-3-sunk67188@gmail.com>
- <20251120190206.GM13846@twin.jikos.cz>
-Content-Language: en-US
-From: Sun Yangkai <sunk67188@gmail.com>
-In-Reply-To: <20251120190206.GM13846@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-2.78 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.18)[-0.895];
+	MIME_GOOD(-0.10)[text/plain];
+	TO_DN_NONE(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:mid,suse.com:email]
+X-Spam-Flag: NO
+X-Spam-Score: -2.78
+X-Spam-Level: 
 
-> I find this worse than the original because the key piece of code is the
-> condition and putting it to the argument obscures it. I think we have
-> the condition in paramter in some places but it's where it does not
-> matter that much.
+The checksum of btrfs, no matter the algorithm utilized, can not provide
+any guarantee that the metadata/data is not modified by a malicious
+attacker.
 
-Yes, I totally understand. The condition in function parameter is annoying. We can
+And refer end users to fs-verity if they require a strong verification
+of a file.
 
-1. Leave the `if (cond) foo(true); else foo(false);` untouched. This seems a
-little stupid and we have to repeat the same thing in different branches.
-But it is more clear and the if-branch condition fits better with the common
-style. If you prefer it, just feel free to drop the second patch.
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+This also makes me wonder, does it even make any sense to support
+SHA256?
 
-2. Do something like this patch. But the foo(cond) style is rare and alien for
-people not get used to it.
+I know in the past it is an important step towards write-time dedupe,
+but that feature eventually get rejected (and I totally agree the
+decision).
 
-3. We can optionally add a local variable like Boris mentioned.
+And dedupe ioctl is also not utilizing checksum to verify if the content
+matches, there is no real user requires cryptographic hash functions.
 
-> Nice improvement on patch 2. It's much better already, but I am also
-> sort of curious how you feel about giving the bool a name to make it
-> more self-documenting.
-> 
-> e.g.,
-> bool full_backref = btrfs_root_id(root) == BTRFS_TREE_RELOC_OBJECTID;
-> btrfs_inc_ref(trans, root, cow, full_backref);
+Which makes SHA256 not only the slowest checksum algorithm, but also the
+largest one (takes 8x metadata space compared to CRC32C).
 
-It looks better than 2, but still seems uncommon. And
-  - The local variable may be declared far away from where we need to use it.
-  - The same condition might be used elsewhere in the scope, so we also want to
-replace those usages with the new local variable and the name full_backref is no
-longer proper.
+I'd say we should even deprecate SHA256 checksum support.
+---
+ Documentation/ch-checksumming.rst | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-So I didn't do this in the patch.
+diff --git a/Documentation/ch-checksumming.rst b/Documentation/ch-checksumming.rst
+index 72261c23fb8c..cc3cb43b175f 100644
+--- a/Documentation/ch-checksumming.rst
++++ b/Documentation/ch-checksumming.rst
+@@ -3,6 +3,17 @@ writing and verified after reading the blocks from devices. The whole metadata
+ block has an inline checksum stored in the b-tree node header. Each data block
+ has a detached checksum stored in the checksum tree.
 
-Thanks,
-Sun YangKai
++.. warning::
++   The checksum of btrfs is only to detect which mirrors is good, it can not
++   guarantee the data/metadata is not modified by any malicious attacker, no matter
++   the checksum algorithm utilized.
++
++   The attacker can always modify the file content, update the checksum tree to use
++   a newly calculated checksum.
++
++   For strong verification of read-only files, please use *fs-verity* feature,
++   which btrfs supports since v5.15.
++
+ .. note::
+    Since a data checksum is calculated just before submitting to the block
+    device, btrfs has a strong requirement that the corresponding data block must
+--
+2.52.0
 
 
