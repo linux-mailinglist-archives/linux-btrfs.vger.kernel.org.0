@@ -1,120 +1,170 @@
-Return-Path: <linux-btrfs+bounces-19248-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19249-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id D34D6C7A6E4
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Nov 2025 16:12:08 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6073AC7A936
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Nov 2025 16:35:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id C50D6386C45
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Nov 2025 15:01:35 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 6405234AB45
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Nov 2025 15:30:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98040350A0B;
-	Fri, 21 Nov 2025 14:59:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 962FC2BD58A;
+	Fri, 21 Nov 2025 15:30:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda.com header.i=@toxicpanda.com header.b="OXmo0B46"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ABeIM4/6"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-qk1-f179.google.com (mail-qk1-f179.google.com [209.85.222.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E284834F487
-	for <linux-btrfs@vger.kernel.org>; Fri, 21 Nov 2025 14:59:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D07CA26560B
+	for <linux-btrfs@vger.kernel.org>; Fri, 21 Nov 2025 15:30:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763737176; cv=none; b=ATQUczDsSfizU8e9XPS0uffoJNtyk1QO1GQubl87TbYAiRLialLzrk01f2yHdKGpkYo0UdSq/tjES5mSk4ManqkBo6jYWcFRwSB2avBwtpDBhqQdVtQWaa41EfRO8OF9Q7wxLyDXYSVTKBc6CSaYTKKH2/XtA0/Gt8g/dh2MtpQ=
+	t=1763739003; cv=none; b=jMZdNt9s2butv9NTP8yrA5wius2r0pb1NTFvpcXDh8mPnQXtOyyxyGb1nwyLpuzd2jjnZvbu/tC/1IAW8UPIHbx4LFHJrv3HTy2mkvru9qgst/IYTZe0rKmHCrv0N363YKmUXZ28BznRX1xTQYRfBqPbt/IjJ9PRNwJn3ZyuH9c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763737176; c=relaxed/simple;
-	bh=ajsBWU2IzUadh0vAEphs0j80/wZHSdlM/Lguu5OfOTo=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=fnBClvX1gBI6GBTq31CqUdAtsDi5X3orI28Frj4NefWomF5SJqFePz0Fv6s2pOX+Plz0OjEzpttoT+pqua+sN6KeD4eIuYvX4xKhod5n1IakXYDLabXsPMKbqCCQW6WkLPNs5p3DOHg7ZYZQbcWjz0kc/d2gF9i3CwOlexYioCI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=pass smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda.com header.i=@toxicpanda.com header.b=OXmo0B46; arc=none smtp.client-ip=209.85.222.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=toxicpanda.com
-Received: by mail-qk1-f179.google.com with SMTP id af79cd13be357-8b3016c311bso253287085a.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 21 Nov 2025 06:59:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda.com; s=google; t=1763737173; x=1764341973; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Uo/3a+N9FgZngrUGo0qp/jW5L7tgGqa+G1BsKok1mgo=;
-        b=OXmo0B46y7vnEyS9gak8HutcqcyNOWq8KpbmIFQk+LhC2MVUbixw/Xq1MS+5DEVh29
-         xOROmPURcPoFY6xy076Df41sTe1HZcyMeERtQbXQh4CBLrqOKi312u9Alyvp0jeMWJV1
-         4xixj0s6Lu2zrK58UPKcyA0F9GMAr2LxwMVk4D9/cIax6mCNaLKHouJmv8NpEzUvwL49
-         p0lMJhm8dKmvz1cW6+qZuA8lNdJTohCAH9RPLIL7wHM994yk87rMU//OWs6HAjTHXyoP
-         FSs5P9NEHI7tX8v79ZtzJTDovzMohERBENuzBjfAzeeqTCB0pvXGd34XBtXm6cL9i4aR
-         nzoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763737173; x=1764341973;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-gg:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Uo/3a+N9FgZngrUGo0qp/jW5L7tgGqa+G1BsKok1mgo=;
-        b=rKdYdYfyTIvSOb2M0t0onAcFS7MtBBMiEDYfb7Orw64Zg/gQ2dFb9JKgLEVc1AiPHU
-         SBWNpPv33mSkkTppi5fIKabmy3K+j9Nq19D+Nk6pbopO4epXI2bYfyaLMwaJEeFoHPQj
-         NG06wTor8nHTwnEyPH2Vd/DSXfivauVbri4gLpMAEewjTKF1Yyg2CZ1Z753KeA6PyEF7
-         niUFzMsmrQRThxZVpL5QX2xMLXbti+fwHS01+yALAF2SUWqbhuNZT4CklGeARxXsjsP3
-         HbqhbT/+rbuMDMftYHe7aXpmHS1RGY6gflGmuF+C/Sd9vARMJH5HGEiWLSRxGoeghW6u
-         Ir9Q==
-X-Gm-Message-State: AOJu0Yzj4XxGJpxnAxK9ul1Foxd6JdzEqeYpoA/FDfCXu3h/2+Ha3WC4
-	PtTK0kvaJH8eU+GfC5T9pfTtbhJpxMl4M3F8ecLZb4Yq693TitRRphSr2So+mZLYYPYbzjF9C2U
-	hTfcOyrDyWA==
-X-Gm-Gg: ASbGncuUjyG29LVr6FfYWNNZ/KrpCuSU7AewEGrJgouooT/J0hHJ/wBMh+M0VIkDreK
-	RANQ/txDP1FqllhHtVSREj4smh3XRSNJw0m07fI17DbpKHpZ3aMvZkNHtyrMux7KqcPbGxkDyyo
-	YGoAnQG/gO1/iNhzSi+R6IXqRmnAHUBOlyM9c0/TvbhdiKsjQiGRA8sUDPewUd8AR66T9ASgd6R
-	4UYoUUt/pureTFKHww8V0vkEgRf/wSQm56kSzLvYQyy7LOb7+evszj3U+HkaDMxbdKxq/5KK7j0
-	ciNItV920nR6gUF2G998qeVRionFKLjA1/u8IgiyyILyl4yh5ctdsayM8QhtU8534iF8mpZron6
-	feiw785Z+zqNnEWt4rK7GuJQbrVeYDzs7HtnRXgV23wYpOMJ2o3Y1tl1vCQVYo8EDynx2ihkPIW
-	fxCnKD1PF1yQUi55mYACctAqE=
-X-Google-Smtp-Source: AGHT+IEwGAD2bbPdUgtFmGhSVQ6lufMq/Y/++OVuOHvZP5SEVOyEQrLLOtxiGDTk5atQZcKsytx7ng==
-X-Received: by 2002:a05:620a:2902:b0:8b1:1585:2252 with SMTP id af79cd13be357-8b33d203af5mr296445985a.1.1763737173351;
-        Fri, 21 Nov 2025 06:59:33 -0800 (PST)
-Received: from localhost ([2603:6080:7702:ce00:f528:9f2f:44c:2c84])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-8b3295f2f6dsm379887185a.54.2025.11.21.06.59.32
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Nov 2025 06:59:32 -0800 (PST)
-From: Josef Bacik <josef@toxicpanda.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 2/2] btrfs: remove useless smp_mb in start_transaction
-Date: Fri, 21 Nov 2025 09:59:22 -0500
-Message-ID: <47165cb8ed8a4a576e83a0ab13813ebe2de808bf.1763736921.git.josef@toxicpanda.com>
-X-Mailer: git-send-email 2.51.1
-In-Reply-To: <cover.1763736921.git.josef@toxicpanda.com>
-References: <cover.1763736921.git.josef@toxicpanda.com>
+	s=arc-20240116; t=1763739003; c=relaxed/simple;
+	bh=efZWS3HBmGGcCG7Wfs/GcVGZvjYXGQk48+hpHyEnuHE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=b6W+zj+M8HuTkCj3vvDSeim0afLXBQuJoNuQXeXvUB7xiAWND53KgubZAhdxBrXh0XUyMBgRV2ADq7SK+Crl2eqGSsceJxv1YnRsfhGPLQZZ+k8CFoU9dz4YM8fgfXVjo8nuCu8bAQkdxNbyV2zBjUbDAQbqR40BWbGbbQKnZRo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ABeIM4/6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5D73C4CEFB
+	for <linux-btrfs@vger.kernel.org>; Fri, 21 Nov 2025 15:30:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1763739003;
+	bh=efZWS3HBmGGcCG7Wfs/GcVGZvjYXGQk48+hpHyEnuHE=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=ABeIM4/6/zxDNbckumLiS0il4RWXYDsaGMhdyNCuzVZmR3eyM6T/IuoqkResk70PS
+	 SoIMv5fungr5i3+GpRdAOgwfwayfcDqJSbGXb2FYBTOuwa+CLgunwnBmZ7OxRqNKd8
+	 UCwcvhalSHO8XcegBsvdnKsfieOQCoCe6DLmTnIyH8b6WUE9xnZI86tHZXY6fq8ztT
+	 PiBRJCiIxZWhpMsF++vCWn1fM8n55sJ2EUpRmCurkOkxwFSv5nkl46hpnkZ9HMNBPv
+	 1szCK2f3IdUU5aBZpM8LZfqKJsdmz8NexnFzH3r1WzHPGxbCR6/mYVVzRP9uwqaEou
+	 LhCh92p4auiyg==
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-b73161849e1so151098966b.2
+        for <linux-btrfs@vger.kernel.org>; Fri, 21 Nov 2025 07:30:03 -0800 (PST)
+X-Gm-Message-State: AOJu0Yy/ZNs2WPo8Jhxy/GNKletCUkv8ESejVZ5fZn1dwHWEkBfzzfWf
+	C2QJ5o5QRxjWx3wf2x5hux7KBAUkrmNUq0Z0+pzYwHkjVmkHgl2ygAvFH/BRBmLK+cT5P+SmhX0
+	3bUamZjs7KM9ghbf+ZjRXceB1kU25ors=
+X-Google-Smtp-Source: AGHT+IFwx2SN5jcQu+hCJM5GqPo2NbId/yG4Vfhz4SztoDc4Hstl8Aip9RqxGAg1t8lEQQVIkc/49ahEr4W6TlAk174=
+X-Received: by 2002:a17:907:d8e:b0:b72:5e29:5084 with SMTP id
+ a640c23a62f3a-b767150b9a3mr274401966b.4.1763739002187; Fri, 21 Nov 2025
+ 07:30:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1763736921.git.josef@toxicpanda.com> <7a9d970450cb1531d0a0da5d8e8615b06aba9137.1763736921.git.josef@toxicpanda.com>
+In-Reply-To: <7a9d970450cb1531d0a0da5d8e8615b06aba9137.1763736921.git.josef@toxicpanda.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Fri, 21 Nov 2025 15:29:25 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H7phOax9p2s-pcaeGdE4rgpZc7NP1=0Ny+o93fXYKJ-Nw@mail.gmail.com>
+X-Gm-Features: AWmQ_bkn0yltK94UDeaaR4HbqRDOT-CY3pY5t6EuJp7BCbGBZFqeUDaR2_AByK8
+Message-ID: <CAL3q7H7phOax9p2s-pcaeGdE4rgpZc7NP1=0Ny+o93fXYKJ-Nw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] btrfs: fix data race on transaction->state
+To: Josef Bacik <josef@toxicpanda.com>
+Cc: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-trans->state is protected by a spin_lock() and there's no mb when we set
-it, simply the spin_unlock(). The correct pairing with that is
-smp_load_acquire(), so replace the smp_mb with the appropriate helper.
+On Fri, Nov 21, 2025 at 3:13=E2=80=AFPM Josef Bacik <josef@toxicpanda.com> =
+wrote:
+>
+> Debugging a hang with btrfs on QEMU I discovered a data race with
+> transaction->state. In wait_current_trans we do
+>
+> wait_event(fs_info->transaction_wait,
+>            cur_trans->state>=3DTRANS_STATE_UNBLOCKED ||
+>            TRANS_ABORTED(cur_trans));
+>
+> however we're doing this outside of the fs_info->trans_lock. This
+> generally isn't super problematic because we hit
+> wake_up(fs_info->transaction_wait) quite a bit, but it could lead to
+> latencies where we miss wakeups, or in the worst case (like the compiler
+> re-orders the load of the ->state outside of the wait_event loop) we
+> could hang completely.
+>
+> Fix this by using a helper that takes the fs_info->trans_lock to do the
+> check safely.
+>
+> I've added a lockdep_assert for the other helper to make sure nobody
+> uses that one without holding the lock.
+>
+> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> ---
+>  fs/btrfs/transaction.c | 18 +++++++++++++++---
+>  1 file changed, 15 insertions(+), 3 deletions(-)
+>
+> diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+> index 89ae0c7a610a..863e145a3c26 100644
+> --- a/fs/btrfs/transaction.c
+> +++ b/fs/btrfs/transaction.c
+> @@ -509,11 +509,25 @@ int btrfs_record_root_in_trans(struct btrfs_trans_h=
+andle *trans,
+>
+>  static inline int is_transaction_blocked(struct btrfs_transaction *trans=
+)
+>  {
+> +       lockdep_assert_held(&trans->fs_info->trans_lock);
+> +
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/transaction.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+It seems odd to sneak this in when no other change in the patch
+introduces a call to this function.
+I would make this a separate patch.
 
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index 863e145a3c26..be2f1b88a0c1 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -737,8 +737,7 @@ start_transaction(struct btrfs_root *root, unsigned int num_items,
- 	INIT_LIST_HEAD(&h->new_bgs);
- 	btrfs_init_metadata_block_rsv(fs_info, &h->delayed_rsv, BTRFS_BLOCK_RSV_DELOPS);
- 
--	smp_mb();
--	if (cur_trans->state >= TRANS_STATE_COMMIT_START &&
-+	if (smp_load_acquire(&cur_trans->state) >= TRANS_STATE_COMMIT_START &&
- 	    may_wait_transaction(fs_info, type)) {
- 		current->journal_info = h;
- 		btrfs_commit_transaction(h);
--- 
-2.51.1
+>         return (trans->state >=3D TRANS_STATE_COMMIT_START &&
+>                 trans->state < TRANS_STATE_UNBLOCKED &&
+>                 !TRANS_ABORTED(trans));
+>  }
+>
+> +/* Helper to check transaction state under lock for wait_event */
+> +static bool trans_unblocked(struct btrfs_transaction *trans)
 
+This could have a name that is closer to the other helper:
+is_transaction_unblocked()
+
+> +{
+> +       struct btrfs_fs_info *fs_info =3D trans->fs_info;
+> +       bool ret;
+> +
+> +       spin_lock(&fs_info->trans_lock);
+> +       ret =3D trans->state >=3D TRANS_STATE_UNBLOCKED || TRANS_ABORTED(=
+trans);
+> +       spin_unlock(&fs_info->trans_lock);
+> +       return ret;
+> +}
+> +
+>  /* wait for commit against the current transaction to become unblocked
+>   * when this is done, it is safe to start a new transaction, but the cur=
+rent
+>   * transaction might not be fully on disk.
+> @@ -529,9 +543,7 @@ static void wait_current_trans(struct btrfs_fs_info *=
+fs_info)
+>                 spin_unlock(&fs_info->trans_lock);
+>
+>                 btrfs_might_wait_for_state(fs_info, BTRFS_LOCKDEP_TRANS_U=
+NBLOCKED);
+> -               wait_event(fs_info->transaction_wait,
+> -                          cur_trans->state >=3D TRANS_STATE_UNBLOCKED ||
+> -                          TRANS_ABORTED(cur_trans));
+> +               wait_event(fs_info->transaction_wait, trans_unblocked(cur=
+_trans));
+
+Instead of adding an helper and locking, couldn't this be simply:
+
+wait_event(fs_info->transaction_wait,
+smp_load_acquire(cur_trans->state) >=3D TRANS_STATE_UNBLOCKED ||
+TRANS_ABORTED(cur_trans));
+
+Thanks.
+
+>                 btrfs_put_transaction(cur_trans);
+>         } else {
+>                 spin_unlock(&fs_info->trans_lock);
+> --
+> 2.51.1
+>
+>
 
