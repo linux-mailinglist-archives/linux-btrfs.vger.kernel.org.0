@@ -1,170 +1,166 @@
-Return-Path: <linux-btrfs+bounces-19232-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19233-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14BD7C768A6
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Nov 2025 23:37:17 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99EDEC76D50
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Nov 2025 02:03:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 13BCF345B69
-	for <lists+linux-btrfs@lfdr.de>; Thu, 20 Nov 2025 22:37:12 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id A8B124E4777
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Nov 2025 01:03:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25F972FDC41;
-	Thu, 20 Nov 2025 22:37:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7B851E5B60;
+	Fri, 21 Nov 2025 01:03:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="RgOMbhD2"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="boB5wCGp";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="OmJJrBnK"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fhigh-a8-smtp.messagingengine.com (fhigh-a8-smtp.messagingengine.com [103.168.172.159])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71EBB2AF1D
-	for <linux-btrfs@vger.kernel.org>; Thu, 20 Nov 2025 22:37:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 525501FDA
+	for <linux-btrfs@vger.kernel.org>; Fri, 21 Nov 2025 01:03:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.159
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763678224; cv=none; b=dSlc85W5SwnF31WpXcNR3ZwuwMQ0BXiRMl4s7NPVkkaRQROnO3agd5XChNrPnE9yU1pmUnkp/Fi9fryDBiWjM1gg4T8jWkxzDUfQaurTzLg4BhFE/QggoAGvKA63fuAam4kpkB0eJvvtHpMm7XCLDaNvcDsILGncrzK5J4Kv7iQ=
+	t=1763686986; cv=none; b=p123crkmrg865wlBuajCY6YZyusuLG40IiJeGaNeR0y0fxup0w+by9Cv+4JEWNQVXE79CS6Rxtzdd2ct12Eqw1jAvKrpMQ9ejsPqfELWAFts2C7vD1gu1pDkX5hMKQlW8iXk4+pECUBD7qRagPoaOnXB+o1JDAucuATbFYS6Gsg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763678224; c=relaxed/simple;
-	bh=AcwuMcZ/RJFqblpVlPWKyfVp/SwXhjj1Ku4QknIGlW4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=K6ZGltmqWbD4fIbZ+aX+xcupU4ZIZfbHdRW2dlSArHpgaHBu48lp4JQvURpWEyG/k1bPciAxXT/xYMPiUzl6HTFVWgqDXqbowZcoIkmSlFMZdeAzs9HcMGLG5C2a7jAkWjz9wAwc7QyoGUEV8mn5lntLTEncp2n5xPbrfAdTC0M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=RgOMbhD2; arc=none smtp.client-ip=209.85.128.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-4779a637712so9441445e9.1
-        for <linux-btrfs@vger.kernel.org>; Thu, 20 Nov 2025 14:37:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1763678221; x=1764283021; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=teHzbHAZt4K2w/tuw2YsIconSZped389koaKoK927cs=;
-        b=RgOMbhD2Lo2pLWRPXs3aBFQvMHOq6MABjqbv3xby5ctGfm347SnhOxLVDGymWAuPc1
-         thR0MWDyM7ciFjrj+/fmYnRQWy6hymEKs/M+sULcwuagt88ndpwucE+emblAS2zLY7nf
-         gkJFwXB/iJzO3mDOY4y6hftELTvjwvZahE+aYUpNbFrLZl1KoxA3cX1Nzx85ITwDz7Ff
-         5ew61T2oTqMI5lwLTOm1AIvGP5+Ncp/kFnXkBnvKeDM+H405xNcC++3ac2pzlAEAJ+du
-         hGLrXmn5DkG+ryy/YhcSOIHCsxwGZ1ieXK5ffjvctdhHgGDuY4aEZZgn9BJC3ixam9Qp
-         v55A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763678221; x=1764283021;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=teHzbHAZt4K2w/tuw2YsIconSZped389koaKoK927cs=;
-        b=iifXswsDFPCy2pgIIvn76y69tHpBrAf50wicOWApgrfmNwdBHTEVdJ2TLPvVW3ktdk
-         RwENdY9VyaeYMOzuq1caotxvj0XGBSko7umfkR1TWYXXmXY1tjBYPEvKF+YHYy629VJc
-         cUHBmwbb5jhc8eS/F/nRSByLmiWg/NTXHAwQUVz2E7TqscfHnMWMvnsp+YFjVowyJ+/a
-         PrQFC+gdaqTRYhjhnQ26n2bbOj7wNIi2kQHKwUS5gS/PNDmOSmcnuws8k1dz5OcnWgIE
-         sokoUWK58At2rgUNAQPZgl5t8b4eDz5Mdr0vCT33o4lmOzeCzNnflfS9LIgL7JYbxWNz
-         wwig==
-X-Forwarded-Encrypted: i=1; AJvYcCV3+6uzbzJtw8RCImDbaIqIuVSEgNe07oL+aA7Tyxybtr18wRvkSs3I1sRiBf2vLrvGiHrjPrcuJO9bOQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywoqksz7hMhdb5ub68O3veUBaBCkKk7g2bUODX2agXuIMklUUU7
-	a6u4RW2EkjNpNmYmFPFMrNvujmjhpgr2u/826KrjOxoC/OZe6WsBBB5qUgMrSJyuFDNI+JaUbRG
-	wizI0
-X-Gm-Gg: ASbGncvi9kLpYsKezJQZsysBhVcY8MFCLWJ1JaQVMTQn2HnxI3tOkcRSVL2N1mNY8lb
-	KDXK1bbLAJZq3DobQhZlQTfv3MM4HeeR/peNbV/5fITQKCO75jCpblsQSzSEkwLKuSwHTx8GGj2
-	QrJZocU51xWupYjq4NuRqWVLb2WoMofLmUrlqCzXG4kFcu8wvk/GCtWTl7Ix80vOTx17rMTJ+fb
-	MwDFO3yYG2TWKAcPXQJoR0rmYr9Y8PN4duOSXd8qCJVUzS8OkuizVuFxaIVr/MeRIzdkQYRQWDt
-	ya7vJCYSgkgjCNFhMHhCWgaEXVJrdVSRI7nS7dZs3vR3geNBm5y/sE+wyPit5yEOWXj2iqyG0pV
-	6hwqN0mZC4L00CuYjqiqFATjS9ImT8jSyOF2aokNPo9o/ibYNadQCDiFrCc3xGUQRcRe5Yl8Pzm
-	7hxd6Hxq+Jp2W0QtQR0QdlbDce+a52KCWysCfvc1g=
-X-Google-Smtp-Source: AGHT+IEi30R7PUEVbcV7RZ1AGGSluhU9fB1gMEH2YtJ/it/mkxTjTJpP3f7nP1Hpolp5Du9gRTeh+Q==
-X-Received: by 2002:a05:6000:612:b0:429:c54d:8bd3 with SMTP id ffacd0b85a97d-42cbfb43efamr1062637f8f.53.1763678220800;
-        Thu, 20 Nov 2025 14:37:00 -0800 (PST)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-bd75def6321sm3584201a12.6.2025.11.20.14.36.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 20 Nov 2025 14:37:00 -0800 (PST)
-Message-ID: <832a46d9-8766-4fcd-a319-940e23a4d765@suse.com>
-Date: Fri, 21 Nov 2025 09:06:55 +1030
+	s=arc-20240116; t=1763686986; c=relaxed/simple;
+	bh=lLmPGBCyNIJSHi5vtxXaMEgY7EJYDYDchnEe/wV9R/M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fj/IvxTEVUdkpuSEib9/5cGd3jBoo2GQP/u3DNh4YoCKZobjaG/w9664Zja//O+C4Njoi6FdWhnf2kyM566vGEN2eouzsmj6TqE92Wd5nwWUt4RP8yjSmfosC55rsGkJ8Fv4YPt020G9xI7CAQnGRy4hC2z47Vnd3A2HvFZh9Ho=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=boB5wCGp; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=OmJJrBnK; arc=none smtp.client-ip=103.168.172.159
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
+Received: from phl-compute-06.internal (phl-compute-06.internal [10.202.2.46])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id 46A6414000D0;
+	Thu, 20 Nov 2025 20:03:03 -0500 (EST)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-06.internal (MEProxy); Thu, 20 Nov 2025 20:03:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+	:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm1; t=1763686983; x=1763773383; bh=bAMQ56lAH6
+	z3cAYVfYYxf5g6uOIxcUkxX0537K4Atn8=; b=boB5wCGpxF92LNvHy2znWKa5yy
+	OLIYraigLsmeigvPxb94XwdfghkG+Ae6rKAWczTJpTCgviEnveDMfUpefXBqOQp5
+	BiOmRckGg8Y+FQGcMjD9zuuF/GINjiu/1ASz31siusiTnWTj8vLb2Noid5c7GlSV
+	jrbF5bFRBwprSFOXcFoVnV3n1vaTQQI5mNm896jaRqiJ1aaQD1gdb6neMPOpQO4R
+	S2Q5IwDgMYeF1CYMLUklsQEuOBuSRwS1EMHnRJcgrxr6Rw/4JqGORPQptj/YkPHz
+	rcrIeWuKQy6s2jVRlVqpyDzaPLFCHSqLJ6JSzQqtNno98KqmsPtDQTHx23eA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+	1763686983; x=1763773383; bh=bAMQ56lAH6z3cAYVfYYxf5g6uOIxcUkxX05
+	37K4Atn8=; b=OmJJrBnKg32YcMjeOFrcqbiP/TusrPGa0AxYTrncym8o3b2W+7v
+	iHIZYKlhBWgMch0sDpWch8HA786UKBLMdXVDonLWKneECFkObvF8tZrEEFqTwlL9
+	/cC9SXPON043nZLe78/X3SQvQIDpUzqj5xjzpUeuCQ2ZXAIGX6MsZ1VabTXo+EKe
+	dH9PXFTH4jw96XRbrjb3Ctl2mrWeruVBhnZRyZysrE5VvSK4iGLG990zVVIxxXOd
+	3mKHNDM4xtrK6s+ELeBLwNwdIMZ+4KRng/igkTrDTfkL4QLGbAKli8CBOPOhrW7V
+	5/BZJgqTzAonlOFoVPwDVLaJTf9VQA2jlsQ==
+X-ME-Sender: <xms:RrofaaZBSWHsRGfZoqWiMt_prL5UzI7bu9FBBGGSxMzOo1OadxCh7Q>
+    <xme:RrofaTa3x44mzI3hPOA9pdwRZqqp6sA3rlVXRBpXJn_xWiBeIYzBn_p8-WjEOdFqk
+    zePgwRTYxoDUO1XVEltQKZr_j2INEHsfKD1P8bkm8O4rNII_bDTFPU>
+X-ME-Received: <xmr:RrofaSl8tCdHT42S1E_yJLUr40wezuNz470VL5CYEXsHW4mTYdBZhVUww6hBCTat57Z8qQoYorkgN2XKlnVdyGm3cJI>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggddvvdekheelucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
+    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
+    gurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhishcu
+    uehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpeekvd
+    ekffejleelhfevhedvjeduhfejtdfhvdevieeiiedugfeugfdtjefgfeeljeenucevlhhu
+    shhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuh
+    hrrdhiohdpnhgspghrtghpthhtohepvddpmhhouggvpehsmhhtphhouhhtpdhrtghpthht
+    ohepfihquhesshhushgvrdgtohhmpdhrtghpthhtoheplhhinhhugidqsghtrhhfshesvh
+    hgvghrrdhkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:RrofaXz8CztAjffczuaE1wkBfMjmnkVdUClVSmjD1DWtHv6CZ6UJCA>
+    <xmx:RrofaYNmCB3AtAgXvRlOtuo7cFV_rqGwvCSkjKimeTtZngQqMotykA>
+    <xmx:RrofaTRDCaFCyvRqBlyo2HX-8ZVSELlflRctPnaTWtUT3FaLSjCPWg>
+    <xmx:RrofaeYH18p37LvaY9Qu5ChDr7jJKlhOnGIG2wGPEsYNh0rdODgBrg>
+    <xmx:R7ofaflGq1nvt14YODVCD200y0F_-BsZFr0kBASXcI4wrIAf1j_Bu_Ft>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 20 Nov 2025 20:03:02 -0500 (EST)
+Date: Thu, 20 Nov 2025 17:02:15 -0800
+From: Boris Burkov <boris@bur.io>
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v3 0/4] btrfs: reduce btrfs_get_extent() calls for
+ buffered write path
+Message-ID: <20251121010043.GC2899191@zen.localdomain>
+References: <cover.1763629982.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Questions about encryption and (possibly weak) checksum
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: linux-crypto@vger.kernel.org, linux-btrfs <linux-btrfs@vger.kernel.org>,
- "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
- Daniel Vacek <neelx@suse.com>, Josef Bacik <josef@toxicpanda.com>
-References: <48a91ada-c413-492f-86a4-483355392d98@suse.com>
- <20251120223248.GA3532564@google.com>
-Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <20251120223248.GA3532564@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1763629982.git.wqu@suse.com>
 
-
-
-在 2025/11/21 09:02, Eric Biggers 写道:
-> On Fri, Nov 21, 2025 at 08:28:38AM +1030, Qu Wenruo wrote:
->> Hi,
->>
->> Recently Daniel is reviving the fscrypt support for btrfs, and one thing
->> caught my attention, related the sequence of encryption and checksum.
->>
->> What is the preferred order between encryption and (possibly weak) checksum?
->>
->> The original patchset implies checksum-then-encrypt, which follows what ext4
->> is doing when both verity and fscrypt are involved.
->>
->>
->> But on the other hand, btrfs' default checksum (CRC32C) is definitely not a
->> cryptography level HMAC, it's mostly for btrfs to detect incorrect content
->> from the storage and switch to another mirror.
->>
->> Furthermore, for compression, btrfs follows the idea of
->> compress-then-checksum, thus to me the idea of encrypt-then-checksum looks
->> more straightforward, and easier to implement.
->>
->> Finally, the btrfs checksum itself is not encrypted (at least for now),
->> meaning the checksum is exposed for any one to modify as long as they
->> understand how to re-calculate the checksum of the metadata.
->>
->>
->> So my question here is:
->>
->> - Is there any preferred sequence between encryption and checksum?
->>
->> - Will a weak checksum (CRC32C) introduce any extra attack vector?
+On Thu, Nov 20, 2025 at 07:46:45PM +1030, Qu Wenruo wrote:
+> [CHANGELOG]
+> v3:
+> - Use @cur_len for btrfs_get_extent() in the last patch
+>   And remove the hole related comment.
+>   This should not cause any behavior change.
 > 
-> If you won't be encrypting the checksums, then it needs to be
-> encrypt+checksum so that the checksums don't leak information about the
-> plaintext.  It doesn't matter how "strong" the checksum is.
+>   The @len parameter for btrfs_get_extent() is only going to cause a
+>   difference when the range is completely a hole (e.g. beyond EOF).
+> 
+>   For our writeback routine, there should be an extent map for us thus
+>   it's no different passing @cur_len or sectorsize.
+> 
+>   I think this @len parameter of btrfs_get_extent() is causing
+>   unnecessary complexity, and want to remove it completely. But that
+>   will be a new series.
+> 
+> v2:
+> - Fix a potential bug where OEs beyond EOF are not truncated properly
+>   This replace the original patch to extract the code into a helper.
+> 
+> - Replace more for_each_set_bit() with for_each_set_bitrange()
+> 
+> - Fix several copy-n-pasted incorrect range inside submit_range()
+> 
+> 
+> Although btrfs has bs < ps support for a long time, and the larger data
+> folios support is also going to be graduate from experimental features
+> soon, the write path is still iterating each fs block and call
+> btrfs_get_extent() on each fs block.
+> 
+> What makes the situation worse is that, for the write path we do not
+> have any cached extent map, meaning even with large folios and we got a
+> continuous range that can be submitted in one go, we still call
+> btrfs_get_extent() many times and get the same range extent map again
+> and again.
+> 
+> This series will reduce the duplicated btrfs_get_extent() calls by only
+> call it once for each range, other than for each fs block.
+> 
+> The first one is a potential bug inspired by Boris' review.
+> Patch 2~3 are minor cleanups.
+> Patch 4 is the core of the optimization.
+> 
+> Although I don't expect there will be much difference in the real world though.
 
-Great, that matches my expectation.
+Reviewed-by: Boris Burkov <boris@bur.io>
 
-Thanks,
-Qu
-
-> - Eric
-
+> 
+> 
+> Qu Wenruo (4):
+>   btrfs: make sure all ordered extents beyond EOF is properly truncated
+>   btrfs: integrate the error handling of submit_one_sector()
+>   btrfs: replace for_each_set_bit() with for_each_set_bitmap()
+>   btrfs: reduce extent map lookup during writes
+> 
+>  fs/btrfs/extent_io.c    | 230 ++++++++++++++++++++--------------------
+>  fs/btrfs/ordered-data.c |  38 +++++++
+>  fs/btrfs/ordered-data.h |   2 +
+>  3 files changed, 156 insertions(+), 114 deletions(-)
+> 
+> -- 
+> 2.52.0
+> 
 
