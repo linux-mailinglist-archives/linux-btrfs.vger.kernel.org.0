@@ -1,277 +1,134 @@
-Return-Path: <linux-btrfs+bounces-19243-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19244-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19A51C78EA3
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Nov 2025 12:56:47 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70A84C7920B
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Nov 2025 14:08:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sea.lore.kernel.org (Postfix) with ESMTPS id C754E242BA
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Nov 2025 11:56:45 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id C3CBA350FFF
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Nov 2025 13:03:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76F0D199EAD;
-	Fri, 21 Nov 2025 11:56:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D370341069;
+	Fri, 21 Nov 2025 13:03:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O1xBqrpq"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="QFUx4fh4"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E49D346FA7
-	for <linux-btrfs@vger.kernel.org>; Fri, 21 Nov 2025 11:56:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F089A34403B
+	for <linux-btrfs@vger.kernel.org>; Fri, 21 Nov 2025 13:03:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763726197; cv=none; b=WtsueDWzHBto+wwrrxSyWvJ3kRsDR5IhmWr+4do3w76HCpuzdhMLVb8MngLbq+rZEqiy2cFK83qM9c1eDyIcVw5GXwEEyD3h+RkfcyzCtV3SqQDOGiDnNlzA8vT/BxiS2kf07RM3LA+By4JCWANB1Ot3rwGf1zqKeJK/Ity+mRY=
+	t=1763730190; cv=none; b=DRXBuBPflzAyHJNm4BbQz9BXvqa2w4x5Og0WeKWAfgS0tGh7XjkMpzN5EIBzcQ1MWots0KWG1GCxSSi2FCc65iqOhD/z20SSaEvlfKmXdN1aayIqj4Ms6qeQnLKp4qFO/ojVZy6df4/0BYMcZFno71pI3Sha8HmL1sw45H5SGLU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763726197; c=relaxed/simple;
-	bh=9veETjfS61uUJHWc+P+xYcoh2Ua7uhI7o/Ily78K/hA=;
+	s=arc-20240116; t=1763730190; c=relaxed/simple;
+	bh=RE8inZJACUTjbhJ7R5bdkx+O4GyPgbuPgpvQX5rm+4A=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jRXHFU0weg6XQXkMZwV8NXR/MGgbQ8ey4acf+7sK3NmbSXNdCOTmuhW36gkiMwDTQBMk9+bZHv84JqAdw1idbbSzNmnuLaAzTkfkYCRgPu+EZoC4hNAcVuhJZ7hUhlAkU6TUlQT/CiU0pSPYo10dC+XqUz/2YFzoB+AOObU5HNQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O1xBqrpq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0377C4CEF1
-	for <linux-btrfs@vger.kernel.org>; Fri, 21 Nov 2025 11:56:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1763726196;
-	bh=9veETjfS61uUJHWc+P+xYcoh2Ua7uhI7o/Ily78K/hA=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=O1xBqrpqJHzObvZ7mZkqUg63TlpUhDaiUGB87U/Z964QKzTayYre1Pp1GFLmgCcRa
-	 3UI08vhY4UMLDJEuv/Q6+8mX4+xZlJZrjlL8vrC0HVwa1YnnlHBBcqqu6kWX1QGVrv
-	 nsclHaTwt/opJ7cIWLH5FmdpKDmWcTMuTFujTqg8lWqK1ArH5/CsH3SUR9H/nSQJ6Z
-	 RJOdECLj5i7ZKsjSavf3kxFzlNS34SLHo09lMVaGCiFr6nO9NQD83RVJFVHIX25hKF
-	 Hz723g00gXhghug/PQ43KfLwrZSnoUCmM+FoegEe7rSWPKppsjXEyslEc7jNzlAZt/
-	 t5Z/rj9TrjKeA==
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-b737502f77bso284227566b.2
-        for <linux-btrfs@vger.kernel.org>; Fri, 21 Nov 2025 03:56:36 -0800 (PST)
-X-Gm-Message-State: AOJu0YxJAWSP3/EyIE9gEaf1PP/nrXHbyQgGTO/EXxKwTsFFW1jubMtU
-	w3Gbi9XBq+30Sghn8TuSA2/o9efqzvrfXQfQvtrYrdhuomRYtuDwSQquCY9v2IaoDnhEj09ch+g
-	LO4DAVLby6t0W+t5EW29jek6Ch/1s2RY=
-X-Google-Smtp-Source: AGHT+IGbRGs3kHz5/XBWbyhvpXJgWOqg0e0c1vQcZYo+C6yrveqHg2RXwQCzAwO01WPx1yruRMPndw5nayhonTe49J0=
-X-Received: by 2002:a17:907:9604:b0:b5c:66ce:bfe6 with SMTP id
- a640c23a62f3a-b7671a1585amr226787966b.55.1763726195074; Fri, 21 Nov 2025
- 03:56:35 -0800 (PST)
+	 To:Cc:Content-Type; b=nOFeznWRWlcAbjXL23UoKIg6HdzNNf3Wab3OqV7NCJ0C7ijiwa0n8y3KVVjgYnmHQO6v5HYCj4JLe6A3o8+YWi3NCu1ZO2wjiD+byJ0ZCY5s00Rv8ugfUMx2TVy8W9J5/Q+0pysQaxhDLsiZFxBGP08JXZSXx4fYmL3bw3XWQe8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=QFUx4fh4; arc=none smtp.client-ip=209.85.128.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-47118259fd8so17832905e9.3
+        for <linux-btrfs@vger.kernel.org>; Fri, 21 Nov 2025 05:03:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1763730186; x=1764334986; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=RE8inZJACUTjbhJ7R5bdkx+O4GyPgbuPgpvQX5rm+4A=;
+        b=QFUx4fh4YCD5UE1/uehzPoKxMW0qLKeaDtTAwwXWN7f5V9z+KakJ2nGk+Rj+3Nfmip
+         V6OqdGFZN070ieMOEg6rzUpNhLQ/axXXp0F5H6tns5+UWOruK8XjnwrG8ZRwiwQGDTMd
+         yW29K1l3bJ9WdI44Z1MwR/tXr4jyVKh7oJTBm34OcQvsSzvC48fU5hvjKPm0dLwihXbp
+         AqwWaO4x9ImsyFBAGzu45Jb5UkjrtbI4GcoMhiIa2iC0S0suUo+bWvP6t0W5PtrJhJWL
+         8uR4f6zMRbWn4J1AiPFqtrle07yecLBaTUTnjY4JTFsBXwMzQ+qJF+R/repYvRpYIDzU
+         c4pg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1763730186; x=1764334986;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RE8inZJACUTjbhJ7R5bdkx+O4GyPgbuPgpvQX5rm+4A=;
+        b=DaXKATRRdWNkAZJALrlB1SoCtJN1dXGRojKd2N0bQGzsKHMDBuP8ykxty94fb8Fgm6
+         vu7sBOAtra9Qi/OlOWzOZFlxCsDTK1yG3iZ5dMIngfj4/vpORVxAzvwr405dXoQngwdV
+         BfMCA5DvkHsdSkagqBFOXy2xTAij35+q4VWfnNHVed/Mdo26Apz4u4PnF6IFgGWNq7Uw
+         m7y4mA7raoHnULhLxqXONuqAW+fRB/KtCj+QyqsuPQoUGAdsPyNeT/pCWCTn1cKEKEEk
+         F8UsUetTnaamg8sjW/Pwqc+SpZyX4BiuyaM6zU8PPFHcwNMdSXlMSayWHh3IactMsuAF
+         NI7A==
+X-Forwarded-Encrypted: i=1; AJvYcCUKX9ToJeB0gKuxjPy0VKzssdInSkF8jc+cpudpXP5F17ZDyCrmgBR3ljL4PYd4SEvQWY5pL6DCESM/Xw==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx2f/1uXlzporum+gZRA4asVln5FDTuk7LyhlwvZDbdIM2V6gK8
+	oFJgnbjWa7or6l9BUxCb/uuMZ5048nv3TkFQOpbpSy51c4hqzYM1GhCeBei2rdBHSxEjhSdvdqc
+	ZqX9QkVcaAYhoq25qnswjz4N+2qf9Etud5x6KKRMZEQ==
+X-Gm-Gg: ASbGncsfaHqph3uECiGVBwkDAvgMXuXo/N4QDmisvCo3MCEKfJqDzr66m7Bha7uattS
+	NaNlDYeIUU44WrT0DvoORB1Wtf1kLK9oS+1hIQqAMOai/SsjNljR+o12EEifW+t2YNBb7DWCPhq
+	VJ/ElJawYC9uWhARkoxHKWH/sAeK+pbQnwfSSU1NcoHw39YRlq4kkhr7vs6/2pm4iqQXhsGExNT
+	tukRNs5uQFs45MZkk7ZXKJW/LzbtnkDlOBnDNF/0ImnlbyUO+CFOhChQe264RPES8LBiNTrsq8r
+	UErDHDfI1sWH9yJFffT4xMuoopwccFThaIVnRd1voZFwaovZ9ZiAV4+RXAypeYBRgVYL9nF946V
+	nPOI=
+X-Google-Smtp-Source: AGHT+IFKvlzMGUOsQjurJJO1/ddu129s8U6J9Qzr1L7YObQFc0ULUukUbdKdK6XW7KVAHd+E0Lj6QT3HD9PKGyA2iIw=
+X-Received: by 2002:a05:600c:4e8e:b0:477:7925:f7fb with SMTP id
+ 5b1f17b1804b1-477c0180d42mr21139625e9.10.1763730185944; Fri, 21 Nov 2025
+ 05:03:05 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1763629982.git.wqu@suse.com> <5960f3429b90311423a57beff157494698ab1395.1763629982.git.wqu@suse.com>
-In-Reply-To: <5960f3429b90311423a57beff157494698ab1395.1763629982.git.wqu@suse.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Fri, 21 Nov 2025 11:55:58 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H6pV-pb6T70aOATXc2VBvA0PJZJcoo+B-SzK48qxzyqbg@mail.gmail.com>
-X-Gm-Features: AWmQ_bkizKU1GhmGJ8sE_-RBTDKmxdhuxHEnOyTiIyPN8YyuZUQUrEvRw6L_Ya4
-Message-ID: <CAL3q7H6pV-pb6T70aOATXc2VBvA0PJZJcoo+B-SzK48qxzyqbg@mail.gmail.com>
-Subject: Re: [PATCH v3 1/4] btrfs: make sure all ordered extents beyond EOF is
- properly truncated
+References: <48a91ada-c413-492f-86a4-483355392d98@suse.com>
+In-Reply-To: <48a91ada-c413-492f-86a4-483355392d98@suse.com>
+From: Daniel Vacek <neelx@suse.com>
+Date: Fri, 21 Nov 2025 14:02:54 +0100
+X-Gm-Features: AWmQ_bmlrTSQRB-IyIJw_d7QEyrSrCi1L10PR-iyaSdF9L9qt__gjWsRdUJNCmQ
+Message-ID: <CAPjX3Ffrs28a6wC3PvtXpPy5Hw9pOmGYqchpg7WRtTwdDo1mgg@mail.gmail.com>
+Subject: Re: Questions about encryption and (possibly weak) checksum
 To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
+Cc: linux-crypto@vger.kernel.org, linux-btrfs <linux-btrfs@vger.kernel.org>, 
+	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>, Josef Bacik <josef@toxicpanda.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Nov 20, 2025 at 9:22=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
+On Thu, 20 Nov 2025 at 22:58, Qu Wenruo <wqu@suse.com> wrote:
+> Hi,
 >
-> [POSSIBLE BUG]
-> If there are multiple ordered extents beyond EOF, at folio writeback
-> time we may only truncate the first ordered extent, but leaving the
-> remaining ones finished but not marked as truncated.
+> Recently Daniel is reviving the fscrypt support for btrfs, and one thing
+> caught my attention, related the sequence of encryption and checksum.
 >
-> Since those OEs are not marked as truncated, it will still insert an
-> file extent item, and may lead to false missing csum errors during
-> "btrfs check".
+> What is the preferred order between encryption and (possibly weak) checksum?
 >
-> [CAUSE]
-> Since we have bs < ps support for a while and experimental large data
-> folios are also going to graduate from experimental features soon, we
-> can have the following folio to be written back:
+> The original patchset implies checksum-then-encrypt, which follows what
+> ext4 is doing when both verity and fscrypt are involved.
+
+If by "the original patchset" you mean the few latest btrfs encryption
+support iterations sent by Josef a couple years back then you may have
+misunderstood the implementation. The design is precisely taking
+checksum of the encrypted data which is exactly the right thing to do.
+And I'm not touching that part at all. You can check it out when I'll
+post the next iteration (or check the v5 on ML archive).
+
+But I'm happy you care :-)
+
+--nX
+
+> But on the other hand, btrfs' default checksum (CRC32C) is definitely
+> not a cryptography level HMAC, it's mostly for btrfs to detect incorrect
+> content from the storage and switch to another mirror.
 >
->   fs block size 4K
->   page size 4K, folio size 64K.
+> Furthermore, for compression, btrfs follows the idea of
+> compress-then-checksum, thus to me the idea of encrypt-then-checksum
+> looks more straightforward, and easier to implement.
 >
->            0        16K      32K                  64K
->            |<---------------- Dirty -------------->|
->            |<-OE A->|<-OE B->|<----- OE C -------->|
->                |
->                i_size 4K.
->
-> In above case we need to submit the writeback for the range [0, 4K).
-> For range [4K, 64K) there is no need to submit any IO but mark the
-> involved OEs (OE A, B, C) all as truncated.
->
-> However during the EOF handling, we only call
-> btrfs_lookup_first_ordered_range() once, thus only got OE A and mark it
-> as truncated.
-> But OE B and C are not marked as truncated, they will finish as usual,
-> which will leave a regular file extent item to be inserted beyond EOF,
-> and without any data checksum.
->
-> [FIX]
-> Introduce a new helper, btrfs_mark_ordered_io_truncated(), to handle all
-> OEs of a range, and mark them all as truncated.
->
-> With that helper, all OEs (A B and C) will be marked as truncated.
-> OE B and C will have 0 truncated_len, preventing any file extent item to
-> be inserted from them.
->
-> Fixes: f0a0f5bfe04e ("btrfs: truncate ordered extent when skipping writeb=
-ack past i_size")
-
-The commit ID is not stable yet, as that change is not in Linus' tree yet.
-
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  fs/btrfs/extent_io.c    | 19 +------------------
->  fs/btrfs/ordered-data.c | 38 ++++++++++++++++++++++++++++++++++++++
->  fs/btrfs/ordered-data.h |  2 ++
->  3 files changed, 41 insertions(+), 18 deletions(-)
->
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index 2d32dfc34ae3..2044b889c887 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -1725,24 +1725,7 @@ static noinline_for_stack int extent_writepage_io(=
-struct btrfs_inode *inode,
->                 cur =3D folio_pos(folio) + (bit << fs_info->sectorsize_bi=
-ts);
->
->                 if (cur >=3D i_size) {
-> -                       struct btrfs_ordered_extent *ordered;
-> -
-> -                       ordered =3D btrfs_lookup_first_ordered_range(inod=
-e, cur,
-> -                                                                  folio_=
-end - cur);
-> -                       /*
-> -                        * We have just run delalloc before getting here,=
- so
-> -                        * there must be an ordered extent.
-> -                        */
-> -                       ASSERT(ordered !=3D NULL);
-> -                       spin_lock(&inode->ordered_tree_lock);
-> -                       set_bit(BTRFS_ORDERED_TRUNCATED, &ordered->flags)=
-;
-> -                       ordered->truncated_len =3D min(ordered->truncated=
-_len,
-> -                                                    cur - ordered->file_=
-offset);
-> -                       spin_unlock(&inode->ordered_tree_lock);
-> -                       btrfs_put_ordered_extent(ordered);
-> -
-> -                       btrfs_mark_ordered_io_finished(inode, folio, cur,
-> -                                                      end - cur, true);
-> +                       btrfs_mark_ordered_io_truncated(inode, folio, cur=
-, end - cur);
->                         /*
->                          * This range is beyond i_size, thus we don't nee=
-d to
->                          * bother writing back.
-> diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
-> index a421f7db9eec..9a0638d13225 100644
-> --- a/fs/btrfs/ordered-data.c
-> +++ b/fs/btrfs/ordered-data.c
-> @@ -546,6 +546,44 @@ void btrfs_mark_ordered_io_finished(struct btrfs_ino=
-de *inode,
->         spin_unlock(&inode->ordered_tree_lock);
->  }
->
-> +/*
-> + * Mark all ordered extents io inside the specified range as truncated.
-> + *
-> + * This is utilized by writeback path, thus there must be an ordered ext=
-ent
-
-by -> by the
-
-> + * for the range.
-> + */
-> +void btrfs_mark_ordered_io_truncated(struct btrfs_inode *inode, struct f=
-olio *folio,
-> +                                    u64 file_offset, u32 len)
-> +{
-> +       u64 cur =3D file_offset;
-> +
-> +       ASSERT(file_offset >=3D folio_pos(folio));
-> +       ASSERT(file_offset + len <=3D folio_end(folio));
-> +
-> +       while  (cur < file_offset + len) {
-
-Two spaces between while and the opening parenthesis.
-
-> +               u32 cur_len =3D file_offset + len - cur;
-
-Please avoid repeating "file_offset + len" so many times. Use a const
-variable at the top like:
-
-const u64 end =3D file_offset + len;
-
-Then use 'end' instead.
-
-> +               struct btrfs_ordered_extent *ordered;
-> +
-> +               ordered =3D btrfs_lookup_first_ordered_range(inode, cur, =
-cur_len);
-> +
-> +               /*
-> +                * We have just run delalloc before getting here, so ther=
-e must
-> +                * be an ordered extent.
-> +                */
-> +               ASSERT(ordered !=3D NULL);
-> +               scoped_guard(spinlock, &inode->ordered_tree_lock) {
-> +                       set_bit(BTRFS_ORDERED_TRUNCATED, &ordered->flags)=
-;
-> +                       ordered->truncated_len =3D min(ordered->truncated=
-_len,
-> +                                                    cur - ordered->file_=
-offset);
-> +               }
-
-I thought we had not made a decision yet to not use this new fancy locking =
-yet.
-In this case where it's a very short critical section, it doesn't
-bring any advantage over using explicit spin_lock/unlock, and adds one
-extra level of indentation.
-
-Also in the subject:
-
-btrfs: make sure all ordered extents beyond EOF is properly truncated
-
-should be "are" instead of "is".
-
-Thanks.
-
-> +               cur_len =3D min(cur_len, ordered->file_offset + ordered->=
-num_bytes - cur);
-> +               btrfs_put_ordered_extent(ordered);
-> +
-> +               cur +=3D cur_len;
-> +       }
-> +       btrfs_mark_ordered_io_finished(inode, folio, file_offset, len, tr=
-ue);
-> +}
-> +
->  /*
->   * Finish IO for one ordered extent across a given range.  The range can=
- only
->   * contain one ordered extent.
-> diff --git a/fs/btrfs/ordered-data.h b/fs/btrfs/ordered-data.h
-> index 1e6b0b182b29..dd4cdc1a8b78 100644
-> --- a/fs/btrfs/ordered-data.h
-> +++ b/fs/btrfs/ordered-data.h
-> @@ -169,6 +169,8 @@ void btrfs_finish_ordered_extent(struct btrfs_ordered=
-_extent *ordered,
->  void btrfs_mark_ordered_io_finished(struct btrfs_inode *inode,
->                                     struct folio *folio, u64 file_offset,
->                                     u64 num_bytes, bool uptodate);
-> +void btrfs_mark_ordered_io_truncated(struct btrfs_inode *inode, struct f=
-olio *folio,
-> +                                    u64 file_offset, u32 len);
->  bool btrfs_dec_test_ordered_pending(struct btrfs_inode *inode,
->                                     struct btrfs_ordered_extent **cached,
->                                     u64 file_offset, u64 io_size);
-> --
-> 2.52.0
+> Finally, the btrfs checksum itself is not encrypted (at least for now),
+> meaning the checksum is exposed for any one to modify as long as they
+> understand how to re-calculate the checksum of the metadata.
 >
 >
+> So my question here is:
+>
+> - Is there any preferred sequence between encryption and checksum?
+>
+> - Will a weak checksum (CRC32C) introduce any extra attack vector?
+>
+> Thanks,
+> Qu
 
