@@ -1,134 +1,151 @@
-Return-Path: <linux-btrfs+bounces-19244-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19245-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70A84C7920B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Nov 2025 14:08:13 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42446C7A44C
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Nov 2025 15:47:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id C3CBA350FFF
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Nov 2025 13:03:54 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTPS id EA7B92E1F3
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Nov 2025 14:47:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D370341069;
-	Fri, 21 Nov 2025 13:03:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13EA328151C;
+	Fri, 21 Nov 2025 14:47:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="QFUx4fh4"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="gzcqgKo2";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZNbrdQpG";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="gzcqgKo2";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZNbrdQpG"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F089A34403B
-	for <linux-btrfs@vger.kernel.org>; Fri, 21 Nov 2025 13:03:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7884B276050
+	for <linux-btrfs@vger.kernel.org>; Fri, 21 Nov 2025 14:47:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763730190; cv=none; b=DRXBuBPflzAyHJNm4BbQz9BXvqa2w4x5Og0WeKWAfgS0tGh7XjkMpzN5EIBzcQ1MWots0KWG1GCxSSi2FCc65iqOhD/z20SSaEvlfKmXdN1aayIqj4Ms6qeQnLKp4qFO/ojVZy6df4/0BYMcZFno71pI3Sha8HmL1sw45H5SGLU=
+	t=1763736463; cv=none; b=RuecQslaXlU1vgsdhFXStsNZ900nvOCIyBkYTqdl6oE/C3LNqt8KX+q5H7jvU2xkqs5dkwxarJABJtMlTkUR7O2AbSGOjz/WoXl9Cpagm1p2zQEwJMlTQqkPf+kMGa1lIlF2pkrZuAgtnVTUBZd+6vpzIjn0WubNvjkoOs5v728=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763730190; c=relaxed/simple;
-	bh=RE8inZJACUTjbhJ7R5bdkx+O4GyPgbuPgpvQX5rm+4A=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nOFeznWRWlcAbjXL23UoKIg6HdzNNf3Wab3OqV7NCJ0C7ijiwa0n8y3KVVjgYnmHQO6v5HYCj4JLe6A3o8+YWi3NCu1ZO2wjiD+byJ0ZCY5s00Rv8ugfUMx2TVy8W9J5/Q+0pysQaxhDLsiZFxBGP08JXZSXx4fYmL3bw3XWQe8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=QFUx4fh4; arc=none smtp.client-ip=209.85.128.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-47118259fd8so17832905e9.3
-        for <linux-btrfs@vger.kernel.org>; Fri, 21 Nov 2025 05:03:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1763730186; x=1764334986; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=RE8inZJACUTjbhJ7R5bdkx+O4GyPgbuPgpvQX5rm+4A=;
-        b=QFUx4fh4YCD5UE1/uehzPoKxMW0qLKeaDtTAwwXWN7f5V9z+KakJ2nGk+Rj+3Nfmip
-         V6OqdGFZN070ieMOEg6rzUpNhLQ/axXXp0F5H6tns5+UWOruK8XjnwrG8ZRwiwQGDTMd
-         yW29K1l3bJ9WdI44Z1MwR/tXr4jyVKh7oJTBm34OcQvsSzvC48fU5hvjKPm0dLwihXbp
-         AqwWaO4x9ImsyFBAGzu45Jb5UkjrtbI4GcoMhiIa2iC0S0suUo+bWvP6t0W5PtrJhJWL
-         8uR4f6zMRbWn4J1AiPFqtrle07yecLBaTUTnjY4JTFsBXwMzQ+qJF+R/repYvRpYIDzU
-         c4pg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763730186; x=1764334986;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RE8inZJACUTjbhJ7R5bdkx+O4GyPgbuPgpvQX5rm+4A=;
-        b=DaXKATRRdWNkAZJALrlB1SoCtJN1dXGRojKd2N0bQGzsKHMDBuP8ykxty94fb8Fgm6
-         vu7sBOAtra9Qi/OlOWzOZFlxCsDTK1yG3iZ5dMIngfj4/vpORVxAzvwr405dXoQngwdV
-         BfMCA5DvkHsdSkagqBFOXy2xTAij35+q4VWfnNHVed/Mdo26Apz4u4PnF6IFgGWNq7Uw
-         m7y4mA7raoHnULhLxqXONuqAW+fRB/KtCj+QyqsuPQoUGAdsPyNeT/pCWCTn1cKEKEEk
-         F8UsUetTnaamg8sjW/Pwqc+SpZyX4BiuyaM6zU8PPFHcwNMdSXlMSayWHh3IactMsuAF
-         NI7A==
-X-Forwarded-Encrypted: i=1; AJvYcCUKX9ToJeB0gKuxjPy0VKzssdInSkF8jc+cpudpXP5F17ZDyCrmgBR3ljL4PYd4SEvQWY5pL6DCESM/Xw==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx2f/1uXlzporum+gZRA4asVln5FDTuk7LyhlwvZDbdIM2V6gK8
-	oFJgnbjWa7or6l9BUxCb/uuMZ5048nv3TkFQOpbpSy51c4hqzYM1GhCeBei2rdBHSxEjhSdvdqc
-	ZqX9QkVcaAYhoq25qnswjz4N+2qf9Etud5x6KKRMZEQ==
-X-Gm-Gg: ASbGncsfaHqph3uECiGVBwkDAvgMXuXo/N4QDmisvCo3MCEKfJqDzr66m7Bha7uattS
-	NaNlDYeIUU44WrT0DvoORB1Wtf1kLK9oS+1hIQqAMOai/SsjNljR+o12EEifW+t2YNBb7DWCPhq
-	VJ/ElJawYC9uWhARkoxHKWH/sAeK+pbQnwfSSU1NcoHw39YRlq4kkhr7vs6/2pm4iqQXhsGExNT
-	tukRNs5uQFs45MZkk7ZXKJW/LzbtnkDlOBnDNF/0ImnlbyUO+CFOhChQe264RPES8LBiNTrsq8r
-	UErDHDfI1sWH9yJFffT4xMuoopwccFThaIVnRd1voZFwaovZ9ZiAV4+RXAypeYBRgVYL9nF946V
-	nPOI=
-X-Google-Smtp-Source: AGHT+IFKvlzMGUOsQjurJJO1/ddu129s8U6J9Qzr1L7YObQFc0ULUukUbdKdK6XW7KVAHd+E0Lj6QT3HD9PKGyA2iIw=
-X-Received: by 2002:a05:600c:4e8e:b0:477:7925:f7fb with SMTP id
- 5b1f17b1804b1-477c0180d42mr21139625e9.10.1763730185944; Fri, 21 Nov 2025
- 05:03:05 -0800 (PST)
+	s=arc-20240116; t=1763736463; c=relaxed/simple;
+	bh=Nnqcr3lNVk+A1qks1o89I5v0Ho/1fS6gWJN5my0iroQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=t0maVRjNdi1YwqLI3pJT4uBiDVwzZeU85muBq0nNsoDO4B0GBI3oSk5X4HxZybn3S1HqCyf32WKmyvEUqO+8Rb2qz20lsPLRebQv1DuHKnV8wCAfk3BNcB7Y2Me9kJjR1d+5KWTijcLj8P5uU/gNE9juHvABBR7n5rvAOasFc2U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=gzcqgKo2; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZNbrdQpG; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=gzcqgKo2; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZNbrdQpG; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 7AC77219EB;
+	Fri, 21 Nov 2025 14:47:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1763736459;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QaQjp6Z+00gowWeN7/AQIicm35GeoMVvIdSBeAonVg0=;
+	b=gzcqgKo2NX50nAXDxL8DTL5rwLDxpvzMMfuCspguM0wmCoDSOcqF3et2Gcc5BD8QdQLlNk
+	cKL/xO3xyGLES4Z/0BgCZBy6nDBn8JS2zZJjIMQ7RFtjhrOk0BCPQvDHiXRSa8M2hSy2OV
+	dyuaq1ojOgkspOLPOFnobrRb3l/F1JU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1763736459;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QaQjp6Z+00gowWeN7/AQIicm35GeoMVvIdSBeAonVg0=;
+	b=ZNbrdQpGwZSy49sRMTtCO98eBJWAUr1JPbfOe+M08Xms0icigMuXcYMfHtUDvgfS397gfB
+	ED9zD+dOYggV0RBw==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1763736459;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QaQjp6Z+00gowWeN7/AQIicm35GeoMVvIdSBeAonVg0=;
+	b=gzcqgKo2NX50nAXDxL8DTL5rwLDxpvzMMfuCspguM0wmCoDSOcqF3et2Gcc5BD8QdQLlNk
+	cKL/xO3xyGLES4Z/0BgCZBy6nDBn8JS2zZJjIMQ7RFtjhrOk0BCPQvDHiXRSa8M2hSy2OV
+	dyuaq1ojOgkspOLPOFnobrRb3l/F1JU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1763736459;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QaQjp6Z+00gowWeN7/AQIicm35GeoMVvIdSBeAonVg0=;
+	b=ZNbrdQpGwZSy49sRMTtCO98eBJWAUr1JPbfOe+M08Xms0icigMuXcYMfHtUDvgfS397gfB
+	ED9zD+dOYggV0RBw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6CC3A3EA61;
+	Fri, 21 Nov 2025 14:47:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id todYGot7IGm+KAAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Fri, 21 Nov 2025 14:47:39 +0000
+Date: Fri, 21 Nov 2025 15:47:38 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Cc: Sun Yangkai <sunk67188@gmail.com>, "dsterba@suse.cz" <dsterba@suse.cz>,
+	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+	"boris@bur.io" <boris@bur.io>
+Subject: Re: [PATCH 2/2] btrfs: simplify boolean argument for
+ btrfs_{inc,dec}_ref
+Message-ID: <20251121144738.GO13846@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20251120141948.5323-1-sunk67188@gmail.com>
+ <20251120141948.5323-3-sunk67188@gmail.com>
+ <20251120190206.GM13846@twin.jikos.cz>
+ <6e3d587b-89ed-4b44-ab62-c485b8fdf814@gmail.com>
+ <b84d76d5-7046-4250-82ae-070e3f16e9b0@wdc.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <48a91ada-c413-492f-86a4-483355392d98@suse.com>
-In-Reply-To: <48a91ada-c413-492f-86a4-483355392d98@suse.com>
-From: Daniel Vacek <neelx@suse.com>
-Date: Fri, 21 Nov 2025 14:02:54 +0100
-X-Gm-Features: AWmQ_bmlrTSQRB-IyIJw_d7QEyrSrCi1L10PR-iyaSdF9L9qt__gjWsRdUJNCmQ
-Message-ID: <CAPjX3Ffrs28a6wC3PvtXpPy5Hw9pOmGYqchpg7WRtTwdDo1mgg@mail.gmail.com>
-Subject: Re: Questions about encryption and (possibly weak) checksum
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-crypto@vger.kernel.org, linux-btrfs <linux-btrfs@vger.kernel.org>, 
-	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>, Josef Bacik <josef@toxicpanda.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b84d76d5-7046-4250-82ae-070e3f16e9b0@wdc.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:replyto,twin.jikos.cz:mid];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
+	ARC_NA(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	RCVD_TLS_ALL(0.00)[];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[gmail.com,suse.cz,vger.kernel.org,bur.io];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto];
+	RCVD_COUNT_TWO(0.00)[2];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[5]
+X-Spam-Flag: NO
+X-Spam-Score: -4.00
+X-Spam-Level: 
 
-On Thu, 20 Nov 2025 at 22:58, Qu Wenruo <wqu@suse.com> wrote:
-> Hi,
->
-> Recently Daniel is reviving the fscrypt support for btrfs, and one thing
-> caught my attention, related the sequence of encryption and checksum.
->
-> What is the preferred order between encryption and (possibly weak) checksum?
->
-> The original patchset implies checksum-then-encrypt, which follows what
-> ext4 is doing when both verity and fscrypt are involved.
+On Fri, Nov 21, 2025 at 06:58:53AM +0000, Johannes Thumshirn wrote:
+> On 11/21/25 4:17 AM, Sun Yangkai wrote:
+> > 3. We can optionally add a local variable like Boris mentioned.
+> 
+> Yeah I'd opt for that as well.
 
-If by "the original patchset" you mean the few latest btrfs encryption
-support iterations sent by Josef a couple years back then you may have
-misunderstood the implementation. The design is precisely taking
-checksum of the encrypted data which is exactly the right thing to do.
-And I'm not touching that part at all. You can check it out when I'll
-post the next iteration (or check the v5 on ML archive).
-
-But I'm happy you care :-)
-
---nX
-
-> But on the other hand, btrfs' default checksum (CRC32C) is definitely
-> not a cryptography level HMAC, it's mostly for btrfs to detect incorrect
-> content from the storage and switch to another mirror.
->
-> Furthermore, for compression, btrfs follows the idea of
-> compress-then-checksum, thus to me the idea of encrypt-then-checksum
-> looks more straightforward, and easier to implement.
->
-> Finally, the btrfs checksum itself is not encrypted (at least for now),
-> meaning the checksum is exposed for any one to modify as long as they
-> understand how to re-calculate the checksum of the metadata.
->
->
-> So my question here is:
->
-> - Is there any preferred sequence between encryption and checksum?
->
-> - Will a weak checksum (CRC32C) introduce any extra attack vector?
->
-> Thanks,
-> Qu
+Ok, this looks reasonable. We use the 'const bool = (condition)' pattern
+elsewhere too.
 
