@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-19254-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19255-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F401DC7B80E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Nov 2025 20:26:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A016C7B841
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Nov 2025 20:29:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A6CB23A5889
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Nov 2025 19:26:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1EDA93A6057
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Nov 2025 19:29:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 714E42E8DE3;
-	Fri, 21 Nov 2025 19:26:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 573062E8B76;
+	Fri, 21 Nov 2025 19:29:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="Xa/xwSKd"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="JnE43EEx"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A37B2E2665
-	for <linux-btrfs@vger.kernel.org>; Fri, 21 Nov 2025 19:26:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54C403207
+	for <linux-btrfs@vger.kernel.org>; Fri, 21 Nov 2025 19:29:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763753205; cv=none; b=TFPnLRDm0LzZ7vPWDQlSu1wb1NmEZVw9erG42jNZFDW5yktjz7E2f7Bz/vzEva84FARMTUiL7pZoDcGDar2u97frkVExJ3DHGdemd43mp9XrFzK2DTxootBJ1Zg+rjVeUQ1/kCppceuQ7WfNTSVtcg1v4XwPe9ddTm7lRUG9I8c=
+	t=1763753358; cv=none; b=dOQHegoA2UrGZbQVBtXQM7l0kQieRWTQjyqm4cZMLc7MxY0KSpSqSPFMfGa5RlA0SZ2tbKLgEsnz4FBsnujjt9UjK6dyKHACvFLlSywYMhX1TB90NXFMGTRWkQjqq2pwHNTvJ4YBx+4b1b/JLJ51L0itktBPm+BrguH4oRA16u0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763753205; c=relaxed/simple;
-	bh=M5tesEHMNxWGcuAk/DgXMPit57Pl5SZ1sMoaC0wKC98=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rBJoJAziCvidNbGt0XXnkbA3IGjWezQ+02F6qu4lvV+YzMi4yoi+rAHUIHj5Po3ow1XMSL4xreq+GDUGi3AJ0YGlt74PmZqRA3vtjv2TAcbzaaanIw3L7+EmL+I41Aysdk06zOiTnqfLL1C/im/NREOS+UCI43HuSfl9x7Hxqf4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=Xa/xwSKd; arc=none smtp.client-ip=212.227.17.21
+	s=arc-20240116; t=1763753358; c=relaxed/simple;
+	bh=XiCpouOcv2JR038E4d1bRRLeIiupcFzY31VEgsUeSqQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=oDb8QEQUQwVN4MCuXO1vWczFBgsZOtDW2FL6zLwYZdYL/4zu5mHAV+DPEMBFH8As3kgmUky0DMVL5kL6hMCtHGnhWbN2nJThELCN8V24U3v3we4rWurJlo0DaVdpoFKBaPFCo5tjj6OwvEzs3WuWvxiRujki7nUIXK/e7d7VDTE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=JnE43EEx; arc=none smtp.client-ip=212.227.17.22
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1763753192; x=1764357992; i=quwenruo.btrfs@gmx.com;
-	bh=cRasro6kblzeAA8CTbXV5L9is1fV9APNpwF94e4m4uo=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	s=s31663417; t=1763753350; x=1764358150; i=quwenruo.btrfs@gmx.com;
+	bh=YHrlfvRUMlOajYgz23h4u/PcLK1LLLWyFJtWwuGeI+4=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=Xa/xwSKdm0IWYMAYVtNExCfKslwglMKGFQ+ss/yGuXWNA1TsO5dQn4XJI9tZO+37
-	 wS9SLBPqeXq494Jbj6b73199Bt+8q/F1lmgxR/JeK+pklK50n/w9+fNi7QefFrlqC
-	 Kk7WKi8h+vHSB9X4OLyvV4nWc5zCIQxzlGtSaxhjKXX+wznBTEYCGg0WtaT298bGz
-	 cH+g4JCIckSfgtPJARmywk3nVpDMNYiU6sOnW21HzvtLX21kwR/OEoA/J0xjcMdIP
-	 JvjQiTX22xrNO1JSRZB/UzYvMM2glgnrPvXVqDE3k6jvCzqMgcO/j6nwJgvbTi4pq
-	 GlvXPUI4gxnQril3dA==
+	b=JnE43EExnOI/owG9QwsFEk3jhk6WF3ZpQ5ZfWO3Cm7KtbJnyedA3jAE/YU2VBAGf
+	 7hobeiFNd5Uw7oMqC0oAhrtxAUZAv5zzvnBth0Jl7Jy/bZyc9w+enJGDGujQwS6IC
+	 HgMEMkZYxGjr0Ss1Xznyo6Pii12NWzsDeUTRqK6J7GP6urCpGEnpM7qxqDZcRGcYR
+	 6Mp9AhAa6E3elxyoSKMi0SFsxzaEZywoqE8ZvvrT9r9HP5ixZ3alV8mUOdyX0H6PW
+	 0H4v/uWS19GLXM8FxUiPZKQXe2CpYlsQaGCfrZUM1fTc44GL6kBppWIx6j0f08X+R
+	 Qy4o6cLRo90X7vHjWw==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MYeMt-1vaZVt2VjX-00QdF3; Fri, 21
- Nov 2025 20:26:31 +0100
-Message-ID: <94236c69-10ed-494f-8895-39a8b4a443b6@gmx.com>
-Date: Sat, 22 Nov 2025 05:56:24 +1030
+Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mg6Zq-1w3oGB49de-00ff2A; Fri, 21
+ Nov 2025 20:29:10 +0100
+Message-ID: <9d592018-b3e2-42c1-b0fe-ed35b9c11cd0@gmx.com>
+Date: Sat, 22 Nov 2025 05:59:07 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,14 +58,10 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/4] btrfs: make sure all ordered extents beyond EOF is
- properly truncated
-To: dsterba@suse.cz, Filipe Manana <fdmanana@kernel.org>
-Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <cover.1763629982.git.wqu@suse.com>
- <5960f3429b90311423a57beff157494698ab1395.1763629982.git.wqu@suse.com>
- <CAL3q7H6pV-pb6T70aOATXc2VBvA0PJZJcoo+B-SzK48qxzyqbg@mail.gmail.com>
- <20251121153850.GP13846@twin.jikos.cz>
+Subject: Re: [PATCH] btrfs: remove redundant zero/NULL initializations in
+ btrfs_alloc_root()
+To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <b35e6981136cd8066b56ba97e99e531e9621a84d.1763740870.git.fdmanana@suse.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -92,149 +88,166 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
  +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
  HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <20251121153850.GP13846@twin.jikos.cz>
+In-Reply-To: <b35e6981136cd8066b56ba97e99e531e9621a84d.1763740870.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:UiVMezjbTn8LYbq//jeejAwf4XbOtobV3uTyMVNY8Dd3CsfWbKa
- pC8Q+qwUP0kzngb2vCinFAAhLAt7t7R0cULxL4T8OpMvcvCdyWisd38C5rG/twQ1xwCXLAR
- 04GABVWeUzZUnBYqnFyOYGv+TTWLGqyN8dikQiquCeefgQAgYZX4JKoxWC45eb1IrDShn0E
- /KAOynQgj/VaVi/8vbn/Q==
+X-Provags-ID: V03:K1:FS7o5Hl2+qzE0KS29PgaGlt6J+n9//PzZ1iUfjEH28jjIACBfFv
+ aVIHhVOykgNWPZX4UxIRw92ge80oOCsqO4C3a3zb0JcAcFGQD5XBQSMVbpn/VMUZcXVaJwn
+ pXMOpJMrnnxPa+/XdrEWjK0lccY5z0zM3ykkI266I5TJ1AO375yTUQy+mPTWJy8ai6wED/P
+ vDSoCNfqKTDX92Arx0XFA==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:wEi5PgFdh+0=;T7Twh6aT4PDRuxLPNyS05oMdzA+
- 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
- FS47tGxuvpXxeKgE4=
+UI-OutboundReport: notjunk:1;M01:P0:Q/AiIpCWma8=;sUUI9fE6oeMdU7IUX0qiCvQXlWR
+ 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
+ bN3ofo20=
 
 
 
-=E5=9C=A8 2025/11/22 02:08, David Sterba =E5=86=99=E9=81=93:
-> On Fri, Nov 21, 2025 at 11:55:58AM +0000, Filipe Manana wrote:
->>> +               /*
->>> +                * We have just run delalloc before getting here, so t=
-here must
->>> +                * be an ordered extent.
->>> +                */
->>> +               ASSERT(ordered !=3D NULL);
->>> +               scoped_guard(spinlock, &inode->ordered_tree_lock) {
->>> +                       set_bit(BTRFS_ORDERED_TRUNCATED, &ordered->fla=
-gs);
->>> +                       ordered->truncated_len =3D min(ordered->trunca=
-ted_len,
->>> +                                                    cur - ordered->fi=
-le_offset);
->>> +               }
->>
->> I thought we had not made a decision yet to not use this new fancy lock=
-ing yet.
->> In this case where it's a very short critical section, it doesn't
->> bring any advantage over using explicit spin_lock/unlock, and adds one
->> extra level of indentation.
+=E5=9C=A8 2025/11/22 02:32, fdmanana@kernel.org =E5=86=99=E9=81=93:
+> From: Filipe Manana <fdmanana@suse.com>
 >=20
-> Agreed, this looks like an anti-pattern of the scoped locking.
+> We have allocated the root with kzalloc() so all the memory is already
+> zero initialized, therefore it's redundant to assign 0 and NULL to sever=
+al
+> of the root members. Remove all of them except the atomic initialization=
+s
+> since atomic_t is an opaque type and it's not a good practice to assume
+> its internals.
 >=20
+> This slightly reduces the binary size.
+> With gcc 14.2.0-19 from Debian on x86_64, before this change:
+>=20
+>    $ size fs/btrfs/btrfs.ko
+>       text	   data	    bss	    dec	    hex	filename
+>    1939404	 162963	  15592	2117959	 205147	fs/btrfs/btrfs.ko
+>=20
+> After this change:
+>=20
+>    $ size fs/btrfs/btrfs.ko
+>       text	   data	    bss	    dec	    hex	filename
+>    1939212	 162963	  15592	2117767	 205087	fs/btrfs/btrfs.ko
+>=20
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-I think one is free to use whatever style as long as there is no mixed=20
-style in the same function.
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
-Sure, we're not yet settled on the style, but I can not see anything=20
-damaging readability either.
-That extra indent is clearly showing the critical section, and we have=20
-enough space in this particular case.
-It's more clear than spinlock() pair, and unlike guard() this won't=20
-cause problems for future modifications.
-
-
-And I didn't get the point of anti-pattern.
-
-You only want to use the guard for the longest critical section with=20
-multiple exit? And leave the simplest ones using the old style?
-That doesn't looks sane to me.
-
-
-I'm not saying we should change to the new RAII style immediately with a=
-=20
-huge patch nor everyone should accept it immediately, but to gradually=20
-use the new style in new codes, with the usual proper review/testing=20
-procedures to keep the correctness.
-
-If one doesn't like the RAII, sure one doesn't need to use, and I'm not=20
-going to force anyone to use that style either.
-
-But if this step-by-step new-code-only approach is also rejected, it=20
-will going to be a closed-loop:
-
-   Not settled -> No new style code to get any feedback -> No motivation
-   to change
+I'm a little surprised that the compiler is not smart enough to skip=20
+those duplicated zeroing.
 
 Thanks,
 Qu
+
+> ---
+>   fs/btrfs/disk-io.c | 13 -------------
+>   1 file changed, 13 deletions(-)
+>=20
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index fe62f5a244f5..89149fac804c 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -652,20 +652,10 @@ static struct btrfs_root *btrfs_alloc_root(struct =
+btrfs_fs_info *fs_info,
+>   	if (!root)
+>   		return NULL;
+>  =20
+> -	memset(&root->root_key, 0, sizeof(root->root_key));
+> -	memset(&root->root_item, 0, sizeof(root->root_item));
+> -	memset(&root->defrag_progress, 0, sizeof(root->defrag_progress));
+>   	root->fs_info =3D fs_info;
+>   	root->root_key.objectid =3D objectid;
+> -	root->node =3D NULL;
+> -	root->commit_root =3D NULL;
+> -	root->state =3D 0;
+>   	RB_CLEAR_NODE(&root->rb_node);
+>  =20
+> -	btrfs_set_root_last_trans(root, 0);
+> -	root->free_objectid =3D 0;
+> -	root->nr_delalloc_inodes =3D 0;
+> -	root->nr_ordered_extents =3D 0;
+>   	xa_init(&root->inodes);
+>   	xa_init(&root->delayed_nodes);
+>  =20
+> @@ -699,10 +689,7 @@ static struct btrfs_root *btrfs_alloc_root(struct b=
+trfs_fs_info *fs_info,
+>   	refcount_set(&root->refs, 1);
+>   	atomic_set(&root->snapshot_force_cow, 0);
+>   	atomic_set(&root->nr_swapfiles, 0);
+> -	btrfs_set_root_log_transid(root, 0);
+>   	root->log_transid_committed =3D -1;
+> -	btrfs_set_root_last_log_commit(root, 0);
+> -	root->anon_dev =3D 0;
+>   	if (!btrfs_is_testing(fs_info)) {
+>   		btrfs_extent_io_tree_init(fs_info, &root->dirty_log_pages,
+>   					  IO_TREE_ROOT_DIRTY_LOG_PAGES);
+
 
