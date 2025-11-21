@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-19259-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19260-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00914C7BA3C
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Nov 2025 21:30:00 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10267C7BAB1
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Nov 2025 21:46:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id C6E104E5F3E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Nov 2025 20:29:52 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 89B2135C0B7
+	for <lists+linux-btrfs@lfdr.de>; Fri, 21 Nov 2025 20:46:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69B362765F5;
-	Fri, 21 Nov 2025 20:29:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78924275B0F;
+	Fri, 21 Nov 2025 20:46:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="hE3ZUVy5"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="Wt4iYwLB"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1204430217E
-	for <linux-btrfs@vger.kernel.org>; Fri, 21 Nov 2025 20:29:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5791420299B
+	for <linux-btrfs@vger.kernel.org>; Fri, 21 Nov 2025 20:46:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763756977; cv=none; b=WpMikGE0jFr9DG3PdQXw+cpOKlcpugGXb+5IlEowLEnT/JLRhpB458ki3Bm7WSdU3q2WmzyE+DNXcOXX2pUbdtzfco7Jwaa9EERociS6W/Fpfjtu27ODfuzu6/VhFYch3EHzbS5i7pFvKwMKbZPQWgLEWBef5IqAGyKLszjRx8Y=
+	t=1763757975; cv=none; b=qncrx/R+6fAK+luRl4HZsjw3d3tlf63D967mO1SfZKI2EGRaslp+5JVyVlnphT5pI3eYtpgN1XkGv5pLa2a4bYpDrWyHNJyD5ovhb+WJSGqQehlASYWFyp9bPTLYsKMHOguhGMp9+Eb1thS04YxIqKR79KaHpjjq0oEr/2ZCzWs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763756977; c=relaxed/simple;
-	bh=FL8hwQZEtV9ScB5GJaBstHhUs2aEA0lcI89U9UbcXM0=;
+	s=arc-20240116; t=1763757975; c=relaxed/simple;
+	bh=tmDZq5+cLwC/nviziEQPEZadx5c4W546kjg+unaiSXI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dCnRGlAiV7ZZdwLRJBc1DmKuTfzV3II4OS1kBMrgtc4ZXF3YpxfZWLuwQkSGKRDTPKgmpRc1aLWtN3GzMu9w5klTCGhXpyTo1Yz2cJwB9NdJXDSJ1Nu7ik11iSL2Es3+nGhL+7qGSlpatXxzf/vNIwREFnBP9XcxbArv/+fEyFo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=hE3ZUVy5; arc=none smtp.client-ip=212.227.17.20
+	 In-Reply-To:Content-Type; b=VIPjHs06PMxok5BGf9APhP/kZT3oFGS68JbCNWZrnRSNWOIVy0TxAgQCRo+UlockL/3HZsEhqUWHkNv2DfBb3pTZmwiYcr128HhoZongTUxm8U5BJosZgILWVIHn7FB5xvOHE7Gu2q58NdK24D4AGxG1K62Osn5xxqAlj1EY7E8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=Wt4iYwLB; arc=none smtp.client-ip=212.227.17.22
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1763756973; x=1764361773; i=quwenruo.btrfs@gmx.com;
-	bh=r2uGgj8JOSwxegnz8M6RUT8lmP4J3dagR97gzKgaD0c=;
+	s=s31663417; t=1763757971; x=1764362771; i=quwenruo.btrfs@gmx.com;
+	bh=Pfw79UA9Ket5DPYvwJcyGk4ioOVZmDx6vx2H/4VIkTs=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=hE3ZUVy5QecKgRXzvQ+rHs2jQKkpkPtFbAq/0OfWShIOxb90GnV3uQMaa5jqmm5D
-	 BorTcoiWE0Csr1e9TImH2zY0LOwLmqLxEOZBgNYQbIcd3xiA4uhztyMHNsvXxwfdb
-	 RxXdQ8Zw8IV8F8wMr6sx9xvQ8KT4H7v+MqbYj/wzdaUlauWfVYPCQVxRmlNGZ57Hh
-	 nM5yfght40KT3RJL2XU9Zewmp2v/x/UVSWki91E6hoWB84aRKHLpZilbVcda0Lc77
-	 NQ8lHWYJ0YttG26S6n6JFtvW75sojRFvhxbRHa0XwFQSCs1ELqqvvqWW5rUW7T3ne
-	 1SQdQ/BlmM4cEzRwew==
+	b=Wt4iYwLB/kfjdva6Pyz9F2Au6THQ+2KyzvuDUQ4e2+c/AAMXwNUPR4k2zTC/XKw2
+	 d5nGcumNFRgV+OSGLBltiUdYn9q81/1L5OYgRk41uVadG9QUsOVOYQKAy3YWoCCEL
+	 WYJOoaaJ3LGuXW5DDEJRI/VWoFcRa8VNqwCh2uv6PvlCp022wh6vc+ioeEuitbxDY
+	 BdU6hvbZUizzvI8s0F1w11t5hSPQmfSkhrlR5JMx752YFXb3Ij6FtAZ9W+SvlIY9c
+	 1yXgKz495x094oQWmPyfrKaRj9z7SWHyqS48Zo0Ybc+4rfH5Nf+O2lcilzo0sN4+X
+	 eEltSGaFRRWLelGBow==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1M6ll8-1vUntS2P7O-006KLR; Fri, 21
- Nov 2025 21:29:33 +0100
-Message-ID: <bff15ad4-1f67-4733-acb4-cd04686f4ec4@gmx.com>
-Date: Sat, 22 Nov 2025 06:59:29 +1030
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N79u8-1wC4oY36nU-015c0e; Fri, 21
+ Nov 2025 21:46:11 +0100
+Message-ID: <58e0b0e5-c72c-43de-a1ec-b9d85a71bbdf@gmx.com>
+Date: Sat, 22 Nov 2025 07:16:06 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,12 +58,17 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] btrfs: fix data race on transaction->state
-To: Filipe Manana <fdmanana@kernel.org>, Josef Bacik <josef@toxicpanda.com>
-Cc: linux-btrfs@vger.kernel.org
-References: <cover.1763736921.git.josef@toxicpanda.com>
- <7a9d970450cb1531d0a0da5d8e8615b06aba9137.1763736921.git.josef@toxicpanda.com>
- <CAL3q7H7phOax9p2s-pcaeGdE4rgpZc7NP1=0Ny+o93fXYKJ-Nw@mail.gmail.com>
+Subject: Re: [PATCH v3 1/4] btrfs: make sure all ordered extents beyond EOF is
+ properly truncated
+To: Daniel Vacek <neelx@suse.com>
+Cc: dsterba@suse.cz, Filipe Manana <fdmanana@kernel.org>,
+ Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <cover.1763629982.git.wqu@suse.com>
+ <5960f3429b90311423a57beff157494698ab1395.1763629982.git.wqu@suse.com>
+ <CAL3q7H6pV-pb6T70aOATXc2VBvA0PJZJcoo+B-SzK48qxzyqbg@mail.gmail.com>
+ <20251121153850.GP13846@twin.jikos.cz>
+ <94236c69-10ed-494f-8895-39a8b4a443b6@gmx.com>
+ <CAPjX3FdrTZwzuObrERxP=pLmSMjYt6Drqfxn4S5ENmL_JQhkzw@mail.gmail.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -90,202 +95,188 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
  +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
  HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <CAL3q7H7phOax9p2s-pcaeGdE4rgpZc7NP1=0Ny+o93fXYKJ-Nw@mail.gmail.com>
+In-Reply-To: <CAPjX3FdrTZwzuObrERxP=pLmSMjYt6Drqfxn4S5ENmL_JQhkzw@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:PRzz+7N7zUt6SyfgpKfpwjBJjUlffkBwHOHZ3E+HAqm1UIzu5yP
- 5JlYHEPVvwLVpK41odV1EUPexMosLiUs/WADqYtME5ItROQcSmY3r2TJxIC3yrcP9EKlYWR
- n1BsTCuSwElQmo86dmYEJfNuDSFRTCbZQ/VKWMSGRweAQcvDLthLqBUteDPMApIwwP78rxS
- yy2M/TtNqcsCG5dgovLqg==
+X-Provags-ID: V03:K1:br/A3x1QUm06GqDyy1w7nwzlsvvo+DA3Z9nk0KxEbwG7+kNLE3M
+ 0RcLUraeIxsb9xsSf13lkjir5dNgZQ1lbhqIqGVttQdapKwvnHq+eXsUAo9lYaPcakXHsEN
+ 01dRXzjuMeydGHPMBpbq8UFQz0Y035irHu36iTdD5hYslBn3kn4YNougUCbESC3Wrkb6o7y
+ YDJ0rebAJS1vyxeSbz5vQ==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:XtTn+2lj4b0=;DQQooAgeBY2ftnbHP+EFqab12fB
- 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
- nnxUUGyI=
+UI-OutboundReport: notjunk:1;M01:P0:kwFCwP4N8XU=;RUGGwp21K3ElwP5c0AbykPDteqz
+ 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
+ Y2WVV2wWF2mgS2Vm+t/jR3hL/S0sPzdMje36Qr
 
 
 
-=E5=9C=A8 2025/11/22 01:59, Filipe Manana =E5=86=99=E9=81=93:
-> On Fri, Nov 21, 2025 at 3:13=E2=80=AFPM Josef Bacik <josef@toxicpanda.co=
-m> wrote:
+=E5=9C=A8 2025/11/22 06:55, Daniel Vacek =E5=86=99=E9=81=93:
+> On Fri, 21 Nov 2025 at 20:28, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+>> =E5=9C=A8 2025/11/22 02:08, David Sterba =E5=86=99=E9=81=93:
+>>> On Fri, Nov 21, 2025 at 11:55:58AM +0000, Filipe Manana wrote:
+>>>>> +               /*
+>>>>> +                * We have just run delalloc before getting here, so=
+ there must
+>>>>> +                * be an ordered extent.
+>>>>> +                */
+>>>>> +               ASSERT(ordered !=3D NULL);
+>>>>> +               scoped_guard(spinlock, &inode->ordered_tree_lock) {
+>>>>> +                       set_bit(BTRFS_ORDERED_TRUNCATED, &ordered->f=
+lags);
+>>>>> +                       ordered->truncated_len =3D min(ordered->trun=
+cated_len,
+>>>>> +                                                    cur - ordered->=
+file_offset);
+>>>>> +               }
+>>>>
+>>>> I thought we had not made a decision yet to not use this new fancy lo=
+cking yet.
+>>>> In this case where it's a very short critical section, it doesn't
+>>>> bring any advantage over using explicit spin_lock/unlock, and adds on=
+e
+>>>> extra level of indentation.
+>>>
+>>> Agreed, this looks like an anti-pattern of the scoped locking.
+>>>
 >>
->> Debugging a hang with btrfs on QEMU I discovered a data race with
->> transaction->state. In wait_current_trans we do
->>
->> wait_event(fs_info->transaction_wait,
->>             cur_trans->state>=3DTRANS_STATE_UNBLOCKED ||
->>             TRANS_ABORTED(cur_trans));
->>
->> however we're doing this outside of the fs_info->trans_lock. This
->> generally isn't super problematic because we hit
->> wake_up(fs_info->transaction_wait) quite a bit, but it could lead to
->> latencies where we miss wakeups, or in the worst case (like the compile=
-r
->> re-orders the load of the ->state outside of the wait_event loop) we
->> could hang completely.
->>
->> Fix this by using a helper that takes the fs_info->trans_lock to do the
->> check safely.
->>
->> I've added a lockdep_assert for the other helper to make sure nobody
->> uses that one without holding the lock.
->>
->> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
->> ---
->>   fs/btrfs/transaction.c | 18 +++++++++++++++---
->>   1 file changed, 15 insertions(+), 3 deletions(-)
->>
->> diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
->> index 89ae0c7a610a..863e145a3c26 100644
->> --- a/fs/btrfs/transaction.c
->> +++ b/fs/btrfs/transaction.c
->> @@ -509,11 +509,25 @@ int btrfs_record_root_in_trans(struct btrfs_trans=
-_handle *trans,
->>
->>   static inline int is_transaction_blocked(struct btrfs_transaction *tr=
-ans)
->>   {
->> +       lockdep_assert_held(&trans->fs_info->trans_lock);
->> +
+>> I think one is free to use whatever style as long as there is no mixed
+>> style in the same function.
 >=20
-> It seems odd to sneak this in when no other change in the patch
-> introduces a call to this function.
-> I would make this a separate patch.
+> I've got a hard objection here. If there is(?) any granularity using
+> guards vs. explicit locking then, IMO, it should be per given lock.
 >=20
->>          return (trans->state >=3D TRANS_STATE_COMMIT_START &&
->>                  trans->state < TRANS_STATE_UNBLOCKED &&
->>                  !TRANS_ABORTED(trans));
->>   }
->>
->> +/* Helper to check transaction state under lock for wait_event */
->> +static bool trans_unblocked(struct btrfs_transaction *trans)
->=20
-> This could have a name that is closer to the other helper:
-> is_transaction_unblocked()
->=20
->> +{
->> +       struct btrfs_fs_info *fs_info =3D trans->fs_info;
->> +       bool ret;
->> +
->> +       spin_lock(&fs_info->trans_lock);
->> +       ret =3D trans->state >=3D TRANS_STATE_UNBLOCKED || TRANS_ABORTE=
-D(trans);
->> +       spin_unlock(&fs_info->trans_lock);
->> +       return ret;
->> +}
->> +
->>   /* wait for commit against the current transaction to become unblocke=
-d
->>    * when this is done, it is safe to start a new transaction, but the =
-current
->>    * transaction might not be fully on disk.
->> @@ -529,9 +543,7 @@ static void wait_current_trans(struct btrfs_fs_info=
- *fs_info)
->>                  spin_unlock(&fs_info->trans_lock);
->>
->>                  btrfs_might_wait_for_state(fs_info, BTRFS_LOCKDEP_TRAN=
-S_UNBLOCKED);
->> -               wait_event(fs_info->transaction_wait,
->> -                          cur_trans->state >=3D TRANS_STATE_UNBLOCKED =
-||
->> -                          TRANS_ABORTED(cur_trans));
->> +               wait_event(fs_info->transaction_wait, trans_unblocked(c=
-ur_trans));
->=20
-> Instead of adding an helper and locking, couldn't this be simply:
->=20
-> wait_event(fs_info->transaction_wait,
-> smp_load_acquire(cur_trans->state) >=3D TRANS_STATE_UNBLOCKED ||
-> TRANS_ABORTED(cur_trans));
+> Ie, given `ordered_tree_lock` - either it should always use the RAII
+> style *OR* it should always use the explicit style. But it should
+> never mix one style in one function and the other style in another
+> function. That would only make it really messy looking for
+> interactions and race bugs / missing/misplaced locking - simply
+> general debugging.
 
-Not an expert on memory barriers, but isn't the key point here that=20
-we're accessing two different variables in a non-atomic way?
+Then check fs/*.c.
 
-And to be honest, I really do not like introducing low level memory=20
-barrier callers, it's really hard to get it right.
+There are guard(rcu) and rcu_read_lock() usage mixed in different files.
+
+E.g. in fs/namespace.c it's using guard(rcu) and scoped_guard(rcu),=20
+meanwhile still having regular rcu_read_lock().
+
+There are more counter-examples than you know.
+We're not the first subsystem to face the new RAII styles, and I hope we=
+=20
+will not be the last either.
+
+
+[...]
+>>
+>> I'm not saying we should change to the new RAII style immediately with =
+a
+>> huge patch nor everyone should accept it immediately, but to gradually
+>> use the new style in new codes, with the usual proper review/testing
+>> procedures to keep the correctness.
+>=20
+> I would understand if you introduced a _new_ lock and started using it
+> with the RAII style - setting the example. But if you're grabbing a
+> lock which is always acquired using the explicit style, just stick to
+> it and keep the style consistent throughout all the callsites, the
+> whole code base. This makes it _easier_ to crosscheck, IMO.
+
+Then check kernfs_root::kernfs_rwsem, it also has mixed RAII and old style=
+s.
+
+We should all remember there are always subsystems before us facing this=
+=20
+challenge, and if they are fine embrace the new style gradually, I see=20
+no reason why we can not.
+
+We're just a regular subsystem in the kernel, not some god-chosen=20
+special one, we do not live in a bubble.
 
 Thanks,
 Qu
 
 >=20
-> Thanks.
+> -just my 2c
 >=20
->>                  btrfs_put_transaction(cur_trans);
->>          } else {
->>                  spin_unlock(&fs_info->trans_lock);
->> --
->> 2.51.1
+>> If one doesn't like the RAII, sure one doesn't need to use, and I'm not
+>> going to force anyone to use that style either.
 >>
+>> But if this step-by-step new-code-only approach is also rejected, it
+>> will going to be a closed-loop:
+>>
+>>     Not settled -> No new style code to get any feedback -> No motivati=
+on
+>>     to change
+>>
+>> Thanks,
+>> Qu
 >>
 >=20
 
