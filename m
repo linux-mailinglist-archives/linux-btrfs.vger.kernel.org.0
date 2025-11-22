@@ -1,149 +1,184 @@
-Return-Path: <linux-btrfs+bounces-19270-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19271-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51876C7D2E5
-	for <lists+linux-btrfs@lfdr.de>; Sat, 22 Nov 2025 15:36:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DF53C7D72F
+	for <lists+linux-btrfs@lfdr.de>; Sat, 22 Nov 2025 21:34:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 103603A6963
-	for <lists+linux-btrfs@lfdr.de>; Sat, 22 Nov 2025 14:36:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C192B3A95EC
+	for <lists+linux-btrfs@lfdr.de>; Sat, 22 Nov 2025 20:34:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97BF028489B;
-	Sat, 22 Nov 2025 14:36:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D0DB2848A8;
+	Sat, 22 Nov 2025 20:34:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WFKUqDUt"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-oa1-f46.google.com (mail-oa1-f46.google.com [209.85.160.46])
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A37A260566
-	for <linux-btrfs@vger.kernel.org>; Sat, 22 Nov 2025 14:36:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE951298CA3
+	for <linux-btrfs@vger.kernel.org>; Sat, 22 Nov 2025 20:33:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763822203; cv=none; b=FKra+wcFTqLcX+lXhD9Nij9+4wnkr/SZMa7ZtrxW6GWoKVISbxi0Z1m/W2hP8aerSsj0HlivDoeQlPyd3qJZMqBMXLcWSugtuGHolVGAFxgPDagbIQnd9y7bE0RnG7WmxHFXuX98MKU+lD/4eyoUSvlofICZnhg7uqCJhN28hv0=
+	t=1763843639; cv=none; b=Vbwvb0nD/WGyZOWCbNOcHZ1ydjcw45p0KbUSBPnHUOFR80t3Qik01qwFrHDj1zXxVS1UCJc0S5DsWXtu0NPQFgBPzVYsLUZ9LHM/g9xlYLkmhVP35GEqtds+6cpsFcpL9o/kE7aiIipN42RIbLe/9yvwaiKmMpp8OgXugRTcRAw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763822203; c=relaxed/simple;
-	bh=EFYi9L5UwDPh1mzI94F/EK35AXPC5I9gw0Q51gsezgI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pb633lNHI0u+IE1oBxop6uaD5uUfRnJzn8UOXUHyF2Q52nCp9JO2YZEnNVQtu82HjB4ktlTny+pYLNv2KkI+4PKJtsoxflsiZ3IbyNEZIhDdMJwIPQO4P3AhaL+0XGNg1kDhH2ZtXQ+UpEmQiYTcl87W6SzZ5LZbugZMIN3J2Z0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gompa.dev; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.160.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gompa.dev
+	s=arc-20240116; t=1763843639; c=relaxed/simple;
+	bh=NHaFMiF6dxiCU0vMg8q5qTDPlG31ZZujzGUesGhT5hQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=OqfgAr3RYcKzHUABmOWlCvPUI0/O/bFzkefjEdQbJ3n0+4N/46mLO4PWdpZfzjHMh2bY4a5pzJpyhxAEY8KdtVnnyRlbLjdbAKcbw8Z4urXckjrHl4Ivz1VxlnYSr3JFRP38J9PcnB0u9DWKsQhlakNwSULZs6ycOX7kdrEWbpk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WFKUqDUt; arc=none smtp.client-ip=209.85.208.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-3ec46e3c65bso2340522fac.0
-        for <linux-btrfs@vger.kernel.org>; Sat, 22 Nov 2025 06:36:40 -0800 (PST)
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-37b9728a353so32507731fa.0
+        for <linux-btrfs@vger.kernel.org>; Sat, 22 Nov 2025 12:33:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1763843636; x=1764448436; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dFn2EwqFqpnjkFoKzC+88UIKZbJzPZxsjNZNiF3KFj4=;
+        b=WFKUqDUtK3N3S7kIr3lO0eVi0KSOTQ4CydlfEdvVVcgXR93bkGwTgp1Eb7U5KxZPcS
+         CD+7IjinJCUKmvDPuMH1fYHjY5ywfX3qpRyuYmRbVawon+BnkzIwUB+m3+XVisxkjFi0
+         IPRbCVqbx5Bj+nEE53y0vsBITf5zXsktmqFFqy6VC+x5OistRVdLc8HXaI3peXm/eQWj
+         s9BWR3rS3vX+AcP81cogkDA+RU9tXthlONdwZ7+IVUu4f2n8g48xSoVWlKfFhU5vcoGj
+         LQYRUw6l1SUBaboWt6sMFdoUEKtVZPRgwVMiRhbv8PPgMRTZwn49bvlbr2+6bdrDZVFJ
+         DAMw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763822200; x=1764427000;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+        d=1e100.net; s=20230601; t=1763843636; x=1764448436;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=mrG3FRl3ZQJELga2T7IxRw84N89LNPCPL/hcWM8uf/0=;
-        b=WXZXF0BandPlN2oN0yHW3Hh5LPPcw0aa/z1T2m8TqwXEhrB1DGOnAFb01lYedlmecR
-         hXuyUwr4Ykm9mgDgKEiJeZpX0t2ayMTw+Vf/atPqAtdOP5I93ZbjjwddbHA5Xdr4rtR3
-         8Zf1TBYldxsIUupcV1gtHZO8hWkYBw119Y2FYFDS+zHo7ID2AIZ8KbYngFNNZl494gBe
-         EC9ED9igTo2HRGA/1m0KjF95ozlvFA19JM6TmECsHMqeMcEtQv65CXfONUzsddCH6dTx
-         Hh5iwdPQ7W+DhuBm/EWMcdu6zWlAJiyBb4SmReFdxDVQ7nHhUnPcuChydbpk6QNdP3v8
-         GiZQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVOr+0hT/1mAO1ADVvlV7GwQJr+/jHnuKRuljN/GUpm7G0PFjsq1s/PYVwEILQAAY+ZKln9h/yPevdDBg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzF1tdOwCac3NawZLzTu2NsADrw5BvCajBChsIDpUJ8phwx+5WP
-	tD8lyO+BhJgwG2Chuq0SBZV48RR7Wf5fKWwylffwX+kJcfwP/VuEvibwmff1Ag==
-X-Gm-Gg: ASbGncvDERsud041Wj8YRcFhCe1YZEhlgUuid/mTpZujF5p6Z/xJovmA4cEQQcE08RH
-	ZbiOOJz1I+ll9/s1pK+HlDw4Qqvu55lYlB3CKinuz6+GX8Rk+c2QFc0EiPUanx1IjcgpkqGyRBG
-	UTVj+K875qSYbVQ2iE3re9imemQArebGQN0o8IZ5jcdEIMAMOyft52YWc1TId5nium96B4wZ/O8
-	OETjquC4D2SUuzLrLRXDQfKQmowLa8m/KOf3Fu0ay9Ytu/dvqAUl+glQ0OdKRnt5yJEPc6G/NSn
-	a2iVcUYnd6SdEeUMRr120xFKgJfxETKx6pAanyQ365aDa8PP9h5KB6C6KAsn5Ag51IzVqweq5q+
-	CM/FgCmImN+R/tWj6xxMZdrfvk6ohpIZoQwnZ+t9CcwiXzGdwFcsiCGbWcnTK3kHrd9w7MJ2+ig
-	akcE9u5OeVcS+p1TRa+5+yIPan9pIWdynWYdxC/qbaC21iP08+uT0ERdBZx9OF/IdO2rd66tM3
-X-Google-Smtp-Source: AGHT+IFDrrlreD0AIozK9rF/azJ4dWi3TA/dd6kRZjugszA1OVhsTQFkhXkE/ssMYw7A2p0PsB3UsQ==
-X-Received: by 2002:a05:6808:1786:b0:450:d927:947c with SMTP id 5614622812f47-45115a64badmr2020901b6e.30.1763822199903;
-        Sat, 22 Nov 2025 06:36:39 -0800 (PST)
-Received: from mail-ot1-f45.google.com (mail-ot1-f45.google.com. [209.85.210.45])
-        by smtp.gmail.com with ESMTPSA id 5614622812f47-450ffe2d425sm2479244b6e.4.2025.11.22.06.36.39
-        for <linux-btrfs@vger.kernel.org>
+        bh=dFn2EwqFqpnjkFoKzC+88UIKZbJzPZxsjNZNiF3KFj4=;
+        b=cPTI1CbOmAfmQ/CAP5T7301NmGUqR7Y9ng/vkslItsC30KgIVzayH4xtDdNrrVIPAU
+         WCgcJnpKMeU1U7C2sa0LpFpxQuH0TPU6QBWDp4UDDc9wnvRDFcABhz1l1sb2uhXUdd/V
+         ksJM6ZMOUZ0QoZ3dxfYWc5Jf98Ty7gzdVHc3R9mwdWah9bEjH0a+BJhSJA3IXRs+mLex
+         DhvWVmsz/6UMNFXHcl+arlmRnc9Mpcv21RJhq4a5ZB0YJgvv8CbgUnYV6uSNZpt4FBoc
+         4jvedkFUkyIpzloPI8aBhWd+r385grPeasCncjlrJKdnZB0/jDv77yykLhOJu7UnhQFL
+         4FpQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWfExmGDn3O8Dc/KU/qM2PN4QCcFSMJiyfkANQshHSgTEN5LtdeU7/ehq8Bkh+4b19EDXPNSvtfSIvcJg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzZITFxvhOv/cNdxWDTEOaGPQqnECmcUvzM7fxG/uUkYAfHT9ot
+	fdW48uKDBBz+hsc4PtH3TfOIdwhxjm21LduOwt9NtJX9sB+/YIPGCF2l
+X-Gm-Gg: ASbGncuVklLU+1fUoLDiUJADwRPiFBP28su7KwybOKfDqex8mv9LOytzvcobxKpFbPy
+	e/sBHqRdPQrH/D7hmGf8NXoHWWlcxhTkxDxxBJbISDmKIY6wQAwyFsMvnLVFZcOyJEqO4vWLC3w
+	nZ5Ykc+tJzjBsXkoQpg5FbjRM+Xt4tEdpjp0O14MFRbsjJ2pyJe+0Ba4TMd/kLWe5o9qGz6ictZ
+	ej0zOXzlGtfTAt2wqrUnZPzVuQsi5ReMtuq8YlAyvyC/9ybAQWNsHB+wAVHXbA+UDoWZVM3Qm2j
+	WSDWxUbqF/GaonPBVMkuMYVRkaQwNMUv11PGO+ZpSBMHo+xNisXMSOkLXll7YTJ+I0k4f9Y4OJP
+	+QFb+WcHcPiiSy7Y8pmEGZITxTzeKto1+2h5XEndBIFDDLUGvlunV20rEZwDbYoaUfQeWVu2g2N
+	XwyxezZVS6
+X-Google-Smtp-Source: AGHT+IFhSsUjwtf7XXEFFhGewe4/WzYwa1EvQXhZvrF755UE0d1dYIej0yvrkJ/oBfshVizcRSlPOQ==
+X-Received: by 2002:a05:651c:4416:10b0:37b:aac1:282e with SMTP id 38308e7fff4ca-37cd9287c95mr16773881fa.28.1763843635543;
+        Sat, 22 Nov 2025 12:33:55 -0800 (PST)
+Received: from localhost ([109.167.240.218])
+        by smtp.gmail.com with UTF8SMTPSA id 38308e7fff4ca-37cc6b597b2sm19299711fa.12.2025.11.22.12.33.54
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 22 Nov 2025 06:36:39 -0800 (PST)
-Received: by mail-ot1-f45.google.com with SMTP id 46e09a7af769-7c7660192b0so1987189a34.0
-        for <linux-btrfs@vger.kernel.org>; Sat, 22 Nov 2025 06:36:39 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXbrOmcnw8rBqo2rUagd1UEB3nhOAlxCv/9BscFGu/U8YlDd6cpBMMxBjS0yXOEt50gWqALjB583pdtRg==@vger.kernel.org
-X-Received: by 2002:a05:6830:3488:b0:771:5ae2:fcde with SMTP id
- 46e09a7af769-7c798f7ba96mr2916201a34.2.1763822199328; Sat, 22 Nov 2025
- 06:36:39 -0800 (PST)
+        Sat, 22 Nov 2025 12:33:55 -0800 (PST)
+From: Askar Safin <safinaskar@gmail.com>
+To: mpatocka@redhat.com
+Cc: Dell.Client.Kernel@dell.com,
+	agk@redhat.com,
+	brauner@kernel.org,
+	dm-devel@lists.linux.dev,
+	ebiggers@kernel.org,
+	kix@kix.es,
+	linux-block@vger.kernel.org,
+	linux-btrfs@vger.kernel.org,
+	linux-crypto@vger.kernel.org,
+	linux-lvm@lists.linux.dev,
+	linux-mm@kvack.org,
+	linux-pm@vger.kernel.org,
+	linux-raid@vger.kernel.org,
+	lvm-devel@lists.linux.dev,
+	milan@mazyland.cz,
+	msnitzer@redhat.com,
+	mzxreary@0pointer.de,
+	nphamcs@gmail.com,
+	pavel@ucw.cz,
+	rafael@kernel.org,
+	ryncsn@gmail.com,
+	safinaskar@gmail.com,
+	torvalds@linux-foundation.org
+Subject: Re: [PATCH 1/2] pm-hibernate: flush disk cache when suspending
+Date: Sat, 22 Nov 2025 23:33:42 +0300
+Message-ID: <20251122203347.3484839-1-safinaskar@gmail.com>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <c44942f2-cf4d-04c2-908f-d16e2e60aae2@redhat.com>
+References: <c44942f2-cf4d-04c2-908f-d16e2e60aae2@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <7458cde1f481c8d8af2786ee64d2bffde5f0386c.1763700989.git.wqu@suse.com>
- <9523838F-B99E-4CC5-8434-B34B105FD08B@scientia.org> <bc5249ba-9c39-42b1-903d-e50375a433d2@suse.com>
- <3C200394-F95B-4D1C-9256-3718E331ED34@scientia.org> <5495561f-415d-4bb0-9cd4-4543c510f111@suse.com>
-In-Reply-To: <5495561f-415d-4bb0-9cd4-4543c510f111@suse.com>
-From: Neal Gompa <neal@gompa.dev>
-Date: Sat, 22 Nov 2025 09:36:03 -0500
-X-Gmail-Original-Message-ID: <CAEg-Je_3rtWr2P_j76792+s30VPn84sDv-u_61_vmLBUE0ztkg@mail.gmail.com>
-X-Gm-Features: AWmQ_bmqpnKk3EPf9MVQGz5yyOka6iv918VShrajeq5dDuRVH8lOvvN7LP780X0
-Message-ID: <CAEg-Je_3rtWr2P_j76792+s30VPn84sDv-u_61_vmLBUE0ztkg@mail.gmail.com>
-Subject: Re: [PATCH] btrfs-progs: docs: add warning for btrfs checksum features
-To: Qu Wenruo <wqu@suse.com>
-Cc: Christoph Anton Mitterer <calestyo@scientia.org>, linux-btrfs@vger.kernel.org, 
-	linux-crypto@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Fri, Nov 21, 2025 at 1:44=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
->
->
->
-> =E5=9C=A8 2025/11/21 16:32, Christoph Anton Mitterer =E5=86=99=E9=81=93:
-> >
-> >
-> > On November 21, 2025 6:24:26 AM GMT+01:00, Qu Wenruo <wqu@suse.com> wro=
-te:
-> >> =E5=9C=A8 2025/11/21 15:47, Christoph Anton Mitterer =E5=86=99=E9=81=
-=93:
-> >>> Is that even the case when the wohle btrfs itself is encrypted, like =
-in dm-crypt (without AEAD or verity, but only a normal cipher like aes-xts-=
-plain64)?
-> >>> Wouldn't an attacker then neet to know how he can forge the right enc=
-rypted checksum?
-> >>
-> >> In that case the attacker won't even know it's a btrfs or not.
-> >
-> > I wouldn't be so sure about that, at least not depending on the threat =
-model.
-> > First, there's always the case of leaking meta data,... like people obs=
-erving the list or my access to Debian's packages archives (btrfs-progs) wo=
-uld e.g. know that there's a good chance I'm using btrfs.
-> >
-> > Also, an attacker might be able to make snapshots of the offline device=
- and see write patterns that may be typical for btrfs.
-> > Even with only a single snapshot being made, with the empty device not =
-randomised in advance, it might be clear which fs is used.
-> >
-> >
-> > But all that's anyway not the main point.
-> >
-> > Even if an attacker doesn't know what's in it,  he could try to silentl=
-y corrupt data or replace (encrypted)  blocks with such from an older snaps=
-hot... which would then perhaps decrypt to something non-gibberish.
->
-> Adding linux-crypto list for more feedback.
->
-> In that case, as long as the csum tree can not be modified, no matter
-> whatever algorithm is, btrfs can still detect something is modified.
->
+Mikulas Patocka <mpatocka@redhat.com>:
+> [PATCH 1/2] pm-hibernate: flush disk cache when suspending
+> 
+> There was reported failure that suspend doesn't work with dm-integrity.
+> The reason for the failure is that the suspend code doesn't issue the
+> FLUSH bio - the data still sits in the dm-integrity cache and they are
+> lost when poweroff happens.
 
-A few years back, the Fedora Btrfs folks debated whether we should
-switch the default away from crc32c to xxhash or anything else[1], and it
-basically came down to the performance hit being too significant to
-consider.
-Given that crc32c does the job in detecting tampering with it, and you
-can reinforce it with fsverity, I'm not too worried about it.
+Your patchset is impossible to apply using "b4 shazam".
 
-[1]: https://pagure.io/fedora-btrfs/project/issue/40
+Here is what I get when I try to apply it using "b4 shazam":
 
 
+d-user@comp:/tmp$ git clone --depth=1 git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+Cloning into 'linux'...
+remote: Enumerating objects: 96577, done.
+remote: Counting objects: 100% (96577/96577), done.
+remote: Compressing objects: 100% (93936/93936), done.
+remote: Total 96577 (delta 7530), reused 20945 (delta 1607), pack-reused 0 (from 0)
+Receiving objects: 100% (96577/96577), 267.21 MiB | 1.85 MiB/s, done.
+Resolving deltas: 100% (7530/7530), done.
+Updating files: 100% (91166/91166), done.
+d-user@comp:/tmp$ cd linux
+d-user@comp:/tmp/linux$ b4 shazam 'c44942f2-cf4d-04c2-908f-d16e2e60aae2@redhat.com'
+Grabbing thread from lore.kernel.org/all/c44942f2-cf4d-04c2-908f-d16e2e60aae2@redhat.com/t.mbox.gz
+Checking for newer revisions
+Grabbing search results from lore.kernel.org
+Analyzing 15 messages in the thread
+WARNING: duplicate messages found at index 1
+   Subject 1: pm-hibernate: flush block device cache when hibernating
+   Subject 2: pm-hibernate: flush disk cache when suspending
+  2 is not a reply... assume additional patch
+WARNING: duplicate messages found at index 2
+   Subject 1: swsusp: make it possible to hibernate to device mapper devices
+   Subject 2: pm-hibernate: flush disk cache when suspending
+  2 is not a reply... assume additional patch
+Checking attestation on all messages, may take a moment...
+---
+  ✓ [PATCH] pm-hibernate: flush block device cache when hibernating
+    ✓ Signed: DKIM/redhat.com
+  ✓ [PATCH RFC 2/2] swsusp: make it possible to hibernate to device mapper devices
+    ✓ Signed: DKIM/redhat.com
+  ✓ [PATCH 1/2] pm-hibernate: flush disk cache when suspending
+    ✓ Signed: DKIM/redhat.com
+  ERROR: missing [4/3]!
+---
+Total patches: 3
+---
+WARNING: Thread incomplete!
+Applying: pm-hibernate: flush block device cache when hibernating
+Applying: swsusp: make it possible to hibernate to device mapper devices
+Patch failed at 0002 swsusp: make it possible to hibernate to device mapper devices
+error: patch failed: kernel/power/swap.c:1591
+error: kernel/power/swap.c: patch does not apply
+hint: Use 'git am --show-current-patch=diff' to see the failed patch
+hint: When you have resolved this problem, run "git am --continue".
+hint: If you prefer to skip this patch, run "git am --skip" instead.
+hint: To restore the original branch and stop patching, run "git am --abort".
+hint: Disable this message with "git config advice.mergeConflict false"
 
---
-=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
-=BC=81/ Always, there's only one truth!
+
+It seems you should send patches not as a reply.
+
+But I will apply your patches anyway, no need to resubmit.
+
+-- 
+Askar Safin
 
