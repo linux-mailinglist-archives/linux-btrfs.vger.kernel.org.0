@@ -1,75 +1,82 @@
-Return-Path: <linux-btrfs+bounces-19274-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19273-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EC22C7E9B8
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Nov 2025 00:33:04 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07C56C7E9B5
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Nov 2025 00:33:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id CABFE341B6B
-	for <lists+linux-btrfs@lfdr.de>; Sun, 23 Nov 2025 23:33:03 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 6BFBE4E155C
+	for <lists+linux-btrfs@lfdr.de>; Sun, 23 Nov 2025 23:32:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5149925C838;
-	Sun, 23 Nov 2025 23:32:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BC14219301;
+	Sun, 23 Nov 2025 23:32:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="GbsBfxnp";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="qxSMGy+p"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="dzFxONIi";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="dzFxONIi"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B71B722A4F1
-	for <linux-btrfs@vger.kernel.org>; Sun, 23 Nov 2025 23:32:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5382E36D4F4
+	for <linux-btrfs@vger.kernel.org>; Sun, 23 Nov 2025 23:32:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763940774; cv=none; b=fkWyxXuMZ/bxKBb3pXesgeccU5X9yQ+TNU0psj3ormWl944XqleOMditHxANhunsY6f0e03FRCFA6jHxSYLOcyGv5VldV5nZ4S/r+jFdaZTzVFjlrnLSW7sCcyA4Eu6HmUYC+PTRNl+OxLLsVaWWzUK6xmj2IpcZPPl0Xm9Rffk=
+	t=1763940771; cv=none; b=hSGx3oKOO75ssuPWBuDgvx1DEzIoL03FQdB4WB0s2BuitIYUOqw3Kz/SKh4bGKeIsmNy2M11au04EZr1wiB/WeEmYWflT/3dAPL8MugOz5574IrokVdEq/LGDALmxvDN0VRnXTrwmZSmISTplPr2NxeJjsQqiLXbZcyo2HRw+CQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763940774; c=relaxed/simple;
-	bh=9olXxianGD+5QV62KYt/tz0t8tV2z3953N3R7uRnXss=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=Wr71EDuvJokhbYlp9vAe1Gsreti7HB37PCUVBCtgcTJDyun6NHHF926NZjH0e3IKDIXynYjNldqH8nm43bJflLlqhQ/WCW2OGyMpQE8lfbresq+jC+WuqYCO1tz/wv+uL4us8aKxabbJgYdYEdmKCvW5PXwcyVBXgvYYRuyuyP8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=GbsBfxnp; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=qxSMGy+p; arc=none smtp.client-ip=195.135.223.130
+	s=arc-20240116; t=1763940771; c=relaxed/simple;
+	bh=BGbnZFr7Lg5gLhN5m7WPCaEHnh+eSb6ghpfz13TCUc0=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=Nr1PBt68229gcX22eScJO1ovEF7dMwg9mt9j3/S3JMQFdoB27VE5D48GRotVp3G9tHU9JDOpq2n40IGjCY0hazf9zt4v/66wDy3IrUjQxwbmvKgWV39UeyP4YOuTy1zag+rwvmE1ZuHcgUtGCjwMdlq2/nEvjlmWATMHVwIIjEo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=dzFxONIi; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=dzFxONIi; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id EFFD421D5A
-	for <linux-btrfs@vger.kernel.org>; Sun, 23 Nov 2025 23:32:44 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 26C5B5BCF3
+	for <linux-btrfs@vger.kernel.org>; Sun, 23 Nov 2025 23:32:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1763940765; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=yRp+RZXs28oRCwVTkTeatEIehmH1KqZbSp9Aypt9Ujw=;
-	b=GbsBfxnp57g9Ucat9ThLIKT3mNCkYaDxUdg+RyYX2azU5D+oph6lR2izT4nlOaOZIPTOH5
-	HLULMQc+1vBjCA2FdFnVL31Emzn+WZOH7ipfHHAnB9EQ+r3hHL+00zJl3OMG75NfrmkUjZ
-	q3t+c9kPDYckLs9tx6TYqB0YlkSREoM=
-Authentication-Results: smtp-out1.suse.de;
+	t=1763940766; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YtsmSfkuUm9FeSjPqkQ+UurhTuMkttqpuyH3phD1NnI=;
+	b=dzFxONIikspHFn8GAlHovjvHsrSjMKtJnR82w3xRcxg+itNoCsNK9IR08BcDtnVhltPGHv
+	8N7SZ1NHCBHSh3kpW5u9CqIotJiUWzWHNXXHqR6JQi8Y3oCMoO2ZVXswIP0jQ1tN8RCW4Y
+	lVscTIOAuhCo9dXLaesqqIqQOGkof9k=
+Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1763940764; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=yRp+RZXs28oRCwVTkTeatEIehmH1KqZbSp9Aypt9Ujw=;
-	b=qxSMGy+pJQWZsV54GcVKSVnAENWBzoDCAdu2lVmlnGz3NC/LdpsJ5YLi/2ov/ps46XRDFd
-	cijW6AQh08ffJJb/1odpKMlf/3pEKzwIAPsW201xUSdFJmb8HQs4qvkc8yA81Y4r7N4qxx
-	WpT7gEV54ONzzMh8vsqI3qswrAgTFBo=
+	t=1763940766; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YtsmSfkuUm9FeSjPqkQ+UurhTuMkttqpuyH3phD1NnI=;
+	b=dzFxONIikspHFn8GAlHovjvHsrSjMKtJnR82w3xRcxg+itNoCsNK9IR08BcDtnVhltPGHv
+	8N7SZ1NHCBHSh3kpW5u9CqIotJiUWzWHNXXHqR6JQi8Y3oCMoO2ZVXswIP0jQ1tN8RCW4Y
+	lVscTIOAuhCo9dXLaesqqIqQOGkof9k=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3538E3EA61
-	for <linux-btrfs@vger.kernel.org>; Sun, 23 Nov 2025 23:32:43 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 66A1B3EA61
+	for <linux-btrfs@vger.kernel.org>; Sun, 23 Nov 2025 23:32:45 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id JTHDOZuZI2kGRQAAD6G6ig
+	id WHTECp2ZI2kGRQAAD6G6ig
 	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Sun, 23 Nov 2025 23:32:43 +0000
+	for <linux-btrfs@vger.kernel.org>; Sun, 23 Nov 2025 23:32:45 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 0/3] btrfs: always return the largest hole possible for btrfs_get_extent()
-Date: Mon, 24 Nov 2025 10:02:23 +1030
-Message-ID: <cover.1763939785.git.wqu@suse.com>
+Subject: [PATCH 1/3] btrfs: return the largest hole between two file extent items
+Date: Mon, 24 Nov 2025 10:02:24 +1030
+Message-ID: <8f8e8639c8b7cdde04d0930017a2f354f33c82d4.1763939785.git.wqu@suse.com>
 X-Mailer: git-send-email 2.52.0
+In-Reply-To: <cover.1763939785.git.wqu@suse.com>
+References: <cover.1763939785.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -77,8 +84,9 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
 X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
+	BAYES_HAM(-3.00)[100.00%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
@@ -89,7 +97,7 @@ X-Spamd-Result: default: False [-2.80 / 50.00];
 	RCPT_COUNT_ONE(0.00)[1];
 	ARC_NA(0.00)[];
 	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid];
 	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	MIME_TRACE(0.00)[0:+];
@@ -100,43 +108,102 @@ X-Spamd-Result: default: False [-2.80 / 50.00];
 	RCVD_TLS_ALL(0.00)[]
 X-Spam-Flag: NO
 X-Spam-Score: -2.80
-X-Spam-Level: 
 
-When looking in the call sites of btrfs_get_extent(), I didn't really
-see the need of @len parameter, as normally btrfs_get_extent() would
-just return the hole or the regular file extent covering @start.
+[CORNER CASE]
+If we have the following file extents layout, btrfs_get_extent() can
+return a smaller hole and cause unnecessary extra tree search:
 
-And it turns out that @len is not really that much used in
-btrfs_get_extent().
+	item 6 key (257 EXTENT_DATA 0) itemoff 15810 itemsize 53
+		generation 9 type 1 (regular)
+		extent data disk byte 13631488 nr 4096
+		extent data offset 0 nr 4096 ram 4096
+		extent compression 0 (none)
 
-If we find a regular/inline/prealloc file extent, we just return the
-full extent map from that file extent.
+	item 7 key (257 EXTENT_DATA 32768) itemoff 15757 itemsize 53
+		generation 9 type 1 (regular)
+		extent data disk byte 13635584 nr 4096
+		extent data offset 0 nr 4096 ram 4096
+		extent compression 0 (none)
 
-It's only for implied holes (aka, NO-HOLES feature where there is no
-explicit file extent item for a hole) that @len makes a difference.
+In above case, range [0, 4K) and [32K, 36K) are regular extents, and
+there is a hole in range [4K, 32K), and the fs has "no-holes" feature,
+meaning the hole will not have a file extent item.
 
-But in that case, we can simply return the largest hole possible (either
-the range between two file extents, or for beyond EOF cases return hole
-covering the largest possible file size).
+[INEFFICIENCY]
+Assume the system has 4K page size, and we're doing readahead for range
+[4K, 32K), no large folio yet.
 
-Patch 1 is removing a hole size truncation, which in theory can benefit
-readahead on a large hole (no extra tree search for the hole again and
-again).
+ btrfs_readahead() for range [4K, 32K)
+ |- btrfs_do_readpage() for folio 4K
+ |  |- get_extent_map() for range [4K, 8K)
+ |     |- btrfs_get_extent() for range [4K, 8K)
+ |        We hit item 6, then for the next item 7.
+ |        At this stage we know range [4K, 32K) is a hole.
+ |        But our search range is only [4K, 8K), not reaching 32K, thus
+ |        we go into not_found: tag, returning a hole em for [4K, 8K).
+ |
+ |- btrfs_do_readpage() for folio 8K
+ |  |- get_extent_map() for range [8K, 12K)
+ |     |- btrfs_get_extent() for range [8K, 12K)
+ |        We hit the same item 6, and then item 7.
+ |        But still we goto not_found tag, inserting a new hole em,
+ |        which will be merged with previous one.
+ |
+ | [ Repeat the same btrfs_get_extent() calls until the end ]
 
-Patch 2 is a refactor to remove a weird code pattern.
+So we're calling btrfs_get_extent() again and again, just for a
+different part of the same hole range [4K, 32K).
 
-Patch 3 is to make beyond EOF cases to return the largest hole possible
-(covering the max file size), so that we won't really utilize @len for
-hole extent map creation.
+[ENHANCEMENT]
+The problem is inside the next: tag, where if we find the next file extent
+item and knows it's beyond our search range start.
 
-Qu Wenruo (3):
-  btrfs: return the largest hole between two file extent items
-  btrfs: refactor hole cases of btrfs_get_extent()
-  btrfs: return the largest possible hole for EOF cases
+But there is no need to fallback to not_found: tag, if we know there is
+a larger hole for [start, found_key.offset).
 
- fs/btrfs/inode.c | 66 +++++++++++++++++++++++++++++++++---------------
- 1 file changed, 45 insertions(+), 21 deletions(-)
+By removing the check for (start + len) against (found_key.offset), we can
+improve the above read loop by:
 
+ btrfs_readahead()
+ btrfs_readahead() for range [4K, 32K)
+ |- btrfs_do_readpage() for folio 4K
+ |  |- get_extent_map() for range [4K, 8K)
+ |     |- btrfs_get_extent() for range [4K, 8K)
+ |        We hit item 6, then for the next item 7.
+ |        At this stage we know range [4K, 32K) is a hole.
+ |        So the hole em for range [4K, 32K) is returned.
+ |
+ |- btrfs_do_readpage() for folio 8K
+ |  |- get_extent_map() for range [8K, 12K)
+ |     The cached hole em range [4K, 32K) covers the range,
+ |     and reuse that em.
+ |
+ | [ Repeat the same btrfs_get_extent() calls until the end ]
+
+Now we only call btrfs_get_extent() once for the whole range [4K, 32K),
+other than the old 8 times.
+
+Although again I do not expect much difference for the real world
+performance.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/inode.c | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 3cf30abcdb08..3a76cea1d43d 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -7181,8 +7181,6 @@ struct extent_map *btrfs_get_extent(struct btrfs_inode *inode,
+ 		if (found_key.objectid != objectid ||
+ 		    found_key.type != BTRFS_EXTENT_DATA_KEY)
+ 			goto not_found;
+-		if (start + len <= found_key.offset)
+-			goto not_found;
+ 		if (start > found_key.offset)
+ 			goto next;
+ 
 -- 
 2.52.0
 
