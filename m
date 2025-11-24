@@ -1,209 +1,230 @@
-Return-Path: <linux-btrfs+bounces-19291-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19292-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35634C80A04
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Nov 2025 14:00:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49C34C80AAC
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Nov 2025 14:09:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 8B731344043
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Nov 2025 13:00:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D95E23AAE28
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Nov 2025 13:06:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06E0D302142;
-	Mon, 24 Nov 2025 13:00:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16193304BAF;
+	Mon, 24 Nov 2025 13:06:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aAyRZQ8o"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="NlxUqhDC";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="q+Veo1nG";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="NlxUqhDC";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="q+Veo1nG"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22FB42FD664
-	for <linux-btrfs@vger.kernel.org>; Mon, 24 Nov 2025 13:00:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90FEA2E8E10
+	for <linux-btrfs@vger.kernel.org>; Mon, 24 Nov 2025 13:06:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763989221; cv=none; b=nmis7LYoAdNOVOeJBYQ5GagdceQ10ZF/AGoNcIVxfnxzVFcSFXsH8KSAtRZ/xYWbreKLrq/XZhVP2GJ6XkvJjSQd5amnqLvxMhnB5FbQlYv3Eh1Vxp5PgHeWp2omuJh5raNUQ0yV/fmwbenkoDUCQ75dYlGcEWhC75L0AydvGFA=
+	t=1763989580; cv=none; b=q6TmByG+wv43jc0srba+EAO+uPQXsFNa6KEc4IHnZBuTdBwo/s3s/+cPhFLF9GOdi8AgIW9ekERvPvoViw0eabA3bQegFC8TVDlItAngzAbs16Psf8Xq7cSBZ0+aEOrzQmx4E8XjaLqrV7iwlGf4bcT/hydSnqHDpKdsno+d4NQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763989221; c=relaxed/simple;
-	bh=2FBUuo2hKHvJ8NQnsdqVQJfpHzs3rJPOXMw3mZJHybs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YiozlU1NxcBVNNHIdDS2H1c9/SVDa+QthlX6Ssp6bN3h0ymTCVL5weA9qGqENPAeTDBP2ysET34BJv984nAqrUotabJ77HYawx3v116TNRl2+KKCpzoaGZsrHakmV+lcMAe3tRmU5g+z3x0ILtfZghaKwiGKYnZYftsaRjPitqU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aAyRZQ8o; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B283FC4CEFB
-	for <linux-btrfs@vger.kernel.org>; Mon, 24 Nov 2025 13:00:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1763989220;
-	bh=2FBUuo2hKHvJ8NQnsdqVQJfpHzs3rJPOXMw3mZJHybs=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=aAyRZQ8oSZYnboDRxKBsbi/w1HGQ9kI3rQpd7keXJm+kg/QNibBqGXNnQFWIZVqP+
-	 jg3KqSnZGdB/rhyACbp9OS/1A6nTIgWPZfA0C2xCO0n4cPKJGupG8/iW0oQRne69rc
-	 YYprNcaiP71MzDnR6CBV9QTxL8UFjYK24bKZx5rmGTs49fdl6L+NbcVnW04SpaJ8N3
-	 Z+CKoDpdWMxQM7yVcd14wE0neB1y7Z6bpSyvK5Cpw5eq9u7qwGgP5b0Wh+x/reunp+
-	 N0DZy03+7HAy5nkNb8kE7pwkD3l8rnwglFlMIIBqZUP36IxfDkPVonamX0uXur43I8
-	 rEDw6fwzIb3fQ==
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-b737c6c13e1so224594566b.3
-        for <linux-btrfs@vger.kernel.org>; Mon, 24 Nov 2025 05:00:20 -0800 (PST)
-X-Gm-Message-State: AOJu0YzWq673rGgRgJs4pulsPz1X7QmvEq4CiT3hOnVe6dRUx+pDS2iO
-	eU0opCc0xMNG5OvKDzzN7+P6b301ZyTmaigFz1W0r4rBipNnlqdiRt+G/zMIgJzx3zRZJLj2Zj/
-	5ZlJ1FEM0l2TMjUSVCgm0pmz4N0zLoKg=
-X-Google-Smtp-Source: AGHT+IGlrswMJjQ5gg6lcfYBfcmY0KOrig6JiVA9KX6yebBsdSx0lzE4RqTjcCicinSxy/mr846pPVVC7u7wo2J88jU=
-X-Received: by 2002:a17:906:99c3:b0:b74:984c:a92e with SMTP id
- a640c23a62f3a-b767152309fmr1228281066b.3.1763989219243; Mon, 24 Nov 2025
- 05:00:19 -0800 (PST)
+	s=arc-20240116; t=1763989580; c=relaxed/simple;
+	bh=pCg5IjoaT/CxDZT6gEzcOQ+YuHhUnk0G6+SistYvn+w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SeyZEGFRzjMaRMe8+97zZew9oDDkAHso1CFkRV8Z77dKI7xVEokciGTEYHZn6RV/fKpZUsDw5hJeIo1EBpyzZK5EXnFEkWylUG7qI3PtxDK41rKOtJJ92WtgQhPulBxnCw+f1O8vas5Yy/0UjyrqKHn9SagvV8hWsIQbqU+sbqA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=NlxUqhDC; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=q+Veo1nG; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=NlxUqhDC; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=q+Veo1nG; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 8E6FA2231C;
+	Mon, 24 Nov 2025 13:06:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1763989575; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=74e8psc+UdHqbFgTyHbnbjvHEv2YFEnPp1D+PqYJh3E=;
+	b=NlxUqhDCuBuA6uMwTyci7XV0Tqb0Ly+IfXX3l+0+Ks+k1YYMaki51EZHX4d0ZF8PhrhYui
+	0YRFCPyRLzQQHLDqWTpi1i8DgY+ykBXlomCEI1stugOlcdGOlJpf7xL/XDYbZ4E6yVRySu
+	2ka8nB5Z0qvUlTozia0O1ayxEFFLyXQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1763989575;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=74e8psc+UdHqbFgTyHbnbjvHEv2YFEnPp1D+PqYJh3E=;
+	b=q+Veo1nG6ng22fQU6XhFbLrbVowG+EKhP9KRiaE8lMHQQeQNm1Eb5aT43r9Aam4X24zqdL
+	NPQcSHNLrYYUq+Cw==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=NlxUqhDC;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=q+Veo1nG
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1763989575; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=74e8psc+UdHqbFgTyHbnbjvHEv2YFEnPp1D+PqYJh3E=;
+	b=NlxUqhDCuBuA6uMwTyci7XV0Tqb0Ly+IfXX3l+0+Ks+k1YYMaki51EZHX4d0ZF8PhrhYui
+	0YRFCPyRLzQQHLDqWTpi1i8DgY+ykBXlomCEI1stugOlcdGOlJpf7xL/XDYbZ4E6yVRySu
+	2ka8nB5Z0qvUlTozia0O1ayxEFFLyXQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1763989575;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=74e8psc+UdHqbFgTyHbnbjvHEv2YFEnPp1D+PqYJh3E=;
+	b=q+Veo1nG6ng22fQU6XhFbLrbVowG+EKhP9KRiaE8lMHQQeQNm1Eb5aT43r9Aam4X24zqdL
+	NPQcSHNLrYYUq+Cw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7F3D13EA61;
+	Mon, 24 Nov 2025 13:06:15 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id zycMH0dYJGkQPgAAD6G6ig
+	(envelope-from <jack@suse.cz>); Mon, 24 Nov 2025 13:06:15 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 110D8A0A04; Mon, 24 Nov 2025 14:06:15 +0100 (CET)
+Date: Mon, 24 Nov 2025 14:06:15 +0100
+From: Jan Kara <jack@suse.cz>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Christian Brauner <brauner@kernel.org>, 
+	Al Viro <viro@zeniv.linux.org.uk>, David Sterba <dsterba@suse.com>, Jan Kara <jack@suse.cz>, 
+	Mike Marshall <hubcap@omnibond.com>, Martin Brandenburg <martin@omnibond.com>, 
+	Carlos Maiolino <cem@kernel.org>, Stefan Roesch <shr@fb.com>, Jeff Layton <jlayton@kernel.org>, 
+	linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org, gfs2@lists.linux.dev, 
+	io-uring@vger.kernel.org, devel@lists.orangefs.org, linux-unionfs@vger.kernel.org, 
+	linux-mtd@lists.infradead.org, linux-xfs@vger.kernel.org, linux-nfs@vger.kernel.org
+Subject: Re: [PATCH 05/14] fs: remove inode_update_time
+Message-ID: <5usxhyehesfb7kwlxnaojzxmumx3twxgmdgg6e45lk3kke6oji@qu7poaekacre>
+References: <20251114062642.1524837-1-hch@lst.de>
+ <20251114062642.1524837-6-hch@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1763939785.git.wqu@suse.com> <8f8e8639c8b7cdde04d0930017a2f354f33c82d4.1763939785.git.wqu@suse.com>
-In-Reply-To: <8f8e8639c8b7cdde04d0930017a2f354f33c82d4.1763939785.git.wqu@suse.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Mon, 24 Nov 2025 12:59:42 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H5x+t_P=CoxcvmNLr8YKM-pUF3mAUiZBUkdRN3oN+273A@mail.gmail.com>
-X-Gm-Features: AWmQ_bkNo6dEp8ahQ9QOAbmK5x-dBc_CCxUkm5uK7yqkDe0fnu0_pFj6XiR1SII
-Message-ID: <CAL3q7H5x+t_P=CoxcvmNLr8YKM-pUF3mAUiZBUkdRN3oN+273A@mail.gmail.com>
-Subject: Re: [PATCH 1/3] btrfs: return the largest hole between two file
- extent items
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251114062642.1524837-6-hch@lst.de>
+X-Rspamd-Queue-Id: 8E6FA2231C
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[19];
+	TO_DN_SOME(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_TLS_LAST(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
+	FROM_EQ_ENVFROM(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	MISSING_XM_UA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email]
+X-Rspamd-Action: no action
+X-Spam-Flag: NO
+X-Spam-Score: -4.01
+X-Spam-Level: 
 
-On Sun, Nov 23, 2025 at 11:32=E2=80=AFPM Qu Wenruo <wqu@suse.com> wrote:
->
-> [CORNER CASE]
-> If we have the following file extents layout, btrfs_get_extent() can
-> return a smaller hole and cause unnecessary extra tree search:
->
->         item 6 key (257 EXTENT_DATA 0) itemoff 15810 itemsize 53
->                 generation 9 type 1 (regular)
->                 extent data disk byte 13631488 nr 4096
->                 extent data offset 0 nr 4096 ram 4096
->                 extent compression 0 (none)
->
->         item 7 key (257 EXTENT_DATA 32768) itemoff 15757 itemsize 53
->                 generation 9 type 1 (regular)
->                 extent data disk byte 13635584 nr 4096
->                 extent data offset 0 nr 4096 ram 4096
->                 extent compression 0 (none)
->
-> In above case, range [0, 4K) and [32K, 36K) are regular extents, and
-> there is a hole in range [4K, 32K), and the fs has "no-holes" feature,
-> meaning the hole will not have a file extent item.
->
-> [INEFFICIENCY]
-> Assume the system has 4K page size, and we're doing readahead for range
-> [4K, 32K), no large folio yet.
->
->  btrfs_readahead() for range [4K, 32K)
->  |- btrfs_do_readpage() for folio 4K
->  |  |- get_extent_map() for range [4K, 8K)
->  |     |- btrfs_get_extent() for range [4K, 8K)
->  |        We hit item 6, then for the next item 7.
->  |        At this stage we know range [4K, 32K) is a hole.
->  |        But our search range is only [4K, 8K), not reaching 32K, thus
->  |        we go into not_found: tag, returning a hole em for [4K, 8K).
->  |
->  |- btrfs_do_readpage() for folio 8K
->  |  |- get_extent_map() for range [8K, 12K)
->  |     |- btrfs_get_extent() for range [8K, 12K)
->  |        We hit the same item 6, and then item 7.
->  |        But still we goto not_found tag, inserting a new hole em,
->  |        which will be merged with previous one.
->  |
->  | [ Repeat the same btrfs_get_extent() calls until the end ]
->
-> So we're calling btrfs_get_extent() again and again, just for a
-> different part of the same hole range [4K, 32K).
->
-> [ENHANCEMENT]
-> The problem is inside the next: tag, where if we find the next file exten=
-t
-> item and knows it's beyond our search range start.
->
-> But there is no need to fallback to not_found: tag, if we know there is
-> a larger hole for [start, found_key.offset).
->
-> By removing the check for (start + len) against (found_key.offset), we ca=
-n
-> improve the above read loop by:
->
->  btrfs_readahead()
->  btrfs_readahead() for range [4K, 32K)
->  |- btrfs_do_readpage() for folio 4K
->  |  |- get_extent_map() for range [4K, 8K)
->  |     |- btrfs_get_extent() for range [4K, 8K)
->  |        We hit item 6, then for the next item 7.
->  |        At this stage we know range [4K, 32K) is a hole.
->  |        So the hole em for range [4K, 32K) is returned.
->  |
->  |- btrfs_do_readpage() for folio 8K
->  |  |- get_extent_map() for range [8K, 12K)
->  |     The cached hole em range [4K, 32K) covers the range,
->  |     and reuse that em.
->  |
->  | [ Repeat the same btrfs_get_extent() calls until the end ]
->
-> Now we only call btrfs_get_extent() once for the whole range [4K, 32K),
-> other than the old 8 times.
->
-> Although again I do not expect much difference for the real world
-> performance.
->
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+On Fri 14-11-25 07:26:08, Christoph Hellwig wrote:
+> The only external user is gone now, open code it in the two VFS
+> callers.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+
+Looks good. Feel free to add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
 > ---
->  fs/btrfs/inode.c | 2 --
->  1 file changed, 2 deletions(-)
->
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index 3cf30abcdb08..3a76cea1d43d 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -7181,8 +7181,6 @@ struct extent_map *btrfs_get_extent(struct btrfs_in=
-ode *inode,
->                 if (found_key.objectid !=3D objectid ||
->                     found_key.type !=3D BTRFS_EXTENT_DATA_KEY)
->                         goto not_found;
-> -               if (start + len <=3D found_key.offset)
-> -                       goto not_found;
-
-Your point about the inefficiency for the readahead case is valid, but
-this may be dangerous in other contexts.
-
-If a caller of btrfs_get_extent() passes a specific length, it may
-mean it has locked the range in the inode's io tree only for that
-range.
-For the readahead case, the caller has typically locked a larger range
-in the io tree - except when attempting to read the last page/folio
-for the readahead range and there's hole that crosses that limit.
-
-By allowing to return an extent map for a larger range:
-
-1) We can now return a stale extent map.
-     After the path is released in btrfs_get_extent(), another task
-may insert a new file extent item (such as a direct IO task).
-
-2) While another task adds the new file extent item, it will also trim
-the hole extent map created by the task that has just finished calling
-btrfs_get_extent().
-    The trimming (typically done in btrfs_drop_extent_map_range())
-means updating the extent map's length, start fields, etc, while the
-task that just called btrfs_get_extent() is using it, causing a race
-with unpredictable results.
-
-We've had problems of this sort in the past.
-It's a bad idea for a task to create extent maps beyond the range it
-has locked in the inode's io tree.
-
-Thanks.
-
-
->                 if (start > found_key.offset)
->                         goto next;
->
-> --
-> 2.52.0
->
->
+>  fs/inode.c         | 23 ++++++++---------------
+>  include/linux/fs.h |  1 -
+>  2 files changed, 8 insertions(+), 16 deletions(-)
+> 
+> diff --git a/fs/inode.c b/fs/inode.c
+> index 24dab63844db..d3edcc5baec9 100644
+> --- a/fs/inode.c
+> +++ b/fs/inode.c
+> @@ -2107,19 +2107,6 @@ int generic_update_time(struct inode *inode, int flags)
+>  }
+>  EXPORT_SYMBOL(generic_update_time);
+>  
+> -/*
+> - * This does the actual work of updating an inodes time or version.  Must have
+> - * had called mnt_want_write() before calling this.
+> - */
+> -int inode_update_time(struct inode *inode, int flags)
+> -{
+> -	if (inode->i_op->update_time)
+> -		return inode->i_op->update_time(inode, flags);
+> -	generic_update_time(inode, flags);
+> -	return 0;
+> -}
+> -EXPORT_SYMBOL(inode_update_time);
+> -
+>  /**
+>   *	atime_needs_update	-	update the access time
+>   *	@path: the &struct path to update
+> @@ -2187,7 +2174,10 @@ void touch_atime(const struct path *path)
+>  	 * We may also fail on filesystems that have the ability to make parts
+>  	 * of the fs read only, e.g. subvolumes in Btrfs.
+>  	 */
+> -	inode_update_time(inode, S_ATIME);
+> +	if (inode->i_op->update_time)
+> +		inode->i_op->update_time(inode, S_ATIME);
+> +	else
+> +		generic_update_time(inode, S_ATIME);
+>  	mnt_put_write_access(mnt);
+>  skip_update:
+>  	sb_end_write(inode->i_sb);
+> @@ -2342,7 +2332,10 @@ static int file_update_time_flags(struct file *file, unsigned int flags)
+>  
+>  	if (mnt_get_write_access_file(file))
+>  		return 0;
+> -	ret = inode_update_time(inode, sync_mode);
+> +	if (inode->i_op->update_time)
+> +		ret = inode->i_op->update_time(inode, sync_mode);
+> +	else
+> +		generic_update_time(inode, sync_mode);
+>  	mnt_put_write_access_file(file);
+>  	return ret;
+>  }
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index c895146c1444..a09cebdb4881 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -2665,7 +2665,6 @@ enum file_time_flags {
+>  
+>  extern bool atime_needs_update(const struct path *, struct inode *);
+>  extern void touch_atime(const struct path *);
+> -int inode_update_time(struct inode *inode, int flags);
+>  
+>  static inline void file_accessed(struct file *file)
+>  {
+> -- 
+> 2.47.3
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
