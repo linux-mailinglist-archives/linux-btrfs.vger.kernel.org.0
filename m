@@ -1,267 +1,245 @@
-Return-Path: <linux-btrfs+bounces-19325-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19326-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47BE9C82930
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Nov 2025 22:49:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4219AC82A48
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Nov 2025 23:25:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id B7B1834A25D
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Nov 2025 21:49:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E667E3ADDA7
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Nov 2025 22:25:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65A832F6585;
-	Mon, 24 Nov 2025 21:49:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9D782566F5;
+	Mon, 24 Nov 2025 22:25:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="d8BIYgDA";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="d8BIYgDA"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZlIux9SR";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="YAKSIgpd";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZlIux9SR";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="YAKSIgpd"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD633195811
-	for <linux-btrfs@vger.kernel.org>; Mon, 24 Nov 2025 21:49:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4077538D
+	for <linux-btrfs@vger.kernel.org>; Mon, 24 Nov 2025 22:25:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764020950; cv=none; b=fVXupBkLaVGDn8dvaRPirGTHciCUR9HEzClhrYjPXlbj1N1J2bM31u8frWlp+LTMBJWPV7LyvPoYbIAh/duobvTBQDSsWeXUEvwQSLvZvo2loLQG+0ibAFugdfEaNbbxvLWKGEfoNfEfUoB7sH0r6n/rHKO4ar+fotP1nX741kE=
+	t=1764023112; cv=none; b=LegEZnFO8itvvcPWVATTpz7AwSVHg6QhIGpCK4QOGfr0ercU9stqBVpkIDJl776uz44dbg2uFH/UwQzi0rgiIQCjN3v8dBMEJcQyiihvSYShOW2hAF6wkbvhTGSwxvamjWcPS/iERd3WyB3HpqBWr2gSQyv93Vsc8vzOnI5FuTI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764020950; c=relaxed/simple;
-	bh=zf4q2xQIJ+0HZYKM/olDzEylyi8rmj9x2YV+XA+NecA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=TXZ6Vsl1k4Ulfs4MNuU6LLbCtjIc+7m2JOF5O14ZvSsMd318TP5X5zfEMvXS5BNCm19SjCGdet+cwF68NQUSLtx8avf7prAjs/lyAhgkLxQgoBRZpM/hqQLRYz0m4VBSY621FIhtcDrVLimrD3N3sLxshrJvSDfd2Dt1e2PhMxE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=d8BIYgDA; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=d8BIYgDA; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+	s=arc-20240116; t=1764023112; c=relaxed/simple;
+	bh=sTKM32Lyey8lj46xt5xzN8HjfrubrOTV9fcP+Xu8NWA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=P3kX1klUXMbnvICcZ5VvMmrPNsl1BftIjxXAkj6FGBbEgIF8TUAN9qEcwSH1R8OM1xWXZauygJwUiHYz42t+mLHuJkKKXs1B8l5TL/v+pBY23Nx3cLVMcNB6MGJDd7el3pXr2wLf9qsu9pmr2Ge4Ss37r2q/EpWWhXZ51j85k9k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZlIux9SR; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=YAKSIgpd; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZlIux9SR; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=YAKSIgpd; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 8B0C0222AF;
-	Mon, 24 Nov 2025 21:49:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1764020944; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=MeR5LAnz/jxfkMgBkn7n1poU7VrytQE3sFdYseN68g4=;
-	b=d8BIYgDA8Sj9cDzlPVRuz7LTr+1FbuG+7yJoWdU0nQ5US0bjgVHc22j1C33boJgswXUPFn
-	xe5XpFBn8069WgnSkQL8GnyUNcATFMoKpCOybvtbgl+Da8Lrxq4nJDkrFb1avXqcbQEEJ/
-	K/nEtcIXqoImwpRTlItypKQk3Io1MCk=
-Authentication-Results: smtp-out1.suse.de;
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 1C0D25BCC2;
+	Mon, 24 Nov 2025 22:25:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1764023108;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=OYp3IY9dFfP8CYOVh0MIDAbXXCLqclSc55v3X3IE3Pg=;
+	b=ZlIux9SR/SrjrIpRmC1/T0WG9ryn81PaYkRIcotg72lNbUS0HvJlY/dOAIU/4iyPdB1J0+
+	9lccV1E++GOsIbs5g/buwhd0+IsGZfEusMbTKuH97jjrQJcTJbU6ZJ064Zi2ctAT90NPC3
+	dQ5gdBZ4PksPC1DEIXqY/cOlzoCe5lQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1764023108;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=OYp3IY9dFfP8CYOVh0MIDAbXXCLqclSc55v3X3IE3Pg=;
+	b=YAKSIgpd+eVSrBZhwyu8qbgNGCjuse/IGq5BDRDSyWePWooePH9BaAxAkfIVJQwWTud0Ku
+	LxEn0zLIAtU4ygBQ==
+Authentication-Results: smtp-out2.suse.de;
 	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1764020944; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=MeR5LAnz/jxfkMgBkn7n1poU7VrytQE3sFdYseN68g4=;
-	b=d8BIYgDA8Sj9cDzlPVRuz7LTr+1FbuG+7yJoWdU0nQ5US0bjgVHc22j1C33boJgswXUPFn
-	xe5XpFBn8069WgnSkQL8GnyUNcATFMoKpCOybvtbgl+Da8Lrxq4nJDkrFb1avXqcbQEEJ/
-	K/nEtcIXqoImwpRTlItypKQk3Io1MCk=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1764023108;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=OYp3IY9dFfP8CYOVh0MIDAbXXCLqclSc55v3X3IE3Pg=;
+	b=ZlIux9SR/SrjrIpRmC1/T0WG9ryn81PaYkRIcotg72lNbUS0HvJlY/dOAIU/4iyPdB1J0+
+	9lccV1E++GOsIbs5g/buwhd0+IsGZfEusMbTKuH97jjrQJcTJbU6ZJ064Zi2ctAT90NPC3
+	dQ5gdBZ4PksPC1DEIXqY/cOlzoCe5lQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1764023108;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=OYp3IY9dFfP8CYOVh0MIDAbXXCLqclSc55v3X3IE3Pg=;
+	b=YAKSIgpd+eVSrBZhwyu8qbgNGCjuse/IGq5BDRDSyWePWooePH9BaAxAkfIVJQwWTud0Ku
+	LxEn0zLIAtU4ygBQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8FBF53EA63;
-	Mon, 24 Nov 2025 21:49:03 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EB4A33EA63;
+	Mon, 24 Nov 2025 22:25:07 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id im6mFM/SJGnsLwAAD6G6ig
-	(envelope-from <wqu@suse.com>); Mon, 24 Nov 2025 21:49:03 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Cc: Boris Burkov <boris@bur.io>
-Subject: [PATCH RESEND] btrfs: make sure all ordered extents beyond EOF are properly truncated
-Date: Tue, 25 Nov 2025 08:18:45 +1030
-Message-ID: <a9684e78f04b1a054eb0fca486e31c61d62628c4.1764020707.git.wqu@suse.com>
-X-Mailer: git-send-email 2.52.0
+	id 1wo+OUPbJGmsUAAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Mon, 24 Nov 2025 22:25:07 +0000
+Date: Mon, 24 Nov 2025 23:25:06 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: Daniel Vacek <neelx@suse.com>, dsterba@suse.cz,
+	Filipe Manana <fdmanana@kernel.org>, Qu Wenruo <wqu@suse.com>,
+	linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v3 1/4] btrfs: make sure all ordered extents beyond EOF
+ is properly truncated
+Message-ID: <20251124222506.GS13846@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1763629982.git.wqu@suse.com>
+ <5960f3429b90311423a57beff157494698ab1395.1763629982.git.wqu@suse.com>
+ <CAL3q7H6pV-pb6T70aOATXc2VBvA0PJZJcoo+B-SzK48qxzyqbg@mail.gmail.com>
+ <20251121153850.GP13846@twin.jikos.cz>
+ <94236c69-10ed-494f-8895-39a8b4a443b6@gmx.com>
+ <CAPjX3FdrTZwzuObrERxP=pLmSMjYt6Drqfxn4S5ENmL_JQhkzw@mail.gmail.com>
+ <58e0b0e5-c72c-43de-a1ec-b9d85a71bbdf@gmx.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-2.80 / 50.00];
+In-Reply-To: <58e0b0e5-c72c-43de-a1ec-b9d85a71bbdf@gmx.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.00 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
 	MIME_GOOD(-0.10)[text/plain];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:mid,suse.com:email];
 	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCPT_COUNT_TWO(0.00)[2];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	FREEMAIL_ENVRCPT(0.00)[gmx.com];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
 	TO_DN_SOME(0.00)[];
-	RCVD_TLS_ALL(0.00)[]
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_TO(0.00)[gmx.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,imap1.dmz-prg2.suse.org:helo];
+	RCVD_COUNT_TWO(0.00)[2];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
 X-Spam-Flag: NO
-X-Spam-Score: -2.80
-X-Spam-Level: 
+X-Spam-Score: -4.00
 
-[POSSIBLE BUG]
-If there are multiple ordered extents beyond EOF, at folio writeback
-time we may only truncate the first ordered extent, but leaving the
-remaining ones finished but not marked as truncated.
+On Sat, Nov 22, 2025 at 07:16:06AM +1030, Qu Wenruo wrote:
+> 在 2025/11/22 06:55, Daniel Vacek 写道:
+> > On Fri, 21 Nov 2025 at 20:28, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+> >> 在 2025/11/22 02:08, David Sterba 写道:
+> >>> On Fri, Nov 21, 2025 at 11:55:58AM +0000, Filipe Manana wrote:
+> >>>>> +               /*
+> >>>>> +                * We have just run delalloc before getting here, so there must
+> >>>>> +                * be an ordered extent.
+> >>>>> +                */
+> >>>>> +               ASSERT(ordered != NULL);
+> >>>>> +               scoped_guard(spinlock, &inode->ordered_tree_lock) {
+> >>>>> +                       set_bit(BTRFS_ORDERED_TRUNCATED, &ordered->flags);
+> >>>>> +                       ordered->truncated_len = min(ordered->truncated_len,
+> >>>>> +                                                    cur - ordered->file_offset);
+> >>>>> +               }
+> >>>>
+> >>>> I thought we had not made a decision yet to not use this new fancy locking yet.
+> >>>> In this case where it's a very short critical section, it doesn't
+> >>>> bring any advantage over using explicit spin_lock/unlock, and adds one
+> >>>> extra level of indentation.
+> >>>
+> >>> Agreed, this looks like an anti-pattern of the scoped locking.
+> >>>
+> >>
+> >> I think one is free to use whatever style as long as there is no mixed
+> >> style in the same function.
+> > 
+> > I've got a hard objection here. If there is(?) any granularity using
+> > guards vs. explicit locking then, IMO, it should be per given lock.
+> > 
+> > Ie, given `ordered_tree_lock` - either it should always use the RAII
+> > style *OR* it should always use the explicit style. But it should
+> > never mix one style in one function and the other style in another
+> > function. That would only make it really messy looking for
+> > interactions and race bugs / missing/misplaced locking - simply
+> > general debugging.
+> 
+> Then check fs/*.c.
+> 
+> There are guard(rcu) and rcu_read_lock() usage mixed in different files.
+> 
+> E.g. in fs/namespace.c it's using guard(rcu) and scoped_guard(rcu), 
+> meanwhile still having regular rcu_read_lock().
+> 
+> There are more counter-examples than you know.
+> We're not the first subsystem to face the new RAII styles, and I hope we 
+> will not be the last either.
 
-Since those OEs are not marked as truncated, it will still insert an
-file extent item, and may lead to false missing csum errors during
-"btrfs check".
+We take inspiration from other subsystems but that some coding style is
+done in another subsystem does not mean we have to do that too. If
+fs/*.c people decide to use it everywhere then so be it.
 
-[CAUSE]
-Since we have bs < ps support for a while and experimental large data
-folios are also going to graduate from experimental features soon, we
-can have the following folio to be written back:
+I was hesitant to introduce the auto cleaning for btrfs_path or kfree
+but so far I found it working. The locking guards are quite different to
+that and I don't seem to get any liking in it
 
-  fs block size 4K
-  page size 4K, folio size 64K.
+> [...]
+> >>
+> >> I'm not saying we should change to the new RAII style immediately with a
+> >> huge patch nor everyone should accept it immediately, but to gradually
+> >> use the new style in new codes, with the usual proper review/testing
+> >> procedures to keep the correctness.
+> > 
+> > I would understand if you introduced a _new_ lock and started using it
+> > with the RAII style - setting the example. But if you're grabbing a
+> > lock which is always acquired using the explicit style, just stick to
+> > it and keep the style consistent throughout all the callsites, the
+> > whole code base. This makes it _easier_ to crosscheck, IMO.
+> 
+> Then check kernfs_root::kernfs_rwsem, it also has mixed RAII and old styles.
+> 
+> We should all remember there are always subsystems before us facing this 
+> challenge, and if they are fine embrace the new style gradually, I see 
+> no reason why we can not.
+> 
+> We're just a regular subsystem in the kernel, not some god-chosen 
+> special one, we do not live in a bubble.
 
-           0        16K      32K                  64K
-	   |<---------------- Dirty -------------->|
-	   |<-OE A->|<-OE B->|<----- OE C -------->|
-               |
-	       i_size 4K.
+Honestly, this is a weird argument to make. There are local coding
+styles that are their own bubbles, look at net/* with their own special
+commenting style and mandatory reverse xmass tree sort of variables (I
+think that one has been adopted by other subsystems too). Contributing to
+those subsystems means following their style. If you want an example
+of a filesystem with unique code formatting style then go no further
+than XFS.
 
-In above case we need to submit the writeback for the range [0, 4K).
-For range [4K, 64K) there is no need to submit any IO but mark the
-involved OEs (OE A, B, C) all as truncated.
+I think we've been doing fine in btrfs with the style consistency and
+incremental updates of old code when possible. This means we have fewer
+choices for personal "creative expression" how the code is written but
+in the long run it makes the code look better.
 
-However during the EOF handling, patch "btrfs: truncate ordered extent
-when skipping writeback past i_size" only calls
-btrfs_lookup_first_ordered_range() once, thus only got OE A and mark it
-as truncated.
+The problem with the guards is that there's no one good way for their
+general use, i.e. the problem of mixing with explicit lock/unlock,
+trylock, unlock/lock order, etc. Allowing both styles will lead to
+inconsistent style based on personal preferences again.
 
-But OE B and C are not marked as truncated, they will finish as usual,
-which will leave a regular file extent item to be inserted beyond EOF,
-and without any data checksum.
-
-[FIX]
-Introduce a new helper, btrfs_mark_ordered_io_truncated(), to handle all
-OEs of a range, and mark them all as truncated.
-
-With that helper, all OEs (A B and C) will be marked as truncated.
-OE B and C will have 0 truncated_len, preventing any file extent item to
-be inserted from them.
-
-Reviewed-by: Boris Burkov <boris@bur.io>
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-Changelog:
-Resend:
-- Move the patch out of the series 'btrfs: reduce btrfs_get_extent()
-  calls for buffered write path'
-  As this is a bug fix, which needs a little higher priority than
-  the remaining optimizations.
-
-- Fix various grammar errors
-
-- Use @end to replace duplicated calculations
-
-- Remove the Fixes: tag
-  The involved patch is not yet merged upstream.
-  Just mention the patch subject inside the commit message.
----
- fs/btrfs/extent_io.c    | 19 +------------------
- fs/btrfs/ordered-data.c | 39 +++++++++++++++++++++++++++++++++++++++
- fs/btrfs/ordered-data.h |  2 ++
- 3 files changed, 42 insertions(+), 18 deletions(-)
-
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 2d32dfc34ae3..2044b889c887 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -1725,24 +1725,7 @@ static noinline_for_stack int extent_writepage_io(struct btrfs_inode *inode,
- 		cur = folio_pos(folio) + (bit << fs_info->sectorsize_bits);
- 
- 		if (cur >= i_size) {
--			struct btrfs_ordered_extent *ordered;
--
--			ordered = btrfs_lookup_first_ordered_range(inode, cur,
--								   folio_end - cur);
--			/*
--			 * We have just run delalloc before getting here, so
--			 * there must be an ordered extent.
--			 */
--			ASSERT(ordered != NULL);
--			spin_lock(&inode->ordered_tree_lock);
--			set_bit(BTRFS_ORDERED_TRUNCATED, &ordered->flags);
--			ordered->truncated_len = min(ordered->truncated_len,
--						     cur - ordered->file_offset);
--			spin_unlock(&inode->ordered_tree_lock);
--			btrfs_put_ordered_extent(ordered);
--
--			btrfs_mark_ordered_io_finished(inode, folio, cur,
--						       end - cur, true);
-+			btrfs_mark_ordered_io_truncated(inode, folio, cur, end - cur);
- 			/*
- 			 * This range is beyond i_size, thus we don't need to
- 			 * bother writing back.
-diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
-index a421f7db9eec..53bef0e1f903 100644
---- a/fs/btrfs/ordered-data.c
-+++ b/fs/btrfs/ordered-data.c
-@@ -546,6 +546,45 @@ void btrfs_mark_ordered_io_finished(struct btrfs_inode *inode,
- 	spin_unlock(&inode->ordered_tree_lock);
- }
- 
-+/*
-+ * Mark all ordered extents io inside the specified range as truncated.
-+ *
-+ * This is utilized by the writeback path, thus there must be one or more ordered
-+ * extents covering the whole range.
-+ */
-+void btrfs_mark_ordered_io_truncated(struct btrfs_inode *inode, struct folio *folio,
-+				     u64 file_offset, u32 len)
-+{
-+	const u64 end = file_offset + len;
-+	u64 cur = file_offset;
-+
-+	ASSERT(file_offset >= folio_pos(folio));
-+	ASSERT(end <= folio_pos(folio) + folio_size(folio));
-+
-+	while (cur < end) {
-+		u32 cur_len = end - cur;
-+		struct btrfs_ordered_extent *ordered;
-+
-+		ordered = btrfs_lookup_first_ordered_range(inode, cur, cur_len);
-+
-+		/*
-+		 * We have just run delalloc before getting here, so there must
-+		 * be an ordered extent.
-+		 */
-+		ASSERT(ordered != NULL);
-+		scoped_guard(spinlock, &inode->ordered_tree_lock) {
-+			set_bit(BTRFS_ORDERED_TRUNCATED, &ordered->flags);
-+			ordered->truncated_len = min(ordered->truncated_len,
-+						     cur - ordered->file_offset);
-+		}
-+		cur_len = min(cur_len, ordered->file_offset + ordered->num_bytes - cur);
-+		btrfs_put_ordered_extent(ordered);
-+
-+		cur += cur_len;
-+	}
-+	btrfs_mark_ordered_io_finished(inode, folio, file_offset, len, true);
-+}
-+
- /*
-  * Finish IO for one ordered extent across a given range.  The range can only
-  * contain one ordered extent.
-diff --git a/fs/btrfs/ordered-data.h b/fs/btrfs/ordered-data.h
-index 1e6b0b182b29..dd4cdc1a8b78 100644
---- a/fs/btrfs/ordered-data.h
-+++ b/fs/btrfs/ordered-data.h
-@@ -169,6 +169,8 @@ void btrfs_finish_ordered_extent(struct btrfs_ordered_extent *ordered,
- void btrfs_mark_ordered_io_finished(struct btrfs_inode *inode,
- 				    struct folio *folio, u64 file_offset,
- 				    u64 num_bytes, bool uptodate);
-+void btrfs_mark_ordered_io_truncated(struct btrfs_inode *inode, struct folio *folio,
-+				     u64 file_offset, u32 len);
- bool btrfs_dec_test_ordered_pending(struct btrfs_inode *inode,
- 				    struct btrfs_ordered_extent **cached,
- 				    u64 file_offset, u64 io_size);
--- 
-2.52.0
-
+As said on slack, we'll get to a conclusion.
 
