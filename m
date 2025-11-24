@@ -1,268 +1,126 @@
-Return-Path: <linux-btrfs+bounces-19318-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19321-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BBC7C822E4
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Nov 2025 19:54:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 43D9CC82592
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Nov 2025 20:52:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id AB6E3348A31
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Nov 2025 18:54:37 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id A602234A4D5
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Nov 2025 19:52:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BB3C31BC85;
-	Mon, 24 Nov 2025 18:53:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3B4832C927;
+	Mon, 24 Nov 2025 19:52:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b="YIauNZze"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZfTZbhn4"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail.burntcomma.com (mail2.burntcomma.com [217.169.27.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C819831AF1D
-	for <linux-btrfs@vger.kernel.org>; Mon, 24 Nov 2025 18:53:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.169.27.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B25F6319600
+	for <linux-btrfs@vger.kernel.org>; Mon, 24 Nov 2025 19:52:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764010423; cv=none; b=T/+dNAzKxxrtrz0mic+pqsvFFiG8meh7FA/JqEtAW4wTQXbmrdj/vOuKoDcXm9yVdDbq8G5P1kjpgQl26ERfYgtXRQHSaeq058dxOFQi5+ySAaSuuZDnTekjQy3qYdeqOO1AXxGUcIib1VQsLnQcNW+l+9j6nyoh6081i/QKHIQ=
+	t=1764013926; cv=none; b=DPJoAXadj4+SHzFylBdG3n2UkpaJRyujXHwsQy5oXB5wUKp+EPmW3v1cvWCnZfkX0Frqqaz+D56PNEt+gZjAQT8BhF1U9g+QZSDH9JgNQilXBZ9G9vCFrmiUEIaZZ4/xI/YBuKx1yGHWkrZlCq8X4088vwysyrLsJ5smbt0HJmI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764010423; c=relaxed/simple;
-	bh=sFPDSUia7JEBsJ0/s6Cw67InFdjQtzM4BEYxBoWA7cA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Mime-Version; b=LYlTAmqc9f8ZmqG3lVxEu19C3N45d4kGm/jbv/5x33H9EWcXiDEKDzNqBF4xthTOW8PRVQgGHga+1O41wKpuxU3cVNb4SPo4v1sBubHtxIBKzT4xkQxskfvvdAjEHkhP81XW0F41q2xRMiypE9WPP9rz7cYHXgW1Q279Ny+GRj8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com; spf=pass smtp.mailfrom=harmstone.com; dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b=YIauNZze; arc=none smtp.client-ip=217.169.27.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=harmstone.com
-Received: from beren (beren.burntcomma.com [IPv6:2a02:8012:8cf0:0:ce28:aaff:fe0d:6db2])
+	s=arc-20240116; t=1764013926; c=relaxed/simple;
+	bh=kwrO+Mnb6L8qVWUtNbvySCVYiWHMfhYzBQP6+X0oeys=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=cJCCXb88mP8q/wN4a/smVijQLDrZoUu0xfzBqtMLaGlCgdHjx5idRuivVCWeXreU9HKJ50uJB0xAaujeINF9ePepBq7LTC7uScVAs8wBO4gW/CD5jn9DsPzxCXlLbaXRNoTrLD7wcDVmKM9lurTvp2qU/TQB5uVLb+XxdU9XWBI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZfTZbhn4; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1764013922;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=57MP1DopHTQAggif2CcNJ9umqlpooR5GfWP71F0mvdU=;
+	b=ZfTZbhn4WjnJlxA2awBka8eJ9JAnYJrnmHlF5omPkUPFL2YbiR4I3rNuj8ZJVyOWpsrcX1
+	W+KuxC3NXRG0EUVl4iUCDtjMULYe9uFU7any2bBKGwC33srBSDIdgNJgjbmi+6gMLMWqT9
+	6yJRej3r1sFIA//Nd+OGS7semhd7Fi0=
+Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-633-uL-TaeAMNeaDna5HDm89iw-1; Mon,
+ 24 Nov 2025 14:51:35 -0500
+X-MC-Unique: uL-TaeAMNeaDna5HDm89iw-1
+X-Mimecast-MFC-AGG-ID: uL-TaeAMNeaDna5HDm89iw_1764013886
+Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by mail.burntcomma.com (Postfix) with ESMTPSA id 8D9512DEC68;
-	Mon, 24 Nov 2025 18:53:31 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=harmstone.com;
-	s=mail; t=1764010411;
-	bh=OQ8q4dl3tAJYL7/4NyjGIc2He7PN36+drOoZmJUNw0U=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=YIauNZzek59LPCWE+Bw7sN7Yk1g8YkVCOW0PaCFCtDV9SOp/v6OfUdKnQnEOQ+pGc
-	 hdqTdxLzwlC+GKFY3uin5oIn/U2wVEjm3i9Dqm/6Q7zPGh1ozjuANZVLlVDjeH4otF
-	 CUesnM5AFowbzKkUJ5pVCmtJUJCLFILyRDnptkzQ=
-From: Mark Harmstone <mark@harmstone.com>
-To: linux-btrfs@vger.kernel.org
-Cc: Mark Harmstone <mark@harmstone.com>
-Subject: [PATCH v7 16/16] btrfs: populate fully_remapped_bgs_list on mount
-Date: Mon, 24 Nov 2025 18:53:08 +0000
-Message-ID: <20251124185335.16556-17-mark@harmstone.com>
-In-Reply-To: <20251124185335.16556-1-mark@harmstone.com>
-References: <20251124185335.16556-1-mark@harmstone.com>
+	(No client certificate requested)
+	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 6CE861800447;
+	Mon, 24 Nov 2025 19:51:25 +0000 (UTC)
+Received: from [10.44.33.72] (unknown [10.44.33.72])
+	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 8EDD918004D8;
+	Mon, 24 Nov 2025 19:51:18 +0000 (UTC)
+Date: Mon, 24 Nov 2025 20:51:16 +0100 (CET)
+From: Mikulas Patocka <mpatocka@redhat.com>
+To: Askar Safin <safinaskar@gmail.com>
+cc: Dell.Client.Kernel@dell.com, agk@redhat.com, brauner@kernel.org, 
+    dm-devel@lists.linux.dev, ebiggers@kernel.org, kix@kix.es, 
+    linux-block@vger.kernel.org, linux-btrfs@vger.kernel.org, 
+    linux-crypto@vger.kernel.org, linux-lvm@lists.linux.dev, 
+    linux-mm@kvack.org, linux-pm@vger.kernel.org, linux-raid@vger.kernel.org, 
+    lvm-devel@lists.linux.dev, milan@mazyland.cz, msnitzer@redhat.com, 
+    mzxreary@0pointer.de, nphamcs@gmail.com, pavel@ucw.cz, rafael@kernel.org, 
+    ryncsn@gmail.com, torvalds@linux-foundation.org
+Subject: Re: [PATCH 1/2] pm-hibernate: flush disk cache when suspending
+In-Reply-To: <20251122224748.3724202-1-safinaskar@gmail.com>
+Message-ID: <4085e0de-30f5-870c-ff82-5a293fe8ac73@redhat.com>
+References: <c44942f2-cf4d-04c2-908f-d16e2e60aae2@redhat.com> <20251122224748.3724202-1-safinaskar@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
 
-Add a function btrfs_populate_fully_remapped_bgs_list() which gets
-called on mount, which looks for fully remapped block groups
-(i.e. identity_remap_count == 0) which haven't yet had their chunk
-stripes and device extents removed.
 
-This happens when a filesystem is unmounted while async discard has not
-yet finished, as otherwise the data range occupied by the chunk stripes
-would be permanently unusable.
 
-Signed-off-by: Mark Harmstone <mark@harmstone.com>
----
- fs/btrfs/block-group.c      | 79 +++++++++++++++++++++++++++++++++++++
- fs/btrfs/block-group.h      |  2 +
- fs/btrfs/disk-io.c          |  9 +++++
- fs/btrfs/free-space-cache.c | 18 +++++++++
- fs/btrfs/relocation.c       |  4 ++
- 5 files changed, 112 insertions(+)
+On Sun, 23 Nov 2025, Askar Safin wrote:
 
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index a6005a54273f..e82a8d8618be 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -4823,6 +4823,11 @@ void btrfs_mark_bg_fully_remapped(struct btrfs_block_group *bg,
- 	struct btrfs_fs_info *fs_info = trans->fs_info;
- 
- 	if (btrfs_test_opt(fs_info, DISCARD_ASYNC)) {
-+		spin_lock(&bg->lock);
-+		set_bit(BLOCK_GROUP_FLAG_STRIPE_REMOVAL_PENDING,
-+			&bg->runtime_flags);
-+		spin_unlock(&bg->lock);
-+
- 		btrfs_discard_queue_work(&fs_info->discard_ctl, bg);
- 	} else {
- 		spin_lock(&fs_info->unused_bgs_lock);
-@@ -4842,3 +4847,77 @@ void btrfs_mark_bg_fully_remapped(struct btrfs_block_group *bg,
- 		spin_unlock(&fs_info->unused_bgs_lock);
- 	}
- }
-+
-+/*
-+ * Compare the block group and chunk trees, and find any fully-remapped block
-+ * groups which haven't yet had their chunk stripes and device extents removed,
-+ * and put them on the fully_remapped_bgs list so this gets done.
-+ *
-+ * This happens when a block group becomes fully remapped, i.e. its last
-+ * identity mapping is removed, and the volume is unmounted before async
-+ * discard has finished. It's important this gets done as until it is the
-+ * chunk's stripes are dead space.
-+ */
-+int btrfs_populate_fully_remapped_bgs_list(struct btrfs_fs_info *fs_info)
-+{
-+	struct rb_node *node_bg, *node_chunk;
-+
-+	node_bg = rb_first_cached(&fs_info->block_group_cache_tree);
-+	node_chunk = rb_first_cached(&fs_info->mapping_tree);
-+
-+	while (node_bg && node_chunk) {
-+		struct btrfs_block_group *bg;
-+		struct btrfs_chunk_map *map;
-+
-+		bg = rb_entry(node_bg, struct btrfs_block_group, cache_node);
-+		map = rb_entry(node_chunk, struct btrfs_chunk_map, rb_node);
-+
-+		ASSERT(bg->start == map->start);
-+
-+		if (!(bg->flags & BTRFS_BLOCK_GROUP_REMAPPED))
-+			goto next;
-+
-+		if (bg->identity_remap_count != 0)
-+			goto next;
-+
-+		if (map->num_stripes == 0)
-+			goto next;
-+
-+		spin_lock(&fs_info->unused_bgs_lock);
-+
-+		if (list_empty(&bg->bg_list)) {
-+			btrfs_get_block_group(bg);
-+			list_add_tail(&bg->bg_list,
-+				      &fs_info->fully_remapped_bgs);
-+		} else {
-+			list_move_tail(&bg->bg_list,
-+				       &fs_info->fully_remapped_bgs);
-+		}
-+
-+		spin_unlock(&fs_info->unused_bgs_lock);
-+
-+		/*
-+		 * Ideally we'd want to call btrfs_discard_queue_work() here,
-+		 * but it'd do nothing as the discard worker hasn't been
-+		 * started yet.
-+		 *
-+		 * The block group will get added to the discard list when
-+		 * btrfs_handle_fully_remapped_bgs() gets called, when we
-+		 * commit the first transaction.
-+		 */
-+		if (btrfs_test_opt(fs_info, DISCARD_ASYNC)) {
-+			spin_lock(&bg->lock);
-+			set_bit(BLOCK_GROUP_FLAG_STRIPE_REMOVAL_PENDING,
-+				&bg->runtime_flags);
-+			spin_unlock(&bg->lock);
-+		}
-+
-+next:
-+		node_bg = rb_next(node_bg);
-+		node_chunk = rb_next(node_chunk);
-+	}
-+
-+	ASSERT(!node_bg && !node_chunk);
-+
-+	return 0;
-+}
-diff --git a/fs/btrfs/block-group.h b/fs/btrfs/block-group.h
-index 743702f4e5d1..bdb75bf1c3f5 100644
---- a/fs/btrfs/block-group.h
-+++ b/fs/btrfs/block-group.h
-@@ -93,6 +93,7 @@ enum btrfs_block_group_flags {
- 	 * transaction.
- 	 */
- 	BLOCK_GROUP_FLAG_NEW,
-+	BLOCK_GROUP_FLAG_STRIPE_REMOVAL_PENDING,
- };
- 
- enum btrfs_caching_type {
-@@ -416,5 +417,6 @@ int btrfs_use_block_group_size_class(struct btrfs_block_group *bg,
- bool btrfs_block_group_should_use_size_class(const struct btrfs_block_group *bg);
- void btrfs_mark_bg_fully_remapped(struct btrfs_block_group *bg,
- 				  struct btrfs_trans_handle *trans);
-+int btrfs_populate_fully_remapped_bgs_list(struct btrfs_fs_info *fs_info);
- 
- #endif /* BTRFS_BLOCK_GROUP_H */
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index e29a6d5ecb2d..7e0e5f6f3223 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -3637,6 +3637,15 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
- 		goto fail_sysfs;
- 	}
- 
-+	if (btrfs_fs_incompat(fs_info, REMAP_TREE)) {
-+		ret = btrfs_populate_fully_remapped_bgs_list(fs_info);
-+		if (ret) {
-+			btrfs_err(fs_info,
-+			"failed to populate fully_remapped_bgs list: %d", ret);
-+			goto fail_sysfs;
-+		}
-+	}
-+
- 	btrfs_zoned_reserve_data_reloc_bg(fs_info);
- 	btrfs_free_zone_cache(fs_info);
- 
-diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
-index e15fa8567f7c..7f7744a78de2 100644
---- a/fs/btrfs/free-space-cache.c
-+++ b/fs/btrfs/free-space-cache.c
-@@ -3068,6 +3068,7 @@ bool btrfs_is_free_space_trimmed(struct btrfs_block_group *block_group)
- 	bool ret = true;
- 
- 	if (block_group->flags & BTRFS_BLOCK_GROUP_REMAPPED &&
-+	    !test_bit(BLOCK_GROUP_FLAG_STRIPE_REMOVAL_PENDING, &block_group->runtime_flags) &&
- 	    block_group->identity_remap_count == 0) {
- 		return true;
- 	}
-@@ -3849,6 +3850,23 @@ void btrfs_trim_fully_remapped_block_group(struct btrfs_block_group *bg)
- 	const u64 max_discard_size = READ_ONCE(discard_ctl->max_discard_size);
- 	u64 end = btrfs_block_group_end(bg);
- 
-+	if (!test_bit(BLOCK_GROUP_FLAG_STRIPE_REMOVAL_PENDING, &bg->runtime_flags)) {
-+		bg->discard_cursor = end;
-+
-+		if (bg->used == 0) {
-+			spin_lock(&fs_info->unused_bgs_lock);
-+			if (!list_empty(&bg->bg_list)) {
-+				list_del_init(&bg->bg_list);
-+				btrfs_put_block_group(bg);
-+			}
-+			spin_unlock(&fs_info->unused_bgs_lock);
-+
-+			btrfs_mark_bg_unused(bg);
-+		}
-+
-+		return;
-+	}
-+
- 	bytes = end - bg->discard_cursor;
- 
- 	if (max_discard_size &&
-diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index 2e1a87ab0509..25766b418a6b 100644
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -4792,6 +4792,10 @@ int btrfs_last_identity_remap_gone(struct btrfs_chunk_map *chunk,
- 
- 	btrfs_remove_bg_from_sinfo(bg);
- 
-+	spin_lock(&bg->lock);
-+	clear_bit(BLOCK_GROUP_FLAG_STRIPE_REMOVAL_PENDING, &bg->runtime_flags);
-+	spin_unlock(&bg->lock);
-+
- 	ret = remove_chunk_stripes(trans, chunk, path);
- 	if (ret) {
- 		btrfs_abort_transaction(trans, ret);
--- 
-2.51.0
+> Mikulas Patocka <mpatocka@redhat.com>:
+> > [PATCH 1/2] pm-hibernate: flush disk cache when suspending
+> > 
+> > There was reported failure that suspend doesn't work with dm-integrity.
+> > The reason for the failure is that the suspend code doesn't issue the
+> > FLUSH bio - the data still sits in the dm-integrity cache and they are
+> > lost when poweroff happens.
+> 
+> I tested this patchset (in Qemu). It works.
+> 
+> Here is script I used for testing:
+> 
+> https://zerobin.net/?66669be7d2404586#xWufhCq7zCoOk3LJcJCj7W4k3vYT3U4vhGutTN3p8m0=
+> 
+> Here are logs:
+> 
+> https://zerobin.net/?5d4a2abbad751890#WMcQl4FAZC9KqcAuJU3TSVr7wuVnPFwI7dlinA9QHOo=
+> 
+> Tested-By: Askar Safin <safinaskar@gmail.com>
+> 
+> There was no any reason to wait for me. You could easily test using script above.
+> 
+> Also: Linux shows this scary message when booting in Qemu:
+> 
+> [    0.512581] sd 0:0:0:0: [sda] Write cache: enabled, read cache: enabled, doesn't support DPO or FUA
+> 
+> So, FUA is not supported? Does it mean that this patch is wrong, and works purely
+> by chance?
+
+If FUA is not supported by a disk, the kernel would send a flush request 
+after the write request with the FUA flag. There's no problem with that - 
+the cache will be flushed correctly.
+
+Mikulas
+
+> -- 
+> Askar Safin
+> 
 
 
