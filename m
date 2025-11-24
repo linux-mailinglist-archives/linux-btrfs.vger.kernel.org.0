@@ -1,54 +1,58 @@
-Return-Path: <linux-btrfs+bounces-19306-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19307-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65A93C822B7
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Nov 2025 19:53:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1EB70C822BE
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Nov 2025 19:53:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B34F84E6CDE
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Nov 2025 18:53:48 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 365904E5744
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Nov 2025 18:53:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 236C0319612;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2374431987E;
 	Mon, 24 Nov 2025 18:53:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b="Px49fQW2"
+	dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b="maGBmhy+"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mail.burntcomma.com (mail2.burntcomma.com [217.169.27.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 455B92D239A
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 456302D3225
 	for <linux-btrfs@vger.kernel.org>; Mon, 24 Nov 2025 18:53:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.169.27.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764010416; cv=none; b=tMvtl8CFgfHX+MKsPP8FMEEKJJRb38/dzanmoQKL9/6W2+qaWGrD2Wu/v0dA/bJIQm5ZITqqkRKeNoH8h8OYs1lESiEznxZwG6TRAhSv+msmmOuLgRsIP94QER6uhZYGax5ILMcKq647OCLY1wbnRchYohbiGfOkXNCxeNBaAcg=
+	t=1764010416; cv=none; b=Mqe5/teD4L8Nb17mWjRCxMc/joP8f1Bft26r5yEZoi1HLw2rq8sOjFau5rmerjr7/DvtCuxrF4oXWAZZNCwp1R3LNokBBMDHn+zxnyCdnfr71IHBHPPItzAKS7P9mZRbickJgvk5TH+GkZXJN1yg1bOuIc2p2zrmZsmGXU20Odg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1764010416; c=relaxed/simple;
-	bh=6eQfowItoiYx8Sk1M9lXe+Br079aw8rowtvuETi5M4I=;
-	h=From:To:Cc:Subject:Date:Message-ID:Mime-Version; b=nnzuP+SlALjpBt86MI6zNpGbWPj2y/z0Bk5Xmubkl3Gc9W1h6LxaHEJCo1xcLiv24W31wceSdyFA23+ji1hr4Dk5QNiw8tADiK0E/zjLUMAq3fN6xFyHRnSBI8uo2/cUt9jMmcO0oLra4EQg9Z0Pnhs7O9bELs1tTqw1mj9goMg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com; spf=pass smtp.mailfrom=harmstone.com; dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b=Px49fQW2; arc=none smtp.client-ip=217.169.27.34
+	bh=yQ4kF+bheBslIqmAmVvyPeVQVIrTHQbuhZbA7apjSVI=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 Mime-Version; b=P0xwS/b9VDwKdWJ0X4/O4jpMgd9ERpKNaZA3zdykZ4ZThZbXsu4BClcHymDePFQkeopSP44U0PjVIKEKGYofpkpiKkNtGSgLhsWCe+gFvGZ3yj+x0Gzbah5dpsoogxUZ/iKc3joWqiVxsmcXB819H2e3Hd5qYifX7irguXP06jI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com; spf=pass smtp.mailfrom=harmstone.com; dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b=maGBmhy+; arc=none smtp.client-ip=217.169.27.34
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=harmstone.com
 Received: from beren (beren.burntcomma.com [IPv6:2a02:8012:8cf0:0:ce28:aaff:fe0d:6db2])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	by mail.burntcomma.com (Postfix) with ESMTPSA id B6CCD2DEC58;
+	by mail.burntcomma.com (Postfix) with ESMTPSA id CA1ED2DEC59;
 	Mon, 24 Nov 2025 18:53:30 +0000 (GMT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=harmstone.com;
 	s=mail; t=1764010410;
-	bh=StDywCNwzbetQh7RBeXOy10POGySdfS3orsaFqSjn6w=;
-	h=From:To:Cc:Subject:Date;
-	b=Px49fQW2oL6mEgbJIVhDsOuyPJggTtsajXjF05gUjQ/FvHMS004NmLvTCaJaGEdaN
-	 5V2ed0ZODiVFi8+70z23XxmYqpeQ66MBpHzBb78m8RcnmRomTZFrDy4BVhOIM5Tzp+
-	 y745y1u+VsShsrRDTuNbkdfzWp/Nw4+TgnFc1Qo8=
+	bh=7C8NBIizY1Oex5AqLEpL6Yb4u5f95s7Z2QSTk7213GY=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=maGBmhy+kzsnpWI8MEH9rWUDBSl85Q1fouz137DLIoziV5NYtMh3pJpuqKFSVubrj
+	 80yacmyti5v9eAg9e8yz1037fnXx8HuK/FcRO18tWcHJQ6+fdvk2MO1qTk7zMqUP97
+	 +kPpmINPmXL+gkO/sKmrBSfsXdxm3/vS4ZLJBh9E=
 From: Mark Harmstone <mark@harmstone.com>
 To: linux-btrfs@vger.kernel.org
-Cc: Mark Harmstone <mark@harmstone.com>
-Subject: [PATCH v7 00/16] Remap tree
-Date: Mon, 24 Nov 2025 18:52:52 +0000
-Message-ID: <20251124185335.16556-1-mark@harmstone.com>
+Cc: Mark Harmstone <mark@harmstone.com>,
+	Boris Burkov <boris@bur.io>
+Subject: [PATCH v7 01/16] btrfs: add definitions and constants for remap-tree
+Date: Mon, 24 Nov 2025 18:52:53 +0000
+Message-ID: <20251124185335.16556-2-mark@harmstone.com>
+In-Reply-To: <20251124185335.16556-1-mark@harmstone.com>
+References: <20251124185335.16556-1-mark@harmstone.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -57,76 +61,169 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This is version 7 of the patch series for the new logical remapping tree
-feature - see the previous cover letters for more information including
-the rationale:
+Add an incompat flag for the new remap-tree feature, and the constants
+and definitions needed to support it.
 
-* RFC: https://lore.kernel.org/all/20250515163641.3449017-1-maharmstone@fb.com/
-* Version 1: https://lore.kernel.org/all/20250605162345.2561026-1-maharmstone@fb.com/
-* Version 2: https://lore.kernel.org/all/20250813143509.31073-1-mark@harmstone.com/
-* Version 3: https://lore.kernel.org/all/20251009112814.13942-1-mark@harmstone.com/
-* Version 4: https://lore.kernel.org/all/20251024181227.32228-1-mark@harmstone.com/
-* Version 5: https://lore.kernel.org/all/20251110171511.20900-1-mark@harmstone.com/
-* Version 6: https://lore.kernel.org/all/20251114184745.9304-1-mark@harmstone.com/
+Signed-off-by: Mark Harmstone <mark@harmstone.com>
+Reviewed-by: Boris Burkov <boris@bur.io>
+---
+ fs/btrfs/accessors.h            |  3 +++
+ fs/btrfs/locking.c              |  1 +
+ fs/btrfs/sysfs.c                |  2 ++
+ fs/btrfs/tree-checker.c         |  6 ++----
+ fs/btrfs/tree-checker.h         |  5 +++++
+ fs/btrfs/volumes.c              |  1 +
+ include/uapi/linux/btrfs.h      |  1 +
+ include/uapi/linux/btrfs_tree.h | 12 ++++++++++++
+ 8 files changed, 27 insertions(+), 4 deletions(-)
 
-Changes since version 6:
-* Added new function btrfs_complete_bg_remapping(), to dedupe some code
-  in btrfs_handle_fully_remapped_bgs() and
-  btrfs_trim_fully_remapped_block_group()
-* Rearranged some code in create_remap_tree_entries() to make things
-  clearer
-
-Mark Harmstone (16):
-  btrfs: add definitions and constants for remap-tree
-  btrfs: add REMAP chunk type
-  btrfs: allow remapped chunks to have zero stripes
-  btrfs: remove remapped block groups from the free-space tree
-  btrfs: don't add metadata items for the remap tree to the extent tree
-  btrfs: add extended version of struct block_group_item
-  btrfs: allow mounting filesystems with remap-tree incompat flag
-  btrfs: redirect I/O for remapped block groups
-  btrfs: handle deletions from remapped block group
-  btrfs: handle setting up relocation of block group with remap-tree
-  btrfs: move existing remaps before relocating block group
-  btrfs: replace identity remaps with actual remaps when doing
-    relocations
-  btrfs: add do_remap param to btrfs_discard_extent()
-  btrfs: allow balancing remap tree
-  btrfs: handle discarding fully-remapped block groups
-  btrfs: populate fully_remapped_bgs_list on mount
-
- fs/btrfs/Kconfig                |    2 +
- fs/btrfs/accessors.h            |   29 +
- fs/btrfs/bio.c                  |    3 +-
- fs/btrfs/bio.h                  |    3 +
- fs/btrfs/block-group.c          |  306 ++++-
- fs/btrfs/block-group.h          |   25 +-
- fs/btrfs/block-rsv.c            |    8 +
- fs/btrfs/block-rsv.h            |    1 +
- fs/btrfs/discard.c              |   57 +-
- fs/btrfs/disk-io.c              |  125 +-
- fs/btrfs/extent-tree.c          |  152 ++-
- fs/btrfs/extent-tree.h          |    4 +-
- fs/btrfs/free-space-cache.c     |   59 +-
- fs/btrfs/free-space-cache.h     |    1 +
- fs/btrfs/free-space-tree.c      |    4 +-
- fs/btrfs/free-space-tree.h      |    5 +-
- fs/btrfs/fs.h                   |   10 +-
- fs/btrfs/inode.c                |    2 +-
- fs/btrfs/locking.c              |    1 +
- fs/btrfs/relocation.c           | 1889 +++++++++++++++++++++++++++++--
- fs/btrfs/relocation.h           |   18 +
- fs/btrfs/space-info.c           |   22 +-
- fs/btrfs/sysfs.c                |    4 +
- fs/btrfs/transaction.c          |    7 +
- fs/btrfs/tree-checker.c         |   94 +-
- fs/btrfs/tree-checker.h         |    5 +
- fs/btrfs/volumes.c              |  356 +++++-
- fs/btrfs/volumes.h              |   18 +-
- include/uapi/linux/btrfs.h      |    1 +
- include/uapi/linux/btrfs_tree.h |   29 +-
- 30 files changed, 2977 insertions(+), 263 deletions(-)
-
+diff --git a/fs/btrfs/accessors.h b/fs/btrfs/accessors.h
+index 78721412951c..3eec1a1ecdf4 100644
+--- a/fs/btrfs/accessors.h
++++ b/fs/btrfs/accessors.h
+@@ -1010,6 +1010,9 @@ BTRFS_SETGET_STACK_FUNCS(stack_verity_descriptor_encryption,
+ BTRFS_SETGET_STACK_FUNCS(stack_verity_descriptor_size,
+ 			 struct btrfs_verity_descriptor_item, size, 64);
+ 
++BTRFS_SETGET_FUNCS(remap_address, struct btrfs_remap, address, 64);
++BTRFS_SETGET_STACK_FUNCS(stack_remap_address, struct btrfs_remap, address, 64);
++
+ /* Cast into the data area of the leaf. */
+ #define btrfs_item_ptr(leaf, slot, type)				\
+ 	((type *)(btrfs_item_nr_offset(leaf, 0) + btrfs_item_offset(leaf, slot)))
+diff --git a/fs/btrfs/locking.c b/fs/btrfs/locking.c
+index 0035851d72b0..726e4d70f37c 100644
+--- a/fs/btrfs/locking.c
++++ b/fs/btrfs/locking.c
+@@ -73,6 +73,7 @@ static struct btrfs_lockdep_keyset {
+ 	{ .id = BTRFS_FREE_SPACE_TREE_OBJECTID,	DEFINE_NAME("free-space") },
+ 	{ .id = BTRFS_BLOCK_GROUP_TREE_OBJECTID, DEFINE_NAME("block-group") },
+ 	{ .id = BTRFS_RAID_STRIPE_TREE_OBJECTID, DEFINE_NAME("raid-stripe") },
++	{ .id = BTRFS_REMAP_TREE_OBJECTID,      DEFINE_NAME("remap-tree") },
+ 	{ .id = 0,				DEFINE_NAME("tree")	},
+ };
+ 
+diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+index 1f64c132b387..e095936c2389 100644
+--- a/fs/btrfs/sysfs.c
++++ b/fs/btrfs/sysfs.c
+@@ -293,6 +293,7 @@ BTRFS_FEAT_ATTR_COMPAT_RO(free_space_tree, FREE_SPACE_TREE);
+ BTRFS_FEAT_ATTR_COMPAT_RO(block_group_tree, BLOCK_GROUP_TREE);
+ BTRFS_FEAT_ATTR_INCOMPAT(raid1c34, RAID1C34);
+ BTRFS_FEAT_ATTR_INCOMPAT(simple_quota, SIMPLE_QUOTA);
++BTRFS_FEAT_ATTR_INCOMPAT(remap_tree, REMAP_TREE);
+ #ifdef CONFIG_BLK_DEV_ZONED
+ BTRFS_FEAT_ATTR_INCOMPAT(zoned, ZONED);
+ #endif
+@@ -327,6 +328,7 @@ static struct attribute *btrfs_supported_feature_attrs[] = {
+ 	BTRFS_FEAT_ATTR_PTR(raid1c34),
+ 	BTRFS_FEAT_ATTR_PTR(block_group_tree),
+ 	BTRFS_FEAT_ATTR_PTR(simple_quota),
++	BTRFS_FEAT_ATTR_PTR(remap_tree),
+ #ifdef CONFIG_BLK_DEV_ZONED
+ 	BTRFS_FEAT_ATTR_PTR(zoned),
+ #endif
+diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
+index c21c21adf61e..aedc208a95b8 100644
+--- a/fs/btrfs/tree-checker.c
++++ b/fs/btrfs/tree-checker.c
+@@ -913,12 +913,10 @@ int btrfs_check_chunk_valid(const struct btrfs_fs_info *fs_info,
+ 			  length, btrfs_stripe_nr_to_offset(U32_MAX));
+ 		return -EUCLEAN;
+ 	}
+-	if (unlikely(type & ~(BTRFS_BLOCK_GROUP_TYPE_MASK |
+-			      BTRFS_BLOCK_GROUP_PROFILE_MASK))) {
++	if (unlikely(type & ~BTRFS_BLOCK_GROUP_VALID)) {
+ 		chunk_err(fs_info, leaf, chunk, logical,
+ 			  "unrecognized chunk type: 0x%llx",
+-			  ~(BTRFS_BLOCK_GROUP_TYPE_MASK |
+-			    BTRFS_BLOCK_GROUP_PROFILE_MASK) & type);
++			  type & ~BTRFS_BLOCK_GROUP_VALID);
+ 		return -EUCLEAN;
+ 	}
+ 
+diff --git a/fs/btrfs/tree-checker.h b/fs/btrfs/tree-checker.h
+index eb201f4ec3c7..833e2fd989eb 100644
+--- a/fs/btrfs/tree-checker.h
++++ b/fs/btrfs/tree-checker.h
+@@ -57,6 +57,11 @@ enum btrfs_tree_block_status {
+ 	BTRFS_TREE_BLOCK_WRITTEN_NOT_SET,
+ };
+ 
++
++#define BTRFS_BLOCK_GROUP_VALID	(BTRFS_BLOCK_GROUP_TYPE_MASK | \
++				 BTRFS_BLOCK_GROUP_PROFILE_MASK | \
++				 BTRFS_BLOCK_GROUP_REMAPPED)
++
+ /*
+  * Exported simply for btrfs-progs which wants to have the
+  * btrfs_tree_block_status return codes.
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index e81c8ac0d8ae..193cbb634ba3 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -231,6 +231,7 @@ void btrfs_describe_block_groups(u64 bg_flags, char *buf, u32 size_buf)
+ 	DESCRIBE_FLAG(BTRFS_BLOCK_GROUP_DATA, "data");
+ 	DESCRIBE_FLAG(BTRFS_BLOCK_GROUP_SYSTEM, "system");
+ 	DESCRIBE_FLAG(BTRFS_BLOCK_GROUP_METADATA, "metadata");
++	DESCRIBE_FLAG(BTRFS_BLOCK_GROUP_REMAPPED, "remapped");
+ 
+ 	DESCRIBE_FLAG(BTRFS_AVAIL_ALLOC_BIT_SINGLE, "single");
+ 	for (i = 0; i < BTRFS_NR_RAID_TYPES; i++)
+diff --git a/include/uapi/linux/btrfs.h b/include/uapi/linux/btrfs.h
+index f40b300bd664..0763a23aeebc 100644
+--- a/include/uapi/linux/btrfs.h
++++ b/include/uapi/linux/btrfs.h
+@@ -336,6 +336,7 @@ struct btrfs_ioctl_fs_info_args {
+ #define BTRFS_FEATURE_INCOMPAT_EXTENT_TREE_V2	(1ULL << 13)
+ #define BTRFS_FEATURE_INCOMPAT_RAID_STRIPE_TREE	(1ULL << 14)
+ #define BTRFS_FEATURE_INCOMPAT_SIMPLE_QUOTA	(1ULL << 16)
++#define BTRFS_FEATURE_INCOMPAT_REMAP_TREE	(1ULL << 17)
+ 
+ struct btrfs_ioctl_feature_flags {
+ 	__u64 compat_flags;
+diff --git a/include/uapi/linux/btrfs_tree.h b/include/uapi/linux/btrfs_tree.h
+index fc29d273845d..4439d77a7252 100644
+--- a/include/uapi/linux/btrfs_tree.h
++++ b/include/uapi/linux/btrfs_tree.h
+@@ -76,6 +76,9 @@
+ /* Tracks RAID stripes in block groups. */
+ #define BTRFS_RAID_STRIPE_TREE_OBJECTID 12ULL
+ 
++/* Holds details of remapped addresses after relocation. */
++#define BTRFS_REMAP_TREE_OBJECTID 13ULL
++
+ /* device stats in the device tree */
+ #define BTRFS_DEV_STATS_OBJECTID 0ULL
+ 
+@@ -282,6 +285,10 @@
+ 
+ #define BTRFS_RAID_STRIPE_KEY	230
+ 
++#define BTRFS_IDENTITY_REMAP_KEY 	234
++#define BTRFS_REMAP_KEY		 	235
++#define BTRFS_REMAP_BACKREF_KEY	 	236
++
+ /*
+  * Records the overall state of the qgroups.
+  * There's only one instance of this key present,
+@@ -1161,6 +1168,7 @@ struct btrfs_dev_replace_item {
+ #define BTRFS_BLOCK_GROUP_RAID6         (1ULL << 8)
+ #define BTRFS_BLOCK_GROUP_RAID1C3       (1ULL << 9)
+ #define BTRFS_BLOCK_GROUP_RAID1C4       (1ULL << 10)
++#define BTRFS_BLOCK_GROUP_REMAPPED      (1ULL << 11)
+ #define BTRFS_BLOCK_GROUP_RESERVED	(BTRFS_AVAIL_ALLOC_BIT_SINGLE | \
+ 					 BTRFS_SPACE_INFO_GLOBAL_RSV)
+ 
+@@ -1323,4 +1331,8 @@ struct btrfs_verity_descriptor_item {
+ 	__u8 encryption;
+ } __attribute__ ((__packed__));
+ 
++struct btrfs_remap {
++	__le64 address;
++} __attribute__ ((__packed__));
++
+ #endif /* _BTRFS_CTREE_H_ */
 -- 
 2.51.0
 
