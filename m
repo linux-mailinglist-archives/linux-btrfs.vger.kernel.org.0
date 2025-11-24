@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-19322-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19323-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A75CC82729
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Nov 2025 21:54:47 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3EE4C8276F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Nov 2025 22:00:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 800E93A38B0
-	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Nov 2025 20:54:45 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 5AF72349710
+	for <lists+linux-btrfs@lfdr.de>; Mon, 24 Nov 2025 21:00:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9AE12D7DE2;
-	Mon, 24 Nov 2025 20:54:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9A45257859;
+	Mon, 24 Nov 2025 21:00:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="NIjdRyLn"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="eV2oDwOk"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8475F258ECC
-	for <linux-btrfs@vger.kernel.org>; Mon, 24 Nov 2025 20:54:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD28423EABF
+	for <linux-btrfs@vger.kernel.org>; Mon, 24 Nov 2025 21:00:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764017680; cv=none; b=enB15C4R7SmnHlsygiTGl3+uJNeIFrwmxnUNmLUHPVQy5bn3mnKL/PnmefjRZu/O5VEnmLCJ1srnIOHRmrny8v8RV/nedRAWt8rgLQPb4Vw/p+IxPg/LC+nFp4HCus+maTD56eyWFSwhLKygqhuDtUUzLdvV5xzih//uJKcmlA0=
+	t=1764018033; cv=none; b=A18X6jjpc7b+kCEHbnVIkkixGdz3ilbXXDv6vU7wMQnT9myyUNFVvfmgWsRTr1N//BqmsIDOrwVXkws4NVZ4olPO6reCV7ciOOuMeyjfIS4CAaHmaumrEzVHQ++KKU5xuk8ff5xDkEnyUq7ZlGEmQoOw4hYSmE5J/X51dfq9z0Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764017680; c=relaxed/simple;
-	bh=Wzl97gSkTSbnhXB5T9cUtML+3h69fxF6ep4kqbpsHsk=;
+	s=arc-20240116; t=1764018033; c=relaxed/simple;
+	bh=VczVc4ihjqyjSZHGQ0wiOnuCj3NrjbHHHaNqEyEFdIo=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jj+6xOlqaBP3wiUz8DwctGWDP0+jbG9S7zXQgH+bTPhSfWpk9fVk+LSfsEyzJ7+jq4bjrHHE272PWI4nuON1hIUz7/399weuI7xS5ksrzJqremoc+FEAYhejfdT3/dHkrxzPinVnlXCAx5/PgnWbcRsTVLCg7tYWQzOoZQ30X0Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=NIjdRyLn; arc=none smtp.client-ip=212.227.17.22
+	 In-Reply-To:Content-Type; b=SqV5ZAC75QS4VuRJa8kQ11pz+mw+nlMzYyBHWs1vRpvWHG82hWsXjKTRHXDt1acstO1GyatJrg6clAHFKwD7k/CoQpFby9NRXGH5ayzHMlGQ0dNGKoP/IDV5O2u3h27WhSxus8TQPxalQ7dqpSfUmX7SOh4fX+IX/zRH2ZfEpD8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=eV2oDwOk; arc=none smtp.client-ip=212.227.17.22
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1764017671; x=1764622471; i=quwenruo.btrfs@gmx.com;
-	bh=DYuRrQhZkCHGa+fTDXnIRYdaP5UUlqPUI3pAWka3B8M=;
+	s=s31663417; t=1764018028; x=1764622828; i=quwenruo.btrfs@gmx.com;
+	bh=VczVc4ihjqyjSZHGQ0wiOnuCj3NrjbHHHaNqEyEFdIo=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=NIjdRyLnrXsXU5cPdKmNO4kWlHak4FM+2ZUOwfoWcS1SigThzasGhP4NIYTTDYNK
-	 DC1T5HQxIY4I/PDY45eXqBXtHf+yOk1h7C5pEnkxq+gKTk8xAjBXue747229N7e9x
-	 nyHZwq8fbBrKpvf6sKues6XvbcfwMjTEmlMhKQI7BYdx+F0qJovtODODpnyqDAhzL
-	 3h/Gwxk9mLKSsfYJfJYYLxJ7/KrSXxvnLHhDpX90U/83FTJlDHfAMh6SNTYUSJLjS
-	 qZKJ5Xv7vOLIB4pqOsfHUGnalelL51TKy5VgQFxJw6/IUi6jfO1lK+VWFlsOJjf6l
-	 8VxW1fPS7dakXfxBFQ==
+	b=eV2oDwOkkwjGoYFZBVdXPzyTYhyJYS34VBLIk/2zBmcxA0qipCkP4xhprNpBXWlk
+	 wJmQy2YsaxOQj8L8DccVSnvY+MxZJeg5tvRmod4jIxis0DSFNZ+MwPFl/DcuIcRWk
+	 Ilu2C4jVi66aNP/WFwbuVy0Nz6+e59KoOQFr/oW7eCcYIQyzJXtDMHdN+AWdUbJkG
+	 w4oUk/Kmi0X0pF+ZfHQh3xVEbS9UnZ9B1dRL0RPKFLpQumfbzBD1DVXBSOPXLlYGX
+	 02jSKL/yNpOimf2s3fjdTQsrkrmDlTT8FLnKjBvcBNCNi0RBVEadmVFo84azoPgQS
+	 hZUsx/QB+z1stn7TLg==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mz9Z5-1wJTAD3wSx-00yAOE; Mon, 24
- Nov 2025 21:54:31 +0100
-Message-ID: <ece89818-27d0-4cee-af21-bac7867ee31d@gmx.com>
-Date: Tue, 25 Nov 2025 07:24:28 +1030
+Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MzhjF-1wIv7q26qn-00rTkW; Mon, 24
+ Nov 2025 22:00:28 +0100
+Message-ID: <959f1a72-9b40-4489-922c-98d17d328253@gmx.com>
+Date: Tue, 25 Nov 2025 07:30:24 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,13 +58,15 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] btrfs: return the largest hole between two file
- extent items
+Subject: Re: [PATCH v3 1/4] btrfs: make sure all ordered extents beyond EOF is
+ properly truncated
 To: Filipe Manana <fdmanana@kernel.org>, Qu Wenruo <wqu@suse.com>
 Cc: linux-btrfs@vger.kernel.org
-References: <cover.1763939785.git.wqu@suse.com>
- <8f8e8639c8b7cdde04d0930017a2f354f33c82d4.1763939785.git.wqu@suse.com>
- <CAL3q7H5x+t_P=CoxcvmNLr8YKM-pUF3mAUiZBUkdRN3oN+273A@mail.gmail.com>
+References: <cover.1763629982.git.wqu@suse.com>
+ <5960f3429b90311423a57beff157494698ab1395.1763629982.git.wqu@suse.com>
+ <CAL3q7H6pV-pb6T70aOATXc2VBvA0PJZJcoo+B-SzK48qxzyqbg@mail.gmail.com>
+ <21484358-d1dc-4c03-837a-28bc57c80fe6@suse.com>
+ <CAL3q7H7Jb5t0uFYk6hJDydNu6DH5rNnPvRKOjfOCVbtqR=mHBg@mail.gmail.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -91,168 +93,145 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
  +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
  HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <CAL3q7H5x+t_P=CoxcvmNLr8YKM-pUF3mAUiZBUkdRN3oN+273A@mail.gmail.com>
+In-Reply-To: <CAL3q7H7Jb5t0uFYk6hJDydNu6DH5rNnPvRKOjfOCVbtqR=mHBg@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:o79zc4przyz6yLCIj4keWhGbhyYRbWWsTV9Ipnyy5HVGSaxG23A
- 1oUBymBDuKWYNsXgLIZqz4O0DTSQbT5EQw/RQrn+mJ8sBUuUZ8UOjtPt1OGKBVVF0eYFVXw
- /mW0g1Y4F9yG2ih5ge09X1GAC19S178E6CUaUS8UMWmU5IPwv0e7Ly16/yMl7z0pkEyRWUD
- Ry6OwnhklPJGbXllrvLGw==
+X-Provags-ID: V03:K1:m4eb+UHilnKTkSVQHInwzVWQ4qqNaBtiLRcGVc0pM94gCszxWay
+ SeI+/yBvMS7mnxLSt9zWItAdQqLrxBUmmrsDL6ltx0yZJTKP75lPf/miBpk56J1QCLij8zw
+ yH/Vz8ux8C4ovzRTOYrNx9a4HAHZ6JNso4I2kFmFw4RbXOFWWzWxjl88i04oduBZJ+cMk4O
+ R3rXZAMVgF/3qbQJqnrTw==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:TLBMUaHJRWA=;w5OH5p8R2sXVf/yf6LAFErnxa0X
- +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
+UI-OutboundReport: notjunk:1;M01:P0:W5IwJUoWIcE=;LBE9C7OPCyUAHcy6mzlYzp/4Ve0
+ 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
+ ULxTmuaUigDJXNAfc=
 
 
 
-=E5=9C=A8 2025/11/24 23:29, Filipe Manana =E5=86=99=E9=81=93:
-> On Sun, Nov 23, 2025 at 11:32=E2=80=AFPM Qu Wenruo <wqu@suse.com> wrote:
-[...]
+=E5=9C=A8 2025/11/24 22:52, Filipe Manana =E5=86=99=E9=81=93:
+> On Sat, Nov 22, 2025 at 1:14=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
 >>
->> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
->> index 3cf30abcdb08..3a76cea1d43d 100644
->> --- a/fs/btrfs/inode.c
->> +++ b/fs/btrfs/inode.c
->> @@ -7181,8 +7181,6 @@ struct extent_map *btrfs_get_extent(struct btrfs_=
-inode *inode,
->>                  if (found_key.objectid !=3D objectid ||
->>                      found_key.type !=3D BTRFS_EXTENT_DATA_KEY)
->>                          goto not_found;
->> -               if (start + len <=3D found_key.offset)
->> -                       goto not_found;
+>>
+>>
+>> =E5=9C=A8 2025/11/21 22:25, Filipe Manana =E5=86=99=E9=81=93:
+>> [...]
+>>>> Fixes: f0a0f5bfe04e ("btrfs: truncate ordered extent when skipping wr=
+iteback past i_size")
+>>>
+>>> The commit ID is not stable yet, as that change is not in Linus' tree =
+yet.
+>>
+>> Thanks for pointing this out. Now it's removed from for-next and will
+>> resend the series with proper upstream commit during the next merge win=
+dow.
 >=20
-> Your point about the inefficiency for the readahead case is valid, but
-> this may be dangerous in other contexts.
+> Instead of waiting until the next merge window, David may want to
+> include this in this one, in which case no Fixes tag is needed, just
+> mention the patch's subject in the change log (that's usually what we
+> do).
+> This way it will avoid backports if we want until the next merge
+> window (for 6.20).
 >=20
-> If a caller of btrfs_get_extent() passes a specific length, it may
-> mean it has locked the range in the inode's io tree only for that
-> range.
-> For the readahead case, the caller has typically locked a larger range
-> in the io tree - except when attempting to read the last page/folio
-> for the readahead range and there's hole that crosses that limit.
+> Or may be included in a pull request for one of the 6.19-rcs.
+
+OK, considering this is a bug fix, I'll resend this patch (without the=20
+whole series) with the Fixed tag removed.
+
+[...]
+
+>> Although I can definitely add an @end, I'm not sure if it's improving
+>> anything, considering it's only utilized twice per loop.
 >=20
-> By allowing to return an extent map for a larger range:
+> I don't think it's confusing at all in this context.
 >=20
-> 1) We can now return a stale extent map.
->       After the path is released in btrfs_get_extent(), another task
-> may insert a new file extent item (such as a direct IO task).
+> It may be confusing when there's an end argument, where we may have to
+> check callers to see how it's computed to find out if it's an
+> inclusive or exclusive end offset.
 >=20
-> 2) While another task adds the new file extent item, it will also trim
-> the hole extent map created by the task that has just finished calling
-> btrfs_get_extent().
->      The trimming (typically done in btrfs_drop_extent_map_range())
-> means updating the extent map's length, start fields, etc, while the
-> task that just called btrfs_get_extent() is using it, causing a race
-> with unpredictable results.
+> Now having the end offset stored in a local variable, it makes it very
+> easy to see that it's exclusive, especially for such a short function.
+> I prefer that than open-coding the sum multiple times (3 times in this
+> function). The compiler generally optimizes and avoids repeating the
+> sum, but it makes the code easier to read and reason.
 
-I agree with the concerns, although I failed to trigger any regression=20
-with several days of fstests runs, the limited benefit vs potential bugs=
-=20
-is not really worthy.
-
-Thus I'm fine discarding this series.
-
->=20
-> We've had problems of this sort in the past.
-> It's a bad idea for a task to create extent maps beyond the range it
-> has locked in the inode's io tree.
-
-However I also find several btrfs_get_extent() call sites without=20
-explicit extent locking.
-
-Call sites like find_first_non_hole() and btrfs_zero_range() rely on=20
-inode lock then waiting for ordered extents.
-
-And buffered writeback path in extent_writepage_io() which relies on the=
-=20
-(sub)page range being locked and the extent map is also pinned.
-
-I'm wondering should we concentrate all extent maps related call sites=20
-to use proper extent locking to be extra safe.
+Got it.
 
 Thanks,
 Qu
 
 >=20
-> Thanks.
->=20
->=20
->>                  if (start > found_key.offset)
->>                          goto next;
 >>
->> --
->> 2.52.0
->>
+>> Thanks,
+>> Qu
 >>
 >=20
 
