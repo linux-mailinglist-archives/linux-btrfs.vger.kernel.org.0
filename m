@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-19349-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19350-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94FFEC8712A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Nov 2025 21:34:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EC86C87319
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Nov 2025 22:15:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 6C2964EB352
-	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Nov 2025 20:32:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 720043B6B5B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 25 Nov 2025 21:15:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB1C72147FB;
-	Tue, 25 Nov 2025 20:32:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BABA32FB997;
+	Tue, 25 Nov 2025 21:15:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="TSS2P9iL"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="AKo4nMvu"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37AB243AA4
-	for <linux-btrfs@vger.kernel.org>; Tue, 25 Nov 2025 20:32:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FCB52F83BC
+	for <linux-btrfs@vger.kernel.org>; Tue, 25 Nov 2025 21:15:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764102763; cv=none; b=IVNll/nj2p+g91tpNd5fjwYwZgIC5tte81Fy4ZhD7rXbI73sdp8Y/FkZ1ybYhv8ey0khHWs8Nc0DcRTfg2IHPBTlt6BmVDxgsdewwi5uLv/1UY1S1BRYkP5F4AzlklrI6w62n4SA9D8x086osWys3UVCPGPY7iLNngMhq753LEU=
+	t=1764105335; cv=none; b=F2zEhdHqhY7loi+lbRKJiIX4AkrvB6stloGoxM/yCgVPxiFokz2UTu31MXs9DtLG/PMf2fCE9oyQjim806WQmt3nb9w+pqprvyH0SQNEjiRfhH3c2HfJPxt1eklYcISbArS9wmPpdcR7vHo3Ua/IBJwRCdX4CfhmJ/vMsgYvqkI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764102763; c=relaxed/simple;
-	bh=mG7eXTmM4Y3nFxW3wCDSyqMsJUZB1tsLInLN11Mz4Gs=;
+	s=arc-20240116; t=1764105335; c=relaxed/simple;
+	bh=JwxIsrBpLpWG+7fdNRHQui0k/x1WRs8t+kR7h9dqqpE=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fs/bcDR7ElBv97FDADB+oiVNt8ItKtdOuAk2T3QvQLoxwPETLPBoiiKmhup05BUlYckC423wcF4BSuK46EF5+Eog2Jyui1mVkizzrmurjrDasK5+WRUTLNU+WtD0gsiiQC5mNfoSiBuIAotGTJZIZNobor2Bdu3hUhMZDc0ZuA0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=TSS2P9iL; arc=none smtp.client-ip=212.227.17.22
+	 In-Reply-To:Content-Type; b=h4WQi6udJHGcUeEgQAAIt/3KdTvsAOYdyWOYUXCH4tmUA/XEwsE+Yu69UaLl0tka1CQRA1zZtLyfHswPDgu6LxvuNgedLNGHlW7MeJO2VNIzDjyPRDHwgZfR2u3dQ7aiGviPgHefeUHZhmzZCVy8cJgYZtjOwKFVwgfcXMpz1Ak=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=AKo4nMvu; arc=none smtp.client-ip=212.227.17.22
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1764102759; x=1764707559; i=quwenruo.btrfs@gmx.com;
-	bh=8hmdfQaE1MPLVUfrnpiG1EzcpBRb+cIY81EuY03jQFE=;
+	s=s31663417; t=1764105329; x=1764710129; i=quwenruo.btrfs@gmx.com;
+	bh=twyhl6f6ZCPsK9OUWWt6+5vPZwMSVMVDNIBef6XRt7w=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=TSS2P9iL7eVULCItI3nf06r9UaEEkx5CpKd0ACHKSVwcTwGbxhy9amQ/emyrbLbw
-	 7s6peivLO7nGokpqEb5klMBewxPgrMWTefNpnNfHuwG0FL8A7tkcla00OBzimkNKo
-	 l64JwdwS17M8+fVMv4+JEBVstett80xd0+3xLxVKnQti7vuM4R/2oqMeyL1iVeI1D
-	 XEj5PiZOsD86VzAA2yzrBK9TGnYhf0FosJSLpYwyLFuEg02kylzzvg4yjuH693nwP
-	 AvYvxlOG2jGiz5IqcrporOuB+gahM5U9hFss4WLUVegetE00lDG3YF9faFfIeO5JH
-	 rIWOA+MXXvmhZG/cPg==
+	b=AKo4nMvuEeSov713xEdBU9hGa7qOUL1JGcoslON5WK6evmbvmPfUCGZC54IbisaL
+	 rOTgKO7hXaU2dMfqfkyyaWSSm8hyuhZCvNR2xbQLhDUfL1Of1o3hhZ36KbzG2TvVE
+	 iOeAIUXK3u56JRQbwoJ/SedLGiZlxyuiRD+4rDDNykANbZKJc7PeSvZUJhDSGOjVj
+	 u5c9HWCvKSc/5p8QuBkitOXzfS7NoeteoV2cKV4wHI2KgDLS8WA4YU22NVZpuMtfQ
+	 Orc2dd18udq39fDxsq8h9ipMctJTgq92vow5TyiYuT8sDc/RFuKeBVp0orNjYLRk8
+	 U1TN9lA9DOuOC6jlQw==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N2V0B-1w74LR3bxf-017Mu1; Tue, 25
- Nov 2025 21:32:39 +0100
-Message-ID: <24139af7-d3d2-4c8a-bf5e-319f845244ba@gmx.com>
-Date: Wed, 26 Nov 2025 07:02:35 +1030
+Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mlw7f-1voIuQ0QLb-00hhmK; Tue, 25
+ Nov 2025 22:15:29 +0100
+Message-ID: <319055e4-abd9-4d5a-8aa9-a5973fb56c35@gmx.com>
+Date: Wed, 26 Nov 2025 07:45:26 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,12 +58,12 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] btrfs: make sure all ordered extents beyond EOF are
- properly truncated
-To: Filipe Manana <fdmanana@kernel.org>, Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org, Boris Burkov <boris@bur.io>
-References: <349a50a207bb672f4d8e48ddfb70da10707902e5.1764057885.git.wqu@suse.com>
- <CAL3q7H5Ue-fSHHUF8daFkp-yZ9QWbKVpdZgbWKrT_gT-4XckgQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] btrfs: introduce BTRFS_PATH_AUTO_RELEASE() helper
+To: dsterba@suse.cz
+Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <cover.1764058736.git.wqu@suse.com>
+ <f1be8250618a68c9abf1be7f3af416ccfad3784b.1764058736.git.wqu@suse.com>
+ <20251125122606.GU13846@twin.jikos.cz> <20251125145142.GV13846@twin.jikos.cz>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -90,319 +90,228 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
  +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
  HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <CAL3q7H5Ue-fSHHUF8daFkp-yZ9QWbKVpdZgbWKrT_gT-4XckgQ@mail.gmail.com>
+In-Reply-To: <20251125145142.GV13846@twin.jikos.cz>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:gwD8qCzkPzOx+rcDPRo4YRqdyQ9iBEGqXncxoSsW+OBnbWCWcto
- boakSq76Pxe6+/EfIKqYqDXqxiU4DSTvbGUbO9p0aavbORDAghdNFVCEs23bCfCGBuThbUb
- qm7KGRChp0AzQ44/SsGbCIxLtPTgEDubLTB0/KhVxi22lOn6dgt88GvPpb6aiWTzLM9LGA2
- nGqfeQii3my935SynELCw==
+X-Provags-ID: V03:K1:B8qfWfUfDRFAGKMA4KO3EOoFj9bNnQITsZEDh/zUwuGEPE4/S89
+ ivNsbrr9qfvh5/CWhcgbgDyLxmDbVtqstC1ZCqSsWnjtrnn+tZoT/8HeukcVzEPEOGTaLQp
+ bbdVRZ0t7ZVrNJacwU/NHrEsFhDtvE5053UmONxYLcp13RlL4C4Nl9cTYJJ3k+mT1hVXnQQ
+ PGBJ6gUEfmKU1OS6QGtlQ==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:5Og5tGgTon4=;a4Nj2a9T4qHo4Q3FirI1dkr0JpD
- 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
+UI-OutboundReport: notjunk:1;M01:P0:H+0A0CfZsnw=;iChOdnE+rdzqlL6938Zi2LObHfb
+ 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
+ bT21381+9BJiv4d1rzOq4ahlFmXw1
 
 
 
-=E5=9C=A8 2025/11/25 21:15, Filipe Manana =E5=86=99=E9=81=93:
-> On Tue, Nov 25, 2025 at 8:08=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
+=E5=9C=A8 2025/11/26 01:21, David Sterba =E5=86=99=E9=81=93:
+> On Tue, Nov 25, 2025 at 01:26:06PM +0100, David Sterba wrote:
+>> On Tue, Nov 25, 2025 at 06:49:57PM +1030, Qu Wenruo wrote:
+>>> There are already several bugs with on-stack btrfs_path involved, even
+>>> it is already a little safer than btrfs_path pointers (only leaks the
+>>> extent buffers, not the btrfs_path structure itself)
+>>>
+>>> - Patch "btrfs: make sure extent and csum paths are always released in
+>>>    scrub_raid56_parity_stripe()"
+>>>    Which is going into v6.19 release cycle.
+>>>
+>>> - Patch "btrfs: fix a potential path leak in print_datA_reloc_error()"
+>>>    The previous patch in the series.
+>>>
+>>> Thus there is a real need to apply auto release for those on-stack pat=
+hs.
+>>>
+>>> This patch introduces a new macro, BTRFS_PATH_AUTO_RELEASE(), which
+>>> defines one on-stack btrfs_path structure, initialize it all to 0, the=
+n
+>>> call btrfs_release_path() on it when exiting the scope.
 >>
->> [POSSIBLE BUG]
->> If there are multiple ordered extents beyond EOF, at folio writeback
->> time we may only truncate the first ordered extent, but leaving the
->> remaining ones finished but not marked as truncated.
->>
->> Since those OEs are not marked as truncated, it will still insert an
->> file extent item, and may lead to false missing csum errors during
->> "btrfs check".
->>
->> [CAUSE]
->> Since we have bs < ps support for a while and experimental large data
->> folios are also going to graduate from experimental features soon, we
->> can have the following folio to be written back:
->>
->>    fs block size 4K
->>    page size 4K, folio size 64K.
->>
->>             0        16K      32K                  64K
->>             |<---------------- Dirty -------------->|
->>             |<-OE A->|<-OE B->|<----- OE C -------->|
->>                 |
->>                 i_size 4K.
->>
->> In above case we need to submit the writeback for the range [0, 4K).
->> For range [4K, 64K) there is no need to submit any IO but mark the
->> involved OEs (OE A, B, C) all as truncated.
->>
->> However during the EOF handling, patch "btrfs: truncate ordered extent
->> when skipping writeback past i_size" only calls
->> btrfs_lookup_first_ordered_range() once, thus only got OE A and mark it
->> as truncated.
+>> Ok this makes sense. Similar to the path freeing, there should be almos=
+t
+>> no code following the expected place of freeing/releasing. If the path
+>> is locked then delaying the cleanup holds the locks. There are relese
+>> calls that will act as an unlock so they should stay, one example below=
+.
+
+Yeah, I missed a location where the early release has its meanings.
+
+Thankfully the auto-release here (not auto-free) is safe against any=20
+existing manual release.
+
+So we should treat the auto-release usage as an extra safenet, and be=20
+more carefully removing the existing manual release.
+
 >=20
-> And there's a reason why the patch only looks for one ordered extent.
+> One example where a path release (either direct or from inside path
+> free) is crucial is e110f8911ddb ("btrfs: fix lockdep splat and
+> potential deadlock after failure running delayed items"). So removing
+> them from the middle of code should be careful.
 >=20
-> Because there shouldn't be more than one: btrfs_truncate() calls
-> btrfs_wait_ordered_range() when we truncate the size of a file to a
-> smaller value.
-> The range goes from the new i_size, rounded down by sector size, to
-> (u64)-1. And btrfs_wait_ordered_range() flushed any delalloc besides
-> waiting for ordered extents.
+>> Otherwise the hint for auto freeing/releasing is "right before return".
 >=20
-> So how can we find more than one ordered extent after this?
+> With the above let me refine that a bit: use auto path
+> release/free before the 'return' when there's no code that depends on
+> the path and related extent buffers, or the remainging code is lighweigh=
+t.
 
-You're right, I forgot the truncation part waiting for ordered extents=20
-beyond rounded up i_size.
+I'd say the hint should be, use it everywhere unless required otherwise,=
+=20
+and review if the existing release can be safely removed.
+At least for this AUTO_RELEASE behavior.
 
-Please discard this patch.
+Unlike AUTO_FREE, we can mix auto-release and existing release safely,
+while we can not mix the existing freeing code with auto-free, as the=20
+existing code won't re-set the path pointer to NULL after freeing, can=20
+lead to double freeing.
+
+
+But the current objective of RAII and scope-based auto-cleanup are just=20
+to ensure we never miss a release.
+There will be some quirks as you exposed and the auto-free problem I=20
+mentioned, but at least it would be easier to review than catching the=20
+original missing release/free.
+
+
+For the long run I hope we can refine our structure lifespan design to=20
+be better, so it can be better suited for something like this (ignore=20
+the ret_guard() naming, and put aside your hate against RAII):
+
+	ret_guard(btrfs_new_path, path =3D btrfs_search_slot_new_path())
+	{
+		/*
+		 * Where the lifespan of the path is only inside the
+		 * the code block, and get auto-freed exiting the scope.
+		 */
+		do_something(path);
+	}
+	if (IS_ERR(path)) {
+		/* Error handling, no @path involved. */
+	}
+
+Although this is against our current error-handling-first coding style,=20
+and not all callsites should be replaced (e.g. callsites using=20
+pre-allocated path).
 
 Thanks,
 Qu
 
+
 >=20
-> I think this changelog should explain that, it makes no mention of
-> this detail about btrfs_truncate().
+>>> --- a/fs/btrfs/inode.c
+>>> +++ b/fs/btrfs/inode.c
+>>> @@ -217,7 +217,7 @@ static void print_data_reloc_error(const struct bt=
+rfs_inode *inode, u64 file_off
+>>>   				   int mirror_num)
+>>>   {
+>>>   	struct btrfs_fs_info *fs_info =3D inode->root->fs_info;
+>>> -	struct btrfs_path path =3D { 0 };
+>>> +	BTRFS_PATH_AUTO_RELEASE(path);
+>>>   	struct btrfs_key found_key =3D { 0 };
+>>>   	struct extent_buffer *eb;
+>>>   	struct btrfs_extent_item *ei;
+>>> @@ -255,7 +255,6 @@ static void print_data_reloc_error(const struct bt=
+rfs_inode *inode, u64 file_off
+>>>   	if (ret < 0) {
+>>>   		btrfs_err_rl(fs_info, "failed to lookup extent item for logical %l=
+lu: %d",
+>>>   			     logical, ret);
+>>> -		btrfs_release_path(&path);
+>>>   		return;
+>>>   	}
+>>>   	eb =3D path.nodes[0];
+>>> @@ -285,13 +284,10 @@ static void print_data_reloc_error(const struct =
+btrfs_inode *inode, u64 file_off
+>>>   				(ref_level ? "node" : "leaf"),
+>>>   				ref_level, ref_root);
+>>>   		}
+>>> -		btrfs_release_path(&path);
+>>>   	} else {
+>>>   		struct btrfs_backref_walk_ctx ctx =3D { 0 };
+>>>   		struct data_reloc_warn reloc_warn =3D { 0 };
+>>>  =20
+>>> -		btrfs_release_path(&path);
+>>
+>> The path should be released here because there's iterate_extent_inodes(=
+)
+>> which can potentially take long due to the iteration.
 >=20
-> Thanks.
+> It would be good to add a comment why the release is there, especially
+> when the function is using the auto release so it's not considered a
+> mistake.
 >=20
->=20
->>
->> But OE B and C are not marked as truncated, they will finish as usual,
->> which will leave a regular file extent item to be inserted beyond EOF,
->> and without any data checksum.
->>
->> [FIX]
->> Introduce a new helper, btrfs_mark_ordered_io_truncated(), to handle al=
-l
->> OEs of a range, and mark them all as truncated.
->>
->> With that helper, all OEs (A B and C) will be marked as truncated.
->> OE B and C will have 0 truncated_len, preventing any file extent item t=
-o
->> be inserted from them.
->>
->> Reviewed-by: Boris Burkov <boris@bur.io>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->> Changelog:
->> v2:
->> - Fix the ASSERT() inside btrfs_mark_ordered_io_truncated()
->>    Since the range passed in is to the end of the folio during writebac=
-k
->>    path, there is no guarantee that there is always one or more ordered
->>    extents covering the full range.
->>
->>    This get triggered during fsstress runs, especially common on bs < p=
-s
->>    cases.
->>
->>    Remove the ASSERT() and exit the oe search instead.
->>
->> Resend:
->> - Move the patch out of the series 'btrfs: reduce btrfs_get_extent()
->>    calls for buffered write path'
->>    As this is a bug fix, which needs a little higher priority than
->>    the remaining optimizations.
->>
->> - Fix various grammar errors
->>
->> - Use @end to replace duplicated calculations
->>
->> - Remove the Fixes: tag
->>    The involved patch is not yet merged upstream.
->>    Just mention the patch subject inside the commit message.
->> ---
->>   fs/btrfs/extent_io.c    | 19 +------------------
->>   fs/btrfs/ordered-data.c | 33 +++++++++++++++++++++++++++++++++
->>   fs/btrfs/ordered-data.h |  2 ++
->>   3 files changed, 36 insertions(+), 18 deletions(-)
->>
->> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
->> index 2d32dfc34ae3..2044b889c887 100644
->> --- a/fs/btrfs/extent_io.c
->> +++ b/fs/btrfs/extent_io.c
->> @@ -1725,24 +1725,7 @@ static noinline_for_stack int extent_writepage_i=
-o(struct btrfs_inode *inode,
->>                  cur =3D folio_pos(folio) + (bit << fs_info->sectorsize=
-_bits);
->>
->>                  if (cur >=3D i_size) {
->> -                       struct btrfs_ordered_extent *ordered;
->> -
->> -                       ordered =3D btrfs_lookup_first_ordered_range(in=
-ode, cur,
->> -                                                                  foli=
-o_end - cur);
->> -                       /*
->> -                        * We have just run delalloc before getting her=
-e, so
->> -                        * there must be an ordered extent.
->> -                        */
->> -                       ASSERT(ordered !=3D NULL);
->> -                       spin_lock(&inode->ordered_tree_lock);
->> -                       set_bit(BTRFS_ORDERED_TRUNCATED, &ordered->flag=
-s);
->> -                       ordered->truncated_len =3D min(ordered->truncat=
-ed_len,
->> -                                                    cur - ordered->fil=
-e_offset);
->> -                       spin_unlock(&inode->ordered_tree_lock);
->> -                       btrfs_put_ordered_extent(ordered);
->> -
->> -                       btrfs_mark_ordered_io_finished(inode, folio, cu=
-r,
->> -                                                      end - cur, true)=
-;
->> +                       btrfs_mark_ordered_io_truncated(inode, folio, c=
-ur, end - cur);
->>                          /*
->>                           * This range is beyond i_size, thus we don't =
-need to
->>                           * bother writing back.
->> diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
->> index a421f7db9eec..3c0b89164139 100644
->> --- a/fs/btrfs/ordered-data.c
->> +++ b/fs/btrfs/ordered-data.c
->> @@ -546,6 +546,39 @@ void btrfs_mark_ordered_io_finished(struct btrfs_i=
-node *inode,
->>          spin_unlock(&inode->ordered_tree_lock);
->>   }
->>
->> +/*
->> + * Mark any ordered extents io inside the specified range as truncated=
-.
->> + */
->> +void btrfs_mark_ordered_io_truncated(struct btrfs_inode *inode, struct=
- folio *folio,
->> +                                    u64 file_offset, u32 len)
->> +{
->> +       const u64 end =3D file_offset + len;
->> +       u64 cur =3D file_offset;
->> +
->> +       ASSERT(file_offset >=3D folio_pos(folio));
->> +       ASSERT(end <=3D folio_pos(folio) + folio_size(folio));
->> +
->> +       while (cur < end) {
->> +               u32 cur_len =3D end - cur;
->> +               struct btrfs_ordered_extent *ordered;
->> +
->> +               ordered =3D btrfs_lookup_first_ordered_range(inode, cur=
-, cur_len);
->> +
->> +               if (!ordered)
->> +                       break;
->> +               scoped_guard(spinlock, &inode->ordered_tree_lock) {
->> +                       set_bit(BTRFS_ORDERED_TRUNCATED, &ordered->flag=
-s);
->> +                       ordered->truncated_len =3D min(ordered->truncat=
-ed_len,
->> +                                                    cur - ordered->fil=
-e_offset);
->> +               }
->> +               cur_len =3D min(cur_len, ordered->file_offset + ordered=
-->num_bytes - cur);
->> +               btrfs_put_ordered_extent(ordered);
->> +
->> +               cur +=3D cur_len;
->> +       }
->> +       btrfs_mark_ordered_io_finished(inode, folio, file_offset, len, =
-true);
->> +}
->> +
->>   /*
->>    * Finish IO for one ordered extent across a given range.  The range =
-can only
->>    * contain one ordered extent.
->> diff --git a/fs/btrfs/ordered-data.h b/fs/btrfs/ordered-data.h
->> index 1e6b0b182b29..dd4cdc1a8b78 100644
->> --- a/fs/btrfs/ordered-data.h
->> +++ b/fs/btrfs/ordered-data.h
->> @@ -169,6 +169,8 @@ void btrfs_finish_ordered_extent(struct btrfs_order=
-ed_extent *ordered,
->>   void btrfs_mark_ordered_io_finished(struct btrfs_inode *inode,
->>                                      struct folio *folio, u64 file_offs=
-et,
->>                                      u64 num_bytes, bool uptodate);
->> +void btrfs_mark_ordered_io_truncated(struct btrfs_inode *inode, struct=
- folio *folio,
->> +                                    u64 file_offset, u32 len);
->>   bool btrfs_dec_test_ordered_pending(struct btrfs_inode *inode,
->>                                      struct btrfs_ordered_extent **cach=
-ed,
->>                                      u64 file_offset, u64 io_size);
->> --
->> 2.52.0
->>
->>
+> In many other cases no comment is needed as the general rule is to free
+> the path right after it's not needed.
 >=20
 
 
