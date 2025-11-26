@@ -1,116 +1,119 @@
-Return-Path: <linux-btrfs+bounces-19360-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19361-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id D208DC89DD5
-	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Nov 2025 13:51:50 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7EA0DC8A1AC
+	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Nov 2025 14:52:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B3ECC4E2B6E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Nov 2025 12:51:41 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id D6BF94EBEFB
+	for <lists+linux-btrfs@lfdr.de>; Wed, 26 Nov 2025 13:51:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7FCF328B52;
-	Wed, 26 Nov 2025 12:51:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFDB6329E58;
+	Wed, 26 Nov 2025 13:51:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nLWu8TKE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J8iRE1/W"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-io1-f42.google.com (mail-io1-f42.google.com [209.85.166.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97E252DCBF2
-	for <linux-btrfs@vger.kernel.org>; Wed, 26 Nov 2025 12:51:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED9E3329379;
+	Wed, 26 Nov 2025 13:51:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764161495; cv=none; b=RkMwgLlZidSkaxwGmdxMO3HIuT0jGsC1zjK8E/CP5x/hlHOPb5Z28bZdG//ICPZlWz2Med98gz+GBoMFR+AMBOm1QJF5tk+SXG6p/yLIRRtd/qA4nvvvkGcp4DAlN3k++yv/xrARHYX1EVfmDmvV1FScizllSJArvhiMd89J2yc=
+	t=1764165083; cv=none; b=GttN/x6x5txv4WMGNCEOwG0pbYPqot5Mpc1/7HfHatjshvpH8vZ0Fr4OvYZe5tayj0oagbxasnGC6j04xdsHI49aVARFgCj585/OyL6G/0p4B3K29UkeBCykme4cX1h8liF4xFP84dyz6f0XzuLfnxFHgDbdgAOkUiM84na8ruc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764161495; c=relaxed/simple;
-	bh=+yhdGxDT8/FxwW8mMSJ4ztUo9kxr7Tbq3tBd5Rjb3FA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=m4z1vU+JSVWe7wHWsIAFyoaPcSQA6vDO4QtRXZXM/2i+4Az7fH3b2nfST+VRO2fY3iqHs+G5BabbHJVB1KTKqcfw1vE9vdCfvz5wHkoy1frPknYRQBnv0IwOFKOzQrXUwtUxX1bP+QyX4+bxTRYD/XAvSp+kwr9OavmWeSeka80=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nLWu8TKE; arc=none smtp.client-ip=209.85.166.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f42.google.com with SMTP id ca18e2360f4ac-949031532f9so40240039f.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 26 Nov 2025 04:51:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1764161493; x=1764766293; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IftgS+SqRiORt75QLzOlSBI34TvyfdYZdE/tNo4H79o=;
-        b=nLWu8TKExr5DkegN5p0HKUvHPQib7fD6icWwLvuJ/UN7HWFJ/0iKbdItq5887NQJYK
-         LppJjd43ayGwjBItd6CUCsn2yqQGhzsWFdV+GqgxrFqsQi7OcZF+kSBCDE/KxHxNbsS1
-         GIqaTketoNw6hkZVOH1fRkrOWjr6UrbZacr54Q8sI15bWYDsx2I8L9mdthI5cG+btzDX
-         nj0ffmElUuYGNSObzpEoZTDLCoNnsnEHv3RRY+zcrPdFh25/55RfotViVlfDIfYXsnuk
-         Vg362xi9aB+IVh7lDs5kx/VaG6B8mdMXhKarBOHYZ2Yqze9baBjaTFXvfWRNq+18lb8c
-         YSqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764161493; x=1764766293;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=IftgS+SqRiORt75QLzOlSBI34TvyfdYZdE/tNo4H79o=;
-        b=k2Y3bzUAfXM4bRqqI5Sb3E2YuW6M0+68We4JoF/yYmOVG3JHLi1m9YsEs0Jehcxyol
-         haN5xBn966/yDS4YpC7TSqB1KESdZxSZyJrLDciMznufUTpbKS57xOpp3c0XYfy3aDUM
-         YrRPSbconiEZCyxqy1qcaOLSInB0UZ8fAX0ox6DL77tmUcOqx5C5tIftFk5ZPwwqWzPQ
-         NkVa4Sj60TpMSpzjOHSAIldmLZqt0div6pmeMkaHxObcExL0TO+TUfr5s944oFpBe4sL
-         Cl6QNZNzpJphNyP4BD6uFux/CJbQSnN1fGEi1IBiyNg89jCbZQIgvskQFQ7ke0gyKb5B
-         EZjw==
-X-Forwarded-Encrypted: i=1; AJvYcCWfEt7nuZQrLwPn/A29qt6nxu1HzhXT3+cC7DXw7KT/xz/piioI2lliqq3VYlG3DDAo6Ek/y4m3xaQCng==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwveadmXRiD0IISNHcIPM/D2zzBiUMWmGS5+C6TZghVe7LgXTHZ
-	K87LyPtLbQLVTJu5EnpwzCCVJYnpct0HxJucgnOtHoqGY9pMv6fzL3wqWzd4WS1WB2FNdAyLWXt
-	g4lRwKfv4xYmTZ/9fLQWONW6UetXch/A=
-X-Gm-Gg: ASbGncvVXmTM3FHHyfRlwqqaNFnvjPYYiTYy3+HQ0DjeGMJ9SgGgWISeb7UF0jDkN8V
-	WnK8mQCogQIXqm5Nu99IlQT5LYo2n9qtf4qsM6LRnaNBgQTsc1rMMmuSGhXDj6XzHusroK8Lqr5
-	x++O0jWfgDfZaDy3E86L/K4ixuIZ4PLvVQCaWFTo3jb1O3DhEwCNJ0cG6wa3Row4tyQ4RCesedW
-	/vqrAGVGCgsDc2Wi4EwM0YGDe1HYnNH+xA1d9Vt1oRQ/zL1RYX1jmuw1ry87Fc9QaAorQ==
-X-Google-Smtp-Source: AGHT+IHhS34m+1SD8tJpx138zZD3EsRZi3N15GwK1gcW6eip8X0EM83IiyMjYmPSNpcESushN3pe3bG8ne7Hpsjh5vQ=
-X-Received: by 2002:a05:6638:8721:b0:5b7:10ea:e2a7 with SMTP id
- 8926c6da1cb9f-5b965b1af7bmr16025724173.8.1764161492726; Wed, 26 Nov 2025
- 04:51:32 -0800 (PST)
+	s=arc-20240116; t=1764165083; c=relaxed/simple;
+	bh=yUKYtxHtKaR+6m/xsrQsQe67bKqXRGc4JbcKnKX+a20=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=miBPd+zx84BIYY2sJDRpPl31r9nQyIpvhZzr2TPGl63tV4UnoM5wUhLQl7EckeRYSUxL2rtH9aCL+gSsFmlTV/dfXzXf+5iNiKbGo7d8i1phYul4n7nM0J/Ad9xctin6JEmsXDFPLXtwLeC/A/+FoqogPGINHMR6LhXvruItRCE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J8iRE1/W; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9ADBEC4CEF8;
+	Wed, 26 Nov 2025 13:51:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1764165082;
+	bh=yUKYtxHtKaR+6m/xsrQsQe67bKqXRGc4JbcKnKX+a20=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=J8iRE1/WnH5hQhQsb+gz1I+WE9aSLdfLQQiRWd7g4hWBfFLiJ7GeKN9MfcROfuy14
+	 Bg5ifG0mRnEDa0wLCNWcaWSef/QLNZ9iuJt146gvNW8/fk6cYnq1PxKc4hQKhLNIBA
+	 sNEXQMAYyhZpIavSfz+KkkZ7tBQo4jX83xz4wgdkgk+sAnQZiGPm4kG9cVpDUNx50f
+	 GszRnMspkE9d7aOOvEx8eAK322hwR8CBYnIQYVbVZy8dg9+z7898oFiThB1IRsH5Xr
+	 Ex3oGaOerSkIflHQPu0XSvcuPfWP3Yma6L1dTMlIVWE32f0gwXl7q8tXr7D18MuVes
+	 /vgMU+UkTu2HA==
+From: Christian Brauner <brauner@kernel.org>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Christian Brauner <brauner@kernel.org>,
+	Al Viro <viro@zeniv.linux.org.uk>,
+	David Sterba <dsterba@suse.com>,
+	Jan Kara <jack@suse.cz>,
+	Mike Marshall <hubcap@omnibond.com>,
+	Martin Brandenburg <martin@omnibond.com>,
+	Carlos Maiolino <cem@kernel.org>,
+	Stefan Roesch <shr@fb.com>,
+	Jeff Layton <jlayton@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	linux-btrfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	gfs2@lists.linux.dev,
+	io-uring@vger.kernel.org,
+	devel@lists.orangefs.org,
+	linux-unionfs@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	linux-xfs@vger.kernel.org,
+	linux-nfs@vger.kernel.org
+Subject: Re: (subset) re-enable IOCB_NOWAIT writes to files v2
+Date: Wed, 26 Nov 2025 14:51:10 +0100
+Message-ID: <20251126-freigaben-fixkosten-7f8ba6710fce@brauner>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20251120064859.2911749-1-hch@lst.de>
+References: <20251120064859.2911749-1-hch@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAO9zADxCYgQVOD9A1WYoS4JcLgvsNtGGr4xEZm9CMFHXsTV8ww@mail.gmail.com>
- <07500979-eca8-4159-b2a5-3052e9958c84@youngman.org.uk> <20251126001526.GA13846@twin.jikos.cz>
-In-Reply-To: <20251126001526.GA13846@twin.jikos.cz>
-From: Roger Heflin <rogerheflin@gmail.com>
-Date: Wed, 26 Nov 2025 06:51:21 -0600
-X-Gm-Features: AWmQ_bntz_i1QiEa4TH0U930vkLMkc6r-_qhym5yOt8grjTnHgC7kUI2p-Jq3qw
-Message-ID: <CAAMCDefgRUH5ygs10_=x75tOybvPPsYC-Q+KCFPP+9Le-x5RBQ@mail.gmail.com>
-Subject: Re: WD Red SN700 4000GB, F/W: 11C120WD (Device not ready; aborting
- reset, CSTS=0x1)
-To: dsterba@suse.cz
-Cc: Wol <antlists@youngman.org.uk>, Justin Piszcz <jpiszcz@lucidpixels.com>, 
-	LKML <linux-kernel@vger.kernel.org>, linux-nvme@lists.infradead.org, 
-	linux-raid@vger.kernel.org, Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1827; i=brauner@kernel.org; h=from:subject:message-id; bh=yUKYtxHtKaR+6m/xsrQsQe67bKqXRGc4JbcKnKX+a20=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWSqs17kYtX3/zt7guqDZZHcotIzSu/JuZ8vW1f2x9Tzn jjvrEs8HaUsDGJcDLJiiiwO7Sbhcst5KjYbZWrAzGFlAhnCwMUpABP5NJ/hfwz3tQVV/86ebZ6Q ZOX2S/x94+vvFxzsdzFb2M/tOJ9ddJzhf+6cWXKXJ/IYCjVvXXqrOyfkypPfnuY+G+fPOLtET2K HGS8A
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
 
-On Tue, Nov 25, 2025 at 6:15=E2=80=AFPM David Sterba <dsterba@suse.cz> wrot=
-e:
->
-> On Tue, Nov 25, 2025 at 06:25:41PM +0000, Wol wrote:
-> > Probably not the problem, but how old are the drives? About 2020, WD
-> > started shingling the Red line (you had to move to Red Pro to get
-> > conventional drives).
->
-> The WD SN700 is an NVMe, though one can imagine how they could be
-> actually shingled with slightly tilted overlapping sockets.
->
+On Thu, 20 Nov 2025 07:47:21 +0100, Christoph Hellwig wrote:
+> commit 66fa3cedf16a ("fs: Add async write file modification handling.")
+> effectively disabled IOCB_NOWAIT writes as timestamp updates currently
+> always require blocking, and the modern timestamp resolution means we
+> always update timestamps.  This leads to a lot of context switches from
+> applications using io_uring to submit file writes, making it often worse
+> than using the legacy aio code that is not using IOCB_NOWAIT.
+> 
+> [...]
 
-You have to get a red plus or red pro in spinning disk to be conventional.
+Applied to the vfs-6.19.misc branch of the vfs/vfs.git tree.
+Patches in the vfs-6.19.misc branch should appear in linux-next soon.
 
-On the nvme: I would check for a firmware update.  I have seen
-multiple SSD drives from several manufacturers that had timed
-housekeeping processes where something went badly wrong with that
-housekeeping process and locked the drive up.    Some of the issues
-lock the drive up until a reset and then when it fires again (hours or
-days later after the reset) it locks up again, and some of those
-firmware bugs brick the drive.    If the timed housekeeping it would
-likely be some set time after you powered it up.
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
+
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
+
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs-6.19.misc
+
+[01/16] fs: refactor file timestamp update logic
+        https://git.kernel.org/vfs/vfs/c/3cd9a42f1b5e
+[02/16] fs: lift the FMODE_NOCMTIME check into file_update_time_flags
+        https://git.kernel.org/vfs/vfs/c/7f30e7a42371
+[03/16] fs: export vfs_utimes
+        https://git.kernel.org/vfs/vfs/c/013983665227
+[04/16] btrfs: use vfs_utimes to update file timestamps
+        https://git.kernel.org/vfs/vfs/c/ded99587047c
+[05/16] btrfs: fix the comment on btrfs_update_time
+        https://git.kernel.org/vfs/vfs/c/f981264ae75e
+[06/16] orangefs: use inode_update_timestamps directly
+        https://git.kernel.org/vfs/vfs/c/eff094a58d00
 
