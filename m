@@ -1,173 +1,119 @@
-Return-Path: <linux-btrfs+bounces-19370-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19371-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6448BC8CE1D
-	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Nov 2025 06:53:18 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8850AC8D0DB
+	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Nov 2025 08:16:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 148DE3AC8E1
-	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Nov 2025 05:53:17 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id D5FE64E72B9
+	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Nov 2025 07:14:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B310227A460;
-	Thu, 27 Nov 2025 05:53:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C21D31A7E2;
+	Thu, 27 Nov 2025 07:14:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="F+IWK4q7"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Z7RRzrF1"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 804F1258EFB
-	for <linux-btrfs@vger.kernel.org>; Thu, 27 Nov 2025 05:53:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 220A131577B
+	for <linux-btrfs@vger.kernel.org>; Thu, 27 Nov 2025 07:14:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764222792; cv=none; b=tlggf54Cbq/VaEoPtVbA7pzsvm1WWk2oa6RyQ1Do20SUyzxMp8gydENE6Ew3M33uSjYxXK6Ksk6vKA966lgaOqRPRpGhgC+eb9ltE9lm/LJVuUmZniNQapNZHbJ0qoVXPQPpmxnXexS4aJFU9u406hLdKgzMorDto7BAn84eU9M=
+	t=1764227672; cv=none; b=eo61vstzoHJc9P07i1za0gl4QvWTwvBQjklg+n8aEbPO7fekElrcLdogj0qEPZzu8JnJf7u8Ftp7V9Ni9vP/ex/p4Ukw6yyWeWhS8MS87VgzR9x5ljbDIez+uPNW3rJfmSjSFt/Zv6SX7K2qQhVoc/wzr9YRdiU9KHoEQtidCRg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764222792; c=relaxed/simple;
-	bh=PCrkKs3Mgj5eolVaV80FR7LcOnxHCobIi2Njqhtpy20=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
-	 In-Reply-To:Content-Type; b=j6D6WluY1ovBeEIRLS8yQUhZ4P9uNnnResXL5w63vvDFVv5DGsnDBmCNPvpEVyGDMwYHkVOgjnTCVAeoykmcCNGdazkmlesUHGi8GW3oNQ0f/db9284y774QRZGmFFrjkoOF6mlSRBaF8oGVoD50yulURD0vu2wjGuztjOvbkik=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=F+IWK4q7; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-477b198f4bcso2273465e9.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 26 Nov 2025 21:53:06 -0800 (PST)
+	s=arc-20240116; t=1764227672; c=relaxed/simple;
+	bh=mdkoxkxeU7ykpNuyFLBJbdhmGSBV6NdlT9B3JjTOWAo=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=Lzgkj35XMqsvcfJrZHPDSV/P6vo1UvCKzfGFlr40uIsSZLkoNOUwjsVot3NYboF8lEUgocUEX5+nc732yrpkVREBOzMgVGgputQ4ks3oaGMmI8j6pnZjJ4WQL+VmDPpZIx/Y/2jwn2IdAa9H+N3vTfVB4jGqVbxCZG/OuPPDxIY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Z7RRzrF1; arc=none smtp.client-ip=209.85.221.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-42bb288c1bfso274899f8f.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Nov 2025 23:14:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1764222785; x=1764827585; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :references:to:from:subject:user-agent:mime-version:date:message-id
+        d=linaro.org; s=google; t=1764227668; x=1764832468; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=1XYbz5ePq2A12aW34jPRVpWBdeEY1dFpB/ZcvzC3hn8=;
-        b=F+IWK4q7kFBCnj0SoUvqVaSloDXWHGTagZPm/4XW+/X77U+NOcAigXRjTLYdCEsonJ
-         U7bm4P93giS4BA8ZKbja6YXTP1wVlz2vWPYsuEXs9absjRMyGrLvDgdmy4Fzt3/vhDhE
-         IayWg06GOhLmmwPtmjDMuhqWutEGceTj/audIsH38Y/aoeHiGnpBitMHQw08IJqxFn7P
-         RltI1WdwjAnA7eNAnjKDGH1P74lODOzTt451tBmCOpZMtI57HFP87zy8ylI2CHpbh25p
-         kR6oX/Z/G9hsm3cPyKNfXlMB5oVoJSj3pD1Sahtru0l7pHUopxQHt4We7b592wMMl8mu
-         0t7w==
+        bh=9GplCav842hV/Nvc763gp63uharYZd9oV29bPvsaZ7c=;
+        b=Z7RRzrF1DP/kyTLJyQihox71sYsTsxGr+y4FUfFwngM5VNogfL4D/kjTOiNMB3FnAI
+         BRkbK3hSnJu9TevRN/MMfY6xEiT9G4U8/LIPCoHhb/v1J4FCCRJJ2EeHo7f0CXtOg42L
+         7VMyrPfAPEsF9EFlU6C5GWEuANmzAM9SLz5t8K1OrVHGIlkyTKfcIzQJjxuVemJLKze7
+         WQ+zIVgfcbUUcXnxXFBQhP9NLH1221DAycwnLHsCIrJQKLZSxqu+TupGa3Lio6H+C2Xx
+         4f94hLnOZ8MZuqFT0kczmHO2cbqSqaDWA/Fa0u1mBy6erkyF7YWLoIMlUy4OtTlpmCMS
+         ZQ1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764222785; x=1764827585;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :references:to:from:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1764227668; x=1764832468;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=1XYbz5ePq2A12aW34jPRVpWBdeEY1dFpB/ZcvzC3hn8=;
-        b=ivUdk5Qrd+cOF4YP2MrRwT+gxSPP1QY0cxCx4dLzfxi4kJl1cvqFnHHeMDzY0pbRXA
-         1qxDBLYKHe+0xHMpUuyEiPYOWlNN6/W9H3XmeADdouSv3qh6rwC4GxEPB/eJwMscaHDs
-         97qv+uqzj24dw5YiIsFVXMAxL8zTrpN8BFhaQQmsUCl7ALkmDgw2bTYKFjcm55/VFrR+
-         NTF0rLDR0Lqk4YwYuAbsap7/HLwlCjCvGeIwmOulIvBxipEdQbA6mTcS1UYTJJ+K76pN
-         ci3+vPSKyEN7iLec3AgCqCaZpHx1MQZnU1Dl/wI38lOiM0BHNibju/ZkDtNitvqDjIK3
-         dW8A==
-X-Gm-Message-State: AOJu0YzMlar/50ZdKBiWyxBR5503SBuOlNvtTsuQIQIj6MS50n3ezs9R
-	4ZBKLTyW+mjmh/sKdz4mMLEk/4C2i7iCdXIgMMvqxYwYIN8DEt+wbBYwQ0lCmlQEc95QP8qzwM5
-	vQk7q
-X-Gm-Gg: ASbGncuz3z/OKEGrdvY6QuGcgSwBR+enYKJpcpCSMaw+Bnda2qBRstjmH3BeYJb273T
-	DdtlAbiL+b+UHv6Hjo7cZGvTunuJsT76p7n7FCwkpXLFIfo2/Sy9xzz/Cj5zursLfOvZBiSaorP
-	lA9bmPvy1TEg8OrNQXjTfH/7hFAetOFeJYZajSDy3+BYcdvpdbhdpUeLbFbHz4OhOjaG5pzJ0On
-	tde8jh+5YN9By0S+A12xer/WiXu2ieuxJTXnZ3znPITk0FIVoH8exGx+GepMCpTXcBrgsNn86XE
-	kBSlbz4Up9aFx0nZHwHC0+AHG+Yrf1/9XCe2cslcTflNksP4qcNndyuWcX05gSOXhLEL7EC7kaf
-	IX4aSR9ljyYuoFV6nAu2OzSZiYaY1zB8WJSRi8Q4I6C04Fx59z+djyW+M8n6vK1CDyBNUr3ga2L
-	kqdArXdfbLdj9NcrXNny13zxvmLdKl7ofpe8xCKtk=
-X-Google-Smtp-Source: AGHT+IHcpSKb8qgBskeXJldHdnjMEKP9crYBAOK7ID2x3HzWyO8U7hFiFe/YpysQSDwrCuMbQiqDfA==
-X-Received: by 2002:a05:600c:5491:b0:46e:32d4:46a1 with SMTP id 5b1f17b1804b1-477c01c36d7mr199822895e9.22.1764222784705;
-        Wed, 26 Nov 2025 21:53:04 -0800 (PST)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29bceb450cfsm4394915ad.74.2025.11.26.21.53.03
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 26 Nov 2025 21:53:04 -0800 (PST)
-Message-ID: <0e809709-32f0-4dc7-88d2-b80b8cabfb85@suse.com>
-Date: Thu, 27 Nov 2025 16:23:01 +1030
+        bh=9GplCav842hV/Nvc763gp63uharYZd9oV29bPvsaZ7c=;
+        b=eULZeh1qL/TeFrlaJpLIR6lGC0QFMsRtgW+1tmJItzKprSn/u3rHr+pAWMwkyVMMw1
+         nKLzsVSBDzppb+9YoEqWFYdtJs+REibV3IWw4qErlgFeusxFKGLTIaZF4ajnorS2NKaD
+         lssyKaaLj2g2bPY55l3l8LJ9H+tBtgtXplnhehOsGjJLpMqkxaZHnXdy0Ip2ownxM6lV
+         AI4zRWPFnJhYu2u8tS83c/kD/7hKYLndJz/iQP/rRJyc2Kagjyr7j8HDtI9G8ePHcokC
+         rhvdCBw6Et91zcid6jKCyQuLXfKLan5A+q4VKC/bby58kjr19zmpbc+RXtFUeaAI4LH5
+         xPBw==
+X-Forwarded-Encrypted: i=1; AJvYcCVwac6fVRR1tVtmGRujJG/1ysDdWeLX2OdK2s0RK1kXZ0N5hCQCgz4g3E8BVPtrifjvEAJCC+vYd1xU4w==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx1K51bLjejGWiuEaIrd93Ht469Bxic0AHNLprwfE5GUgdWWrxh
+	K8oNbau8PfAjYvNu0B0gNVlXTxJO2vOJL4dOlZpxdWGslUo4y22An2NLf+4tUJ4TsR0=
+X-Gm-Gg: ASbGnct1C7zfCjgP94avZ+j3Wz9bVaHVxztfjuy9cHX/AZcHwB3o2PBs2amal0BxJhj
+	WkzmdG7FTKhsblrKp9PY44Cp0hauuzWWLiAzxSTounQWGV+p/KWxWcxLadcD8Y5gw2i8B1QOH4e
+	QgT45n0X9QZ/se752OnMiq3aCwXqDXug6/tk6qj/buSwX+WLD+Mb19gXCZOht9XW79ROjuTM1+n
+	3k6tkLtkS2eWOo5ahx2zjOe/tL+pJm6OnPJsITcyEDqbbHfcOUn1pyVCU26Pxm9QZaFhn1caRs8
+	gw5sy5LvWjurZqj4t55TPYyguhfEve+KAdWQZrG+hkb660qGtjC8yTuo+rhs30SXwS30oHPfop2
+	ccZs26Qo9I8xhXHr9hOT/wkxBK0S7p45wBvYUtr8vh+Ewo0diUYo9flT6hWZGfWlDU4PgsZmic6
+	F1z8g96jeA2+h8MKYkoSbSCjo0wa0=
+X-Google-Smtp-Source: AGHT+IFZULvedfdDJQMjNfZ7h5QuwFdTyPL+YRqIWRICCEohX6Tw2SAcEoIQp1s4lv6cnwQOhiZ5aw==
+X-Received: by 2002:a5d:588c:0:b0:429:f14a:9807 with SMTP id ffacd0b85a97d-42e0f34fadbmr9794453f8f.40.1764227668370;
+        Wed, 26 Nov 2025 23:14:28 -0800 (PST)
+Received: from localhost ([196.207.164.177])
+        by smtp.gmail.com with UTF8SMTPSA id ffacd0b85a97d-42e1c5d613esm1899470f8f.11.2025.11.26.23.14.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Nov 2025 23:14:27 -0800 (PST)
+Date: Thu, 27 Nov 2025 10:14:24 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Sun YangKai <sunk67188@gmail.com>
+Cc: Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org
+Subject: [PATCH next] btrfs: tests: Fix double free in remove_extent_ref()
+Message-ID: <aSf6UHCbZrgZCQ1L@stanley.mountain>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/3] btrfs-progs: add block-group-tree to the default
- mkfs/convert features
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-References: <cover.1764220734.git.wqu@suse.com>
-Content-Language: en-US
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <cover.1764220734.git.wqu@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
 
+We converted this code to use auto free cleanup.h magic but one old
+school free was accidentally left behind which leads to a double free
+bug.
 
+Fixes: a320476ca8a3 ("btrfs: tests: do trivial BTRFS_PATH_AUTO_FREE conversions")
+Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+---
+ fs/btrfs/tests/qgroup-tests.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-在 2025/11/27 15:55, Qu Wenruo 写道:
-> I was planning to do this during v6.12 but forgot it and now the next
-> LTS kernel release is not that far away, it's finally time to make the
-> switch.
-> 
-> The first patch is to update the existing test cases related to
-> disabling no-holes/free-space-tree, which will lead to mkfs/convert
-> failure as block-group-tree requires those two features.
-> 
-> The second patch is a large page-size specific fix, where on 64K page
-> size systems misc/057 will fail due to subpage mount always enables v2
-> free space cache, resulting later conversion failure to fst.
-> 
-> The final patch is the one enabling new default block-group-tree feature
-> for mkfs and convert.
-> 
-> Qu Wenruo (3):
->    btrfs-progs: tests: disable bgt feature for ^no-holes and ^fst runs
-
-Although we can fix the test case for progs selftests, it will be a much 
-more complex work to address all fstests test cases.
-
-I do not think we will really deprecate explicit holes any time soon, 
-thus those fstests will stay.
-
-I'll update the series to automatically disable bgt feature instead. So 
-that mkfs.btrfs -O ^no-holes can still work as expected (no no-holes nor 
-bgt).
-
-Thanks,
-Qu
-
->    btrfs-progs: misc-tests: check if free space tree is enabled after
->      mount
->    btrfs-progs: add block-group-tree to the default mkfs features
-> 
->   Documentation/mkfs.btrfs.rst                           |  2 +-
->   common/fsfeatures.c                                    |  2 +-
->   common/fsfeatures.h                                    |  3 ++-
->   tests/cli-tests/009-btrfstune/test.sh                  |  2 +-
->   tests/misc-tests/001-btrfstune-features/test.sh        |  9 +++++----
->   tests/misc-tests/057-btrfstune-free-space-tree/test.sh | 10 +++++++++-
->   6 files changed, 19 insertions(+), 9 deletions(-)
-> 
-> --
-> 2.52.0
-> 
-> 
+diff --git a/fs/btrfs/tests/qgroup-tests.c b/fs/btrfs/tests/qgroup-tests.c
+index 05cfda8af422..e9124605974b 100644
+--- a/fs/btrfs/tests/qgroup-tests.c
++++ b/fs/btrfs/tests/qgroup-tests.c
+@@ -187,7 +187,6 @@ static int remove_extent_ref(struct btrfs_root *root, u64 bytenr,
+ 	ret = btrfs_search_slot(&trans, root, &key, path, -1, 1);
+ 	if (ret) {
+ 		test_err("couldn't find backref %d", ret);
+-		btrfs_free_path(path);
+ 		return ret;
+ 	}
+ 	btrfs_del_item(&trans, root, path);
+-- 
+2.51.0
 
 
