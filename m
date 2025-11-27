@@ -1,289 +1,195 @@
-Return-Path: <linux-btrfs+bounces-19383-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19384-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE3F4C8FE98
-	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Nov 2025 19:23:37 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A112C90312
+	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Nov 2025 22:31:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 5278034279E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Nov 2025 18:23:33 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B942F4E26AB
+	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Nov 2025 21:31:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 444B6301473;
-	Thu, 27 Nov 2025 18:23:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 723252D9ED1;
+	Thu, 27 Nov 2025 21:31:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="u1Yhzgrf"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="tuSH50Ti";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="umsAtYqa"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83D6C2FFFBC
-	for <linux-btrfs@vger.kernel.org>; Thu, 27 Nov 2025 18:23:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E76203B2A0
+	for <linux-btrfs@vger.kernel.org>; Thu, 27 Nov 2025 21:31:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764267784; cv=none; b=AyOYoPfw6wQwGuoYQ+Evy0euWAYAb6zB/V535ESBLtK8Lhnw7kqFQlAoh/n+YeOeb2y6QInRSbk3gu3gmYP3gX6EXvoEQJ8YPzIzpG+dTVD9XXwEXmg5YfZ9HHmzLx7sXVbgfZKeencTVtXpfSPIygGUV1aDHwpuAnY9QQ0p8lI=
+	t=1764279079; cv=none; b=Cg0wplRnwu5OvM+6/PMMLgdIWHw3y3tf+5lxx+i9SW/ZTObBXw0FHid1/e2ZFYnoYuZTYjnbQiIvEEK6OjiBUl9xTFuYggyGHZ0FGqnub0FJ8AYxN6yswhtADIPHfvldvh0JSrHM01WkL6GLge2SSXidC4NpE3Zo51jOV5e7WrQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764267784; c=relaxed/simple;
-	bh=LbC9a5JiNlruuM0SQ0TahVfOyb1DvJGOtYpOJOkHNoQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=siMyaVgi/AnlcmOvILnwioQpJwHT3MHRO8CXv2Sju55makmKl2fV8L06kbF/Q3mNsYyYNryzDjHF6jmjg0UUvVlhoKdEFPqODL/mQuUU+1VIfl7UiX3pya/CpdwoNtj9nRHj4rVPWvYF7UM72DV2wkjyp/IKZlgL1a6nxklUOpI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=u1Yhzgrf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 661E8C4AF09
-	for <linux-btrfs@vger.kernel.org>; Thu, 27 Nov 2025 18:23:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1764267784;
-	bh=LbC9a5JiNlruuM0SQ0TahVfOyb1DvJGOtYpOJOkHNoQ=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=u1Yhzgrf7Y/i7ddpHbDcVF7iems3V1UTs3qBgn7u7uys55oq2+qHLBQNkR3f3A/eu
-	 ZEjBY5nV1tFL4UbAaz4/przJMhXISNTkP2/aYDPqiIsWZcBmandV8CQvD84P6oQ74E
-	 oW+fnZvF5fuY9XGw4mytGk3hxWYLf90CXTxdkd17aYBHVfVZuiYa0uP88Cy4gO4BQ8
-	 IyZ8iejs+cKWPuu/RzT7MLuxBybuAMlPDdy7PmdaNjU8f2hy2fxTG5keS70FiM2dGp
-	 FKZRL1V3ZTDXclK0Ch1z6HMIVX7g/ECK2ZC4PHPBvLkOyT68z78fzUASfoH+HYXxS6
-	 Bv9GleCNIi4og==
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-b7373fba6d1so171802466b.3
-        for <linux-btrfs@vger.kernel.org>; Thu, 27 Nov 2025 10:23:04 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUEU6wqndMkpM1FxdH34HzOHiN1TGeFNcuROX3dsj+CiEpJLBoef+G7rNev7qINloX4usrlFhASiJhwNw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyMNqSLeuHFwiWTcR9al364PRsZu1p+rM2tLhxbNQspVu4bOOD4
-	qcfD4m9ZR2VG2RcjhLWgNwse57qJrwB+2zvuZmnMot0f+erxIiHV9rDEjgdFJAWS9wn8uy88GDQ
-	WLeeOJm7MxyLKDcMaxdiFprgsImIk5+4=
-X-Google-Smtp-Source: AGHT+IEjcg9MJro+W1ptH5dDySrjjZP2GMc54RLEAwc3ZgNBfBqBB0XOQAGdqr+do20dDw4mkxPS8Phi9HtKEjiXX/k=
-X-Received: by 2002:a17:907:3faa:b0:b73:21db:64aa with SMTP id
- a640c23a62f3a-b7671a46900mr2640701466b.38.1764267782951; Thu, 27 Nov 2025
- 10:23:02 -0800 (PST)
+	s=arc-20240116; t=1764279079; c=relaxed/simple;
+	bh=/4UE36Sz3kNKRB/apTfuUAuDjKxDMQHFLCue0Bz04gc=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=nyJeeIHrc50s5m8+eFCBpwn/YbOUDYwaFXq6zoMPUowYPOn7TdnuvsU/PTwKeF4fziqF2SrQuX5ya3S9H3Ny7d9GUGq40JN+HUyjWxqU6wgUMouObrrZUUKoFyOt2YBv7433mOSDVngI5I+151z/z74yl4UIukWCouQdm9hlJ+Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=tuSH50Ti; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=umsAtYqa; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id AF952336A2;
+	Thu, 27 Nov 2025 21:31:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1764279075; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=TBm75b9fuEFjxW5+F2I/HB72fedVhrmICKQrCWumHvI=;
+	b=tuSH50TiMVeH1GAVbwVI+B/mxKa6szzPpGjpxIM9NT0WEFGCdNEsmqIyvoMoIWcCGJflHh
+	OKNtoVzBHC9OytZgjAPzAZAl2coz2AGbDmbejQ9TFdNgr7+eld5CtMe5/51nusIa62iyXe
+	3bzUnlyY+F0HH5DKtaw1oYkkoq99HUk=
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=umsAtYqa
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1764279074; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=TBm75b9fuEFjxW5+F2I/HB72fedVhrmICKQrCWumHvI=;
+	b=umsAtYqaVy84RLHGGhh8jZQMoJO1aUjipKrb1+5inL89QD9ufBpamkUGj4cHe0DkeUyOYM
+	3ki4C7AUSe6Z6dv1Etr6r2/KoH0tbXV4B+vFtjP1xDvqHAGdnUruZJ8LaGRrHS7q+ruMRw
+	Wf0Z0e4GhU3FVAMboxhpdQ0wAyGvXyY=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B1AB03EA63;
+	Thu, 27 Nov 2025 21:31:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id xH2mHCHDKGn9IwAAD6G6ig
+	(envelope-from <wqu@suse.com>); Thu, 27 Nov 2025 21:31:13 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org,
+	fstests@vger.kernel.org
+Subject: [PATCH] fstests: generic/746: skip if btrfs' new block-group-tree is involved
+Date: Fri, 28 Nov 2025 08:00:52 +1030
+Message-ID: <20251127213052.15859-1-wqu@suse.com>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <7bbc9419-5c56-450a-b5a0-efeae7457113@gmail.com>
-In-Reply-To: <7bbc9419-5c56-450a-b5a0-efeae7457113@gmail.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Thu, 27 Nov 2025 18:22:26 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H4FG+knhfYfN-wBPOzzoa1_FOLTJ3xzPXf8ZvhFPWozOA@mail.gmail.com>
-X-Gm-Features: AWmQ_bnI3AGZibVk-2e802OG1aH_s6luFHIzeFnvzg3i2BYrg1ptWo7ENTj26Yk
-Message-ID: <CAL3q7H4FG+knhfYfN-wBPOzzoa1_FOLTJ3xzPXf8ZvhFPWozOA@mail.gmail.com>
-Subject: Re: File system corruption after renaming directory and creating a
- new file with same name if system crashes
-To: Vyacheslav Kovalevsky <slava.kovalevskiy.2014@gmail.com>
-Cc: clm@fb.com, dsterba@suse.com, linux-btrfs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	MIME_TRACE(0.00)[0:+];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	RCPT_COUNT_TWO(0.00)[2];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email,suse.com:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+	RCVD_TLS_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.com:+]
+X-Rspamd-Action: no action
+X-Spam-Flag: NO
+X-Spam-Score: -3.01
+X-Spam-Level: 
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: AF952336A2
 
-On Thu, Nov 27, 2025 at 1:58=E2=80=AFPM Vyacheslav Kovalevsky
-<slava.kovalevskiy.2014@gmail.com> wrote:
->
-> File system becomes corrupted after renaming directory, creating and
-> syncing a new file with the same name if system crashes.
->
->
-> Detailed description
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->
-> Hello, we have found another issue with btrfs crash behavior.
->
-> In short, two directories are created and synced. Then, first directory
-> is renamed as subdirectory of the second directory. A new file is
-> created with name that was previously associated with the first
-> directory. The file is fsync'ed and moved under the renamed directory
-> and fsync'ed again.
+[FALSE ALERT]
+The test case will fail on btrfs if the new block-group-tree feature is
+enabled:
 
-It doesn't need to be under the renamed directory, it can be any directory.
+FSTYP         -- btrfs
+PLATFORM      -- Linux/x86_64 btrfs-vm 6.18.0-rc6-custom+ #321 SMP PREEMPT_DYNAMIC Sun Nov 23 16:34:33 ACDT 2025
+MKFS_OPTIONS  -- -O block-group-tree /dev/mapper/test-scratch1
+MOUNT_OPTIONS -- /dev/mapper/test-scratch1 /mnt/scratch
 
-> After a crash, file system cannot be mounted,
-> reporting block corruption.
->
-> It seems that the directory entry becomes corrupted when the `nlink`
+generic/746 44s ... [failed, exit status 1]- output mismatch (see xfstests-dev/results//generic/746.out.bad)
+    --- tests/generic/746.out	2024-06-27 13:55:51.286338519 +0930
+    +++ xfstests-dev/results//generic/746.out.bad	2025-11-28 07:47:17.039827837 +1030
+    @@ -2,4 +2,4 @@
+     Generating garbage on loop...done.
+     Running fstrim...done.
+     Detecting interesting holes in image...done.
+    -Comparing holes to the reported space from FS...done.
+    +Comparing holes to the reported space from FS...Sectors 256-2111 are not marked as free!
+    ...
+    (Run 'diff -u xfstests-dev/tests/generic/746.out xfstests-dev/results//generic/746.out.bad'  to see the entire diff)
 
-Not the directory entry but the directory inode.
+[CAUSE]
+Sectors [256, 2048) are the reserved 1M free space.
+Sectors [2048, 2112) are the leading free space in the chunk tree.
+Sectors [2112, 1244) is the first tree block in the chunk tree.
 
-Fix sent a few minutes ago:
+The reported free sectors from get_free_sectors() looks like this:
 
-https://lore.kernel.org/linux-btrfs/973df1035d967979681ed741f074e5db90aa4f7=
-0.1764264662.git.fdmanana@suse.com/
+  2144 10566
+  10688 11711
+  ...
 
-Thanks.
+Note that there should be a free sector range in [2048, 2122) but it's
+not reported in get_free_sectors().
 
-> value is erroneously set to 2, somehow.
->
->
-> System info
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->
-> Linux version 6.18.0-rc7, also tested on 6.18.0-rc2 and 6.14.11.
->
->
-> How to reproduce
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->
-> Test:
->
-> ```
-> #include <errno.h>
-> #include <fcntl.h>
-> #include <stdio.h>
-> #include <string.h>
-> #include <sys/stat.h>
-> #include <sys/types.h>
-> #include <unistd.h>
->
-> int main() {
->    int status;
->    int file_fd;
->
->    status =3D mkdir("dir1", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
->    printf("MKDIR: %d\n", status);
->
->    status =3D mkdir("dir2", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
->    printf("MKDIR: %d\n", status);
->
->    sync();
->
->    status =3D rename("dir1", "dir2/dir3");
->    printf("RENAME: %d\n", status);
->
->    // create regular file with the name directory had before rename
->    status =3D open("dir1", O_RDWR | O_CREAT);
->    printf("OPEN: %d\n", status);
->    file_fd =3D status;
->
->    status =3D fsync(file_fd);
->    printf("FSYNC: %d\n", status);
->
->    status =3D rename("dir1", "dir2/dir3/not-dir");
->    printf("RENAME: %d\n", status);
->
->    status =3D fsync(file_fd);
->    printf("FSYNC: %d\n", status);
-> }
-> ```
->
-> dmesg:
->
-> ```
-> [ 17.559361] BTRFS: device fsid 17a75b88-e58e-457d-83db-ea6599920bc7
-> devid 1 transid 9 /dev/vdb (253:16) scanned by mount (1095)
-> [ 17.559676] BTRFS info (device vdb): first mount of filesystem
-> 17a75b88-e58e-457d-83db-ea6599920bc7
-> [ 17.559690] BTRFS info (device vdb): using crc32c (crc32c-lib) checksum
-> algorithm
-> [ 17.562785] BTRFS info (device vdb): start tree-log replay
-> [ 17.563301] page: refcount:2 mapcount:0 mapping:0000000077ae2817
-> index:0x1d00 pfn:0x1057ac
-> [ 17.563305] memcg:ffff89a500340000
-> [ 17.563307] aops:btree_aops ino:1
-> [ 17.563311] flags:
-> 0x17ffffc800402a(uptodate|lru|private|writeback|node=3D0|zone=3D2|lastcpu=
-pid=3D0x1fffff)
-> [ 17.563315] raw: 0017ffffc800402a fffff9aa84135708 fffff9aa84073d88
-> ffff89a51cb23a90
-> [ 17.563318] raw: 0000000000001d00 ffff89a502951b40 00000002ffffffff
-> ffff89a500340000
-> [ 17.563319] page dumped because: eb page dump
-> [ 17.563320] BTRFS critical (device vdb): corrupt leaf: root=3D5
-> block=3D30408704 slot=3D6 ino=3D257, invalid nlink: has 2 expect no more =
-than
-> 1 for dir
-> [ 17.564768] BTRFS info (device vdb): leaf 30408704 gen 10 total ptrs 17
-> free space 14869 owner 5
-> [ 17.564772] item 0 key (256 INODE_ITEM 0) itemoff 16123 itemsize 160
-> [ 17.564775] inode generation 3 transid 9 size 16 nbytes 16384
-> [ 17.564776] block group 0 mode 40755 links 1 uid 0 gid 0
-> [ 17.564778] rdev 0 sequence 2 flags 0x0
-> [ 17.564779] atime 1764249615.0
-> [ 17.564781] ctime 1764249645.130028300
-> [ 17.564782] mtime 1764249645.130028300
-> [ 17.564784] otime 1764249615.0
-> [ 17.564785] item 1 key (256 INODE_REF 256) itemoff 16111 itemsize 12
-> [ 17.564787] index 0 name_len 2
-> [ 17.564789] item 2 key (256 DIR_ITEM 2363071922) itemoff 16077 itemsize =
-34
-> [ 17.564791] location key (257 1 0) type 2
-> [ 17.564792] transid 9 data_len 0 name_len 4
-> [ 17.564794] item 3 key (256 DIR_ITEM 2676584006) itemoff 16043 itemsize =
-34
-> [ 17.564795] location key (258 1 0) type 2
-> [ 17.564797] transid 9 data_len 0 name_len 4
-> [ 17.564798] item 4 key (256 DIR_INDEX 2) itemoff 16009 itemsize 34
-> [ 17.564800] location key (257 1 0) type 2
-> [ 17.564801] transid 9 data_len 0 name_len 4
-> [ 17.564803] item 5 key (256 DIR_INDEX 3) itemoff 15975 itemsize 34
-> [ 17.564805] location key (258 1 0) type 2
-> [ 17.564806] transid 9 data_len 0 name_len 4
-> [ 17.564807] item 6 key (257 INODE_ITEM 0) itemoff 15815 itemsize 160
-> [ 17.564809] inode generation 9 transid 10 size 14 nbytes 0
-> [ 17.564811] block group 0 mode 40755 links 2 uid 0 gid 0
-> [ 17.564812] rdev 0 sequence 1 flags 0x0
-> [ 17.564813] atime 1764249645.130028300
-> [ 17.564815] ctime 1764249645.130028300
-> [ 17.564816] mtime 1764249645.130028300
-> [ 17.564818] otime 1764249645.130028300
-> [ 17.564819] item 7 key (257 INODE_REF 256) itemoff 15801 itemsize 14
-> [ 17.564821] index 2 name_len 4
-> [ 17.564822] item 8 key (257 INODE_REF 258) itemoff 15787 itemsize 14
-> [ 17.564824] index 2 name_len 4
-> [ 17.564825] item 9 key (257 DIR_ITEM 3753155587) itemoff 15750 itemsize =
-37
-> [ 17.564827] location key (259 1 0) type 1
-> [ 17.564828] transid 10 data_len 0 name_len 7
-> [ 17.564830] item 10 key (257 DIR_INDEX 2) itemoff 15713 itemsize 37
-> [ 17.564831] location key (259 1 0) type 1
-> [ 17.564833] transid 10 data_len 0 name_len 7
-> [ 17.564834] item 11 key (258 INODE_ITEM 0) itemoff 15553 itemsize 160
-> [ 17.564836] inode generation 9 transid 10 size 8 nbytes 0
-> [ 17.564837] block group 0 mode 40755 links 1 uid 0 gid 0
-> [ 17.564839] rdev 0 sequence 1 flags 0x0
-> [ 17.564840] atime 1764249645.130028300
-> [ 17.564842] ctime 1764249645.130028300
-> [ 17.564843] mtime 1764249645.130028300
-> [ 17.564844] otime 1764249645.130028300
-> [ 17.564846] item 12 key (258 INODE_REF 256) itemoff 15539 itemsize 14
-> [ 17.564847] index 3 name_len 4
-> [ 17.564849] item 13 key (258 DIR_ITEM 1843588421) itemoff 15505 itemsize=
- 34
-> [ 17.564851] location key (257 1 0) type 2
-> [ 17.564852] transid 10 data_len 0 name_len 4
-> [ 17.564853] item 14 key (258 DIR_INDEX 2) itemoff 15471 itemsize 34
-> [ 17.564855] location key (257 1 0) type 2
-> [ 17.564856] transid 10 data_len 0 name_len 4
-> [ 17.564858] item 15 key (259 INODE_ITEM 0) itemoff 15311 itemsize 160
-> [ 17.564860] inode generation 10 transid 10 size 0 nbytes 0
-> [ 17.564861] block group 0 mode 100000 links 1 uid 0 gid 0
-> [ 17.564863] rdev 0 sequence 2 flags 0x0
-> [ 17.564864] atime 1764249645.139028211
-> [ 17.564865] ctime 1764249645.140028202
-> [ 17.564867] mtime 1764249645.139028211
-> [ 17.564868] otime 1764249645.139028211
-> [ 17.564869] item 16 key (259 INODE_REF 257) itemoff 15294 itemsize 17
-> [ 17.564870] index 2 name_len 7
-> [ 17.564872] BTRFS error (device vdb): block=3D30408704 write time tree
-> block corruption detected
-> [ 17.566147] BTRFS: error (device vdb) in btrfs_commit_transaction:2535:
-> errno=3D-5 IO failure (Error while writing out transaction)
-> [ 17.567374] BTRFS warning (device vdb state E): Skipping commit of
-> aborted transaction.
-> [ 17.567377] BTRFS error (device vdb state EA): Transaction aborted
-> (error -5)
-> [ 17.568502] BTRFS: error (device vdb state EA) in
-> cleanup_transaction:2020: errno=3D-5 IO failure
-> [ 17.569956] BTRFS: error (device vdb state EA) in
-> btrfs_replay_log:2093: errno=3D-5 IO failure (Failed to recover log tree)
-> [ 17.571778] BTRFS error (device vdb state EA): open_ctree failed: -5
-> ```
->
-> Steps:
-> 1. Create and mount new btrfs file system in default configuration.
-> 2. Change directory to root of the file system and run the compiled test.
-> 3. Cause hard system crash (e.g. QEMU `system_reset` command).
-> 4. Remount file system after crash.
-> 5. Observe that mount fails.
->
-> Notes:
->
-> - if path in open() is changed to any other name (instead of `dir1`) the
-> bug will not manifest.
->
->
+The get_free_sectors() call is fs dependent, and for btrfs it's using
+parse-extent-tree.awk script to handle the extent tree dump.
+
+The script uses BLOCK_GROUP_ITEM items to detect the beginning of a
+block group so that it can calculate the hole between the bginning of a
+block group and the first data/metadata item.
+
+However block-group-tree feature moves BLOCK_GROUP_ITEM items to a
+dedicated tree, making the existing script unable to parse the free
+space at the beginning of a block group.
+
+[FIX]
+For block-group-tree feature, we need to parse both block group tree and
+extent tree and do cross-reference.
+It is not that simple to do in a single awk script, so unfortunately
+skip the test if the btrfs has block-group-tree feature enabled.
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ tests/generic/746 | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/tests/generic/746 b/tests/generic/746
+index 6f02b1cc..c62fdbc9 100755
+--- a/tests/generic/746
++++ b/tests/generic/746
+@@ -162,6 +162,18 @@ mkdir $loop_mnt
+ _mkfs_dev $loop_dev
+ _mount $loop_dev $loop_mnt
+ 
++# The new block-group-tree will feature screw up the extent tree parsing, as
++# there is no more block group item in that tree to mark the start
++# of a block group, causing the free space between the beginning of bg
++# and the first data/metadata block not counted as free space.
++# So reject fs with block-group-tree feature for now.
++if [ $FSTYP = "btrfs" ]; then
++	if $BTRFS_UTIL_PROG inspect-internal dump-super $loop_dev |\
++		grep -q BLOCK_GROUP_TREE; then
++		_notrun "No support for block-group-tree extent tree parsing yet"
++	fi
++fi
++
+ echo -n "Generating garbage on loop..."
+ # Goal is to fill it up, ignore any errors.
+ for i in `seq 1 10`; do
+-- 
+2.51.2
+
 
