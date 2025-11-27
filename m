@@ -1,309 +1,507 @@
-Return-Path: <linux-btrfs+bounces-19376-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19377-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 106C8C8D5D8
-	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Nov 2025 09:37:54 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 880D2C8D60E
+	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Nov 2025 09:40:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 750E14E586C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Nov 2025 08:37:47 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 673964E6F50
+	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Nov 2025 08:40:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 334C9324B3E;
-	Thu, 27 Nov 2025 08:37:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1874320A2E;
+	Thu, 27 Nov 2025 08:40:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="ehn1f+jc";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="fo2xKWPV"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="RzezFmla"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fout-b3-smtp.messagingengine.com (fout-b3-smtp.messagingengine.com [202.12.124.146])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DCFA321F48
-	for <linux-btrfs@vger.kernel.org>; Thu, 27 Nov 2025 08:37:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.146
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A4FD31DDA4
+	for <linux-btrfs@vger.kernel.org>; Thu, 27 Nov 2025 08:40:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764232642; cv=none; b=CPnxWG1e2WsTAesqCZ0xwXlN5cm8vdJCracT8t6V+qIqBk0zwCvm7IiQUJswrglWIHo62Rlt+P7KL/nczyWz40j45L5Ax0+BAuTHk9eyQ11QPGlC15ucaQamsA3Ex6nKPfPU7NESB8+KhITMBbJUrIQ67cUnPbLhBHByX0QcnSE=
+	t=1764232817; cv=none; b=fSbjhjyD7l7z7JEBWxI/WbraE5Eq4/OYhcO/5Od7ZYYLakYbDZjdcd2nG2pq8tXwu+v63NO1qjlXcpRaKfktQJDJP7YOT288xO9ytFt6c/iwgcpnf5jYCqzj5sR3EbVXG2g58jjZtycs+4JVuz6QKz7ygZgxOS/4anV7VKbbNQM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764232642; c=relaxed/simple;
-	bh=U+cb4ofjgqZ1ndI3JBKnvXE0+u2a7zaomIIOW8QKj8c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=paXHMVCW5QFpx+sXDHqc+VdlpLafhm7k1TV3IyoKbCKkbb4ELQg/pUlSHNmmrvtQp4rtB3LRvKRl5bDsKdstXGAnYb8qcnMDykVEzA7upRyN9r/j8MH9c03lXf2QwSgze8qQNx0vPOnic7AquZoTecApCJqVCKf5f61hCKFLiYo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=ehn1f+jc; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=fo2xKWPV; arc=none smtp.client-ip=202.12.124.146
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-02.internal (phl-compute-02.internal [10.202.2.42])
-	by mailfout.stl.internal (Postfix) with ESMTP id 22B591D00157;
-	Thu, 27 Nov 2025 03:37:19 -0500 (EST)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-02.internal (MEProxy); Thu, 27 Nov 2025 03:37:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1764232638; x=1764319038; bh=8/F+luMCva
-	mhh+Hb7uNLkfLK5aSvfF/VioaXeZwu2UE=; b=ehn1f+jcO4h5lKs5hpmBYqJGWH
-	kk93b/gMeak/VrbwflwmZ17tgdGWM0I6NE1JiCTPV/+lSbYamRN9DLZ4ho5cXaAc
-	zxNSxMyPBVcELV/4ZAM9BiViZMUQjdj89YwuuKGSQ+63oXxmm7MPbZJnRuBbsOCH
-	X+IuZ3Gu8yFwJMtq9VQeiYhtTrd5reaQHz6YoJ/RqRTipDuQqKU8iU0D6iFHB4D6
-	J2sLm4NzhP3npb2U+SHrXgfiT+Hzi90C6Nq7cNEzlTIJI7mNSEw3j4ERlCDOHJAu
-	A6ONC6imauEMe4ETLBwWpbO9KUrm0MpjKEq+Q9FbvdJfFwZ6Ace0Cz7xun0A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-	1764232638; x=1764319038; bh=8/F+luMCvamhh+Hb7uNLkfLK5aSvfF/Vioa
-	XeZwu2UE=; b=fo2xKWPVp7G7da5X0s+x+0HJuGVaCAu63I8pIWKSiR/bQjBAa3u
-	iREiedJPvpBugrJphgIHsnObKVP1MiDR5mJDcO+ufWIa1BmmOKyzMII5j7DzCBrj
-	EAl/OZJIs+FekEn48Flq0I24kGJZ6hWbonXejuJKqyoUkUOSkc4FmjJ2QurLnozC
-	CGtoHewu0fyTbdfdkllj4UVL1vpOYI5hjVt+WbXhLyCiy0Mre9V+1oO2u1wDWcJr
-	G/4o1Pl/R775d4KUMaUb9Um7Ap/sx2z8M/PWcgOrFZaKENgCdZuBVR1upY1Z4szj
-	Kms2mSS1Dj8cfcNFIX2Uv3ibwxNikCZwe5A==
-X-ME-Sender: <xms:vQ0oaUo7QMGmZjtj1TgpTVlnEgRAY9GZ0AuOgau3o8VMpgwmfmtlGQ>
-    <xme:vQ0oaQpaaaoNT7JVd5SsAEKh3eDF3vIQ73hChIwkXoEWyi1Go11c19ndEIkRbpoTB
-    q0d2Y2U_y47_QQVc2abqMKgmebUqFQ_EO8NlW_SQm-r2EHJGBSA36hw>
-X-ME-Received: <xmr:vQ0oaW1IQRf_k41_WNMYUQro9XUALgh6TxV-_p30btnbUa9u3r43y1xPVyyAthZikSaye1bJI8vE5OoRRDvlU1vwqSk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggddvgeeijeejucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhishcu
-    uehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpeekvd
-    ekffejleelhfevhedvjeduhfejtdfhvdevieeiiedugfeugfdtjefgfeeljeenucevlhhu
-    shhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuh
-    hrrdhiohdpnhgspghrtghpthhtohepvddpmhhouggvpehsmhhtphhouhhtpdhrtghpthht
-    ohepmhgrrhhksehhrghrmhhsthhonhgvrdgtohhmpdhrtghpthhtoheplhhinhhugidqsg
-    htrhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:vg0oaXANNADqt-2MkkE-4-XbCYj_yOs_CpuZ8MG_HuGYi5pICvJ2cA>
-    <xmx:vg0oaWfWQketOzdwdrJax40Ok1IQhLQ27OpZYNXlZYggHhUmjbyP_w>
-    <xmx:vg0oaUi_ofqeJzfageFK64GWN1SMpiIVB60bHZWm2sqCUAadIIrbRw>
-    <xmx:vg0oaWrUrarjUeWkE3BP2RblsJaQRkJ41yTSaiitFJrSMOZZXrlCww>
-    <xmx:vg0oaYe-TwJjDTw80h-Rl9tmxlaEojK0R6IAwImUPqaPJGpVMkPwXpJ7>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 27 Nov 2025 03:37:17 -0500 (EST)
-Date: Thu, 27 Nov 2025 00:37:28 -0800
-From: Boris Burkov <boris@bur.io>
-To: Mark Harmstone <mark@harmstone.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v7 16/16] btrfs: populate fully_remapped_bgs_list on mount
-Message-ID: <20251127083531.GA2656892@zen.localdomain>
-References: <20251124185335.16556-1-mark@harmstone.com>
- <20251124185335.16556-17-mark@harmstone.com>
+	s=arc-20240116; t=1764232817; c=relaxed/simple;
+	bh=bHIxcWK83IPlUjvTYyNnd0G/cf8mv10scmwaMLEvI7Y=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=g/aCVrDoY7rMk3EN17M9yv4lWz1pqvfkaymbH7CY8LhzzYF2XqdpwgkD6AMZ/PykH0Mk+q+3K0a7ofRBORupjqvgFquWrlBwKpNs+BqVQBfgw8xraYw5pRz7r966Zquh0w5hG7DgtOgrdhFG/BNyWDqt1jmvbmK3KSnX+/SVssY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=RzezFmla; arc=none smtp.client-ip=209.85.221.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-42b3b0d76fcso384573f8f.3
+        for <linux-btrfs@vger.kernel.org>; Thu, 27 Nov 2025 00:40:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1764232813; x=1764837613; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5dR/rI0k27VpjFJyKIKVrmsZByrDSxYf4xOQvDAiKNU=;
+        b=RzezFmlaaLC1M8DuY/srtSKfOJ3oLDoamLSwgNFjB/Jrg6fYgmMTU2APKiCYkbtJ/8
+         Tucbf5LFkJeFj9cWLUw7FQ+fy9O744ME0F1k2L0P0PyqNDExVmVGyuoP+G1HNAW62Jl6
+         lWuYLiKTDRDrbbVrMKsyyIsX9C3llDtfSLv40tG5/SVxqJroY503jEsXIbMfYEYhkPBc
+         BPpp7RXpQrWLrhAITnrx8rsw63EimmDeknXytOtMoBa1pMJhcgt1RYnAQgzTOgwjv9/e
+         anI+oY5LASlQMjgrCHVjaD4mMZfQvdOJMKC8xsdy2mPcx1fp0RLnZ/SOsMcYt+h574QF
+         VRsg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1764232813; x=1764837613;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=5dR/rI0k27VpjFJyKIKVrmsZByrDSxYf4xOQvDAiKNU=;
+        b=F2ZSLczKM3MHJezm370AaMrcJzHu65VlQHNIkHb4F145mJa5UnDccqahChoHZ6+91c
+         t/xBmO6GeRb0enp0LqAzezBmnLKpFWmrJXlnRDZI3qgKljkwLMZAXgpnpUUBWNpb3b0e
+         JY8DFti8FW/KHE7LNZRivNKjI6eFYuK1fVqCF+hdb+OXC3upZ6AAfl9KYRzVBYYXk1TL
+         4GrBOJaSoi0qxBDFhMq/paO4hh60+5Zx10KcvpG+X9Lq6Otb0mzC5ONe9/2uHsoHYiWb
+         i5LmiszxJtxpQbn6sarE6npinQZGZTZTrz5UKfEw2S50YAsKMjPQAObmiiUNLYmjFaiD
+         fMuw==
+X-Forwarded-Encrypted: i=1; AJvYcCXyibVl7BmcQV8ULyxFVwF8FziwSZ3QWv3Yie1xaUC4zpUhfE0bkCFVND51ai5ZqPttRAJQujgyTviW8w==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwdPC2VGV2HgGBRaUntBramDnKhMTdJU3MapjV4KLZaf+fpM4ZC
+	lFYsZkLEty4/9ZpeVqLSVekVJvh+nzW7YFGezSRu3nrRo15dS842ik5ElbQxv1kS3ZqkgPKfAgm
+	8EUoLih38/FXV8km6q1l4E23rY4Otoqme1m+tEjPU6Q==
+X-Gm-Gg: ASbGnctgg94zz0z5J75mdMftDLL6gh1nQUqsAVndUt0wwXERn9Pr+qZX6KHQ0DbCoZC
+	3JrTGvaJDVElklfWgRM0Y8CZ77gvUtpfQZTX3/FaC14MALs8S/0ytQRchhpzfxJD/tdjRAacQ39
+	Fwg6NzKCGSpGmkw+UQyfLBFtOFipmeQbyLZwYMpwTfS3a6V+iZHMZiiE/tixuwzfOGc4AMINkc0
+	hnWfTACVXkbBRnr2W4pCI715EW2e5Ry1lJ9aNTbwZxzhlxhBZyqBR443zahW9xR/eu5w1o9RTDs
+	W5fTFQHd11EIxXtdWZlbakSXf+D1NNPfrLuJ+OL6Rfn1ElkZAL4SNYj3CZA/Zo+i9uE0
+X-Google-Smtp-Source: AGHT+IH7okXbSZWmASINvtHenAOWTGIJifTNK+4K84aArU7mw5Kcqrx+ZoQieon4aJW2YCC8HURi3JS9jVIc6Q5ZGas=
+X-Received: by 2002:a05:6000:2681:b0:429:d0f0:6dd1 with SMTP id
+ ffacd0b85a97d-42cc1d618b2mr23691493f8f.58.1764232812739; Thu, 27 Nov 2025
+ 00:40:12 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251124185335.16556-17-mark@harmstone.com>
+References: <20251015121157.1348124-1-neelx@suse.com> <20251015121157.1348124-4-neelx@suse.com>
+ <20251024212920.GE20913@twin.jikos.cz> <CAPjX3Fc6abzXgE+_S6tKjmh9uUmsYo+UUE+5V8uGMK0QqLAKbg@mail.gmail.com>
+ <f0f633d6-f0e0-4d4c-98cb-096afe77f330@gmx.com> <CAPjX3FfqvOMndYY6Ai9qVgaHX_y8PV=8i4_aMGGOvGcUCOj9ig@mail.gmail.com>
+ <20251126141142.GB13846@suse.cz>
+In-Reply-To: <20251126141142.GB13846@suse.cz>
+From: Daniel Vacek <neelx@suse.com>
+Date: Thu, 27 Nov 2025 09:40:01 +0100
+X-Gm-Features: AWmQ_bmV7o0P8vBFQs1GarIbYvXPZ_tt6cviIt1QtsC8FmQ4Il4z__YseZNSr_Y
+Message-ID: <CAPjX3FevTcNtE8yFVJR8xFa0K_-iFDqbw1tWg=tn9==XHPQgbg@mail.gmail.com>
+Subject: Re: [PATCH 3/8] btrfs-progs: start tracking extent encryption context info
+To: dsterba@suse.cz
+Cc: Qu Wenruo <quwenruo.btrfs@gmx.com>, David Sterba <dsterba@suse.com>, 
+	linux-btrfs@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>, 
+	Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Nov 24, 2025 at 06:53:08PM +0000, Mark Harmstone wrote:
-> Add a function btrfs_populate_fully_remapped_bgs_list() which gets
-> called on mount, which looks for fully remapped block groups
-> (i.e. identity_remap_count == 0) which haven't yet had their chunk
-> stripes and device extents removed.
-> 
-> This happens when a filesystem is unmounted while async discard has not
-> yet finished, as otherwise the data range occupied by the chunk stripes
-> would be permanently unusable.
-> 
-Reviewed-by: Boris Burkov <boris@bur.io>
-> Signed-off-by: Mark Harmstone <mark@harmstone.com>
-> ---
->  fs/btrfs/block-group.c      | 79 +++++++++++++++++++++++++++++++++++++
->  fs/btrfs/block-group.h      |  2 +
->  fs/btrfs/disk-io.c          |  9 +++++
->  fs/btrfs/free-space-cache.c | 18 +++++++++
->  fs/btrfs/relocation.c       |  4 ++
->  5 files changed, 112 insertions(+)
-> 
-> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-> index a6005a54273f..e82a8d8618be 100644
-> --- a/fs/btrfs/block-group.c
-> +++ b/fs/btrfs/block-group.c
-> @@ -4823,6 +4823,11 @@ void btrfs_mark_bg_fully_remapped(struct btrfs_block_group *bg,
->  	struct btrfs_fs_info *fs_info = trans->fs_info;
->  
->  	if (btrfs_test_opt(fs_info, DISCARD_ASYNC)) {
-> +		spin_lock(&bg->lock);
-> +		set_bit(BLOCK_GROUP_FLAG_STRIPE_REMOVAL_PENDING,
-> +			&bg->runtime_flags);
-> +		spin_unlock(&bg->lock);
-> +
->  		btrfs_discard_queue_work(&fs_info->discard_ctl, bg);
->  	} else {
->  		spin_lock(&fs_info->unused_bgs_lock);
-> @@ -4842,3 +4847,77 @@ void btrfs_mark_bg_fully_remapped(struct btrfs_block_group *bg,
->  		spin_unlock(&fs_info->unused_bgs_lock);
->  	}
->  }
-> +
-> +/*
-> + * Compare the block group and chunk trees, and find any fully-remapped block
-> + * groups which haven't yet had their chunk stripes and device extents removed,
-> + * and put them on the fully_remapped_bgs list so this gets done.
-> + *
-> + * This happens when a block group becomes fully remapped, i.e. its last
-> + * identity mapping is removed, and the volume is unmounted before async
-> + * discard has finished. It's important this gets done as until it is the
-> + * chunk's stripes are dead space.
-> + */
-> +int btrfs_populate_fully_remapped_bgs_list(struct btrfs_fs_info *fs_info)
-> +{
-> +	struct rb_node *node_bg, *node_chunk;
-> +
-> +	node_bg = rb_first_cached(&fs_info->block_group_cache_tree);
-> +	node_chunk = rb_first_cached(&fs_info->mapping_tree);
-> +
-> +	while (node_bg && node_chunk) {
-> +		struct btrfs_block_group *bg;
-> +		struct btrfs_chunk_map *map;
-> +
-> +		bg = rb_entry(node_bg, struct btrfs_block_group, cache_node);
-> +		map = rb_entry(node_chunk, struct btrfs_chunk_map, rb_node);
-> +
-> +		ASSERT(bg->start == map->start);
-> +
-> +		if (!(bg->flags & BTRFS_BLOCK_GROUP_REMAPPED))
-> +			goto next;
-> +
-> +		if (bg->identity_remap_count != 0)
-> +			goto next;
-> +
-> +		if (map->num_stripes == 0)
-> +			goto next;
-> +
-> +		spin_lock(&fs_info->unused_bgs_lock);
-> +
-> +		if (list_empty(&bg->bg_list)) {
-> +			btrfs_get_block_group(bg);
-> +			list_add_tail(&bg->bg_list,
-> +				      &fs_info->fully_remapped_bgs);
-> +		} else {
-> +			list_move_tail(&bg->bg_list,
-> +				       &fs_info->fully_remapped_bgs);
-> +		}
-> +
-> +		spin_unlock(&fs_info->unused_bgs_lock);
-> +
-> +		/*
-> +		 * Ideally we'd want to call btrfs_discard_queue_work() here,
-> +		 * but it'd do nothing as the discard worker hasn't been
-> +		 * started yet.
-> +		 *
-> +		 * The block group will get added to the discard list when
-> +		 * btrfs_handle_fully_remapped_bgs() gets called, when we
-> +		 * commit the first transaction.
-> +		 */
-> +		if (btrfs_test_opt(fs_info, DISCARD_ASYNC)) {
-> +			spin_lock(&bg->lock);
-> +			set_bit(BLOCK_GROUP_FLAG_STRIPE_REMOVAL_PENDING,
-> +				&bg->runtime_flags);
-> +			spin_unlock(&bg->lock);
-> +		}
-> +
-> +next:
-> +		node_bg = rb_next(node_bg);
-> +		node_chunk = rb_next(node_chunk);
-> +	}
-> +
-> +	ASSERT(!node_bg && !node_chunk);
-> +
-> +	return 0;
-> +}
-> diff --git a/fs/btrfs/block-group.h b/fs/btrfs/block-group.h
-> index 743702f4e5d1..bdb75bf1c3f5 100644
-> --- a/fs/btrfs/block-group.h
-> +++ b/fs/btrfs/block-group.h
-> @@ -93,6 +93,7 @@ enum btrfs_block_group_flags {
->  	 * transaction.
->  	 */
->  	BLOCK_GROUP_FLAG_NEW,
-> +	BLOCK_GROUP_FLAG_STRIPE_REMOVAL_PENDING,
->  };
->  
->  enum btrfs_caching_type {
-> @@ -416,5 +417,6 @@ int btrfs_use_block_group_size_class(struct btrfs_block_group *bg,
->  bool btrfs_block_group_should_use_size_class(const struct btrfs_block_group *bg);
->  void btrfs_mark_bg_fully_remapped(struct btrfs_block_group *bg,
->  				  struct btrfs_trans_handle *trans);
-> +int btrfs_populate_fully_remapped_bgs_list(struct btrfs_fs_info *fs_info);
->  
->  #endif /* BTRFS_BLOCK_GROUP_H */
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index e29a6d5ecb2d..7e0e5f6f3223 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -3637,6 +3637,15 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
->  		goto fail_sysfs;
->  	}
->  
-> +	if (btrfs_fs_incompat(fs_info, REMAP_TREE)) {
-> +		ret = btrfs_populate_fully_remapped_bgs_list(fs_info);
-> +		if (ret) {
-> +			btrfs_err(fs_info,
-> +			"failed to populate fully_remapped_bgs list: %d", ret);
-> +			goto fail_sysfs;
-> +		}
-> +	}
-> +
->  	btrfs_zoned_reserve_data_reloc_bg(fs_info);
->  	btrfs_free_zone_cache(fs_info);
->  
-> diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
-> index e15fa8567f7c..7f7744a78de2 100644
-> --- a/fs/btrfs/free-space-cache.c
-> +++ b/fs/btrfs/free-space-cache.c
-> @@ -3068,6 +3068,7 @@ bool btrfs_is_free_space_trimmed(struct btrfs_block_group *block_group)
->  	bool ret = true;
->  
->  	if (block_group->flags & BTRFS_BLOCK_GROUP_REMAPPED &&
-> +	    !test_bit(BLOCK_GROUP_FLAG_STRIPE_REMOVAL_PENDING, &block_group->runtime_flags) &&
->  	    block_group->identity_remap_count == 0) {
->  		return true;
->  	}
-> @@ -3849,6 +3850,23 @@ void btrfs_trim_fully_remapped_block_group(struct btrfs_block_group *bg)
->  	const u64 max_discard_size = READ_ONCE(discard_ctl->max_discard_size);
->  	u64 end = btrfs_block_group_end(bg);
->  
-> +	if (!test_bit(BLOCK_GROUP_FLAG_STRIPE_REMOVAL_PENDING, &bg->runtime_flags)) {
-> +		bg->discard_cursor = end;
-> +
-> +		if (bg->used == 0) {
-> +			spin_lock(&fs_info->unused_bgs_lock);
-> +			if (!list_empty(&bg->bg_list)) {
-> +				list_del_init(&bg->bg_list);
-> +				btrfs_put_block_group(bg);
-> +			}
-> +			spin_unlock(&fs_info->unused_bgs_lock);
-> +
-> +			btrfs_mark_bg_unused(bg);
-> +		}
-> +
-> +		return;
-> +	}
-> +
->  	bytes = end - bg->discard_cursor;
->  
->  	if (max_discard_size &&
-> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-> index 2e1a87ab0509..25766b418a6b 100644
-> --- a/fs/btrfs/relocation.c
-> +++ b/fs/btrfs/relocation.c
-> @@ -4792,6 +4792,10 @@ int btrfs_last_identity_remap_gone(struct btrfs_chunk_map *chunk,
->  
->  	btrfs_remove_bg_from_sinfo(bg);
->  
-> +	spin_lock(&bg->lock);
-> +	clear_bit(BLOCK_GROUP_FLAG_STRIPE_REMOVAL_PENDING, &bg->runtime_flags);
-> +	spin_unlock(&bg->lock);
-> +
->  	ret = remove_chunk_stripes(trans, chunk, path);
->  	if (ret) {
->  		btrfs_abort_transaction(trans, ret);
-> -- 
-> 2.51.0
-> 
+On Wed, 26 Nov 2025 at 15:11, David Sterba <dsterba@suse.cz> wrote:
+> On Wed, Nov 05, 2025 at 11:55:15AM +0100, Daniel Vacek wrote:
+> > On Wed, 5 Nov 2025 at 10:12, Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+> > > =E5=9C=A8 2025/11/5 18:52, Daniel Vacek =E5=86=99=E9=81=93:
+> > > > On Fri, 24 Oct 2025 at 23:29, David Sterba <dsterba@suse.cz> wrote:
+> > > >>
+> > > >> On Wed, Oct 15, 2025 at 02:11:51PM +0200, Daniel Vacek wrote:
+> > > >>> From: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+> > > >>>
+> > > >>> This recapitulates the kernel change named 'btrfs: start tracking=
+ extent
+> > > >>> encryption context info".
+> > > >>>
+> > > >>> Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
+> > > >>> ---
+> > > >>>   kernel-shared/accessors.h       | 43 ++++++++++++++++++++++
+> > > >>>   kernel-shared/tree-checker.c    | 65 ++++++++++++++++++++++++++=
++------
+> > > >>>   kernel-shared/uapi/btrfs_tree.h | 23 +++++++++++-
+> > > >>>   3 files changed, 118 insertions(+), 13 deletions(-)
+> > > >>>
+> > > >>> diff --git a/kernel-shared/accessors.h b/kernel-shared/accessors.=
+h
+> > > >>> index cb96f3e2..5d90be76 100644
+> > > >>> --- a/kernel-shared/accessors.h
+> > > >>> +++ b/kernel-shared/accessors.h
+> > > >>> @@ -935,6 +935,9 @@ BTRFS_SETGET_STACK_FUNCS(super_uuid_tree_gene=
+ration, struct btrfs_super_block,
+> > > >>>   BTRFS_SETGET_STACK_FUNCS(super_nr_global_roots, struct btrfs_su=
+per_block,
+> > > >>>                         nr_global_roots, 64);
+> > > >>>
+> > > >>> +/* struct btrfs_file_extent_encryption_info */
+> > > >>> +BTRFS_SETGET_FUNCS(encryption_info_size, struct btrfs_encryption=
+_info, size, 32);
+> > > >>> +
+> > > >>>   /* struct btrfs_file_extent_item */
+> > > >>>   BTRFS_SETGET_STACK_FUNCS(stack_file_extent_type, struct btrfs_f=
+ile_extent_item,
+> > > >>>                         type, 8);
+> > > >>> @@ -973,6 +976,46 @@ BTRFS_SETGET_FUNCS(file_extent_encryption, s=
+truct btrfs_file_extent_item,
+> > > >>>   BTRFS_SETGET_FUNCS(file_extent_other_encoding, struct btrfs_fil=
+e_extent_item,
+> > > >>>                   other_encoding, 16);
+> > > >>>
+> > > >>> +static inline struct btrfs_encryption_info *btrfs_file_extent_en=
+cryption_info(
+> > > >>> +                                     const struct btrfs_file_ext=
+ent_item *ei)
+> > > >>> +{
+> > > >>> +     unsigned long offset =3D (unsigned long)ei;
+> > > >>> +
+> > > >>> +     offset +=3D offsetof(struct btrfs_file_extent_item, encrypt=
+ion_info);
+> > > >>> +     return (struct btrfs_encryption_info *)offset;
+> > > >>> +}
+> > > >>> +
+> > > >>> +static inline unsigned long btrfs_file_extent_encryption_ctx_off=
+set(
+> > > >>> +                                     const struct btrfs_file_ext=
+ent_item *ei)
+> > > >>> +{
+> > > >>> +     unsigned long offset =3D (unsigned long)ei;
+> > > >>> +
+> > > >>> +     offset +=3D offsetof(struct btrfs_file_extent_item, encrypt=
+ion_info);
+> > > >>> +     return offset + offsetof(struct btrfs_encryption_info, cont=
+ext);
+> > > >>> +}
+> > > >>> +
+> > > >>> +static inline u32 btrfs_file_extent_encryption_ctx_size(
+> > > >>> +                                     const struct extent_buffer =
+*eb,
+> > > >>> +                                     const struct btrfs_file_ext=
+ent_item *ei)
+> > > >>> +{
+> > > >>> +     return btrfs_encryption_info_size(eb, btrfs_file_extent_enc=
+ryption_info(ei));
+> > > >>> +}
+> > > >>> +
+> > > >>> +static inline void btrfs_set_file_extent_encryption_ctx_size(
+> > > >>> +                                     struct extent_buffer *eb,
+> > > >>> +                                     struct btrfs_file_extent_it=
+em *ei,
+> > > >>> +                                     u32 val)
+> > > >>> +{
+> > > >>> +     btrfs_set_encryption_info_size(eb, btrfs_file_extent_encryp=
+tion_info(ei), val);
+> > > >>> +}
+> > > >>> +
+> > > >>> +static inline u32 btrfs_file_extent_encryption_info_size(
+> > > >>> +                                     const struct extent_buffer =
+*eb,
+> > > >>> +                                     const struct btrfs_file_ext=
+ent_item *ei)
+> > > >>> +{
+> > > >>> +     return btrfs_encryption_info_size(eb, btrfs_file_extent_enc=
+ryption_info(ei));
+> > > >>> +}
+> > > >>> +
+> > > >>>   /* btrfs_qgroup_status_item */
+> > > >>>   BTRFS_SETGET_FUNCS(qgroup_status_generation, struct btrfs_qgrou=
+p_status_item,
+> > > >>>                   generation, 64);
+> > > >>> diff --git a/kernel-shared/tree-checker.c b/kernel-shared/tree-ch=
+ecker.c
+> > > >>> index ccc1f1ea..93073979 100644
+> > > >>> --- a/kernel-shared/tree-checker.c
+> > > >>> +++ b/kernel-shared/tree-checker.c
+> > > >>> @@ -242,6 +242,8 @@ static int check_extent_data_item(struct exte=
+nt_buffer *leaf,
+> > > >>>        u32 sectorsize =3D fs_info->sectorsize;
+> > > >>>        u32 item_size =3D btrfs_item_size(leaf, slot);
+> > > >>>        u64 extent_end;
+> > > >>> +     u8 policy;
+> > > >>> +     u8 fe_type;
+> > > >>>
+> > > >>>        if (unlikely(!IS_ALIGNED(key->offset, sectorsize))) {
+> > > >>>                file_extent_err(leaf, slot,
+> > > >>> @@ -272,12 +274,12 @@ static int check_extent_data_item(struct ex=
+tent_buffer *leaf,
+> > > >>>                                SZ_4K);
+> > > >>>                return -EUCLEAN;
+> > > >>>        }
+> > > >>> -     if (unlikely(btrfs_file_extent_type(leaf, fi) >=3D
+> > > >>> -                  BTRFS_NR_FILE_EXTENT_TYPES)) {
+> > > >>> +
+> > > >>> +     fe_type =3D btrfs_file_extent_type(leaf, fi);
+> > > >>> +     if (unlikely(fe_type >=3D BTRFS_NR_FILE_EXTENT_TYPES)) {
+> > > >>>                file_extent_err(leaf, slot,
+> > > >>>                "invalid type for file extent, have %u expect rang=
+e [0, %u]",
+> > > >>> -                     btrfs_file_extent_type(leaf, fi),
+> > > >>> -                     BTRFS_NR_FILE_EXTENT_TYPES - 1);
+> > > >>> +                     fe_type, BTRFS_NR_FILE_EXTENT_TYPES - 1);
+> > > >>>                return -EUCLEAN;
+> > > >>>        }
+> > > >>>
+> > > >>> @@ -293,10 +295,11 @@ static int check_extent_data_item(struct ex=
+tent_buffer *leaf,
+> > > >>>                        BTRFS_NR_COMPRESS_TYPES - 1);
+> > > >>>                return -EUCLEAN;
+> > > >>>        }
+> > > >>> -     if (unlikely(btrfs_file_extent_encryption(leaf, fi))) {
+> > > >>> +     policy =3D btrfs_file_extent_encryption(leaf, fi);
+> > > >>> +     if (unlikely(policy >=3D BTRFS_NR_ENCRYPTION_TYPES)) {
+> > > >>>                file_extent_err(leaf, slot,
+> > > >>> -                     "invalid encryption for file extent, have %=
+u expect 0",
+> > > >>> -                     btrfs_file_extent_encryption(leaf, fi));
+> > > >>> +                     "invalid encryption for file extent, have %=
+u expect range [0, %u]",
+> > > >>> +                     policy, BTRFS_NR_ENCRYPTION_TYPES - 1);
+> > > >>>                return -EUCLEAN;
+> > > >>>        }
+> > > >>>        if (btrfs_file_extent_type(leaf, fi) =3D=3D BTRFS_FILE_EXT=
+ENT_INLINE) {
+> > > >>> @@ -325,12 +328,50 @@ static int check_extent_data_item(struct ex=
+tent_buffer *leaf,
+> > > >>>                return 0;
+> > > >>>        }
+> > > >>>
+> > > >>> -     /* Regular or preallocated extent has fixed item size */
+> > > >>> -     if (unlikely(item_size !=3D sizeof(*fi))) {
+> > > >>> -             file_extent_err(leaf, slot,
+> > > >>> +     if (policy =3D=3D BTRFS_ENCRYPTION_FSCRYPT) {
+> > > >>> +             size_t fe_size =3D sizeof(*fi) + sizeof(struct btrf=
+s_encryption_info);
+> > > >>> +             u32 ctxsize;
+> > > >>> +
+> > > >>> +             if (unlikely(item_size < fe_size)) {
+> > > >>> +                     file_extent_err(leaf, slot,
+> > > >>> +     "invalid item size for encrypted file extent, have %u expec=
+t =3D %zu + size of u32",
+> > > >>> +                                     item_size, sizeof(*fi));
+> > > >>> +                     return -EUCLEAN;
+> > > >>> +             }
+> > > >>> +
+> > > >>> +             ctxsize =3D btrfs_file_extent_encryption_info_size(=
+leaf, fi);
+> > > >>> +             if (unlikely(item_size !=3D (fe_size + ctxsize))) {
+> > > >>> +                     file_extent_err(leaf, slot,
+> > > >>> +     "invalid item size for encrypted file extent, have %u expec=
+t =3D %zu + context of size %u",
+> > > >>> +                                     item_size, fe_size, ctxsize=
+);
+> > > >>> +                     return -EUCLEAN;
+> > > >>> +             }
+> > > >>> +
+> > > >>> +             if (unlikely(ctxsize > BTRFS_MAX_EXTENT_CTX_SIZE)) =
+{
+> > > >>> +                     file_extent_err(leaf, slot,
+> > > >>> +     "invalid file extent context size, have %u expect a maximum=
+ of %u",
+> > > >>> +                                     ctxsize, BTRFS_MAX_EXTENT_C=
+TX_SIZE);
+> > > >>> +                     return -EUCLEAN;
+> > > >>> +             }
+> > > >>> +
+> > > >>> +             /*
+> > > >>> +              * Only regular and prealloc extents should have an=
+ encryption
+> > > >>> +              * context.
+> > > >>> +              */
+> > > >>> +             if (unlikely(fe_type !=3D BTRFS_FILE_EXTENT_REG &&
+> > > >>> +                          fe_type !=3D BTRFS_FILE_EXTENT_PREALLO=
+C)) {
+> > > >>> +                     file_extent_err(leaf, slot,
+> > > >>> +             "invalid type for encrypted file extent, have %u",
+> > > >>> +                                     btrfs_file_extent_type(leaf=
+, fi));
+> > > >>> +                     return -EUCLEAN;
+> > > >>> +             }
+> > > >>> +     } else {
+> > > >>> +             if (unlikely(item_size !=3D sizeof(*fi))) {
+> > > >>> +                     file_extent_err(leaf, slot,
+> > > >>>        "invalid item size for reg/prealloc file extent, have %u e=
+xpect %zu",
+> > > >>> -                     item_size, sizeof(*fi));
+> > > >>> -             return -EUCLEAN;
+> > > >>> +                                     item_size, sizeof(*fi));
+> > > >>> +                     return -EUCLEAN;
+> > > >>> +             }
+> > > >>>        }
+> > > >>>        if (unlikely(CHECK_FE_ALIGNED(leaf, slot, fi, ram_bytes, s=
+ectorsize) ||
+> > > >>>                     CHECK_FE_ALIGNED(leaf, slot, fi, disk_bytenr,=
+ sectorsize) ||
+> > > >>> diff --git a/kernel-shared/uapi/btrfs_tree.h b/kernel-shared/uapi=
+/btrfs_tree.h
+> > > >>> index 7f3dffe6..4b4f45aa 100644
+> > > >>> --- a/kernel-shared/uapi/btrfs_tree.h
+> > > >>> +++ b/kernel-shared/uapi/btrfs_tree.h
+> > > >>> @@ -1066,6 +1066,24 @@ enum {
+> > > >>>        BTRFS_NR_FILE_EXTENT_TYPES =3D 3,
+> > > >>>   };
+> > > >>>
+> > > >>> +/*
+> > > >>> + * Currently just the FSCRYPT_SET_CONTEXT_MAX_SIZE, which is lar=
+ger than the
+> > > >>> + * current extent context size from fscrypt, so this should give=
+ us plenty of
+> > > >>> + * breathing room for expansion later.
+> > > >>> + */
+> > > >>> +#define BTRFS_MAX_EXTENT_CTX_SIZE 40
+> > > >>> +
+> > > >>> +enum {
+> > > >>> +     BTRFS_ENCRYPTION_NONE,
+> > > >>> +     BTRFS_ENCRYPTION_FSCRYPT,
+> > > >>> +     BTRFS_NR_ENCRYPTION_TYPES,
+> > > >>> +};
+> > > >>> +
+> > > >>> +struct btrfs_encryption_info {
+> > > >>> +     __le32 size;
+> > > >>> +     __u8 context[0];
+> > > >>> +};
+> > > >>> +
+> > > >>>   struct btrfs_file_extent_item {
+> > > >>>        /*
+> > > >>>         * transaction id that created this extent
+> > > >>> @@ -1115,7 +1133,10 @@ struct btrfs_file_extent_item {
+> > > >>>         * always reflects the size uncompressed and without encod=
+ing.
+> > > >>>         */
+> > > >>>        __le64 num_bytes;
+> > > >>> -
+> > > >>> +     /*
+> > > >>> +      * the encryption info, if any
+> > > >>> +      */
+> > > >>> +     struct btrfs_encryption_info encryption_info[0];
+> > > >>
+> > > >> Looking at this again, adding variable length data will make it ha=
+rd to
+> > > >> add more items to the file extent. We could not decide the version=
+ just
+> > > >> by the size, as done in other structures.
+> > > >
+> > > > Checking the details of btrfs_file_extent_item I understand the ite=
+m
+> > > > is already variable size in case of inline extent.
+> > >
+> > > Yeah, but I'm not sure if that is a good example to follow, or a bad
+> > > example to avoid.
+> > >
+> > > The biggest concern is for encrypted inline data extents.
+> > > We need to put two variable sized data into a single item.
+> > > (I know there are examples like btrfs_dir_item for XATTR, but again n=
+ot
+> > > sure if we should really follow that)
+> >
+> > Just for the record, with the state of the patches as of now, inline
+> > extent encryption is not supported. And for example ext4 also merges
+> > the encryption context with the inline data.
+> > But if we wanted to implement encrypted inline extents it may be
+> > easier for us to just add a new key storing the context. So perhaps we
+> > can do it right away to cover all the cases in a generic way.
+>
+> For the record, I think separate key/item is a better option.
+
+I have got this implemented. Though I'm not sure I like the end
+result. Basically each extent now creates two items for the meta
+needed for an extent. This doubles tree operations and example result
+looks like this (with patched btrfs-progs):
+
+>         item 105 key (257 INODE_ITEM 0) itemoff 11219 itemsize 160
+>                 generation 9 transid 9 size 86016 nbytes 81920
+>                 block group 0 mode 100600 links 1 uid 0 gid 0 rdev 0
+>                 sequence 95 flags 0x1000(UNKNOWN: 0x1000)
+>                 atime 1764179848.703684571 (2025-11-26 18:57:28)
+>                 ctime 1764179848.789259149 (2025-11-26 18:57:28)
+>                 mtime 1764179848.789259149 (2025-11-26 18:57:28)
+>                 otime 1764179848.703684571 (2025-11-26 18:57:28)
+>         item 106 key (257 INODE_REF 256) itemoff 11193 itemsize 26
+>                 index 2 namelen 16 name: \270\2439\t\005\342\230\243\301~=
+\363\f$\3608g
+>         item 107 key (257 FSCRYPT_INODE_CTX 0) itemoff 11153 itemsize 40
+>                 value: 020104020000000069b2f6edeee720cce0577937eb8a675177=
+d5a7f82d59cb4c7c8c5a33fde3c603
+>         item 108 key (257 FSCRYPT_CTX 4096) itemoff 11119 itemsize 34
+>                 value: 010169b2f6edeee720cce0577937eb8a6751d0dd42ea7ba43e=
+e8c55a2f79cbc890bd
+>         item 109 key (257 FSCRYPT_CTX 8192) itemoff 11085 itemsize 34
+>                 value: 010169b2f6edeee720cce0577937eb8a6751c49b3ed9999cfb=
+684992b30e01cabab2
+> <snip>
+>         item 124 key (257 FSCRYPT_CTX 69632) itemoff 10575 itemsize 34
+>                 value: 010169b2f6edeee720cce0577937eb8a6751da3728d22c66c1=
+ae40d92d8b283cb393
+>         item 125 key (257 FSCRYPT_CTX 73728) itemoff 10541 itemsize 34
+>                 value: 010169b2f6edeee720cce0577937eb8a675189848f22c27c6b=
+bbfb06fe521571658c
+>         item 126 key (257 FSCRYPT_CTX 77824) itemoff 10507 itemsize 34
+>                 value: 010169b2f6edeee720cce0577937eb8a67516c546baab142d3=
+c37e64439c5d90f609
+>         item 127 key (257 FSCRYPT_CTX 81920) itemoff 10473 itemsize 34
+>                 value: 010169b2f6edeee720cce0577937eb8a6751d1a28c6fcd2ce1=
+6b02858d614645f314
+>         item 128 key (257 EXTENT_DATA 4096) itemoff 10420 itemsize 53
+>                 generation 9 type 1 (regular)
+>                 extent data disk byte 13787136 nr 4096
+>                 extent data offset 0 nr 4096 ram 4096
+>                 extent compression 0 (none)
+>                 extent encryption 1 (fscrypt)
+>         item 129 key (257 EXTENT_DATA 8192) itemoff 10367 itemsize 53
+>                 generation 9 type 1 (regular)
+>                 extent data disk byte 13778944 nr 4096
+>                 extent data offset 0 nr 4096 ram 4096
+>                 extent compression 0 (none)
+>                 extent encryption 1 (fscrypt)
+>         item 130 key (257 EXTENT_DATA 12288) itemoff 10314 itemsize 53
+>                 generation 9 type 1 (regular)
+>                 extent data disk byte 13770752 nr 4096
+>                 extent data offset 0 nr 4096 ram 4096
+>                 extent compression 0 (none)
+>                 extent encryption 1 (fscrypt)
+>         item 131 key (257 EXTENT_DATA 16384) itemoff 10261 itemsize 53
+>                 generation 9 type 1 (regular)
+>                 extent data disk byte 13762560 nr 4096
+>                 extent data offset 0 nr 4096 ram 4096
+>                 extent compression 0 (none)
+>                 extent encryption 1 (fscrypt)
+> <snip>
+>         item 144 key (257 EXTENT_DATA 69632) itemoff 9572 itemsize 53
+>                 generation 9 type 1 (regular)
+>                 extent data disk byte 13656064 nr 4096
+>                 extent data offset 0 nr 4096 ram 4096
+>                 extent compression 0 (none)
+>                 extent encryption 1 (fscrypt)
+>         item 145 key (257 EXTENT_DATA 73728) itemoff 9519 itemsize 53
+>                 generation 9 type 1 (regular)
+>                 extent data disk byte 13647872 nr 4096
+>                 extent data offset 0 nr 4096 ram 4096
+>                 extent compression 0 (none)
+>                 extent encryption 1 (fscrypt)
+>         item 146 key (257 EXTENT_DATA 77824) itemoff 9466 itemsize 53
+>                 generation 9 type 1 (regular)
+>                 extent data disk byte 13639680 nr 4096
+>                 extent data offset 0 nr 4096 ram 4096
+>                 extent compression 0 (none)
+>                 extent encryption 1 (fscrypt)
+>         item 147 key (257 EXTENT_DATA 81920) itemoff 9413 itemsize 53
+>                 generation 9 type 1 (regular)
+>                 extent data disk byte 13631488 nr 4096
+>                 extent data offset 0 nr 4096 ram 4096
+>                 extent compression 0 (none)
+>                 extent encryption 1 (fscrypt)
+
+Basically the metadata needed for each extent is split into two keys.
+That means that in some cases (which could actually be many cases)
+getting the needed data for a given extent would end up reading from
+two leaf nodes.
+
+With this insight it actually makes more sense to append the
+encryption context to the file extent item itself. We do this in a lot
+of other keys as well. xattr dir items for another example. inode ref
+itself as well. inlined data. Plain (not file) extent items, metadata
+items... And so on and so on.
+
+It seems to me we do this all the time, I'm not sure why the
+opposition in this case?
+
+The call is on you. I can send this version (after I make sure nothing
+else broke) or the former one.
+
+I'll also be happy to hear opinions from others. Qu expressed concerns
+against inline crypt context before (the btrfs-progs implementation
+needs to be further debugged for sure). Does it still hold with the
+above being said?
+
+--nX
 
