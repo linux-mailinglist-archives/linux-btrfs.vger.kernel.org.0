@@ -1,79 +1,79 @@
-Return-Path: <linux-btrfs+bounces-19368-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19369-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 569DAC8CDE4
-	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Nov 2025 06:25:46 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98018C8CDE7
+	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Nov 2025 06:25:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id BE1784E3B49
-	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Nov 2025 05:25:37 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 899494E371C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Nov 2025 05:25:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D12C530F7F7;
-	Thu, 27 Nov 2025 05:25:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 485BD30F55D;
+	Thu, 27 Nov 2025 05:25:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="t7AwKZkI";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="t7AwKZkI"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="JUftyuKj";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="NB1Dznin"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D6C01EA7CC
-	for <linux-btrfs@vger.kernel.org>; Thu, 27 Nov 2025 05:25:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB94C8F4A
+	for <linux-btrfs@vger.kernel.org>; Thu, 27 Nov 2025 05:25:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764221135; cv=none; b=Y/Wok5HF1BCmwpGZ6TPHwKBuWaqKp/z+yBM1eDTAqJFix7jJMvtLsdmrjrRK0/xxA29ZopTJyILv40Hsob6AcG3gCccsr06qCYl0HydCUYJvcWLTy009ciE0xg9v+hdAENTtRO/4g5KfC5Lio73s7FIgPQrgWUUQaYeR6Go+wUY=
+	t=1764221141; cv=none; b=oY1qBZ81uDcKknVJKpWsn7xQEcS1/WaMevGTwtoDz0pZi9QQtG9qqX6SX64Z71JkOgPp2w+qSuztRyaLYF31s3AsTl8i1xmxuDsp3kPy9lnxDt6MEuar+mnFwnWVXyHCn6UTTEpL4WniqN1MEpwdehGNadA1q0GBkxO+L+GJKtc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764221135; c=relaxed/simple;
-	bh=ISb6BV58OhCFnVLXf7naoZpmqRE8D6Ei1gVQaxNqvag=;
+	s=arc-20240116; t=1764221141; c=relaxed/simple;
+	bh=MVX2Zks/haxGb0+IZMb2a2a0vJ92tfo1/2knLqT/+Qg=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Be6TxBuwUqX1hGX49mhCosc1qWP8NpTtc9TA7ZBhVlmIkh1fkrvG1E3K/79u86NVNkXQTFozpwYnx+1P92f1VC9f63fHefFeRpxbBAGwqeZWQOw9rMzh3RPptagV9J9V/0ahQzThsyJ8pQ+1oZdpQt+Om5q1mvpVa4oTRUHTt6U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=t7AwKZkI; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=t7AwKZkI; arc=none smtp.client-ip=195.135.223.131
+	 MIME-Version; b=uX5BifyP4+moPOI/ms/z1o3UV2HFF8vncbVRJfG1p3iyeY9gDcQEFUBs3gjDjRRU4GSwjOc23tYz4zY/FyQfs0n3G3U+a5cV0NPLKXbrG0dj5XlgQlJuQ/Sz1YmJWCnhRrIzQXKoPMTm4vrn/jiaUVW5FAhne9/ABHzXNHIRd4c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=JUftyuKj; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=NB1Dznin; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id B85E75BCC5
-	for <linux-btrfs@vger.kernel.org>; Thu, 27 Nov 2025 05:25:25 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id ECEBD5BCCC
+	for <linux-btrfs@vger.kernel.org>; Thu, 27 Nov 2025 05:25:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1764221125; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1764221127; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=p4GXbJKwWiLkNfPMDZPVXCRVRGGXBlHkJi8a095xORI=;
-	b=t7AwKZkIotghQIPteggs4YJlj2lwgadtQXcOOzUZKarSYAIkWtT0Kuyzi/VhvU3BOIglcM
-	Xtvt5PvSfCnfJ7p8i9RiQaWcKuZ/vfmQWM7C6DfuaHc+ar+Vkpv60lDyM9RXof03wqClKC
-	i5eBoNl3mafpFbcjrXYrt9fnvW7yiSw=
+	bh=Ix/wx2QDkr8lpPjAOIIphPI/aPEkpr37g1GYzcG+cH8=;
+	b=JUftyuKjI1VS7u3B4UvOGNP33r7HlqjCoBv46A0HBZLzjYp+2Q+suwqDG7GtH0d2TBD8/m
+	gHbXJhDnJ+E/5/svUzZ/LvHEUDcI8Qcg2RvtQk5paUl9m6B6UJu+F+y9kfOME9dVkoiQau
+	SvieZlfyYTAnuA6Av4dQExsZ2JWV/08=
 Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1764221125; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1764221126; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=p4GXbJKwWiLkNfPMDZPVXCRVRGGXBlHkJi8a095xORI=;
-	b=t7AwKZkIotghQIPteggs4YJlj2lwgadtQXcOOzUZKarSYAIkWtT0Kuyzi/VhvU3BOIglcM
-	Xtvt5PvSfCnfJ7p8i9RiQaWcKuZ/vfmQWM7C6DfuaHc+ar+Vkpv60lDyM9RXof03wqClKC
-	i5eBoNl3mafpFbcjrXYrt9fnvW7yiSw=
+	bh=Ix/wx2QDkr8lpPjAOIIphPI/aPEkpr37g1GYzcG+cH8=;
+	b=NB1DzninKqkmDWV7bBpRQPXNY3O3ayrXIRvYEaaGkkGVBruwpyX3aIgK1v5FbopfEzEDzL
+	7A9bteMXJjDt+RibLk/iL0cNkL7DnuSsF94rSixFQ1DnHNlnsEQRSPgjSU7bawi4nJTCoC
+	AoglXA87f3TvItSsRH0mp8mF3pTZddo=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 025A43EA63
-	for <linux-btrfs@vger.kernel.org>; Thu, 27 Nov 2025 05:25:24 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 36DC73EA63
+	for <linux-btrfs@vger.kernel.org>; Thu, 27 Nov 2025 05:25:25 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id UL7SLcTgJ2l3fgAAD6G6ig
+	id qOkuOsXgJ2l3fgAAD6G6ig
 	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Thu, 27 Nov 2025 05:25:24 +0000
+	for <linux-btrfs@vger.kernel.org>; Thu, 27 Nov 2025 05:25:25 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/3] btrfs-progs: misc-tests: check if free space tree is enabled after mount
-Date: Thu, 27 Nov 2025 15:55:03 +1030
-Message-ID: <0cc91f44cac758721ffc9c575fde8d234b3b5bee.1764220734.git.wqu@suse.com>
+Subject: [PATCH 3/3] btrfs-progs: add block-group-tree to the default mkfs features
+Date: Thu, 27 Nov 2025 15:55:04 +1030
+Message-ID: <89fed6be1ab56ceaf378b87c1f917d2e26f9f105.1764220734.git.wqu@suse.com>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <cover.1764220734.git.wqu@suse.com>
 References: <cover.1764220734.git.wqu@suse.com>
@@ -84,6 +84,9 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Spam-Flag: NO
+X-Spam-Score: -2.80
+X-Spam-Level: 
 X-Spamd-Result: default: False [-2.80 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
 	MID_CONTAINS_FROM(1.00)[];
@@ -96,7 +99,7 @@ X-Spamd-Result: default: False [-2.80 / 50.00];
 	RCPT_COUNT_ONE(0.00)[1];
 	ARC_NA(0.00)[];
 	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid];
 	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	MIME_TRACE(0.00)[0:+];
@@ -105,43 +108,63 @@ X-Spamd-Result: default: False [-2.80 / 50.00];
 	TO_DN_NONE(0.00)[];
 	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
 	RCVD_TLS_ALL(0.00)[]
-X-Spam-Level: 
-X-Spam-Score: -2.80
-X-Spam-Flag: NO
 
-For bs < ps cases, a mount will always enable free-space-tree due to the
-limitation of v1 space cache.
+The block-group-tree feature is already considered safe since v6.6
+kernels, and btrfs-progs have also improved its off-line conversion
+ability (btrfstune --convert-to|from-block-group-tree).
 
-Test case misc/057 will lead to false failure if the page size is larger
-than the default 4K sector size.
+Now it's time to make bgt feature as the default mkfs features.
+This affects both mkfs and btrfs-convert.
 
-Add an extra check on free-space-tree after fs population, and skip the
-test case if so.
+The target merge window is v6.18.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- tests/misc-tests/057-btrfstune-free-space-tree/test.sh | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ Documentation/mkfs.btrfs.rst | 2 +-
+ common/fsfeatures.c          | 2 +-
+ common/fsfeatures.h          | 3 ++-
+ 3 files changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/tests/misc-tests/057-btrfstune-free-space-tree/test.sh b/tests/misc-tests/057-btrfstune-free-space-tree/test.sh
-index fe5b87a1fd38..f4099dd639e7 100755
---- a/tests/misc-tests/057-btrfstune-free-space-tree/test.sh
-+++ b/tests/misc-tests/057-btrfstune-free-space-tree/test.sh
-@@ -17,6 +17,14 @@ run_check_mount_test_dev
- populate_fs
- run_check_umount_test_dev
+diff --git a/Documentation/mkfs.btrfs.rst b/Documentation/mkfs.btrfs.rst
+index 7734354fd6da..b4e23cc1fb24 100644
+--- a/Documentation/mkfs.btrfs.rst
++++ b/Documentation/mkfs.btrfs.rst
+@@ -424,7 +424,7 @@ free-space-tree
+ .. _mkfs-feature-block-group-tree:
  
-+# Check if the fs has free space tree already. Currently bs < ps mount
-+# will always enable free-space-tree (no support for v1 free space cache)
-+if run_check_stdout "$TOP/btrfs" inspect-internal dump-super "$TEST_DEV" |\
-+	grep -q "FREE_SPACE_TREE"; then
-+	_not_run "free-space-tree is always enabled for page size $(getconf PAGESIZE)"
-+fi
-+
- run_check $SUDO_HELPER "$TOP/btrfstune" --convert-to-free-space-tree "$TEST_DEV"
+ block-group-tree
+-        (kernel support since 6.1)
++        (default since btrfs-progs v6.19, kernel support since 6.1)
  
-+
- run_check "$TOP/btrfs" check "$TEST_DEV"
+         Enable a dedicated b-tree for block group items, this greatly reduces
+         mount time for large filesystems due to better data locality that
+diff --git a/common/fsfeatures.c b/common/fsfeatures.c
+index 69a1b3934099..389d19b4d416 100644
+--- a/common/fsfeatures.c
++++ b/common/fsfeatures.c
+@@ -219,7 +219,7 @@ static const struct btrfs_feature mkfs_features[] = {
+ 		.sysfs_name	= "block_group_tree",
+ 		VERSION_TO_STRING2(compat, 6,1),
+ 		VERSION_TO_STRING2(safe, 6,6),
+-		VERSION_NULL(default),
++		VERSION_TO_STRING2(default, 6,19),
+ 		.desc		= "block group tree, more efficient block group tracking to reduce mount time"
+ 	},
+ #if EXPERIMENTAL
+diff --git a/common/fsfeatures.h b/common/fsfeatures.h
+index 3559076ba5dc..3ae8d2a5eed7 100644
+--- a/common/fsfeatures.h
++++ b/common/fsfeatures.h
+@@ -46,7 +46,8 @@ struct btrfs_mkfs_features {
+ 
+ static const struct btrfs_mkfs_features btrfs_mkfs_default_features = {
+ 	.compat_ro_flags = BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE |
+-			   BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE_VALID,
++			   BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE_VALID |
++			   BTRFS_FEATURE_COMPAT_RO_BLOCK_GROUP_TREE,
+ 	.incompat_flags	 = BTRFS_FEATURE_INCOMPAT_EXTENDED_IREF |
+ 			   BTRFS_FEATURE_INCOMPAT_NO_HOLES |
+ 			   BTRFS_FEATURE_INCOMPAT_SKINNY_METADATA,
 -- 
 2.52.0
 
