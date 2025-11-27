@@ -1,74 +1,74 @@
-Return-Path: <linux-btrfs+bounces-19384-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19385-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A112C90312
-	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Nov 2025 22:31:29 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73E65C9041C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Nov 2025 22:57:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B942F4E26AB
-	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Nov 2025 21:31:21 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id EC2E934E6D3
+	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Nov 2025 21:57:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 723252D9ED1;
-	Thu, 27 Nov 2025 21:31:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C880311C3C;
+	Thu, 27 Nov 2025 21:57:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="tuSH50Ti";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="umsAtYqa"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="SiEGW2a2";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="SiEGW2a2"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E76203B2A0
-	for <linux-btrfs@vger.kernel.org>; Thu, 27 Nov 2025 21:31:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84F222EDD72
+	for <linux-btrfs@vger.kernel.org>; Thu, 27 Nov 2025 21:57:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764279079; cv=none; b=Cg0wplRnwu5OvM+6/PMMLgdIWHw3y3tf+5lxx+i9SW/ZTObBXw0FHid1/e2ZFYnoYuZTYjnbQiIvEEK6OjiBUl9xTFuYggyGHZ0FGqnub0FJ8AYxN6yswhtADIPHfvldvh0JSrHM01WkL6GLge2SSXidC4NpE3Zo51jOV5e7WrQ=
+	t=1764280637; cv=none; b=QHNXh9gcdqfnoLD0BBV8h/w1x1u9LfrKV4yTXAE8creX9jw5xwVRtMIRE0ma/zS7iFrcJAFcoTfV3KZRRwKnIkaQSUuUsRBQPPY8o5WRJI4pE1Vuu9+ZkrsJbBUCymujSNGJSYmlulsmnqOZBhofG7FQKxMbrk2PmXKEOYYrALk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764279079; c=relaxed/simple;
-	bh=/4UE36Sz3kNKRB/apTfuUAuDjKxDMQHFLCue0Bz04gc=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=nyJeeIHrc50s5m8+eFCBpwn/YbOUDYwaFXq6zoMPUowYPOn7TdnuvsU/PTwKeF4fziqF2SrQuX5ya3S9H3Ny7d9GUGq40JN+HUyjWxqU6wgUMouObrrZUUKoFyOt2YBv7433mOSDVngI5I+151z/z74yl4UIukWCouQdm9hlJ+Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=tuSH50Ti; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=umsAtYqa; arc=none smtp.client-ip=195.135.223.130
+	s=arc-20240116; t=1764280637; c=relaxed/simple;
+	bh=LgMYjRgL3rPBjY4H9Uttgp4T3GZY+/5wwzzCdEiO+Ng=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=HKg6tBgcluywb7QnIGHcv7uLrAZ5wS9AjPgxvbCKRq8VpRKYVcIldP3e3iD/hEFs8auOwq4eSBjRYrNVRfabLlegXegIHBJuh1c2tFjQRdJbhvvPCUYtOHCKxiu0vqzIZvHBM0OTrzW5Iir50zusv9FtI7ezCauAXyKRYrql8RM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=SiEGW2a2; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=SiEGW2a2; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id AF952336A2;
-	Thu, 27 Nov 2025 21:31:14 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 38C24336B1;
+	Thu, 27 Nov 2025 21:57:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1764279075; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1764280632; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=TBm75b9fuEFjxW5+F2I/HB72fedVhrmICKQrCWumHvI=;
-	b=tuSH50TiMVeH1GAVbwVI+B/mxKa6szzPpGjpxIM9NT0WEFGCdNEsmqIyvoMoIWcCGJflHh
-	OKNtoVzBHC9OytZgjAPzAZAl2coz2AGbDmbejQ9TFdNgr7+eld5CtMe5/51nusIa62iyXe
-	3bzUnlyY+F0HH5DKtaw1oYkkoq99HUk=
+	bh=6MQg9R4uWxoU+lXrb2SP1NqmKk/3FnTfaxUeiGuKICk=;
+	b=SiEGW2a2owWT1LS+As5+xXhxmA6i9Q+3eIAK+EEWfV+TZqVy+9psDqAmIxoF52/GcuqrB7
+	or+baR+3DF9F+NkNw0PqmNVxznBX+g5A+gCdPc3UVTlQKWs+Vzb1LEuWbQ7fnxTsMFVBFr
+	nwXkSc6M5a6jsD99keBXDBq9vP689yM=
 Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=umsAtYqa
+	dkim=pass header.d=suse.com header.s=susede1 header.b=SiEGW2a2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1764279074; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1764280632; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=TBm75b9fuEFjxW5+F2I/HB72fedVhrmICKQrCWumHvI=;
-	b=umsAtYqaVy84RLHGGhh8jZQMoJO1aUjipKrb1+5inL89QD9ufBpamkUGj4cHe0DkeUyOYM
-	3ki4C7AUSe6Z6dv1Etr6r2/KoH0tbXV4B+vFtjP1xDvqHAGdnUruZJ8LaGRrHS7q+ruMRw
-	Wf0Z0e4GhU3FVAMboxhpdQ0wAyGvXyY=
+	bh=6MQg9R4uWxoU+lXrb2SP1NqmKk/3FnTfaxUeiGuKICk=;
+	b=SiEGW2a2owWT1LS+As5+xXhxmA6i9Q+3eIAK+EEWfV+TZqVy+9psDqAmIxoF52/GcuqrB7
+	or+baR+3DF9F+NkNw0PqmNVxznBX+g5A+gCdPc3UVTlQKWs+Vzb1LEuWbQ7fnxTsMFVBFr
+	nwXkSc6M5a6jsD99keBXDBq9vP689yM=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B1AB03EA63;
-	Thu, 27 Nov 2025 21:31:13 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 25D513EA63;
+	Thu, 27 Nov 2025 21:57:10 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id xH2mHCHDKGn9IwAAD6G6ig
-	(envelope-from <wqu@suse.com>); Thu, 27 Nov 2025 21:31:13 +0000
+	id pTSINTbJKGmKOwAAD6G6ig
+	(envelope-from <wqu@suse.com>); Thu, 27 Nov 2025 21:57:10 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org,
 	fstests@vger.kernel.org
-Subject: [PATCH] fstests: generic/746: skip if btrfs' new block-group-tree is involved
-Date: Fri, 28 Nov 2025 08:00:52 +1030
-Message-ID: <20251127213052.15859-1-wqu@suse.com>
+Subject: [PATCH v2] fstests: generic/746: skip if btrfs' new block-group-tree is involved
+Date: Fri, 28 Nov 2025 08:26:53 +1030
+Message-ID: <f89dd72abd7040e4373d2655a7f2625f7c96c3b7.1764280576.git.wqu@suse.com>
 X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -107,7 +107,7 @@ X-Spam-Flag: NO
 X-Spam-Score: -3.01
 X-Spam-Level: 
 X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: AF952336A2
+X-Rspamd-Queue-Id: 38C24336B1
 
 [FALSE ALERT]
 The test case will fail on btrfs if the new block-group-tree feature is
@@ -133,15 +133,15 @@ generic/746 44s ... [failed, exit status 1]- output mismatch (see xfstests-dev/r
 [CAUSE]
 Sectors [256, 2048) are the reserved 1M free space.
 Sectors [2048, 2112) are the leading free space in the chunk tree.
-Sectors [2112, 1244) is the first tree block in the chunk tree.
+Sectors [2112, 2144) is the first tree block in the chunk tree.
 
-The reported free sectors from get_free_sectors() looks like this:
+However the reported free sectors from get_free_sectors() looks like this:
 
   2144 10566
   10688 11711
   ...
 
-Note that there should be a free sector range in [2048, 2122) but it's
+Note that there should be a free sector range in [2048, 2112) but it's
 not reported in get_free_sectors().
 
 The get_free_sectors() call is fs dependent, and for btrfs it's using
@@ -163,11 +163,17 @@ skip the test if the btrfs has block-group-tree feature enabled.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
+Changelog
+v2:
+- Fix several typos in the commit message
+  Mostly related to the sequence between 1 and 2, have all kinds of typos
+  like: 2122 (should be 2112) 1244 (should be 2144)
+---
  tests/generic/746 | 12 ++++++++++++
  1 file changed, 12 insertions(+)
 
 diff --git a/tests/generic/746 b/tests/generic/746
-index 6f02b1cc..c62fdbc9 100755
+index 6f02b1cc3547..c62fdbc9de20 100755
 --- a/tests/generic/746
 +++ b/tests/generic/746
 @@ -162,6 +162,18 @@ mkdir $loop_mnt
@@ -190,6 +196,6 @@ index 6f02b1cc..c62fdbc9 100755
  # Goal is to fill it up, ignore any errors.
  for i in `seq 1 10`; do
 -- 
-2.51.2
+2.52.0
 
 
