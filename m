@@ -1,171 +1,173 @@
-Return-Path: <linux-btrfs+bounces-19369-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19370-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98018C8CDE7
-	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Nov 2025 06:25:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6448BC8CE1D
+	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Nov 2025 06:53:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 899494E371C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Nov 2025 05:25:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 148DE3AC8E1
+	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Nov 2025 05:53:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 485BD30F55D;
-	Thu, 27 Nov 2025 05:25:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B310227A460;
+	Thu, 27 Nov 2025 05:53:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="JUftyuKj";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="NB1Dznin"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="F+IWK4q7"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB94C8F4A
-	for <linux-btrfs@vger.kernel.org>; Thu, 27 Nov 2025 05:25:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 804F1258EFB
+	for <linux-btrfs@vger.kernel.org>; Thu, 27 Nov 2025 05:53:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764221141; cv=none; b=oY1qBZ81uDcKknVJKpWsn7xQEcS1/WaMevGTwtoDz0pZi9QQtG9qqX6SX64Z71JkOgPp2w+qSuztRyaLYF31s3AsTl8i1xmxuDsp3kPy9lnxDt6MEuar+mnFwnWVXyHCn6UTTEpL4WniqN1MEpwdehGNadA1q0GBkxO+L+GJKtc=
+	t=1764222792; cv=none; b=tlggf54Cbq/VaEoPtVbA7pzsvm1WWk2oa6RyQ1Do20SUyzxMp8gydENE6Ew3M33uSjYxXK6Ksk6vKA966lgaOqRPRpGhgC+eb9ltE9lm/LJVuUmZniNQapNZHbJ0qoVXPQPpmxnXexS4aJFU9u406hLdKgzMorDto7BAn84eU9M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764221141; c=relaxed/simple;
-	bh=MVX2Zks/haxGb0+IZMb2a2a0vJ92tfo1/2knLqT/+Qg=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=uX5BifyP4+moPOI/ms/z1o3UV2HFF8vncbVRJfG1p3iyeY9gDcQEFUBs3gjDjRRU4GSwjOc23tYz4zY/FyQfs0n3G3U+a5cV0NPLKXbrG0dj5XlgQlJuQ/Sz1YmJWCnhRrIzQXKoPMTm4vrn/jiaUVW5FAhne9/ABHzXNHIRd4c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=JUftyuKj; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=NB1Dznin; arc=none smtp.client-ip=195.135.223.131
+	s=arc-20240116; t=1764222792; c=relaxed/simple;
+	bh=PCrkKs3Mgj5eolVaV80FR7LcOnxHCobIi2Njqhtpy20=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
+	 In-Reply-To:Content-Type; b=j6D6WluY1ovBeEIRLS8yQUhZ4P9uNnnResXL5w63vvDFVv5DGsnDBmCNPvpEVyGDMwYHkVOgjnTCVAeoykmcCNGdazkmlesUHGi8GW3oNQ0f/db9284y774QRZGmFFrjkoOF6mlSRBaF8oGVoD50yulURD0vu2wjGuztjOvbkik=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=F+IWK4q7; arc=none smtp.client-ip=209.85.128.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id ECEBD5BCCC
-	for <linux-btrfs@vger.kernel.org>; Thu, 27 Nov 2025 05:25:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1764221127; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ix/wx2QDkr8lpPjAOIIphPI/aPEkpr37g1GYzcG+cH8=;
-	b=JUftyuKjI1VS7u3B4UvOGNP33r7HlqjCoBv46A0HBZLzjYp+2Q+suwqDG7GtH0d2TBD8/m
-	gHbXJhDnJ+E/5/svUzZ/LvHEUDcI8Qcg2RvtQk5paUl9m6B6UJu+F+y9kfOME9dVkoiQau
-	SvieZlfyYTAnuA6Av4dQExsZ2JWV/08=
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1764221126; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ix/wx2QDkr8lpPjAOIIphPI/aPEkpr37g1GYzcG+cH8=;
-	b=NB1DzninKqkmDWV7bBpRQPXNY3O3ayrXIRvYEaaGkkGVBruwpyX3aIgK1v5FbopfEzEDzL
-	7A9bteMXJjDt+RibLk/iL0cNkL7DnuSsF94rSixFQ1DnHNlnsEQRSPgjSU7bawi4nJTCoC
-	AoglXA87f3TvItSsRH0mp8mF3pTZddo=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 36DC73EA63
-	for <linux-btrfs@vger.kernel.org>; Thu, 27 Nov 2025 05:25:25 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id qOkuOsXgJ2l3fgAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Thu, 27 Nov 2025 05:25:25 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 3/3] btrfs-progs: add block-group-tree to the default mkfs features
-Date: Thu, 27 Nov 2025 15:55:04 +1030
-Message-ID: <89fed6be1ab56ceaf378b87c1f917d2e26f9f105.1764220734.git.wqu@suse.com>
-X-Mailer: git-send-email 2.52.0
-In-Reply-To: <cover.1764220734.git.wqu@suse.com>
-References: <cover.1764220734.git.wqu@suse.com>
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-477b198f4bcso2273465e9.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 26 Nov 2025 21:53:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1764222785; x=1764827585; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :references:to:from:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1XYbz5ePq2A12aW34jPRVpWBdeEY1dFpB/ZcvzC3hn8=;
+        b=F+IWK4q7kFBCnj0SoUvqVaSloDXWHGTagZPm/4XW+/X77U+NOcAigXRjTLYdCEsonJ
+         U7bm4P93giS4BA8ZKbja6YXTP1wVlz2vWPYsuEXs9absjRMyGrLvDgdmy4Fzt3/vhDhE
+         IayWg06GOhLmmwPtmjDMuhqWutEGceTj/audIsH38Y/aoeHiGnpBitMHQw08IJqxFn7P
+         RltI1WdwjAnA7eNAnjKDGH1P74lODOzTt451tBmCOpZMtI57HFP87zy8ylI2CHpbh25p
+         kR6oX/Z/G9hsm3cPyKNfXlMB5oVoJSj3pD1Sahtru0l7pHUopxQHt4We7b592wMMl8mu
+         0t7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1764222785; x=1764827585;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :references:to:from:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1XYbz5ePq2A12aW34jPRVpWBdeEY1dFpB/ZcvzC3hn8=;
+        b=ivUdk5Qrd+cOF4YP2MrRwT+gxSPP1QY0cxCx4dLzfxi4kJl1cvqFnHHeMDzY0pbRXA
+         1qxDBLYKHe+0xHMpUuyEiPYOWlNN6/W9H3XmeADdouSv3qh6rwC4GxEPB/eJwMscaHDs
+         97qv+uqzj24dw5YiIsFVXMAxL8zTrpN8BFhaQQmsUCl7ALkmDgw2bTYKFjcm55/VFrR+
+         NTF0rLDR0Lqk4YwYuAbsap7/HLwlCjCvGeIwmOulIvBxipEdQbA6mTcS1UYTJJ+K76pN
+         ci3+vPSKyEN7iLec3AgCqCaZpHx1MQZnU1Dl/wI38lOiM0BHNibju/ZkDtNitvqDjIK3
+         dW8A==
+X-Gm-Message-State: AOJu0YzMlar/50ZdKBiWyxBR5503SBuOlNvtTsuQIQIj6MS50n3ezs9R
+	4ZBKLTyW+mjmh/sKdz4mMLEk/4C2i7iCdXIgMMvqxYwYIN8DEt+wbBYwQ0lCmlQEc95QP8qzwM5
+	vQk7q
+X-Gm-Gg: ASbGncuz3z/OKEGrdvY6QuGcgSwBR+enYKJpcpCSMaw+Bnda2qBRstjmH3BeYJb273T
+	DdtlAbiL+b+UHv6Hjo7cZGvTunuJsT76p7n7FCwkpXLFIfo2/Sy9xzz/Cj5zursLfOvZBiSaorP
+	lA9bmPvy1TEg8OrNQXjTfH/7hFAetOFeJYZajSDy3+BYcdvpdbhdpUeLbFbHz4OhOjaG5pzJ0On
+	tde8jh+5YN9By0S+A12xer/WiXu2ieuxJTXnZ3znPITk0FIVoH8exGx+GepMCpTXcBrgsNn86XE
+	kBSlbz4Up9aFx0nZHwHC0+AHG+Yrf1/9XCe2cslcTflNksP4qcNndyuWcX05gSOXhLEL7EC7kaf
+	IX4aSR9ljyYuoFV6nAu2OzSZiYaY1zB8WJSRi8Q4I6C04Fx59z+djyW+M8n6vK1CDyBNUr3ga2L
+	kqdArXdfbLdj9NcrXNny13zxvmLdKl7ofpe8xCKtk=
+X-Google-Smtp-Source: AGHT+IHcpSKb8qgBskeXJldHdnjMEKP9crYBAOK7ID2x3HzWyO8U7hFiFe/YpysQSDwrCuMbQiqDfA==
+X-Received: by 2002:a05:600c:5491:b0:46e:32d4:46a1 with SMTP id 5b1f17b1804b1-477c01c36d7mr199822895e9.22.1764222784705;
+        Wed, 26 Nov 2025 21:53:04 -0800 (PST)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29bceb450cfsm4394915ad.74.2025.11.26.21.53.03
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 26 Nov 2025 21:53:04 -0800 (PST)
+Message-ID: <0e809709-32f0-4dc7-88d2-b80b8cabfb85@suse.com>
+Date: Thu, 27 Nov 2025 16:23:01 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/3] btrfs-progs: add block-group-tree to the default
+ mkfs/convert features
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+References: <cover.1764220734.git.wqu@suse.com>
+Content-Language: en-US
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
+ Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
+ fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
+ 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
+ V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
+ rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
+ cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
+ qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
+ /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
+ o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
+ JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+In-Reply-To: <cover.1764220734.git.wqu@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Flag: NO
-X-Spam-Score: -2.80
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	RCVD_TLS_ALL(0.00)[]
 
-The block-group-tree feature is already considered safe since v6.6
-kernels, and btrfs-progs have also improved its off-line conversion
-ability (btrfstune --convert-to|from-block-group-tree).
 
-Now it's time to make bgt feature as the default mkfs features.
-This affects both mkfs and btrfs-convert.
 
-The target merge window is v6.18.
+在 2025/11/27 15:55, Qu Wenruo 写道:
+> I was planning to do this during v6.12 but forgot it and now the next
+> LTS kernel release is not that far away, it's finally time to make the
+> switch.
+> 
+> The first patch is to update the existing test cases related to
+> disabling no-holes/free-space-tree, which will lead to mkfs/convert
+> failure as block-group-tree requires those two features.
+> 
+> The second patch is a large page-size specific fix, where on 64K page
+> size systems misc/057 will fail due to subpage mount always enables v2
+> free space cache, resulting later conversion failure to fst.
+> 
+> The final patch is the one enabling new default block-group-tree feature
+> for mkfs and convert.
+> 
+> Qu Wenruo (3):
+>    btrfs-progs: tests: disable bgt feature for ^no-holes and ^fst runs
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- Documentation/mkfs.btrfs.rst | 2 +-
- common/fsfeatures.c          | 2 +-
- common/fsfeatures.h          | 3 ++-
- 3 files changed, 4 insertions(+), 3 deletions(-)
+Although we can fix the test case for progs selftests, it will be a much 
+more complex work to address all fstests test cases.
 
-diff --git a/Documentation/mkfs.btrfs.rst b/Documentation/mkfs.btrfs.rst
-index 7734354fd6da..b4e23cc1fb24 100644
---- a/Documentation/mkfs.btrfs.rst
-+++ b/Documentation/mkfs.btrfs.rst
-@@ -424,7 +424,7 @@ free-space-tree
- .. _mkfs-feature-block-group-tree:
- 
- block-group-tree
--        (kernel support since 6.1)
-+        (default since btrfs-progs v6.19, kernel support since 6.1)
- 
-         Enable a dedicated b-tree for block group items, this greatly reduces
-         mount time for large filesystems due to better data locality that
-diff --git a/common/fsfeatures.c b/common/fsfeatures.c
-index 69a1b3934099..389d19b4d416 100644
---- a/common/fsfeatures.c
-+++ b/common/fsfeatures.c
-@@ -219,7 +219,7 @@ static const struct btrfs_feature mkfs_features[] = {
- 		.sysfs_name	= "block_group_tree",
- 		VERSION_TO_STRING2(compat, 6,1),
- 		VERSION_TO_STRING2(safe, 6,6),
--		VERSION_NULL(default),
-+		VERSION_TO_STRING2(default, 6,19),
- 		.desc		= "block group tree, more efficient block group tracking to reduce mount time"
- 	},
- #if EXPERIMENTAL
-diff --git a/common/fsfeatures.h b/common/fsfeatures.h
-index 3559076ba5dc..3ae8d2a5eed7 100644
---- a/common/fsfeatures.h
-+++ b/common/fsfeatures.h
-@@ -46,7 +46,8 @@ struct btrfs_mkfs_features {
- 
- static const struct btrfs_mkfs_features btrfs_mkfs_default_features = {
- 	.compat_ro_flags = BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE |
--			   BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE_VALID,
-+			   BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE_VALID |
-+			   BTRFS_FEATURE_COMPAT_RO_BLOCK_GROUP_TREE,
- 	.incompat_flags	 = BTRFS_FEATURE_INCOMPAT_EXTENDED_IREF |
- 			   BTRFS_FEATURE_INCOMPAT_NO_HOLES |
- 			   BTRFS_FEATURE_INCOMPAT_SKINNY_METADATA,
--- 
-2.52.0
+I do not think we will really deprecate explicit holes any time soon, 
+thus those fstests will stay.
+
+I'll update the series to automatically disable bgt feature instead. So 
+that mkfs.btrfs -O ^no-holes can still work as expected (no no-holes nor 
+bgt).
+
+Thanks,
+Qu
+
+>    btrfs-progs: misc-tests: check if free space tree is enabled after
+>      mount
+>    btrfs-progs: add block-group-tree to the default mkfs features
+> 
+>   Documentation/mkfs.btrfs.rst                           |  2 +-
+>   common/fsfeatures.c                                    |  2 +-
+>   common/fsfeatures.h                                    |  3 ++-
+>   tests/cli-tests/009-btrfstune/test.sh                  |  2 +-
+>   tests/misc-tests/001-btrfstune-features/test.sh        |  9 +++++----
+>   tests/misc-tests/057-btrfstune-free-space-tree/test.sh | 10 +++++++++-
+>   6 files changed, 19 insertions(+), 9 deletions(-)
+> 
+> --
+> 2.52.0
+> 
+> 
 
 
