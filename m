@@ -1,179 +1,309 @@
-Return-Path: <linux-btrfs+bounces-19375-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19376-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E286C8D1F9
-	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Nov 2025 08:34:49 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 106C8C8D5D8
+	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Nov 2025 09:37:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 317D4350A8F
-	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Nov 2025 07:34:09 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 750E14E586C
+	for <lists+linux-btrfs@lfdr.de>; Thu, 27 Nov 2025 08:37:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AD5A1487E9;
-	Thu, 27 Nov 2025 07:33:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 334C9324B3E;
+	Thu, 27 Nov 2025 08:37:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="MaCSJsxb";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="MaCSJsxb"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="ehn1f+jc";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="fo2xKWPV"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fout-b3-smtp.messagingengine.com (fout-b3-smtp.messagingengine.com [202.12.124.146])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8C7D31A07C
-	for <linux-btrfs@vger.kernel.org>; Thu, 27 Nov 2025 07:33:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DCFA321F48
+	for <linux-btrfs@vger.kernel.org>; Thu, 27 Nov 2025 08:37:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.146
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764228828; cv=none; b=V/FUkfoK7wUCJMSm+obWE5Jz2prPM9PQlx/J+J32UCeQRYBOSq+xSjevJLW9q6pqfo6CVF1iT5VMpQGApAQRYxNKrnuBX3GEJ8Zhn8z56BLbLP37jrlyAT6qLDPplNolVDgf3VZZSHdDvkIsSKHNl70vkY6jzmsAVY1eBF4GuSM=
+	t=1764232642; cv=none; b=CPnxWG1e2WsTAesqCZ0xwXlN5cm8vdJCracT8t6V+qIqBk0zwCvm7IiQUJswrglWIHo62Rlt+P7KL/nczyWz40j45L5Ax0+BAuTHk9eyQ11QPGlC15ucaQamsA3Ex6nKPfPU7NESB8+KhITMBbJUrIQ67cUnPbLhBHByX0QcnSE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764228828; c=relaxed/simple;
-	bh=Fu7nZOl5gZ/ky19Ui69zrcbEDON5kFSQWR58Cl3fXtk=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=hRBUDMUO/FjjhVB43AAd3oGttvMSLEfDX20D0G6aNOolb3omWSMkBaVy/n3QSi8RV+Hm1wowAQK3hz7k4Dibl/qJoeuRmYlI9AZsr6QthKeGK9aTo2o2m3iTMA3PV2h5J2h2pS1GZWApVy45KJgiZEFhozCh9DTEA1S8FQRRRTk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=MaCSJsxb; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=MaCSJsxb; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 44F985BD00
-	for <linux-btrfs@vger.kernel.org>; Thu, 27 Nov 2025 07:33:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1764228819; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Lc70kxfLl5KS4z5e0Vu1inxAL6iT+Y2Zb1/GHzA+akk=;
-	b=MaCSJsxb2f4U1130haBxyiQs5W6y4EMgqt6JIH/EoYclyG34nznBHYy0VrMuOcyalLfw9d
-	OUqkWUIyw8UzPxGQJID1i7yZGgXZzP7ZbsUI9ulwp6ze6Tgm//iF1b0tnL4OpN1AjsEbnu
-	kVHL69o7ZDBvEBLp+EjX8XqEoHci3tc=
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=MaCSJsxb
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1764228819; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Lc70kxfLl5KS4z5e0Vu1inxAL6iT+Y2Zb1/GHzA+akk=;
-	b=MaCSJsxb2f4U1130haBxyiQs5W6y4EMgqt6JIH/EoYclyG34nznBHYy0VrMuOcyalLfw9d
-	OUqkWUIyw8UzPxGQJID1i7yZGgXZzP7ZbsUI9ulwp6ze6Tgm//iF1b0tnL4OpN1AjsEbnu
-	kVHL69o7ZDBvEBLp+EjX8XqEoHci3tc=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8446E3EA63
-	for <linux-btrfs@vger.kernel.org>; Thu, 27 Nov 2025 07:33:38 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id OEv8EdL+J2nlcgAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Thu, 27 Nov 2025 07:33:38 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 3/3] btrfs-progs: add block-group-tree to the default mkfs features
-Date: Thu, 27 Nov 2025 18:03:17 +1030
-Message-ID: <5b47a8e82ae8f4c1b630f5e14a2176802d9d98b1.1764228560.git.wqu@suse.com>
-X-Mailer: git-send-email 2.52.0
-In-Reply-To: <cover.1764228560.git.wqu@suse.com>
-References: <cover.1764228560.git.wqu@suse.com>
+	s=arc-20240116; t=1764232642; c=relaxed/simple;
+	bh=U+cb4ofjgqZ1ndI3JBKnvXE0+u2a7zaomIIOW8QKj8c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=paXHMVCW5QFpx+sXDHqc+VdlpLafhm7k1TV3IyoKbCKkbb4ELQg/pUlSHNmmrvtQp4rtB3LRvKRl5bDsKdstXGAnYb8qcnMDykVEzA7upRyN9r/j8MH9c03lXf2QwSgze8qQNx0vPOnic7AquZoTecApCJqVCKf5f61hCKFLiYo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=ehn1f+jc; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=fo2xKWPV; arc=none smtp.client-ip=202.12.124.146
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
+Received: from phl-compute-02.internal (phl-compute-02.internal [10.202.2.42])
+	by mailfout.stl.internal (Postfix) with ESMTP id 22B591D00157;
+	Thu, 27 Nov 2025 03:37:19 -0500 (EST)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-02.internal (MEProxy); Thu, 27 Nov 2025 03:37:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+	:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm1; t=1764232638; x=1764319038; bh=8/F+luMCva
+	mhh+Hb7uNLkfLK5aSvfF/VioaXeZwu2UE=; b=ehn1f+jcO4h5lKs5hpmBYqJGWH
+	kk93b/gMeak/VrbwflwmZ17tgdGWM0I6NE1JiCTPV/+lSbYamRN9DLZ4ho5cXaAc
+	zxNSxMyPBVcELV/4ZAM9BiViZMUQjdj89YwuuKGSQ+63oXxmm7MPbZJnRuBbsOCH
+	X+IuZ3Gu8yFwJMtq9VQeiYhtTrd5reaQHz6YoJ/RqRTipDuQqKU8iU0D6iFHB4D6
+	J2sLm4NzhP3npb2U+SHrXgfiT+Hzi90C6Nq7cNEzlTIJI7mNSEw3j4ERlCDOHJAu
+	A6ONC6imauEMe4ETLBwWpbO9KUrm0MpjKEq+Q9FbvdJfFwZ6Ace0Cz7xun0A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+	1764232638; x=1764319038; bh=8/F+luMCvamhh+Hb7uNLkfLK5aSvfF/Vioa
+	XeZwu2UE=; b=fo2xKWPVp7G7da5X0s+x+0HJuGVaCAu63I8pIWKSiR/bQjBAa3u
+	iREiedJPvpBugrJphgIHsnObKVP1MiDR5mJDcO+ufWIa1BmmOKyzMII5j7DzCBrj
+	EAl/OZJIs+FekEn48Flq0I24kGJZ6hWbonXejuJKqyoUkUOSkc4FmjJ2QurLnozC
+	CGtoHewu0fyTbdfdkllj4UVL1vpOYI5hjVt+WbXhLyCiy0Mre9V+1oO2u1wDWcJr
+	G/4o1Pl/R775d4KUMaUb9Um7Ap/sx2z8M/PWcgOrFZaKENgCdZuBVR1upY1Z4szj
+	Kms2mSS1Dj8cfcNFIX2Uv3ibwxNikCZwe5A==
+X-ME-Sender: <xms:vQ0oaUo7QMGmZjtj1TgpTVlnEgRAY9GZ0AuOgau3o8VMpgwmfmtlGQ>
+    <xme:vQ0oaQpaaaoNT7JVd5SsAEKh3eDF3vIQ73hChIwkXoEWyi1Go11c19ndEIkRbpoTB
+    q0d2Y2U_y47_QQVc2abqMKgmebUqFQ_EO8NlW_SQm-r2EHJGBSA36hw>
+X-ME-Received: <xmr:vQ0oaW1IQRf_k41_WNMYUQro9XUALgh6TxV-_p30btnbUa9u3r43y1xPVyyAthZikSaye1bJI8vE5OoRRDvlU1vwqSk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggddvgeeijeejucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
+    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
+    gurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhishcu
+    uehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpeekvd
+    ekffejleelhfevhedvjeduhfejtdfhvdevieeiiedugfeugfdtjefgfeeljeenucevlhhu
+    shhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuh
+    hrrdhiohdpnhgspghrtghpthhtohepvddpmhhouggvpehsmhhtphhouhhtpdhrtghpthht
+    ohepmhgrrhhksehhrghrmhhsthhonhgvrdgtohhmpdhrtghpthhtoheplhhinhhugidqsg
+    htrhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:vg0oaXANNADqt-2MkkE-4-XbCYj_yOs_CpuZ8MG_HuGYi5pICvJ2cA>
+    <xmx:vg0oaWfWQketOzdwdrJax40Ok1IQhLQ27OpZYNXlZYggHhUmjbyP_w>
+    <xmx:vg0oaUi_ofqeJzfageFK64GWN1SMpiIVB60bHZWm2sqCUAadIIrbRw>
+    <xmx:vg0oaWrUrarjUeWkE3BP2RblsJaQRkJ41yTSaiitFJrSMOZZXrlCww>
+    <xmx:vg0oaYe-TwJjDTw80h-Rl9tmxlaEojK0R6IAwImUPqaPJGpVMkPwXpJ7>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 27 Nov 2025 03:37:17 -0500 (EST)
+Date: Thu, 27 Nov 2025 00:37:28 -0800
+From: Boris Burkov <boris@bur.io>
+To: Mark Harmstone <mark@harmstone.com>
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH v7 16/16] btrfs: populate fully_remapped_bgs_list on mount
+Message-ID: <20251127083531.GA2656892@zen.localdomain>
+References: <20251124185335.16556-1-mark@harmstone.com>
+ <20251124185335.16556-17-mark@harmstone.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.com:mid,suse.com:dkim,suse.com:email];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCPT_COUNT_ONE(0.00)[1];
-	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	FROM_EQ_ENVFROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.com:mid,suse.com:dkim,suse.com:email];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	DKIM_TRACE(0.00)[suse.com:+]
-X-Spam-Level: 
-X-Spam-Score: -3.01
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 44F985BD00
-X-Rspamd-Action: no action
-X-Spam-Flag: NO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251124185335.16556-17-mark@harmstone.com>
 
-The block-group-tree feature is already considered safe since v6.6
-kernels, and btrfs-progs have also improved its off-line conversion
-ability (btrfstune --convert-to|from-block-group-tree).
-
-Now it's time to make bgt feature as the default mkfs features.
-This affects both mkfs and btrfs-convert.
-
-The target merge window is v6.18.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- Documentation/mkfs.btrfs.rst | 2 +-
- common/fsfeatures.c          | 2 +-
- common/fsfeatures.h          | 3 ++-
- 3 files changed, 4 insertions(+), 3 deletions(-)
-
-diff --git a/Documentation/mkfs.btrfs.rst b/Documentation/mkfs.btrfs.rst
-index 100449675597..fdaf035d8e20 100644
---- a/Documentation/mkfs.btrfs.rst
-+++ b/Documentation/mkfs.btrfs.rst
-@@ -424,7 +424,7 @@ free-space-tree
- .. _mkfs-feature-block-group-tree:
- 
- block-group-tree
--        (kernel support since 6.1)
-+        (default since btrfs-progs v6.19, kernel support since 6.1)
- 
-         Enable a dedicated b-tree for block group items, this greatly reduces
-         mount time for large filesystems due to better data locality that
-diff --git a/common/fsfeatures.c b/common/fsfeatures.c
-index 69a1b3934099..389d19b4d416 100644
---- a/common/fsfeatures.c
-+++ b/common/fsfeatures.c
-@@ -219,7 +219,7 @@ static const struct btrfs_feature mkfs_features[] = {
- 		.sysfs_name	= "block_group_tree",
- 		VERSION_TO_STRING2(compat, 6,1),
- 		VERSION_TO_STRING2(safe, 6,6),
--		VERSION_NULL(default),
-+		VERSION_TO_STRING2(default, 6,19),
- 		.desc		= "block group tree, more efficient block group tracking to reduce mount time"
- 	},
- #if EXPERIMENTAL
-diff --git a/common/fsfeatures.h b/common/fsfeatures.h
-index 3559076ba5dc..3ae8d2a5eed7 100644
---- a/common/fsfeatures.h
-+++ b/common/fsfeatures.h
-@@ -46,7 +46,8 @@ struct btrfs_mkfs_features {
- 
- static const struct btrfs_mkfs_features btrfs_mkfs_default_features = {
- 	.compat_ro_flags = BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE |
--			   BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE_VALID,
-+			   BTRFS_FEATURE_COMPAT_RO_FREE_SPACE_TREE_VALID |
-+			   BTRFS_FEATURE_COMPAT_RO_BLOCK_GROUP_TREE,
- 	.incompat_flags	 = BTRFS_FEATURE_INCOMPAT_EXTENDED_IREF |
- 			   BTRFS_FEATURE_INCOMPAT_NO_HOLES |
- 			   BTRFS_FEATURE_INCOMPAT_SKINNY_METADATA,
--- 
-2.52.0
-
+On Mon, Nov 24, 2025 at 06:53:08PM +0000, Mark Harmstone wrote:
+> Add a function btrfs_populate_fully_remapped_bgs_list() which gets
+> called on mount, which looks for fully remapped block groups
+> (i.e. identity_remap_count == 0) which haven't yet had their chunk
+> stripes and device extents removed.
+> 
+> This happens when a filesystem is unmounted while async discard has not
+> yet finished, as otherwise the data range occupied by the chunk stripes
+> would be permanently unusable.
+> 
+Reviewed-by: Boris Burkov <boris@bur.io>
+> Signed-off-by: Mark Harmstone <mark@harmstone.com>
+> ---
+>  fs/btrfs/block-group.c      | 79 +++++++++++++++++++++++++++++++++++++
+>  fs/btrfs/block-group.h      |  2 +
+>  fs/btrfs/disk-io.c          |  9 +++++
+>  fs/btrfs/free-space-cache.c | 18 +++++++++
+>  fs/btrfs/relocation.c       |  4 ++
+>  5 files changed, 112 insertions(+)
+> 
+> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+> index a6005a54273f..e82a8d8618be 100644
+> --- a/fs/btrfs/block-group.c
+> +++ b/fs/btrfs/block-group.c
+> @@ -4823,6 +4823,11 @@ void btrfs_mark_bg_fully_remapped(struct btrfs_block_group *bg,
+>  	struct btrfs_fs_info *fs_info = trans->fs_info;
+>  
+>  	if (btrfs_test_opt(fs_info, DISCARD_ASYNC)) {
+> +		spin_lock(&bg->lock);
+> +		set_bit(BLOCK_GROUP_FLAG_STRIPE_REMOVAL_PENDING,
+> +			&bg->runtime_flags);
+> +		spin_unlock(&bg->lock);
+> +
+>  		btrfs_discard_queue_work(&fs_info->discard_ctl, bg);
+>  	} else {
+>  		spin_lock(&fs_info->unused_bgs_lock);
+> @@ -4842,3 +4847,77 @@ void btrfs_mark_bg_fully_remapped(struct btrfs_block_group *bg,
+>  		spin_unlock(&fs_info->unused_bgs_lock);
+>  	}
+>  }
+> +
+> +/*
+> + * Compare the block group and chunk trees, and find any fully-remapped block
+> + * groups which haven't yet had their chunk stripes and device extents removed,
+> + * and put them on the fully_remapped_bgs list so this gets done.
+> + *
+> + * This happens when a block group becomes fully remapped, i.e. its last
+> + * identity mapping is removed, and the volume is unmounted before async
+> + * discard has finished. It's important this gets done as until it is the
+> + * chunk's stripes are dead space.
+> + */
+> +int btrfs_populate_fully_remapped_bgs_list(struct btrfs_fs_info *fs_info)
+> +{
+> +	struct rb_node *node_bg, *node_chunk;
+> +
+> +	node_bg = rb_first_cached(&fs_info->block_group_cache_tree);
+> +	node_chunk = rb_first_cached(&fs_info->mapping_tree);
+> +
+> +	while (node_bg && node_chunk) {
+> +		struct btrfs_block_group *bg;
+> +		struct btrfs_chunk_map *map;
+> +
+> +		bg = rb_entry(node_bg, struct btrfs_block_group, cache_node);
+> +		map = rb_entry(node_chunk, struct btrfs_chunk_map, rb_node);
+> +
+> +		ASSERT(bg->start == map->start);
+> +
+> +		if (!(bg->flags & BTRFS_BLOCK_GROUP_REMAPPED))
+> +			goto next;
+> +
+> +		if (bg->identity_remap_count != 0)
+> +			goto next;
+> +
+> +		if (map->num_stripes == 0)
+> +			goto next;
+> +
+> +		spin_lock(&fs_info->unused_bgs_lock);
+> +
+> +		if (list_empty(&bg->bg_list)) {
+> +			btrfs_get_block_group(bg);
+> +			list_add_tail(&bg->bg_list,
+> +				      &fs_info->fully_remapped_bgs);
+> +		} else {
+> +			list_move_tail(&bg->bg_list,
+> +				       &fs_info->fully_remapped_bgs);
+> +		}
+> +
+> +		spin_unlock(&fs_info->unused_bgs_lock);
+> +
+> +		/*
+> +		 * Ideally we'd want to call btrfs_discard_queue_work() here,
+> +		 * but it'd do nothing as the discard worker hasn't been
+> +		 * started yet.
+> +		 *
+> +		 * The block group will get added to the discard list when
+> +		 * btrfs_handle_fully_remapped_bgs() gets called, when we
+> +		 * commit the first transaction.
+> +		 */
+> +		if (btrfs_test_opt(fs_info, DISCARD_ASYNC)) {
+> +			spin_lock(&bg->lock);
+> +			set_bit(BLOCK_GROUP_FLAG_STRIPE_REMOVAL_PENDING,
+> +				&bg->runtime_flags);
+> +			spin_unlock(&bg->lock);
+> +		}
+> +
+> +next:
+> +		node_bg = rb_next(node_bg);
+> +		node_chunk = rb_next(node_chunk);
+> +	}
+> +
+> +	ASSERT(!node_bg && !node_chunk);
+> +
+> +	return 0;
+> +}
+> diff --git a/fs/btrfs/block-group.h b/fs/btrfs/block-group.h
+> index 743702f4e5d1..bdb75bf1c3f5 100644
+> --- a/fs/btrfs/block-group.h
+> +++ b/fs/btrfs/block-group.h
+> @@ -93,6 +93,7 @@ enum btrfs_block_group_flags {
+>  	 * transaction.
+>  	 */
+>  	BLOCK_GROUP_FLAG_NEW,
+> +	BLOCK_GROUP_FLAG_STRIPE_REMOVAL_PENDING,
+>  };
+>  
+>  enum btrfs_caching_type {
+> @@ -416,5 +417,6 @@ int btrfs_use_block_group_size_class(struct btrfs_block_group *bg,
+>  bool btrfs_block_group_should_use_size_class(const struct btrfs_block_group *bg);
+>  void btrfs_mark_bg_fully_remapped(struct btrfs_block_group *bg,
+>  				  struct btrfs_trans_handle *trans);
+> +int btrfs_populate_fully_remapped_bgs_list(struct btrfs_fs_info *fs_info);
+>  
+>  #endif /* BTRFS_BLOCK_GROUP_H */
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index e29a6d5ecb2d..7e0e5f6f3223 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -3637,6 +3637,15 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
+>  		goto fail_sysfs;
+>  	}
+>  
+> +	if (btrfs_fs_incompat(fs_info, REMAP_TREE)) {
+> +		ret = btrfs_populate_fully_remapped_bgs_list(fs_info);
+> +		if (ret) {
+> +			btrfs_err(fs_info,
+> +			"failed to populate fully_remapped_bgs list: %d", ret);
+> +			goto fail_sysfs;
+> +		}
+> +	}
+> +
+>  	btrfs_zoned_reserve_data_reloc_bg(fs_info);
+>  	btrfs_free_zone_cache(fs_info);
+>  
+> diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
+> index e15fa8567f7c..7f7744a78de2 100644
+> --- a/fs/btrfs/free-space-cache.c
+> +++ b/fs/btrfs/free-space-cache.c
+> @@ -3068,6 +3068,7 @@ bool btrfs_is_free_space_trimmed(struct btrfs_block_group *block_group)
+>  	bool ret = true;
+>  
+>  	if (block_group->flags & BTRFS_BLOCK_GROUP_REMAPPED &&
+> +	    !test_bit(BLOCK_GROUP_FLAG_STRIPE_REMOVAL_PENDING, &block_group->runtime_flags) &&
+>  	    block_group->identity_remap_count == 0) {
+>  		return true;
+>  	}
+> @@ -3849,6 +3850,23 @@ void btrfs_trim_fully_remapped_block_group(struct btrfs_block_group *bg)
+>  	const u64 max_discard_size = READ_ONCE(discard_ctl->max_discard_size);
+>  	u64 end = btrfs_block_group_end(bg);
+>  
+> +	if (!test_bit(BLOCK_GROUP_FLAG_STRIPE_REMOVAL_PENDING, &bg->runtime_flags)) {
+> +		bg->discard_cursor = end;
+> +
+> +		if (bg->used == 0) {
+> +			spin_lock(&fs_info->unused_bgs_lock);
+> +			if (!list_empty(&bg->bg_list)) {
+> +				list_del_init(&bg->bg_list);
+> +				btrfs_put_block_group(bg);
+> +			}
+> +			spin_unlock(&fs_info->unused_bgs_lock);
+> +
+> +			btrfs_mark_bg_unused(bg);
+> +		}
+> +
+> +		return;
+> +	}
+> +
+>  	bytes = end - bg->discard_cursor;
+>  
+>  	if (max_discard_size &&
+> diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+> index 2e1a87ab0509..25766b418a6b 100644
+> --- a/fs/btrfs/relocation.c
+> +++ b/fs/btrfs/relocation.c
+> @@ -4792,6 +4792,10 @@ int btrfs_last_identity_remap_gone(struct btrfs_chunk_map *chunk,
+>  
+>  	btrfs_remove_bg_from_sinfo(bg);
+>  
+> +	spin_lock(&bg->lock);
+> +	clear_bit(BLOCK_GROUP_FLAG_STRIPE_REMOVAL_PENDING, &bg->runtime_flags);
+> +	spin_unlock(&bg->lock);
+> +
+>  	ret = remove_chunk_stripes(trans, chunk, path);
+>  	if (ret) {
+>  		btrfs_abort_transaction(trans, ret);
+> -- 
+> 2.51.0
+> 
 
