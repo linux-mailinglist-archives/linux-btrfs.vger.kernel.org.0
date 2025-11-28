@@ -1,63 +1,63 @@
-Return-Path: <linux-btrfs+bounces-19399-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19400-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BC44C9242C
-	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Nov 2025 15:17:11 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24C34C9240D
+	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Nov 2025 15:16:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC8EC3AF126
-	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Nov 2025 14:16:15 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 6920B3509F5
+	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Nov 2025 14:16:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21013331230;
-	Fri, 28 Nov 2025 14:14:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5CBB3314A9;
+	Fri, 28 Nov 2025 14:14:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="CUNTNYGD"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jDI9BYqq"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D05F6331232;
-	Fri, 28 Nov 2025 14:14:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 881EE33123D;
+	Fri, 28 Nov 2025 14:14:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764339295; cv=none; b=Bu8lLBZ6DxAalQEYC21P0azU3IHxbMg4R8E7QCkk/tp1tJ02EWx3CCIeDKnzV0VjxsNgX2hvIoN63+hLrqzc89OWRc8bvUnN+NTpiFotNBEoOQMbN/e4bYWfmIWRQ4h4iV3SWpaYYeovNL4qlNY6bkJ2xi0TK01dDPiSqU+tkzQ=
+	t=1764339298; cv=none; b=cTecwxG6l6HaeWpMMBF14Q8WNihUzY9FmR/fKRyXO6ElcNPxYXsxpm8b0ktvF3EV2VDDEKDk5fkxi0ZyV6QaiaqnKBNT8H85r5kf+P2s26tAfi0T9iKOnjU/mSHp8JG8ntsFowCofUJfS3K+UVwW4RUiM1Dag/9C9O5tA8PgOTA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764339295; c=relaxed/simple;
-	bh=ZvqmPw4T6Gz2H3QQj/9UnAx9YD3LsI8N8HhCpw+JSNA=;
+	s=arc-20240116; t=1764339298; c=relaxed/simple;
+	bh=y3ErzXKc3FPuya5jOZqBcRVODuHT2ckpbDssR0XNHKc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=eM04f5oewfRjRAF3KMPtOWRiw1s6BpLwfe392Po3elI3x6kBIAVr+YTbj4wgdM3h3fHCiDumau9ubfcbGjPWfL0YCBcLuDSZHRR9sgT6gmY01gyaRf6jk0PI/0bOwM+AwdWywClqWmwzaM2Ja01lOZnRQShb1OdGmbxErU47RrY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=CUNTNYGD; arc=none smtp.client-ip=192.198.163.14
+	 MIME-Version; b=Wk9dJbLKowy3TpBLfWKenAfV1HXYXrFHhjpfZWX4uHZSkrBFkFMLGU1Omij35xJUkxL5i5JFClPW2uuE3t1cb7o4YozfceZ9fVhBUGa5QR6ti4kTGUu+Id99s0zqGNwrNcH8GFxAqos2He+yIeDKlzaPOr3M1t4tjo+EwfZo/fA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jDI9BYqq; arc=none smtp.client-ip=192.198.163.14
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1764339294; x=1795875294;
+  t=1764339297; x=1795875297;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=ZvqmPw4T6Gz2H3QQj/9UnAx9YD3LsI8N8HhCpw+JSNA=;
-  b=CUNTNYGDYKahJk2UuBuy/0cfbjLFmXYM2lBG/5T0hF4aBk9WEkvKtrwF
-   ERuoNjC06Q8GDIKQluqKOqelJdUft3/YbXM8R2ZqNyMNQ17+c+mq1HOHB
-   sC2uvUd8hBRa5NXQK6j+QjcyFfygK2ittIDRsipAUHvOdZY/qJoWb12Yv
-   jpXh6yH/3F+snYRjHbQLS2PH1rQ719OPrWVlWzx7Uig4FPU/slzirqTxQ
-   BLP7fQ69T+uSknvNSfonaRhrOEd76s0nM3/N3fvN5lFp5ErRKqje/T1Zu
-   W5yQ4FTiaj/eKuR7PUfcQxc6ADrzYtNShncfVXsoSvJ9m6zchbeQwRe+k
-   w==;
-X-CSE-ConnectionGUID: 28vmeiPfQvWs/fgSKZmxvA==
-X-CSE-MsgGUID: ZfTMn0EHTPOTmYIKchamZw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11626"; a="66409465"
+  bh=y3ErzXKc3FPuya5jOZqBcRVODuHT2ckpbDssR0XNHKc=;
+  b=jDI9BYqqtCnrh574tA5KOsjwt3FuPflb+kig5Ci57weoqFOUJFLPwzbv
+   BPgPBYFZYcOg5N9UeSK6bygWNgSFNAqsvSphhPYU9U+yCZbY0tymAUT6V
+   uzuHA4zGY64jdO18gCCHXwpoKnnbjqaHDPXh5b7XxyW7fbRVaZzsjQhgg
+   PHYuhgls2EgH5ErKqI7/0xTjLbkILcp4VxAr03OnkRALSz1H3Y5yeTiEr
+   2utnrOwx3biOC9rKN7W7jGoVx4iJYVvPuwuu36o+sERGf+EkqfRqjTtsd
+   taAZUs17NCvPu5h6C8uaCoUrVrfW0L7mSmb9pMtxdulo99ZpHfMF+O+Mq
+   A==;
+X-CSE-ConnectionGUID: ced5sbxbReeeWK73MUlmpA==
+X-CSE-MsgGUID: 8fVB1xqgS7CIpLvI0KjnPg==
+X-IronPort-AV: E=McAfee;i="6800,10657,11626"; a="66409477"
 X-IronPort-AV: E=Sophos;i="6.20,234,1758610800"; 
-   d="scan'208";a="66409465"
+   d="scan'208";a="66409477"
 Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2025 06:14:54 -0800
-X-CSE-ConnectionGUID: 07AYphcUQHqkriIaFNQvYw==
-X-CSE-MsgGUID: xepMrwxoS7ONCJUXcrYvfg==
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Nov 2025 06:14:56 -0800
+X-CSE-ConnectionGUID: Kg9RyktLTDKBKeryJ8YyEA==
+X-CSE-MsgGUID: gJheXkDPRYqQwaLkE/OZ4Q==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.20,234,1758610800"; 
-   d="scan'208";a="216823031"
+   d="scan'208";a="216823040"
 Received: from silpixa00401971.ir.intel.com ([10.20.226.106])
-  by fmviesa002.fm.intel.com with ESMTP; 28 Nov 2025 06:14:51 -0800
+  by fmviesa002.fm.intel.com with ESMTP; 28 Nov 2025 06:14:53 -0800
 From: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
 To: clm@fb.comi,
 	dsterba@suse.com,
@@ -71,9 +71,9 @@ Cc: linux-btrfs@vger.kernel.org,
 	weigang.li@intel.com,
 	senozhatsky@chromium.org,
 	Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-Subject: [RFC PATCH 06/16] crypto: deflate - add support for deflate rfc1950 (zlib)
-Date: Fri, 28 Nov 2025 19:04:54 +0000
-Message-ID: <20251128191531.1703018-7-giovanni.cabiddu@intel.com>
+Subject: [RFC PATCH 07/16] crypto: scomp - Add setparam interface
+Date: Fri, 28 Nov 2025 19:04:55 +0000
+Message-ID: <20251128191531.1703018-8-giovanni.cabiddu@intel.com>
 X-Mailer: git-send-email 2.51.1
 In-Reply-To: <20251128191531.1703018-1-giovanni.cabiddu@intel.com>
 References: <20251128191531.1703018-1-giovanni.cabiddu@intel.com>
@@ -86,166 +86,156 @@ MIME-Version: 1.0
 Organization: Intel Research and Development Ireland Ltd - Co. Reg. #308263 - Collinstown Industrial Park, Leixlip, County Kildare - Ireland
 Content-Transfer-Encoding: 8bit
 
-Add acomp backend for zlib-deflate compression algorithm.
+From: Herbert Xu <herbert@gondor.apana.org.au>
 
-This backend outputs data in the format defined by rfc1950: raw deflate
-data wrapped with a zlib header and footer.
+Add the scompress plumbing for setparam.  This is modelled after
+setkey for shash.
 
+Signed-off-by: Herbert Xu <herbert@gondor.apana.org.au>
 Signed-off-by: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
 ---
- crypto/deflate.c | 74 ++++++++++++++++++++++++++++++++++++++++++------
- 1 file changed, 65 insertions(+), 9 deletions(-)
+ crypto/scompress.c                  | 48 ++++++++++++++++++++++++++++-
+ include/crypto/internal/scompress.h | 27 ++++++++++++++++
+ 2 files changed, 74 insertions(+), 1 deletion(-)
 
-diff --git a/crypto/deflate.c b/crypto/deflate.c
-index a3e1fff55661..26b4617f6196 100644
---- a/crypto/deflate.c
-+++ b/crypto/deflate.c
-@@ -36,7 +36,7 @@ static DEFINE_MUTEX(deflate_stream_lock);
- static void *deflate_alloc_stream(void)
- {
- 	size_t size = max(zlib_inflate_workspacesize(),
--			  zlib_deflate_workspacesize(-DEFLATE_DEF_WINBITS,
-+			  zlib_deflate_workspacesize(MAX_WBITS,
- 						     DEFLATE_DEF_MEMLEVEL));
- 	struct deflate_stream *ctx;
+diff --git a/crypto/scompress.c b/crypto/scompress.c
+index 1a7ed8ae65b0..900796f3035a 100644
+--- a/crypto/scompress.c
++++ b/crypto/scompress.c
+@@ -45,6 +45,46 @@ static cpumask_t scomp_scratch_want;
+ static void scomp_scratch_workfn(struct work_struct *work);
+ static DECLARE_WORK(scomp_scratch_work, scomp_scratch_workfn);
  
-@@ -113,17 +113,34 @@ static int deflate_compress_one(struct acomp_req *req,
- 	return 0;
- }
- 
--static int deflate_compress(struct acomp_req *req)
-+enum algo {
-+	ALGO_DEFLATE,
-+	ALGO_ZLIB_DEFLATE,
-+};
++static int scomp_no_setparam(struct crypto_scomp *tfm, const u8 *param,
++			     unsigned int len)
++{
++	return -ENOSYS;
++}
 +
-+static int _deflate_compress(struct acomp_req *req, enum algo algo)
- {
- 	struct crypto_acomp_stream *s;
- 	struct deflate_stream *ds;
-+	int window_bits;
- 	int err;
- 
-+	switch (algo) {
-+	case ALGO_DEFLATE:
-+		window_bits = -DEFLATE_DEF_WINBITS;
-+		break;
-+	case ALGO_ZLIB_DEFLATE:
-+		window_bits = DEFLATE_DEF_WINBITS;
-+		break;
-+	default:
-+		return -EINVAL;
++static bool crypto_scomp_alg_has_setparam(struct scomp_alg *alg)
++{
++	return alg->setparam != scomp_no_setparam;
++}
++
++static bool crypto_scomp_alg_needs_param(struct scomp_alg *alg)
++{
++	return crypto_scomp_alg_has_setparam(alg) &&
++	       !(alg->base.cra_flags & CRYPTO_ALG_OPTIONAL_KEY);
++}
++
++static void scomp_set_need_param(struct crypto_scomp *tfm,
++				 struct scomp_alg *alg)
++{
++	if (crypto_scomp_alg_needs_param(alg))
++		crypto_scomp_set_flags(tfm, CRYPTO_TFM_NEED_KEY);
++}
++
++int crypto_scomp_setparam(struct crypto_scomp *tfm, const u8 *param,
++			  unsigned int len)
++{
++	struct scomp_alg *scomp = crypto_scomp_alg(tfm);
++	int err;
++
++	err = scomp->setparam(tfm, param, len);
++	if (unlikely(err)) {
++		scomp_set_need_param(tfm, scomp);
++		return err;
 +	}
 +
- 	s = crypto_acomp_lock_stream_bh(&deflate_streams);
- 	ds = s->ctx;
- 
- 	err = zlib_deflateInit2(&ds->stream, DEFLATE_DEF_LEVEL, Z_DEFLATED,
--				-DEFLATE_DEF_WINBITS, DEFLATE_DEF_MEMLEVEL,
-+				window_bits, DEFLATE_DEF_MEMLEVEL,
- 				Z_DEFAULT_STRATEGY);
- 	if (err != Z_OK) {
- 		err = -EINVAL;
-@@ -138,6 +155,16 @@ static int deflate_compress(struct acomp_req *req)
- 	return err;
- }
- 
-+static int deflate_compress(struct acomp_req *req)
-+{
-+	return _deflate_compress(req, ALGO_DEFLATE);
++	crypto_scomp_clear_flags(tfm, CRYPTO_TFM_NEED_KEY);
++	return 0;
 +}
 +
-+static int zlib_deflate_compress(struct acomp_req *req)
+ static int __maybe_unused crypto_scomp_report(
+ 	struct sk_buff *skb, struct crypto_alg *alg)
+ {
+@@ -121,9 +161,12 @@ static int crypto_scomp_alloc_scratches(void)
+ 
+ static int crypto_scomp_init_tfm(struct crypto_tfm *tfm)
+ {
+-	struct scomp_alg *alg = crypto_scomp_alg(__crypto_scomp_tfm(tfm));
++	struct crypto_scomp *comp = __crypto_scomp_tfm(tfm);
++	struct scomp_alg *alg = crypto_scomp_alg(comp);
+ 	int ret = 0;
+ 
++	scomp_set_need_param(comp, alg);
++
+ 	mutex_lock(&scomp_lock);
+ 	ret = crypto_acomp_alloc_streams(&alg->streams);
+ 	if (ret)
+@@ -356,6 +399,9 @@ static void scomp_prepare_alg(struct scomp_alg *alg)
+ 	comp_prepare_alg(&alg->calg);
+ 
+ 	base->cra_flags |= CRYPTO_ALG_REQ_VIRT;
++
++	if (!alg->setparam)
++		alg->setparam = scomp_no_setparam;
+ }
+ 
+ int crypto_register_scomp(struct scomp_alg *alg)
+diff --git a/include/crypto/internal/scompress.h b/include/crypto/internal/scompress.h
+index 6a2c5f2e90f9..cfeff1009e2f 100644
+--- a/include/crypto/internal/scompress.h
++++ b/include/crypto/internal/scompress.h
+@@ -20,6 +20,7 @@ struct crypto_scomp {
+  *
+  * @compress:	Function performs a compress operation
+  * @decompress:	Function performs a de-compress operation
++ * @setparam:	Set parameters of the algorithm (e.g., compression level)
+  * @streams:	Per-cpu memory for algorithm
+  * @calg:	Cmonn algorithm data structure shared with acomp
+  */
+@@ -30,6 +31,8 @@ struct scomp_alg {
+ 	int (*decompress)(struct crypto_scomp *tfm, const u8 *src,
+ 			  unsigned int slen, u8 *dst, unsigned int *dlen,
+ 			  void *ctx);
++	int (*setparam)(struct crypto_scomp *tfm, const u8 *param,
++			unsigned int len);
+ 
+ 	struct crypto_acomp_streams streams;
+ 
+@@ -64,10 +67,31 @@ static inline struct scomp_alg *crypto_scomp_alg(struct crypto_scomp *tfm)
+ 	return __crypto_scomp_alg(crypto_scomp_tfm(tfm)->__crt_alg);
+ }
+ 
++static inline u32 crypto_scomp_get_flags(struct crypto_scomp *tfm)
 +{
-+	return _deflate_compress(req, ALGO_ZLIB_DEFLATE);
++	return crypto_tfm_get_flags(crypto_scomp_tfm(tfm));
 +}
 +
- static int deflate_decompress_one(struct acomp_req *req,
- 				  struct deflate_stream *ds)
- {
-@@ -194,7 +221,7 @@ static int deflate_decompress_one(struct acomp_req *req,
- 	return 0;
- }
- 
--static int deflate_decompress(struct acomp_req *req)
-+static int _deflate_decompress(struct acomp_req *req, enum algo algo)
- {
- 	struct crypto_acomp_stream *s;
- 	struct deflate_stream *ds;
-@@ -203,7 +230,18 @@ static int deflate_decompress(struct acomp_req *req)
- 	s = crypto_acomp_lock_stream_bh(&deflate_streams);
- 	ds = s->ctx;
- 
--	err = zlib_inflateInit2(&ds->stream, -DEFLATE_DEF_WINBITS);
-+	switch (algo) {
-+	case ALGO_DEFLATE:
-+		err = zlib_inflateInit2(&ds->stream, -DEFLATE_DEF_WINBITS);
-+		break;
-+	case ALGO_ZLIB_DEFLATE:
-+		err = zlib_inflateInit(&ds->stream);
-+		break;
-+	default:
-+		err = -EINVAL;
-+		break;
-+	}
-+
- 	if (err != Z_OK) {
- 		err = -EINVAL;
- 		goto out;
-@@ -217,6 +255,16 @@ static int deflate_decompress(struct acomp_req *req)
- 	return err;
- }
- 
-+static int deflate_decompress(struct acomp_req *req)
++static inline void crypto_scomp_set_flags(struct crypto_scomp *tfm, u32 flags)
 +{
-+	return _deflate_decompress(req, ALGO_DEFLATE);
++	crypto_tfm_set_flags(crypto_scomp_tfm(tfm), flags);
 +}
 +
-+static int zlib_deflate_decompress(struct acomp_req *req)
++static inline void crypto_scomp_clear_flags(struct crypto_scomp *tfm, u32 flags)
 +{
-+	return _deflate_decompress(req, ALGO_ZLIB_DEFLATE);
++	crypto_tfm_clear_flags(crypto_scomp_tfm(tfm), flags);
 +}
 +
- static int deflate_init(struct crypto_acomp *tfm)
++int crypto_scomp_setparam(struct crypto_scomp *tfm, const u8 *param,
++			  unsigned int len);
++
+ static inline int crypto_scomp_compress(struct crypto_scomp *tfm,
+ 					const u8 *src, unsigned int slen,
+ 					u8 *dst, unsigned int *dlen, void *ctx)
  {
- 	int ret;
-@@ -228,7 +276,7 @@ static int deflate_init(struct crypto_acomp *tfm)
- 	return ret;
++	if (crypto_scomp_get_flags(tfm) & CRYPTO_TFM_NEED_KEY)
++		return -ENOKEY;
++
+ 	return crypto_scomp_alg(tfm)->compress(tfm, src, slen, dst, dlen, ctx);
  }
  
--static struct acomp_alg acomp = {
-+static struct acomp_alg acomps[] = { {
- 	.compress		= deflate_compress,
- 	.decompress		= deflate_decompress,
- 	.init			= deflate_init,
-@@ -236,16 +284,24 @@ static struct acomp_alg acomp = {
- 	.base.cra_driver_name	= "deflate-generic",
- 	.base.cra_flags		= CRYPTO_ALG_REQ_VIRT,
- 	.base.cra_module	= THIS_MODULE,
--};
-+}, {
-+	.compress		= zlib_deflate_compress,
-+	.decompress		= zlib_deflate_decompress,
-+	.init			= deflate_init,
-+	.base.cra_name		= "zlib-deflate",
-+	.base.cra_driver_name	= "zlib-deflate-generic",
-+	.base.cra_flags		= CRYPTO_ALG_REQ_VIRT,
-+	.base.cra_module	= THIS_MODULE,
-+} };
- 
- static int __init deflate_mod_init(void)
+@@ -76,6 +100,9 @@ static inline int crypto_scomp_decompress(struct crypto_scomp *tfm,
+ 					  u8 *dst, unsigned int *dlen,
+ 					  void *ctx)
  {
--	return crypto_register_acomp(&acomp);
-+	return crypto_register_acomps(acomps, ARRAY_SIZE(acomps));
++	if (crypto_scomp_get_flags(tfm) & CRYPTO_TFM_NEED_KEY)
++		return -ENOKEY;
++
+ 	return crypto_scomp_alg(tfm)->decompress(tfm, src, slen, dst, dlen,
+ 						 ctx);
  }
- 
- static void __exit deflate_mod_fini(void)
- {
--	crypto_unregister_acomp(&acomp);
-+	crypto_unregister_acomps(acomps, ARRAY_SIZE(acomps));
- 	crypto_acomp_free_streams(&deflate_streams);
- }
- 
 -- 
 2.51.1
 
