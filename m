@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-19419-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19420-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4D0DC931DD
-	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Nov 2025 21:30:27 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40BF7C931E9
+	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Nov 2025 21:32:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 54EBA3AB49F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Nov 2025 20:30:26 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id BA8BD34D022
+	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Nov 2025 20:32:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22DDB2D97A0;
-	Fri, 28 Nov 2025 20:30:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BACF62D47E9;
+	Fri, 28 Nov 2025 20:32:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="Um0F/fga"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="eoYfAM6b"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDFCE25F7A9;
-	Fri, 28 Nov 2025 20:30:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EDB425487C
+	for <linux-btrfs@vger.kernel.org>; Fri, 28 Nov 2025 20:32:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764361818; cv=none; b=Xewvk2NXWaqTxnzkvRHhYz6xS3e+x3v1i2bECXJ1e8QPCorCNlv4SEgAag0REKgFau05q0yNhLzIFbPMm9KERVpPW9Ec+uzk8MZEe6KJAbu+xi8YxJMkrkTmUni67758bYsOkZ3nmxrf30z9x8TiaV0t/DOIO3gwtF9lU91iNPE=
+	t=1764361951; cv=none; b=D8K3NvKppMP00bsiAEbziVFKxTn2OAyb8XDVEIx/nmKURoEa7RgVEE/nWb11zjO+S6rVdU0Nfh9gTG7F8ElwBOaih3UaxemauZoYoykCFNSVbQXelj2Y0HZL6WWz2mkQeo05Jf89nLOOUupyymJW/d3LPrdXEoQc2Is39t20rgo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764361818; c=relaxed/simple;
-	bh=sugWLgJEvhax4QBMAzH8zN6P2WNpE7OeQ7CDLzg8bq0=;
+	s=arc-20240116; t=1764361951; c=relaxed/simple;
+	bh=JNad8aZo9aNRX9Wc+64aXHRQT26aX0WGOJm+LMIaleY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Woql4c5GvgK0YYnp4tYmB0mgwzPeZr5jsqEC4jMmnwLUs2tnd2hA3/iez7MRw9di5z+imhlMtOPSRg1f75g4PsZ9y4CEzI+r5267trGE4vfej1ijv+GL+p9SUkQYWHbfmX391q8EkTzlIwUZ7sffZYGRpTQNQ8ImAC0hFWRpFU8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=Um0F/fga; arc=none smtp.client-ip=212.227.17.21
+	 In-Reply-To:Content-Type; b=S+IcMMpa/5BHhAXUMRnqeOK4o6C2LMN1xasO6kn4WsWnqTshyF4V8/HGpixRyojUffEEm/d8btdy1jXN0Ns3FlMNR3Bv9ab+6RnQn3N1ITvngYbCLyOWt+6URxwf97P3TjCjIShXO1vilG5HxROB3XG0MY6RMJf3eNMt9BZ2ll4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=eoYfAM6b; arc=none smtp.client-ip=212.227.17.22
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1764361811; x=1764966611; i=quwenruo.btrfs@gmx.com;
-	bh=sugWLgJEvhax4QBMAzH8zN6P2WNpE7OeQ7CDLzg8bq0=;
+	s=s31663417; t=1764361946; x=1764966746; i=quwenruo.btrfs@gmx.com;
+	bh=3xIvfv4Z7FzqhUl/IhQLch2dCsOluVw/Dk/VdkUspoo=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=Um0F/fgaMktEOzqp31/gH/vNu9m90dACdS8faWD6KacTn6K6gPDsnAzLSDDQSqEL
-	 K4Xp68G09OpKZ8+uQNn3Msz+oS1e7wUrCTHWcq3VPl0+lyfDC/m/7+/CqbnGvowvo
-	 Qkgu7NWkuDEaObhuQtJMpMkHU9bS7zV0hYbAQzA7myw86sq2zgRogD5Hz2tRLDowC
-	 fWMOOXrR3ihOh84qhF2VyAJjovP0xzlz2njPDwozKzXC/f6jYdYaFjjFhgbF5nGmc
-	 Ua7tfCzhiQY4tkGQdDDUSeQYeAt4xNNYHoQkCipDUbRorkD6tHwKG9kL6U7M0nPv+
-	 j+LwGzQaLgUQOeAV7A==
+	b=eoYfAM6bAxVqPxjxouU0wHjDwr7ULm9h5rkQQ/k0VzRRZsSeSXGegAgr0IyPVftc
+	 wuY8EVQqdmo0DMZxUBzsGzRBezGwehi/nEubQnU14twhsDL4MiUw/hmzwUfbXUYCh
+	 HEN4ia2AFkGvvTr/C+Ul7Clpx+tkO49JH3fvq0g4V2w7cbbCekX2mMWMu20euRmzC
+	 O4anmHvbw+Yv1Y1JTjuoFpRjh+BhCbI8USZSzcjq57+6Do/kcpDY4t9rKoxPLhrXp
+	 AaSt8egG0fA5+HAbdTmJ5WYZ8Fu06SuMel1jWlpKdbUUy7KbwPXwchDY3/3mDv4hW
+	 9Kqbo4g/GGClRla64Q==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1Md6Mt-1vy8o537dD-00ZSis; Fri, 28
- Nov 2025 21:30:11 +0100
-Message-ID: <e04e525f-8cc1-42c1-b234-e74e06d91446@gmx.com>
-Date: Sat, 29 Nov 2025 07:00:06 +1030
+Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1Mo6ux-1vrbKk3PIJ-00b5bW; Fri, 28
+ Nov 2025 21:32:26 +0100
+Message-ID: <b9f84c46-998a-4f45-a78c-fa501b24e912@gmx.com>
+Date: Sat, 29 Nov 2025 07:02:23 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,15 +58,17 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: Ideas for RAIDZ-like design to solve write-holes, with larger fs
- block size
-To: kreijack@inwind.it, Qu Wenruo <wqu@suse.com>
-Cc: "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
- linux-btrfs <linux-btrfs@vger.kernel.org>, zfs-devel@list.zfsonlinux.org
-References: <4c0c1d27-957c-4a6f-9397-47ca321b1805@suse.com>
- <f7e56d56-014f-4027-ab9d-d602c5e67137@libero.it>
- <45e8a40a-635e-462e-9f83-9210a5961e1b@gmx.com>
- <466de455-a413-424f-9853-7d7d10abce49@inwind.it>
+Subject: Re: mkfs.btrfs reproducibility
+To: Calvin Owens <calvin@wbinvd.org>
+Cc: Demi Marie Obenour <demiobenour@gmail.com>, Qu Wenruo <wqu@suse.com>,
+ linux-btrfs@vger.kernel.org
+References: <0ff47dc5-cf0d-4b5a-8d84-f309a74cbf32@gmail.com>
+ <9194ad3f-183d-46e9-afc3-b52ab2bf28cb@suse.com>
+ <fa8d6257-649b-4de1-b723-64cbc34c0a7f@gmail.com>
+ <3247ee84-5a0d-4561-8d25-b1b8e180215a@gmx.com>
+ <14681d38-fbdf-4ac2-93fa-7eba21588930@gmail.com>
+ <0b099290-03bf-4a1d-8411-716f78058586@gmx.com>
+ <aSnkiEKGUon3pqa9@mozart.vkv.me>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -93,112 +95,215 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
  +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
  HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <466de455-a413-424f-9853-7d7d10abce49@inwind.it>
+In-Reply-To: <aSnkiEKGUon3pqa9@mozart.vkv.me>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:oLscAnfmxiqarFmwlIjzMW2oGoT34/nJESPVCu60KpHUBFZByfn
- tsFyOOz0W71w/yhbDZ4KzJTtkioia6gbXG+aJAZZk52ccMiApAEQIbjk5U9MdbWLfeuiFmz
- H9QOmMhdiKYjcby0KA3LHfMPjMND+Ea3XWopBWJxyM8QSGdKvyiEGN/JXPrZ5EWGb0bWaU6
- ivM+xYph+DcYyMU8tSCgw==
+X-Provags-ID: V03:K1:QJJPUlbWU7TpCLp5m1VAfu9vvYkAX40je39TKngyWWVlljiZtH7
+ oFM62fzfkWID1+5Ig7yvnkGux5Euycdv7U4uxezBjC9isSo0pkZe1hUQDsESThRS1pndrtA
+ SzbLcnYp2VPOFLsQABytwcvDmj6Yh4SHmBMNVWSjlE9NGAPHvWkYA/KodsbOy2JHIQoEd+C
+ XVXnDof8KlcLMKm309NUA==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:fC5dKIKlN98=;WbR7/FaxGVU7220JIQdpw92DSFC
- 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
- UAzTpJwHwg+QQPeYE=
+UI-OutboundReport: notjunk:1;M01:P0:3tutVNIfwDs=;8EGfKmqGR5TfVx1ZNsUPCwmgdNk
+ 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
 
 
 
-=E5=9C=A8 2025/11/29 06:51, Goffredo Baroncelli =E5=86=99=E9=81=93:
-> On 28/11/2025 21.10, Qu Wenruo wrote:
-[...]
->>> As wrote above, I suggests to use a "per chunk" fs-bs
+=E5=9C=A8 2025/11/29 04:36, Calvin Owens =E5=86=99=E9=81=93:
+> On Friday 10/17 at 09:20 +1030, Qu Wenruo wrote:
+>> =E5=9C=A8 2025/10/17 09:12, Demi Marie Obenour =E5=86=99=E9=81=93:
+>>> On 10/15/25 02:49, Qu Wenruo wrote:
+>>>>
+>>>>
+>>>> =E5=9C=A8 2025/10/15 16:31, Demi Marie Obenour =E5=86=99=E9=81=93:
+>>>>> On 10/15/25 01:47, Qu Wenruo wrote:
+>>>>>> =E5=9C=A8 2025/10/15 16:13, Demi Marie Obenour =E5=86=99=E9=81=93:
+>>>>>>> I need to create a BTRFS filesystem where /home and /tmp are BTRFS
+>>>>>>> subvolumes owned by root.  It's easy to create the subvolumes with
+>>>>>>> --subvol and --rootdir, but they wind up being owned by the user t=
+hat
+>>>>>>> ran mkfs.btrfs, not by root.  I tried using fakeroot and it doesn'=
+t
+>>>>>>> work, regardless of whether fakeroot and btrfs-progs come from Arc=
+h
+>>>>>>> or Nixpkgs.
+>>>>>>>
+>>>>>>> What is the best way to do this without needing root privileges?
+>>>>>>> Nix builders don't have root access, and I don't know if they have
+>>>>>>> access to user namespaces either.
+>>>>>>
+>>>>>> Not familiar with namespace but I believe we can address it with so=
+me
+>>>>>> extra options like --pid-map and --gid-map options, so that we can =
+map
+>>>>>> the user pid/gid to 0:0 in that case.
+>>>>>>
+>>>>>> Thanks,
+>>>>>> Qu
+>>>>>
+>>>>> Thank you!  This would be awesome.  In the meantime I worked around
+>>>>> the issue by having systemd-tmpfiles fix up the permissions.
+>>>>
+>>>> Mind to share some details? I believe this will help other users, and=
+ I
+>>>> can add a short note into the docs.
+>>>
+>>> I fixed the owner and permissions at startup.  This is not good
+>>> because it means that the image is not reproducible.
 >>
->> As mentioned, bs must be per-fs, or writes can not be ensured to be bs=
-=20
->> aligned.
+>> OK, so it's not the proper fix.
+>>
+>> I'll continue working on the new --pid-map/--gid-map solution so that t=
+he
+>> files will have the proper gid/pid set.
 >=20
+> Hi Qu,
 >=20
-> Ok.. try to see from another POV: may be that it would be enough that=20
-> the allocator=C2=A0 ... allocates space for extent with a specific multi=
-ple=20
-> of ps ?
-> This and the fact that an extent is immutable, should be enough...
+> I bumped into this: the issue is that mkfs.btrfs uses ntfw, which isn't
+> instrumented by the LD_PRELOADs from fakeroot.
+>=20
+> The kludge patch below in btrfs-progs gives me the behavior I want, and
+> what I think Demi wanted as well.
+>=20
+> Credit: https://github.com/NixOS/nixpkgs/issues/455331
+>=20
+> Really though, IMHO it should be fixed in fakeroot: the Yocto clone of
+> it called pseudo does have ntfw support, as noted in the above issue. I
+> haven't had time to follow up on that yet but I will soon.
 
-Nope, things like relocation can easily break the immutable assumption.
+To me the LD_PRELOAD looks like just another hack.
 
-That's why I don't think it's even possible to implement a per-chunk=20
-stripe length, as that will make some extent that's totally bs aligned=20
-to be not aligned on another chunk.
+I'd like to know how many gid/uid maps normally there are for such usages.
+
+If it's less than a few hundred, I think I can add some gid/uid mapping=20
+options to mkfs.btrfs, so that no extra hacks are needed.
 
 Thanks,
 Qu
+
+>=20
+> Thanks,
+> Calvin
+>=20
+> -----8<-----
+> From: Calvin Owens <calvin@wbinvd.org>
+> Subject: [KLUDGE][btrfs-progs] Make the --rootdir argument work with fak=
+eroot
+>=20
+> Signed-off-by: Calvin Owens <calvin@wbinvd.org>
+> ---
+>   mkfs/rootdir.c | 17 +++++++++++++++--
+>   1 file changed, 15 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/mkfs/rootdir.c b/mkfs/rootdir.c
+> index 7bdd6245..0f2c23c9 100644
+> --- a/mkfs/rootdir.c
+> +++ b/mkfs/rootdir.c
+> @@ -1631,7 +1631,7 @@ out:
+>   	return ret;
+>   }
+>  =20
+> -static int ftw_add_inode(const char *full_path, const struct stat *st,
+> +static int ftw_add_inode(const char *full_path, const struct stat *unus=
+ed,
+>   			 int typeflag, struct FTW *ftwbuf)
+>   {
+>   	struct btrfs_fs_info *fs_info =3D g_trans->fs_info;
+> @@ -1639,10 +1639,23 @@ static int ftw_add_inode(const char *full_path, =
+const struct stat *st,
+>   	struct btrfs_inode_item inode_item =3D { 0 };
+>   	struct inode_entry *parent;
+>   	struct rootdir_subvol *rds;
+> -	const bool have_hard_links =3D (!S_ISDIR(st->st_mode) && st->st_nlink =
+> 1);
+> +	struct stat kludgebuf;
+> +	const struct stat *st;
+> +	bool have_hard_links;
+>   	u64 ino;
+>   	int ret;
+>  =20
+> +	/*
+> +	 * KLUDGE: Explicitly call lstat(), so our view of the filesystem is
+> +	 * through the LD_PRELOAD installed by the fakeroot command.
+> +	 */
+> +	if (lstat(full_path, &kludgebuf)) {
+> +		error("Kludge with second stat() call failed: %m");
+> +		return ret;
+> +	}
+> +	st =3D &kludgebuf;
+> +	have_hard_links =3D (!S_ISDIR(st->st_mode) && st->st_nlink > 1);
+> +
+>   	/* The rootdir itself. */
+>   	if (unlikely(ftwbuf->level =3D=3D 0)) {
+>   		u64 root_ino;
+
 
