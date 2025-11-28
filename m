@@ -1,448 +1,232 @@
-Return-Path: <linux-btrfs+bounces-19386-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19387-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E819C90851
-	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Nov 2025 02:43:20 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0F1FC90B2D
+	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Nov 2025 04:07:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 8E0D2350991
-	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Nov 2025 01:43:19 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 564E04E3ADA
+	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Nov 2025 03:07:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8633224A067;
-	Fri, 28 Nov 2025 01:43:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3835E29E0E9;
+	Fri, 28 Nov 2025 03:07:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="SqloRsJA";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="SqloRsJA"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="N1b4EZr6"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 068E124677F
-	for <linux-btrfs@vger.kernel.org>; Fri, 28 Nov 2025 01:43:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43A4A1E7C18
+	for <linux-btrfs@vger.kernel.org>; Fri, 28 Nov 2025 03:07:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764294193; cv=none; b=FnGGrcCk5XOfiKDeJymcsnNKaywDgtxU4W27tY7CjyDengW+fuM0kaq+S6sKA6NJOmbtyP+JOx1bLf+N4nXPuIZAkl9DsMvlbq0NGYxU+s3Ah2VXBxVsOrKe+WmDIE413Skn0KDIjcCIIt56pLHRHVSNe8rPHVXzrPX8k/VoY+8=
+	t=1764299258; cv=none; b=QIP3Q32vX80kXaU/Y7G06gHCR0uQNsXO8F5ELv/O4RW9j/JMRCuyzs+3yFqQmbi8r7JbyHw6KYTk5oNepwxwf6uePPHkq23Hi0dTECv+Xr4OOhxhzz0Lmhy6vFdr0o+NPojpN3gZ6KzStPgZ6Cvhp/E+f0gZHwa3vzijPHURL+o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764294193; c=relaxed/simple;
-	bh=1A0LuyiYy51H9ZQYjT4bH3eMA8wM7jvRDC+Ly0WfGP0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=i1x4Le2XXSxaKbuSzpWacr/68BZMCIJ2lURrHHac2Ld/e1QUDYUrR7u2r+dduqRrWBPMUsF38j8B0BCQIfodd4cn0wZkeSTERxcALm6lC2MoOnVHKMZ4MIpxGYFw1swwHhIPcgIF3RQITZ54C73mIZlxFh26+nhCyRW78oj/Gdo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=SqloRsJA; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=SqloRsJA; arc=none smtp.client-ip=195.135.223.130
+	s=arc-20240116; t=1764299258; c=relaxed/simple;
+	bh=rDordQGhNOH5SttwVsuuKdo/CtICKy8hwBJCgwlGLs4=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=RuuCmy9msZXbKlq1elJG3gjuTuJvbsipiLe86teJHfVAqiNBknxolODzaxdyjpY2ZiAABNVIZwnORG8qWgkt6h8WVLL4oPEfbRQKtCQtUiGiwRjRy6dQ6bMThMSFyheI5aWkLcrFwUdhKnbHGc5o96KRWKOIMcTpssH3DJTIt4M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=N1b4EZr6; arc=none smtp.client-ip=209.85.128.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 149A7336C1;
-	Fri, 28 Nov 2025 01:43:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1764294188; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=8LVEzhEJW7XaPrmME3oKO8SGyHlgnyQ34afm/RYmcTc=;
-	b=SqloRsJA+WjTV9HCBD7HxuBMlMV95SuRSUkiSsQAxlx3N4wXNOdhn4Bhclda8p/d9M3lwl
-	o62J98CCRgd3sI8kM9033P89BCGpU9agiZI6UA/GYgASmn4KDgADlKsdDeYQihGaKddLz4
-	QOdfqtERgNdLtKXvWVAlRzo3XAgL0As=
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1764294188; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=8LVEzhEJW7XaPrmME3oKO8SGyHlgnyQ34afm/RYmcTc=;
-	b=SqloRsJA+WjTV9HCBD7HxuBMlMV95SuRSUkiSsQAxlx3N4wXNOdhn4Bhclda8p/d9M3lwl
-	o62J98CCRgd3sI8kM9033P89BCGpU9agiZI6UA/GYgASmn4KDgADlKsdDeYQihGaKddLz4
-	QOdfqtERgNdLtKXvWVAlRzo3XAgL0As=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id F32D33EA63;
-	Fri, 28 Nov 2025 01:43:07 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id DB4IOyv+KGmzDwAAD6G6ig
-	(envelope-from <dsterba@suse.com>); Fri, 28 Nov 2025 01:43:07 +0000
-From: David Sterba <dsterba@suse.com>
-To: torvalds@linux-foundation.org
-Cc: David Sterba <dsterba@suse.com>,
-	linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs updates for 6.19
-Date: Fri, 28 Nov 2025 02:43:04 +0100
-Message-ID: <cover.1764293730.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.51.0
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-47775fb6c56so10526635e9.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 27 Nov 2025 19:07:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1764299254; x=1764904054; darn=vger.kernel.org;
+        h=content-transfer-encoding:autocrypt:subject:from:to
+         :content-language:user-agent:mime-version:date:message-id:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mpCyz/9P22tV8fDaOVWWRCa2r5LmOB5jCS8opHK9hyc=;
+        b=N1b4EZr6U7VFQUwhlDFv2hWI8n1IYcUOhxtZ71F1HJ89xusJmAADdRxuQkSaPUlyEY
+         QQk9CJaze+IEBl/UYOkUAlFQxe8LGH28y8fNilMWXwcX8aHgnmxzoHktohmXw2IaRJii
+         oCHyKx/zBSZZOwPyYjIYt5GsBllRnh3yDiR9qrVXn6reUMeFA/gRwfzEnjn8anzILfRl
+         LOIJOsjktHyzBL0soP+HwMBcKcdOWNk5pDOVwauf6biIr9w6Dqb48hy4rdyCYV7WhE48
+         64/uH06vK3AC8kG7Q4Dbn61Kyi9iLGcZetzXW0ViA0fhif65Ct4/rjBzLf/P51KI8eJ3
+         C0PA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1764299254; x=1764904054;
+        h=content-transfer-encoding:autocrypt:subject:from:to
+         :content-language:user-agent:mime-version:date:message-id:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mpCyz/9P22tV8fDaOVWWRCa2r5LmOB5jCS8opHK9hyc=;
+        b=sK1KzODGka1Q/F3WVVsWAA/LNv6ReaS9dV8jfiubNA5cXYBhMP/SwY7o6IpUCWx3w9
+         f1xw7K/r2/8/FEr7IaKIYe0mUwcY2SkAT8dlDdF59XE7v1knkCUj8fAmnzF3maHMbPmE
+         hp1Ql3OiaIR3wM6ym1YF6IZwXgqLKII4YyO3BjiMZJOXI7bausLQyEHre3PlgLMcaf8T
+         j2AhY8/HZaGnzDVOadQpl26OmzU88u6a0YmA43f0rhhp6pImzxc6t1R7F80sg+7oyf9K
+         Hs+l0mHm3QmRBXbDjSWsUZO8fzeUxP4fn3xlfuOqkxEOLjVPcEDStDTMFQT8pT+3U4WF
+         1GUQ==
+X-Gm-Message-State: AOJu0YyFlJBdFu8ZWYjKGmhMDXCIZvW93dQVCtNvLX9hSUx1MXK2cQiS
+	i6R4imCEsR+K8HiPoyRrCfYHTQ99Ekb1Ho52DQlYqMD2TG4X1MVT7poRtIMe0ZGLEHk0ES46MP+
+	vJ1DS
+X-Gm-Gg: ASbGnctT3nQuNVsoDA5hJzngJ5EZR9MPDuaTIMSBdm/XVsgz+52UfnJkMsdk5EPdO7m
+	01gGl87q9/2GM4QGPTk6qvI06n7BNL9XmEfpOTnkcYQrNSIVZLctSShWp1jQBLDmO+hmbjF/L3P
+	GznZ/DFL5P1AFIQQO81ZbbEpXdM1gLyk3UVOVfli+m/L78zAHsAps6+y/5ZB0TJgrCRISKY+Sye
+	kiKlVfdGHU1ZPijb05gPqmDGjVLBTTB9ZpepMfzI7aGiH/36I7hRdz4mYli5SVlA9mtS007PcHJ
+	SMkHBKbEYU/Ou23TOsPW68FntyBvkgTgWJ3u1uxScuIde0qc+p0lvSlOt7QKywu3t8HYCnuNjUk
+	xPqbUrkgJ70SlLEfRvrc0TBU4/vmFWCAbSBwheP0uEATiaS/tQB2OQ3BIIn1PZqQj8hvKvjGLrS
+	M6sAJCGYSOMvHSx1OVpBsk4gLpK3zaB/3wzPaB9Ec=
+X-Google-Smtp-Source: AGHT+IHMcASB0KggOCUf9K0Lv67abZ/TFhrn/fm384fDoQ/BBMYSeRFN7Xj4SPw5JzdQLsTyeb16kw==
+X-Received: by 2002:a05:600c:6287:b0:477:54cd:200e with SMTP id 5b1f17b1804b1-47904acae83mr108347555e9.1.1764299254468;
+        Thu, 27 Nov 2025 19:07:34 -0800 (PST)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29bce40ab6bsm29840775ad.21.2025.11.27.19.07.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 Nov 2025 19:07:33 -0800 (PST)
+Message-ID: <4c0c1d27-957c-4a6f-9397-47ca321b1805@suse.com>
+Date: Fri, 28 Nov 2025 13:37:29 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-3.30 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-0.998];
-	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_SOME(0.00)[];
-	ARC_NA(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:mid];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_THREE(0.00)[4];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:mid]
-X-Spam-Level: 
-X-Spam-Score: -3.30
-X-Spam-Flag: NO
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: linux-btrfs <linux-btrfs@vger.kernel.org>,
+ "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+ zfs-devel@list.zfsonlinux.org
+From: Qu Wenruo <wqu@suse.com>
+Subject: Ideas for RAIDZ-like design to solve write-holes, with larger fs
+ block size
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
+ Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
+ fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
+ 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
+ V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
+ rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
+ cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
+ qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
+ /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
+ o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
+ JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
 Hi,
 
-please pull the following branch with btrfs updates. Thanks.
+With the recent bs > ps support for btrfs, I'm wondering if it's 
+possible to experiment some RAIDZ-like solutions to solve RAID56 
+write-holes problems (at least for data COW cases) without traditional 
+journal.
 
-Features:
+Currently my idea looks like this:
 
-- shutdown ioctl support (needs CONFIG_BTRFS_EXPERIMENTAL for now)
-  - set filesystem state as being shut down (also named going down in
-    other filesystems), where all active operations return EIO and this
-    cannot be changed until unmount
-  - pending operations are attempted to be finished but error messages
-    may still show up depending on where exactly the shutdown happened
+- Fixed and much smaller stripe data length
+   Currently the data stripe length is fixed for all btrfs RAID profiles,
+   64K.
 
-- scrub (and device replace) vs suspend/hibernate
-  - a running scrub will prevent suspend, which can be annoying as
-    suspend is an immediate request and scrub is not critical
-  - filesystem freezing before suspend was not sufficient as the problem
-    was in process freezing
-  - behaviour change: on suspend scrub and device replace are cancelled,
-    where scrub can record the last state and continue from there; the
-    device replace has to be restarted from the beginning
+   But will change to 4K (minimal and default) for RAIDZ chunks.
 
-- zone stats exported in sysfs, from the perspective of the filesystem
-  this includes active, reclaimable, relocation etc zones
+- Force a larger than 4K fs block size (or data io size)
+   And that fs block size will determine how many devices we can use for
+   a RAIDZ chunk.
 
-Performance:
+   E.g. with 32K fs block size, and 4K stripe length, we can use 8
+   devices for data, +1 for parity.
+   But this also means, one has to have at least 9 devices to maintain
+   the this scheme with 4K stripe length.
+   (More is fine, less is not possible)
 
-- improvements when processing space reservation tickets by optimizing
-  locking and shrinking critical sections, cumulative improvements in
-  lockstat numbers show +15%
 
-Notable fixes:
+But there are still some uncertainty that I hope to get some feedback 
+before starting coding on this.
 
-- use vmalloc fallback when allocating bios as high order allocations
-  can happen with wide checksums (like sha256)
+- Conflicts with raid-stripe-tree and no zoned support
+   I know WDC is working on raid-stripe-tree feature, which will support
+   all profiles including RAID56 for data on zoned devices.
 
-- scrub will always track the last position of progress so it's not
-  starting from zero after an error
+   And the feature can be used without zoned device.
 
-Core:
+   Although there is never RAID56 support implemented so far.
 
-- under experimental config, checksum calculations are offloaded to
-  process context, simplifies locking and allows to remove compression
-  write worker kthread(s)
-  - speed improvement in direct IO throughput with buffered IO fallback
-    is +15% when not offloaded but this is more related to internal
-    crypto subsystem improvements
-  - this will be probably default in the future removing the sysfs
-    tunable
+   Would raid-stripe-tree conflicts with this new RAIDZ idea, or it's
+   better just wait for raid-stripe-tree?
 
-- (experimental) block size > page size updates
-  - support more operations when not using large folios (encoded
-    read/write and send)
-  - raid56
+- Performance
+   If our stripe length is 4K it means one fs block will be split into
+   4K writes into each device.
 
-- more preparations for fscrypt support
+   The initial sequential write will be split into a lot of 4K sized
+   random writes into the real disks.
 
-Other:
+   Not sure how much performance impact it will have, maybe it can be
+   solved with proper blk plug?
 
-- more conversions to auto-cleaned variables
+- Larger fs block size or larger IO size
+   If the fs block size is larger than the 4K stripe length, it means
+   the data checksum is calulated for the whole fs block, and it will
+   make rebuild much harder.
 
-- parameter cleanups and removals
+   E.g. fs block size is 16K, stripe length is 4K, and have 4 data
+   stripes and 1 parity stripe.
 
-- extended warning fixes
+   If one data stripe is corrupted, the checksum will mismatch for the
+   whole 16K, but we don't know which 4K is corrupted, thus has to try
+   4 times to get a correct rebuild result.
 
-- improved printing of structured values like keys
+   Apply this to a whole disk, then rebuild will take forever...
 
-- lots of other cleanups and refactoring
+   But this only requires extra rebuild mechanism for RAID chunks.
 
-----------------------------------------------------------------
-The following changes since commit ac3fd01e4c1efce8f2c054cdeb2ddd2fc0fb150d:
 
-  Linux 6.18-rc7 (2025-11-23 14:53:16 -0800)
+   The other solution is to introduce another size limit, maybe something
+   like data_io_size, and for example using 16K data_io_size, and still
+   4K fs block size, with the same 4K stripe length.
 
-are available in the Git repository at:
+   So that every writes will be aligned to that 16K (a single 4K write
+   will dirty the whole 16K range). And checksum will be calculated for
+   each 4K block.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.19-tag
+   Then reading the 16K we verify every 4K block, and can detect which
+   block is corrupted and just repair that block.
 
-for you to fetch changes up to 9e0e6577b3e5e5cf7c1acd178eb648e8f830ba17:
+   The cost will be the extra space spent saving 4x data checksum, and
+   the extra data_io_size related code.
 
-  btrfs: remove unnecessary inode key in btrfs_log_all_parents() (2025-11-25 01:53:33 +0100)
 
-----------------------------------------------------------------
-Andy Shevchenko (1):
-      btrfs: replace const_ilog2() with ilog2()
+- Way more rigid device number requirement
+   Everything must be decided at mkfs time, the stripe length, fs block
+   size/data io size, and number of devices.
 
-Baolin Liu (1):
-      btrfs: simplify list initialization in btrfs_compr_pool_scan()
+   Sure one can still add more devices than required, but it will just
+   behave like more disks with RAID1.
+   Each RAIDZ chunk will have fixed amount of devices.
 
-Boris Burkov (2):
-      btrfs: ignore ENOMEM from alloc_bitmap()
-      btrfs: fix racy bitfield write in btrfs_clear_space_info_full()
+   And furthermore, one can no longer remove devices below the minimal
+   amount required by the RAIDZ chunks.
+   If going with 16K blocksize/data io size, 4K stripe length, then it
+   will always require 5 disks for RAIDZ1.
+   Unless the end user gets rid of all RAIDZ chunks (e.g. convert
+   to regular RAID1* or even SINGLE).
 
-David Sterba (6):
-      btrfs: print-tree: use string format for key names
-      btrfs: fix trivial -Wshadow warnings
-      btrfs: subpage: rename macro variables to avoid shadowing
-      btrfs: move and rename CSUM_FMT definition
-      btrfs: make a few more ASSERTs verbose
-      btrfs: remaining BTRFS_PATH_AUTO_FREE conversions
+- Larger fs block size/data io size means higher write amplification
+   That's the most obvious part, and may be less obvious higher memory
+   pressure, and btrfs is already pretty bad at write-amplification.
 
-Filipe Manana (77):
-      btrfs: use single return value variable in btrfs_relocate_block_group()
-      btrfs: use end_pos variable where needed in btrfs_dirty_folio()
-      btrfs: truncate ordered extent when skipping writeback past i_size
-      btrfs: use variable for end offset in extent_writepage_io()
-      btrfs: split assertion into two in extent_writepage_io()
-      btrfs: add unlikely to unexpected error case in extent_writepages()
-      btrfs: consistently round up or down i_size in btrfs_truncate()
-      btrfs: avoid multiple i_size rounding in btrfs_truncate()
-      btrfs: avoid repeated computations in btrfs_mark_ordered_io_finished()
-      btrfs: remove fs_info argument from btrfs_try_granting_tickets()
-      btrfs: remove fs_info argument from priority_reclaim_data_space()
-      btrfs: remove fs_info argument from priority_reclaim_metadata_space()
-      btrfs: remove fs_info argument from maybe_fail_all_tickets()
-      btrfs: remove fs_info argument from calc_available_free_space()
-      btrfs: remove fs_info argument from btrfs_can_overcommit()
-      btrfs: remove fs_info argument from btrfs_dump_space_info()
-      btrfs: remove fs_info argument from shrink_delalloc() and flush_space()
-      btrfs: remove fs_info argument from btrfs_calc_reclaim_metadata_size()
-      btrfs: remove fs_info argument from need_preemptive_reclaim()
-      btrfs: remove fs_info argument from steal_from_global_rsv()
-      btrfs: remove fs_info argument from handle_reserve_ticket()
-      btrfs: remove fs_info argument from maybe_clamp_preempt()
-      btrfs: fix parameter documentation for btrfs_reserve_data_bytes()
-      btrfs: remove fs_info argument from __reserve_bytes()
-      btrfs: remove fs_info argument from btrfs_reserve_metadata_bytes()
-      btrfs: remove fs_info argument from btrfs_sysfs_add_space_info_type()
-      btrfs: remove fs_info argument from btrfs_zoned_activate_one_bg()
-      btrfs: add macros to facilitate printing of keys
-      btrfs: use the key format macros when printing keys
-      btrfs: remove pointless data_end assignment in btrfs_extent_item()
-      btrfs: return real error when failing tickets in maybe_fail_all_tickets()
-      btrfs: avoid recomputing used space in btrfs_try_granting_tickets()
-      btrfs: make btrfs_can_overcommit() return bool instead of int
-      btrfs: avoid used space computation when trying to grant tickets
-      btrfs: avoid used space computation when reserving space
-      btrfs: inline btrfs_space_info_used()
-      btrfs: bail out earlier from need_preemptive_reclaim() if we have tickets
-      btrfs: increment loop count outside critical section during metadata reclaim
-      btrfs: shorten critical section in btrfs_preempt_reclaim_metadata_space()
-      btrfs: avoid unnecessary reclaim calculation in priority_reclaim_metadata_space()
-      btrfs: assert space_info is locked in steal_from_global_rsv()
-      btrfs: assign booleans to global reserve's full field
-      btrfs: process ticket outside global reserve critical section
-      btrfs: remove double underscore prefix from __reserve_bytes()
-      btrfs: reduce space_info critical section in btrfs_chunk_alloc()
-      btrfs: reduce block group critical section in btrfs_free_reserved_bytes()
-      btrfs: reduce block group critical section in btrfs_add_reserved_bytes()
-      btrfs: reduce block group critical section in do_trimming()
-      btrfs: reduce block group critical section in pin_down_extent()
-      btrfs: use local variable for space_info in pin_down_extent()
-      btrfs: remove 'reserved' argument from btrfs_pin_extent()
-      btrfs: change 'reserved' argument from pin_down_extent() to bool
-      btrfs: reduce block group critical section in unpin_extent_range()
-      btrfs: remove pointless label and goto from unpin_extent_range()
-      btrfs: add data_race() in btrfs_account_ro_block_groups_free_space()
-      btrfs: move ticket wakeup and finalization to remove_ticket()
-      btrfs: avoid space_info locking when checking if tickets are served
-      btrfs: annotate as unlikely fs aborted checks in space flushing code
-      btrfs: move struct reserve_ticket definition to space-info.c
-      btrfs: fix leaf leak in an error path in btrfs_del_items()
-      btrfs: remove pointless return value update in btrfs_del_items()
-      btrfs: add unlikely to critical error in btrfs_extend_item()
-      btrfs: always use left leaf variable in __push_leaf_right()
-      btrfs: remove duplicated leaf dirty status clearing in __push_leaf_right()
-      btrfs: always use right leaf variable in __push_leaf_left()
-      btrfs: abort transaction on item count overflow in __push_leaf_left()
-      btrfs: update check_skip variable after unlocking current node
-      btrfs: use bool type for btrfs_path members used as booleans
-      btrfs: use booleans for delalloc arguments and struct find_free_extent_ctl
-      btrfs: place all boolean fields together in struct find_free_extent_ctl
-      btrfs: use test_and_set_bit() in btrfs_delayed_delete_inode_ref()
-      btrfs: remove root argument from btrfs_del_dir_entries_in_log()
-      btrfs: reduce arguments to btrfs_del_inode_ref_in_log()
-      btrfs: send: add unlikely to all unexpected overflow checks
-      btrfs: send: do not allocate memory for xattr data when checking it exists
-      btrfs: remove redundant zero/NULL initializations in btrfs_alloc_root()
-      btrfs: remove unnecessary inode key in btrfs_log_all_parents()
+   Currently page cache is relying on larger folios to handle those
+   bs > ps cases, requiring more contigous physical memory space.
 
-Gladyshev Ilya (1):
-      btrfs: don't generate any code from ASSERT() in release builds
+   And this limit will not go away even the end user choose to get
+   rid of all RAIDZ chunks.
 
-Johannes Thumshirn (1):
-      btrfs: zoned: show statistics for zoned filesystems
 
-Josef Bacik (3):
-      btrfs: add orig_logical to btrfs_bio for encryption
-      btrfs: don't rewrite ret from inode_permission
-      btrfs: don't search back for dir inode item in INO_LOOKUP_USER
+So any feedback is appreciated, no matter from end users, or even ZFS 
+developers who invented RAIDZ in the first place.
 
-Mehdi Ben Hadj Khelifa (1):
-      btrfs: refactor allocation size calculation in alloc_btrfs_io_context()
-
-Miquel Sabaté Solà (5):
-      btrfs: fix double free of qgroup record after failure to add delayed ref head
-      btrfs: declare free_ipath() via DEFINE_FREE()
-      btrfs: define the AUTO_KFREE/AUTO_KVFREE helper macros
-      btrfs: apply the AUTO_K(V)FREE macros throughout the code
-      btrfs: add ASSERTs on prealloc in qgroup functions
-
-Omar Sandoval (1):
-      btrfs: disable various operations on encrypted inodes
-
-Qu Wenruo (38):
-      btrfs: remove unnecessary NULL fs_info check from find_lock_delalloc_range()
-      btrfs: introduce a new shutdown state
-      btrfs: implement shutdown ioctl
-      btrfs: implement remove_bdev and shutdown super operation callbacks
-      btrfs: subpage: simplify the PAGECACHE_TAG_TOWRITE handling
-      btrfs: scrub: add cancel/pause/removed bg checks for raid56 parity stripes
-      btrfs: scrub: cancel the run if the process or fs is being frozen
-      btrfs: scrub: cancel the run if there is a pending signal
-      btrfs: replace BTRFS_MAX_BIO_SECTORS with BIO_MAX_VECS
-      btrfs: headers cleanup to remove unnecessary local includes
-      btrfs: remove btrfs_bio::fs_info by extracting it from btrfs_bio::inode
-      btrfs: make sure all btrfs_bio::end_io are called in task context
-      btrfs: remove btrfs_fs_info::compressed_write_workers
-      btrfs: relax btrfs_inode::ordered_tree_lock IRQ locking context
-      btrfs: introduce btrfs_bio::async_csum
-      btrfs: use kvcalloc for btrfs_bio::csum allocation
-      btrfs: make sure extent and csum paths are always released in scrub_raid56_parity_stripe()
-      btrfs: scrub: factor out parity scrub code into a helper
-      btrfs: raid56: remove sector_ptr::has_paddr member
-      btrfs: raid56: move sector_ptr::uptodate into a dedicated bitmap
-      btrfs: raid56: remove sector_ptr structure
-      btrfs: make btrfs_csum_one_bio() handle bs > ps without large folios
-      btrfs: make btrfs_repair_io_failure() handle bs > ps cases without large folios
-      btrfs: make read verification handle bs > ps cases without large folios
-      btrfs: enable encoded read/write/send for bs > ps cases
-      btrfs: scrub: always update btrfs_scrub_progress::last_physical
-      btrfs: raid56: add an overview for the btrfs_raid_bio structure
-      btrfs: raid56: introduce a new parameter to locate a sector
-      btrfs: raid56: prepare generate_pq_vertical() for bs > ps cases
-      btrfs: raid56: prepare recover_vertical() to support bs > ps cases
-      btrfs: raid56: prepare verify_one_sector() to support bs > ps cases
-      btrfs: raid56: prepare verify_bio_data_sectors() to support bs > ps cases
-      btrfs: raid56: prepare set_bio_pages_uptodate() to support bs > ps cases
-      btrfs: raid56: prepare steal_rbio() to support bs > ps cases
-      btrfs: raid56: prepare rbio_bio_add_io_paddr() to support bs > ps cases
-      btrfs: raid56: prepare finish_parity_scrub() to support bs > ps cases
-      btrfs: raid56: enable bs > ps support
-      btrfs: raid56: remove the "_step" infix
-
-Rajeev Tapadia (1):
-      btrfs: fix comment in alloc_bitmap() and drop stale TODO
-
-Sun YangKai (6):
-      btrfs: more trivial BTRFS_PATH_AUTO_FREE conversions
-      btrfs: tests: do trivial BTRFS_PATH_AUTO_FREE conversions
-      btrfs: factor out root promotion logic into promote_child_to_root()
-      btrfs: optimize balance_level() path reference handling
-      btrfs: simplify leaf traversal after path release in btrfs_next_old_leaf()
-      btrfs: remove redundant level reset in btrfs_del_items()
-
-Sweet Tea Dorminy (1):
-      btrfs: disable verity on encrypted inodes
-
-Xuanqiang Luo (1):
-      btrfs: remove redundant refcount check in btrfs_put_transaction()
-
-Zhen Ni (1):
-      btrfs: fix incomplete parameter rename in btrfs_decompress()
-
- fs/btrfs/accessors.h              |   1 +
- fs/btrfs/acl.c                    |  25 +-
- fs/btrfs/backref.c                |  37 +-
- fs/btrfs/backref.h                |   7 +-
- fs/btrfs/bio.c                    | 290 +++++++++----
- fs/btrfs/bio.h                    |  39 +-
- fs/btrfs/block-group.c            |  83 ++--
- fs/btrfs/block-group.h            |   2 +-
- fs/btrfs/block-rsv.c              |  14 +-
- fs/btrfs/btrfs_inode.h            |  20 +-
- fs/btrfs/compression.c            |  47 +--
- fs/btrfs/compression.h            |  15 +-
- fs/btrfs/ctree.c                  | 240 ++++++-----
- fs/btrfs/ctree.h                  |  18 +-
- fs/btrfs/defrag.c                 |   5 +-
- fs/btrfs/delalloc-space.c         |   4 +-
- fs/btrfs/delayed-inode.c          |  26 +-
- fs/btrfs/delayed-ref.c            |  45 +-
- fs/btrfs/dev-replace.c            |   4 +-
- fs/btrfs/dir-item.c               |   4 +-
- fs/btrfs/direct-io.c              |  10 +-
- fs/btrfs/disk-io.c                |  64 ++-
- fs/btrfs/disk-io.h                |   3 +-
- fs/btrfs/extent-tree.c            | 172 ++++----
- fs/btrfs/extent-tree.h            |  27 +-
- fs/btrfs/extent_io.c              |  57 ++-
- fs/btrfs/extent_io.h              |   1 -
- fs/btrfs/extent_map.h             |   3 +-
- fs/btrfs/file-item.c              |  89 ++--
- fs/btrfs/file-item.h              |   4 +-
- fs/btrfs/file.c                   |  32 +-
- fs/btrfs/free-space-cache.c       |  24 +-
- fs/btrfs/free-space-tree.c        |  55 +--
- fs/btrfs/fs.h                     |  36 +-
- fs/btrfs/inode-item.c             |   5 +-
- fs/btrfs/inode.c                  | 194 +++++----
- fs/btrfs/ioctl.c                  | 173 ++++----
- fs/btrfs/messages.c               |   1 +
- fs/btrfs/messages.h               |   3 +-
- fs/btrfs/misc.h                   |   7 +
- fs/btrfs/ordered-data.c           |  74 ++--
- fs/btrfs/print-tree.c             |  16 +-
- fs/btrfs/qgroup.c                 | 182 ++++----
- fs/btrfs/raid-stripe-tree.c       |  18 +-
- fs/btrfs/raid56.c                 | 859 ++++++++++++++++++++++----------------
- fs/btrfs/raid56.h                 | 103 ++++-
- fs/btrfs/reflink.c                |  15 +-
- fs/btrfs/relocation.c             |  85 ++--
- fs/btrfs/root-tree.c              |   4 +-
- fs/btrfs/scrub.c                  | 270 +++++++-----
- fs/btrfs/send.c                   | 113 +++--
- fs/btrfs/space-info.c             | 464 ++++++++++----------
- fs/btrfs/space-info.h             |  43 +-
- fs/btrfs/subpage.c                |  67 ++-
- fs/btrfs/subpage.h                |   1 -
- fs/btrfs/super.c                  |  77 +++-
- fs/btrfs/sysfs.c                  |  58 ++-
- fs/btrfs/sysfs.h                  |   3 +-
- fs/btrfs/tests/extent-io-tests.c  |   3 +-
- fs/btrfs/tests/extent-map-tests.c |   6 +-
- fs/btrfs/tests/qgroup-tests.c     |  16 +-
- fs/btrfs/transaction.c            |  48 ++-
- fs/btrfs/transaction.h            |   4 -
- fs/btrfs/tree-checker.c           |  23 +-
- fs/btrfs/tree-log.c               | 183 ++++----
- fs/btrfs/tree-log.h               |   8 +-
- fs/btrfs/uuid-tree.c              | 120 ++----
- fs/btrfs/verity.c                 |  32 +-
- fs/btrfs/volumes.c                | 199 ++++-----
- fs/btrfs/volumes.h                |  10 +-
- fs/btrfs/xattr.c                  |  41 +-
- fs/btrfs/zoned.c                  |  53 ++-
- fs/btrfs/zoned.h                  |   7 +-
- include/uapi/linux/btrfs.h        |   9 +
- 74 files changed, 2788 insertions(+), 2312 deletions(-)
+Thanks,
+Qu
 
