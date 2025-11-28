@@ -1,492 +1,220 @@
-Return-Path: <linux-btrfs+bounces-19390-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19391-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E846C90F57
-	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Nov 2025 07:32:08 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C142C90F7B
+	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Nov 2025 07:33:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 5B43B4E562C
-	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Nov 2025 06:32:05 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id D7AD434A357
+	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Nov 2025 06:33:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C73E72C3252;
-	Fri, 28 Nov 2025 06:32:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 766F72D24B6;
+	Fri, 28 Nov 2025 06:33:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="GUrCRe/f";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="iCrccRKj"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="T5hhBrCQ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C173622F76F
-	for <linux-btrfs@vger.kernel.org>; Fri, 28 Nov 2025 06:31:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88D412C375A
+	for <linux-btrfs@vger.kernel.org>; Fri, 28 Nov 2025 06:33:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764311523; cv=none; b=IC5/aSYPMqcL/B+NMoRir4jRetaXzBQxV2O6vVi82jt/WR2og2Rn1Yz3ub/RMcLar1u3x8D/uw+9NjyckSN4uI48RETIwI7NuiEdjl4flRg5N6P3y/eT9aruBFWQUl8ZJnEHgWwumEMBeATL7HJB8PKhTD0bIkcEf4H2h0R0IcA=
+	t=1764311619; cv=none; b=HlhibAI0+/Y2Il8pi9Ce5EBqdypuW5eNhNB5CwfCelPLBy5c2/dwOPaHnmXZnCZ1/9cDkxJTd2aTXg8rFjPRAqRn1aNskZ/KNJqNSebE83xMDqtiwYvA69JIyUadMhzl3N+B1/WPjZp/lVHbQmc5Vnl6AzuPXzvf5kSwsE8bfbY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764311523; c=relaxed/simple;
-	bh=z64kplQC9jVpncAGXB1xMaHL8hrvhcCyoKhV+48CB6M=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=d1rklYo1JPpc13IextQk4J7YQazl3kgot+lRcLgo0qX3CtdZWnaX4c1TO09THLvtUAo7Y6JDRel7JS5LXBvSZDez8GcOXfInu9sZInsRseFr9uuvER9FtLO7xejRS7m7xZY1NgsJXyy5yuaTkHKadZVVJf2F+LB+P6Z/fI+TUfo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=GUrCRe/f; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=iCrccRKj; arc=none smtp.client-ip=195.135.223.131
+	s=arc-20240116; t=1764311619; c=relaxed/simple;
+	bh=Lc3gfdT9Lu3f9QngPtKzGJJW/U9dAokhGDGyNQ4lk7c=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
+	 In-Reply-To:Content-Type; b=BjDJfruiCH7oPlEgdGZNdYM88QQXlnnTFEQrW+xu6qUhSGkkTIeGMTHluahtW6Attyt4SmY/p0cpWUBe6gtil+EiCfzxw0J7pACoKLTBBUFS0BbZ+Zmv3MdGJXch+GnUiB4nyp7dWl3Xkau59OVk6G8rbpwr2eJjUXwbazZWNVI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=T5hhBrCQ; arc=none smtp.client-ip=209.85.128.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 92DE05BD2F;
-	Fri, 28 Nov 2025 06:31:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1764311517; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=dfFgsI75Pvo6/dDvguMntWrHCCqG512enbenJFT6yLk=;
-	b=GUrCRe/fQFBgWQUxKV/KakHs2XrzNG2jcJtgmioZQf4+X3a/ARrHRV3To3edZAPy8AuRy/
-	QQ7CfT0jTvO7UGaF1GFUZjvGJFo0x+fbzwjJ1XgKZRTc79VsbwIBF6uF0G8tkWs2v7l8rn
-	wdMEMKrRAbmlL8v5xj8KPjtNGI5uEjQ=
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1764311516; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=dfFgsI75Pvo6/dDvguMntWrHCCqG512enbenJFT6yLk=;
-	b=iCrccRKjnZ8ACVPqmWlycMzgiwhFyymyKiSRb25ERraszSr2vbsqRg4vVPjatVQPQg5Dg0
-	fF1H7EBrT4Lnl2+aLhWe9rwlfnudaoae00oAvrD3cWUO5GHAdalPEBb4bdI/czFRlYej4K
-	njGZbzTMy0PxEQtUPWhI9zSO6QIrDX4=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 919A03EA63;
-	Fri, 28 Nov 2025 06:31:55 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id HEqUFNtBKWmvGgAAD6G6ig
-	(envelope-from <wqu@suse.com>); Fri, 28 Nov 2025 06:31:55 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org,
-	fstests@vger.kernel.org
-Subject: [PATCH] fstests: generic/746: update the parser to handle block group tree
-Date: Fri, 28 Nov 2025 17:01:33 +1030
-Message-ID: <20251128063137.67274-1-wqu@suse.com>
-X-Mailer: git-send-email 2.52.0
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-477770019e4so11715185e9.3
+        for <linux-btrfs@vger.kernel.org>; Thu, 27 Nov 2025 22:33:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1764311613; x=1764916413; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :references:to:from:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=qsrT5ubHZ3F8UgMeNxac4MyuI9ebaQK0E+RbSUM7t6Q=;
+        b=T5hhBrCQN99nquOCX3p9vYIEnOo1S+9gBxo+VeOoM1CRGOkgMn2Qif8AqvKFRJ/YWv
+         f5yF5XDyAnn9x6REEwgFu0EXfqXhNG4WSnY3BR6D16oJNvZ57bKzjwOP3HCiM/WCJPBh
+         E9SvCq6KafYvs3MG+CctKztRMuZf11n+QCXncnsfPCuaNcTiBl3ysJsUP4Nx+tZn/oou
+         3WcGsWb18LfDXdrrPctCpjyLE/S+Xv+EgYyO8bL6MLq2D95V7+HnYeRZclZbXn9im0cH
+         s3hd8nbn6szpQlhMn9XtGsrjoSL+x+WF3aVty8YFLANVxYr2KJZGWY2oOViuiaw0WIv2
+         vflg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1764311613; x=1764916413;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :references:to:from:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qsrT5ubHZ3F8UgMeNxac4MyuI9ebaQK0E+RbSUM7t6Q=;
+        b=UOaUGme9tDetmUaMNp0jpEl9LiZOOBDd5hx54BzDeuZ0L5CwhBZ60xhkVUg6uZ++3y
+         c+k/ogTfP6GKkIpv/9QiT3GPig9XuWNwW9dnd8uAeiXX+ip6JWddBzfNx2HqxHwxITs1
+         RR+r/QuNk854zOWZLGEzbwpt11VQNBA/WYJnTzuiiO0G2/RhJ8x4W42qYhZhP2hmz6Bc
+         Dm4Q3QcmEghM/9HQS2iu/F29ZY6/BmWb5BEqd9OqQSI0b6OaM1/oKbI/ZvUPBlaStTS1
+         +7xlxlh0b273j8N1oQnGkc8lZ25cv8FMRG+P8I3+Tf6053wxEn4y9zkKMmqxweRbLVND
+         tFjQ==
+X-Gm-Message-State: AOJu0YxWWprdNG+/bf4ArDdRwMFIwbacOUoGlvjnaGfFOQHO602OGDDx
+	r6UhcY85+UNgFHY/qQqaNJTfpcrZARxSjU7ZP7RBjj06uaUqljWrPp8LPCQ4bvkxoI7x7DQi66n
+	hlxLS
+X-Gm-Gg: ASbGncsZ9l2+9Tcf02Z+aPm5aZa14sJNjY1hTnPBggp+Uk2/crL6Qy5UCLeO+KukoKS
+	hZ8TVj9+LEfFN1+9CB4yG97u9swqbvklNbCKd/oKyhz41rFbBy5Pd20wetvNtnkRzRppshOD5aK
+	YqBk+2yNhggRe/2ptrcdSVKidp3K9jecErl0QWJ/WPhC3ITZjExkhvHztNsv4RWyuslrQRwxBIJ
+	vGED5bZmmaadCnR5HEu2QVXXRFHsskNWqrSNyZnc5W9xQU1Cxrxqi5xcCESIiQaepkTLwwfdhUf
+	DDA+mmW3LyRKyCVbSXtNnfIB87QxSrv6UuBT/2EFqxhDybUQV4NnQuAlIRHyy5p+pzaage38ei9
+	EYJSeHsiU4106kWsfXWVOoJZzTWZV9qPCZWOPamH8e0QAOKd0bN+X+W5z5OH1MaAalnrouEDk7c
+	gwgns+jZzXrhug3HW1w6JbmciSmFAPDuUDBwADjVc=
+X-Google-Smtp-Source: AGHT+IHrH03q69tJ1aiiqC/INhAGdxhwl1iNrSCnQ+5tzWd4jNxsY72apgKPvuGNtPa57mLRntcWEg==
+X-Received: by 2002:a05:600c:4f49:b0:46e:761b:e7ff with SMTP id 5b1f17b1804b1-47904b24957mr128951965e9.28.1764311613430;
+        Thu, 27 Nov 2025 22:33:33 -0800 (PST)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-78ad102dd77sm12508247b3.47.2025.11.27.22.33.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 27 Nov 2025 22:33:32 -0800 (PST)
+Message-ID: <cc1b5cda-2ef5-4c8d-9591-5723185666a9@suse.com>
+Date: Fri, 28 Nov 2025 17:03:29 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] fstests: generic/746: skip if btrfs' new
+ block-group-tree is involved
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
+References: <f89dd72abd7040e4373d2655a7f2625f7c96c3b7.1764280576.git.wqu@suse.com>
+Content-Language: en-US
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
+ Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
+ fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
+ 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
+ V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
+ rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
+ cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
+ qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
+ /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
+ o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
+ JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+In-Reply-To: <f89dd72abd7040e4373d2655a7f2625f7c96c3b7.1764280576.git.wqu@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-3.30 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-0.999];
-	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWO(0.00)[2];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:mid,suse.com:email];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:mid,suse.com:email]
-X-Spam-Level: 
-X-Spam-Score: -3.30
-X-Spam-Flag: NO
 
-[FALSE ALERT]
-The test case will fail on btrfs if the new block-group-tree feature is
-enabled:
+This is replaced by this newer patch:
 
-FSTYP         -- btrfs
-PLATFORM      -- Linux/x86_64 btrfs-vm 6.18.0-rc6-custom+ #321 SMP PREEMPT_DYNAMIC Sun Nov 23 16:34:33 ACDT 2025
-MKFS_OPTIONS  -- -O block-group-tree /dev/mapper/test-scratch1
-MOUNT_OPTIONS -- /dev/mapper/test-scratch1 /mnt/scratch
+  https://lore.kernel.org/linux-btrfs/20251128063137.67274-1-wqu@suse.com/
 
-generic/746 44s ... [failed, exit status 1]- output mismatch (see xfstests-dev/results//generic/746.out.bad)
-    --- tests/generic/746.out	2024-06-27 13:55:51.286338519 +0930
-    +++ xfstests-dev/results//generic/746.out.bad	2025-11-28 07:47:17.039827837 +1030
-    @@ -2,4 +2,4 @@
-     Generating garbage on loop...done.
-     Running fstrim...done.
-     Detecting interesting holes in image...done.
-    -Comparing holes to the reported space from FS...done.
-    +Comparing holes to the reported space from FS...Sectors 256-2111 are not marked as free!
-    ...
-    (Run 'diff -u xfstests-dev/tests/generic/746.out xfstests-dev/results//generic/746.out.bad'  to see the entire diff)
+The newer patch adds proper block-group-tree support by a new python 
+based script, that accepts an extra block group tree dump to properly 
+handle the block group boundary case.
 
-[CAUSE]
-Sectors [256, 2048) are the from the reserved first 1M free space.
-Sectors [2048, 2112) are the leading free space in the chunk tree.
-Sectors [2112, 2144) is the first tree block in the chunk tree.
+Thanks,
+Qu
 
-However the reported free sectors from get_free_sectors() looks like this:
-
-  2144 10566
-  10688 11711
-  ...
-
-Note that there should be a free sector range in [2048, 2112) but it's
-not reported in get_free_sectors().
-
-The get_free_sectors() call is fs dependent, and for btrfs it's using
-parse-extent-tree.awk script to handle the extent tree dump.
-
-The script uses BLOCK_GROUP_ITEM items to detect the beginning of a
-block group so that it can calculate the hole between the beginning of a
-block group and the first data/metadata item.
-
-However block-group-tree feature moves BLOCK_GROUP_ITEM items to a
-dedicated tree, making the existing script unable to parse the free
-space at the beginning of a block group.
-
-[FIX]
-Introduce a new script, parse-free-space.py, that accepts two tree
-dumps:
-
-- block group tree dump
-  If the fs has block-group-tree feature, it's the block group tree
-  dump.
-  Otherwise the regular extent tree dump is enough.
-
-- extent tree dump
-  The usual extent tree dump.
-
-With a dedicated block group tree dump, the script can correctly handle
-the beginning part of free space, no matter if block-group-tree feature
-is enabled or not.
-
-And with this parser, the old parse-extent-tree.awk can be retired.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- src/parse-extent-tree.awk | 144 --------------------------------------
- src/parse-free-space.py   | 122 ++++++++++++++++++++++++++++++++
- tests/generic/746         |  16 ++++-
- 3 files changed, 135 insertions(+), 147 deletions(-)
- delete mode 100755 src/parse-extent-tree.awk
- create mode 100755 src/parse-free-space.py
-
-diff --git a/src/parse-extent-tree.awk b/src/parse-extent-tree.awk
-deleted file mode 100755
-index 1e69693c..00000000
---- a/src/parse-extent-tree.awk
-+++ /dev/null
-@@ -1,144 +0,0 @@
--# SPDX-License-Identifier: GPL-2.0
--# Copyright (c) 2019 Nikolay Borisov, SUSE LLC.  All Rights Reserved.
--#
--# Parses btrfs' extent tree for holes. Holes are the ranges between 2 adjacent
--# extent blocks. For example if we have the following 2 metadata items in the
--# extent tree:
--#	item 6 key (30425088 METADATA_ITEM 0) itemoff 16019 itemsize 33
--#	item 7 key (30490624 METADATA_ITEM 0) itemoff 15986 itemsize 33
--#
--# There is a whole of 64k between then - 30490624−30425088 = 65536
--# Same logic applies for adjacent EXTENT_ITEMS.
--#
--# The script requires the following parameters passed on command line:
--#     * sectorsize - how many bytes per sector, used to convert the output of
--#     the script to sectors.
--#     * nodesize - size of metadata extents, used for internal calculations
--
--# Given an extent line "item 2 key (13672448 EXTENT_ITEM 65536) itemoff 16153 itemsize 53"
--# or "item 6 key (30425088 METADATA_ITEM 0) itemoff 16019 itemsize 33" returns
--# either 65536 (for data extents) or the fixes nodesize value for metadata
--# extents.
--function get_extent_size(line, tmp) {
--	if (line ~ data_match || line ~ bg_match) {
--		split(line, tmp)
--		gsub(/\)/,"", tmp[6])
--		return tmp[6]
--	} else if (line ~ metadata_match) {
--		return nodesize
--	}
--}
--
--# given a 'item 2 key (13672448 EXTENT_ITEM 65536) itemoff 16153 itemsize 53'
--# and returns 13672448.
--function get_extent_offset(line, tmp) {
--	split(line, tmp)
--	gsub(/\(/,"",tmp[4])
--	return tmp[4]
--}
--
--# This function parses all the extents belonging to a particular block group
--# which are accumulated in lines[] and calculates the offsets of the holes
--# part of this block group.
--#
--# base_offset and bg_line are local variables
--function print_array(base_offset, bg_line)
--{
--	if (match(lines[0], bg_match)) {
--		# we don't have an extent at the beginning of of blockgroup, so we
--		# have a hole between blockgroup offset and first extent offset
--		bg_line = lines[0]
--		prev_size=0
--		prev_offset=get_extent_offset(bg_line)
--		delete lines[0]
--	} else {
--		# we have an extent at the beginning of block group, so initialize
--		# the prev_* vars correctly
--		bg_line = lines[1]
--		prev_size = get_extent_size(lines[0])
--		prev_offset = get_extent_offset(lines[0])
--		delete lines[1]
--		delete lines[0]
--	}
--
--	bg_offset=get_extent_offset(bg_line)
--	bgend=bg_offset + get_extent_size(bg_line)
--
--	for (i in lines) {
--			cur_size = get_extent_size(lines[i])
--			cur_offset = get_extent_offset(lines[i])
--			if (cur_offset  != prev_offset + prev_size)
--				print int((prev_size + prev_offset) / sectorsize), int((cur_offset-1) / sectorsize)
--			prev_size = cur_size
--			prev_offset = cur_offset
--	}
--
--	print int((prev_size + prev_offset) / sectorsize), int((bgend-1) / sectorsize)
--	total_printed++
--	delete lines
--}
--
--BEGIN {
--	loi_match="^.item [0-9]* key \\([0-9]* (BLOCK_GROUP_ITEM|METADATA_ITEM|EXTENT_ITEM) [0-9]*\\).*"
--	metadata_match="^.item [0-9]* key \\([0-9]* METADATA_ITEM [0-9]*\\).*"
--	data_match="^.item [0-9]* key \\([0-9]* EXTENT_ITEM [0-9]*\\).*"
--	bg_match="^.item [0-9]* key \\([0-9]* BLOCK_GROUP_ITEM [0-9]*\\).*"
--	node_match="^node.*$"
--	leaf_match="^leaf [0-9]* flags"
--	line_count=0
--	total_printed=0
--	skip_lines=0
--}
--
--{
--	# skip lines not belonging to a leaf
--	if (match($0, node_match)) {
--		skip_lines=1
--	} else if (match($0, leaf_match)) {
--		skip_lines=0
--	}
--
--	if (!match($0, loi_match) || skip_lines == 1) next;
--
--	# we have a line of interest, we need to parse it. First check if there is
--	# anything in the array
--	if (line_count==0) {
--		lines[line_count++]=$0;
--	} else {
--		prev_line=lines[line_count-1]
--		split(prev_line, prev_line_fields)
--		prev_objectid=prev_line_fields[4]
--		objectid=$4
--
--		if (objectid == prev_objectid && match($0, bg_match)) {
--			if (total_printed>0) {
--				# We are adding a BG after we have added its first extent
--				# previously, consider this a record ending event and just print
--				# the array
--
--				delete lines[line_count-1]
--				print_array()
--				# we now start a new array with current and previous lines
--				line_count=0
--				lines[line_count++]=prev_line
--				lines[line_count++]=$0
--			} else {
--				# first 2 added lines are EXTENT and BG that match, in this case
--				# just add them
--				lines[line_count++]=$0
--
--			}
--		} else if (match($0, bg_match)) {
--			# ordinary end of record
--			print_array()
--			line_count=0
--			lines[line_count++]=$0
--		} else {
--			lines[line_count++]=$0
--		}
--	}
--}
--
--END {
--	print_array()
--}
-diff --git a/src/parse-free-space.py b/src/parse-free-space.py
-new file mode 100755
-index 00000000..3c761715
---- /dev/null
-+++ b/src/parse-free-space.py
-@@ -0,0 +1,122 @@
-+#!/usr/bin/python3
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# Parse block group and extent tree output to create a free sector list.
-+#
-+# Usage:
-+#  ./parse-free-space -n <nodesize> -b <bg_dump> -e <extent_dump>
-+#
-+# nodesize:     The nodesize of the btrfs
-+# bg_dump:      The tree dump file that contains block group items
-+#               If block-group-tree feature is enabled, it's block group tree dump.
-+#               Otherwise it's extent tree dump
-+# extent_dump:  The tree dump file that contains extent items
-+#               Just the extent tree dump, requires all tree block and data have
-+#               corresponding extent/metadata item.
-+#
-+# The output is "%d %d", the first one is the sector number (in 512 byte) of the
-+# free space, the second one is the last sector number of the free range.
-+
-+import getopt
-+import sys
-+import re
-+
-+bg_match = "^.item [0-9]* key \\([0-9]* BLOCK_GROUP_ITEM [0-9]*\\).*"
-+metadata_match="^.item [0-9]* key \\([0-9]* METADATA_ITEM [0-9]*\\).*"
-+data_match="^.item [0-9]* key \\([0-9]* EXTENT_ITEM [0-9]*\\).*"
-+
-+def parse_block_groups(file_path):
-+    bg_list = []
-+    with open(file_path, 'r') as bg_file:
-+        for line in bg_file:
-+            match = re.search(bg_match, line)
-+            if match == None:
-+                continue
-+            start = match.group(0).split()[3][1:]
-+            length = match.group(0).split()[5][:-1]
-+            bg_list.append({'start': int(start), 'length': int(length)})
-+    return sorted(bg_list, key=lambda d: d['start'])
-+
-+def parse_extents(file_path):
-+    extent_list = []
-+    with open(file_path, 'r') as bg_file:
-+        for line in bg_file:
-+            match = re.search(data_match, line)
-+            if match:
-+                start = match.group(0).split()[3][1:]
-+                length = match.group(0).split()[5][:-1]
-+                extent_list.append({'start': int(start), 'length': int(length)})
-+                continue
-+            match = re.search(metadata_match, line)
-+            if match:
-+                start = match.group(0).split()[3][1:]
-+                length = nodesize
-+                extent_list.append({'start': int(start), 'length': int(length)})
-+                continue
-+    return sorted(extent_list, key=lambda d: d['start'])
-+
-+def range_end(range):
-+    return range['start'] + range['length']
-+
-+def calc_free_spaces(bg_list, extent_list):
-+    free_list = []
-+    bg_iter = iter(bg_list)
-+    cur_bg = next(bg_iter)
-+    prev_end = cur_bg['start']
-+
-+    for cur_extent in extent_list:
-+        # Finished one bg, add the remaining free space.
-+        while range_end(cur_bg) <= cur_extent['start']:
-+            if range_end(cur_bg) > prev_end:
-+                free_list.append({'start': prev_end,
-+                                  'length': range_end(cur_bg) - prev_end})
-+            cur_bg = next(bg_iter)
-+            prev_end = cur_bg['start']
-+
-+        if prev_end < cur_extent['start']:
-+            free_list.append({'start': prev_end,
-+                              'length': cur_extent['start'] - prev_end})
-+        prev_end = range_end(cur_extent)
-+
-+    # Handle the remaining part in the bg
-+    if range_end(cur_bg) > prev_end:
-+        free_list.append({'start': prev_end,
-+                          'length': range_end(cur_bg) - prev_end})
-+
-+    # Handle the remaining empty bgs (if any)
-+    for cur_bg in bg_iter:
-+        free_list.append({'start': cur_bg['start'],
-+                          'length': cur_bg['length']})
-+
-+
-+    return free_list
-+
-+nodesize = 0
-+sectorsize = 512
-+bg_file_path = ''
-+extent_file_path = ''
-+
-+opts, args = getopt.getopt(sys.argv[1:], 's:n:b:e:')
-+for o, a in opts:
-+    if o == '-n':
-+        nodesize = int(a)
-+    elif o == '-b':
-+        bg_file_path = a
-+    elif o == '-e':
-+        extent_file_path = a
-+    elif o == '-s':
-+        sectorsize = int(a)
-+
-+if nodesize == 0 or sectorsize == 0:
-+    print("require -n <nodesize> and -s <sectorsize>")
-+    sys.exit(1)
-+if not bg_file_path or not extent_file_path:
-+    print("require -b <bg_file> and -e <extent_file>")
-+    sys.exit(1)
-+
-+bg_list = parse_block_groups(bg_file_path)
-+extent_list = parse_extents(extent_file_path)
-+free_space_list = calc_free_spaces(bg_list, extent_list)
-+for free_space in free_space_list:
-+    print(free_space['start'] >> 9,
-+          (range_end(free_space) >> 9) - 1)
-diff --git a/tests/generic/746 b/tests/generic/746
-index 6f02b1cc..0d53546e 100755
---- a/tests/generic/746
-+++ b/tests/generic/746
-@@ -93,13 +93,23 @@ get_free_sectors()
- 			| sed -n 's/nodesize\s*\(.*\)/\1/p')
- 
- 		# Get holes within block groups
--		$BTRFS_UTIL_PROG inspect-internal dump-tree -t extent $loop_dev \
--			| $AWK_PROG -v sectorsize=512 -v nodesize=$nodesize -f $here/src/parse-extent-tree.awk
-+		$BTRFS_UTIL_PROG inspect-internal dump-tree -t extent $loop_dev >> $tmp/extent_dump
-+		if $BTRFS_UTIL_PROG inspect-internal dump-super $loop_dev |\
-+				grep -q "BLOCK_GROUP_TREE"; then
-+			$BTRFS_UTIL_PROG inspect-internal dump-tree -t block-group $loop_dev \
-+				>> $tmp/bg_dump
-+		else
-+			cp $tmp/extent_dump $tmp/bg_dump
-+		fi
-+		$here/src/parse-free-space.py -n $nodesize -b $tmp/bg_dump -e $tmp/extent_dump \
-+			>> $tmp/bg_free_space
- 
- 		# Get holes within unallocated space on disk
- 		$BTRFS_UTIL_PROG inspect-internal dump-tree -t dev $loop_dev \
--			| $AWK_PROG -v sectorsize=512 -v devsize=$device_size -f $here/src/parse-dev-tree.awk
-+			| $AWK_PROG -v sectorsize=512 -v devsize=$device_size \
-+			  -f $here/src/parse-dev-tree.awk >> $tmp/unallocated
- 
-+		cat $tmp/bg_free_space $tmp/unallocated | sort
- 	;;
- 	esac
- }
--- 
-2.51.2
+在 2025/11/28 08:26, Qu Wenruo 写道:
+> [FALSE ALERT]
+> The test case will fail on btrfs if the new block-group-tree feature is
+> enabled:
+> 
+> FSTYP         -- btrfs
+> PLATFORM      -- Linux/x86_64 btrfs-vm 6.18.0-rc6-custom+ #321 SMP PREEMPT_DYNAMIC Sun Nov 23 16:34:33 ACDT 2025
+> MKFS_OPTIONS  -- -O block-group-tree /dev/mapper/test-scratch1
+> MOUNT_OPTIONS -- /dev/mapper/test-scratch1 /mnt/scratch
+> 
+> generic/746 44s ... [failed, exit status 1]- output mismatch (see xfstests-dev/results//generic/746.out.bad)
+>      --- tests/generic/746.out	2024-06-27 13:55:51.286338519 +0930
+>      +++ xfstests-dev/results//generic/746.out.bad	2025-11-28 07:47:17.039827837 +1030
+>      @@ -2,4 +2,4 @@
+>       Generating garbage on loop...done.
+>       Running fstrim...done.
+>       Detecting interesting holes in image...done.
+>      -Comparing holes to the reported space from FS...done.
+>      +Comparing holes to the reported space from FS...Sectors 256-2111 are not marked as free!
+>      ...
+>      (Run 'diff -u xfstests-dev/tests/generic/746.out xfstests-dev/results//generic/746.out.bad'  to see the entire diff)
+> 
+> [CAUSE]
+> Sectors [256, 2048) are the reserved 1M free space.
+> Sectors [2048, 2112) are the leading free space in the chunk tree.
+> Sectors [2112, 2144) is the first tree block in the chunk tree.
+> 
+> However the reported free sectors from get_free_sectors() looks like this:
+> 
+>    2144 10566
+>    10688 11711
+>    ...
+> 
+> Note that there should be a free sector range in [2048, 2112) but it's
+> not reported in get_free_sectors().
+> 
+> The get_free_sectors() call is fs dependent, and for btrfs it's using
+> parse-extent-tree.awk script to handle the extent tree dump.
+> 
+> The script uses BLOCK_GROUP_ITEM items to detect the beginning of a
+> block group so that it can calculate the hole between the bginning of a
+> block group and the first data/metadata item.
+> 
+> However block-group-tree feature moves BLOCK_GROUP_ITEM items to a
+> dedicated tree, making the existing script unable to parse the free
+> space at the beginning of a block group.
+> 
+> [FIX]
+> For block-group-tree feature, we need to parse both block group tree and
+> extent tree and do cross-reference.
+> It is not that simple to do in a single awk script, so unfortunately
+> skip the test if the btrfs has block-group-tree feature enabled.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+> Changelog
+> v2:
+> - Fix several typos in the commit message
+>    Mostly related to the sequence between 1 and 2, have all kinds of typos
+>    like: 2122 (should be 2112) 1244 (should be 2144)
+> ---
+>   tests/generic/746 | 12 ++++++++++++
+>   1 file changed, 12 insertions(+)
+> 
+> diff --git a/tests/generic/746 b/tests/generic/746
+> index 6f02b1cc3547..c62fdbc9de20 100755
+> --- a/tests/generic/746
+> +++ b/tests/generic/746
+> @@ -162,6 +162,18 @@ mkdir $loop_mnt
+>   _mkfs_dev $loop_dev
+>   _mount $loop_dev $loop_mnt
+>   
+> +# The new block-group-tree will feature screw up the extent tree parsing, as
+> +# there is no more block group item in that tree to mark the start
+> +# of a block group, causing the free space between the beginning of bg
+> +# and the first data/metadata block not counted as free space.
+> +# So reject fs with block-group-tree feature for now.
+> +if [ $FSTYP = "btrfs" ]; then
+> +	if $BTRFS_UTIL_PROG inspect-internal dump-super $loop_dev |\
+> +		grep -q BLOCK_GROUP_TREE; then
+> +		_notrun "No support for block-group-tree extent tree parsing yet"
+> +	fi
+> +fi
+> +
+>   echo -n "Generating garbage on loop..."
+>   # Goal is to fill it up, ignore any errors.
+>   for i in `seq 1 10`; do
 
 
