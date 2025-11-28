@@ -1,82 +1,52 @@
-Return-Path: <linux-btrfs+bounces-19391-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19392-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3C142C90F7B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Nov 2025 07:33:44 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6DF6C91CD7
+	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Nov 2025 12:36:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id D7AD434A357
-	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Nov 2025 06:33:42 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 1BE08345948
+	for <lists+linux-btrfs@lfdr.de>; Fri, 28 Nov 2025 11:36:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 766F72D24B6;
-	Fri, 28 Nov 2025 06:33:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 029CE30B52E;
+	Fri, 28 Nov 2025 11:36:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="T5hhBrCQ"
+	dkim=pass (1024-bit key) header.d=bupt.moe header.i=@bupt.moe header.b="kHK/abvG"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtpbgeu2.qq.com (smtpbgeu2.qq.com [18.194.254.142])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88D412C375A
-	for <linux-btrfs@vger.kernel.org>; Fri, 28 Nov 2025 06:33:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA0FF17BA6
+	for <linux-btrfs@vger.kernel.org>; Fri, 28 Nov 2025 11:36:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.194.254.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764311619; cv=none; b=HlhibAI0+/Y2Il8pi9Ce5EBqdypuW5eNhNB5CwfCelPLBy5c2/dwOPaHnmXZnCZ1/9cDkxJTd2aTXg8rFjPRAqRn1aNskZ/KNJqNSebE83xMDqtiwYvA69JIyUadMhzl3N+B1/WPjZp/lVHbQmc5Vnl6AzuPXzvf5kSwsE8bfbY=
+	t=1764329777; cv=none; b=jPYQSKh49dBkJy6ErEJHFd4rUYP9k1+fwRR1OdcaSmQBCwb/XnJ2ACYbzkBjnHMaVhn51X5ziRLGExYo6eDPSDxUfbmhsSRER+s0iB4XApzqqD/SrVD43trrhxngoLCYRN75BC9UUbEcgo/Odo7D0U7J9XmwV20Aw82VC43t/WI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764311619; c=relaxed/simple;
-	bh=Lc3gfdT9Lu3f9QngPtKzGJJW/U9dAokhGDGyNQ4lk7c=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
-	 In-Reply-To:Content-Type; b=BjDJfruiCH7oPlEgdGZNdYM88QQXlnnTFEQrW+xu6qUhSGkkTIeGMTHluahtW6Attyt4SmY/p0cpWUBe6gtil+EiCfzxw0J7pACoKLTBBUFS0BbZ+Zmv3MdGJXch+GnUiB4nyp7dWl3Xkau59OVk6G8rbpwr2eJjUXwbazZWNVI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=T5hhBrCQ; arc=none smtp.client-ip=209.85.128.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-477770019e4so11715185e9.3
-        for <linux-btrfs@vger.kernel.org>; Thu, 27 Nov 2025 22:33:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1764311613; x=1764916413; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :references:to:from:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qsrT5ubHZ3F8UgMeNxac4MyuI9ebaQK0E+RbSUM7t6Q=;
-        b=T5hhBrCQN99nquOCX3p9vYIEnOo1S+9gBxo+VeOoM1CRGOkgMn2Qif8AqvKFRJ/YWv
-         f5yF5XDyAnn9x6REEwgFu0EXfqXhNG4WSnY3BR6D16oJNvZ57bKzjwOP3HCiM/WCJPBh
-         E9SvCq6KafYvs3MG+CctKztRMuZf11n+QCXncnsfPCuaNcTiBl3ysJsUP4Nx+tZn/oou
-         3WcGsWb18LfDXdrrPctCpjyLE/S+Xv+EgYyO8bL6MLq2D95V7+HnYeRZclZbXn9im0cH
-         s3hd8nbn6szpQlhMn9XtGsrjoSL+x+WF3aVty8YFLANVxYr2KJZGWY2oOViuiaw0WIv2
-         vflg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764311613; x=1764916413;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :references:to:from:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=qsrT5ubHZ3F8UgMeNxac4MyuI9ebaQK0E+RbSUM7t6Q=;
-        b=UOaUGme9tDetmUaMNp0jpEl9LiZOOBDd5hx54BzDeuZ0L5CwhBZ60xhkVUg6uZ++3y
-         c+k/ogTfP6GKkIpv/9QiT3GPig9XuWNwW9dnd8uAeiXX+ip6JWddBzfNx2HqxHwxITs1
-         RR+r/QuNk854zOWZLGEzbwpt11VQNBA/WYJnTzuiiO0G2/RhJ8x4W42qYhZhP2hmz6Bc
-         Dm4Q3QcmEghM/9HQS2iu/F29ZY6/BmWb5BEqd9OqQSI0b6OaM1/oKbI/ZvUPBlaStTS1
-         +7xlxlh0b273j8N1oQnGkc8lZ25cv8FMRG+P8I3+Tf6053wxEn4y9zkKMmqxweRbLVND
-         tFjQ==
-X-Gm-Message-State: AOJu0YxWWprdNG+/bf4ArDdRwMFIwbacOUoGlvjnaGfFOQHO602OGDDx
-	r6UhcY85+UNgFHY/qQqaNJTfpcrZARxSjU7ZP7RBjj06uaUqljWrPp8LPCQ4bvkxoI7x7DQi66n
-	hlxLS
-X-Gm-Gg: ASbGncsZ9l2+9Tcf02Z+aPm5aZa14sJNjY1hTnPBggp+Uk2/crL6Qy5UCLeO+KukoKS
-	hZ8TVj9+LEfFN1+9CB4yG97u9swqbvklNbCKd/oKyhz41rFbBy5Pd20wetvNtnkRzRppshOD5aK
-	YqBk+2yNhggRe/2ptrcdSVKidp3K9jecErl0QWJ/WPhC3ITZjExkhvHztNsv4RWyuslrQRwxBIJ
-	vGED5bZmmaadCnR5HEu2QVXXRFHsskNWqrSNyZnc5W9xQU1Cxrxqi5xcCESIiQaepkTLwwfdhUf
-	DDA+mmW3LyRKyCVbSXtNnfIB87QxSrv6UuBT/2EFqxhDybUQV4NnQuAlIRHyy5p+pzaage38ei9
-	EYJSeHsiU4106kWsfXWVOoJZzTWZV9qPCZWOPamH8e0QAOKd0bN+X+W5z5OH1MaAalnrouEDk7c
-	gwgns+jZzXrhug3HW1w6JbmciSmFAPDuUDBwADjVc=
-X-Google-Smtp-Source: AGHT+IHrH03q69tJ1aiiqC/INhAGdxhwl1iNrSCnQ+5tzWd4jNxsY72apgKPvuGNtPa57mLRntcWEg==
-X-Received: by 2002:a05:600c:4f49:b0:46e:761b:e7ff with SMTP id 5b1f17b1804b1-47904b24957mr128951965e9.28.1764311613430;
-        Thu, 27 Nov 2025 22:33:33 -0800 (PST)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-78ad102dd77sm12508247b3.47.2025.11.27.22.33.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 27 Nov 2025 22:33:32 -0800 (PST)
-Message-ID: <cc1b5cda-2ef5-4c8d-9591-5723185666a9@suse.com>
-Date: Fri, 28 Nov 2025 17:03:29 +1030
+	s=arc-20240116; t=1764329777; c=relaxed/simple;
+	bh=ugkaeNuKljmwiSgXZluqrhyQJMLdVta4JZdoiNAdkYA=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=KzAjQwlzmr/vkA7JZlh/P6UcUBsTQdKJd1IXLFpCAQwIx6g0uzFREqL/pu7RH++ivy1JUon2EXQddsKqdE0hThpWn+rbCYwr1aIYfDP5bqIbPS8WfV8Xc4U5j9A8kgZQbilsrmaT/24rbOW1sv/IcXIWRWD6DUwZPMdWL5ba0UE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bupt.moe; spf=pass smtp.mailfrom=bupt.moe; dkim=pass (1024-bit key) header.d=bupt.moe header.i=@bupt.moe header.b=kHK/abvG; arc=none smtp.client-ip=18.194.254.142
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bupt.moe
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bupt.moe
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bupt.moe;
+	s=qqmb2301; t=1764329761;
+	bh=8HsM5P8BS8x1LqJoX77bfUmWfm10K1hQXwkWxVm/82k=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject;
+	b=kHK/abvGwdAzt3/OEsU1znkecGNWHE4uCSfJhtmzW+lQAj+XtemszQpPfzeFzWj7M
+	 v734NNEsT5+pFm4Q+R5l7knWhF2qdl1oER9yAxDOyY5GUgIcwOkZ1G/rT4ieyB/9iY
+	 v+qCIUHWdPTmo5d9lWjHx2kJRNGJ3ti89huHft2c=
+X-QQ-mid: esmtpgz15t1764329760t25f1e1c0
+X-QQ-Originating-IP: aQJLKzrn36+5XC8PbxtdDgzv5C7Z3to+27ohEBpmeUo=
+Received: from [198.18.0.1] ( [123.134.104.238])
+	by bizesmtp.qq.com (ESMTP) with SMTP id 0
+	for <linux-btrfs@vger.kernel.org>; Fri, 28 Nov 2025 19:35:59 +0800 (CST)
+X-QQ-SSF: 0000000000000000000000000000000
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 13035330746348230136
+Message-ID: <0BED8C36F63EBD8F+f61c437e-3e5f-4a1c-9c18-17fd31abfcd4@bupt.moe>
+Date: Fri, 28 Nov 2025 19:36:01 +0800
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -84,137 +54,152 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] fstests: generic/746: skip if btrfs' new
- block-group-tree is involved
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
-References: <f89dd72abd7040e4373d2655a7f2625f7c96c3b7.1764280576.git.wqu@suse.com>
-Content-Language: en-US
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <f89dd72abd7040e4373d2655a7f2625f7c96c3b7.1764280576.git.wqu@suse.com>
+To: linux-btrfs <linux-btrfs@vger.kernel.org>
+From: HAN Yuwei <hrx@bupt.moe>
+Subject: [BUG] 6.18-rc7 cannot mount RAID1 zoned btrfs.
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: esmtpgz:bupt.moe:qybglogicsvrgz:qybglogicsvrgz3a-0
+X-QQ-XMAILINFO: OatzRg8pHEjpKRr+XpDZB12CRzoARyu/tgWZNsXNLkOWkXjEOjsiK+gy
+	NM/FpXBOaOUniOQOaMt+bPyrwsSxHi/JJ4PT/PU073yQp2I3Ac9NlP0nSJhBYNlWFiSBTw0
+	sGBgpelfZZCTpeAAB59JxfuBHLokdVzdfQVXTX4LERJZBU5yFXllHZrEkEBonpX3sANLyBC
+	JDjPGy8ckn/cNfCO0lbR4cdiSyNNtlgtdenFHK+cwecvK1wCi5qp+M8on99gpr00dJokFMX
+	D7Ag5z32Rp8aNI/pWupLSzLqlN2+R5nL5BlOd/UKIbLBNQCWF6iv2h7dAt4BweXE7PoZLDI
+	tqb7oHbPFIRHmwXX6GLjtjmSz62FLKxLMqTiLwlCZjmcPq6LQ5wZUIA5TNmjrMNW0eYXi1c
+	j8ud/aWXCC+mJpXB2Lcvw0Ue/tnqYEqel5VN10UXMzBZLTfjAbETCqg5fHZqjfEvEnt39lg
+	deUaG6yPcpDthF5CcJzIYIMjSCqO9PlmJ5dkA0gi1pas0ulxeOfQXFSkZw7EQ/7ivBt5r32
+	0q0Hq1Xz7WmIBOqVYxY4o8yvhd5oyBL+HX7TIDNu5Hw3Za02+sUXj7ZcBwI+Y4yizS1/Dml
+	9gtv3RufunYETBfBGVAX3cKnbgA2huNOHPcznWe5zY7CPoRbqdfNgZaR29uroYoiNy1glfs
+	eKiyXcbrSPeUwtciYd6LZvJmEq6Q+vMeJczKtuxroKmXBVqkHAkLrikUQp3IZuB62ffvQ1W
+	5k9I0IsJ6Ignz9oz8SDRfAMli33X2wWaM/VMASdtP5nvo9mI7mSHKEM1pvS+n430Vv1SQMZ
+	/8vRwqgQ+NUIq7RzJTk1R2qIPbk9Gb3CdVBYmFbgK9XELNiQSkOC1P1q+Q5CJojLC38oI7u
+	kgciW0N76Y31cNWZ+Cbhsk94BLPbgSnqdiQL1eriR/HJpUIdcLcFrj4EARn21S3Z09QiWcu
+	RtwamCbKWdpHYzQ==
+X-QQ-XMRINFO: NI4Ajvh11aEj8Xl/2s1/T8w=
+X-QQ-RECHKSPAM: 0
 
-This is replaced by this newer patch:
+Hi,
 
-  https://lore.kernel.org/linux-btrfs/20251128063137.67274-1-wqu@suse.com/
+I have upgraded my test bench NAS from 6.18-rc2 to 6.18-rc7, And can't 
+mount my RAID1 volume.
 
-The newer patch adds proper block-group-tree support by a new python 
-based script, that accepts an extra block group tree dump to properly 
-handle the block group boundary case.
+[   18.140714] BTRFS: device label DATA4 devid 1 transid 8182 /dev/sdc 
+(8:32) scanned by mount (529)
+[   18.143655] BTRFS: device label DATA2 devid 1 transid 12997 /dev/sdd 
+(8:48) scanned by mount (528)
+[   18.151014] BTRFS info (device sdc): first mount of filesystem 
+2662c5a3-eac0-477a-a82a-b298a16dae02
+[   18.151028] BTRFS info (device sdc): using crc32c (crc32c-lib) 
+checksum algorithm
+[   18.153940] BTRFS info (device sda): first mount of filesystem 
+c3b4520d-ea9c-4ac2-9cbd-2c8820346809
+[   18.153953] BTRFS info (device sda): using crc32c (crc32c-lib) 
+checksum algorithm
+[   18.155658] BTRFS info (device sdd): first mount of filesystem 
+6a75f34b-1b2e-40f5-87ef-d83d980148b8
+[   18.155675] BTRFS info (device sdd): using crc32c (crc32c-lib) 
+checksum algorithm
+[   18.157421] BTRFS: device fsid ba54f121-eb78-4af4-8a33-4764db37c0fa 
+devid 1 transid 4814 /dev/nvme0n1p4 (259:8) scanned by mount (530)
+[   18.157737] BTRFS info (device nvme0n1p4): first mount of filesystem 
+ba54f121-eb78-4af4-8a33-4764db37c0fa
+[   18.157752] BTRFS info (device nvme0n1p4): using crc32c (crc32c-lib) 
+checksum algorithm
+[   18.274329] BTRFS info (device nvme0n1p4): enabling ssd optimizations
+[   18.274336] BTRFS info (device nvme0n1p4): turning on async discard
+[   18.274338] BTRFS info (device nvme0n1p4): enabling free space tree
+[   19.192944] BTRFS info (device sda): host-managed zoned block device 
+/dev/sda, 52156 zones of 268435456 bytes
+[   19.271742] BTRFS info (device sdc): host-managed zoned block device 
+/dev/sdc, 52156 zones of 268435456 bytes
+[   19.460332] BTRFS info (device sdd): host-managed zoned block device 
+/dev/sdd, 52156 zones of 268435456 bytes
+[   19.757242] BTRFS info (device sda): host-managed zoned block device 
+/dev/sdb, 52156 zones of 268435456 bytes
+[   19.868623] BTRFS info (device sda): zoned mode enabled with zone 
+size 268435456
+[   20.940894] BTRFS info (device sdd): zoned mode enabled with zone 
+size 268435456
+[   21.101010] r8169 0000:07:00.0 ethob: Link is Up - 1Gbps/Full - flow 
+control off
+[   21.128595] BTRFS info (device sdc): zoned mode enabled with zone 
+size 268435456
+[   21.436972] BTRFS error (device sda): zoned: write pointer offset 
+mismatch of zones in raid1 profile
+[   21.438396] BTRFS error (device sda): zoned: failed to load zone info 
+of bg 1496796102656
+[   21.440404] BTRFS error (device sda): failed to read block groups: -5
+[   21.460591] BTRFS error (device sda): open_ctree failed: -5
+[   23.292227] BTRFS info (device sdc): checking UUID tree
+[   23.292306] BTRFS info (device sdc): enabling free space tree
+[   23.410507] BTRFS info (device sdd): checking UUID tree
+[   23.410597] BTRFS info (device sdd): enabling free space tree
 
-Thanks,
-Qu
+uname -a:
+Linux ninesheep 6.18.0-rc7-btrfs-test #10 SMP PREEMPT_DYNAMIC Mon Nov 24 
+19:50:01 CST 2025 x86_64 GNU/Linux
 
-在 2025/11/28 08:26, Qu Wenruo 写道:
-> [FALSE ALERT]
-> The test case will fail on btrfs if the new block-group-tree feature is
-> enabled:
-> 
-> FSTYP         -- btrfs
-> PLATFORM      -- Linux/x86_64 btrfs-vm 6.18.0-rc6-custom+ #321 SMP PREEMPT_DYNAMIC Sun Nov 23 16:34:33 ACDT 2025
-> MKFS_OPTIONS  -- -O block-group-tree /dev/mapper/test-scratch1
-> MOUNT_OPTIONS -- /dev/mapper/test-scratch1 /mnt/scratch
-> 
-> generic/746 44s ... [failed, exit status 1]- output mismatch (see xfstests-dev/results//generic/746.out.bad)
->      --- tests/generic/746.out	2024-06-27 13:55:51.286338519 +0930
->      +++ xfstests-dev/results//generic/746.out.bad	2025-11-28 07:47:17.039827837 +1030
->      @@ -2,4 +2,4 @@
->       Generating garbage on loop...done.
->       Running fstrim...done.
->       Detecting interesting holes in image...done.
->      -Comparing holes to the reported space from FS...done.
->      +Comparing holes to the reported space from FS...Sectors 256-2111 are not marked as free!
->      ...
->      (Run 'diff -u xfstests-dev/tests/generic/746.out xfstests-dev/results//generic/746.out.bad'  to see the entire diff)
-> 
-> [CAUSE]
-> Sectors [256, 2048) are the reserved 1M free space.
-> Sectors [2048, 2112) are the leading free space in the chunk tree.
-> Sectors [2112, 2144) is the first tree block in the chunk tree.
-> 
-> However the reported free sectors from get_free_sectors() looks like this:
-> 
->    2144 10566
->    10688 11711
->    ...
-> 
-> Note that there should be a free sector range in [2048, 2112) but it's
-> not reported in get_free_sectors().
-> 
-> The get_free_sectors() call is fs dependent, and for btrfs it's using
-> parse-extent-tree.awk script to handle the extent tree dump.
-> 
-> The script uses BLOCK_GROUP_ITEM items to detect the beginning of a
-> block group so that it can calculate the hole between the bginning of a
-> block group and the first data/metadata item.
-> 
-> However block-group-tree feature moves BLOCK_GROUP_ITEM items to a
-> dedicated tree, making the existing script unable to parse the free
-> space at the beginning of a block group.
-> 
-> [FIX]
-> For block-group-tree feature, we need to parse both block group tree and
-> extent tree and do cross-reference.
-> It is not that simple to do in a single awk script, so unfortunately
-> skip the test if the btrfs has block-group-tree feature enabled.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
-> Changelog
-> v2:
-> - Fix several typos in the commit message
->    Mostly related to the sequence between 1 and 2, have all kinds of typos
->    like: 2122 (should be 2112) 1244 (should be 2144)
-> ---
->   tests/generic/746 | 12 ++++++++++++
->   1 file changed, 12 insertions(+)
-> 
-> diff --git a/tests/generic/746 b/tests/generic/746
-> index 6f02b1cc3547..c62fdbc9de20 100755
-> --- a/tests/generic/746
-> +++ b/tests/generic/746
-> @@ -162,6 +162,18 @@ mkdir $loop_mnt
->   _mkfs_dev $loop_dev
->   _mount $loop_dev $loop_mnt
->   
-> +# The new block-group-tree will feature screw up the extent tree parsing, as
-> +# there is no more block group item in that tree to mark the start
-> +# of a block group, causing the free space between the beginning of bg
-> +# and the first data/metadata block not counted as free space.
-> +# So reject fs with block-group-tree feature for now.
-> +if [ $FSTYP = "btrfs" ]; then
-> +	if $BTRFS_UTIL_PROG inspect-internal dump-super $loop_dev |\
-> +		grep -q BLOCK_GROUP_TREE; then
-> +		_notrun "No support for block-group-tree extent tree parsing yet"
-> +	fi
-> +fi
-> +
->   echo -n "Generating garbage on loop..."
->   # Goal is to fill it up, ignore any errors.
->   for i in `seq 1 10`; do
+btrfs inspect-internal dump-super /dev/sda:
+superblock: bytenr=65536, device=/dev/sda
+---------------------------------------------------------
+csum_type               0 (crc32c)
+csum_size               4
+csum                    0xde24f48f [match]
+bytenr                  65536
+flags                   0x1
+                         ( WRITTEN )
+magic                   _BHRfS_M [match]
+fsid                    c3b4520d-ea9c-4ac2-9cbd-2c8820346809
+metadata_uuid           00000000-0000-0000-0000-000000000000
+label                   6.17_RST_TEST
+generation              473
+root                    1435214675968
+sys_array_size          129
+chunk_root_generation   471
+root_level              0
+chunk_root              1658798080
+chunk_root_level        1
+log_root                0
+log_root_transid (deprecated)   0
+log_root_level          0
+total_bytes             28001039286272
+bytes_used              765387165696
+sectorsize              4096
+nodesize                16384
+leafsize (deprecated)   16384
+stripesize              4096
+root_dir                6
+num_devices             2
+compat_flags            0x0
+compat_ro_flags         0xb
+                         ( FREE_SPACE_TREE |
+                           FREE_SPACE_TREE_VALID |
+                           BLOCK_GROUP_TREE )
+incompat_flags          0x5361
+                         ( MIXED_BACKREF |
+                           BIG_METADATA |
+                           EXTENDED_IREF |
+                           SKINNY_METADATA |
+                           NO_HOLES |
+                           ZONED |
+                           RAID_STRIPE_TREE )
+cache_generation        0
+uuid_tree_generation    473
+dev_item.uuid           b6f8ba93-410e-4b90-9375-7fc5d1afc677
+dev_item.fsid           c3b4520d-ea9c-4ac2-9cbd-2c8820346809 [match]
+dev_item.type           0
+dev_item.total_bytes    14000519643136
+dev_item.bytes_used     387352363008
+dev_item.io_align       4096
+dev_item.io_width       4096
+dev_item.sector_size    4096
+dev_item.devid          1
+dev_item.dev_group      0
+dev_item.seek_speed     0
+dev_item.bandwidth      0
+dev_item.generation     0
+
+HAN Yuwei
 
 
