@@ -1,229 +1,241 @@
-Return-Path: <linux-btrfs+bounces-19467-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19468-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58923C9C69D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 02 Dec 2025 18:35:59 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47DBBC9CBE5
+	for <lists+linux-btrfs@lfdr.de>; Tue, 02 Dec 2025 20:20:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id C5485342ACC
-	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Dec 2025 17:35:58 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 1B5EB34A613
+	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Dec 2025 19:20:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E40A2C11E6;
-	Tue,  2 Dec 2025 17:35:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 431982D595F;
+	Tue,  2 Dec 2025 19:19:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZQvCFGiz"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kc5d7MUv"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9F4D257AD1
-	for <linux-btrfs@vger.kernel.org>; Tue,  2 Dec 2025 17:35:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.13
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764696953; cv=fail; b=lt11mwt9SBuhQUqCNSho5ZzbNG8tF9wtukqZlDv8UZeCR0rqopao34d3WXlB3AH9B7VA1daoKMa5KP0RV/r6Shmr1xj+R9M93B1z32SffSOdGJvls/FggLxqgPpN3bEe59MEe+jqUpXt19SwMbXM5CNAOxo0P1NJ2KfqwalwghY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764696953; c=relaxed/simple;
-	bh=cOP6i2HaP6rcQyeC69DWZx2RPJC3nJpH8RuuNP2VwCM=;
-	h=Date:From:To:CC:Subject:Message-ID:Content-Type:
-	 Content-Disposition:MIME-Version; b=OCi9E7eYVv99LlIaSgRN6SMRoyqrufMByZJPw/4CkfrsX5fwHIZyXaTwF2biEsiUlh2psKj8H05c8UEZ+roRF/P8ujBjCCAc9Mirg5b7Lw/Dw1cJ0LNYftB6Xp3uk5mQuTrkrq3QXFtRGt8b8aOiGi0/ZTE0wXxsA16VbPSxs7M=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZQvCFGiz; arc=fail smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1764696952; x=1796232952;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=cOP6i2HaP6rcQyeC69DWZx2RPJC3nJpH8RuuNP2VwCM=;
-  b=ZQvCFGizr8poqpfILrrITVFt4ovZl6ZQi76/a7lfS+6lkm9xBkOvtPUJ
-   O4NS5qa3EUR9wuGwHoIw3Fk09ZIo+/E/7a0/tD0yxrHYanp7Wm1izkNY+
-   6EayTYMTDxFj0jCgqbRu07Jcq/zAWpTrOPW1JOxm5r8ZSrr0Gchpcd70/
-   aV9R9W9tbspv33E4qVdCcmQo1lHKeYUfw4H8tTOtFps7R1luKu4V11LBx
-   36iRudlyAcknBawZV/10TsrUkN+jccFODzfWAA2kUVqGLh+23KJdy11XI
-   cMlht/Jc6BQAjt/KPRHGorr78OUUr+uUoQD/kxRR+CpCDWNZGKA0t0NrK
-   w==;
-X-CSE-ConnectionGUID: yxE4EZffTQiUcB9gR+19iw==
-X-CSE-MsgGUID: 3i3kuR8VR92JCo+R2iM2WA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11630"; a="77782269"
-X-IronPort-AV: E=Sophos;i="6.20,243,1758610800"; 
-   d="scan'208";a="77782269"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2025 09:35:52 -0800
-X-CSE-ConnectionGUID: 1CcZSlamSXuPFbHsH+5mqA==
-X-CSE-MsgGUID: /AmyWuU4QbOyJBfX5KbN1w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.20,243,1758610800"; 
-   d="scan'208";a="194672031"
-Received: from fmsmsx902.amr.corp.intel.com ([10.18.126.91])
-  by fmviesa008.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Dec 2025 09:35:51 -0800
-Received: from FMSMSX903.amr.corp.intel.com (10.18.126.92) by
- fmsmsx902.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.29; Tue, 2 Dec 2025 09:35:50 -0800
-Received: from fmsedg902.ED.cps.intel.com (10.1.192.144) by
- FMSMSX903.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.29 via Frontend Transport; Tue, 2 Dec 2025 09:35:50 -0800
-Received: from BL0PR03CU003.outbound.protection.outlook.com (52.101.53.4) by
- edgegateway.intel.com (192.55.55.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.29; Tue, 2 Dec 2025 09:35:50 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=bpMrDMZEqlkpBC6x6mSEOm6UgysWa1jEpMKurQQIfVRvO0HqC8d4Wjqtmu29qcDOaKgv7PcWUjddmqhKLXgSNMEvSt3KSmQJZQSIHYCi/NVkNkw3OYkhj8Yz4d6v41s649cwAWTMbwPRQp62pgPeo/wsimUdajRruzSr3n+09f0RQB/HPaRGlrv2+ATCGbNoVDH/+bNYzOsJYR20qhTuuhUfSVT0n3iN0U1y7bnJot7gljdzxzp/MZlFavXhQVpEfgMieJm+P4F4Fs7ks3BxhC3h+FdiMgtSvLkgxoMYEUPb7jDbnlML2xnrkPQsgla0NDXiultcNMdCT0p/TiyG6Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=5TFsDtEdLNp150MMH8702G06yME4DTRmV2G2eqTNCs4=;
- b=REGA94vgpi8wiSsli+/dt6130qyGv3r8eIVofag5IGcCucoS/Y8ySuroZIrZq0af79nA3iTOTFWA9O14WN2oETee4HYkvpOX91OH0fI+dH4Aph/DR6iCrzVzAvPyksvFwQHWmzFd5wycWuIrvg/6D8FvEZiK37vaYgmus7OZdk8lEbbaq5Pm80lt572DQg4qa2xjIUBttcj7G4NKMjnrL0p+J80n+VMXW4zO9l442xKR1hGNRJFZ41FPhuZ5sDUZdegHE8nmsfMPp+q2BemMW7T7JulJFgf7ow/CegJJOohCKB16amIU1X56yg6J7l2K/X1ZocUJKKynMBdwRtWOgQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CY5PR11MB6366.namprd11.prod.outlook.com (2603:10b6:930:3a::8)
- by MW5PR11MB5788.namprd11.prod.outlook.com (2603:10b6:303:198::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9366.17; Tue, 2 Dec
- 2025 17:35:47 +0000
-Received: from CY5PR11MB6366.namprd11.prod.outlook.com
- ([fe80::22af:c9c9:3681:5201]) by CY5PR11MB6366.namprd11.prod.outlook.com
- ([fe80::22af:c9c9:3681:5201%5]) with mapi id 15.20.9366.012; Tue, 2 Dec 2025
- 17:35:47 +0000
-Date: Tue, 2 Dec 2025 17:35:37 +0000
-From: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
-To: <clm@fb.com>, <dsterba@suse.com>
-CC: <linux-btrfs@vger.kernel.org>
-Subject: [BUG REPORT] possible use-after-free in btrfs_get_delayed_node()?
-Message-ID: <aS8jaaOK/JB5sAnZ@gcabiddu-mobl.ger.corp.intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-Organization: Intel Research and Development Ireland Ltd - Co. Reg. #308263 -
- Collinstown Industrial Park, Leixlip, County Kildare - Ireland
-X-ClientProxiedBy: DB9PR02CA0002.eurprd02.prod.outlook.com
- (2603:10a6:10:1d9::7) To CY5PR11MB6366.namprd11.prod.outlook.com
- (2603:10b6:930:3a::8)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68FA81F09B3
+	for <linux-btrfs@vger.kernel.org>; Tue,  2 Dec 2025 19:19:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1764703184; cv=none; b=cMu1CsabFXPKoF7XeaDnIp83loBGPR6OR/bpR3zI9CyXRo82l6nuafw/znAV82aA6IQYPlubzKbL0qs8udTV4e3GplVbPL8xKqkIZuGC3sBEdo0Mb9SLu0hyfYrDuH3WpZAQdwqzQwgekQvQp8IQDEa4nHsJ0iJzQs2olQKvVMQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1764703184; c=relaxed/simple;
+	bh=NL7snJKzJwsgH7BhSOd0U4LCa0CKAQe2eDKCy2VN+lY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fjO8IBu45yIxa0DljYD+VrvLJ0u3I07lBcsPWeHZQSM70XK80mk9oTeFp/yq2MKQL81G4GT4joPZfVDSTRou2huKp26ErktORuGoSDZ3Wz93gJrYJJyrPF0kdTXy3EWrsff4NRMUv5XcflW2B5jbYIFcYimp6QeT9S4wluRumOg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kc5d7MUv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3ED60C4AF0B
+	for <linux-btrfs@vger.kernel.org>; Tue,  2 Dec 2025 19:19:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1764703184;
+	bh=NL7snJKzJwsgH7BhSOd0U4LCa0CKAQe2eDKCy2VN+lY=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=kc5d7MUv2fb/fp/viWF8Y5+/4D0PJljLUduyY2aPHnIItYEONiN/l1XAMXqsv4lQy
+	 OXqBzRHZd/zqImCQNEyppy8CGbwUtAi9dcxQ+kEMHbHleVg2eOxKWaUhqsI7Uu9c35
+	 9oxHlCljc3+k0J+J9cTe8emxHQ5PqqO5OQJQ2/PHrfA4bcjeyk+bFjeIrzEoPbeMXm
+	 wOqvUbQCvpPWpoZ6VYMvXisu9ZHhksGaUolGya4EIuGZXgQ/EYsMnv0rVAyZuMMfRM
+	 wf6JY6clNLqH/+ODx5/AcTz/HPuK4efIk5+95+FpB9YhdSga6GcCewYRUrXtn1JM7J
+	 1R6x6N77T4TQg==
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-b739ef3f739so356768566b.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 02 Dec 2025 11:19:44 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWLEmR/tZFfRrkuJLvJs1x7PVfKLuiJH0AopXxP5/8JKzjGW43QS9JsDKbP6kTK2l0MIcOLCY2kPMaXfQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwrzEFHpG8LXdIqjB2+Oal4g86Go705cZShfkmoGVz/qVLuiPDa
+	QctMZOMCQQwqzNEuWhJSVCJ/z0XWUFD49YXAMs/QebFzs4VkNdBE79Z3HWbJTdf+m0kEJKTyu5c
+	yGpkQtoiacwh9vfcal62jyYByYPCgc9A=
+X-Google-Smtp-Source: AGHT+IF154pLtEgoYAtKAbOomhqP6C/9+/HGLK0hgpVGVF896EzIS1MZPR2M4bSOXhvr/phh8N2EbLFUfMTTP08ECuE=
+X-Received: by 2002:a17:907:744:b0:b73:b0eb:16f5 with SMTP id
+ a640c23a62f3a-b76c55f4037mr4002153866b.31.1764703182849; Tue, 02 Dec 2025
+ 11:19:42 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY5PR11MB6366:EE_|MW5PR11MB5788:EE_
-X-MS-Office365-Filtering-Correlation-Id: 99ce4ed7-5c57-4875-dee9-08de31c93a89
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|366016|1800799024;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?+S/EGquVvuw3NLHnaR75mXWW/IiqJT5UZU5e9+4WsI2+AUJ/h253W/FgNObA?=
- =?us-ascii?Q?0GxzKYmriarv11Q2KNZtENd416xvPQjk13fwsajE9SGOqiW3RixTm14Lq/BP?=
- =?us-ascii?Q?275VVixP5aahqpXXhegF6p63gPEWIl7n+HIxq5+qiXF4F7A6rqzzxdeQhhbm?=
- =?us-ascii?Q?MzYFnFaPBBgH2HVjrObRaSSsxtW1KXd42Q9qJQRA0W4u3UcLzdmp5fSashnB?=
- =?us-ascii?Q?yq8JJAuUO/DUhSfP0jLzE5jgz2HIqs2+E/IxhgbtLiQBhUk6WLAwv5TIkrsv?=
- =?us-ascii?Q?rLV+8/wZJLoAojih1uuJfCG8cdHlfHxAKxQQfwFultswDIgwGisOt5mwoyaq?=
- =?us-ascii?Q?wmUwdBOLsKqKzhzzHuduxqTd29UXTGrIXnL4Z9i+AirZr4pQu5rL+7PdO1Iq?=
- =?us-ascii?Q?SiOI+LfOyiaGWnKE8aY6LpIgwsNtP7Yy+Cpu2+KNQ8UyNarJUqCPgc0EitF1?=
- =?us-ascii?Q?sLpsjUgNyBrHb1mN1VfPemunDcOqLN+x1qOuUhF4w7XnDQ+qYlCEjzaPi1ch?=
- =?us-ascii?Q?DODvWE5gZbsjahvK1M1146Z+V+GbFW68VkkVPpk9v9NtL691FT9e/LiwWVcc?=
- =?us-ascii?Q?UDDzkpR/BVIPhsPoO8U0NEbFpZ5IkGsPKDLLQiG6NZkGRUX9HCGU2bF96ahS?=
- =?us-ascii?Q?qNDvtTGrRpm3FBCb6Zmo2SFbhS/IEOOckjvOLL/p84iSDn3jkuPPycXozw9i?=
- =?us-ascii?Q?roH50+q3ku7+8109BfdhMBAK2KZ4bTEVzTmM/FEP0qrGa50Tz7DejuizDxgp?=
- =?us-ascii?Q?UqJ4GnUA4iMcJfkhVXxfh0MorZvXy08PHJSVTlnWucXoQb6Dkcab41RWAwtl?=
- =?us-ascii?Q?dwmgn/H8Kmmgk4B3srrBf+clcTBCIszQTnkrEi/gIrCb7JZiYezw7c0TgMfz?=
- =?us-ascii?Q?5cPky4VBXx3SnBv7pO4V/4bkQdS0ERVgs+CmsQkd3TbbXIJC/Xf645maFZHC?=
- =?us-ascii?Q?+Cuq59JOhhDwI23CHaMGUrR8wclAc21rkYtqFThx7pIFXbv1/36qy+zLUqCN?=
- =?us-ascii?Q?q71LyykG4caQn70PxCCaGNkZxG3HTke9eB9/Hkdqu+JGw64xh4rhvFvKjoul?=
- =?us-ascii?Q?IupRPCXbfI2XGxXw8FU0Bcz03PwBMIb+fKJWFe/GW45JY2DwvRsUf/mqCBw4?=
- =?us-ascii?Q?esULjgU2TyncKj9bMZYUgOmIGEkDBWPP+An9xpu/TcfGHuqowYO/Vapx1OGU?=
- =?us-ascii?Q?lVlFp+YhBlJbQPqhdF64QrgnG4J4J+18Ukud1wF9XqowgML1d/qWcKK2tsv6?=
- =?us-ascii?Q?rixW18gQIlivd/l3/HXb148i0ygHqXiMREY/CVG8nvFLe6zBoNuKTnMrmPlc?=
- =?us-ascii?Q?kK0tajq2jhxWS6EDCpOWaHIClavim9RYSR7rzfWOkbFon8pG0uzpdTxlJWjd?=
- =?us-ascii?Q?mIMG8Cf5NRzfARMCWb8Sjs3XfRF0AK9AO/uFMJuONIBAKaktBDpTAjcQvmB2?=
- =?us-ascii?Q?m4mQI4spVnbupZCKItR6I8kuH3KAHP6zFOH81EO4te3hhnQxkauReA=3D=3D?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR11MB6366.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(366016)(1800799024);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?cFlcpw6QrvUA0fYURh44NsUlXuj5j99hJQUcQjXJnJUYyT7MRuFIBWBbOrbW?=
- =?us-ascii?Q?Bt9Km46c4273pAhlX8CtLFdjYjKKlMhKiE7zcR0Lg2uvOHHpdcniI7u/bXZd?=
- =?us-ascii?Q?gq9ZC8MlYUQ/gmvy95U2adgDi/Ig13YVUnRjglWWnJNHuUrvc2BoXQzLXeuH?=
- =?us-ascii?Q?RWxIUkjtAlmFrzH3+hN+mJPjaMs0QjW3yA/VhHoRtda2lRjY39w56H1bfep7?=
- =?us-ascii?Q?2XjVIm4lq4YJCU5tlQWu6LYya69Zfdv0I04PnET0cYe4YkbBo/pQdTB8X4oM?=
- =?us-ascii?Q?2licQ7MjeRDpWuSnT5xXoTQ0mFKVw6wgA1sB+DcCbIeZ5ibpyjSvdL7wB3qN?=
- =?us-ascii?Q?eUSN2+81/wzxx8tJw8SBFRUEr5FQxzoL4Yw0AN0OEClidVKb8s8UCieCx6oz?=
- =?us-ascii?Q?1lxr2AbroQMyuYYukxiIsi2kI7egI62Mwb4reRkgbPbLbbMhicyPGqYKmB43?=
- =?us-ascii?Q?rzP1J1/oBpKhihotscz2PWLrXHkt8WMA55+78IiKrx8MH52fa2hJQQfJRYxK?=
- =?us-ascii?Q?o9Ncyu9OMhX0uJaiwwtb14QMbKItqQwqpBAOK2B8ZMq9r5fUtkVZNnnTmOWS?=
- =?us-ascii?Q?i+y7oyDgnE8oKhT2ahWv/DNr4Ax8E2Dy/Knnan3IP4ymY3ka+/ILDQhkN5sW?=
- =?us-ascii?Q?hFlPE61TaoHrT/uujcgr/dzg7SGhcboPc9GXKKbM3IUeaYqcQu6XEBcmtDiR?=
- =?us-ascii?Q?F/xa/TYbuDfyVeMBHKwfzavYjE1BCmDvggPJ14ZdkTBsOCMCdURY71fcQ06f?=
- =?us-ascii?Q?LflWDkl/DL+ICHttnldOuWM5itY8OrWJGtPiOkpNupY7g9kxwaFC3amn5b16?=
- =?us-ascii?Q?wTzoSyIrqkM2hllZNRbrb16+DBT6U/fFYavU29eRL4kddC7/QUH7xUi6Hckx?=
- =?us-ascii?Q?VKYIjOtIwOGwL7afAvtLxo+VcxqNo+Klusqee3S/Wa2SV4iCE8wqlv7ohII8?=
- =?us-ascii?Q?22V2tP4oYf8sc+OmTqRW1/8JJ5h9S+m3gz1zg7UFpr1DRhG56643eG70XvZ0?=
- =?us-ascii?Q?OY70ag4hXefUPBhp46NxPpi4FC27Q6dKP6cRxf7UWbAN7qgkniAujj8YELbE?=
- =?us-ascii?Q?URNwOWDQqifMO3Z7wgEkOxbL+Vb+8JqZXjsss+NLTrKbMjoZwvpQrEa5SAUY?=
- =?us-ascii?Q?feZuC6OUeW4dJQBn0GnXB6z50pVlcvkD3q3d4FDEAgaDptJ+N4kkQD+cQML4?=
- =?us-ascii?Q?H31Bnun9lN2/F9Kcz6V063kMc1833p3gkykfRW11qD4mo/ZP9N9adLgamntI?=
- =?us-ascii?Q?rv0eIMuXglv+wyQqg58/hlaaPSU+11im1NUWjLkQMdbDPyuGxCuCw/k/dYnF?=
- =?us-ascii?Q?ZLVAh1aj0NszDfbDlrf+Tal773JRqNdfyM+VZEStpayML5C+G395dMUkytTo?=
- =?us-ascii?Q?LJaGGt8ixja0eibiPMgSTVvvMdIySdXJc+luu2fS1yNUT/u95e4Xc+0cSgQo?=
- =?us-ascii?Q?Ee3QFnnTxX9OrfIGsbzl5nUrHxX888wE2ctH1yNv0ZOZoLz1KYOfM/UGQ+i0?=
- =?us-ascii?Q?94oDVSgmmUIUPMpXFYWVVIAlE+mND7N/dTKtQm+YZhcFLiCLypbvyVEqNe4J?=
- =?us-ascii?Q?ePyQAs90EaE6FsJL1kGhOv3PH5Xdnn2yR9N+1OAP6JYo47Edud3EHAcFOmmP?=
- =?us-ascii?Q?Yw=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 99ce4ed7-5c57-4875-dee9-08de31c93a89
-X-MS-Exchange-CrossTenant-AuthSource: CY5PR11MB6366.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Dec 2025 17:35:47.4471
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 35+t+d01g1WEFMlUkcF/NKkqIG47ELZUqjD4KV+7qZpjxvnrAx6qXaq/LAJ2fz6Xbvi4TX07ZZTcAp8Z5R7/twxiRSalMMpC5k4Fq7Jm3I8=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW5PR11MB5788
-X-OriginatorOrg: intel.com
+References: <CAL3q7H5L2Yc3aNCfffuimET6LLup9iB2T4_1caJkgV+c8avRMg@mail.gmail.com>
+ <20251202171745.798946-1-loemra.dev@gmail.com>
+In-Reply-To: <20251202171745.798946-1-loemra.dev@gmail.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Tue, 2 Dec 2025 19:19:05 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H6q-j8Xo_SHGyY0+pHj=BQHezTwxbP9VKQxgLruqxQdow@mail.gmail.com>
+X-Gm-Features: AWmQ_bm6zC7vIXR7_po8EZTp8AwAt_bZ4zg_0obvLC7T-l83B9iXzNCcXfoSIng
+Message-ID: <CAL3q7H6q-j8Xo_SHGyY0+pHj=BQHezTwxbP9VKQxgLruqxQdow@mail.gmail.com>
+Subject: Re: [linus:master] [btrfs] e8513c012d: addition_on#;use-after-free
+To: Leo Martins <loemra.dev@gmail.com>
+Cc: Oliver Sang <oliver.sang@intel.com>, oe-lkp@lists.linux.dev, lkp@intel.com, 
+	linux-kernel@vger.kernel.org, David Sterba <dsterba@suse.com>, 
+	linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-While developing this set [1] I got the following issue which seems
-unrelated to the set:
+On Tue, Dec 2, 2025 at 5:17=E2=80=AFPM Leo Martins <loemra.dev@gmail.com> w=
+rote:
+>
+> On Tue, 2 Dec 2025 15:04:51 +0000 Filipe Manana <fdmanana@kernel.org> wro=
+te:
+>
+> > On Tue, Dec 2, 2025 at 8:40=E2=80=AFAM Oliver Sang <oliver.sang@intel.c=
+om> wrote:
+> > >
+> > > hi, Leo Martins,
+> > >
+> > > On Mon, Dec 01, 2025 at 04:51:41PM -0800, Leo Martins wrote:
+> > >
+> > > [...]
+> > >
+> > > >
+> > > > Hello,
+> > > >
+> > > > I believe I have identified the root cause of the warning.
+> > > > However, I'm having some troubles running the reproducer as I
+> > > > haven't setup lkp-tests yet. Could you test the patch below
+> > > > against your reproducer to see if it fixes the issue?
+> > >
+> > > we confirmed your patch fixed the issues we reported in origial repor=
+t. thanks!
+> > >
+> > > Tested-by: kernel test robot <oliver.sang@intel.com>
+> > >
+> > > >
+> > > > ---8<---
+> > > >
+> > > > [PATCH] btrfs: fix use-after-free in btrfs_get_or_create_delayed_no=
+de
+> > > >
+> > > > Previously, btrfs_get_or_create_delayed_node sets the delayed_node'=
+s
+> > > > refcount before acquiring the root->delayed_nodes lock.
+> > > > Commit e8513c012de7 ("btrfs: implement ref_tracker for delayed_node=
+s")
+> > > > moves refcount_set inside the critical section which means
+> > > > there is no longer a memory barrier between setting the refcount an=
+d
+> > > > setting btrfs_inode->delayed_node =3D node.
+> > > >
+> > > > This allows btrfs_get_or_create_delayed_node to set
+> > > > btrfs_inode->delayed_node before setting the refcount.
+> > > > A different thread is then able to read and increase the refcount
+> > > > of btrfs_inode->delayed_node leading to a refcounting bug and
+> > > > a use-after-free warning.
+> > > >
+> > > > The fix is to move refcount_set back to where it was to take
+> > > > advantage of the implicit memory barrier provided by lock
+> > > > acquisition.
+> > > >
+> > > > Fixes: e8513c012de7 ("btrfs: implement ref_tracker for delayed_node=
+s")
+> > > > Reported-by: kernel test robot <oliver.sang@intel.com>
+> > > > Closes: https://lore.kernel.org/oe-lkp/202511262228.6dda231e-lkp@in=
+tel.com
+> > > > Signed-off-by: Leo Martins <loemra.dev@gmail.com>
+> > > > ---
+> > > >  fs/btrfs/delayed-inode.c | 34 ++++++++++++++++++----------------
+> > > >  1 file changed, 18 insertions(+), 16 deletions(-)
+> > > >
+> > > > diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
+> > > > index 364814642a91..f61f10000e33 100644
+> > > > --- a/fs/btrfs/delayed-inode.c
+> > > > +++ b/fs/btrfs/delayed-inode.c
+> > > > @@ -152,37 +152,39 @@ static struct btrfs_delayed_node *btrfs_get_o=
+r_create_delayed_node(
+> > > >               return ERR_PTR(-ENOMEM);
+> > > >       btrfs_init_delayed_node(node, root, ino);
+> > > >
+> > > > +     /* Cached in the inode and can be accessed. */
+> > > > +     refcount_set(&node->refs, 2);
+> > > > +     btrfs_delayed_node_ref_tracker_alloc(node, tracker, GFP_ATOMI=
+C);
+> > > > +     btrfs_delayed_node_ref_tracker_alloc(node, &node->inode_cache=
+_tracker, GFP_ATOMIC);
+> > > > +
+> > > >       /* Allocate and reserve the slot, from now it can return a NU=
+LL from xa_load(). */
+> > > >       ret =3D xa_reserve(&root->delayed_nodes, ino, GFP_NOFS);
+> > > > -     if (ret =3D=3D -ENOMEM) {
+> > > > -             btrfs_delayed_node_ref_tracker_dir_exit(node);
+> > > > -             kmem_cache_free(delayed_node_cache, node);
+> > > > -             return ERR_PTR(-ENOMEM);
+> > > > -     }
+> > > > +     if (ret =3D=3D -ENOMEM)
+> > > > +             goto cleanup;
+> > > > +
+> > > >       xa_lock(&root->delayed_nodes);
+> > > >       ptr =3D xa_load(&root->delayed_nodes, ino);
+> > > >       if (ptr) {
+> > > >               /* Somebody inserted it, go back and read it. */
+> > > >               xa_unlock(&root->delayed_nodes);
+> > > > -             btrfs_delayed_node_ref_tracker_dir_exit(node);
+> > > > -             kmem_cache_free(delayed_node_cache, node);
+> > > > -             node =3D NULL;
+> > > > -             goto again;
+> > > > +             goto cleanup;
+> > > >       }
+> > > >       ptr =3D __xa_store(&root->delayed_nodes, ino, node, GFP_ATOMI=
+C);
+> > > >       ASSERT(xa_err(ptr) !=3D -EINVAL);
+> > > >       ASSERT(xa_err(ptr) !=3D -ENOMEM);
+> > > >       ASSERT(ptr =3D=3D NULL);
+> > > > -
+> > > > -     /* Cached in the inode and can be accessed. */
+> > > > -     refcount_set(&node->refs, 2);
+> > > > -     btrfs_delayed_node_ref_tracker_alloc(node, tracker, GFP_ATOMI=
+C);
+> > > > -     btrfs_delayed_node_ref_tracker_alloc(node, &node->inode_cache=
+_tracker, GFP_ATOMIC);
+> > > > -
+> > > > -     btrfs_inode->delayed_node =3D node;
+> > > > +     WRITE_ONCE(btrfs_inode->delayed_node, node);
+> >
+> > Why the WRITE_ONCE() change?
+>
+> Since there are lockless readers of btrfs_inode->delayed_node all writers
+> should be marked with WRITE_ONCE to force the compiler to store atomicall=
+y.
 
-    refcount_t: saturated; leaking memory.
-    refcount_t: addition on 0; use-after-free.
-    ...
-    WARNING: CPU: 67 PID: 3156316 at lib/refcount.c:22 refcount_warn_saturate+0x55/0x110
-    RIP: 0010:refcount_warn_saturate+0x55/0x110
-    CPU: 77 UID: 0 PID: 3002837 Comm: kworker/u1153:6
-    Workqueue: btrfs-endio-write btrfs_work_helper
-    Call Trace:
-     <TASK>
-     btrfs_get_delayed_node.isra.0+0xe9/0x1b0
-     btrfs_get_or_create_delayed_node.isra.0+0x134/0x1b0
-     btrfs_delayed_update_inode+0x28/0x1e0
-     btrfs_update_inode+0x59/0xc0
-     btrfs_finish_one_ordered+0x5c6/0xa90
-     btrfs_work_helper+0xc4/0x190
-     process_one_work+0x192/0x350
-     worker_thread+0x25a/0x3a0
-     kthread+0xfc/0x240
-     ret_from_fork+0xf4/0x110
-     ret_from_fork_asm+0x1a/0x30
-     </TASK>
+If by atomically you mean to avoid store/load tearing, then using the
+_ONCE() macros won't do anything because we are dealing with pointers.
+This has been discussed in the past, see:
 
-Could this be a race between btrfs_get_delayed_node() and
-btrfs_remove_delayed_node() where btrfs_get_delayed_node() reads
-btrfs_inode->delayed_node and calls refcount_inc() without checking if
-the node is already being freed?
+https://lore.kernel.org/linux-btrfs/cover.1715951291.git.fdmanana@suse.com/
 
-    btrfs_get_delayed_node()
-    ...
-        node = READ_ONCE(btrfs_inode->delayed_node);
-        if (node) {
-            refcount_inc(&node->refs);  // node may already be freed?
-            ...
-        }
-
-Thanks,
-
-[1] https://lore.kernel.org/all/20251128191531.1703018-1-giovanni.cabiddu@intel.com/
-
--- 
-Giovanni
+>
+> >
+> > Can you explain in the changelog why it's being introduced?
+> > This seems unrelated and it was not there before the commit mentioned
+> > in the Fixes tag.
+>
+> I'll send out a v2 without the WRITE_ONCE since it is not directly relate=
+d
+> to this bug and send out a separate patch updating writes to use WRITE_ON=
+CE.
+>
+> Thanks.
+>
+> >
+> > Thanks.
+> >
+> > > >       xa_unlock(&root->delayed_nodes);
+> > > >
+> > > >       return node;
+> > > > +cleanup:
+> > > > +     btrfs_delayed_node_ref_tracker_free(node, tracker);
+> > > > +     btrfs_delayed_node_ref_tracker_free(node, &node->inode_cache_=
+tracker);
+> > > > +     btrfs_delayed_node_ref_tracker_dir_exit(node);
+> > > > +     kmem_cache_free(delayed_node_cache, node);
+> > > > +     if (ret)
+> > > > +             return ERR_PTR(ret);
+> > > > +     goto again;
+> > > >  }
+> > > >
+> > > >  /*
+> > > > --
+> > > > 2.47.3
+> > >
+>
 
