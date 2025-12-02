@@ -1,53 +1,49 @@
-Return-Path: <linux-btrfs+bounces-19461-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19462-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 585CEC9BEB3
-	for <lists+linux-btrfs@lfdr.de>; Tue, 02 Dec 2025 16:17:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 107CAC9C018
+	for <lists+linux-btrfs@lfdr.de>; Tue, 02 Dec 2025 16:47:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 89756348584
-	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Dec 2025 15:17:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D03A13A6815
+	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Dec 2025 15:47:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA92B252292;
-	Tue,  2 Dec 2025 15:16:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C03831ED6B;
+	Tue,  2 Dec 2025 15:47:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=bupt.moe header.i=@bupt.moe header.b="vXdB7s4x"
+	dkim=pass (2048-bit key) header.d=sotapeli.fi header.i=@sotapeli.fi header.b="iDXHSzFb"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtpbg154.qq.com (smtpbg154.qq.com [15.184.224.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from se.sotapeli.fi (se.sotapeli.fi [206.168.212.219])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78C937DA66
-	for <linux-btrfs@vger.kernel.org>; Tue,  2 Dec 2025 15:16:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=15.184.224.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C25112248A8;
+	Tue,  2 Dec 2025 15:46:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=206.168.212.219
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764688618; cv=none; b=RT9G2urihE/Yw12045bPaqDdpm8OkiaoFTJnOm1wUNzcBMERSnHjI5Cb4bIO4ubc/cWh/DZ5zQqiU6D2gd+RjC1NgSSwqpzUD9D8XOhL43TaquuUe5kcLq7vi0aI64NFQSO/bzF563IGVPoTVCAyo8yNHu3OkoQ5ljyj7AumQuA=
+	t=1764690419; cv=none; b=qbJunEPgNfeYU35DIbMjjJhnUJzO99UqxCt0rBUyMmD/x7ppDhE9SdEOO8+8GthH4CPe4Cd2owHZdAn2GXxdyOSPMunf4Ih3jMRFZ+K89Wt1Km3jZg5q/cM+yXF0GLkxTvqGtXizXgtPrRz+GGD2iBr6fp52VS3YYw9AIagYSLM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764688618; c=relaxed/simple;
-	bh=RYvHFCEHYFyUTDhTObt7ymnmaf08yLak542VinEypis=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=dCE/8K+hGBl2WXS8sYnb3zkRkO9B2o8pMnYB8VNGA2jg+vGViHydg/LDXFgz3ROZJzV9Lm7l/7RKXsL1K4PiaiXxpnqpjy+DKsev2gyB0Hd6etwK1Y6rmIoGn26tCquJvjeZOLEXdTtD3L0t9RAIZeK5C0DHkejZNvqMgIf/rAg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bupt.moe; spf=pass smtp.mailfrom=bupt.moe; dkim=pass (1024-bit key) header.d=bupt.moe header.i=@bupt.moe header.b=vXdB7s4x; arc=none smtp.client-ip=15.184.224.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bupt.moe
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bupt.moe
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bupt.moe;
-	s=qqmb2301; t=1764688607;
-	bh=nRMsO8V3i0JlFbvF7f3gQHsSv7bbVpi1gOFHqHqxjBo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From;
-	b=vXdB7s4xS04/zzg6zADagbirOUcQVrkVxnAZqkTRysT71DzER97dJESnvFyw+cUD6
-	 k9uH2BMU3GYmdK+gqXjHo80IJLo174Q54pbCm/pw2w24osyIwf1PSE9Wgdqx05up7M
-	 1NFmmJkwmSRntJcbSIKcgQElrFjq4JjDjjCP7ulM=
-X-QQ-mid: zesmtpgz3t1764688603tf0f0cd2f
-X-QQ-Originating-IP: Vb/l6eRAX3q6qPr6gj1pR1p4f6UDrIbr8oBJzIjmidg=
-Received: from [198.18.0.1] ( [123.134.104.238])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Tue, 02 Dec 2025 23:16:42 +0800 (CST)
-X-QQ-SSF: 0000000000000000000000000000000
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 8019220805694550285
-Message-ID: <92785CEDF310B353+14512df2-8c80-4a0d-920e-df428c87c5c5@bupt.moe>
-Date: Tue, 2 Dec 2025 23:16:44 +0800
+	s=arc-20240116; t=1764690419; c=relaxed/simple;
+	bh=AyVb9L2J9d3ixUC+nJip8YL680lFEBi/s1vBjtuA+R4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Ms+W8XTPlrm9NV3719kXiqL/t1/6Q1IEcFrqrZUaVQ4377fytTPNLYRhR9mUBRf0PgQtYS+ds2jrNZT2rhdujQtyz4CmnfJuRb4tPYnP/1rH/DAWcjcph4HCwzoLvJ86GXIYg/DtAgRPCUVBHcPRvQ4+CzpRGtb2Wcxs/7R8DJo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sotapeli.fi; spf=pass smtp.mailfrom=sotapeli.fi; dkim=pass (2048-bit key) header.d=sotapeli.fi header.i=@sotapeli.fi header.b=iDXHSzFb; arc=none smtp.client-ip=206.168.212.219
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sotapeli.fi
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sotapeli.fi
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id B3905181A4C4;
+	Tue,  2 Dec 2025 16:46:31 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sotapeli.fi; s=dkim;
+	t=1764690405; h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:content-language:in-reply-to:references:autocrypt;
+	bh=r69k+Y6fU8ylPhcad8uc1t3pvc3qLvJ3Mu5AnS9TxPA=;
+	b=iDXHSzFbtigM+KTJnwtD2AT9jtWrvGQmZDzgtjHbwECJgIy9A8ChcNEoajl0TvNlI0eMIr
+	LiEvy2Esqz/jozKljjQZ/romZ9IPHrq+W/EsTCNlzEPiJ80dO1gK+6wEASdGgJjrXF4IJ6
+	WkwI277BOfXEA+b6uQ7YUljscmCFaMkjyRss02zF7oAxklvIS1l/dla41YBzY+CcuGcpHP
+	8Yl3QBAnlN4auNAvt7hB7BBJ2RVnX58NuYtntm4H+DkSALwgOzKy/JhBFtuTBW/I/UCysJ
+	DGcMhRcsber07FWlp8zN97J8IzmOL4ZqZ2sjn58dtfmpV23dkemsml1ZHkvlqg==
+Message-ID: <8d3e44b0-23d8-4493-8e7e-33bbe1d904ef@sotapeli.fi>
+Date: Tue, 2 Dec 2025 17:46:29 +0200
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -55,143 +51,88 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [BUG] 6.18-rc7 cannot mount RAID1 zoned btrfs.
-To: Naohiro Aota <Naohiro.Aota@wdc.com>,
- Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
- linux-btrfs <linux-btrfs@vger.kernel.org>
-References: <0BED8C36F63EBD8F+f61c437e-3e5f-4a1c-9c18-17fd31abfcd4@bupt.moe>
- <e865d52c-8f07-431a-8fff-907bd6cfb0e8@wdc.com>
- <F24595B65EF81413+dddb8a6c-9da6-4480-b168-fcfa20d3c296@bupt.moe>
- <DENLBYCUSKZP.13MWTQQNEAUBW@wdc.com>
-From: HAN Yuwei <hrx@bupt.moe>
-In-Reply-To: <DENLBYCUSKZP.13MWTQQNEAUBW@wdc.com>
+Subject: Re: [RFC PATCH 00/16] btrfs: offload compression to hardware
+ accelerators
+To: Christoph Hellwig <hch@infradead.org>,
+ Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+Cc: clm@fb.comi, dsterba@suse.com, terrelln@fb.com,
+ herbert@gondor.apana.org.au, linux-btrfs@vger.kernel.org,
+ linux-crypto@vger.kernel.org, qat-linux@intel.com, cyan@meta.com,
+ brian.will@intel.com, weigang.li@intel.com, senozhatsky@chromium.org
+References: <20251128191531.1703018-1-giovanni.cabiddu@intel.com>
+ <aS6a_ae64D4MvBpW@infradead.org>
+Content-Language: en-US
+From: Jani Partanen <jiipee@sotapeli.fi>
+Autocrypt: addr=jiipee@sotapeli.fi; keydata=
+ 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
+In-Reply-To: <aS6a_ae64D4MvBpW@infradead.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: zesmtpgz:bupt.moe:qybglogicsvrgz:qybglogicsvrgz3a-0
-X-QQ-XMAILINFO: OccmtviHNKX2VVC0iF37qqaMG+eHBIS8dvCNzkOimdr/CM1gYEfy4sht
-	gSmUe4xD7ihI8POWCfKxX09V9qY0OxsNnQFwQLrBD7bdSv48NQVEsftMPrQjI9egqVDmyD8
-	UvzMnmSvmJ1aO/jcLtRwsp6vauzwJjoZ++8/PfNWz6iFPD1zekmSuXDeuDGvsWygOZJGY07
-	Ja1QRo52L31YNnZ4qk36cDDbvqgUGJNIgQ/y0WePT7BxTcCsf5Ds4ch8V6BhBxOtlpDYB7q
-	g4quG6aehSoUgPpgEf1UxT1+krgU5ipqhwsrMeO5I1hWmqdVkTf2pAmL54apMCXtU/dXwpK
-	KsKtI6787OXSFPv28EAVIRy1JHacleJK+g7cDxZ/hP6CXY4hSmmjXFeIsL61MZ1aCDbN+OB
-	t/eb3KsAlLw2mt9tVIeexbHnvV2kJVk8m5y4BgOPTZ2P8xBAN7IkP50QMKWcDLkBV5RmsYe
-	5SK3LhZVO/bNwYxoRKOSxFMv8P2aCcC4Zxk93IkeLcWnwNGN5elgg4u+zVVPhE5+sG9OHJx
-	EF28a3YZPXDnofqbrx7wrHaQnF8okiByzdnX/RrznHkord2NA38F/PJErLS16ojlAj8gqyt
-	JVQKcKosiVj6fzTRQR+az2R+xNLrd6z5ni8lBXnQHLYf+/uVQ2jbYY+52hmOYq5C6B8xMsk
-	cRzVvY83lpq97sVe2Vx1d/cXlBrvdIN3Y0LH1t+1zmUTfNCg/38/J697vkCAYOgXPJ7c6kq
-	Ezcle8YmjLRuNPYr0eV1tGhvGGGuHt9m/16S6RLEqgkp35ONymuPj2Uyz/0l3hMOCllSqR/
-	gvOOrA5mBhccFdXuSsF7QFdt9wudH0XwIrotRqhYLkivOj22i9sntvTqDMBrVAZhKD/nMUT
-	nsVtcAbC6JBWEyQSSHlPVd9g63VtpS5YXWgqcShmF2kt4oczjpSZKbIfhGyVIEp/vHby9Gk
-	IgrmL1L1arMav6LxCA29nhYrhOSNbGh6ve14=
-X-QQ-XMRINFO: NI4Ajvh11aEj8Xl/2s1/T8w=
-X-QQ-RECHKSPAM: 0
+Content-Transfer-Encoding: 7bit
+X-Last-TLS-Session-Version: TLSv1.3
 
-在 2025/12/2 16:33, Naohiro Aota 写道:
-> On Sat Nov 29, 2025 at 12:38 AM JST, HAN Yuwei wrote:
->> 在 2025/11/28 23:03, Johannes Thumshirn 写道:
->>> On 11/28/25 12:36 PM, HAN Yuwei wrote:
->>>> /dev/sdd, 52156 zones of 268435456 bytes
->>>> [   19.757242] BTRFS info (device sda): host-managed zoned block device
->>>> /dev/sdb, 52156 zones of 268435456 bytes
->>>> [   19.868623] BTRFS info (device sda): zoned mode enabled with zone
->>>> size 268435456
->>>> [   20.940894] BTRFS info (device sdd): zoned mode enabled with zone
->>>> size 268435456
->>>> [   21.101010] r8169 0000:07:00.0 ethob: Link is Up - 1Gbps/Full - flow
->>>> control off
->>>> [   21.128595] BTRFS info (device sdc): zoned mode enabled with zone
->>>> size 268435456
->>>> [   21.436972] BTRFS error (device sda): zoned: write pointer offset
->>>> mismatch of zones in raid1 profile
->>>> [   21.438396] BTRFS error (device sda): zoned: failed to load zone info
->>>> of bg 1496796102656
->>>> [   21.440404] BTRFS error (device sda): failed to read block groups: -5
->>>> [   21.460591] BTRFS error (device sda): open_ctree failed: -5
->>>
->>> Hi this means, the write pointers of both zones forming the block-group
->>> 1496796102656 are out of sync.
->>>
->>> For RAID1 I can't really see why there should be a difference tough,
->>> recently only RAID0 and RAID10 code got touched.
->>>
->>> Debugging this might get a bit tricky, but anyways. You can grab the
->>> physical locations of the block-group form the chunk tree via:
->>>
->>> btrfs inspect-internal dump-tree -t chunk /dev/sda |\
->>>
->>>         grep -A 7 -E "CHUNK_ITEM 1496796102656" |\
->>>
->>>         grep "\bstripe\b"
->>>
->>>
->>> Then assuming dev 0 is sda and dev 1 is sdb
->>>
->>> blkzone report -c 1 -o "offset_from_devid 0 / 512" /dev/sda
->>>
->>> blkzone report -c 1 -o "offset_from_devid 1 / 512" /dev/sdb
->>>
->>>
->>> E.g. (on my system):
->>>
->>> root@virtme-ng:/# btrfs inspect-internal dump-tree -t chunk /dev/vda |\
->>>
->>>                                         grep -A7 -E "CHUNK_ITEM
->>> 2147483648" | \
->>>
->>>                                        grep "\bstripe\b"
->>>                stripe 0 devid 1 offset 2147483648
->>>                stripe 1 devid 2 offset 1073741824
->>>
->>> root@virtme-ng:/# blkzone report -c 1 -o $((2147483648 / 512)) /dev/vda
->>>      start: 0x000400000, len 0x080000, cap 0x080000, wptr 0x000000 reset:0
->>> non-seq:0, zcond: 1(em) [type: 2(SEQ_WRITE_REQUIRED)]
->>>
->>> root@virtme-ng:/# blkzone report -c 1 -o $((1073741824 / 512)) /dev/vdb
->>>      start: 0x000200000, len 0x080000, cap 0x080000, wptr 0x000000 reset:0
->>> non-seq:0, zcond: 1(em) [type: 2(SEQ_WRITE_REQUIRED)]
->>>
->>> Note this is an empty FS, so the write pointers are at 0.
->>>
->> # btrfs inspect-internal dump-tree -t chunk /dev/sda|\
->> grep -A 7 -E "CHUNK_ITEM 1496796102656"|\
->> grep stripe
->>
->> length 268435456 owner 2 stripe_len 65536 type METADATA|RAID1
->> num_stripes 2 sub_stripes 1
->>       stripe 0 devid 2 offset 374467461120
->>       stripe 1 devid 1 offset 1342177280
->> # blkzone report -c 1 -o "731381760" /dev/sda
->>     start: 0x02b980000, len 0x080000, cap 0x080000, wptr 0x07ff80 reset:0
->> non-seq:0, zcond: 4(cl) [type: 2(SEQ_WRITE_REQUIRED)]
->> # blkzone report -c 1 -o "2621440" /dev/sdb
->>     start: 0x000280000, len 0x080000, cap 0x080000, wptr 0x000000 reset:0
->> non-seq:0, zcond: 0(nw) [type: 1(CONVENTIONAL)]
-> 
-> Could I also have the last extent of the chunk, please? You can see that
-> with the following command:
-> 
-> btrfs inspect-internal dump-tree -t extent /dev/sda |\
-> grep -B 4 -A 1 -E "1496796102656 BLOCK_GROUP_ITEM"
-> 
-"-t extent" seems filtered out what your need. I have done this:
-# btrfs inspect-internal dump-tree /dev/sda |grep -B 4 -A 1 -E 
-"1496796102656 BLOCK_GROUP_ITEM"
-         item 201 key (1495453925376 BLOCK_GROUP_ITEM 268435456) itemoff 
-11435 itemsize 24
-                 block group used 268435456 chunk_objectid 256 flags 
-DATA|single
-         item 202 key (1496527667200 BLOCK_GROUP_ITEM 268435456) itemoff 
-11411 itemsize 24
-                 block group used 0 chunk_objectid 256 flags DATA|single
-         item 203 key (1496796102656 BLOCK_GROUP_ITEM 268435456) itemoff 
-11387 itemsize 24
-                 block group used 0 chunk_objectid 256 flags METADATA|RAID1
 
->>
->> seems like they have distributed to different type of zones. Should I do
->> bisect to pin the commit?
->>
->> HAN Yuwei
+On 02/12/2025 9.53, Christoph Hellwig wrote:
+> On Fri, Nov 28, 2025 at 07:04:48PM +0000, Giovanni Cabiddu wrote:
+>> +---------------------------+---------+---------+---------+---------+
+>> |                           | QAT-L9  | ZSTD-L3 | ZLIB-L3 | LZO-L1  |
+>> +---------------------------+---------+---------+---------+---------+
+>> | Disk Write TPUT (GiB/s)   | 6.5     | 5.2     | 2.2     | 6.5     |
+>> +---------------------------+---------+---------+---------+---------+
+>> | CPU utils %age @208 cores | 4.56%   | 15.67%  | 12.79%  | 19.85%  |
+>> +---------------------------+---------+---------+---------+---------+
+>> | Compression Ratio         | 34%     | 35%     | 37%     | 58%     |
+>> +---------------------------+---------+---------+---------+---------+
+> Is it just me, or do the numbers not look all that great at least
+> when comparing to ZSTD-L3 and LZO-L1?  What are the decompression
+> numbers?
+>
+
+What makes you think so?
+
+If CPU util numbers was single core %, then I would agree with you. But 
+its 208 cores so there is quite big saving, like over 20 cores saved if 
+I have understood this right.
+
 
 
