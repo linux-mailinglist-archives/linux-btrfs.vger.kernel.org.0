@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-19446-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19447-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04BEBC99FB6
-	for <lists+linux-btrfs@lfdr.de>; Tue, 02 Dec 2025 05:09:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E744EC9A025
+	for <lists+linux-btrfs@lfdr.de>; Tue, 02 Dec 2025 05:27:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id D41D2345093
-	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Dec 2025 04:09:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0EBF93A2BF7
+	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Dec 2025 04:27:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23C1B28A1E6;
-	Tue,  2 Dec 2025 04:09:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CA922F5A02;
+	Tue,  2 Dec 2025 04:27:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="RtUVGfWN"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="XCUHXLJe"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8BCC212B0A
-	for <linux-btrfs@vger.kernel.org>; Tue,  2 Dec 2025 04:09:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1BD02F5473
+	for <linux-btrfs@vger.kernel.org>; Tue,  2 Dec 2025 04:27:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764648557; cv=none; b=jQaM7wAe2f8qkpCsUpknKvDcIZnfF0F9lMMisoGC693P+DiTRja0JFn7HIHQ/Ok3XiOFxGXmO1qAfyGkT7uNfMikPLJZW7uudNMfE6W+gfXS6PPJHH3uhKz/yCBMfofLKhFJwqCf+bp5SRkDXZ2jKVqBsAgae9LKzkZZcZ72arQ=
+	t=1764649665; cv=none; b=Tya3E+kTllTssnSq0cmS6tpYIMW7sPkO/GowezGYI8alUZXdQj4YOtIbZlYNdNP3ujxXmp1KEUljGCY2huSMahpdSsBrVw67CJjspuCt26TV1V+6ORwb44OESE3ae6xNnJc82GtlTo4bqnkXYwuNmg2DNPgjjK9vTRjyxlniVFI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764648557; c=relaxed/simple;
-	bh=hLbP65He4C14+QFYXqxkivtLYTwFsh+H2BxIOwxHAcY=;
+	s=arc-20240116; t=1764649665; c=relaxed/simple;
+	bh=zR+5jltth1MXMkVgiT5j6KWx9ewcOkmtWXfZ+01HACs=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=Y8r+sAf7GeOtjk6KEYvzmqh4zeFr/RYDc/BpzGRWTZBvMXnzMGFf/stK9lCHvFxoOQlx5gReaV9kznOGSb1JkVrwUi4hYHJHjpiLigsBBLuTe/+U3yXOVGT/2X3mDs7IAatitLxwA/b/x/DjlT61OCU7U4Je7v2NbAb8/J0BWy0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=RtUVGfWN; arc=none smtp.client-ip=212.227.17.20
+	 In-Reply-To:Content-Type; b=HgbSrfWimAgiPTTpsMkbOFHYWxxWq0QAgshAIFPSwjRgy9Il5dYypfIDgjPk9ZBWfsBD60uouMy8BdMh1NoEembrFSyYX5HCrAoe16+QNf7DBd80k8ZMzUyKszB+9AC/Y9fSoBmx5fFOJBSwHnUbzSCE463oJKLF8UVmAXEyfwk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=XCUHXLJe; arc=none smtp.client-ip=212.227.17.21
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1764648552; x=1765253352; i=quwenruo.btrfs@gmx.com;
-	bh=/MC1UiGPhtKo+visOLfbO8Gr2Rb+GG47+XAw0sEhaOA=;
+	s=s31663417; t=1764649657; x=1765254457; i=quwenruo.btrfs@gmx.com;
+	bh=zR+5jltth1MXMkVgiT5j6KWx9ewcOkmtWXfZ+01HACs=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=RtUVGfWNvs7OQqqJunb0IiR71mVVVTpFP9YzyqSiUgz7U3ejExc/j//lVIMMW7TC
-	 ZioGiM5nlAval6/TvYY5utoj6ceXxSHIJKdHHkSoFg5Clh3vyn9Z7TS5xHpgMlA5p
-	 w0+DTq9ZJpTkOa1Y/u72RtZc9/IwVMfhihuFbGvyz4QHIsAIbNbVAovKCl80EVxUt
-	 x30CKgnIfKW5Lp43rwKT3xyEXsmjJfc3BVbpQ8jDJtEgscnNM4d1PY+CbgNk5BpMI
-	 sNebA5Flf3YWngg6mxh1djuc/W5kO9qcY1QkcAVo6HhkJk904IdOZR0cLl88vqdIz
-	 lY4txYhC2vV7x3uU4A==
+	b=XCUHXLJehIWrhEI9wP0ZhDrFgItnZkXn4rijvlhn1SCldziApYKCumUEM598zMxh
+	 E7h/B+LWqQu6xi2MMVUcIUap4PJ/8b9wUdV+NtkojUgNrQybbW5lDbWPg5XnbVGRJ
+	 WiNCjjfwyxC5A2W66kWOOYb7CZk4xWlIvA/ustOuxHoccNQN8m7+PJHdgM16Nryjx
+	 dwrtA0CBIc7g2uZExEjgfttwpcvPfDMGnIoCqrJabtDy3lGRtl4IIk0O0u8IMAIKw
+	 aLwwvLd+A6m/6HCSGlvsDnO95o4XLSc/nTQBcYk0a5E9FJ6Ja3yR0xU/L2jRh6eTK
+	 96wk+yShuVPNJSPz+g==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MG9kC-1vIZWl2Hng-00HP1t; Tue, 02
- Dec 2025 05:09:12 +0100
-Message-ID: <fa100509-d871-47f5-85d9-286eb6a037b0@gmx.com>
-Date: Tue, 2 Dec 2025 14:39:08 +1030
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MWzfl-1vbTCT3czp-00XYsO; Tue, 02
+ Dec 2025 05:27:37 +0100
+Message-ID: <5b0d277a-68b5-43c0-a292-1f43ab30d207@gmx.com>
+Date: Tue, 2 Dec 2025 14:57:34 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,11 +58,12 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/3] btrfs-progs: add block-group-tree to the default
- mkfs/convert features
-To: Nicholas D Steeves <nsteeves@gmail.com>, Qu Wenruo <wqu@suse.com>,
- linux-btrfs@vger.kernel.org
-References: <cover.1764228560.git.wqu@suse.com> <87o6ohisqg.fsf@gmail.com>
+Subject: Re: Troubles translating root tree's logical to physical address
+To: Robin Seidl <robin.seidl@fau.de>,
+ linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <7e9c5666-645d-4b4f-9608-a521353c54b0@fau.de>
+ <b5bce92a-f1e8-4137-ae9c-df6980702095@gmx.com>
+ <59b45b35-e67c-4f54-9710-fe91fe9b0be0@fau.de>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -89,132 +90,241 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
  +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
  HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <87o6ohisqg.fsf@gmail.com>
+In-Reply-To: <59b45b35-e67c-4f54-9710-fe91fe9b0be0@fau.de>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:h67onqbtlVijUBJKxGGirAi6VL7r6T2173Chqoux+tnbhfkbdfv
- gpdm3iTZcGM1Vt9t6NPPs6+2+qADqjxnJIcvmcY1/65N62bu50FyR+AerW0RiSwai1kKKGr
- m9DZQShQjvaVFuNfvjKnQwsuV864sX+GR8acc898gnDaLboEwXQ/oQaLjlj3TGL+c3eaSko
- V9rWk1zjP+yEg2pUAW9UA==
+X-Provags-ID: V03:K1:4rXsLCZJ0IBRYVjHrzwROcV/Pdr+KFkLyZzNgRiGeV/TYN2gBLh
+ b+vTV/ToxTvYATsdk7ER5rbZM0gUDB6Tjm9KhSwDTShI0S2FONMnlehvQoS+kIzjMljkYLe
+ VFn4Tj6ZIMxNBaS4rGTFiToiMgqIYj4FwwgpNFi4wcWZG2hr3CYVjkW4Ql4vQ+pYnxpiaBA
+ cRsQLvtNkQ2pBIuJK7vOA==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:PJaEExwREe4=;Ob/rmB+ToQS0cSd0zsg2GNSPGn4
- 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
+UI-OutboundReport: notjunk:1;M01:P0:NleDcYN6WxQ=;vUlpzF6lYUpHWoQGh+Z/0pLTjnB
+ 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
+ zHbbu4sd19PRQ9HikysGekWeauWI5oOSvM8lhz
 
 
 
-=E5=9C=A8 2025/12/2 11:51, Nicholas D Steeves =E5=86=99=E9=81=93:
-> Hi Qu,
+=E5=9C=A8 2025/12/1 19:21, Robin Seidl =E5=86=99=E9=81=93:
+> Hello Qu,
 >=20
-> Qu Wenruo <wqu@suse.com> writes:
+> thank you for your last answer, it helped a lot!
 >=20
->> [CHANGELOG]
->> v2:
->> - Automatically remove bgt feature when dependent feature is missing
->>    Instead of erroring out. This will allow us to run the existing
->>    no-holes/v1 free space cache test cases without any modification.
->>
->> I was planning to do this during v6.12 but forgot it and now the next
->> LTS kernel release is not that far away, it's finally time to make the
->> switch.
->>
+> I am currently trying to understand the structure of the extent tree in=
+=20
+> more detail and have the following problems:
 >=20
-> Does this also mean that block-group-tree is considered recommended and
-> production-ready for users of linux-6.12 LTS, or that it will only be
-> recommended for the next LTS kernel series?
+> According to the documentation, the main items in the extent tree are of=
+=20
+> type `BTRFS_EXTENT_ITEM_KEY`, `BTRFS_METADATA_ITEM_KEY`,
 
-I think 6.12 is already safe enough (the current safe version is 6.6).
+Those are the basic ones with inline items.
+
+If an inlined extent go too large, there will be other items for the=20
+corresponding types:
+
+BTRFS_SHARED_DATA_REF_KEY for data backrefs, and=20
+BTRFS_SHARED_BLOCK_REF_KEY for metadata backrefs.
+
+> and=20
+> `BTRFS_BLOCK_GROUP_ITEM_KEY`.
+
+And where you can find BTRFS_BLOCK_GROUP_ITEM_KEY depends on fs features.
+If the fs has BLOCK_GROUP_TREE feature, then that key will be moved to=20
+block group tree.
+
+> The documentation also states that,=20
+> depending on the flags it contains, a `btrfs_extent_item` is followed by=
+=20
+> additional structs. I assume that these structs are referred to here:=20
+> https://github.com/kdave/btrfs-progs/=20
+> blob/745e510b6c82829b9345699db323b9a615a9f539/kernel-shared/uapi/=20
+> btrfs_tree.h#L815-L839. Is that correct?
+
+Yes.
+
+> However, I cannot figure out=20
+> which flags would have to be set for which struct and in what order they=
+=20
+> would then be written.
+
+You can check the print-tree code for that.
+
+https://github.com/kdave/btrfs-progs/blob/745e510b6c82829b9345699db323b9a6=
+15a9f539/kernel-shared/print-tree.c#L500
+
+For metadata btrfs_extent_item::flags it has EXTENT_FLAG_TREE_BLOCK flag.
+Otherwise it should have EXTENT_FLAG_DATA flag set.
 
 >=20
-> Also, are there any known disadvantages that result from having used
-> btrfstune compared with a pristine FS created with
-> mkfs.btrfs -O block-group-tree ?
+> What also confuses me is that some of these structs appear to have=20
+> defined key types (https://github.com/kdave/btrfs-progs/=20
+> blob/745e510b6c82829b9345699db323b9a615a9f539/kernel-shared/uapi/=20
+> btrfs_tree. h#L237-L251), which would imply that they could be=20
+> identified by their keys, like the main items above, instead of by the=
+=20
+> set flags. However, a quick look at the output of `dump-tree` did not=20
+> confirm this.
 
-I can only come up with the disadvantage of btrfstune itself, e.g:
+Please check the print_extent_item() function, which shows exactly how=20
+those key types are utilized for inline case.
 
-- Older bugs in btrfstune that failed to resume interrupted conversion
-
-- Certain ENOSPC bugs if the fs is really full
-
-- Offline conversion
-
-As long as the fs can be safely converted, there should be no difference.
+And just around the callsites of print_extent_item() inside=20
+__btrfs_print_leaf(), there are other print_extent*() calls, that are=20
+handling the dedicated keyed cases.
 
 Thanks,
 Qu
 
 >=20
-> Best,
-> Nicholas
+> Can you clarify how exactly I should read the contents of the extent tre=
+e?
+>=20
+> Best regards
+> Robin
+>=20
+> Am 17.11.2025 um 11:01 schrieb Qu Wenruo:
+>>
+>>
+>> =E5=9C=A8 2025/11/17 20:05, Robin Seidl =E5=86=99=E9=81=93:
+>>> Hello,
+>>> I'm currently working on reading the BTRFS structures without=20
+>>> mounting the filesystem. I am now having troubles translating the=20
+>>> root tree root address to a physical address:
+>>>
+>>> I did the tests on a freshly created filesystem.
+>>> At 0x10000 the superblock begins.
+>>> At 0x10050 the u64 logical address of the root tree root begins. It=20
+>>> is 0x1d4c000.
+>>> At 0x100a0 the u32 size of the chunk array begins. It is 0x81.
+>>> At 0x1032b the sys_chunk_array starts.
+>>> =C2=A0=C2=A0 =C2=A0 0x1032b to 0x1033c is the btrfs_key. The chunks lo=
+gical start=20
+>>> (u64 at 0x10334) is 0x1500000
+>>> =C2=A0=C2=A0 =C2=A0 0x1033c to 0x1036c is the btrfs_chunk. The chunks =
+length (u64 at=20
+>>> 0x1033c) is 0x800000.
+>>> =C2=A0=C2=A0 =C2=A0 0x1036c to 0x1037d is the btrfs_stripe.
+>>
+>> This can be done using `btrfs ins dump-super -f` to print a more human=
+=20
+>> readable output of the system chunk array.
+>>
+>>>
+>>> When the logical start of the chunk is 0x1500000 and the length is=20
+>>> 0x800000, then the logical end of the chunk is 0x1d00000. This=20
+>>> implies that the root tree root adddress 0x1d4c000 is outside of the=
+=20
+>>> first and only chunk.
+>>
+>> Just like the name, system chunk array, it only contains system chunks.
+>>
+>> System chunks only store the chunk tree, which stores the remaining=20
+>> chunks.
+>>> What am I missing here, how do I translate the logical address of the=
+=20
+>>> root tree root into its physical counterpart?
+>>
+>> Tree root is in metadata chunks, not in system chunks.
+>>
+>> You need super block system chunk array -> chunk tree -> the remaining=
+=20
+>> chunks to do the bootstrap.
+>>
+>> If you are not yet able to understand the full kernel bootstrap code=20
+>> (it's more complex and have a lot of other things), you can check=20
+>> open_ctree() from btrfs-progs.
+>>
+>> The overall involved functions are (all from btrfs-progs):
+>>
+>> - btrfs_setup_chunk_tree_and_device_map()
+>>
+>> - btrfs_read_sys_array()
+>>
+>> - btrfs_read_chunk_tree()
+>>
+>> Thanks,
+>> Qu
+>>
+>>
+>>>
+>>> Best regards
+>>> Robin
+>>>
+>>> PS: In the wiki (https://btrfs.readthedocs.io/en/latest/dev/On-disk-=
+=20
+>>> format.html#superblock) there is a typo regarding the start of the=20
+>>> sys_chunk_array as it claims it starts at 0x1002b.
+>>>
+>>
 
 
