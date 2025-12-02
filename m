@@ -1,206 +1,197 @@
-Return-Path: <linux-btrfs+bounces-19460-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19461-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26BE2C9BE46
-	for <lists+linux-btrfs@lfdr.de>; Tue, 02 Dec 2025 16:06:01 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 585CEC9BEB3
+	for <lists+linux-btrfs@lfdr.de>; Tue, 02 Dec 2025 16:17:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CAD8E3A655F
-	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Dec 2025 15:05:34 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 89756348584
+	for <lists+linux-btrfs@lfdr.de>; Tue,  2 Dec 2025 15:17:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C84325485A;
-	Tue,  2 Dec 2025 15:05:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA92B252292;
+	Tue,  2 Dec 2025 15:16:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GbonkNwT"
+	dkim=pass (1024-bit key) header.d=bupt.moe header.i=@bupt.moe header.b="vXdB7s4x"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from smtpbg154.qq.com (smtpbg154.qq.com [15.184.224.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B9F723909C
-	for <linux-btrfs@vger.kernel.org>; Tue,  2 Dec 2025 15:05:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78C937DA66
+	for <linux-btrfs@vger.kernel.org>; Tue,  2 Dec 2025 15:16:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=15.184.224.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764687931; cv=none; b=Ke/H6QyQe0ZTs1mPqYwTLdhvradyU4pr7T/nPttoWGfWKcddSjgqjoLedVTy3DdsWSed7cy6G54NnCa1kZVZSkKXdBBZrzB0PjXYCxGASBj63dwd8bjWAcZoXwyJP0b5RV8X6oN9IC/rTj9ZV0mMlncmOSJxuxhwEmbMulXzOy4=
+	t=1764688618; cv=none; b=RT9G2urihE/Yw12045bPaqDdpm8OkiaoFTJnOm1wUNzcBMERSnHjI5Cb4bIO4ubc/cWh/DZ5zQqiU6D2gd+RjC1NgSSwqpzUD9D8XOhL43TaquuUe5kcLq7vi0aI64NFQSO/bzF563IGVPoTVCAyo8yNHu3OkoQ5ljyj7AumQuA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764687931; c=relaxed/simple;
-	bh=Bk33QOd9VseHEK9mrk+2mRwwZLTcNsv/SfXt2yDKQ7k=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tpZYZlVbU5RF7y4CNwqrtL4c7WFL5+aGidRf1yv+yKI1msrJeqfbJ7QeFHOCRdD+ZC+z2ep2xkLaiH3h5gJrtm12BVKJ0A25GfCiRYtoob5b9slXVpwuykjYWpnAWBa6tRNYf10V1bAIwcCLsKLC1hXAsTnNG4J1/QLSyxLScSQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GbonkNwT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3227AC16AAE
-	for <linux-btrfs@vger.kernel.org>; Tue,  2 Dec 2025 15:05:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1764687931;
-	bh=Bk33QOd9VseHEK9mrk+2mRwwZLTcNsv/SfXt2yDKQ7k=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=GbonkNwTrxc7JKSxfZduI5Jo1++/GgXgjT3MkQQt5uciOqUcxWDn9n0fSPAMTEDdH
-	 +p+XtDuuh3RDwZq2celX0NF0GKOANrUBswls8evqWhb9ngWYV/dQ5Xo5R8i9A5j5hv
-	 jjM2JMExQI+6E3c6keVlYWd8jtDsfFbgk3d38U9cSWJrrDu/LMOcw0YR1WVem2+75X
-	 yK8yLA3wNnONC3EYchRc2haJTcieHr7w5Yt2JHn6wmvZhYKSctG3H+n8uzrVxjCv8O
-	 o6IUVRrfxmsP42LRE0NqUoGMQNxNAvCIveRzE6im52Z1ZrnpQyALFAmhqQNzBBHxfd
-	 4K1bVS+6z+lOA==
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-6418738efa0so9166625a12.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 02 Dec 2025 07:05:31 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVZYUIK/dSlgpzupSb+Q5wGN6kz1zMH/xPn01g8Qh5wprdaewC9cAIR0aIOlnGbzdJ4Pmb6N1SgDx0P4g==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzEKOSRZUUPKvLm+JuJqPLdqnJQp0QTjdzYCabFG1rFrlca7i6e
-	31rekYJDorOvwccbvtIcuff5sYwxgxTj2gYudKuobXYSQzP6TK7z4UZgjJZmL9uemAQdurcx9bj
-	xkjYIEYHPh5KY+lkUMlpzHXKn81zFM+U=
-X-Google-Smtp-Source: AGHT+IEbSDAaYiYWwBMJXqSWexOsKdKt55C8QPguCIGaXotM32TPtdzJUNuj36lfMorqFJtzay/krvZba3h4pUd2rl8=
-X-Received: by 2002:a17:907:97d6:b0:b4a:ed12:ce51 with SMTP id
- a640c23a62f3a-b767156522dmr4679057166b.23.1764687929663; Tue, 02 Dec 2025
- 07:05:29 -0800 (PST)
+	s=arc-20240116; t=1764688618; c=relaxed/simple;
+	bh=RYvHFCEHYFyUTDhTObt7ymnmaf08yLak542VinEypis=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=dCE/8K+hGBl2WXS8sYnb3zkRkO9B2o8pMnYB8VNGA2jg+vGViHydg/LDXFgz3ROZJzV9Lm7l/7RKXsL1K4PiaiXxpnqpjy+DKsev2gyB0Hd6etwK1Y6rmIoGn26tCquJvjeZOLEXdTtD3L0t9RAIZeK5C0DHkejZNvqMgIf/rAg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bupt.moe; spf=pass smtp.mailfrom=bupt.moe; dkim=pass (1024-bit key) header.d=bupt.moe header.i=@bupt.moe header.b=vXdB7s4x; arc=none smtp.client-ip=15.184.224.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bupt.moe
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bupt.moe
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bupt.moe;
+	s=qqmb2301; t=1764688607;
+	bh=nRMsO8V3i0JlFbvF7f3gQHsSv7bbVpi1gOFHqHqxjBo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:From;
+	b=vXdB7s4xS04/zzg6zADagbirOUcQVrkVxnAZqkTRysT71DzER97dJESnvFyw+cUD6
+	 k9uH2BMU3GYmdK+gqXjHo80IJLo174Q54pbCm/pw2w24osyIwf1PSE9Wgdqx05up7M
+	 1NFmmJkwmSRntJcbSIKcgQElrFjq4JjDjjCP7ulM=
+X-QQ-mid: zesmtpgz3t1764688603tf0f0cd2f
+X-QQ-Originating-IP: Vb/l6eRAX3q6qPr6gj1pR1p4f6UDrIbr8oBJzIjmidg=
+Received: from [198.18.0.1] ( [123.134.104.238])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Tue, 02 Dec 2025 23:16:42 +0800 (CST)
+X-QQ-SSF: 0000000000000000000000000000000
+X-QQ-GoodBg: 0
+X-BIZMAIL-ID: 8019220805694550285
+Message-ID: <92785CEDF310B353+14512df2-8c80-4a0d-920e-df428c87c5c5@bupt.moe>
+Date: Tue, 2 Dec 2025 23:16:44 +0800
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <202511262228.6dda231e-lkp@intel.com> <20251202005146.3723457-1-loemra.dev@gmail.com>
- <aS6l5hildWAimd2f@xsang-OptiPlex-9020>
-In-Reply-To: <aS6l5hildWAimd2f@xsang-OptiPlex-9020>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Tue, 2 Dec 2025 15:04:51 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H5L2Yc3aNCfffuimET6LLup9iB2T4_1caJkgV+c8avRMg@mail.gmail.com>
-X-Gm-Features: AWmQ_bn0eFXK67zVjkQ_yMCesPI6jAz23baXAmCN0lYmveAfHcKB1BXH-VDAyyI
-Message-ID: <CAL3q7H5L2Yc3aNCfffuimET6LLup9iB2T4_1caJkgV+c8avRMg@mail.gmail.com>
-Subject: Re: [linus:master] [btrfs] e8513c012d: addition_on#;use-after-free
-To: Oliver Sang <oliver.sang@intel.com>
-Cc: Leo Martins <loemra.dev@gmail.com>, oe-lkp@lists.linux.dev, lkp@intel.com, 
-	linux-kernel@vger.kernel.org, David Sterba <dsterba@suse.com>, 
-	linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [BUG] 6.18-rc7 cannot mount RAID1 zoned btrfs.
+To: Naohiro Aota <Naohiro.Aota@wdc.com>,
+ Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+ linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <0BED8C36F63EBD8F+f61c437e-3e5f-4a1c-9c18-17fd31abfcd4@bupt.moe>
+ <e865d52c-8f07-431a-8fff-907bd6cfb0e8@wdc.com>
+ <F24595B65EF81413+dddb8a6c-9da6-4480-b168-fcfa20d3c296@bupt.moe>
+ <DENLBYCUSKZP.13MWTQQNEAUBW@wdc.com>
+From: HAN Yuwei <hrx@bupt.moe>
+In-Reply-To: <DENLBYCUSKZP.13MWTQQNEAUBW@wdc.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: zesmtpgz:bupt.moe:qybglogicsvrgz:qybglogicsvrgz3a-0
+X-QQ-XMAILINFO: OccmtviHNKX2VVC0iF37qqaMG+eHBIS8dvCNzkOimdr/CM1gYEfy4sht
+	gSmUe4xD7ihI8POWCfKxX09V9qY0OxsNnQFwQLrBD7bdSv48NQVEsftMPrQjI9egqVDmyD8
+	UvzMnmSvmJ1aO/jcLtRwsp6vauzwJjoZ++8/PfNWz6iFPD1zekmSuXDeuDGvsWygOZJGY07
+	Ja1QRo52L31YNnZ4qk36cDDbvqgUGJNIgQ/y0WePT7BxTcCsf5Ds4ch8V6BhBxOtlpDYB7q
+	g4quG6aehSoUgPpgEf1UxT1+krgU5ipqhwsrMeO5I1hWmqdVkTf2pAmL54apMCXtU/dXwpK
+	KsKtI6787OXSFPv28EAVIRy1JHacleJK+g7cDxZ/hP6CXY4hSmmjXFeIsL61MZ1aCDbN+OB
+	t/eb3KsAlLw2mt9tVIeexbHnvV2kJVk8m5y4BgOPTZ2P8xBAN7IkP50QMKWcDLkBV5RmsYe
+	5SK3LhZVO/bNwYxoRKOSxFMv8P2aCcC4Zxk93IkeLcWnwNGN5elgg4u+zVVPhE5+sG9OHJx
+	EF28a3YZPXDnofqbrx7wrHaQnF8okiByzdnX/RrznHkord2NA38F/PJErLS16ojlAj8gqyt
+	JVQKcKosiVj6fzTRQR+az2R+xNLrd6z5ni8lBXnQHLYf+/uVQ2jbYY+52hmOYq5C6B8xMsk
+	cRzVvY83lpq97sVe2Vx1d/cXlBrvdIN3Y0LH1t+1zmUTfNCg/38/J697vkCAYOgXPJ7c6kq
+	Ezcle8YmjLRuNPYr0eV1tGhvGGGuHt9m/16S6RLEqgkp35ONymuPj2Uyz/0l3hMOCllSqR/
+	gvOOrA5mBhccFdXuSsF7QFdt9wudH0XwIrotRqhYLkivOj22i9sntvTqDMBrVAZhKD/nMUT
+	nsVtcAbC6JBWEyQSSHlPVd9g63VtpS5YXWgqcShmF2kt4oczjpSZKbIfhGyVIEp/vHby9Gk
+	IgrmL1L1arMav6LxCA29nhYrhOSNbGh6ve14=
+X-QQ-XMRINFO: NI4Ajvh11aEj8Xl/2s1/T8w=
+X-QQ-RECHKSPAM: 0
 
-On Tue, Dec 2, 2025 at 8:40=E2=80=AFAM Oliver Sang <oliver.sang@intel.com> =
-wrote:
->
-> hi, Leo Martins,
->
-> On Mon, Dec 01, 2025 at 04:51:41PM -0800, Leo Martins wrote:
->
-> [...]
->
-> >
-> > Hello,
-> >
-> > I believe I have identified the root cause of the warning.
-> > However, I'm having some troubles running the reproducer as I
-> > haven't setup lkp-tests yet. Could you test the patch below
-> > against your reproducer to see if it fixes the issue?
->
-> we confirmed your patch fixed the issues we reported in origial report. t=
-hanks!
->
-> Tested-by: kernel test robot <oliver.sang@intel.com>
->
-> >
-> > ---8<---
-> >
-> > [PATCH] btrfs: fix use-after-free in btrfs_get_or_create_delayed_node
-> >
-> > Previously, btrfs_get_or_create_delayed_node sets the delayed_node's
-> > refcount before acquiring the root->delayed_nodes lock.
-> > Commit e8513c012de7 ("btrfs: implement ref_tracker for delayed_nodes")
-> > moves refcount_set inside the critical section which means
-> > there is no longer a memory barrier between setting the refcount and
-> > setting btrfs_inode->delayed_node =3D node.
-> >
-> > This allows btrfs_get_or_create_delayed_node to set
-> > btrfs_inode->delayed_node before setting the refcount.
-> > A different thread is then able to read and increase the refcount
-> > of btrfs_inode->delayed_node leading to a refcounting bug and
-> > a use-after-free warning.
-> >
-> > The fix is to move refcount_set back to where it was to take
-> > advantage of the implicit memory barrier provided by lock
-> > acquisition.
-> >
-> > Fixes: e8513c012de7 ("btrfs: implement ref_tracker for delayed_nodes")
-> > Reported-by: kernel test robot <oliver.sang@intel.com>
-> > Closes: https://lore.kernel.org/oe-lkp/202511262228.6dda231e-lkp@intel.=
-com
-> > Signed-off-by: Leo Martins <loemra.dev@gmail.com>
-> > ---
-> >  fs/btrfs/delayed-inode.c | 34 ++++++++++++++++++----------------
-> >  1 file changed, 18 insertions(+), 16 deletions(-)
-> >
-> > diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
-> > index 364814642a91..f61f10000e33 100644
-> > --- a/fs/btrfs/delayed-inode.c
-> > +++ b/fs/btrfs/delayed-inode.c
-> > @@ -152,37 +152,39 @@ static struct btrfs_delayed_node *btrfs_get_or_cr=
-eate_delayed_node(
-> >               return ERR_PTR(-ENOMEM);
-> >       btrfs_init_delayed_node(node, root, ino);
-> >
-> > +     /* Cached in the inode and can be accessed. */
-> > +     refcount_set(&node->refs, 2);
-> > +     btrfs_delayed_node_ref_tracker_alloc(node, tracker, GFP_ATOMIC);
-> > +     btrfs_delayed_node_ref_tracker_alloc(node, &node->inode_cache_tra=
-cker, GFP_ATOMIC);
-> > +
-> >       /* Allocate and reserve the slot, from now it can return a NULL f=
-rom xa_load(). */
-> >       ret =3D xa_reserve(&root->delayed_nodes, ino, GFP_NOFS);
-> > -     if (ret =3D=3D -ENOMEM) {
-> > -             btrfs_delayed_node_ref_tracker_dir_exit(node);
-> > -             kmem_cache_free(delayed_node_cache, node);
-> > -             return ERR_PTR(-ENOMEM);
-> > -     }
-> > +     if (ret =3D=3D -ENOMEM)
-> > +             goto cleanup;
-> > +
-> >       xa_lock(&root->delayed_nodes);
-> >       ptr =3D xa_load(&root->delayed_nodes, ino);
-> >       if (ptr) {
-> >               /* Somebody inserted it, go back and read it. */
-> >               xa_unlock(&root->delayed_nodes);
-> > -             btrfs_delayed_node_ref_tracker_dir_exit(node);
-> > -             kmem_cache_free(delayed_node_cache, node);
-> > -             node =3D NULL;
-> > -             goto again;
-> > +             goto cleanup;
-> >       }
-> >       ptr =3D __xa_store(&root->delayed_nodes, ino, node, GFP_ATOMIC);
-> >       ASSERT(xa_err(ptr) !=3D -EINVAL);
-> >       ASSERT(xa_err(ptr) !=3D -ENOMEM);
-> >       ASSERT(ptr =3D=3D NULL);
-> > -
-> > -     /* Cached in the inode and can be accessed. */
-> > -     refcount_set(&node->refs, 2);
-> > -     btrfs_delayed_node_ref_tracker_alloc(node, tracker, GFP_ATOMIC);
-> > -     btrfs_delayed_node_ref_tracker_alloc(node, &node->inode_cache_tra=
-cker, GFP_ATOMIC);
-> > -
-> > -     btrfs_inode->delayed_node =3D node;
-> > +     WRITE_ONCE(btrfs_inode->delayed_node, node);
+在 2025/12/2 16:33, Naohiro Aota 写道:
+> On Sat Nov 29, 2025 at 12:38 AM JST, HAN Yuwei wrote:
+>> 在 2025/11/28 23:03, Johannes Thumshirn 写道:
+>>> On 11/28/25 12:36 PM, HAN Yuwei wrote:
+>>>> /dev/sdd, 52156 zones of 268435456 bytes
+>>>> [   19.757242] BTRFS info (device sda): host-managed zoned block device
+>>>> /dev/sdb, 52156 zones of 268435456 bytes
+>>>> [   19.868623] BTRFS info (device sda): zoned mode enabled with zone
+>>>> size 268435456
+>>>> [   20.940894] BTRFS info (device sdd): zoned mode enabled with zone
+>>>> size 268435456
+>>>> [   21.101010] r8169 0000:07:00.0 ethob: Link is Up - 1Gbps/Full - flow
+>>>> control off
+>>>> [   21.128595] BTRFS info (device sdc): zoned mode enabled with zone
+>>>> size 268435456
+>>>> [   21.436972] BTRFS error (device sda): zoned: write pointer offset
+>>>> mismatch of zones in raid1 profile
+>>>> [   21.438396] BTRFS error (device sda): zoned: failed to load zone info
+>>>> of bg 1496796102656
+>>>> [   21.440404] BTRFS error (device sda): failed to read block groups: -5
+>>>> [   21.460591] BTRFS error (device sda): open_ctree failed: -5
+>>>
+>>> Hi this means, the write pointers of both zones forming the block-group
+>>> 1496796102656 are out of sync.
+>>>
+>>> For RAID1 I can't really see why there should be a difference tough,
+>>> recently only RAID0 and RAID10 code got touched.
+>>>
+>>> Debugging this might get a bit tricky, but anyways. You can grab the
+>>> physical locations of the block-group form the chunk tree via:
+>>>
+>>> btrfs inspect-internal dump-tree -t chunk /dev/sda |\
+>>>
+>>>         grep -A 7 -E "CHUNK_ITEM 1496796102656" |\
+>>>
+>>>         grep "\bstripe\b"
+>>>
+>>>
+>>> Then assuming dev 0 is sda and dev 1 is sdb
+>>>
+>>> blkzone report -c 1 -o "offset_from_devid 0 / 512" /dev/sda
+>>>
+>>> blkzone report -c 1 -o "offset_from_devid 1 / 512" /dev/sdb
+>>>
+>>>
+>>> E.g. (on my system):
+>>>
+>>> root@virtme-ng:/# btrfs inspect-internal dump-tree -t chunk /dev/vda |\
+>>>
+>>>                                         grep -A7 -E "CHUNK_ITEM
+>>> 2147483648" | \
+>>>
+>>>                                        grep "\bstripe\b"
+>>>                stripe 0 devid 1 offset 2147483648
+>>>                stripe 1 devid 2 offset 1073741824
+>>>
+>>> root@virtme-ng:/# blkzone report -c 1 -o $((2147483648 / 512)) /dev/vda
+>>>      start: 0x000400000, len 0x080000, cap 0x080000, wptr 0x000000 reset:0
+>>> non-seq:0, zcond: 1(em) [type: 2(SEQ_WRITE_REQUIRED)]
+>>>
+>>> root@virtme-ng:/# blkzone report -c 1 -o $((1073741824 / 512)) /dev/vdb
+>>>      start: 0x000200000, len 0x080000, cap 0x080000, wptr 0x000000 reset:0
+>>> non-seq:0, zcond: 1(em) [type: 2(SEQ_WRITE_REQUIRED)]
+>>>
+>>> Note this is an empty FS, so the write pointers are at 0.
+>>>
+>> # btrfs inspect-internal dump-tree -t chunk /dev/sda|\
+>> grep -A 7 -E "CHUNK_ITEM 1496796102656"|\
+>> grep stripe
+>>
+>> length 268435456 owner 2 stripe_len 65536 type METADATA|RAID1
+>> num_stripes 2 sub_stripes 1
+>>       stripe 0 devid 2 offset 374467461120
+>>       stripe 1 devid 1 offset 1342177280
+>> # blkzone report -c 1 -o "731381760" /dev/sda
+>>     start: 0x02b980000, len 0x080000, cap 0x080000, wptr 0x07ff80 reset:0
+>> non-seq:0, zcond: 4(cl) [type: 2(SEQ_WRITE_REQUIRED)]
+>> # blkzone report -c 1 -o "2621440" /dev/sdb
+>>     start: 0x000280000, len 0x080000, cap 0x080000, wptr 0x000000 reset:0
+>> non-seq:0, zcond: 0(nw) [type: 1(CONVENTIONAL)]
+> 
+> Could I also have the last extent of the chunk, please? You can see that
+> with the following command:
+> 
+> btrfs inspect-internal dump-tree -t extent /dev/sda |\
+> grep -B 4 -A 1 -E "1496796102656 BLOCK_GROUP_ITEM"
+> 
+"-t extent" seems filtered out what your need. I have done this:
+# btrfs inspect-internal dump-tree /dev/sda |grep -B 4 -A 1 -E 
+"1496796102656 BLOCK_GROUP_ITEM"
+         item 201 key (1495453925376 BLOCK_GROUP_ITEM 268435456) itemoff 
+11435 itemsize 24
+                 block group used 268435456 chunk_objectid 256 flags 
+DATA|single
+         item 202 key (1496527667200 BLOCK_GROUP_ITEM 268435456) itemoff 
+11411 itemsize 24
+                 block group used 0 chunk_objectid 256 flags DATA|single
+         item 203 key (1496796102656 BLOCK_GROUP_ITEM 268435456) itemoff 
+11387 itemsize 24
+                 block group used 0 chunk_objectid 256 flags METADATA|RAID1
 
-Why the WRITE_ONCE() change?
+>>
+>> seems like they have distributed to different type of zones. Should I do
+>> bisect to pin the commit?
+>>
+>> HAN Yuwei
 
-Can you explain in the changelog why it's being introduced?
-This seems unrelated and it was not there before the commit mentioned
-in the Fixes tag.
-
-Thanks.
-
-> >       xa_unlock(&root->delayed_nodes);
-> >
-> >       return node;
-> > +cleanup:
-> > +     btrfs_delayed_node_ref_tracker_free(node, tracker);
-> > +     btrfs_delayed_node_ref_tracker_free(node, &node->inode_cache_trac=
-ker);
-> > +     btrfs_delayed_node_ref_tracker_dir_exit(node);
-> > +     kmem_cache_free(delayed_node_cache, node);
-> > +     if (ret)
-> > +             return ERR_PTR(ret);
-> > +     goto again;
-> >  }
-> >
-> >  /*
-> > --
-> > 2.47.3
->
 
