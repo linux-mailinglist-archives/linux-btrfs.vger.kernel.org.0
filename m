@@ -1,191 +1,269 @@
-Return-Path: <linux-btrfs+bounces-19478-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19479-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC6FAC9EAE7
-	for <lists+linux-btrfs@lfdr.de>; Wed, 03 Dec 2025 11:19:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6ADD0C9EC29
+	for <lists+linux-btrfs@lfdr.de>; Wed, 03 Dec 2025 11:46:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id F17673488A4
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Dec 2025 10:19:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F081F3A872D
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Dec 2025 10:46:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 397532EA468;
-	Wed,  3 Dec 2025 10:19:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 035DA2F0C7B;
+	Wed,  3 Dec 2025 10:45:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Sia1MYIL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xo0TgJ3A"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 119562DE707;
-	Wed,  3 Dec 2025 10:19:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42F9C2989B4
+	for <linux-btrfs@vger.kernel.org>; Wed,  3 Dec 2025 10:45:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764757151; cv=none; b=l1y/iSY3P6bBKvJmq7rfGniKBLZ/N+ITjeHc/tYquDWUGvNErSeQ+Nx1uktYZhMQwK9KJaKYAVzIDIwpFWKsOCDR5OQt2vxS1pXHKllevKb46ByutDXSV7CIX1ds0M4LfkzWbsbeKqWsSV42pR80nsIwvB1HEA7q5/RDEwFV3CY=
+	t=1764758756; cv=none; b=KcFww6cxZjXYwJdG9KCLDjS9NlJZTOp6CCMSvQY2Vf86cWt8S4DTDDVZjqOLNe2l763FVqOeEk9rwYJ+TB21zkE45ntZ7KfyRrV/ONOh9isy5mV8WQdE6C358bwlc1eMyTrq72XleVbE+SfZ8ggeoceGqg5+YviHlxb2vepGNwM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764757151; c=relaxed/simple;
-	bh=1ALGFmGlgOHY6f+bdLdgKebsX+au1yQ5dTRhimTaFoA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=MzVrCaPOfJSbHnu5034+sN/igCQpAT0+eqawrc2CmK2pAHRA2QjXw7hUydE514Q7CmplIfKVrvREVZ5mESHganvctY0wvUSStpd4q0tj2K2UR/RW+qDVmiF3IJKZIDMao2imUe8JmnRcJWDHCn1/lUgf8DoAhemIKTQ1oTsaR84=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Sia1MYIL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25361C113D0;
-	Wed,  3 Dec 2025 10:18:49 +0000 (UTC)
+	s=arc-20240116; t=1764758756; c=relaxed/simple;
+	bh=10t4BJX+q1wqD8KyLAGeZLJKdJKQTkkfESmLGD3t7xk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=q9mXUW9fzSsHwDMaC00stWnv4bDxHWjRnBVfNCPDi2X2Q8BRV41IMDVurgBUJOKaJLm40ozdkKjA4oLqoOmOxbSBB1jYG91O56TWKxunibSaPy0oGoYJl8wZQW8Ui+s//v9g5ChATgZYRndRF9gbxXQeFA1Zt+CeUOOIRXSsqFA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Xo0TgJ3A; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2140C116B1
+	for <linux-btrfs@vger.kernel.org>; Wed,  3 Dec 2025 10:45:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1764757150;
-	bh=1ALGFmGlgOHY6f+bdLdgKebsX+au1yQ5dTRhimTaFoA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Sia1MYILwN3OHyU8vJVbFzEbPmh+E9Rkdc13NmENJiNAQwujMzrx7aLJDYQwnRJH2
-	 icv0Cs7+2DiJlUtJrJ3jFjsxz5e5SC+H4b4cDPm/4/s+aTZepyO4AvrHMcRjPs8po7
-	 P0lAluHlqilBXk1Sh/B/XN0TZMdipTL7EolZ0FehsZ8XGO0/aidHMHK8ayQiiiT5TA
-	 U6OOgYna9Ec2DgYD68Hcv9/StfMLZVIApf1YAZumWdYivMJy+S1b4NF19fKc5R60wD
-	 vv/cJLS0nI7ttPeXB8OyKOFM1iSYjxfn/4avfs6o2Xu7czGUpIFQziUIbMv79dw+WM
-	 YExRE41C2xh0g==
-From: Christian Brauner <brauner@kernel.org>
-To: Jeff Layton <jlayton@kernel.org>
-Cc: Christian Brauner <brauner@kernel.org>,
-	NeilBrown <neilb@ownmail.net>,
-	linux-kernel@vger.kernel.org,
-	v9fs@lists.linux.dev,
-	linux-fsdevel@vger.kernel.org,
-	linux-afs@lists.infradead.org,
-	linux-btrfs@vger.kernel.org,
-	ceph-devel@vger.kernel.org,
-	codalist@coda.cs.cmu.edu,
-	ecryptfs@vger.kernel.org,
-	linux-efi@vger.kernel.org,
-	linux-ext4@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	gfs2@lists.linux.dev,
-	linux-um@lists.infradead.org,
-	linux-mm@kvack.org,
-	linux-mtd@lists.infradead.org,
-	jfs-discussion@lists.sourceforge.net,
-	linux-nfs@vger.kernel.org,
-	linux-nilfs@vger.kernel.org,
-	ntfs3@lists.linux.dev,
-	ocfs2-devel@lists.linux.dev,
-	linux-karma-devel@lists.sourceforge.net,
-	devel@lists.orangefs.org,
-	linux-unionfs@vger.kernel.org,
-	linux-cifs@vger.kernel.org,
-	samba-technical@lists.samba.org,
-	linux-xfs@vger.kernel.org,
-	linux-hardening@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	NeilBrown <neil@brown.name>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Jan Kara <jack@suse.cz>,
-	Eric Van Hensbergen <ericvh@kernel.org>,
-	Latchesar Ionkov <lucho@ionkov.net>,
-	Dominique Martinet <asmadeus@codewreck.org>,
-	Christian Schoenebeck <linux_oss@crudebyte.com>,
-	David Sterba <dsterba@suse.com>,
-	David Howells <dhowells@redhat.com>,
-	Marc Dionne <marc.dionne@auristor.com>,
-	"Tigran A. Aivazian" <aivazian.tigran@gmail.com>,
-	Chris Mason <clm@fb.com>,
-	Xiubo Li <xiubli@redhat.com>,
-	Ilya Dryomov <idryomov@gmail.com>,
-	Jan Harkes <jaharkes@cs.cmu.edu>,
-	coda@cs.cmu.edu,
-	Tyler Hicks <code@tyhicks.com>,
-	Jeremy Kerr <jk@ozlabs.org>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Namjae Jeon <linkinjeon@kernel.org>,
-	Sungjong Seo <sj1557.seo@samsung.com>,
-	Yuezhang Mo <yuezhang.mo@sony.com>,
-	Theodore Ts'o <tytso@mit.edu>,
-	Andreas Dilger <adilger.kernel@dilger.ca>,
-	Jaegeuk Kim <jaegeuk@kernel.org>,
-	Chao Yu <chao@kernel.org>,
-	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-	Miklos Szeredi <miklos@szeredi.hu>,
-	Andreas Gruenbacher <agruenba@redhat.com>,
-	Viacheslav Dubeyko <slava@dubeyko.com>,
-	John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-	Yangtao Li <frank.li@vivo.com>,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Mikulas Patocka <mikulas@artax.karlin.mff.cuni.cz>,
-	Muchun Song <muchun.song@linux.dev>,
-	Oscar Salvador <osalvador@suse.de>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Dave Kleikamp <shaggy@kernel.org>,
-	Trond Myklebust <trondmy@kernel.org>,
-	Anna Schumaker <anna@kernel.org>,
-	Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-	Mark Fasheh <mark@fasheh.com>,
-	Joel Becker <jlbec@evilplan.org>,
-	Joseph Qi <joseph.qi@linux.alibaba.com>,
-	Bob Copeland <me@bobcopeland.com>,
-	Mike Marshall <hubcap@omnibond.com>,
-	Martin Brandenburg <martin@omnibond.com>,
-	Amir Goldstein <amir73il@gmail.com>,
-	Steve French <sfrench@samba.org>,
-	Paulo Alcantara <pc@manguebit.org>,
-	Ronnie Sahlberg <ronniesahlberg@gmail.com>,
-	Shyam Prasad N <sprasad@microsoft.com>,
-	Tom Talpey <tom@talpey.com>,
-	Bharath SM <bharathsm@microsoft.com>,
-	Zhihao Cheng <chengzhihao1@huawei.com>,
-	Hans de Goede <hansg@kernel.org>,
-	Carlos Maiolino <cem@kernel.org>,
-	Hugh Dickins <hughd@google.com>,
-	Baolin Wang <baolin.wang@linux.alibaba.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Kees Cook <kees@kernel.org>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	David Hildenbrand <david@kernel.org>
-Subject: Re: [PATCH RESEND v3] vfs: remove the excl argument from the ->create() inode_operation
-Date: Wed,  3 Dec 2025 11:18:32 +0100
-Message-ID: <20251203-sechzehn-lethargisch-cd739d4ff49a@brauner>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20251201-create-excl-v3-1-8933a444b046@kernel.org>
-References: <20251201-create-excl-v3-1-8933a444b046@kernel.org>
+	s=k20201202; t=1764758756;
+	bh=10t4BJX+q1wqD8KyLAGeZLJKdJKQTkkfESmLGD3t7xk=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=Xo0TgJ3AuWtMZt/2j53zvGU4BdYqV2Nfw/8sqIp/DOuaxzaxg3Cj9YkiWQFhFTErs
+	 8vWWxrE5OKuYq1LDE0KYTgxgp6wpDfPbc2fihojfm4ByMGsXQSOX7k3057z59tXJmj
+	 CkqJQX0UwJcGzILcFpQV7xI0My7rlojkoOsFoz1hKxdMoDCCPbkH+vKMRL9xwzPerf
+	 doCQwBwrEbHIXun/dAu4hqQLx72SpgL2h7EXMYGaja0ZKR0C+VbBY372yd/zbWpuL/
+	 NLOWH4FYxHg0jjhZMF/BugpsLXjSo5jvqJM7j2MBj8hrfca+7j1Lo4a4cMurCWxnIT
+	 V+7dgpVL115dg==
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-b735487129fso949302966b.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 03 Dec 2025 02:45:55 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVSq8OV4ipZBBoaCexl4qUwPvyPl2qlvKl3epPcHXytbRmSWNRSBpjXz0Uz/nkGaGFuvUz3mpT8ZZ5IJA==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw27X3AF6jhycX3Ff/5gqOI/ZFjCv3tGvoUSjl2p4OhNJuCSIzd
+	44+M6IR1jufd+BUfJdBYbKll9RDPzCRkVh9xqaP3Ge6VQjuT82VUiEwn1dt4nnzlo5Pq3uKhIhM
+	Pu+L1i0N5UvILK+VkFgH77Wg36dScW48=
+X-Google-Smtp-Source: AGHT+IEoOZjm4Dn/Ql73PBVO04tjThrP3m8G2aylGlBGtw+zYMw1zl1BUEovUUr8x3tzYA0w/sxgoJ908Xy+sMnFjW0=
+X-Received: by 2002:a17:907:3d87:b0:b76:45bf:ce38 with SMTP id
+ a640c23a62f3a-b79dbea4522mr148989566b.19.1764758754400; Wed, 03 Dec 2025
+ 02:45:54 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1370; i=brauner@kernel.org; h=from:subject:message-id; bh=1ALGFmGlgOHY6f+bdLdgKebsX+au1yQ5dTRhimTaFoA=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWQa8NXdfyOWEe7C1j7j3H39MtmOfckhfYU3uPbO3GJ5W X9idSdfRykLgxgXg6yYIotDu0m43HKeis1GmRowc1iZQIYwcHEKwER6JjEyXElxiNLjXsTcG/zF veHQZtE3X3LuXMnZx/2vIaPja/5RBYb/9Vo7JnHefOS2MX2Dr5zm5id7fnmJz3GXVk7n4Wu5Kpf KBAA=
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
-Content-Transfer-Encoding: 8bit
+References: <CAL3q7H6q-j8Xo_SHGyY0+pHj=BQHezTwxbP9VKQxgLruqxQdow@mail.gmail.com>
+ <20251202210330.2705156-1-loemra.dev@gmail.com>
+In-Reply-To: <20251202210330.2705156-1-loemra.dev@gmail.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Wed, 3 Dec 2025 10:45:17 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H5EA=NUOPwtgUNUMhOhGd85pSgsgy17KwBOWgWV9594+Q@mail.gmail.com>
+X-Gm-Features: AWmQ_bmICo-kdHDQZfqufIjTmQwNMF-BAeAM85sRxAu_ffdgThHcwLx69yp-12A
+Message-ID: <CAL3q7H5EA=NUOPwtgUNUMhOhGd85pSgsgy17KwBOWgWV9594+Q@mail.gmail.com>
+Subject: Re: [linus:master] [btrfs] e8513c012d: addition_on#;use-after-free
+To: Leo Martins <loemra.dev@gmail.com>
+Cc: Oliver Sang <oliver.sang@intel.com>, oe-lkp@lists.linux.dev, lkp@intel.com, 
+	linux-kernel@vger.kernel.org, David Sterba <dsterba@suse.com>, 
+	linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 01 Dec 2025 08:11:42 -0500, Jeff Layton wrote:
-> With three exceptions, ->create() methods provided by filesystems ignore
-> the "excl" flag.  Those exception are NFS, GFS2 and vboxsf which all also
-> provide ->atomic_open.
-> 
-> Since ce8644fcadc5 ("lookup_open(): expand the call of vfs_create()"),
-> the "excl" argument to the ->create() inode_operation is always set to
-> true in vfs_create(). The ->create() call in lookup_open() sets it
-> according to the O_EXCL open flag, but is never called if the filesystem
-> provides ->atomic_open().
-> 
-> [...]
+On Tue, Dec 2, 2025 at 9:03=E2=80=AFPM Leo Martins <loemra.dev@gmail.com> w=
+rote:
+>
+> On Tue, 2 Dec 2025 19:19:05 +0000 Filipe Manana <fdmanana@kernel.org> wro=
+te:
+>
+> > On Tue, Dec 2, 2025 at 5:17=E2=80=AFPM Leo Martins <loemra.dev@gmail.co=
+m> wrote:
+> > >
+> > > On Tue, 2 Dec 2025 15:04:51 +0000 Filipe Manana <fdmanana@kernel.org>=
+ wrote:
+> > >
+> > > > On Tue, Dec 2, 2025 at 8:40=E2=80=AFAM Oliver Sang <oliver.sang@int=
+el.com> wrote:
+> > > > >
+> > > > > hi, Leo Martins,
+> > > > >
+> > > > > On Mon, Dec 01, 2025 at 04:51:41PM -0800, Leo Martins wrote:
+> > > > >
+> > > > > [...]
+> > > > >
+> > > > > >
+> > > > > > Hello,
+> > > > > >
+> > > > > > I believe I have identified the root cause of the warning.
+> > > > > > However, I'm having some troubles running the reproducer as I
+> > > > > > haven't setup lkp-tests yet. Could you test the patch below
+> > > > > > against your reproducer to see if it fixes the issue?
+> > > > >
+> > > > > we confirmed your patch fixed the issues we reported in origial r=
+eport. thanks!
+> > > > >
+> > > > > Tested-by: kernel test robot <oliver.sang@intel.com>
+> > > > >
+> > > > > >
+> > > > > > ---8<---
+> > > > > >
+> > > > > > [PATCH] btrfs: fix use-after-free in btrfs_get_or_create_delaye=
+d_node
+> > > > > >
+> > > > > > Previously, btrfs_get_or_create_delayed_node sets the delayed_n=
+ode's
+> > > > > > refcount before acquiring the root->delayed_nodes lock.
+> > > > > > Commit e8513c012de7 ("btrfs: implement ref_tracker for delayed_=
+nodes")
+> > > > > > moves refcount_set inside the critical section which means
+> > > > > > there is no longer a memory barrier between setting the refcoun=
+t and
+> > > > > > setting btrfs_inode->delayed_node =3D node.
+> > > > > >
+> > > > > > This allows btrfs_get_or_create_delayed_node to set
+> > > > > > btrfs_inode->delayed_node before setting the refcount.
+> > > > > > A different thread is then able to read and increase the refcou=
+nt
+> > > > > > of btrfs_inode->delayed_node leading to a refcounting bug and
+> > > > > > a use-after-free warning.
+> > > > > >
+> > > > > > The fix is to move refcount_set back to where it was to take
+> > > > > > advantage of the implicit memory barrier provided by lock
+> > > > > > acquisition.
+> > > > > >
+> > > > > > Fixes: e8513c012de7 ("btrfs: implement ref_tracker for delayed_=
+nodes")
+> > > > > > Reported-by: kernel test robot <oliver.sang@intel.com>
+> > > > > > Closes: https://lore.kernel.org/oe-lkp/202511262228.6dda231e-lk=
+p@intel.com
+> > > > > > Signed-off-by: Leo Martins <loemra.dev@gmail.com>
+> > > > > > ---
+> > > > > >  fs/btrfs/delayed-inode.c | 34 ++++++++++++++++++--------------=
+--
+> > > > > >  1 file changed, 18 insertions(+), 16 deletions(-)
+> > > > > >
+> > > > > > diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.=
+c
+> > > > > > index 364814642a91..f61f10000e33 100644
+> > > > > > --- a/fs/btrfs/delayed-inode.c
+> > > > > > +++ b/fs/btrfs/delayed-inode.c
+> > > > > > @@ -152,37 +152,39 @@ static struct btrfs_delayed_node *btrfs_g=
+et_or_create_delayed_node(
+> > > > > >               return ERR_PTR(-ENOMEM);
+> > > > > >       btrfs_init_delayed_node(node, root, ino);
+> > > > > >
+> > > > > > +     /* Cached in the inode and can be accessed. */
+> > > > > > +     refcount_set(&node->refs, 2);
+> > > > > > +     btrfs_delayed_node_ref_tracker_alloc(node, tracker, GFP_A=
+TOMIC);
+> > > > > > +     btrfs_delayed_node_ref_tracker_alloc(node, &node->inode_c=
+ache_tracker, GFP_ATOMIC);
+> > > > > > +
+> > > > > >       /* Allocate and reserve the slot, from now it can return =
+a NULL from xa_load(). */
+> > > > > >       ret =3D xa_reserve(&root->delayed_nodes, ino, GFP_NOFS);
+> > > > > > -     if (ret =3D=3D -ENOMEM) {
+> > > > > > -             btrfs_delayed_node_ref_tracker_dir_exit(node);
+> > > > > > -             kmem_cache_free(delayed_node_cache, node);
+> > > > > > -             return ERR_PTR(-ENOMEM);
+> > > > > > -     }
+> > > > > > +     if (ret =3D=3D -ENOMEM)
+> > > > > > +             goto cleanup;
+> > > > > > +
+> > > > > >       xa_lock(&root->delayed_nodes);
+> > > > > >       ptr =3D xa_load(&root->delayed_nodes, ino);
+> > > > > >       if (ptr) {
+> > > > > >               /* Somebody inserted it, go back and read it. */
+> > > > > >               xa_unlock(&root->delayed_nodes);
+> > > > > > -             btrfs_delayed_node_ref_tracker_dir_exit(node);
+> > > > > > -             kmem_cache_free(delayed_node_cache, node);
+> > > > > > -             node =3D NULL;
+> > > > > > -             goto again;
+> > > > > > +             goto cleanup;
+> > > > > >       }
+> > > > > >       ptr =3D __xa_store(&root->delayed_nodes, ino, node, GFP_A=
+TOMIC);
+> > > > > >       ASSERT(xa_err(ptr) !=3D -EINVAL);
+> > > > > >       ASSERT(xa_err(ptr) !=3D -ENOMEM);
+> > > > > >       ASSERT(ptr =3D=3D NULL);
+> > > > > > -
+> > > > > > -     /* Cached in the inode and can be accessed. */
+> > > > > > -     refcount_set(&node->refs, 2);
+> > > > > > -     btrfs_delayed_node_ref_tracker_alloc(node, tracker, GFP_A=
+TOMIC);
+> > > > > > -     btrfs_delayed_node_ref_tracker_alloc(node, &node->inode_c=
+ache_tracker, GFP_ATOMIC);
+> > > > > > -
+> > > > > > -     btrfs_inode->delayed_node =3D node;
+> > > > > > +     WRITE_ONCE(btrfs_inode->delayed_node, node);
+> > > >
+> > > > Why the WRITE_ONCE() change?
+> > >
+> > > Since there are lockless readers of btrfs_inode->delayed_node all wri=
+ters
+> > > should be marked with WRITE_ONCE to force the compiler to store atomi=
+cally.
+> >
+> > If by atomically you mean to avoid store/load tearing, then using the
+> > _ONCE() macros won't do anything because we are dealing with pointers.
+> > This has been discussed in the past, see:
+> >
+> > https://lore.kernel.org/linux-btrfs/cover.1715951291.git.fdmanana@suse.=
+com/
+>
+> That is what I meant. Missed that discussion, thanks for the link.
+> I do still see some value in using WRITE_ONCE which is for the human
+> reader to realize that there are lockless readers, but that's pretty
+> minor.
 
-Applied to the vfs-6.20.mkdir branch of the vfs/vfs.git tree.
-Patches in the vfs-6.20.mkdir branch should appear in linux-next soon.
+No and that's mentioned in the thread: using _ONCE() when it doesn't
+offer any protection but to signal someone reading the source code
+that it can be accessed in a lockless way is only confusing people and
+influencing people to repeat this pattern.
 
-Please report any outstanding bugs that were missed during review in a
-new review to the original patch series allowing us to drop it.
+To make it clear that it's accessed in a lockless way, just make the
+reader side use data_race() if it's a safe race or smp_load_acquire()
+otherwise, with proper comments right above the read access. These
+also make KCSAN and other tools not report possible races.
 
-It's encouraged to provide Acked-bys and Reviewed-bys even though the
-patch has now been applied. If possible patch trailers will be updated.
-
-Note that commit hashes shown below are subject to change due to rebase,
-trailer updates or similar. If in doubt, please check the listed branch.
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-branch: vfs-6.20.mkdir
-
-[1/1] vfs: remove the excl argument from the ->create() inode_operation
-      https://git.kernel.org/vfs/vfs/c/7d91315b4335
+> >
+> > >
+> > > >
+> > > > Can you explain in the changelog why it's being introduced?
+> > > > This seems unrelated and it was not there before the commit mention=
+ed
+> > > > in the Fixes tag.
+> > >
+> > > I'll send out a v2 without the WRITE_ONCE since it is not directly re=
+lated
+> > > to this bug and send out a separate patch updating writes to use WRIT=
+E_ONCE.
+> > >
+> > > Thanks.
+> > >
+> > > >
+> > > > Thanks.
+> > > >
+> > > > > >       xa_unlock(&root->delayed_nodes);
+> > > > > >
+> > > > > >       return node;
+> > > > > > +cleanup:
+> > > > > > +     btrfs_delayed_node_ref_tracker_free(node, tracker);
+> > > > > > +     btrfs_delayed_node_ref_tracker_free(node, &node->inode_ca=
+che_tracker);
+> > > > > > +     btrfs_delayed_node_ref_tracker_dir_exit(node);
+> > > > > > +     kmem_cache_free(delayed_node_cache, node);
+> > > > > > +     if (ret)
+> > > > > > +             return ERR_PTR(ret);
+> > > > > > +     goto again;
+> > > > > >  }
+> > > > > >
+> > > > > >  /*
+> > > > > > --
+> > > > > > 2.47.3
+> > > > >
+> > >
 
