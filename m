@@ -1,269 +1,152 @@
-Return-Path: <linux-btrfs+bounces-19479-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19481-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6ADD0C9EC29
-	for <lists+linux-btrfs@lfdr.de>; Wed, 03 Dec 2025 11:46:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3923C9EC74
+	for <lists+linux-btrfs@lfdr.de>; Wed, 03 Dec 2025 11:54:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F081F3A872D
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Dec 2025 10:46:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC0D13A472A
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Dec 2025 10:54:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 035DA2F0C7B;
-	Wed,  3 Dec 2025 10:45:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xo0TgJ3A"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95C722F12CD;
+	Wed,  3 Dec 2025 10:54:35 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from psionic.psi5.com (psionic.psi5.com [185.187.169.70])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42F9C2989B4
-	for <linux-btrfs@vger.kernel.org>; Wed,  3 Dec 2025 10:45:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03C322DE707;
+	Wed,  3 Dec 2025 10:54:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.187.169.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764758756; cv=none; b=KcFww6cxZjXYwJdG9KCLDjS9NlJZTOp6CCMSvQY2Vf86cWt8S4DTDDVZjqOLNe2l763FVqOeEk9rwYJ+TB21zkE45ntZ7KfyRrV/ONOh9isy5mV8WQdE6C358bwlc1eMyTrq72XleVbE+SfZ8ggeoceGqg5+YviHlxb2vepGNwM=
+	t=1764759275; cv=none; b=eTMh5eYPcfHDwYiQnPixLXitW4FsiZ7LWNcmOT5UIEMc+BfkmJg/2+q67n3l0rkPON4a4+b9szkxukr6TpkU3UNnXCbD3FLjnf7OgnfsdbWXWeXjbaqgvUKMzPssXBotMW8Rh8jF6YGbFAMezpjpvQaRC/VqwCDcTfqUFej7L7I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764758756; c=relaxed/simple;
-	bh=10t4BJX+q1wqD8KyLAGeZLJKdJKQTkkfESmLGD3t7xk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=q9mXUW9fzSsHwDMaC00stWnv4bDxHWjRnBVfNCPDi2X2Q8BRV41IMDVurgBUJOKaJLm40ozdkKjA4oLqoOmOxbSBB1jYG91O56TWKxunibSaPy0oGoYJl8wZQW8Ui+s//v9g5ChATgZYRndRF9gbxXQeFA1Zt+CeUOOIRXSsqFA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Xo0TgJ3A; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2140C116B1
-	for <linux-btrfs@vger.kernel.org>; Wed,  3 Dec 2025 10:45:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1764758756;
-	bh=10t4BJX+q1wqD8KyLAGeZLJKdJKQTkkfESmLGD3t7xk=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=Xo0TgJ3AuWtMZt/2j53zvGU4BdYqV2Nfw/8sqIp/DOuaxzaxg3Cj9YkiWQFhFTErs
-	 8vWWxrE5OKuYq1LDE0KYTgxgp6wpDfPbc2fihojfm4ByMGsXQSOX7k3057z59tXJmj
-	 CkqJQX0UwJcGzILcFpQV7xI0My7rlojkoOsFoz1hKxdMoDCCPbkH+vKMRL9xwzPerf
-	 doCQwBwrEbHIXun/dAu4hqQLx72SpgL2h7EXMYGaja0ZKR0C+VbBY372yd/zbWpuL/
-	 NLOWH4FYxHg0jjhZMF/BugpsLXjSo5jvqJM7j2MBj8hrfca+7j1Lo4a4cMurCWxnIT
-	 V+7dgpVL115dg==
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-b735487129fso949302966b.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 03 Dec 2025 02:45:55 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVSq8OV4ipZBBoaCexl4qUwPvyPl2qlvKl3epPcHXytbRmSWNRSBpjXz0Uz/nkGaGFuvUz3mpT8ZZ5IJA==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw27X3AF6jhycX3Ff/5gqOI/ZFjCv3tGvoUSjl2p4OhNJuCSIzd
-	44+M6IR1jufd+BUfJdBYbKll9RDPzCRkVh9xqaP3Ge6VQjuT82VUiEwn1dt4nnzlo5Pq3uKhIhM
-	Pu+L1i0N5UvILK+VkFgH77Wg36dScW48=
-X-Google-Smtp-Source: AGHT+IEoOZjm4Dn/Ql73PBVO04tjThrP3m8G2aylGlBGtw+zYMw1zl1BUEovUUr8x3tzYA0w/sxgoJ908Xy+sMnFjW0=
-X-Received: by 2002:a17:907:3d87:b0:b76:45bf:ce38 with SMTP id
- a640c23a62f3a-b79dbea4522mr148989566b.19.1764758754400; Wed, 03 Dec 2025
- 02:45:54 -0800 (PST)
+	s=arc-20240116; t=1764759275; c=relaxed/simple;
+	bh=zlku+hEAoDWyukBBVx477+OkecSYeuAuCSlqe8H5itw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=VTHbIJUevPeQCeAwA3oITYJGLiHwfgmWaGsVKSUQH8hlAZRHDn7vyDIgHQT8r5d2m4OSm9JGDTQidB62o89LE833xuLzKRkEK+kIYnLsge+05it4UQDduRZ9PihMmMf6ql/2LkN+MsnwX+AmfhAAo1L4RKTQF+foRpEdGHdgJAU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hogyros.de; spf=pass smtp.mailfrom=hogyros.de; arc=none smtp.client-ip=185.187.169.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hogyros.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hogyros.de
+Received: from [192.168.10.94] (unknown [39.110.247.193])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by psionic.psi5.com (Postfix) with ESMTPSA id 0E35C3F11A;
+	Wed,  3 Dec 2025 11:47:13 +0100 (CET)
+Message-ID: <9d7b182e-9da7-458f-b913-14eee415359d@hogyros.de>
+Date: Wed, 3 Dec 2025 19:47:11 +0900
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAL3q7H6q-j8Xo_SHGyY0+pHj=BQHezTwxbP9VKQxgLruqxQdow@mail.gmail.com>
- <20251202210330.2705156-1-loemra.dev@gmail.com>
-In-Reply-To: <20251202210330.2705156-1-loemra.dev@gmail.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Wed, 3 Dec 2025 10:45:17 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H5EA=NUOPwtgUNUMhOhGd85pSgsgy17KwBOWgWV9594+Q@mail.gmail.com>
-X-Gm-Features: AWmQ_bmICo-kdHDQZfqufIjTmQwNMF-BAeAM85sRxAu_ffdgThHcwLx69yp-12A
-Message-ID: <CAL3q7H5EA=NUOPwtgUNUMhOhGd85pSgsgy17KwBOWgWV9594+Q@mail.gmail.com>
-Subject: Re: [linus:master] [btrfs] e8513c012d: addition_on#;use-after-free
-To: Leo Martins <loemra.dev@gmail.com>
-Cc: Oliver Sang <oliver.sang@intel.com>, oe-lkp@lists.linux.dev, lkp@intel.com, 
-	linux-kernel@vger.kernel.org, David Sterba <dsterba@suse.com>, 
-	linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 00/16] btrfs: offload compression to hardware
+ accelerators
+To: Christoph Hellwig <hch@infradead.org>, Jani Partanen <jiipee@sotapeli.fi>
+Cc: Giovanni Cabiddu <giovanni.cabiddu@intel.com>, clm@fb.com,
+ dsterba@suse.com, terrelln@fb.com, herbert@gondor.apana.org.au,
+ linux-btrfs@vger.kernel.org, linux-crypto@vger.kernel.org,
+ qat-linux@intel.com, cyan@meta.com, brian.will@intel.com,
+ weigang.li@intel.com, senozhatsky@chromium.org
+References: <20251128191531.1703018-1-giovanni.cabiddu@intel.com>
+ <aS6a_ae64D4MvBpW@infradead.org>
+ <8d3e44b0-23d8-4493-8e7e-33bbe1d904ef@sotapeli.fi>
+ <aS_f9axsi0QmmhiL@infradead.org>
+Content-Language: en-US
+From: Simon Richter <Simon.Richter@hogyros.de>
+In-Reply-To: <aS_f9axsi0QmmhiL@infradead.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, Dec 2, 2025 at 9:03=E2=80=AFPM Leo Martins <loemra.dev@gmail.com> w=
-rote:
->
-> On Tue, 2 Dec 2025 19:19:05 +0000 Filipe Manana <fdmanana@kernel.org> wro=
-te:
->
-> > On Tue, Dec 2, 2025 at 5:17=E2=80=AFPM Leo Martins <loemra.dev@gmail.co=
-m> wrote:
-> > >
-> > > On Tue, 2 Dec 2025 15:04:51 +0000 Filipe Manana <fdmanana@kernel.org>=
- wrote:
-> > >
-> > > > On Tue, Dec 2, 2025 at 8:40=E2=80=AFAM Oliver Sang <oliver.sang@int=
-el.com> wrote:
-> > > > >
-> > > > > hi, Leo Martins,
-> > > > >
-> > > > > On Mon, Dec 01, 2025 at 04:51:41PM -0800, Leo Martins wrote:
-> > > > >
-> > > > > [...]
-> > > > >
-> > > > > >
-> > > > > > Hello,
-> > > > > >
-> > > > > > I believe I have identified the root cause of the warning.
-> > > > > > However, I'm having some troubles running the reproducer as I
-> > > > > > haven't setup lkp-tests yet. Could you test the patch below
-> > > > > > against your reproducer to see if it fixes the issue?
-> > > > >
-> > > > > we confirmed your patch fixed the issues we reported in origial r=
-eport. thanks!
-> > > > >
-> > > > > Tested-by: kernel test robot <oliver.sang@intel.com>
-> > > > >
-> > > > > >
-> > > > > > ---8<---
-> > > > > >
-> > > > > > [PATCH] btrfs: fix use-after-free in btrfs_get_or_create_delaye=
-d_node
-> > > > > >
-> > > > > > Previously, btrfs_get_or_create_delayed_node sets the delayed_n=
-ode's
-> > > > > > refcount before acquiring the root->delayed_nodes lock.
-> > > > > > Commit e8513c012de7 ("btrfs: implement ref_tracker for delayed_=
-nodes")
-> > > > > > moves refcount_set inside the critical section which means
-> > > > > > there is no longer a memory barrier between setting the refcoun=
-t and
-> > > > > > setting btrfs_inode->delayed_node =3D node.
-> > > > > >
-> > > > > > This allows btrfs_get_or_create_delayed_node to set
-> > > > > > btrfs_inode->delayed_node before setting the refcount.
-> > > > > > A different thread is then able to read and increase the refcou=
-nt
-> > > > > > of btrfs_inode->delayed_node leading to a refcounting bug and
-> > > > > > a use-after-free warning.
-> > > > > >
-> > > > > > The fix is to move refcount_set back to where it was to take
-> > > > > > advantage of the implicit memory barrier provided by lock
-> > > > > > acquisition.
-> > > > > >
-> > > > > > Fixes: e8513c012de7 ("btrfs: implement ref_tracker for delayed_=
-nodes")
-> > > > > > Reported-by: kernel test robot <oliver.sang@intel.com>
-> > > > > > Closes: https://lore.kernel.org/oe-lkp/202511262228.6dda231e-lk=
-p@intel.com
-> > > > > > Signed-off-by: Leo Martins <loemra.dev@gmail.com>
-> > > > > > ---
-> > > > > >  fs/btrfs/delayed-inode.c | 34 ++++++++++++++++++--------------=
---
-> > > > > >  1 file changed, 18 insertions(+), 16 deletions(-)
-> > > > > >
-> > > > > > diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.=
-c
-> > > > > > index 364814642a91..f61f10000e33 100644
-> > > > > > --- a/fs/btrfs/delayed-inode.c
-> > > > > > +++ b/fs/btrfs/delayed-inode.c
-> > > > > > @@ -152,37 +152,39 @@ static struct btrfs_delayed_node *btrfs_g=
-et_or_create_delayed_node(
-> > > > > >               return ERR_PTR(-ENOMEM);
-> > > > > >       btrfs_init_delayed_node(node, root, ino);
-> > > > > >
-> > > > > > +     /* Cached in the inode and can be accessed. */
-> > > > > > +     refcount_set(&node->refs, 2);
-> > > > > > +     btrfs_delayed_node_ref_tracker_alloc(node, tracker, GFP_A=
-TOMIC);
-> > > > > > +     btrfs_delayed_node_ref_tracker_alloc(node, &node->inode_c=
-ache_tracker, GFP_ATOMIC);
-> > > > > > +
-> > > > > >       /* Allocate and reserve the slot, from now it can return =
-a NULL from xa_load(). */
-> > > > > >       ret =3D xa_reserve(&root->delayed_nodes, ino, GFP_NOFS);
-> > > > > > -     if (ret =3D=3D -ENOMEM) {
-> > > > > > -             btrfs_delayed_node_ref_tracker_dir_exit(node);
-> > > > > > -             kmem_cache_free(delayed_node_cache, node);
-> > > > > > -             return ERR_PTR(-ENOMEM);
-> > > > > > -     }
-> > > > > > +     if (ret =3D=3D -ENOMEM)
-> > > > > > +             goto cleanup;
-> > > > > > +
-> > > > > >       xa_lock(&root->delayed_nodes);
-> > > > > >       ptr =3D xa_load(&root->delayed_nodes, ino);
-> > > > > >       if (ptr) {
-> > > > > >               /* Somebody inserted it, go back and read it. */
-> > > > > >               xa_unlock(&root->delayed_nodes);
-> > > > > > -             btrfs_delayed_node_ref_tracker_dir_exit(node);
-> > > > > > -             kmem_cache_free(delayed_node_cache, node);
-> > > > > > -             node =3D NULL;
-> > > > > > -             goto again;
-> > > > > > +             goto cleanup;
-> > > > > >       }
-> > > > > >       ptr =3D __xa_store(&root->delayed_nodes, ino, node, GFP_A=
-TOMIC);
-> > > > > >       ASSERT(xa_err(ptr) !=3D -EINVAL);
-> > > > > >       ASSERT(xa_err(ptr) !=3D -ENOMEM);
-> > > > > >       ASSERT(ptr =3D=3D NULL);
-> > > > > > -
-> > > > > > -     /* Cached in the inode and can be accessed. */
-> > > > > > -     refcount_set(&node->refs, 2);
-> > > > > > -     btrfs_delayed_node_ref_tracker_alloc(node, tracker, GFP_A=
-TOMIC);
-> > > > > > -     btrfs_delayed_node_ref_tracker_alloc(node, &node->inode_c=
-ache_tracker, GFP_ATOMIC);
-> > > > > > -
-> > > > > > -     btrfs_inode->delayed_node =3D node;
-> > > > > > +     WRITE_ONCE(btrfs_inode->delayed_node, node);
-> > > >
-> > > > Why the WRITE_ONCE() change?
-> > >
-> > > Since there are lockless readers of btrfs_inode->delayed_node all wri=
-ters
-> > > should be marked with WRITE_ONCE to force the compiler to store atomi=
-cally.
-> >
-> > If by atomically you mean to avoid store/load tearing, then using the
-> > _ONCE() macros won't do anything because we are dealing with pointers.
-> > This has been discussed in the past, see:
-> >
-> > https://lore.kernel.org/linux-btrfs/cover.1715951291.git.fdmanana@suse.=
-com/
->
-> That is what I meant. Missed that discussion, thanks for the link.
-> I do still see some value in using WRITE_ONCE which is for the human
-> reader to realize that there are lockless readers, but that's pretty
-> minor.
+Hi,
 
-No and that's mentioned in the thread: using _ONCE() when it doesn't
-offer any protection but to signal someone reading the source code
-that it can be accessed in a lockless way is only confusing people and
-influencing people to repeat this pattern.
+On 12/3/25 4:00 PM, Christoph Hellwig wrote:
 
-To make it clear that it's accessed in a lockless way, just make the
-reader side use data_race() if it's a safe race or smp_load_acquire()
-otherwise, with proper comments right above the read access. These
-also make KCSAN and other tools not report possible races.
+> Well, if you compared QAT-L9 to LZO-L1 specifically:
 
-> >
-> > >
-> > > >
-> > > > Can you explain in the changelog why it's being introduced?
-> > > > This seems unrelated and it was not there before the commit mention=
-ed
-> > > > in the Fixes tag.
-> > >
-> > > I'll send out a v2 without the WRITE_ONCE since it is not directly re=
-lated
-> > > to this bug and send out a separate patch updating writes to use WRIT=
-E_ONCE.
-> > >
-> > > Thanks.
-> > >
-> > > >
-> > > > Thanks.
-> > > >
-> > > > > >       xa_unlock(&root->delayed_nodes);
-> > > > > >
-> > > > > >       return node;
-> > > > > > +cleanup:
-> > > > > > +     btrfs_delayed_node_ref_tracker_free(node, tracker);
-> > > > > > +     btrfs_delayed_node_ref_tracker_free(node, &node->inode_ca=
-che_tracker);
-> > > > > > +     btrfs_delayed_node_ref_tracker_dir_exit(node);
-> > > > > > +     kmem_cache_free(delayed_node_cache, node);
-> > > > > > +     if (ret)
-> > > > > > +             return ERR_PTR(ret);
-> > > > > > +     goto again;
-> > > > > >  }
-> > > > > >
-> > > > > >  /*
-> > > > > > --
-> > > > > > 2.47.3
-> > > > >
-> > >
+FWIW I think the same infrastructure is useful for nx-gzip on POWER9+, 
+which is a definite win:
+
+1. With 4 GiB of random data, effectively uncompressible:
+
+$ time nx_gzip -c test.bin >test.bin.nxgz
+real    0m4.716s
+user    0m1.381s
+sys     0m2.237s
+
+$ time gzip -c test.bin >test.bin.gz
+real    2m58.536s
+user    2m56.098s
+sys     0m2.084s
+
+2. With 4 GiB of NUL bytes:
+
+$ time nx_gzip -c zero.bin >zero.bin.nxgz
+real    0m0.855s
+user    0m0.613s
+sys     0m0.241s
+
+$ time gzip -c zero.bin >zero.bin.gz
+real    0m25.944s
+user    0m25.600s
+sys     0m0.336s
+
+This includes quite a bit of overhead because we're commanding the 
+coprocessor from a userspace library with a zlib compatible interface, 
+so there is syscall overhead for reading, poking the coprocessor and 
+writing, and the blocks submitted aren't as large as they could be, so 
+I'd expect an acomp module running before transferring data to userspace 
+to be a bit faster still.
+
+Unpacking is quite a bit faster as well, to the point where unpacking 
+the compressed block of 4GiB NUL bytes is faster than reading 4 GiB from 
+/dev/zero for me.
+
+For acomp, I pretty much always expect offloading to be worth the 
+overhead if hardware is available, simply because working with 
+bitstreams is awkward on any architecture that isn't specifically 
+designed for it, and when an algorithm requires building a dictionary, 
+gathering statistics and two-pass processing, that becomes even more 
+visible.
+
+For ahash/acrypt, there is a trade-off here, and where it is depends on 
+CPU features, the overhead of offloading, the overhead of receiving the 
+result, and how much of that overhead can be mitigated by submitting a 
+batch of operations.
+
+For the latter, we also need a better submission interface that actually 
+allows large batches, and submitters to use that.
+
+Much of the discussion about hardware offload has been circular -- no 
+one is submitting large requests because for CPU based implementations 
+there is no benefit in doing so (it just makes the interface more 
+complex), and hardware based implementations are sequentially processing 
+one small request at a time because no one is submitting larger batches, 
+and as a result we can't see a lot of performance improvements.
+
+As an example of interface pain points: ahash has synchronous 
+import/export functions, and no way for the driver to indicate that the 
+result buffer must be reachable by DMA as well, so even with a mailbox 
+interface that allows me to submit operations with low overhead, I need 
+to synthesize state readbacks into an auxiliary buffer and request an 
+interrupt to be delivered after each "update" operation, simply so I can 
+have the state available in case it is requested, while normally I would 
+only generate an interrupt after an "export" or "final" operation is 
+completed (and also rate-limit these).
+
+There's a lot of additional things that I think a good API would allow, 
+such as directly feeding data from mass storage to a coprocessor if they 
+have compatible interfaces -- since the initial fetch is asynchronous 
+anyway, the offload overhead becomes even less relevant then.
+
+I also think that zswap is going to be an important use case here, and 
+there has been quite a bit of discussion about large folios and batching 
+requests here. It would be cool if QAT or nx-gzip could be plugged into 
+zswap.
+
+    Simon
 
