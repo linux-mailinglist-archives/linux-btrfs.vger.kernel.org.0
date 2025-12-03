@@ -1,215 +1,162 @@
-Return-Path: <linux-btrfs+bounces-19483-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19484-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9EB7C9EDC6
-	for <lists+linux-btrfs@lfdr.de>; Wed, 03 Dec 2025 12:40:15 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id F29AFC9EE1D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 03 Dec 2025 12:45:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 96A5C4E4829
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Dec 2025 11:39:05 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 3E5F334BA0D
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Dec 2025 11:44:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1A9E2F5A17;
-	Wed,  3 Dec 2025 11:38:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDED82F60CA;
+	Wed,  3 Dec 2025 11:43:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M5BZBgKr"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EcE9i+ID"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51C342F5467
-	for <linux-btrfs@vger.kernel.org>; Wed,  3 Dec 2025 11:38:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 469B12F5A3E
+	for <linux-btrfs@vger.kernel.org>; Wed,  3 Dec 2025 11:43:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764761934; cv=none; b=q1f4qDTH/GzjIb8S8/yo2wNeWFwmD8XsF7FbUs+12aKkGOwq5vvBERFLe5MGNnPRCcSU9IA1g+h8B+nREU2glWEauaIESINXDcTnHaEA5RM7fqigS3YmxQSWOR8hyWsE9xodQ5/dyYVoKxItqOPtyKpOBVmufIIlCfSj/w8/Ax0=
+	t=1764762224; cv=none; b=sUxaV6Zly61c8Wc4Sm3eSbXF9RO4CIYz7UZYMWlWFEguRc4cjhhF+UCD1Q6Eue4jEFyu91TrY2Eu2bWpbtDYWbmdS82xmDpVurCWC0Un01qR5debK29LZHo36qyyRBw4eUyjnPxB0MwNAETmJggWkcJd4+bg7CR4C8kN/ockxhg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764761934; c=relaxed/simple;
-	bh=oYgJLnMLBTLjMU2XPSAErfmSJrddd+Z+KaQotAzmTng=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JTK2MktAODzGUX7beJ8ihGeJXff2Bp8DMDmyJq8tVT2LOjezOmMFYrvMpYoLvnaUJ6N8hviRd930hsEXGlg6ys4nVKIGxqyrnqwpq5sIjPQluhRiygND9QmXYNv5OfmSHLN9iKMQcCPksZuO/sR5eXT9yqTWGlx/DlJf0RhjkxY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M5BZBgKr; arc=none smtp.client-ip=209.85.214.169
+	s=arc-20240116; t=1764762224; c=relaxed/simple;
+	bh=oBkvuCBrbfVyaeM5v/bY5mEWKjFvn1fVUN27hwHehX4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=BfJFEkfO4GUaCqDG/4ggAVvJMAojy1sSfLsk6UhbM6sc/hVzuRh1zEbkdpz9JCCzMkiWSz+1V5rb40slc6aKmob0JFCgRBdnbntIXIkpmaa1o5blxipr1blGo1zeehkDyuQs2izhYwgfH8C35o9b6NtnTPWh9NR8R0HrkUZCD4c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EcE9i+ID; arc=none smtp.client-ip=209.85.210.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-2984dfae0acso102290195ad.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 03 Dec 2025 03:38:52 -0800 (PST)
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-7ba55660769so5647348b3a.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 03 Dec 2025 03:43:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1764761932; x=1765366732; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=RF5rVsgNS9MNETZb6wlNSOTYWmEo8PvEP85K6wzRNk8=;
-        b=M5BZBgKroJJT0RODDDy3FDgPxXejy8harLjyP0qPfvoaSJz5ZI3LCp8QLhN91P5yZ2
-         /zzSrGDPR/0V8HM9H/6WdzczFzfT5sPdbnt0qiUvMb1usALAogVSUeHojX4fteXz8XbY
-         6ZgK9pjVlUlLbxTRGekqEnnWOi45Gba+/arQWK7GhJAtmHhmk47tvLEz+IO6eO7j+V6J
-         zcN4LoL6ixk1ziE9md6UP7oMWqw65x8v9Ca9WWlmBsFRlo3ujLz5sBt/u86DVIMiCEdv
-         sR0PNSMWTJze/Yx+M38LuFlM7cjkbtFtulIORD6yChfSosnYZUZYYltzWYW1xA+g2JTP
-         cmfw==
+        d=gmail.com; s=20230601; t=1764762222; x=1765367022; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=nmzrPAt9kb7dexvB71oGQlxWay34k4ETfXHiGvlbouI=;
+        b=EcE9i+IDiqq/P/K7rUeAZEBFACjDGz+DczOxx2s53yvpZpl8Aup8ma1v7pmlJMyPpB
+         UKhzumzt65BsdA9tPlSQTUEzkE8V9KeNQ0HbVSfCRTc9xgWFzKZAd3HkKDm422WAUZwH
+         FZZ4EaSI64wya6LF3LJa0HOHjl+g0YvXI7E8+EATXlH/GPWEyLm29J7/Z2NnAytiN7k3
+         kC4uFeCty7ECLlp9ct37P9rsiMbsKttgnVbYEBBYY7p3ARJTlZarmCNyRQcqcz8/gBmS
+         HFc+bajyPQmhF5Y9V/aq4Pgqgiea6UnONs6CKDHhEVKgu5ArUoyZlEiUkn6f0L3rQM14
+         REHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764761932; x=1765366732;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RF5rVsgNS9MNETZb6wlNSOTYWmEo8PvEP85K6wzRNk8=;
-        b=iznN1LjiTsL7bJROYb7ma/J9vw10XOCtvmHLkHQNBlC//gf+z5qBSA+p0k0OCxqIE3
-         PUWraVVxGRLkMp3aW5BZngt75p8IdWJ+8wvjv3+R1T3pD7UJeYNEPDiCqT9xIlEEjy/V
-         aq7iphF/ANlusF14GvSDWUDi/y7tMRxo2Qdjl1nu07tSUYouDtR8JSXh/wruE5cGn4P5
-         nfoJe4QVJfzCE0MbE6lERlyhAl7wvuL9IOnXSjdBlja4jPQ1PEAV9N3lgsGcx00mjEYr
-         RyX43OAql6QwamhQ4HCNlFJ1Yaz+6awJ2ndDDEGyPQvK8AdzH9cm2e7LgVQFa6YS+oDG
-         TCBA==
-X-Forwarded-Encrypted: i=1; AJvYcCXUwvs22S1AV/ZRmU6c1qdvMmEpyihawQLuEQFR84km6beDNAKm4UjLjr3wbNATScd8Pfbh+57eoywlLA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YybFtsTGTadQBakUfo6g5xh7YSjJVsuoXe5fB0mvpmgRQpVx+tp
-	swwV2a4RofJq/ybF784sIUYOUTUqvLxAd/rg512lKFllRoeDk8vjeYcVIhuCFA==
-X-Gm-Gg: ASbGnctaQjETYtQ6Mc2HKIFXayK2QtWuC6xmO24Swd/lVqioMx+Ij7PbXPPLjds68nd
-	hsJH2mHaeN8bOO+npHXyjBnfarC2PGTj2kgDkbVRb3xKELD/K6n8VkFy+3pnHUDhSyYVPeKMpeR
-	pRIz80IUo14RUNz+q7ivSSzHmnh2alC3eo2yicjFx1UERbsErys3uK9lfLzTO1YkWIS+iZIhD1S
-	vITitibXDXel6uvP0AmqDOJb6tu3IM1BSyXNa18U02wSrWJg2jPhfXFtNPtm+eZgF0IkRE4Gz/2
-	KkgHnQX2KMVaYqAge9jZG8P0pRrlfQ873PZdP2bWJKTscel6R3Y0VzT4I5R3sM9L7Z6r/CU1an2
-	dJAJzCW09NlDrNbMAW1gFw+5cGsnNRlh2xsDhDAgEHJbOKT4+QzPXQLDvPWUCONXlvwocrxds90
-	/gKT87
-X-Google-Smtp-Source: AGHT+IFaMTfp0skkgVYWKG0nvbNnv8ZAsz9tMg880fsRMe99DRmLdMJnhMtQLPhDTTF9QjU3xAsUgA==
-X-Received: by 2002:a17:903:3c28:b0:297:d6c0:90b3 with SMTP id d9443c01a7336-29d68362ebemr24976895ad.23.1764761931606;
-        Wed, 03 Dec 2025 03:38:51 -0800 (PST)
-Received: from sidong ([175.195.128.78])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29bceb7d4f4sm182835265ad.101.2025.12.03.03.38.50
+        d=1e100.net; s=20230601; t=1764762222; x=1765367022;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nmzrPAt9kb7dexvB71oGQlxWay34k4ETfXHiGvlbouI=;
+        b=LWWrjuReg/7Ru/wZcU+4GyJ8ymo7BjBYuGyX7k9sQzf7AscsaSSXJ/l2GQ3ZCdXZMn
+         IzUq49Klj4s/JPM1+4IEdhwYZtQ9t6rpnDwwV0BGsd2gS4Y1OO/QlI5QUFtiQu9Yw853
+         oocbgQ/Suu2g1lBoVR6dzLjUl0NZ1HBmyrzEtMmlW2/kfnBOObRlvkVyoSfPzP7GZ+ar
+         SvA+c3BlyRtnj7pzgohUyBMbiOThpdFZfZv4kJr/pR+cPu5lDYUEZ9Kx4ZOGryURXpEe
+         eXbFPvSlIP2iDmB2BAzUXUvTwQoFd/qmnCq+oBOvaWLMX2+QwGKo8vBLCdrP6r586Se1
+         WgTQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUQ7/Zovca/F//IgussAnAKQ3mE1EyOoaexNGxRuRoQM3H8G82qiQO9mAujdKMZbP0rC99MBejvoct6qg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyIGNGqG7fn6uL1c56xiAPd/USv0bmPRweuvP3Bs9vaeOUoBgO7
+	QDY7oKTBHEvtfIPyVwsraDcHmrHPEEI8JOnOpVnPvJ03Y/ySSBkB+amf
+X-Gm-Gg: ASbGnct5OiA5Ev1GmSHC1deenfqfvesljGYMUiFHsqhGXO9/mb075thJsnowfG31szI
+	Bpa56ImpEyArUFvQg94OZHjNJxbNCVOezz5Z8I78DqQp8IdGazRFdwS+BxOUM8PgYMNMPgambZQ
+	pLzrcYIZLTswmKV/BsqXqESvopmYTWCFQ6e75O5e+v6JUT8jRMFWAyQuHwI0GPm2j9LvmbnXQWs
+	hwuteOvLXDl5NbEBhzwXuwIiHtNF34g/Z/3nKnNDhjb/woxCaro0Sg5GB+5vje3g4p9QN5CUSth
+	cGC6PswBcQJNSbLCQPa4bYKmpWkXCwwnjCkU8LeC1bAcG+S5wotyByC0swmII47C+TtOyHVMtNp
+	haVw8vTe+JF1dmgwDzQh2DC66WA1eHXG8fL1f8XmGJgqnwzkzgi1+NJtdtFUwzjU1pKnJkVXSgI
+	uK9NCmfIo0thZQHZIoct00GKYBLgtFpHszTT46jRDjZqVM9A==
+X-Google-Smtp-Source: AGHT+IHdnFsa4ffMwlnwovXZJPD+rbcRmchS4n60kAyf+dDPYEYAQF73K96zE7yxTNdTWdV8fOAbDg==
+X-Received: by 2002:a05:6a20:3942:b0:2ea:41f1:d54a with SMTP id adf61e73a8af0-363f5eb6172mr2466088637.55.1764762222362;
+        Wed, 03 Dec 2025 03:43:42 -0800 (PST)
+Received: from sidong.sidong.yang.office.furiosa.vpn ([175.195.128.78])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-be4f5f3416bsm12826672a12.0.2025.12.03.03.43.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Dec 2025 03:38:51 -0800 (PST)
-Date: Wed, 3 Dec 2025 11:38:29 +0000
+        Wed, 03 Dec 2025 03:43:41 -0800 (PST)
 From: Sidong Yang <realwakka@gmail.com>
-To: Filipe Manana <fdmanana@kernel.org>
-Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 1/1] btrfs/339: test receive dump stream for different
- user
-Message-ID: <aTAhNRFMJMYWkhtO@sidong>
-References: <20251119052843.35108-1-realwakka@gmail.com>
- <CAL3q7H5e6R5XzFQTfx9hpxsiaVoQoiXgsqSTRO9GQAhmv+-rng@mail.gmail.com>
+To: fstests@vger.kernel.org,
+	Filipe Manana <fdmanana@kernel.org>
+Cc: Sidong Yang <realwakka@gmail.com>,
+	linux-btrfs@vger.kernel.org
+Subject: [PATCH v3 1/1] btrfs/339: test receive dump stream for different user
+Date: Wed,  3 Dec 2025 11:43:25 +0000
+Message-ID: <20251203114328.10386-1-realwakka@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAL3q7H5e6R5XzFQTfx9hpxsiaVoQoiXgsqSTRO9GQAhmv+-rng@mail.gmail.com>
 
-On Tue, Dec 02, 2025 at 02:57:19PM +0000, Filipe Manana wrote:
-> On Wed, Nov 19, 2025 at 5:30 AM Sidong Yang <realwakka@gmail.com> wrote:
-> >
-> > Test receive to dump stream file from different user.
-> >
-> > This is a regression test for the btrfs-progs commit cd933616d485
-> > ("btrfs-progs: receive: don't use O_NOATIME to open stream for
-> > dumping").
-> >
-> > Signed-off-by: Sidong Yang <realwakka@gmail.com>
-> > ---
-> > v2:
-> > - forward to $seqres.full rather than -q
-> > - use $tmp for stream file
-> > ---
-> >  tests/btrfs/339     | 40 ++++++++++++++++++++++++++++++++++++++++
-> >  tests/btrfs/339.out |  2 ++
-> >  2 files changed, 42 insertions(+)
-> >  create mode 100755 tests/btrfs/339
-> >  create mode 100644 tests/btrfs/339.out
-> >
-> > diff --git a/tests/btrfs/339 b/tests/btrfs/339
-> > new file mode 100755
-> > index 00000000..0df24577
-> > --- /dev/null
-> > +++ b/tests/btrfs/339
-> > @@ -0,0 +1,40 @@
-> > +#! /bin/bash
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +# Copyright (c) 2025 Sidong Yang.  All Rights Reserved.
-> > +#
-> > +# FS QA Test 339
-> > +#
-> > +# Test btrfs receive dump stream from different user
-> > +#
-> > +. ./common/preamble
-> > +_begin_fstest auto quick send snapshot
-> > +
-> > +# Override the default cleanup function.
-> > +_cleanup()
-> > +{
-> > +       cd /
-> > +       rm -r -f $tmp.*
-> > +}
-> 
-> This does the same as the default _cleanup function, so there's no
-> need to have it, just remove it.
+Test receive to dump stream file from different user.
 
-I see, Thanks
+This is a regression test for the btrfs-progs commit cd933616d485
+("btrfs-progs: receive: don't use O_NOATIME to open stream for
+dumping").
 
-> 
-> > +
-> > +. ./common/filter
-> > +. ./common/quota
-> 
-> Why include the quota file? It's not needed, the test doesn't use
-> anything from it, just remove it.
+Signed-off-by: Sidong Yang <realwakka@gmail.com>
+---
+v2:
+- forward to $seqres.full rather than -q
+- use $tmp for stream file
+v3:
+- use _btrfs than $BTRFS_UTIL_PROG
+- remove unnecessary cleanup, requirement
+---
+ tests/btrfs/339     | 32 ++++++++++++++++++++++++++++++++
+ tests/btrfs/339.out |  2 ++
+ 2 files changed, 34 insertions(+)
+ create mode 100755 tests/btrfs/339
+ create mode 100644 tests/btrfs/339.out
 
-I don't need it. Removed.
-> 
-> > +
-> > +_require_scratch
-> > +_require_user
-> > +
-> > +_fixed_by_git_commit btrfs-progs cd933616d485 \
-> > +       "btrfs-progs: receive: don't use O_NOATIME to open stream for dumping"
-> > +
-> > +_scratch_mkfs >> $seqres.full 2>&1 || _fail "mkfs failed"
-> > +_scratch_mount
-> > +
-> > +stream=$tmp.fsv.ss
-> > +
-> > +$BTRFS_UTIL_PROG subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/snap >> $seqres.full
-> 
-> Nowadays we use _btrfs, it's shorter and does the same (including the
-> stdout redirection):
-> 
-> _btrfs subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/snap
-> 
-> > +$BTRFS_UTIL_PROG send -f $stream $SCRATCH_MNT/snap >> $seqres.full 2>&1 || _fail "send failed"
-> 
-> And here:
-> 
-> _btrfs send -f $stream $SCRATCH_MNT/snap
-> 
-> There's no need to:  || _fail "send failed"
-> That is generally discouraged in fstests. A failure will just cause a
-> mismatch with the golden output and make the test fail.
-> 
-> But _btrfs already calls _fail and redirects to the .full file anyway.
-> 
-> Otherwise it looks good, thanks.
+diff --git a/tests/btrfs/339 b/tests/btrfs/339
+new file mode 100755
+index 00000000..234a9ea0
+--- /dev/null
++++ b/tests/btrfs/339
+@@ -0,0 +1,32 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (c) 2025 Sidong Yang.  All Rights Reserved.
++#
++# FS QA Test 339
++#
++# Test btrfs receive dump stream from different user
++#
++. ./common/preamble
++_begin_fstest auto quick send snapshot
++
++. ./common/filter
++
++_require_scratch
++_require_user
++
++_fixed_by_git_commit btrfs-progs cd933616d485 \
++	"btrfs-progs: receive: don't use O_NOATIME to open stream for dumping"
++
++_scratch_mkfs >> $seqres.full 2>&1 || _fail "mkfs failed"
++_scratch_mount
++
++stream=$tmp.fsv.ss
++
++_btrfs subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/snap
++_btrfs send -f $stream $SCRATCH_MNT/snap
++chmod a+r $stream
++_su $qa_user -c "$BTRFS_UTIL_PROG receive --dump -f $stream" >> $seqres.full
++
++# success, all done
++echo "Silence is golden"
++_exit 0
+diff --git a/tests/btrfs/339.out b/tests/btrfs/339.out
+new file mode 100644
+index 00000000..293ea808
+--- /dev/null
++++ b/tests/btrfs/339.out
+@@ -0,0 +1,2 @@
++QA output created by 339
++Silence is golden
+-- 
+2.43.0
 
-Thanks, I'll send a new version right away.
-
-Thanks,
-Sidong
-> 
-> 
-> 
-> > +chmod a+r $stream
-> > +_su $qa_user -c "$BTRFS_UTIL_PROG receive --dump -f $stream" >> $seqres.full
-> > +
-> > +# success, all done
-> > +echo "Silence is golden"
-> > +_exit 0
-> > diff --git a/tests/btrfs/339.out b/tests/btrfs/339.out
-> > new file mode 100644
-> > index 00000000..293ea808
-> > --- /dev/null
-> > +++ b/tests/btrfs/339.out
-> > @@ -0,0 +1,2 @@
-> > +QA output created by 339
-> > +Silence is golden
-> > --
-> > 2.43.0
-> >
-> >
 
