@@ -1,86 +1,70 @@
-Return-Path: <linux-btrfs+bounces-19484-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19485-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id F29AFC9EE1D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 03 Dec 2025 12:45:10 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E3D5C9F230
+	for <lists+linux-btrfs@lfdr.de>; Wed, 03 Dec 2025 14:31:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 3E5F334BA0D
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Dec 2025 11:44:36 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 07F86348101
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Dec 2025 13:31:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDED82F60CA;
-	Wed,  3 Dec 2025 11:43:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF6DC2FB0A1;
+	Wed,  3 Dec 2025 13:31:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EcE9i+ID"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="NVZV7ReG"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from esa6.hgst.iphmx.com (esa6.hgst.iphmx.com [216.71.154.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 469B12F5A3E
-	for <linux-btrfs@vger.kernel.org>; Wed,  3 Dec 2025 11:43:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D44CB2FB08F
+	for <linux-btrfs@vger.kernel.org>; Wed,  3 Dec 2025 13:31:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.71.154.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764762224; cv=none; b=sUxaV6Zly61c8Wc4Sm3eSbXF9RO4CIYz7UZYMWlWFEguRc4cjhhF+UCD1Q6Eue4jEFyu91TrY2Eu2bWpbtDYWbmdS82xmDpVurCWC0Un01qR5debK29LZHo36qyyRBw4eUyjnPxB0MwNAETmJggWkcJd4+bg7CR4C8kN/ockxhg=
+	t=1764768710; cv=none; b=D6Kc8ZMQ7owhLXtPYw8rjVEZHtTlD/c48LNW9xCsVxvIWFMJ33I6UdORDVmt/neYMW3RL7n4zlLZykdEN2Hsvea2cQv8tk44RhnQn4jU2g2q3p+jwhuJBrmvwYCJXPGx6fC7r/lpxjN8AHTBb8Ms1fTyG2mlHwPWTQkESN+GJXM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764762224; c=relaxed/simple;
-	bh=oBkvuCBrbfVyaeM5v/bY5mEWKjFvn1fVUN27hwHehX4=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=BfJFEkfO4GUaCqDG/4ggAVvJMAojy1sSfLsk6UhbM6sc/hVzuRh1zEbkdpz9JCCzMkiWSz+1V5rb40slc6aKmob0JFCgRBdnbntIXIkpmaa1o5blxipr1blGo1zeehkDyuQs2izhYwgfH8C35o9b6NtnTPWh9NR8R0HrkUZCD4c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EcE9i+ID; arc=none smtp.client-ip=209.85.210.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-7ba55660769so5647348b3a.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 03 Dec 2025 03:43:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1764762222; x=1765367022; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=nmzrPAt9kb7dexvB71oGQlxWay34k4ETfXHiGvlbouI=;
-        b=EcE9i+IDiqq/P/K7rUeAZEBFACjDGz+DczOxx2s53yvpZpl8Aup8ma1v7pmlJMyPpB
-         UKhzumzt65BsdA9tPlSQTUEzkE8V9KeNQ0HbVSfCRTc9xgWFzKZAd3HkKDm422WAUZwH
-         FZZ4EaSI64wya6LF3LJa0HOHjl+g0YvXI7E8+EATXlH/GPWEyLm29J7/Z2NnAytiN7k3
-         kC4uFeCty7ECLlp9ct37P9rsiMbsKttgnVbYEBBYY7p3ARJTlZarmCNyRQcqcz8/gBmS
-         HFc+bajyPQmhF5Y9V/aq4Pgqgiea6UnONs6CKDHhEVKgu5ArUoyZlEiUkn6f0L3rQM14
-         REHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764762222; x=1765367022;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nmzrPAt9kb7dexvB71oGQlxWay34k4ETfXHiGvlbouI=;
-        b=LWWrjuReg/7Ru/wZcU+4GyJ8ymo7BjBYuGyX7k9sQzf7AscsaSSXJ/l2GQ3ZCdXZMn
-         IzUq49Klj4s/JPM1+4IEdhwYZtQ9t6rpnDwwV0BGsd2gS4Y1OO/QlI5QUFtiQu9Yw853
-         oocbgQ/Suu2g1lBoVR6dzLjUl0NZ1HBmyrzEtMmlW2/kfnBOObRlvkVyoSfPzP7GZ+ar
-         SvA+c3BlyRtnj7pzgohUyBMbiOThpdFZfZv4kJr/pR+cPu5lDYUEZ9Kx4ZOGryURXpEe
-         eXbFPvSlIP2iDmB2BAzUXUvTwQoFd/qmnCq+oBOvaWLMX2+QwGKo8vBLCdrP6r586Se1
-         WgTQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUQ7/Zovca/F//IgussAnAKQ3mE1EyOoaexNGxRuRoQM3H8G82qiQO9mAujdKMZbP0rC99MBejvoct6qg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyIGNGqG7fn6uL1c56xiAPd/USv0bmPRweuvP3Bs9vaeOUoBgO7
-	QDY7oKTBHEvtfIPyVwsraDcHmrHPEEI8JOnOpVnPvJ03Y/ySSBkB+amf
-X-Gm-Gg: ASbGnct5OiA5Ev1GmSHC1deenfqfvesljGYMUiFHsqhGXO9/mb075thJsnowfG31szI
-	Bpa56ImpEyArUFvQg94OZHjNJxbNCVOezz5Z8I78DqQp8IdGazRFdwS+BxOUM8PgYMNMPgambZQ
-	pLzrcYIZLTswmKV/BsqXqESvopmYTWCFQ6e75O5e+v6JUT8jRMFWAyQuHwI0GPm2j9LvmbnXQWs
-	hwuteOvLXDl5NbEBhzwXuwIiHtNF34g/Z/3nKnNDhjb/woxCaro0Sg5GB+5vje3g4p9QN5CUSth
-	cGC6PswBcQJNSbLCQPa4bYKmpWkXCwwnjCkU8LeC1bAcG+S5wotyByC0swmII47C+TtOyHVMtNp
-	haVw8vTe+JF1dmgwDzQh2DC66WA1eHXG8fL1f8XmGJgqnwzkzgi1+NJtdtFUwzjU1pKnJkVXSgI
-	uK9NCmfIo0thZQHZIoct00GKYBLgtFpHszTT46jRDjZqVM9A==
-X-Google-Smtp-Source: AGHT+IHdnFsa4ffMwlnwovXZJPD+rbcRmchS4n60kAyf+dDPYEYAQF73K96zE7yxTNdTWdV8fOAbDg==
-X-Received: by 2002:a05:6a20:3942:b0:2ea:41f1:d54a with SMTP id adf61e73a8af0-363f5eb6172mr2466088637.55.1764762222362;
-        Wed, 03 Dec 2025 03:43:42 -0800 (PST)
-Received: from sidong.sidong.yang.office.furiosa.vpn ([175.195.128.78])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-be4f5f3416bsm12826672a12.0.2025.12.03.03.43.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Dec 2025 03:43:41 -0800 (PST)
-From: Sidong Yang <realwakka@gmail.com>
-To: fstests@vger.kernel.org,
-	Filipe Manana <fdmanana@kernel.org>
-Cc: Sidong Yang <realwakka@gmail.com>,
-	linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 1/1] btrfs/339: test receive dump stream for different user
-Date: Wed,  3 Dec 2025 11:43:25 +0000
-Message-ID: <20251203114328.10386-1-realwakka@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1764768710; c=relaxed/simple;
+	bh=0VEPmQjkX/eHz1lf1VCE3HNAryeRMb1lE9t3Lb/tarc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=IwOwCt1gYa5DGOWL8ufVwdR1ccYAmNyWe06RcoAeB+KQQyYbW2qytsyzQFhQfS5VWxFSdd0S81XbfVI2hA1W6O4/64Lp03GoJXbAhkZB9FO8SXMGS7L4lnkgJKqbbODq1KZJ/uGZg6j7dWNAflktMfYCrEjBpar68LbsfGKRnik=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=NVZV7ReG; arc=none smtp.client-ip=216.71.154.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1764768707; x=1796304707;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=0VEPmQjkX/eHz1lf1VCE3HNAryeRMb1lE9t3Lb/tarc=;
+  b=NVZV7ReGYFG+BYQF1uXqXraP7HIM1BK6QWPXe1d/fF94nvgHjzc7/iPU
+   9ToAvvmYPHkaUluSGtVy05NRr4KOq1QjnzdbJUQNDG7gXjEIRQrpK5PwR
+   oZbT2tMUpW4p2b1T6PIayntjyVpJoSNUjs9elcDZLAmsuFs76JGnQlDdw
+   Az1neGqse2ObT29VJH/keuj+PaatXosCgYSzGt3dtTCLobVerg+4ZhMYs
+   31+EncJNpLXEfTsLrsbs9lj5WWp3P0RJ7M2L2ZxvB37+MjF/E80s9H1IF
+   QngDcEPGUxg056qVMfIQkLM20NLQqeXmA1G0jmhKS5doM5szOpC/cuYFN
+   w==;
+X-CSE-ConnectionGUID: 34gdVL3gQbS6kwt7YnqLZw==
+X-CSE-MsgGUID: TYHluQ8EQXaZdQkFVnRgng==
+X-IronPort-AV: E=Sophos;i="6.20,246,1758556800"; 
+   d="scan'208";a="135832412"
+Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep03.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 03 Dec 2025 21:31:40 +0800
+IronPort-SDR: 69303bbd_FOtkQ86C8P6gL9eZHiO82cZzCMAw8mS7rrzmBfcbunoCtmW
+ Y2NBwZw8jfkOM8Mq3eQgsAPFo2LZBCG9mSyDLUA==
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep03.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 03 Dec 2025 05:31:41 -0800
+WDCIronportException: Internal
+Received: from wdap-fejaxhfdkv.ad.shared (HELO neo.wdc.com) ([10.224.28.99])
+  by uls-op-cesaip02.wdc.com with ESMTP; 03 Dec 2025 05:31:39 -0800
+From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+To: linux-btrfs@vger.kernel.org
+Cc: Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+	Naohiro Aota <naohiro.aota@wdc.com>,
+	Christoph Hellwig <hch@lst.de>
+Subject: [PATCH v2] btrfs: zoned: don't zone append to conventional zone
+Date: Wed,  3 Dec 2025 14:31:32 +0100
+Message-ID: <20251203133132.274038-1-johannes.thumshirn@wdc.com>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -89,74 +73,110 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Test receive to dump stream file from different user.
+In case of a zoned RAID, it can happen that a data write is targeting a
+sequential write required zone and a conventional zone. In this case the
+bio will be marked as REQ_OP_ZONE_APPEND but for the conventional zone,
+this needs to be REQ_OP_WRITE.
 
-This is a regression test for the btrfs-progs commit cd933616d485
-("btrfs-progs: receive: don't use O_NOATIME to open stream for
-dumping").
+The setting of REQ_OP_ZONE_APPEND is deferred to the last possible time in
+btrfs_submit_dev_bio(), but the decision if we can use zone append is
+cached in btrfs_bio.
 
-Signed-off-by: Sidong Yang <realwakka@gmail.com>
+Cc: Naohiro Aota <naohiro.aota@wdc.com>
+Cc: Christoph Hellwig <hch@lst.de>
+Fixes: e9b9b911e03c ("btrfs: add raid stripe tree to features enabled with debug config")
+Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
-v2:
-- forward to $seqres.full rather than -q
-- use $tmp for stream file
-v3:
-- use _btrfs than $BTRFS_UTIL_PROG
-- remove unnecessary cleanup, requirement
----
- tests/btrfs/339     | 32 ++++++++++++++++++++++++++++++++
- tests/btrfs/339.out |  2 ++
- 2 files changed, 34 insertions(+)
- create mode 100755 tests/btrfs/339
- create mode 100644 tests/btrfs/339.out
+ fs/btrfs/bio.c | 20 ++++++++++----------
+ fs/btrfs/bio.h |  3 +++
+ 2 files changed, 13 insertions(+), 10 deletions(-)
 
-diff --git a/tests/btrfs/339 b/tests/btrfs/339
-new file mode 100755
-index 00000000..234a9ea0
---- /dev/null
-+++ b/tests/btrfs/339
-@@ -0,0 +1,32 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2025 Sidong Yang.  All Rights Reserved.
-+#
-+# FS QA Test 339
-+#
-+# Test btrfs receive dump stream from different user
-+#
-+. ./common/preamble
-+_begin_fstest auto quick send snapshot
+diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
+index 4a7bef895b97..0e52cc8e860e 100644
+--- a/fs/btrfs/bio.c
++++ b/fs/btrfs/bio.c
+@@ -480,6 +480,8 @@ static void btrfs_clone_write_end_io(struct bio *bio)
+ 
+ static void btrfs_submit_dev_bio(struct btrfs_device *dev, struct bio *bio)
+ {
++	u64 physical = bio->bi_iter.bi_sector << SECTOR_SHIFT;
 +
-+. ./common/filter
+ 	if (!dev || !dev->bdev ||
+ 	    test_bit(BTRFS_DEV_STATE_MISSING, &dev->dev_state) ||
+ 	    (btrfs_op(bio) == BTRFS_MAP_WRITE &&
+@@ -494,12 +496,14 @@ static void btrfs_submit_dev_bio(struct btrfs_device *dev, struct bio *bio)
+ 	 * For zone append writing, bi_sector must point the beginning of the
+ 	 * zone
+ 	 */
+-	if (bio_op(bio) == REQ_OP_ZONE_APPEND) {
+-		u64 physical = bio->bi_iter.bi_sector << SECTOR_SHIFT;
++	if (btrfs_bio(bio)->use_append &&
++	    btrfs_dev_is_sequential(dev, physical)) {
+ 		u64 zone_start = round_down(physical, dev->fs_info->zone_size);
+ 
+ 		ASSERT(btrfs_dev_is_sequential(dev, physical));
+ 		bio->bi_iter.bi_sector = zone_start >> SECTOR_SHIFT;
++		bio->bi_opf &= ~REQ_OP_WRITE;
++		bio->bi_opf |= REQ_OP_ZONE_APPEND;
+ 	}
+ 	btrfs_debug(dev->fs_info,
+ 	"%s: rw %d 0x%x, sector=%llu, dev=%lu (%s id %llu), size=%u",
+@@ -747,7 +751,6 @@ static bool btrfs_submit_chunk(struct btrfs_bio *bbio, int mirror_num)
+ 	u64 logical = bio->bi_iter.bi_sector << SECTOR_SHIFT;
+ 	u64 length = bio->bi_iter.bi_size;
+ 	u64 map_length = length;
+-	bool use_append = btrfs_use_zone_append(bbio);
+ 	struct btrfs_io_context *bioc = NULL;
+ 	struct btrfs_io_stripe smap;
+ 	blk_status_t status;
+@@ -775,8 +778,10 @@ static bool btrfs_submit_chunk(struct btrfs_bio *bbio, int mirror_num)
+ 	if (bio_op(bio) == REQ_OP_WRITE && is_data_bbio(bbio))
+ 		bbio->orig_logical = logical;
+ 
++	bbio->use_append = btrfs_use_zone_append(bbio);
 +
-+_require_scratch
-+_require_user
+ 	map_length = min(map_length, length);
+-	if (use_append)
++	if (bbio->use_append)
+ 		map_length = btrfs_append_map_length(bbio, map_length);
+ 
+ 	if (map_length < length) {
+@@ -805,11 +810,6 @@ static bool btrfs_submit_chunk(struct btrfs_bio *bbio, int mirror_num)
+ 	}
+ 
+ 	if (btrfs_op(bio) == BTRFS_MAP_WRITE) {
+-		if (use_append) {
+-			bio->bi_opf &= ~REQ_OP_WRITE;
+-			bio->bi_opf |= REQ_OP_ZONE_APPEND;
+-		}
+-
+ 		if (is_data_bbio(bbio) && bioc && bioc->use_rst) {
+ 			/*
+ 			 * No locking for the list update, as we only add to
+@@ -836,7 +836,7 @@ static bool btrfs_submit_chunk(struct btrfs_bio *bbio, int mirror_num)
+ 			status = errno_to_blk_status(ret);
+ 			if (status)
+ 				goto fail;
+-		} else if (use_append ||
++		} else if (bbio->use_append ||
+ 			   (btrfs_is_zoned(fs_info) && inode &&
+ 			    inode->flags & BTRFS_INODE_NODATASUM)) {
+ 			ret = btrfs_alloc_dummy_sum(bbio);
+diff --git a/fs/btrfs/bio.h b/fs/btrfs/bio.h
+index 56279b7f3b2a..a057b9e2b383 100644
+--- a/fs/btrfs/bio.h
++++ b/fs/btrfs/bio.h
+@@ -92,6 +92,9 @@ struct btrfs_bio {
+ 	/* Whether the csum generation for data write is async. */
+ 	bool async_csum;
+ 
++	/* Whether the bio is written using zone append. */
++	bool use_append;
 +
-+_fixed_by_git_commit btrfs-progs cd933616d485 \
-+	"btrfs-progs: receive: don't use O_NOATIME to open stream for dumping"
-+
-+_scratch_mkfs >> $seqres.full 2>&1 || _fail "mkfs failed"
-+_scratch_mount
-+
-+stream=$tmp.fsv.ss
-+
-+_btrfs subvolume snapshot -r $SCRATCH_MNT $SCRATCH_MNT/snap
-+_btrfs send -f $stream $SCRATCH_MNT/snap
-+chmod a+r $stream
-+_su $qa_user -c "$BTRFS_UTIL_PROG receive --dump -f $stream" >> $seqres.full
-+
-+# success, all done
-+echo "Silence is golden"
-+_exit 0
-diff --git a/tests/btrfs/339.out b/tests/btrfs/339.out
-new file mode 100644
-index 00000000..293ea808
---- /dev/null
-+++ b/tests/btrfs/339.out
-@@ -0,0 +1,2 @@
-+QA output created by 339
-+Silence is golden
+ 	/*
+ 	 * This member must come last, bio_alloc_bioset will allocate enough
+ 	 * bytes for entire btrfs_bio but relies on bio being last.
 -- 
-2.43.0
+2.52.0
 
 
