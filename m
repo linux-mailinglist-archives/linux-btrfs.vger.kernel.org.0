@@ -1,346 +1,258 @@
-Return-Path: <linux-btrfs+bounces-19476-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19477-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9AE5C9E2E4
-	for <lists+linux-btrfs@lfdr.de>; Wed, 03 Dec 2025 09:21:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D9542C9EACA
+	for <lists+linux-btrfs@lfdr.de>; Wed, 03 Dec 2025 11:17:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C96F53A9790
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Dec 2025 08:21:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B40073A1298
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Dec 2025 10:17:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F61C2C21CB;
-	Wed,  3 Dec 2025 08:21:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C17FB2E92AF;
+	Wed,  3 Dec 2025 10:16:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YVsBsKxn"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-oi1-f207.google.com (mail-oi1-f207.google.com [209.85.167.207])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEB2E2C0F9C
-	for <linux-btrfs@vger.kernel.org>; Wed,  3 Dec 2025 08:21:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.207
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764750087; cv=none; b=nDqfQpZTa6huPlABAwbiAEytK/E5H0Tvc3qKT7GlErFMpHp0X3i++EFugwKJ52clORx0yj4rZnpW63D0z2TGXUQOnvRy3cFiEHmHiv6YOQr7NVx3NfEbDr83nxYvAscEKF5XB7O5bvYcFKxFPfug0p8QzdktvyUJzUQRy3aHdgI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764750087; c=relaxed/simple;
-	bh=duGnPjeykp+Kojhvw933qqFROtCcZWLDWXYZ7OOs4yc=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=DPnIsL0efvmkO+C3/A4iWT54lp2a44Aup/q/ZyDT9exs5ebfMR6jnbyLDXf67Y4nlSwxIAnPiwZ4B3lRT9Oa3g/laF2wWBp0oxvYDmdcWsjUNrgzFbeC4LyniUKJX8L0DBXQMpEhdGpltm9piC/yuhlPzvmG61lvLmudb69zPwU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.167.207
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-oi1-f207.google.com with SMTP id 5614622812f47-450fd003480so7571302b6e.2
-        for <linux-btrfs@vger.kernel.org>; Wed, 03 Dec 2025 00:21:25 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764750085; x=1765354885;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=l4XaMB4ZEoj+wWuKfCMQMoDgXHSQREgdhwGzG7wgxco=;
-        b=oUll2FzlWAyVdtjZgN25ApKPxIAZiNR0DGDf6UC7QgX6FnC96ybLYlVDTlGbp0GJxx
-         lwsgr12pex792zaSzyQKzlxIAjF8qgWpfMj0uXH7eXltFRfbNyfW7lfzJvxX7BgCPe1t
-         KafvNIZgAmyVN1lTKFEZyqrAcu9APYVbjNR9iswSk8w3TA5lrCm26N6U9qsoXrDqsJYY
-         U/8FYW4/k28bR9pUUZ//z/Ehj6PLJVCiGV1K9AG/fzKFTK1XM4Y/FKGwv4oZSBMsQnCT
-         0jZufA22OLyCmSmRdFDYnjOGeB/Yy+AzLFcsdrl/XQ0Ln6orIjfGWqW8MRiKAzNl0N5I
-         15FQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU3GVTUv3jMSRirKqsjylq/sIzgPbAdqE4DjBdDMq6O2s5VAU0umczLHl52pRtotECgtwTr3FGG4lI7Ow==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxNeBq3labaWG23RbofjQ4Ms9ipHEi7I2UTIJG66g2OmDZ5Bmq+
-	1E1UFE5rkjRcZ50ZJxCetGmjSXfB8a3S65hdSsr9Acb5rKuct0erUf0Ze5dC9HRBVDRViS44HpA
-	bG/GDiqvMKpP7S9aanXTDNbmEdb2ur2P9/zCZMJNsi3n3WznS8UDHM8R9B9g=
-X-Google-Smtp-Source: AGHT+IGMgyC2rk0Pq+pW67CVX42LUvfjPYPtEBloq+xztlBG3mu47MdwXTKtddu5LQGoutmVy0MIUMmv7iP1EaVQz5A8EU9cKi2K
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95816213254;
+	Wed,  3 Dec 2025 10:16:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.16
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1764757014; cv=fail; b=U7JcPS9N7dfqnkU6XczCLP9hG374m28h1G9o+JMpndPnBD7hwosuxECbzsD9vC31DxxeRKp3W/4QDud4bveoEGAYXskfYEVqZS03scGE9PrBJeSpYD1ucyeLoG4SA5uCH/4bgUPVy59yyn7Cz1ShU8URABNhouJ+wFj1W9EkBdQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1764757014; c=relaxed/simple;
+	bh=UNUtwEc+5Ohe0fD9vJxh3UTWPN3GfU6jZHR+WxrbcNg=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=EMk3clU6Y99tnP3PqwtFhPWU29Nfpw48lXXfia21qZRmRnS1VdZa/vDPRivX9wYvx4KlGr+MbgC4yLO1Ku6xoyhQeCd8G34kte8TQItBzeqs17psih/7AK8GxIeh6OxlOp4n9TfVbiuyxU5N/4lnp+YXUBp+SUw3A3gmpyiAEEw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YVsBsKxn; arc=fail smtp.client-ip=192.198.163.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1764757013; x=1796293013;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=UNUtwEc+5Ohe0fD9vJxh3UTWPN3GfU6jZHR+WxrbcNg=;
+  b=YVsBsKxn9yRPegK3FT4v2Ln9CAQBYjgjHZ/DrUFN697pBK0IuggngdN5
+   mEEB+79fT1KaVUtW6UbBa6NkVKjyhGnuoUiMB+NJPqkDeeBvp6EYOCft0
+   Vr963sccMRLBQDyCUeJ4JE3buuNrAMCNj3q84oXF2W4SVRMrWuZehk7GV
+   HegR9AjaKY0ArE6Dpy72F/XDxaED6lRw+M3ZLKkFwv+s2XSx8tKFpJQK7
+   TMOg1yvVrK4rIjZ7msnBZfclNWdKeQN28uVcI9XVHA55Fup7ODPLdZqyV
+   312phS7koT/xeWSjbfnoADEvv2c2NbHsoRjqbjyHDRRXLJHVLYR1A0F6e
+   A==;
+X-CSE-ConnectionGUID: 0k+EH+uaQhGkmUhhYlUz6A==
+X-CSE-MsgGUID: 4eNiC6ohSe6wR+HJHsFuaA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11631"; a="54294631"
+X-IronPort-AV: E=Sophos;i="6.20,245,1758610800"; 
+   d="scan'208";a="54294631"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2025 02:16:49 -0800
+X-CSE-ConnectionGUID: z0wJUwSlTKWHbhTLFl9TmA==
+X-CSE-MsgGUID: WcThD9DcREiuO2W5JUFvGg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.20,245,1758610800"; 
+   d="scan'208";a="195430473"
+Received: from fmsmsx901.amr.corp.intel.com ([10.18.126.90])
+  by fmviesa010.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Dec 2025 02:16:45 -0800
+Received: from FMSMSX903.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx901.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.29; Wed, 3 Dec 2025 02:16:41 -0800
+Received: from fmsedg902.ED.cps.intel.com (10.1.192.144) by
+ FMSMSX903.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.29 via Frontend Transport; Wed, 3 Dec 2025 02:16:41 -0800
+Received: from PH7PR06CU001.outbound.protection.outlook.com (52.101.201.23) by
+ edgegateway.intel.com (192.55.55.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.2562.29; Wed, 3 Dec 2025 02:16:41 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=J6/5fg+fmKehLKbAywo4tRDo/mmgSA2e33qQb2TXSOA4+KRrVp1R5mdycZlTRf9uq2wy8TTiDFZRkMwGSK5aCy4G9Ez0lFaCIgyltIBYe/4i/j5Q14cuVXyjuhnzrACdllr8URpB8LrbYQt92DFyBjos8toOVvxVsQH3eVrGvolzYl2kwwWLCSGKCPkAfm06Ts4CgVXdBIQ54VzghzhVcsLXYgbcNcrjmYoJwRQy2PML8hyaVj8s00mLcKI+pxuhtZXRlUFT2VOElTcNt/qSY8yl6CpgGPO+l8WKOUbKZSeiquDPAS1ZPerfUNmOqxnvcegmXOzDZmQjcMLMPGVJyw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=F/6Sf4fW7c+b/tH0dWjF2xtUfgdTvmPJJcqECwaBbLQ=;
+ b=Vjo+9f0dQaWcDrevE7DGdP1VPRsKT3mCfqPW4M/HM5EGDDvmmsgD4/SlxuDZ7/6EI+Ej7x7ETFLSxqkHni/YZ4vkbP+wuYKg/W9Q9HlNNdfAY95imM+hXaMWZLyziIXY7fUtuaTyKgCBFdPV5/E0gUA6MzZFMD5eWaowd5xxseRCCoWNBFK/Z6RYi+VLXb5utX8Og4PTI6TQbzFKaeEjk12LROK3OQ6RdyJiM1+4O8Dcnc305ODrbL5QMmc/1BdaFQo6UvqvAlq6YbrLM13nvEmYj8kTLvtZBT35DSOiFPYQmEm7fsnBy6SdIOspVPGJR2tUQ6R0ZfWxlrkdpiohxQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from DS0PR11MB6374.namprd11.prod.outlook.com (2603:10b6:8:ca::8) by
+ DS7PR11MB6040.namprd11.prod.outlook.com (2603:10b6:8:77::5) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.9388.9; Wed, 3 Dec 2025 10:16:33 +0000
+Received: from DS0PR11MB6374.namprd11.prod.outlook.com
+ ([fe80::15ef:b5be:851f:52b8]) by DS0PR11MB6374.namprd11.prod.outlook.com
+ ([fe80::15ef:b5be:851f:52b8%7]) with mapi id 15.20.9366.012; Wed, 3 Dec 2025
+ 10:16:33 +0000
+Date: Wed, 3 Dec 2025 10:15:29 +0000
+From: Giovanni Cabiddu <giovanni.cabiddu@intel.com>
+To: Christoph Hellwig <hch@infradead.org>
+CC: Jani Partanen <jiipee@sotapeli.fi>, <clm@fb.com>, <dsterba@suse.com>,
+	<terrelln@fb.com>, <herbert@gondor.apana.org.au>,
+	<linux-btrfs@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+	<qat-linux@intel.com>, <cyan@meta.com>, <brian.will@intel.com>,
+	<weigang.li@intel.com>, <senozhatsky@chromium.org>
+Subject: Re: [RFC PATCH 00/16] btrfs: offload compression to hardware
+ accelerators
+Message-ID: <aTANwYrQi5MwRyUQ@gcabiddu-mobl.ger.corp.intel.com>
+References: <20251128191531.1703018-1-giovanni.cabiddu@intel.com>
+ <aS6a_ae64D4MvBpW@infradead.org>
+ <8d3e44b0-23d8-4493-8e7e-33bbe1d904ef@sotapeli.fi>
+ <aS_f9axsi0QmmhiL@infradead.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <aS_f9axsi0QmmhiL@infradead.org>
+Organization: Intel Research and Development Ireland Ltd - Co. Reg. #308263 -
+ Collinstown Industrial Park, Leixlip, County Kildare - Ireland
+X-ClientProxiedBy: DUZP191CA0037.EURP191.PROD.OUTLOOK.COM
+ (2603:10a6:10:4f8::9) To CY5PR11MB6366.namprd11.prod.outlook.com
+ (2603:10b6:930:3a::8)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6808:300e:b0:450:d7fb:85c2 with SMTP id
- 5614622812f47-4536e3d9bfdmr721420b6e.19.1764750084903; Wed, 03 Dec 2025
- 00:21:24 -0800 (PST)
-Date: Wed, 03 Dec 2025 00:21:24 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <692ff304.a70a0220.d98e3.01b4.GAE@google.com>
-Subject: [syzbot] [btrfs?] possible deadlock in btrfs_page_mkwrite
-From: syzbot <syzbot+8ff80a43de91ba2d80fc@syzkaller.appspotmail.com>
-To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR11MB6374:EE_|DS7PR11MB6040:EE_
+X-MS-Office365-Filtering-Correlation-Id: c9d2e166-9975-46c6-cea9-08de3254eaaa
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|7416014|1800799024|366016;
+X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?7LGebMLwQ4bNvF3XESmGMClZVq6pleFEZJczJdUiaGDVS4Q1Q35TOcqPhcXR?=
+ =?us-ascii?Q?Ujg3aw6OTSMx534gNFcV5bKibFh2wki8AIWscMO7klQdonJKk/bbLNm88J3c?=
+ =?us-ascii?Q?VOKvcQ4aKLy4Oy9RZUitgkDgG17z4hmkrslgz9l680D2H/uYvoPChhNluYD+?=
+ =?us-ascii?Q?NPX4E9BifDKfkY+2HvCIP4ilDyuGswN31GyLAfRoazSXoUG02tpYBb+v2Gan?=
+ =?us-ascii?Q?xJtHD+jOIb2kepYptUs/e21l3DaM79nP9BASvVFjFoqzCgq8G/cbtrDT49QX?=
+ =?us-ascii?Q?3bdY1vw4+xVtkifXAiaoKv37GzztCO5LHjCKsx9IidU2JGfnsOHVfrvIbutC?=
+ =?us-ascii?Q?EoECPJQGnFhoslHn5RtUSeB5LNmXpv1/yRXTjKMIkDvByfL/qhkwPlkz7Wci?=
+ =?us-ascii?Q?ZRwpz5Q+C7QvEr6AqJ1B0pbB1jdqaYnJWbGYeDzcGc8lKM2BFLe6mO3mG6w8?=
+ =?us-ascii?Q?unVudwzeFP8I95iEzVT47VBTspgYdhDMtmBVWXLLWn2+yTFVvbsMLCFlPSKJ?=
+ =?us-ascii?Q?0Go/TRt+ximKUnBFCgL52Ov0Gh+onQWrMbBIYFkwe9D7E9ddoJjIGs48Ti7+?=
+ =?us-ascii?Q?Nqew+zZsUdDEslAk5W54BsFEyDOpqt0VkcdbxdxAQDNRZluC5o+jvGz7CCC3?=
+ =?us-ascii?Q?/zx1IbVz3GAkuEJWWXHRdQu37fSVR1hcUFIvct1CTAVE5D5f8xxICUSmXomX?=
+ =?us-ascii?Q?46t0EmOKPRIY2mPXli0MUoH/8hwjQbRTZjJjxY7kj7O8tC8hZq3J9G/UZiMO?=
+ =?us-ascii?Q?neioQdXxzNUnq5gZ4jNY9XQT5QpSJBoi7m98D4/Up78RNmGt1hNk1Mownv5k?=
+ =?us-ascii?Q?QXbacsZT5uThrrj9ZbmC8lPItZcO6865HF4aokl3q0eUQVv9ua0AA3aTgvOo?=
+ =?us-ascii?Q?8HuGTfZZZTuhfd5UrDGK6H3dvry5/Uwy/og2wnAxuWvC0gSgcaq8lmAN0C+/?=
+ =?us-ascii?Q?m5Ww7huEcVM+uZRxWPXRVMory8v8VhnikvoFR+tuU2lixalAKZQGe64BZxbV?=
+ =?us-ascii?Q?M2t9aozEbL42T3aAY7m7iPwnc0HrL8yHeRklto5zUtb5nkGqQ0ORyisQxpv8?=
+ =?us-ascii?Q?gnVt6uaVIwUz7H4XHfriF46VXVr6GzoW6ZPZP9Ar3mEik6EKrNnHq05Oy5Js?=
+ =?us-ascii?Q?6OlyAKV3JfTonJ0ERg+FAv3jiNPrMg+Rsti8fWLDF4+pxbaVT5bq22qZcXc1?=
+ =?us-ascii?Q?ue7xWon7lvWvGAXAjM4J0FWv/4qjV3/vT7pUmTliXCZK6NBhq+l8L0isSrMT?=
+ =?us-ascii?Q?1rg40oxaQiXFFIe/Rz7iWYVu23qUfkJ6zHa9QBik9EsxR5BX1ChS6tqHFrol?=
+ =?us-ascii?Q?NKlIBnZZbsWMxJKV2FjAlUpC7r5QNQhTYW6rAyFyt8M3n5gE/E03PO6NqXY1?=
+ =?us-ascii?Q?WcebRKdl1ypDL/5aN2/t09wJFSpxD9TzbhcOP+06NUDBebuIJ5A9vmZg+Dse?=
+ =?us-ascii?Q?bXM1GHllMB7wqcXTwB0V67FE8EmqbmV6nVwp8rSMozGBW9ZCJZ8Q+g=3D=3D?=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB6374.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(1800799024)(366016);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?dnnDj80DrWdX16zprkEq9PJQtP+PXg6+TBPbIIb1vziyn+Oiprh9H0SIlM5L?=
+ =?us-ascii?Q?m6s59tTO1cmlrgwTeVFknRBqMFZStxEuaMgxR0/4byQ7dKrWGrC9FfUSk0HT?=
+ =?us-ascii?Q?gH3zAb4TSu9KdxZ3PTkDB0PW1QZM9T6iHi4MHGDE5VusDlstlb/XirR8UYpy?=
+ =?us-ascii?Q?8qpxLm/V4u6X+uvlk7yCjYpRjd1muAhif9QVMHr+RfedjGmwzRgn0VG9RGR6?=
+ =?us-ascii?Q?7//DscetGMKR9TXkr4d2C2/yHI4E5z2N5b1k+gTCkZmsC0GXokbL3Q3Nj67x?=
+ =?us-ascii?Q?OZGWNhJZUetdVWzI5vPj3wVA5YXaMQXqlrXzBFFJAQEG4EGU8jnDN6x7x6Gr?=
+ =?us-ascii?Q?3e/O8shla/MgHoVluq9qmrrhRn8frUQhXQDDJKc9tclnsklNpKDZRWjMFeMI?=
+ =?us-ascii?Q?0xOa4JcTYpTHdu570JbsdS0bOwWDwZ2LPj00gp8Kgal5iAPYse10I/5smTU3?=
+ =?us-ascii?Q?dMsBUBQQ/G2+6aj4zkj2WQ+7JXAy1FjU7XwPiAtkXai+3Gu+K16MMH2Pulx3?=
+ =?us-ascii?Q?6AmnP5Jnc6vvXFH+ePCElL5ordgK7CDfsmUAlkPcnyiSrDR4qxTZTXGKsIEF?=
+ =?us-ascii?Q?F/48GAddPHTOWohuRStrRJL66uWjKmSTgxDTAorpc8ThV+KNu17bTVC4/6Dz?=
+ =?us-ascii?Q?+A6dj842EJ6Z5nu1894ScxgR5TxOtLI1MZ9EumJMXFq8MrdesICrMyK6pga8?=
+ =?us-ascii?Q?dYjItWN/LgUajrFE3c4FPQcJ0tkmm+Pkk8Tqr0QOGJ1naVS0mfjkkhFPtflL?=
+ =?us-ascii?Q?u75XViM5Q49lov6J4IdRvSsRr1+NkMh196+z+0+71JUvL39kPuftdRfRflFw?=
+ =?us-ascii?Q?uX0mQmLG2nupXcvhZEMZRtkpCtTWt5ToMiQwceujRnOUk2ni9hz4EjFt8viK?=
+ =?us-ascii?Q?0rpgEVIOVxxka6ZB1zNaBYn4NGMRhMgHRjvc1/GVkj72TCOJoQmyMlTrG0St?=
+ =?us-ascii?Q?sdwqmdi7K4YVJKaW+HOo4XCzjVnAHmI+HlK4HKckKnih6dKcBMe1Dx/b1uOr?=
+ =?us-ascii?Q?NZJE1RRTZQZhAhifK3S9i2DvtipioN5WteYaqTPrgPlYvi1oFMmkgxyOIqYp?=
+ =?us-ascii?Q?M8Fd7KsinVf1dqNtNd6a46sN7lXKko5MhqGL1BDocuTVORTAJKS8uKtrkBbV?=
+ =?us-ascii?Q?uGGvQZx12wXcvxjRny+t+9oHo1SoOnf7HSaaoTR1xK+uxZpfW7+6TeQgyDMd?=
+ =?us-ascii?Q?BrpVYnLWSQoJTjfb3GU8hjZUJS2XqnaaHRB8ODtidI1Eu1gbZzVVhqxgDaIl?=
+ =?us-ascii?Q?bHyiwZBHgPngwegflV8FT1V4sIoxn+0nkkE+XVf+xCCgoILPQ6yj3qauKFCn?=
+ =?us-ascii?Q?Kaf35lX5lYQS3ZBp727I9bdyvDBzO2GyKVvG7XDMcDzCaeX/07SgHVarxFO8?=
+ =?us-ascii?Q?Q2/S49LB52mgqIKF55sbDqfs/yzEKsz98axGm3div6EFHTiu3YV+GeYPN5vr?=
+ =?us-ascii?Q?t94stL+vIVT3mByjBh5wdOw+lzAvvcIHkQvcXdbGnGHjAcBwptaJLhrXX+VJ?=
+ =?us-ascii?Q?ZHPEYohobfC3ORl39E5XUUrBK2hkvr+XKNBV/RBY5iTlCPEb0zf7ycgMFe8I?=
+ =?us-ascii?Q?OesPpC4OCmUnovLVnGvCEjwSth5Qb6NBWCjSPh/6YeEfxR2kHWc7jmHiRU/J?=
+ =?us-ascii?Q?bg=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: c9d2e166-9975-46c6-cea9-08de3254eaaa
+X-MS-Exchange-CrossTenant-AuthSource: CY5PR11MB6366.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Dec 2025 10:16:33.2008
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Fb8dby02lZDgxn9mSuoWxNvzCiu7JXCJI/Uno+VEPF2n3gV1bkl9qneSmp3TnckxCrMwestNKXu+0XetRb+w9soMUkfD5D4WX6OmfduCjIY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR11MB6040
+X-OriginatorOrg: intel.com
 
-Hello,
+Apologies, I should have included you in the TO list on my earlier reply
+to Jani:
+https://lore.kernel.org/all/aS8fo0h32Yp+ZSPV@gcabiddu-mobl.ger.corp.intel.com/
 
-syzbot found the following issue on:
+On Tue, Dec 02, 2025 at 11:00:05PM -0800, Christoph Hellwig wrote:
+> On Tue, Dec 02, 2025 at 05:46:29PM +0200, Jani Partanen wrote:
+> > 
+> > On 02/12/2025 9.53, Christoph Hellwig wrote:
+> > > On Fri, Nov 28, 2025 at 07:04:48PM +0000, Giovanni Cabiddu wrote:
+> > > > +---------------------------+---------+---------+---------+---------+
+> > > > |                           | QAT-L9  | ZSTD-L3 | ZLIB-L3 | LZO-L1  |
+> > > > +---------------------------+---------+---------+---------+---------+
+> > > > | Disk Write TPUT (GiB/s)   | 6.5     | 5.2     | 2.2     | 6.5     |
+> > > > +---------------------------+---------+---------+---------+---------+
+> > > > | CPU utils %age @208 cores | 4.56%   | 15.67%  | 12.79%  | 19.85%  |
+> > > > +---------------------------+---------+---------+---------+---------+
+> > > > | Compression Ratio         | 34%     | 35%     | 37%     | 58%     |
+> > > > +---------------------------+---------+---------+---------+---------+
+> > > Is it just me, or do the numbers not look all that great at least
+> > > when comparing to ZSTD-L3 and LZO-L1?  What are the decompression
+> > > numbers?
+> > > 
+> > 
+> > What makes you think so?
+> 
+> Well, if you compared QAT-L9 to LZO-L1 specifically:
+> 
+>  - yes, cpu usage is reduced to a quarter
+>  - disk performance is the same
+>  - the compression ratio is much, much worse
+The compression ratio with QAT-ZLIB-L9 is close to SW-ZSTD-L3 (lower is better).
 
-HEAD commit:    05c93f3395ed Merge branch 'for-next/core' into for-kernelci
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=16cfa112580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3b5338ad1e59a06c
-dashboard link: https://syzkaller.appspot.com/bug?extid=8ff80a43de91ba2d80fc
-compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
-userspace arch: arm64
+Here is an updated version of the table for clarity:
+ +---------------------------+-------------+-----------+-----------+-----------+
+ |                           | QAT-ZLIB-L9 | ZSTD-L3   | ZLIB-L3   | LZO-L1    |
+ +---------------------------+-------------+-----------+-----------+-----------+
+ | Disk Write TPUT (GiB/s)   | 6.5         | 5.2       | 2.2       | 6.5       |
+ | (higher is better)        |             |           |           |           |
+ +---------------------------+-------------+-----------+-----------+-----------+
+ | CPU utils %age @208 cores | 4.56%       | 15.67%    | 12.79%    | 19.85%    |
+ | (lower is better)         | ~9 cores    | ~33 cores | ~27 cores | ~41 cores |
+ +---------------------------+-------------+-----------+-----------+-----------+
+ | Compression Ratio         | 34%         | 35%       | 37%       | 58%       |
+ | (lower is better)         |             |           |           |           |
+ +---------------------------+-------------+-----------+-----------+-----------+
 
-Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> and we don't know anything about the decompression speed.
+I'll share the decompression benchmarks in a future revision once they
+pass internal approval.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/6b5c913e373c/disk-05c93f33.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/15e75f1266ef/vmlinux-05c93f33.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/dd930129c578/Image-05c93f33.gz.xz
+> All the while you significantly complicate the code.
+The changes in BTRFS are about 800 LOC and the core logic is straightforward:
+convert folios to scatterlists and invoke the acomp APIs for offloading
+compression/decompression.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+8ff80a43de91ba2d80fc@syzkaller.appspotmail.com
+The majority of the code is in the QAT driver to enable the algorithms.
 
-======================================================
-WARNING: possible circular locking dependency detected
-syzkaller #0 Not tainted
-------------------------------------------------------
-syz.1.810/10993 is trying to acquire lock:
-ffff0000f98b59b8 (&ei->i_mmap_lock){++++}-{4:4}, at: btrfs_page_mkwrite+0x5a4/0x1714 fs/btrfs/file.c:1919
+Regards,
 
-but task is already holding lock:
-ffff0000cadb8518 (sb_pagefaults#7){.+.+}-{0:0}, at: do_page_mkwrite+0x138/0x2b8 mm/memory.c:3489
-
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #6 (sb_pagefaults#7){.+.+}-{0:0}:
-       percpu_down_read_internal include/linux/percpu-rwsem.h:53 [inline]
-       percpu_down_read_freezable include/linux/percpu-rwsem.h:83 [inline]
-       __sb_start_write include/linux/fs.h:1916 [inline]
-       sb_start_pagefault include/linux/fs.h:2081 [inline]
-       btrfs_page_mkwrite+0x284/0x1714 fs/btrfs/file.c:1874
-       do_page_mkwrite+0x138/0x2b8 mm/memory.c:3489
-       do_shared_fault mm/memory.c:5792 [inline]
-       do_fault mm/memory.c:5854 [inline]
-       do_pte_missing mm/memory.c:4362 [inline]
-       handle_pte_fault mm/memory.c:6234 [inline]
-       __handle_mm_fault+0x178c/0x4798 mm/memory.c:6366
-       handle_mm_fault+0x274/0x7fc mm/memory.c:6535
-       do_page_fault+0x57c/0x13cc arch/arm64/mm/fault.c:700
-       do_translation_fault+0xc4/0x114 arch/arm64/mm/fault.c:793
-       do_mem_abort+0x70/0x194 arch/arm64/mm/fault.c:933
-       el0_da+0x64/0x230 arch/arm64/kernel/entry-common.c:540
-       el0t_64_sync_handler+0x90/0x12c arch/arm64/kernel/entry-common.c:746
-       el0t_64_sync+0x198/0x19c arch/arm64/kernel/entry.S:596
-
--> #5 (&mm->mmap_lock){++++}-{4:4}:
-       down_read_killable+0x60/0x32c kernel/locking/rwsem.c:1560
-       mmap_read_lock_killable+0x28/0x8c include/linux/mmap_lock.h:377
-       get_mmap_lock_carefully mm/mmap_lock.c:377 [inline]
-       lock_mm_and_find_vma+0x2a4/0x2d8 mm/mmap_lock.c:428
-       do_page_fault+0x50c/0x13cc arch/arm64/mm/fault.c:678
-       do_translation_fault+0xc4/0x114 arch/arm64/mm/fault.c:793
-       do_mem_abort+0x70/0x194 arch/arm64/mm/fault.c:933
-       el1_abort+0x40/0x64 arch/arm64/kernel/entry-common.c:303
-       el1h_64_sync_handler+0x50/0xfc arch/arm64/kernel/entry-common.c:437
-       el1h_64_sync+0x6c/0x70 arch/arm64/kernel/entry.S:591
-       __uaccess_mask_ptr arch/arm64/include/asm/uaccess.h:169 [inline]
-       filldir64+0x314/0x6bc fs/readdir.c:381
-       dir_emit include/linux/fs.h:3988 [inline]
-       kernfs_fop_readdir+0x498/0x79c fs/kernfs/dir.c:1910
-       iterate_dir+0x2dc/0x478 fs/readdir.c:108
-       __do_sys_getdents64 fs/readdir.c:410 [inline]
-       __se_sys_getdents64 fs/readdir.c:396 [inline]
-       __arm64_sys_getdents64+0x110/0x2fc fs/readdir.c:396
-       __invoke_syscall arch/arm64/kernel/syscall.c:35 [inline]
-       invoke_syscall+0x98/0x254 arch/arm64/kernel/syscall.c:49
-       el0_svc_common+0xe8/0x23c arch/arm64/kernel/syscall.c:132
-       do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:151
-       el0_svc+0x5c/0x254 arch/arm64/kernel/entry-common.c:724
-       el0t_64_sync_handler+0x84/0x12c arch/arm64/kernel/entry-common.c:743
-       el0t_64_sync+0x198/0x19c arch/arm64/kernel/entry.S:596
-
--> #4 (&root->kernfs_rwsem){++++}-{4:4}:
-       down_write+0x50/0xc0 kernel/locking/rwsem.c:1590
-       kernfs_add_one+0x48/0x60c fs/kernfs/dir.c:791
-       kernfs_create_dir_ns+0xd4/0x12c fs/kernfs/dir.c:1093
-       sysfs_create_dir_ns+0x114/0x24c fs/sysfs/dir.c:59
-       create_dir lib/kobject.c:73 [inline]
-       kobject_add_internal+0x5a8/0xb20 lib/kobject.c:240
-       kobject_add_varg lib/kobject.c:374 [inline]
-       kobject_init_and_add+0x118/0x17c lib/kobject.c:457
-       btrfs_sysfs_add_qgroups+0x110/0x268 fs/btrfs/sysfs.c:2645
-       btrfs_quota_enable+0x210/0x2438 fs/btrfs/qgroup.c:1022
-       btrfs_ioctl_quota_ctl+0x178/0x1bc fs/btrfs/ioctl.c:3667
-       btrfs_ioctl+0x86c/0xc3c fs/btrfs/ioctl.c:5333
-       vfs_ioctl fs/ioctl.c:51 [inline]
-       __do_sys_ioctl fs/ioctl.c:597 [inline]
-       __se_sys_ioctl fs/ioctl.c:583 [inline]
-       __arm64_sys_ioctl+0x14c/0x1c4 fs/ioctl.c:583
-       __invoke_syscall arch/arm64/kernel/syscall.c:35 [inline]
-       invoke_syscall+0x98/0x254 arch/arm64/kernel/syscall.c:49
-       el0_svc_common+0xe8/0x23c arch/arm64/kernel/syscall.c:132
-       do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:151
-       el0_svc+0x5c/0x254 arch/arm64/kernel/entry-common.c:724
-       el0t_64_sync_handler+0x84/0x12c arch/arm64/kernel/entry-common.c:743
-       el0t_64_sync+0x198/0x19c arch/arm64/kernel/entry.S:596
-
--> #3 (&fs_info->qgroup_ioctl_lock){+.+.}-{4:4}:
-       __mutex_lock_common+0x1d0/0x2678 kernel/locking/mutex.c:598
-       __mutex_lock kernel/locking/mutex.c:760 [inline]
-       mutex_lock_nested+0x2c/0x38 kernel/locking/mutex.c:812
-       btrfs_quota_enable+0x24c/0x2438 fs/btrfs/qgroup.c:1051
-       btrfs_ioctl_quota_ctl+0x178/0x1bc fs/btrfs/ioctl.c:3667
-       btrfs_ioctl+0x86c/0xc3c fs/btrfs/ioctl.c:5333
-       vfs_ioctl fs/ioctl.c:51 [inline]
-       __do_sys_ioctl fs/ioctl.c:597 [inline]
-       __se_sys_ioctl fs/ioctl.c:583 [inline]
-       __arm64_sys_ioctl+0x14c/0x1c4 fs/ioctl.c:583
-       __invoke_syscall arch/arm64/kernel/syscall.c:35 [inline]
-       invoke_syscall+0x98/0x254 arch/arm64/kernel/syscall.c:49
-       el0_svc_common+0xe8/0x23c arch/arm64/kernel/syscall.c:132
-       do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:151
-       el0_svc+0x5c/0x254 arch/arm64/kernel/entry-common.c:724
-       el0t_64_sync_handler+0x84/0x12c arch/arm64/kernel/entry-common.c:743
-       el0t_64_sync+0x198/0x19c arch/arm64/kernel/entry.S:596
-
--> #2 (btrfs_trans_num_extwriters){++++}-{0:0}:
-       join_transaction+0x190/0xb5c fs/btrfs/transaction.c:321
-       start_transaction+0x778/0x155c fs/btrfs/transaction.c:705
-       btrfs_start_transaction+0x34/0x44 fs/btrfs/transaction.c:816
-       btrfs_rebuild_free_space_tree+0xac/0x6c0 fs/btrfs/free-space-tree.c:1340
-       btrfs_start_pre_rw_mount+0xed8/0x1728 fs/btrfs/disk-io.c:3062
-       open_ctree+0x24cc/0x358c fs/btrfs/disk-io.c:3619
-       btrfs_fill_super fs/btrfs/super.c:987 [inline]
-       btrfs_get_tree_super fs/btrfs/super.c:1951 [inline]
-       btrfs_get_tree_subvol fs/btrfs/super.c:2094 [inline]
-       btrfs_get_tree+0xd94/0x15dc fs/btrfs/super.c:2128
-       vfs_get_tree+0x90/0x28c fs/super.c:1758
-       fc_mount fs/namespace.c:1199 [inline]
-       do_new_mount_fc fs/namespace.c:3642 [inline]
-       do_new_mount+0x284/0x944 fs/namespace.c:3718
-       path_mount+0x5b4/0xdfc fs/namespace.c:4028
-       do_mount fs/namespace.c:4041 [inline]
-       __do_sys_mount fs/namespace.c:4229 [inline]
-       __se_sys_mount fs/namespace.c:4206 [inline]
-       __arm64_sys_mount+0x3e8/0x468 fs/namespace.c:4206
-       __invoke_syscall arch/arm64/kernel/syscall.c:35 [inline]
-       invoke_syscall+0x98/0x254 arch/arm64/kernel/syscall.c:49
-       el0_svc_common+0xe8/0x23c arch/arm64/kernel/syscall.c:132
-       do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:151
-       el0_svc+0x5c/0x254 arch/arm64/kernel/entry-common.c:724
-       el0t_64_sync_handler+0x84/0x12c arch/arm64/kernel/entry-common.c:743
-       el0t_64_sync+0x198/0x19c arch/arm64/kernel/entry.S:596
-
--> #1 (btrfs_trans_num_writers){++++}-{0:0}:
-       __lock_release kernel/locking/lockdep.c:5574 [inline]
-       lock_release+0x198/0x39c kernel/locking/lockdep.c:5889
-       percpu_up_read include/linux/percpu-rwsem.h:112 [inline]
-       __sb_end_write include/linux/fs.h:1911 [inline]
-       sb_end_intwrite+0x3c/0x348 include/linux/fs.h:2028
-       __btrfs_end_transaction+0x1f4/0x5f4 fs/btrfs/transaction.c:1076
-       btrfs_end_transaction+0x24/0x34 fs/btrfs/transaction.c:1110
-       __btrfs_prealloc_file_range+0x77c/0xb28 fs/btrfs/inode.c:9145
-       btrfs_prealloc_file_range+0x60/0x7c fs/btrfs/inode.c:9159
-       btrfs_zero_range+0x928/0xb7c fs/btrfs/file.c:3070
-       btrfs_fallocate+0x8ec/0x1734 fs/btrfs/file.c:3181
-       vfs_fallocate+0x52c/0x668 fs/open.c:342
-       ksys_fallocate fs/open.c:366 [inline]
-       __do_sys_fallocate fs/open.c:371 [inline]
-       __se_sys_fallocate fs/open.c:369 [inline]
-       __arm64_sys_fallocate+0xbc/0x10c fs/open.c:369
-       __invoke_syscall arch/arm64/kernel/syscall.c:35 [inline]
-       invoke_syscall+0x98/0x254 arch/arm64/kernel/syscall.c:49
-       el0_svc_common+0xe8/0x23c arch/arm64/kernel/syscall.c:132
-       do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:151
-       el0_svc+0x5c/0x254 arch/arm64/kernel/entry-common.c:724
-       el0t_64_sync_handler+0x84/0x12c arch/arm64/kernel/entry-common.c:743
-       el0t_64_sync+0x198/0x19c arch/arm64/kernel/entry.S:596
-
--> #0 (&ei->i_mmap_lock){++++}-{4:4}:
-       check_prev_add kernel/locking/lockdep.c:3165 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3284 [inline]
-       validate_chain kernel/locking/lockdep.c:3908 [inline]
-       __lock_acquire+0x1774/0x30a4 kernel/locking/lockdep.c:5237
-       lock_acquire+0x14c/0x2e0 kernel/locking/lockdep.c:5868
-       down_read+0x58/0x2f8 kernel/locking/rwsem.c:1537
-       btrfs_page_mkwrite+0x5a4/0x1714 fs/btrfs/file.c:1919
-       do_page_mkwrite+0x138/0x2b8 mm/memory.c:3489
-       do_shared_fault mm/memory.c:5792 [inline]
-       do_fault mm/memory.c:5854 [inline]
-       do_pte_missing mm/memory.c:4362 [inline]
-       handle_pte_fault mm/memory.c:6234 [inline]
-       __handle_mm_fault+0x178c/0x4798 mm/memory.c:6366
-       handle_mm_fault+0x274/0x7fc mm/memory.c:6535
-       do_page_fault+0x57c/0x13cc arch/arm64/mm/fault.c:700
-       do_translation_fault+0xc4/0x114 arch/arm64/mm/fault.c:793
-       do_mem_abort+0x70/0x194 arch/arm64/mm/fault.c:933
-       el0_da+0x64/0x230 arch/arm64/kernel/entry-common.c:540
-       el0t_64_sync_handler+0x90/0x12c arch/arm64/kernel/entry-common.c:746
-       el0t_64_sync+0x198/0x19c arch/arm64/kernel/entry.S:596
-
-other info that might help us debug this:
-
-Chain exists of:
-  &ei->i_mmap_lock --> &mm->mmap_lock --> sb_pagefaults#7
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  rlock(sb_pagefaults#7);
-                               lock(&mm->mmap_lock);
-                               lock(sb_pagefaults#7);
-  rlock(&ei->i_mmap_lock);
-
- *** DEADLOCK ***
-
-2 locks held by syz.1.810/10993:
- #0: ffff0000cf866790 (&mm->mmap_lock){++++}-{4:4}, at: mmap_read_trylock include/linux/mmap_lock.h:387 [inline]
- #0: ffff0000cf866790 (&mm->mmap_lock){++++}-{4:4}, at: get_mmap_lock_carefully mm/mmap_lock.c:368 [inline]
- #0: ffff0000cf866790 (&mm->mmap_lock){++++}-{4:4}, at: lock_mm_and_find_vma+0x38/0x2d8 mm/mmap_lock.c:428
- #1: ffff0000cadb8518 (sb_pagefaults#7){.+.+}-{0:0}, at: do_page_mkwrite+0x138/0x2b8 mm/memory.c:3489
-
-stack backtrace:
-CPU: 0 UID: 0 PID: 10993 Comm: syz.1.810 Not tainted syzkaller #0 PREEMPT 
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/03/2025
-Call trace:
- show_stack+0x2c/0x3c arch/arm64/kernel/stacktrace.c:499 (C)
- __dump_stack+0x30/0x40 lib/dump_stack.c:94
- dump_stack_lvl+0xd8/0x12c lib/dump_stack.c:120
- dump_stack+0x1c/0x28 lib/dump_stack.c:129
- print_circular_bug+0x324/0x32c kernel/locking/lockdep.c:2043
- check_noncircular+0x154/0x174 kernel/locking/lockdep.c:2175
- check_prev_add kernel/locking/lockdep.c:3165 [inline]
- check_prevs_add kernel/locking/lockdep.c:3284 [inline]
- validate_chain kernel/locking/lockdep.c:3908 [inline]
- __lock_acquire+0x1774/0x30a4 kernel/locking/lockdep.c:5237
- lock_acquire+0x14c/0x2e0 kernel/locking/lockdep.c:5868
- down_read+0x58/0x2f8 kernel/locking/rwsem.c:1537
- btrfs_page_mkwrite+0x5a4/0x1714 fs/btrfs/file.c:1919
- do_page_mkwrite+0x138/0x2b8 mm/memory.c:3489
- do_shared_fault mm/memory.c:5792 [inline]
- do_fault mm/memory.c:5854 [inline]
- do_pte_missing mm/memory.c:4362 [inline]
- handle_pte_fault mm/memory.c:6234 [inline]
- __handle_mm_fault+0x178c/0x4798 mm/memory.c:6366
- handle_mm_fault+0x274/0x7fc mm/memory.c:6535
- do_page_fault+0x57c/0x13cc arch/arm64/mm/fault.c:700
- do_translation_fault+0xc4/0x114 arch/arm64/mm/fault.c:793
- do_mem_abort+0x70/0x194 arch/arm64/mm/fault.c:933
- el0_da+0x64/0x230 arch/arm64/kernel/entry-common.c:540
- el0t_64_sync_handler+0x90/0x12c arch/arm64/kernel/entry-common.c:746
- el0t_64_sync+0x198/0x19c arch/arm64/kernel/entry.S:596
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+-- 
+Giovanni
 
