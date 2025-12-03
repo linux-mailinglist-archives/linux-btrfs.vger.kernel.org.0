@@ -1,143 +1,125 @@
-Return-Path: <linux-btrfs+bounces-19498-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19499-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15139CA1A8F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 03 Dec 2025 22:21:34 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75197CA1CC3
+	for <lists+linux-btrfs@lfdr.de>; Wed, 03 Dec 2025 23:15:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 00AEA3004453
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Dec 2025 21:21:32 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 1D708300BB84
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Dec 2025 22:13:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0784A2BE7A7;
-	Wed,  3 Dec 2025 21:21:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDFD82E03F1;
+	Wed,  3 Dec 2025 22:13:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="aojE/agT";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="qZy8SU8R"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h24ieQB2"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fhigh-b4-smtp.messagingengine.com (fhigh-b4-smtp.messagingengine.com [202.12.124.155])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7A122BE7B4;
-	Wed,  3 Dec 2025 21:21:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.155
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACC2F2DCBE0
+	for <linux-btrfs@vger.kernel.org>; Wed,  3 Dec 2025 22:13:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764796889; cv=none; b=sgJ93vLrcOgNSqGMo8oUH+W83MhHLMuubpH2WFdflwO2hd0IHlE4gwzYmP5hmbZWw+S6KnDC2dSLggMWYvecLn4puHKNdvaectqF6ExRLypMkS/0n6lNPecxgfkq+gjNAH5RWc3N+UzsjF9Y/ilou/nXoHwPql0q8akgh+E8CGU=
+	t=1764800002; cv=none; b=NwakarDnndrM2CH1qMzK0Gj5hhiJk1iAsrdTrVepaXS7P7UnYGBTN513SEGHpL7nmiCr20pR4KxmB03UVhO2oiqwmTUIb3hYLKiuImpvGGnLhLl8JBMgRlTPWSLQScf9ma8g9lSsZw43U6h0ehyCQDQ3xRncbTfXijpTPXgQDx4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764796889; c=relaxed/simple;
-	bh=AIkhICtH4DTfK/2SU3s3twcc2zxgRV6L8wc3Ds19FnY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=awtIKOkBbu1VFnUL5SiUJVA03RHolwfxPB3sCl1W53K+zrpz9ykJF5LYZp6FFgXrDshkL0+VGPiXvbfGV3P3NnJ1chIt2rgDSR2swowF4N/lTTtpHlryznSeIcYh8cj11kDXyGjO+OAym5S/hvMgrwH57QC5PGev66ZFvo1HXSo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=aojE/agT; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=qZy8SU8R; arc=none smtp.client-ip=202.12.124.155
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-10.internal (phl-compute-10.internal [10.202.2.50])
-	by mailfhigh.stl.internal (Postfix) with ESMTP id 056847A0186;
-	Wed,  3 Dec 2025 16:21:25 -0500 (EST)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-10.internal (MEProxy); Wed, 03 Dec 2025 16:21:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1764796885; x=1764883285; bh=8loxiW6iU1
-	lTRylgVkYUvow6Eq+DRXPskyNJXcwBTqc=; b=aojE/agTXjL+3UjRUgxNtADENw
-	NMPj/Q59AVyQpGfAqZrJTNE4jQ4WixGUr6cZgHS32ytGn1v7mpWbM1cgpObtEEbT
-	RK7NNAbWa3uMFx02MBNi9/VSVdSGKspAL6v9aAzD5t2j5rDKm6OcjoI8kBg6pzWX
-	sfnELXCN/w2R6AS803nAUDYjFgJLUv+NGZHMD/0qJatVBxWK3RuaGgr/yxvQqHvd
-	PCuuka28wcIlt7JPeDTKcJG0H9gnkAJvAjrIC5s1PAUsigxn49JkmmDPSZG6EdGb
-	My1uHB9TWXqyn6rmBPn5HQnLqF+kDItylnz98B2jXNGoVYc2zUDvCoVp+T+A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-	1764796885; x=1764883285; bh=8loxiW6iU1lTRylgVkYUvow6Eq+DRXPskyN
-	JXcwBTqc=; b=qZy8SU8R4jSLxwnKi+VxG6dP9wJPR8TGsy8wk6gZ/95W+9a1Y+e
-	llhfD/nWMdCBBtLmkRC+2cYIlSJxqsNw7x/dAeQFa/qHSVRSaXBI4yNk7395Ke6K
-	ir8ZMd/1kBFA6bXMnGO1XVk6u3T0vkryeHWoMYgTL/LXwYYhQddZEvxvEHa4Lom/
-	M/MrTtyoBsIW4KbjBysmJqzS4luW9dunryL4GYeuD6ZfeDM8xIg4ivB2i2rQGS8X
-	I5osRwXGNPoW+NyGCEHGgwRbhpfTRVAuW4crGcJKIEkAPMKvgLVyJMNjznt4i0a9
-	o6mm62BEfB7n32tx9NJT1yl6qjI+9rkTjVg==
-X-ME-Sender: <xms:1akwaV7NTuYisvNEk6ynLZqQ81EpLmxeECkjd1yRHjVpZtg9PFdkwQ>
-    <xme:1akwaUYPWTh6mewmvl1kSl5qqG5MG4zonvtLdQ04uPQ9OMHSWlWdonp_B2g7WVG2h
-    Ae5rUtUf2QWcxDlwNAxHmHNLgJnJ-D9Kv-PYsvNcUgAGOsnljJFJREz>
-X-ME-Received: <xmr:1akwacghQv_epi7M4Az72KtnMIdwj7-EJUY7XNHKQJDGPOjv8iSXck6ozaKM26jTUaOpzv1JPq22MlWeX9SxUS7uNZI>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdefkeejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceurghi
-    lhhouhhtmecufedttdenucenucfjughrpeffhffvvefukfhfgggtuggjsehttdertddttd
-    dvnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheq
-    necuggftrfgrthhtvghrnhepkedvkeffjeellefhveehvdejudfhjedthfdvveeiieeiud
-    fguefgtdejgfefleejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghi
-    lhhfrhhomhepsghorhhishessghurhdrihhopdhnsggprhgtphhtthhopeehpdhmohguvg
-    epshhmthhpohhuthdprhgtphhtthhopehmphgvlhhlihiiiigvrhdruggvvhesghhmrghi
-    lhdrtghomhdprhgtphhtthhopegtlhhmsehfsgdrtghomhdprhgtphhtthhopegushhtvg
-    hrsggrsehsuhhsvgdrtghomhdprhgtphhtthhopehlihhnuhigqdgsthhrfhhssehvghgv
-    rhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvgh
-    gvrhdrkhgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:1akwad9r3rH5qkKI3meijs4bdj5NXHYF3MNP5tv7b5j5BGES8ojTlw>
-    <xmx:1akwafqPa7o0Wp1fRNpBRrI3OkSdf_u1CpZF5KEdx5qp_qecSlOptQ>
-    <xmx:1akwadUqEIGhTrCTD5CN3u8Fq6z_VmYB76z4TwQ8hO05w--APsMMKA>
-    <xmx:1akwaWD1fPU3obeHnQS4nmW5gf-jBNCpoxWNFGQRInGwIHHDNh8B6Q>
-    <xmx:1akwad3jF1yLJbZk-XmIfEf-BPaNL4MxBRxuK0IRxGTElFON5mN7OUoB>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 3 Dec 2025 16:21:25 -0500 (EST)
-Date: Wed, 3 Dec 2025 13:21:45 -0800
-From: Boris Burkov <boris@bur.io>
-To: Massimiliano Pellizzer <mpellizzer.dev@gmail.com>
-Cc: clm@fb.com, dsterba@suse.com, linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] btrfs: remove dead assignment in prepare_one_folio()
-Message-ID: <20251203212145.GC3589713@zen.localdomain>
-References: <20251128174804.293605-1-mpellizzer.dev@gmail.com>
+	s=arc-20240116; t=1764800002; c=relaxed/simple;
+	bh=sRQv8zCAnwT5YednJoTNug6WaYTXlxSJT/RzMJorDqs=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=Jmfl2N3MlaT35880NgsJWpmgwUQvwaNvKKBJVMMmW71yvDfTz9FjEBNPcVk2/Xk/lfXxyxQ8vSsBrIv3jIJfQXXo6yYUYM8KiD3wfZT4pk+ypnliID9CXmW8lgZE+UF/MbPtRCUgQvdODIiTcFj+WkfbqGNcBylWr3UkRlqOS1E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h24ieQB2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82F4DC4CEF5
+	for <linux-btrfs@vger.kernel.org>; Wed,  3 Dec 2025 22:13:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1764800002;
+	bh=sRQv8zCAnwT5YednJoTNug6WaYTXlxSJT/RzMJorDqs=;
+	h=From:To:Subject:Date:In-Reply-To:References:From;
+	b=h24ieQB2BCWHAcvxVJogkObKOXJDgcC2Olv7tnw0YiTxtI6emXejE1Yh71aDrqLfM
+	 +BBGqlJd8XKj1laHpOryzfKCoBQ/Hid9CPjhCpQy75fZvOdsvoJCYhMpRC0LsJlwf7
+	 C1K0bc6lEnz63jTZbPEf1CObxCQ4WtVrEsvWFDc6qvRul1aJYPEN6MNelNw11dioe2
+	 srwhkoossPVnx3+fFXAGNbyui/AfC5sP/PFK0uLhxs2Yr9TC3MCzBs4DyGy0emHFju
+	 tyccir423mYz8W3fL+RKnxaSSRd8/Tk2yloVoHaXDkZXJV2Kav/oJoNqlqJUWaCEq6
+	 EsJb/aOyjMCng==
+From: fdmanana@kernel.org
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH v2] btrfs: do not skip logging new dentries when logging a new name
+Date: Wed,  3 Dec 2025 22:13:18 +0000
+Message-ID: <818f6f16e33bfa2da9bd0101e49a47aad44a791a.1764799815.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.47.2
+In-Reply-To: <a1b70971f8b73d44695ab6af56b69e0ae1010179.1764783284.git.fdmanana@suse.com>
+References: <a1b70971f8b73d44695ab6af56b69e0ae1010179.1764783284.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251128174804.293605-1-mpellizzer.dev@gmail.com>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Nov 28, 2025 at 05:47:55PM +0000, Massimiliano Pellizzer wrote:
-> In the error path of prepare_one_folio(), we assign ret = 0
-> before jumping to the again label to retry the operation.
-> However, ret is immediately overwritten by
-> ret = set_folio_extent_mapped(folio).
-> 
-> The zero assignment is never observerd by any code path,
-> therefore it can be safely removed.
-> 
-> No functional change.
+From: Filipe Manana <fdmanana@suse.com>
 
-This looks fine to me. But given the fact that we are setting ret = 0
-before entering the again: loop, this code is maintaining that
-(unneeded) invariant. So I think we should remove both or neither.
+When we are logging a directory and the log context indicates that we
+are logging a new name for some other file (that is or was inside that
+directory), we skip logging the inodes for new dentries in the directory.
 
-I would lean towards removing both, but I don't feel strongly about it.
+This is ok most of the time, but if after the rename or link operation
+that triggered the logging of that directory, we have an explicit fsync
+of that directory without the directory inode being evicted and reloaded,
+we end up never logging the inodes for the new dentries that we found
+during the new name logging, as the next directory fsync will only process
+dentries that were added after the last time we logged the directory (we
+are doing an incremental directory logging).
 
-Thanks,
-Boris
+So make sure we always log new dentries for a directory even if we are
+in a context of logging a new name.
 
-> 
-> Signed-off-by: Massimiliano Pellizzer <mpellizzer.dev@gmail.com>
-> ---
->  fs/btrfs/file.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-> index 7a501e73d880..7d875aa261d1 100644
-> --- a/fs/btrfs/file.c
-> +++ b/fs/btrfs/file.c
-> @@ -877,7 +877,6 @@ static noinline int prepare_one_folio(struct inode *inode, struct folio **folio_
->  		/* The folio is already unlocked. */
->  		folio_put(folio);
->  		if (!nowait && ret == -EAGAIN) {
-> -			ret = 0;
->  			goto again;
->  		}
->  		return ret;
-> -- 
-> 2.51.0
-> 
+We started skipping logging inodes for new dentries as of commit
+c48792c6ee7a ("btrfs: do not log new dentries when logging that a new name
+exists") and it was fine back then, because when logging a directory we
+always iterated over all the directory entries (for leaves changed in the
+current transaction) so a subsequent fsync would always log anything that
+was previously skipped while logging a directory when logging a new name
+(with btrfs_log_new_name()). But later support for incrementally logging
+a directory was added in commit dc2872247ec0 ("btrfs: keep track of the
+last logged keys when logging a directory"), to avoid checking all dir
+items every time we log a directory, so the check to skip dentry logging
+added in the first commit should have been removed when the incremental
+support for logging a directory was added.
+
+A test case for fstests will follow soon.
+
+Reported-by: Vyacheslav Kovalevsky <slava.kovalevskiy.2014@gmail.com>
+Link: https://lore.kernel.org/linux-btrfs/84c4e713-85d6-42b9-8dcf-0722ed26cb05@gmail.com/
+Fixes: dc2872247ec0 ("btrfs: keep track of the last logged keys when logging a directory")
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+
+V2: Update changelog to be more detailed about when skipping the logging
+    of new dentries during new name logging became incorrect, and update
+    the Fixes commit.
+
+ fs/btrfs/tree-log.c | 8 --------
+ 1 file changed, 8 deletions(-)
+
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index 64c1155160a2..31edc93a383e 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -5865,14 +5865,6 @@ static int log_new_dir_dentries(struct btrfs_trans_handle *trans,
+ 	struct btrfs_inode *curr_inode = start_inode;
+ 	int ret = 0;
+ 
+-	/*
+-	 * If we are logging a new name, as part of a link or rename operation,
+-	 * don't bother logging new dentries, as we just want to log the names
+-	 * of an inode and that any new parents exist.
+-	 */
+-	if (ctx->logging_new_name)
+-		return 0;
+-
+ 	path = btrfs_alloc_path();
+ 	if (!path)
+ 		return -ENOMEM;
+-- 
+2.47.2
+
 
