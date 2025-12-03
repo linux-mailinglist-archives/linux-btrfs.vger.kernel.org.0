@@ -1,199 +1,178 @@
-Return-Path: <linux-btrfs+bounces-19490-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19491-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03B67CA113A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 03 Dec 2025 19:41:49 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id A33A1CA1483
+	for <lists+linux-btrfs@lfdr.de>; Wed, 03 Dec 2025 20:09:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D9AC432A786A
-	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Dec 2025 17:43:14 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 5C4F83001C0E
+	for <lists+linux-btrfs@lfdr.de>; Wed,  3 Dec 2025 19:09:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA25D33B6CC;
-	Wed,  3 Dec 2025 17:43:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23E4D32C95B;
+	Wed,  3 Dec 2025 19:09:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NfNGKi34"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eAXMXySe"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E66EB343D7B
-	for <linux-btrfs@vger.kernel.org>; Wed,  3 Dec 2025 17:43:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46C83261B96;
+	Wed,  3 Dec 2025 19:09:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764783791; cv=none; b=BPeGteFWCXDBBT16eAUIARkPHycz2u2lWcaezA9nqp5ptA7FHMGP3xGt08wseRXW68/JxFXz/GOvqeY5hQBGUvx7VfJxRIcRMgi5dWA/avqkkS/70WlxeGfrEgVGOOU4zkT5Dx6c3KZxqGCybaVEAiW59w2V+05xxd+mtiXdRvQ=
+	t=1764788978; cv=none; b=JT/Krf+QT1WICTWbsmXhVhSnQvgpM6SzWR1Nv+JZ5U+eIU1I5lBlef6eGE24KO9GQIoxGGA7FXbKLv8t3ZVsmAvUOudTS7TJTRaApL4ulXvDBBzR/iqJvj3K19G746iBzChS4XG92w5HdGQSobkm6kbnLxRp80Hg4YGOMCFvCLs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764783791; c=relaxed/simple;
-	bh=xqK3UsWzwiP+Id7mGerrYXyXpPb9Quy5TrWRzw9rVOA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=oNitWOtIMarVj86xcV57zl1hNLABTzFFkKVchfzjdVqFee+elpfdy6NuhUGsJ2TNYfG9tn8U48IuxfjtykufASam0eAwifiX2yJRcEeQt4ivDp/zHLlm4HGetwYbvHqUP2xlPB2oBKm3I311dPAiF0NAvhfRgHGn8LMFuKSFXZg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NfNGKi34; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65035C116C6
-	for <linux-btrfs@vger.kernel.org>; Wed,  3 Dec 2025 17:43:10 +0000 (UTC)
+	s=arc-20240116; t=1764788978; c=relaxed/simple;
+	bh=yZi0rAqdIK7CJAeZ1wNsttnbuDrtfBEtSPDdFMON40Y=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jyqvYVR/HC5XJ9sSF0CF7khuuCEV9WSSYc2J1Wd0wjiWH+IkB5Wz423AUZNTicgQ49FsvMB3rKrPj+Rd3/MuiCL1insAlRA+9dQV6jMSF6Sya0EhN9p7QfIQbSmqd50I6hukAqGJUQNe0Nlpyombt62v8z8ns3Be5p8XUDa77tI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eAXMXySe; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50F60C4CEF5;
+	Wed,  3 Dec 2025 19:09:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1764783790;
-	bh=xqK3UsWzwiP+Id7mGerrYXyXpPb9Quy5TrWRzw9rVOA=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=NfNGKi34/DlKWO60pUTc4OwQb77k5OOa5ZDhglyilT4coaAADpvzUYqPti4lU+SB8
-	 zHg6hBmYXm0FRS936sUcrBC3+M8XbEkpD2h8L+8DTVgZoHMYQpnB/T/LDSjxRTmiWF
-	 4YbqfBg2CKyyIxIAMwVtTBF1tyNB4J7XPtIQI9OuouQXLtNPtG182VkwzNgd4tnrhS
-	 cXnkybRGEPSsTW6nldYsnGazSeOKK8IVb38ztFTg+DcrDqFQ1+zHTYOz/Ua2pYOtoV
-	 D+rfmuplu2JZzJdTvklq4ageccWhVkY9dtXjkyCUF/OvbIdLV92VGQNmwx2JpRgghY
-	 O79otxX7tmNDw==
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-640a503fbe8so5299148a12.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 03 Dec 2025 09:43:10 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUOge6M9DueuQpkad03DnvTzJVmwJsRPQzoMJeieAdBWP3eKrDpkIBlZjzhhYJtdPeq70cPnwUEoZI70A==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzRbyPqmUi4AKAfNMmC9UKntEiE5qynO3fyDq8dr706znauDZ9I
-	DksX/W1iPHuReyGtfbQ4rYlQAvkNDkTePbltwxXcsYGMRjC9Ua+BNi16+gVFoVdabJCN/948jlM
-	hb6jl8R+ZmmLndroBguw6ELLp4pETU/A=
-X-Google-Smtp-Source: AGHT+IGwjjNAAGhQ46s6akOruKGa6yH4GMjXOoCzsIHwzLED5vtf+SuYyY84f+ZBuVZ67UoSB/bth643xVfvUMP/E0Q=
-X-Received: by 2002:a17:907:3f24:b0:b70:68d7:ac0c with SMTP id
- a640c23a62f3a-b79ec6b9586mr2343866b.42.1764783788628; Wed, 03 Dec 2025
- 09:43:08 -0800 (PST)
+	s=k20201202; t=1764788977;
+	bh=yZi0rAqdIK7CJAeZ1wNsttnbuDrtfBEtSPDdFMON40Y=;
+	h=From:To:Cc:Subject:Date:From;
+	b=eAXMXySeAff9e6egfc5MT0xk97kQWRADo7YF0+eXfyGzrByfIyW7RWhVLhjJp4Izi
+	 gudPJZZPeoO0Mp5Na06cHQJeEWpm7k67Oj08W8mcJIwDUXkOguRUHUd189YJrJYU+H
+	 3shaT0kNvVGBnseQi/u/ZyJEjaeAe8hvHZWy58SKbycs2nWNWMVznwlzZw/fTMPfRn
+	 +RjgwhColdJu4AjzEfcePX/chmmo+26BX1ziV/STlfzXOSaysXkwOc/eR4KTX+72vF
+	 mHCoHNEa/Z0OyQMxQjTHvm5am7RscayR6enwl5/fcW97TuIOPfkfEEfElo7DupPpRm
+	 vCuCtmpAqIhgA==
+From: Eric Biggers <ebiggers@kernel.org>
+To: linux-crypto@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	Ard Biesheuvel <ardb@kernel.org>,
+	"Jason A . Donenfeld" <Jason@zx2c4.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Thorsten Blum <thorsten.blum@linux.dev>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	David Laight <david.laight@runbox.com>,
+	David Sterba <dsterba@suse.com>,
+	llvm@lists.linux.dev,
+	linux-btrfs@vger.kernel.org,
+	Eric Biggers <ebiggers@kernel.org>
+Subject: [PATCH] lib/crypto: blake2b: Roll up BLAKE2b round loop on 32-bit
+Date: Wed,  3 Dec 2025 11:06:52 -0800
+Message-ID: <20251203190652.144076-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <84c4e713-85d6-42b9-8dcf-0722ed26cb05@gmail.com>
-In-Reply-To: <84c4e713-85d6-42b9-8dcf-0722ed26cb05@gmail.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Wed, 3 Dec 2025 17:42:31 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H4e8JPggKYasQA9Cm2UA=iCNuuchEjB0GzYKxPvf4f-FA@mail.gmail.com>
-X-Gm-Features: AWmQ_bl01_qDFrQoMHIgzNtzpvKhtnW9SlQyo-BF0jqXLY83Wk7ksM0HT8TKtdg
-Message-ID: <CAL3q7H4e8JPggKYasQA9Cm2UA=iCNuuchEjB0GzYKxPvf4f-FA@mail.gmail.com>
-Subject: Re: Directory is not persisted after creating 100s of files inside,
- writing to another file and renaming it if system crashes.
-To: Vyacheslav Kovalevsky <slava.kovalevskiy.2014@gmail.com>
-Cc: clm@fb.com, dsterba@suse.com, linux-btrfs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Dec 3, 2025 at 11:26=E2=80=AFAM Vyacheslav Kovalevsky
-<slava.kovalevskiy.2014@gmail.com> wrote:
->
-> Directory entry is not persisted after creating 100s (hundreds) of files =
-inside, writing to another file (with `O_SYNC` flag) and renaming it if sys=
-tem crashes.
+BLAKE2b has a state of 16 64-bit words.  Add the message data in and
+there are 32 64-bit words.  With the current code where all the rounds
+are unrolled to enable constant-folding of the blake2b_sigma values,
+this results in a very large code size on 32-bit kernels, including a
+recurring issue where gcc uses a large amount of stack.
 
-There's no need to create hundreds of files, 1 is enough. There's also
-no need to open the file with O_SYNC or write data to it, more details
-below.
+There's just not much benefit to this unrolling when the code is already
+so large.  Let's roll up the rounds when !CONFIG_64BIT.  Then, remove
+the now-unnecessary override of the stack frame size warning.
 
->
->
-> Detailed description
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->
-> Hello, we have found another issue with btrfs crash behavior.
->
-> In short:
->
-> 1. Create and sync an empty file in root directory.
-> 2. Make new directory in root directory.
-> 3. Open the file with `O_SYNC` flag and write some data (of specific size=
-).
+Code size improvements for blake2b_compress_generic():
 
-There's no need to O_SYNC, write data of any specific size or even write da=
-ta.
-Just change the file in some way (writing something to it of any size,
-or changing uid, gid, or add a xattr, etc) and then fsync it.
+                  Size before (bytes)    Size after (bytes)
+                  -------------------    ------------------
+    i386, gcc           27584                 3632
+    i386, clang         18208                 3248
+    arm32, gcc          19912                 2860
+    arm32, clang        21336                 3344
 
-> 4. Fill directory with specific number of empty files.
+Running the BLAKE2b benchmark on a !CONFIG_64BIT kernel on an x86_64
+processor shows a 16384B throughput change of 351 => 340 MB/s (gcc) or
+442 MB/s => 375 MB/s (clang).  So clearly not much of a slowdown either.
+But also that microbenchmark also effectively disregards cache usage,
+which is important in practice and is far better in the smaller code.
 
-One file is enough.
+Note: If we rolled up the loop on x86_64 too, the change would be
+7024 bytes => 1584 bytes and 1960 MB/s => 1396 MB/s (gcc), or
+6848 bytes => 1696 bytes and 1920 MB/s => 1263 MB/s (clang).
+Maybe still worth it, though not quite as clearly beneficial.
 
-Fixed by:   https://lore.kernel.org/linux-btrfs/a1b70971f8b73d44695ab6af56b=
-69e0ae1010179.1764783284.git.fdmanana@suse.com/
+Fixes: 91d689337fe8 ("crypto: blake2b - add blake2b generic implementation")
+Signed-off-by: Eric Biggers <ebiggers@kernel.org>
+---
+ lib/crypto/Makefile  |  1 -
+ lib/crypto/blake2b.c | 25 +++++++++++++------------
+ 2 files changed, 13 insertions(+), 13 deletions(-)
 
-Thanks.
+diff --git a/lib/crypto/Makefile b/lib/crypto/Makefile
+index b5346cebbb55..330ab65b29c4 100644
+--- a/lib/crypto/Makefile
++++ b/lib/crypto/Makefile
+@@ -31,11 +31,10 @@ obj-$(CONFIG_CRYPTO_LIB_GF128MUL)		+= gf128mul.o
+ 
+ ################################################################################
+ 
+ obj-$(CONFIG_CRYPTO_LIB_BLAKE2B) += libblake2b.o
+ libblake2b-y := blake2b.o
+-CFLAGS_blake2b.o := -Wframe-larger-than=4096 #  https://gcc.gnu.org/bugzilla/show_bug.cgi?id=105930
+ ifeq ($(CONFIG_CRYPTO_LIB_BLAKE2B_ARCH),y)
+ CFLAGS_blake2b.o += -I$(src)/$(SRCARCH)
+ libblake2b-$(CONFIG_ARM) += arm/blake2b-neon-core.o
+ endif # CONFIG_CRYPTO_LIB_BLAKE2B_ARCH
+ 
+diff --git a/lib/crypto/blake2b.c b/lib/crypto/blake2b.c
+index 09c6d65d8a6e..923cda5c7603 100644
+--- a/lib/crypto/blake2b.c
++++ b/lib/crypto/blake2b.c
+@@ -12,10 +12,11 @@
+ #include <linux/bug.h>
+ #include <linux/export.h>
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/string.h>
++#include <linux/unroll.h>
+ #include <linux/types.h>
+ 
+ static const u8 blake2b_sigma[12][16] = {
+ 	{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 },
+ 	{ 14, 10, 4, 8, 9, 15, 13, 6, 1, 12, 0, 2, 11, 7, 5, 3 },
+@@ -81,22 +82,22 @@ blake2b_compress_generic(struct blake2b_ctx *ctx,
+ 	G(r, 4, v[0], v[ 5], v[10], v[15]); \
+ 	G(r, 5, v[1], v[ 6], v[11], v[12]); \
+ 	G(r, 6, v[2], v[ 7], v[ 8], v[13]); \
+ 	G(r, 7, v[3], v[ 4], v[ 9], v[14]); \
+ } while (0)
+-		ROUND(0);
+-		ROUND(1);
+-		ROUND(2);
+-		ROUND(3);
+-		ROUND(4);
+-		ROUND(5);
+-		ROUND(6);
+-		ROUND(7);
+-		ROUND(8);
+-		ROUND(9);
+-		ROUND(10);
+-		ROUND(11);
++
++#ifdef CONFIG_64BIT
++		/*
++		 * Unroll the rounds loop to enable constant-folding of the
++		 * blake2b_sigma values.  Seems worthwhile on 64-bit kernels.
++		 * Not worthwhile on 32-bit kernels because the code size is
++		 * already so large there due to BLAKE2b using 64-bit words.
++		 */
++		unrolled_full
++#endif
++		for (int r = 0; r < 12; r++)
++			ROUND(r);
+ 
+ #undef G
+ #undef ROUND
+ 
+ 		for (i = 0; i < 8; ++i)
 
-> 5. Rename the previously written file.
-> 6. Sync root directory.
->
-> After system crash directory will be missing, although it was synced in t=
-he last step.
->
->
-> System info
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->
-> Linux version 6.18, also tested on 6.14.11.
->
->
-> How to reproduce
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->
-> ```
-> #include <errno.h>
-> #include <fcntl.h>
-> #include <stdio.h>
-> #include <string.h>
-> #include <sys/stat.h>
-> #include <sys/types.h>
-> #include <unistd.h>
->
-> #define BUFFER_LEN 1024 // should be at least ~ 528
-> #define FILE_N 256      // should be at least ~ 128
->
-> int main() {
->    int status;
->    int file_fd;
->    int root_fd;
->
->    int buffer[BUFFER_LEN + 1] =3D {};
->    for (int i =3D 0; i < BUFFER_LEN; ++i) {
->      buffer[i] =3D i;
->    }
->
->    status =3D creat("file1", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
->    printf("CREAT: %d\n", status);
->    close(status);
->
->    // persist `file1`
->    sync();
->
->    status =3D mkdir("dir", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
->    printf("MKDIR: %d\n", status);
->
->    // `O_SYNC` is important
->    status =3D open("file1", O_WRONLY | O_SYNC);
->    printf("OPEN: %d\n", status);
->    file_fd =3D status;
->
->    status =3D write(file_fd, buffer, BUFFER_LEN);
->    printf("WRITE: %d\n", status);
->
->    char path[100];
->    // fill directory with a lot of empty files
->    for (int i =3D 0; i < FILE_N; ++i) {
->      sprintf(path, "dir/%d", i);
->      status =3D creat(path, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
->      close(status);
->    }
->
->    status =3D rename("file1", "file2");
->    printf("RENAME: %d\n", status);
->
->    status =3D open(".", O_RDONLY | O_DIRECTORY);
->    printf("OPEN: %d\n", status);
->    root_fd =3D status;
->
->    // persist `dir`
->    status =3D fsync(root_fd);
->    printf("FSYNC: %d\n", status);
-> }
-> // after the crash `dir` is missing
-> ```
->
-> Steps:
->
-> 1. Create and mount new btrfs file system in default configuration.
-> 2. Change directory to root of the file system and run the compiled test.
-> 3. Cause hard system crash (e.g. QEMU `system_reset` command).
-> 4. Remount file system after crash.
-> 5. Observe that `dir` directory is missing.
->
->
+base-commit: 3f9f0252130e7dd60d41be0802bf58f6471c691d
+-- 
+2.52.0
+
 
