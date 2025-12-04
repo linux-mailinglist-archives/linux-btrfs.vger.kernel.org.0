@@ -1,126 +1,112 @@
-Return-Path: <linux-btrfs+bounces-19518-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19519-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4544FCA3265
-	for <lists+linux-btrfs@lfdr.de>; Thu, 04 Dec 2025 11:06:44 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11CF1CA3A4E
+	for <lists+linux-btrfs@lfdr.de>; Thu, 04 Dec 2025 13:44:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 80F60300B8F4
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Dec 2025 10:06:43 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 701DE305B922
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Dec 2025 12:43:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E139335574;
-	Thu,  4 Dec 2025 10:06:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7D9933C1A8;
+	Thu,  4 Dec 2025 12:43:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Jae/5bZt"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="qcfu5/h6"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from esa3.hgst.iphmx.com (esa3.hgst.iphmx.com [216.71.153.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 408F83093CE;
-	Thu,  4 Dec 2025 10:06:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AC672E8B8A
+	for <linux-btrfs@vger.kernel.org>; Thu,  4 Dec 2025 12:43:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.71.153.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764842799; cv=none; b=LAoLpRwBWU53LJ/1cUwH6gdkwhEayEvGAqep2VPC5n6t1C5gXu6FTKHbIBbo8SuEOBjcmwkwInG8GCgEOulofDWYKzKrKhlQgCuh2gwG0ruDRKHpyLcd0iW5mhnc1ZzrKfuHncjzzvj27pbBQSGgK1n+IRfQL6dCHCVkozC+N8Y=
+	t=1764852225; cv=none; b=HTa9LdOzsp5yaEdjswfXyesBDYdJI3mBM1JoQI59unDwh6p0OHZUXKN1DWgBwYTGuN3+lEGrgwtb3k838r+vQ+cUxGs7oVeQOvRux3XP8BD4FWDROOmkb93+6ecC8YZOamsDTAtpbW2jvoShGUwdxntZb22FXNnVeZUu/R7ZVkU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764842799; c=relaxed/simple;
-	bh=3CbHWwvx1Y/+aUKlP/ABMg6jMDp3hgDvw2qY8W+kWAU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JzDNxkZhmFMR3I4/Tk6fsP26ivHVhmn9vUT+5vRwVfnHPP7522N1W1mZMxdAuRoG1KgHD/WD3pzCupQw2I9Dd9+pL8IwiJw8z6o5OURlt1VaLhLQCPDMaS1PGBFgnLSCIPlZ9Y1fKLZ67KId1/zXKp8Y/EyTgYyW3zORv9OVp+s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Jae/5bZt; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=oTrYaefzNJqnzLYxcV+wzQAlxSf47/Xercf9bzlyWHI=; b=Jae/5bZtLTDGpMScrX7z6aYZVU
-	JCn2/5Q0EA58u+M5RjNjdNuhpn5gey5Sbmq4prXWmOqhyouTYXh26mG2hCkdX8eupJiVEHDIaJ3dD
-	OSQf34egNGB6CLomrhGhpu7W4XdDvXE0wJlxl7tjkUPuTVFQ9VZ55+hZzPDEt7bskqwiAABSmjpx9
-	91mc0b6vST+ZR3+mJck/ymh2mFq4twIMvDRPwmKNCuiKZOWZVDiZ5ckO06YKM7SaherLxaiYYYg2K
-	/RF49IDdkRNFDBEl928u8K/tBtpE3BKRKRKyIRDUZqQ5chpy9t14NeOQpJrkjuXfhvtpsr6HrxEBu
-	ipeuB/2g==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vR6EN-00000007p0e-2Qoe;
-	Thu, 04 Dec 2025 10:06:35 +0000
-Date: Thu, 4 Dec 2025 02:06:35 -0800
-From: Christoph Hellwig <hch@infradead.org>
-To: Simon Richter <Simon.Richter@hogyros.de>
-Cc: Christoph Hellwig <hch@infradead.org>,
-	Jani Partanen <jiipee@sotapeli.fi>,
-	Giovanni Cabiddu <giovanni.cabiddu@intel.com>, clm@fb.com,
-	dsterba@suse.com, terrelln@fb.com, herbert@gondor.apana.org.au,
-	linux-btrfs@vger.kernel.org, linux-crypto@vger.kernel.org,
-	qat-linux@intel.com, cyan@meta.com, brian.will@intel.com,
-	weigang.li@intel.com, senozhatsky@chromium.org
-Subject: Re: [RFC PATCH 00/16] btrfs: offload compression to hardware
- accelerators
-Message-ID: <aTFdK1QU6Q-GPZe4@infradead.org>
-References: <20251128191531.1703018-1-giovanni.cabiddu@intel.com>
- <aS6a_ae64D4MvBpW@infradead.org>
- <8d3e44b0-23d8-4493-8e7e-33bbe1d904ef@sotapeli.fi>
- <aS_f9axsi0QmmhiL@infradead.org>
- <9d7b182e-9da7-458f-b913-14eee415359d@hogyros.de>
+	s=arc-20240116; t=1764852225; c=relaxed/simple;
+	bh=OonSdBpUkQIOcvttVB8yVSRfibcSi8+UnqllSgkkO+A=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Rd8cRlrRNd0mAEG4eF06Uq7bDK1+n6JEWoiS2b3glwxRFh81DYO20EvKCfOSOvq6VB3UOzhAq2z6sJlNol7VUSJOkGE6AOWpqQiqjhPlVwCYo3Yl8bvNz0VHnwpNjvsm1xgVgJfcHLMaylpbOgTeY0ZYnAOj66p7KYcAyderqE4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=qcfu5/h6; arc=none smtp.client-ip=216.71.153.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1764852223; x=1796388223;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=OonSdBpUkQIOcvttVB8yVSRfibcSi8+UnqllSgkkO+A=;
+  b=qcfu5/h6K2z2CVBk6rjsT9psOt8tx5AXoDrMQnEjgHoQRQ2j2NymRC68
+   +FUt1YbPzQQfb9EdM8QAj2Cpj25P/VX9q0Lb1T2yIVgHfC9/ei9wOwudo
+   MdRXtiIx1cbbnMGmbMT/6VwmLzwC4Cpfph4dzZXxN3xiXisKShloR6k/S
+   QIe+jLRjyHHKSVHDt1foTNYDavBEz2nm//f1X38k7X0OnImKYzVkwHuBi
+   eS71Br5KXhwHsCQewBqo+mNjfC7lGYNW7DBPMoY1KemvyYQdqEchVpgLb
+   SacDaJQHoOKAdQQ4W/xjEuA9PmWupvn23tlbELG31PClubveHSL+EiOxp
+   g==;
+X-CSE-ConnectionGUID: rwNc0sBFR8y2H9lmrdbrCA==
+X-CSE-MsgGUID: oH+ZPaQqRGOvXKMLwF0ukw==
+X-IronPort-AV: E=Sophos;i="6.20,248,1758556800"; 
+   d="scan'208";a="137266126"
+Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep03.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 04 Dec 2025 20:42:34 +0800
+IronPort-SDR: 693181ba_1xf1j/uIWUCInMQcf7LQEAl1k4ywMLPygPSEKtqXCuL5g/x
+ BtPLtBkJ9MjG5Sefrbq7BrmAtd2Aq5otwkvL1Ig==
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep03.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 04 Dec 2025 04:42:35 -0800
+WDCIronportException: Internal
+Received: from unknown (HELO neo.wdc.com) ([10.224.28.106])
+  by uls-op-cesaip01.wdc.com with ESMTP; 04 Dec 2025 04:42:33 -0800
+From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+To: linux-btrfs@vger.kernel.org
+Cc: Christoph Hellwig <hch@lst.de>,
+	Naohiro Aota <naohiro.aota@wdc.com>,
+	Qu Wenruo <wqu@suse.com>,
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH v3 0/5] btrfs: zoned: don't zone append to conventional zone
+Date: Thu,  4 Dec 2025 13:42:22 +0100
+Message-ID: <20251204124227.431678-1-johannes.thumshirn@wdc.com>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9d7b182e-9da7-458f-b913-14eee415359d@hogyros.de>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
 
-On Wed, Dec 03, 2025 at 07:47:11PM +0900, Simon Richter wrote:
-> Unpacking is quite a bit faster as well, to the point where unpacking the
-> compressed block of 4GiB NUL bytes is faster than reading 4 GiB from
-> /dev/zero for me.
+When in a zoned mirrored RAID setup a block-group is backed by a
+conventional and a sequential write required zone, btrfs will write the
+data using REQ_OP_ZONE_APPEND. As this is illegal an ASSERT() in
+btrfs_submit_dev_bio() will catch it beforehand.
 
-Which makes me wonder why Intel isn't showing decompression numbers.
-For file system workloads those generally are more much common, and
-they are generally synchronous while writes often or not, and
-compressible ones should be even less so.
+Fix it by only setting REQ_OP_ZONE_APPEND btrfs_submit_dev_bio() if the
+actual zone is a sequential write required zone.
 
-> For acomp, I pretty much always expect offloading to be worth the overhead
-> if hardware is available, simply because working with bitstreams is awkward
-> on any architecture that isn't specifically designed for it, and when an
-> algorithm requires building a dictionary, gathering statistics and two-pass
-> processing, that becomes even more visible.
+To avoid multiple block-group lookups, cache the ability to use zone
+append in btrfs_bio.
 
-I would be really surprised if it makes sense for just a few kilobyes,
-e.g. a single compressible btrfs extent.  I'd love to see numbers
-proving me wrong, though.
+Afterwards convert the sprinkled booleans in btrfs_bio into a 'flags'
+member and set them accordingly. This is deliberately done after the fix
+to ease potential backporting.
 
-> For ahash/acrypt, there is a trade-off here, and where it is depends on CPU
-> features, the overhead of offloading, the overhead of receiving the result,
-> and how much of that overhead can be mitigated by submitting a batch of
-> operations.
->
-> For the latter, we also need a better submission interface that actually
-> allows large batches, and submitters to use that.
+Changes to v2:
+- Rename to can_use_append
+- Add patches to move booleans into new flags member
 
-For acrypt Eric has shown pretty devastating numbers for offloads.  Which
-doesn't surprise me at all given how well modern CPUs handle the
-low-level building blocks for cryptographic algorithms.
+Johannes Thumshirn (5):
+  btrfs: zoned: don't zone append to conventional zone
+  btrfs: move btrfs_bio::csum_search_commit_root into flags
+  btrfs: move btrfs_bio::is_scrub into flags
+  btrfs: move btrfs_bio::async_csum into flags
+  btrfs: move btrfs_bio::can_use_append into flags
 
-> As an example of interface pain points: ahash has synchronous import/export
-> functions, and no way for the driver to indicate that the result buffer must
-> be reachable by DMA as well, so even with a mailbox interface that allows me
-> to submit operations with low overhead, I need to synthesize state readbacks
-> into an auxiliary buffer and request an interrupt to be delivered after each
-> "update" operation, simply so I can have the state available in case it is
-> requested, while normally I would only generate an interrupt after an
-> "export" or "final" operation is completed (and also rate-limit these).
+ fs/btrfs/bio.c         | 32 ++++++++++++++++++--------------
+ fs/btrfs/bio.h         | 24 +++++++++++++-----------
+ fs/btrfs/compression.c |  4 +++-
+ fs/btrfs/extent_io.c   |  7 ++++---
+ fs/btrfs/file-item.c   |  8 ++++----
+ fs/btrfs/scrub.c       |  2 +-
+ 6 files changed, 43 insertions(+), 34 deletions(-)
 
-Which brings me to my previous point:  ahash from the looks off it
-just looks like a pretty horrible interface.  So someone really needs
-to come up with an easy to use interface that covers to hardware and
-software needs.  Note that on the software side offloading to multiple
-other CPU core would be a natural fit and make it look a lot like an
-async hardware offload.   You'd need to make it use the correct data
-structures, e.g. bio_vecs provided for source and destination instead
-of scatterlist, and clear definitions of addressability.  Bounce points
-for supporting PCIe P2P transfers, which seems like a very natural fit
-here.
+-- 
+2.52.0
 
 
