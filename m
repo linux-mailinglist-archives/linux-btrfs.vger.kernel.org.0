@@ -1,163 +1,209 @@
-Return-Path: <linux-btrfs+bounces-19525-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19526-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69DFACA3B93
-	for <lists+linux-btrfs@lfdr.de>; Thu, 04 Dec 2025 14:08:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 99945CA3D56
+	for <lists+linux-btrfs@lfdr.de>; Thu, 04 Dec 2025 14:35:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 298BD3112470
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Dec 2025 13:04:35 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 0E1DE305D653
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Dec 2025 13:30:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 942BC33F388;
-	Thu,  4 Dec 2025 13:04:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F87F342146;
+	Thu,  4 Dec 2025 13:30:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QAGioxPG"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E035033F37F
-	for <linux-btrfs@vger.kernel.org>; Thu,  4 Dec 2025 13:04:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 602AF279DC0
+	for <linux-btrfs@vger.kernel.org>; Thu,  4 Dec 2025 13:30:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764853473; cv=none; b=pFeFLxX8IZ+7G8s48IYptUsi1yqmGUvBdlsDjENuMziEIrQCF1G7FiS/8oNtbC94z+UPCU/r17s9WhJuyi+bhETTeIkUuk207Z6DvJYLD5Q543SbiluaByBWDL5qeaOaRZiTVXLF/6sd7zLBzSFPUlA86Fl9oY2tKlvVkyKUyvc=
+	t=1764855056; cv=none; b=t/vvbRQXbGfcKrKyc8gYG/ICP1RdM2UjLKIL/kEiXTBT5bC3ApeDtXYSFwlr0MiggJhwTZtRvHYQH4qPVXZI1OCg/S1s4lviK4l6DRPYmXcyCWI8wbchZzTXFOJFkS2c9gN4F893s8cuQldOaympICNUEFMgaoqhguVVzBmNlX4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764853473; c=relaxed/simple;
-	bh=QDNW4p83aYOdjGk0ChnNOgzVr51/3l5A+Qk4GNT2yGs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rUX6yhYRipOPcjfehrl1kl8048friqPTzzz9Tg0YK3e+WZE+pcHAdRxoKc8HlJ4mcW0tMi8SIFyO+bDWMa+zjygpy97zG0wTrUclAVpDsawkGqKKx6maxlA0zgYQTMKNNVGEVlBvP6T5el/wF+4EapmbnciLro0SW/j4Bbj6Bpg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id 758DD68D0D; Thu,  4 Dec 2025 14:04:26 +0100 (CET)
-Date: Thu, 4 Dec 2025 14:04:26 +0100
-From: Christoph Hellwig <hch@lst.de>
-To: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Cc: linux-btrfs@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-	Naohiro Aota <naohiro.aota@wdc.com>, Qu Wenruo <wqu@suse.com>
-Subject: Re: [PATCH v3 1/5] btrfs: zoned: don't zone append to conventional
- zone
-Message-ID: <20251204130426.GA26743@lst.de>
-References: <20251204124227.431678-1-johannes.thumshirn@wdc.com> <20251204124227.431678-2-johannes.thumshirn@wdc.com>
+	s=arc-20240116; t=1764855056; c=relaxed/simple;
+	bh=pQ3N7e/1FUWhdvMfFSRSwpjWnYSgF4Q92V7sniTbbHA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=acrrUu4fh5p6RNaPtdtvUotaloQfwtSP2pHaLFSwMW05fwTqGropoa3X0zilWbRrLWjrsCjZ/olq5ilo8l8/jcr711uQNA22vbXQC2CJa+IHa6tUtInm7yPijzDdLJkQEIG3LjZSNGA/KcVMQYCzhEJqtW5nKCvGadzXvSzknPw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QAGioxPG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4C58C19421
+	for <linux-btrfs@vger.kernel.org>; Thu,  4 Dec 2025 13:30:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1764855055;
+	bh=pQ3N7e/1FUWhdvMfFSRSwpjWnYSgF4Q92V7sniTbbHA=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=QAGioxPGRLezovsU3v4Out+/mGm1A2INkOKNkUFxpO158dXxyFKFNDJLzoyardQJO
+	 8d+p0uwlC7iLjzGSlPNXlDKQGFqTSiJ7DnZ3HGkYdLetivw7DvQSMPGc5Xx8CVoxbn
+	 MgfXydb5YjTeOgqND4T6kAB4OSGBrzCvbqxhO5z70NMPoenMe6A15IB0s3RobHVMX0
+	 AzutxS3VS/IOygfiEY1wOLOFabFW2mry6zPON4y/WRkXlMaswmevddc5HRrptwk3Ua
+	 ZQn/qY2z9QR/9ymbvbNpYB5UzFi6fMkGGCTj5M5HKwPn/z1y6mKdrPMO/BBqjTYBn6
+	 3sJzjvoIF0nEw==
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-b734fcbf1e3so204118566b.3
+        for <linux-btrfs@vger.kernel.org>; Thu, 04 Dec 2025 05:30:55 -0800 (PST)
+X-Gm-Message-State: AOJu0YydN1ebHfks2WF7NWQtCAfv3Q1vjMnu3vurXCqWwlSfFfI2jnWj
+	cowpNNMnivZs8IfQzTrGEiyIj7oarSRJkE/qo8z74daxKsHFqpZHxsRGLUMV96fYJyf4DQFsmHY
+	xODegA546zMuYie1awKtMIcsa0hG6v2U=
+X-Google-Smtp-Source: AGHT+IGscJpvXEG9kBWwxtRldUBKpHh2NPAOtKQwrTD8TIYdHMDtABLQiOAWzNeK2g5x2ozNcHDVIN3Xd31cgMDTMuI=
+X-Received: by 2002:a17:907:7b85:b0:b73:8792:c3ca with SMTP id
+ a640c23a62f3a-b79dc51af8cmr647019766b.32.1764855054476; Thu, 04 Dec 2025
+ 05:30:54 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251204124227.431678-2-johannes.thumshirn@wdc.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+References: <20251204124227.431678-1-johannes.thumshirn@wdc.com> <20251204124227.431678-3-johannes.thumshirn@wdc.com>
+In-Reply-To: <20251204124227.431678-3-johannes.thumshirn@wdc.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Thu, 4 Dec 2025 13:30:17 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H7rB-WghdPAOjJmoKhV+e6ftj=3DK+aDdGnjBRjUHcPZg@mail.gmail.com>
+X-Gm-Features: AWmQ_blH1bpcnvKoBRb3etrRn_U31caop8RphnqyLINHkzimLeiJ0UmmKmo14-w
+Message-ID: <CAL3q7H7rB-WghdPAOjJmoKhV+e6ftj=3DK+aDdGnjBRjUHcPZg@mail.gmail.com>
+Subject: Re: [PATCH v3 2/5] btrfs: move btrfs_bio::csum_search_commit_root
+ into flags
+To: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Cc: linux-btrfs@vger.kernel.org, Christoph Hellwig <hch@lst.de>, 
+	Naohiro Aota <naohiro.aota@wdc.com>, Qu Wenruo <wqu@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Looks good:
-
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-
-On Thu, Dec 04, 2025 at 01:42:23PM +0100, Johannes Thumshirn wrote:
-> In case of a zoned RAID, it can happen that a data write is targeting a
-> sequential write required zone and a conventional zone. In this case the
-> bio will be marked as REQ_OP_ZONE_APPEND but for the conventional zone,
-> this needs to be REQ_OP_WRITE.
-> 
-> The setting of REQ_OP_ZONE_APPEND is deferred to the last possible time in
-> btrfs_submit_dev_bio(), but the decision if we can use zone append is
-> cached in btrfs_bio.
-> 
-> Cc: Naohiro Aota <naohiro.aota@wdc.com>
-> Cc: Christoph Hellwig <hch@lst.de>
-> Fixes: e9b9b911e03c ("btrfs: add raid stripe tree to features enabled with debug config")
+On Thu, Dec 4, 2025 at 12:44=E2=80=AFPM Johannes Thumshirn
+<johannes.thumshirn@wdc.com> wrote:
+>
+> Remove struct btrfs_bio's csum_search_commit_root field and move it as a
+> flag into the newly introduced flags member of struct btrfs_bio.
+>
 > Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 > ---
->  fs/btrfs/bio.c | 20 ++++++++++----------
->  fs/btrfs/bio.h |  3 +++
->  2 files changed, 13 insertions(+), 10 deletions(-)
-> 
+>  fs/btrfs/bio.c         | 5 ++++-
+>  fs/btrfs/bio.h         | 6 ++++--
+>  fs/btrfs/compression.c | 4 +++-
+>  fs/btrfs/extent_io.c   | 7 ++++---
+>  fs/btrfs/file-item.c   | 4 ++--
+>  5 files changed, 17 insertions(+), 9 deletions(-)
+>
 > diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
-> index 4a7bef895b97..33149f07e62d 100644
+> index 33149f07e62d..2a9ab1275b7d 100644
 > --- a/fs/btrfs/bio.c
 > +++ b/fs/btrfs/bio.c
-> @@ -480,6 +480,8 @@ static void btrfs_clone_write_end_io(struct bio *bio)
->  
->  static void btrfs_submit_dev_bio(struct btrfs_device *dev, struct bio *bio)
->  {
-> +	u64 physical = bio->bi_iter.bi_sector << SECTOR_SHIFT;
+> @@ -97,7 +97,10 @@ static struct btrfs_bio *btrfs_split_bio(struct btrfs_=
+fs_info *fs_info,
+>                 bbio->orig_logical =3D orig_bbio->orig_logical;
+>                 orig_bbio->orig_logical +=3D map_length;
+>         }
+> -       bbio->csum_search_commit_root =3D orig_bbio->csum_search_commit_r=
+oot;
 > +
->  	if (!dev || !dev->bdev ||
->  	    test_bit(BTRFS_DEV_STATE_MISSING, &dev->dev_state) ||
->  	    (btrfs_op(bio) == BTRFS_MAP_WRITE &&
-> @@ -494,12 +496,14 @@ static void btrfs_submit_dev_bio(struct btrfs_device *dev, struct bio *bio)
->  	 * For zone append writing, bi_sector must point the beginning of the
->  	 * zone
->  	 */
-> -	if (bio_op(bio) == REQ_OP_ZONE_APPEND) {
-> -		u64 physical = bio->bi_iter.bi_sector << SECTOR_SHIFT;
-> +	if (btrfs_bio(bio)->can_use_append &&
-> +	    btrfs_dev_is_sequential(dev, physical)) {
->  		u64 zone_start = round_down(physical, dev->fs_info->zone_size);
->  
->  		ASSERT(btrfs_dev_is_sequential(dev, physical));
->  		bio->bi_iter.bi_sector = zone_start >> SECTOR_SHIFT;
-> +		bio->bi_opf &= ~REQ_OP_WRITE;
-> +		bio->bi_opf |= REQ_OP_ZONE_APPEND;
->  	}
->  	btrfs_debug(dev->fs_info,
->  	"%s: rw %d 0x%x, sector=%llu, dev=%lu (%s id %llu), size=%u",
-> @@ -747,7 +751,6 @@ static bool btrfs_submit_chunk(struct btrfs_bio *bbio, int mirror_num)
->  	u64 logical = bio->bi_iter.bi_sector << SECTOR_SHIFT;
->  	u64 length = bio->bi_iter.bi_size;
->  	u64 map_length = length;
-> -	bool use_append = btrfs_use_zone_append(bbio);
->  	struct btrfs_io_context *bioc = NULL;
->  	struct btrfs_io_stripe smap;
->  	blk_status_t status;
-> @@ -775,8 +778,10 @@ static bool btrfs_submit_chunk(struct btrfs_bio *bbio, int mirror_num)
->  	if (bio_op(bio) == REQ_OP_WRITE && is_data_bbio(bbio))
->  		bbio->orig_logical = logical;
->  
-> +	bbio->can_use_append = btrfs_use_zone_append(bbio);
+> +       if (orig_bbio->flags & BTRFS_BIO_CSUM_SEARCH_COMMIT_ROOT)
+> +               bbio->flags |=3D BTRFS_BIO_CSUM_SEARCH_COMMIT_ROOT;
 > +
->  	map_length = min(map_length, length);
-> -	if (use_append)
-> +	if (bbio->can_use_append)
->  		map_length = btrfs_append_map_length(bbio, map_length);
->  
->  	if (map_length < length) {
-> @@ -805,11 +810,6 @@ static bool btrfs_submit_chunk(struct btrfs_bio *bbio, int mirror_num)
->  	}
->  
->  	if (btrfs_op(bio) == BTRFS_MAP_WRITE) {
-> -		if (use_append) {
-> -			bio->bi_opf &= ~REQ_OP_WRITE;
-> -			bio->bi_opf |= REQ_OP_ZONE_APPEND;
-> -		}
-> -
->  		if (is_data_bbio(bbio) && bioc && bioc->use_rst) {
->  			/*
->  			 * No locking for the list update, as we only add to
-> @@ -836,7 +836,7 @@ static bool btrfs_submit_chunk(struct btrfs_bio *bbio, int mirror_num)
->  			status = errno_to_blk_status(ret);
->  			if (status)
->  				goto fail;
-> -		} else if (use_append ||
-> +		} else if (bbio->can_use_append ||
->  			   (btrfs_is_zoned(fs_info) && inode &&
->  			    inode->flags & BTRFS_INODE_NODATASUM)) {
->  			ret = btrfs_alloc_dummy_sum(bbio);
+>         atomic_inc(&orig_bbio->pending_ios);
+>         return bbio;
+>  }
 > diff --git a/fs/btrfs/bio.h b/fs/btrfs/bio.h
-> index 56279b7f3b2a..d6da9ed08bfa 100644
+> index d6da9ed08bfa..18d7d441c1ec 100644
 > --- a/fs/btrfs/bio.h
 > +++ b/fs/btrfs/bio.h
-> @@ -92,6 +92,9 @@ struct btrfs_bio {
->  	/* Whether the csum generation for data write is async. */
->  	bool async_csum;
->  
-> +	/* Whether the bio is written using zone append. */
-> +	bool can_use_append;
+> @@ -20,6 +20,9 @@ struct btrfs_inode;
+>
+>  typedef void (*btrfs_bio_end_io_t)(struct btrfs_bio *bbio);
+>
+> +/* Use the commit root to look up csums (data read bio only). */
+> +#define BTRFS_BIO_CSUM_SEARCH_COMMIT_ROOT      (1 << 0)
+
+Please use ENUM_BIT(), it's our preferred way for defining flags and
+makes backports less likely to cause problems due to accidental flags
+getting the same value (we've been hit by this a few times in the
+past).
+See examples such as in extent-io-tree.h.
+
+Also, what's the motivation for this and the other similar patches?
+Does it reduce the size of the structure? If so, please mention it in
+the changelog and what are the old and new sizes.
+
+Thanks.
+
 > +
->  	/*
->  	 * This member must come last, bio_alloc_bioset will allocate enough
->  	 * bytes for entire btrfs_bio but relies on bio being last.
-> -- 
+>  /*
+>   * Highlevel btrfs I/O structure.  It is allocated by btrfs_bio_alloc an=
+d
+>   * passed to btrfs_submit_bbio() for mapping to the physical devices.
+> @@ -80,8 +83,7 @@ struct btrfs_bio {
+>         /* Save the first error status of split bio. */
+>         blk_status_t status;
+>
+> -       /* Use the commit root to look up csums (data read bio only). */
+> -       bool csum_search_commit_root;
+> +       unsigned int flags;
+>
+>         /*
+>          * Since scrub will reuse btree inode, we need this flag to disti=
+nguish
+> diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+> index 913fddce356a..1823262fabbd 100644
+> --- a/fs/btrfs/compression.c
+> +++ b/fs/btrfs/compression.c
+> @@ -603,7 +603,9 @@ void btrfs_submit_compressed_read(struct btrfs_bio *b=
+bio)
+>         cb->compressed_len =3D compressed_len;
+>         cb->compress_type =3D btrfs_extent_map_compression(em);
+>         cb->orig_bbio =3D bbio;
+> -       cb->bbio.csum_search_commit_root =3D bbio->csum_search_commit_roo=
+t;
+> +
+> +       if (bbio->flags & BTRFS_BIO_CSUM_SEARCH_COMMIT_ROOT)
+> +               cb->bbio.flags |=3D BTRFS_BIO_CSUM_SEARCH_COMMIT_ROOT;
+>
+>         btrfs_free_extent_map(em);
+>
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index 2d32dfc34ae3..d321f6897388 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -166,9 +166,10 @@ static void bio_set_csum_search_commit_root(struct b=
+trfs_bio_ctrl *bio_ctrl)
+>         if (!(btrfs_op(&bbio->bio) =3D=3D BTRFS_MAP_READ && is_data_inode=
+(bbio->inode)))
+>                 return;
+>
+> -       bio_ctrl->bbio->csum_search_commit_root =3D
+> -               (bio_ctrl->generation &&
+> -                bio_ctrl->generation < btrfs_get_fs_generation(bbio->ino=
+de->root->fs_info));
+> +
+> +       if (bio_ctrl->generation &&
+> +           bio_ctrl->generation < btrfs_get_fs_generation(bbio->inode->r=
+oot->fs_info))
+> +               bbio->flags |=3D BTRFS_BIO_CSUM_SEARCH_COMMIT_ROOT;
+>  }
+>
+>  static void submit_one_bio(struct btrfs_bio_ctrl *bio_ctrl)
+> diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
+> index 14e5257f0f04..823c063bb4b7 100644
+> --- a/fs/btrfs/file-item.c
+> +++ b/fs/btrfs/file-item.c
+> @@ -422,7 +422,7 @@ int btrfs_lookup_bio_sums(struct btrfs_bio *bbio)
+>          * while we are not holding the commit_root_sem, and we get csums
+>          * from across transactions.
+>          */
+> -       if (bbio->csum_search_commit_root) {
+> +       if (bbio->flags & BTRFS_BIO_CSUM_SEARCH_COMMIT_ROOT) {
+>                 path->search_commit_root =3D true;
+>                 path->skip_locking =3D true;
+>                 down_read(&fs_info->commit_root_sem);
+> @@ -473,7 +473,7 @@ int btrfs_lookup_bio_sums(struct btrfs_bio *bbio)
+>                 bio_offset +=3D count * sectorsize;
+>         }
+>
+> -       if (bbio->csum_search_commit_root)
+> +       if (bbio->flags & BTRFS_BIO_CSUM_SEARCH_COMMIT_ROOT)
+>                 up_read(&fs_info->commit_root_sem);
+>         return ret;
+>  }
+> --
 > 2.52.0
----end quoted text---
+>
+>
 
