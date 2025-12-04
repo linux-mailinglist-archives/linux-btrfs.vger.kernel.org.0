@@ -1,197 +1,211 @@
-Return-Path: <linux-btrfs+bounces-19506-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19507-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 337E4CA2421
-	for <lists+linux-btrfs@lfdr.de>; Thu, 04 Dec 2025 04:32:33 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id E827FCA2498
+	for <lists+linux-btrfs@lfdr.de>; Thu, 04 Dec 2025 05:05:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 35B773045087
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Dec 2025 03:32:27 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 5F556300DCA9
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Dec 2025 04:05:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA98D2C15A2;
-	Thu,  4 Dec 2025 03:32:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9571F1F75A6;
+	Thu,  4 Dec 2025 04:05:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="bHE7OVM0"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="Abf/3R06";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="f65akjvq"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+Received: from fout-b8-smtp.messagingengine.com (fout-b8-smtp.messagingengine.com [202.12.124.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF6A6398FA8
-	for <linux-btrfs@vger.kernel.org>; Thu,  4 Dec 2025 03:32:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FA48398F99
+	for <linux-btrfs@vger.kernel.org>; Thu,  4 Dec 2025 04:05:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764819146; cv=none; b=iBr/IvUtVkq0d4Hu8u86/lWVgQTH0ZydDPIH1iYEWwto6ZuPy400hIYAa+kBZD4eWWygml/JkLrk3I9zXhzZAQFBj6wKGUGjTlalpukNLqdwf678+rtomSCZSg4ZiYeLyo/hjbY+pXPxAnb0rZzsmdGj3afRraKRvKEFAYFXI1Q=
+	t=1764821122; cv=none; b=uD6vUsbIDQWF8mixkiSS5Gmb98WGxfjxqhPIOXcuyN2r43v/as7CyWYAAQl3slh58xp63Ey0Z2vmslK8BFfu9KIHmxXV7aVkzf8ytoiLJms6iExZaPPKa3jH1E4mzZKxq8AtietEz0IgYKPjcHbqsnclh/Jm4sQpaiGG23HMUew=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764819146; c=relaxed/simple;
-	bh=GVJ56vOjOe/Ba1LyAE93M6v5VuozR3eBq0Vz9DsAR9A=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=jKQ3vvmTG3kpiAZJZ6KcO3X6jeKZMf9NDbJQaHVMbTnquegnkErvMor1x3vSvsoj6oIvJKFWxt8WKdvuPDjPQM59cFkzLYb/2aAtFLPjRwqQe0nxCGlnKD2I9A5+IuD/Z0uioI1O7LZnlfZwxAB5UyiBP2XMYcWqDvYB/h8kaSk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=bHE7OVM0; arc=none smtp.client-ip=212.227.15.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1764819136; x=1765423936; i=quwenruo.btrfs@gmx.com;
-	bh=XfAKWFlF902NmzFW8mQ4mE7TFsXMBiFx9w3eGi7zdeU=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=bHE7OVM0PZcNpxeWKZFCh+hQssJhv0OOFgxWEMWil0wSg3p4ZZd3/qpy1snqTnnC
-	 /+clNjW1qKuzxojcd7BMXoagALUvE7Q8DE9StYSaN6UiyyQ8X/R22+DUBTTg4LZqe
-	 2FH6fmsPb+yjtFIMUbmylhSfHWCptFEeY4G1tRbQZP7oMzG3hKV7O5fYu/NaZAoTm
-	 DzhweTFxE4ubbuSsEPUdNYKkoFD94KNDJICyDUxehoIAPQQCou9107cwCnN53tSkH
-	 iUh1FxhaRBUShNjNcx+qQqXaxfSCj3AIpPBxitQ7r1m+RlXEDlxAuhs6O0i3kpvw+
-	 DndPqgwI+sWRQbFRQw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MFKGZ-1vFmqs3f6v-005tSV; Thu, 04
- Dec 2025 04:32:16 +0100
-Message-ID: <241764c4-ef43-4491-9b9e-dcf34e12a741@gmx.com>
-Date: Thu, 4 Dec 2025 14:02:12 +1030
+	s=arc-20240116; t=1764821122; c=relaxed/simple;
+	bh=poqFRMIzgbluOWOHPPsKQU1oWXjAD5bSIMQKA8WOx8k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uJ0+4vcXtgo0AXUtMYP0miEVP8NJ6Aio/ZMQujjbrypyV/FBcUeoQKjr4r+2yvfX1sbRcuBaiQZ2HKzzbzr/WT3GbUKgFB19Ym/5IXU6GuIuZzeHVTVqT75fttLkdT4Xpr0mok0XSOZqfhUgYk2pHl6Q+y0THCI7VxtNZPh457o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=Abf/3R06; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=f65akjvq; arc=none smtp.client-ip=202.12.124.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
+Received: from phl-compute-01.internal (phl-compute-01.internal [10.202.2.41])
+	by mailfout.stl.internal (Postfix) with ESMTP id 70B5F1D0026C;
+	Wed,  3 Dec 2025 23:05:18 -0500 (EST)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-01.internal (MEProxy); Wed, 03 Dec 2025 23:05:18 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+	:content-transfer-encoding:content-type:content-type:date:date
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm2; t=1764821118;
+	 x=1764907518; bh=8X0eR001i+x7O2IpzjUFKrx1LSQXOzANeFz9WPuPK/A=; b=
+	Abf/3R066mBu8Y5avgcJe1hfFOcSLPfyFsuw77roAcjiWKz5+nwCcRd/Nq88GpLo
+	dlV+OsWmc438rAezDjcwlATUvTMnNaDMo2rw6CjrNjhQyBDk9LGhYYRIQTBAkZFb
+	bwpfmA0guBt7d9uWosIeqIqCj3+4+4fd18ennxnkcjC04fz/h86ir+8RHKH9YsC5
+	qneEKTVpMtuTx8SB6QL+yFxu2BuHYihb5v4OwixCJ+IDHiMYGaw/GQYemiaxL+d7
+	yWPuEvnWgX1ebir1nqKt1Nm9LSnqCf7Pec152TCoRibN4yJoU8IamU/SPvOSeFFp
+	pGjfdtusyX5Lt+oqLP47nQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1764821118; x=
+	1764907518; bh=8X0eR001i+x7O2IpzjUFKrx1LSQXOzANeFz9WPuPK/A=; b=f
+	65akjvq8RgQarK9uX79ypkZELeQq1k/IZVSBY3BJFpeGNH+8FNav76+7rx8i4QYC
+	WFmzX1ofyhR1dKgmCDkjdPKvxVO3Ge4lfz51ojp2mp6clirMeZoCzpvZ6eIDHA6j
+	1k4ROnNl9scj7NCpXsZtKkLRaA2WiQRgazV5XfWHWoMbBiGQRo20btZw69tGndTE
+	5j2r63sNnK/WhSBft+tCg74j9DsK5EVJ0stII7FY0yFGkUkK1icmhRgs9agbg+cP
+	Z359ItVsMuid2xyGwQcTdpb0pCVkzxCBOE2kgRNpFmb9gcr8N9T6EUghYqASo3XB
+	Njt9DAKrkkny5u+2ODwBw==
+X-ME-Sender: <xms:fggxaUPLz7t2YhW-HBMrv-6XqghLv48M7JJH_A4D-p_Pl2kcJmAF6Q>
+    <xme:fggxaSa1rdXtDkDO6wugwMS0jo7JqRQ8Af5ZGZ8GPSdJlScQNVmwh7Il-0Cx6lgdY
+    QpJZpt3lfGJdmurtlEOvxAamFPoIvZdsgGugEtnVoId5pPZzL3Bc75k>
+X-ME-Received: <xmr:fggxaYpNPDMoSQLli-p8t1QJ9cTmp5FerBh5HfX2cl1G6FjiF2HsIzyBvfax3pQvGd2ETNObZ09y8MGM0j0du1monWo>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdegheejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceurghi
+    lhhouhhtmecufedttdenucenucfjughrpeffhffvvefukfhfgggtugfgjgesthekredttd
+    dtjeenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdrihho
+    qeenucggtffrrghtthgvrhhnpedulefhtdfhteduvdethfeftdeitdethedvtdekvdeltd
+    dvveegtdeuuddtiedtieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgr
+    ihhlfhhrohhmpegsohhrihhssegsuhhrrdhiohdpnhgspghrtghpthhtohepfedpmhhoug
+    gvpehsmhhtphhouhhtpdhrtghpthhtohepqhhufigvnhhruhhordgsthhrfhhssehgmhig
+    rdgtohhmpdhrtghpthhtoheplhhinhhugidqsghtrhhfshesvhhgvghrrdhkvghrnhgvlh
+    drohhrghdprhgtphhtthhopehkvghrnhgvlhdqthgvrghmsehfsgdrtghomh
+X-ME-Proxy: <xmx:fggxaWaDWQ5Gvch2Z5Sxm9DlhXkYK3HR7LJMyWE268yI2CRN-B6YXA>
+    <xmx:fggxaQQSlIgJHpZGWpd7S-p6B5BO355Jc_T6T0o6Vw3OtSR7klXa0A>
+    <xmx:fggxad7EfE3hrfidLYH5VX00miTmW38KnjVYo8udPzE8oxw-iSibiw>
+    <xmx:fggxaVxQeoW9E0DFqkgYK4187TEcO_PJRRLFMsJBoKm-zyQQEAz-Ng>
+    <xmx:fggxaU-9-kVWeGeGFTJVpTIgvOIhYNBe97eEp2ycPfCM4WkhCHlfpBL0>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 3 Dec 2025 23:05:17 -0500 (EST)
+Date: Wed, 3 Dec 2025 20:05:36 -0800
+From: Boris Burkov <boris@bur.io>
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH 3/3] btrfs: relax squota parent qgroup deletion rule
+Message-ID: <20251204040536.GA3743796@zen.localdomain>
+References: <cover.1764796022.git.boris@bur.io>
+ <4b63df0e26492b520b8b145e1d95e356ad89d51a.1764796022.git.boris@bur.io>
+ <c7cf2a0b-8ee8-4527-9b50-dee1916fa1d1@gmx.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/3] btrfs: squota inheritance improvements
-To: Boris Burkov <boris@bur.io>, linux-btrfs@vger.kernel.org,
- kernel-team@fb.com
-References: <cover.1764796022.git.boris@bur.io>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <cover.1764796022.git.boris@bur.io>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:dryCn/jSlyqTUuJ1nf5XQS2ZRHHYt1c6AbxZbUv3dXiHYekfsY3
- ktT7Zw8yLt1f2necNSRjJ20asj1povRxZqyYi6+QjoiKR7bUiPbVOUeNmQ4hzbLHNlNq9Yl
- 2LQVkEbrrrv3ygZbDSgjt0+umOrGp6NI2psU5Wk+YSpLtVAHbPKkcy6vZUzlm5yKlKCNr5I
- F5Cx0KznV7bcMLyntatjw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:fvZvK/Cp7l4=;MYqcYB4YB9V5YhmSdUiC7bCBV8c
- 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
- D1mCd6t0/voLLnF81Pq1H+b+Sg=
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <c7cf2a0b-8ee8-4527-9b50-dee1916fa1d1@gmx.com>
 
+On Thu, Dec 04, 2025 at 01:49:53PM +1030, Qu Wenruo wrote:
+> 
+> 
+> 在 2025/12/4 07:41, Boris Burkov 写道:
+> > Currently, with squotas, we do not allow removing a parent qgroup with
+> > no members if it still has usage accounted to it. This makes it really
+> > difficult to recover from accounting bugs, as we have no good way of
+> > getting back to 0 usage.
+> > 
+> > Instead, allow deletion (it's safe at 0 members..) while still warning
+> > about the inconsistency by adding a squota parent check.
+> > 
+> > Signed-off-by: Boris Burkov <boris@bur.io>
+> > ---
+> >   fs/btrfs/qgroup.c | 51 +++++++++++++++++++++++++++++++++--------------
+> >   1 file changed, 36 insertions(+), 15 deletions(-)
+> > 
+> > diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+> > index 9e7e0c2e98ac..731ab71ff8ef 100644
+> > --- a/fs/btrfs/qgroup.c
+> > +++ b/fs/btrfs/qgroup.c
+> > @@ -1458,6 +1458,7 @@ static void qgroup_iterator_clean(struct list_head *head)
+> >   	}
+> >   }
+> > +
+> 
+> A stray new line.
+> 
+> Otherwise looks good to me. I'll reply on the cover letter.
+> 
+> Thanks,
+> Qu
+> 
 
+I didn't quite get to sending the new fstest before leaving on a
+vacation before LPC, but I intend to do it next week. So please don't
+feel the burden to also prepare an fstest of the new reproducer.
 
-=E5=9C=A8 2025/12/4 07:41, Boris Burkov =E5=86=99=E9=81=93:
-> One bug fix for an off-by-one metadata accounting error and two generic
-> improvements. Details in the patches.
+Thanks for the review,
+Boris
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-
->=20
-> Boris Burkov (3):
->    btrfs: fix qgroup_snapshot_quick_inherit() squota bug
-
-Thanks for the bug report of regular qgroup.
-
->    btrfs: check squota parent usage on membership change
->    btrfs: relax squota parent qgroup deletion rule
-
-And don't forget to remove the stray new line at merge time.
-
-Thanks,
-Qu
-
->=20
->   fs/btrfs/qgroup.c | 93 +++++++++++++++++++++++++++++++++++++++--------
->   1 file changed, 78 insertions(+), 15 deletions(-)
->=20
-
+> >   /*
+> >    * The easy accounting, we're updating qgroup relationship whose child qgroup
+> >    * only has exclusive extents.
+> > @@ -1730,6 +1731,36 @@ int btrfs_create_qgroup(struct btrfs_trans_handle *trans, u64 qgroupid)
+> >   	return ret;
+> >   }
+> > +static bool can_delete_parent_qgroup(struct btrfs_qgroup *qgroup)
+> > +
+> > +{
+> > +	ASSERT(btrfs_qgroup_level(qgroup->qgroupid));
+> > +	return list_empty(&qgroup->members);
+> > +}
+> > +
+> > +/*
+> > + * Return true if we can delete the squota qgroup and false otherwise.
+> > + *
+> > + * Rules for whether we can delete:
+> > + *
+> > + * A subvolume qgroup can be removed iff the subvolume is fully deleted, which
+> > + * is iff there is 0 usage in the qgroup.
+> > + *
+> > + * A higher level qgroup can be removed iff it has no members.
+> > + * Note: We audit its usage to warn on inconsitencies without blocking deletion.
+> > + */
+> > +static bool can_delete_squota_qgroup(struct btrfs_fs_info *fs_info, struct btrfs_qgroup *qgroup)
+> > +{
+> > +	ASSERT(btrfs_qgroup_mode(fs_info) == BTRFS_QGROUP_MODE_SIMPLE);
+> > +
+> > +	if (btrfs_qgroup_level(qgroup->qgroupid) > 0) {
+> > +		squota_check_parent_usage(fs_info, qgroup);
+> > +		return can_delete_parent_qgroup(qgroup);
+> > +	}
+> > +
+> > +	return !(qgroup->rfer || qgroup->excl || qgroup->rfer_cmpr || qgroup->excl_cmpr);
+> > +}
+> > +
+> >   /*
+> >    * Return 0 if we can not delete the qgroup (not empty or has children etc).
+> >    * Return >0 if we can delete the qgroup.
+> > @@ -1740,23 +1771,13 @@ static int can_delete_qgroup(struct btrfs_fs_info *fs_info, struct btrfs_qgroup
+> >   	struct btrfs_key key;
+> >   	BTRFS_PATH_AUTO_FREE(path);
+> > -	/*
+> > -	 * Squota would never be inconsistent, but there can still be case
+> > -	 * where a dropped subvolume still has qgroup numbers, and squota
+> > -	 * relies on such qgroup for future accounting.
+> > -	 *
+> > -	 * So for squota, do not allow dropping any non-zero qgroup.
+> > -	 */
+> > -	if (btrfs_qgroup_mode(fs_info) == BTRFS_QGROUP_MODE_SIMPLE &&
+> > -	    (qgroup->rfer || qgroup->excl || qgroup->excl_cmpr || qgroup->rfer_cmpr))
+> > -		return 0;
+> > +	/* Since squotas cannot be inconsistent, they have special rules for deletion. */
+> > +	if (btrfs_qgroup_mode(fs_info) == BTRFS_QGROUP_MODE_SIMPLE)
+> > +		return can_delete_squota_qgroup(fs_info, qgroup);
+> >   	/* For higher level qgroup, we can only delete it if it has no child. */
+> > -	if (btrfs_qgroup_level(qgroup->qgroupid)) {
+> > -		if (!list_empty(&qgroup->members))
+> > -			return 0;
+> > -		return 1;
+> > -	}
+> > +	if (btrfs_qgroup_level(qgroup->qgroupid))
+> > +		return can_delete_parent_qgroup(qgroup);
+> >   	/*
+> >   	 * For level-0 qgroups, we can only delete it if it has no subvolume
+> 
 
