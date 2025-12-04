@@ -1,145 +1,132 @@
-Return-Path: <linux-btrfs+bounces-19530-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19531-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37E69CA5618
-	for <lists+linux-btrfs@lfdr.de>; Thu, 04 Dec 2025 21:52:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 57F1CCA56F3
+	for <lists+linux-btrfs@lfdr.de>; Thu, 04 Dec 2025 22:18:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id BD1EA315F737
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Dec 2025 20:51:18 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 980ED3178E18
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Dec 2025 21:16:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6781D32695D;
-	Thu,  4 Dec 2025 20:51:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A62B32B9A0;
+	Thu,  4 Dec 2025 21:11:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nXqTKca8"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fm6embI1"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ej1-f68.google.com (mail-ej1-f68.google.com [209.85.218.68])
+Received: from mail-ed1-f65.google.com (mail-ed1-f65.google.com [209.85.208.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17B13325491
-	for <linux-btrfs@vger.kernel.org>; Thu,  4 Dec 2025 20:51:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.68
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16C3932ABFD
+	for <linux-btrfs@vger.kernel.org>; Thu,  4 Dec 2025 21:10:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764881475; cv=none; b=bVTg6Op6QSbfWE1IX/iAE42Fn483IcSekt8o0rsD8IqhmliVR1qqxHCfeT/bEiQ2HDqWTydngWVAmDiRdxiTaQgUBgcq1BjmJ8045tiX2R50hL6V3BkgnsagBlw0tz8Goxi4sFQZA5QE6GkFxMvINtAtZmBxnvc7D+Arry4bGaI=
+	t=1764882661; cv=none; b=dHBACUuVrmswLiQT+5rBVPkaEGmaTVNKlmD60Her7T24go8ibLV+q+oM2PtfDtzkp1ST/PnGzXodTLDrJSUnEH6lq28YMQZqkdl9zN/YpuplgEzCmprH3orTRXLoSrCBRKGloYRRq9xIIzb2vCpr8dFcVOflISMg/fAyZWK8AQs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764881475; c=relaxed/simple;
-	bh=qStRwU3cLntJjUZlqULxIdT4n+7gbhFNns/LaMGRiJQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Lou9zoZc6EIBcYV5MFc1Gtvpjd7B/SHNfaNnfgVyRthxVADN5n95KWj02PD81ATLCtL1xWGEF9YT2O7BGtogik53S4BgcfEraK88+iprE/0phLnfK/A93dFctxftsMQxcnLS2I1AP41phc2SIaZe2fPiQnuGXh8EZCdcEZLqmTM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nXqTKca8; arc=none smtp.client-ip=209.85.218.68
+	s=arc-20240116; t=1764882661; c=relaxed/simple;
+	bh=w3fsxewpQDLfXHQ4U2m1BD9H/RVSNts68FOUpu4tU7Q=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Q+ZFQjKAZMpZgaxw/l8uu3gVU3m1y4Eo7eE9o8D0HO8XTx05kzk0zfkGIvKpqUee5qgxDV6+MKs9rBXNoi0dlynWuRNJxSUwf2KJimfm8Fu/G0ySCDpFfWF50btp/TYcIfg3RCjLFey78yB8XbcQL3kVE6dXBY2eEIxI27IHqIk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fm6embI1; arc=none smtp.client-ip=209.85.208.65
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f68.google.com with SMTP id a640c23a62f3a-b735b7326e5so244901466b.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 04 Dec 2025 12:51:12 -0800 (PST)
+Received: by mail-ed1-f65.google.com with SMTP id 4fb4d7f45d1cf-64320b9bb4bso2781644a12.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 04 Dec 2025 13:10:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1764881471; x=1765486271; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hZH+D16UoYb8doKRnFG/JQvXCEGP29ibkCYAyKitbHA=;
-        b=nXqTKca85tOtD0x3fC2hEHvIIzwfgnh6HFVr6g8IDqBE2FRIZqr5yN/LCvfp3iQYdg
-         MxSHZjzRwTg1YVg+oqUSXI8AFQ+WM5I99TeShS+x0iOM9oCmcvM25nhTSebwnKfolNFj
-         brs3Lq/vS0jpq72aEG+7Y5+kHds4GZl+D6Ra4xaQc3Hr4odc3UAcedy/WKTmTTICPZxd
-         Bfy9fRwPpaa3uMpRSIa5Nnwny4Z7ISonprjllfoBGu30C42yJa2hISNoA/IDZ9LEHOui
-         xOvlNPtMMUfN2rYW5H+yP0JWQw+Ey2+shImIDO2729Dfr8e0wyUbtWAEePz7pHn/+PfR
-         CKcQ==
+        d=gmail.com; s=20230601; t=1764882658; x=1765487458; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=eprH5ppmLX3mc74864RpHa6sZY3l7+Jd7hL26GBKWpo=;
+        b=fm6embI1MTnNcUt4b01kFXqCFj8x7lYEDOywmJw1UoM4ln8ONfrS41psaeI+MgaUDa
+         dx0h7aEDnVEh5pagigSCuxGD10WqtDhsh83+oJAWk53FF7XIRerb9tx+JPta2wIMDrts
+         wW//pepRm/3ue0kTm1S9ikFZ0XlbF8UOODPmIMxznypQiFbQ5OHPyhb4JKqMBBq3SQX9
+         RcFp5lffYC7Vwl+dtaObWVF4oYArL9Qr6Q6Ezv0YsALlrIfuOee73Q3uBKHg1eryK7s3
+         XX1uu/YTgux6SCf5ke11TY30c1OU7t9AAlvmcxkA09IMxLHyh4+sywnwCjhjcY+LtOwZ
+         pX5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764881471; x=1765486271;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=hZH+D16UoYb8doKRnFG/JQvXCEGP29ibkCYAyKitbHA=;
-        b=YE/91emBY00iFD9t7h8kHjsxyykKhnTcIDM8eg52VEYStwcZ71vkCJCWCcntDZeCby
-         bcwDPVL0V0nHA8BoMB5pib/xSCMNSyvvx0Rnd/GUvTA4jT8GP8lM1C82IU0RJQkDdtPn
-         iiwU/9qR785ULyPZ7NdwBxHkjApR8CvYgGqaY/MT8Hjj5SXRdHrHd/dQZbPKXS0ndXwk
-         pO2nQpBL5V32q4e8m+yt26hASdoFLdPe9U1EQAY/9TR23kp3G5LWUeYF4B8pXXAFKmEA
-         bWJ/UDmz6+OEJvmees1IK8fz6eI9aW80aanCUKBNivFDTdt4yvYJcefpizncJxFwQF1t
-         /Z/A==
-X-Forwarded-Encrypted: i=1; AJvYcCV1tZIDfMTR6O+joFZvaSCsdp3YaqScfiirUoAKgNto6UmFzZzshudCxNqLyJc3Fowmi739ObIDwdMhew==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwW8ObOdBg0AiFUSZLyjPivRpMFsRX0Wr0mGwX7Jc752Vck7Y09
-	gj6+sjbXqENA6Hx44Grv8cWo9e49/nawjx1Om4kaRc+DJTaXJtpbDbN9DpkxyyZMmUOVYr46ISQ
-	NGSPsAVV8lvLJmQQCNI5DT1B4XCUZN+LaiTmgn7I=
-X-Gm-Gg: ASbGncuVZUb7AStS4PCxljU6EjY3x7xcFnoOEnTsctvb0S1fanMPDN4moKP6q8W9TLs
-	3ozrs2FOuS+SXVffMXPlf30NIa45/K8nV4vs7Rf6D18w7CCLUHZPg+mJREAvp0u6CoCb5Tkh4m9
-	uwzl5njS56Js51/Ea9eDR753f1uJdiehx+lqjYuXQRxmnRucPzwjbR4qxfLr9B/PamEYJRHhKVo
-	ENsa+Dv7P2b/88CtW3eVZypVq7vWNHedpk/T2EsKCRS4mZVSAlLcl6vtc8rqtrjAZ9/
-X-Google-Smtp-Source: AGHT+IGDIg6FQbjAtZaT5HsWNQbQk0YasQgl8pQJnaomUsT6faEz/DPedPOXi38PmoJsSTjdAIepT+9VM09mUlzwd6I=
-X-Received: by 2002:a17:907:9725:b0:b79:cbbf:7b09 with SMTP id
- a640c23a62f3a-b79eb5d8013mr541401466b.15.1764881471111; Thu, 04 Dec 2025
- 12:51:11 -0800 (PST)
+        d=1e100.net; s=20230601; t=1764882658; x=1765487458;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eprH5ppmLX3mc74864RpHa6sZY3l7+Jd7hL26GBKWpo=;
+        b=BZ4JA+qUK5BGXxqXPy42cCC3xdTazayNgN16m989XObmdlT1qVFstXQQijmogZ1opA
+         eslGoJjlxp4InaQwKMV70TcT1Y0T8pJvBg+uamQHPMv0EwqCeUlt21CCjCxI7mHFPwrx
+         /KfBL6oLglO4VVxYMv4fbzjiGllk+tmlAWgoYk98eCDINKsQdpmYKkhfryr2ry4qCO7j
+         Wxzl/TgKmvD7UsZtITDMDPkVT3puZ37aG8p3t2/k8FzMEma4SO2uAScIPIdcx6Xm1pG1
+         CB2eTxTby9+A78m7oeJEztihMEdEqWRMJHgx+7WIuk/BO/1yB60AC5io/THZ847tqx2i
+         LTWQ==
+X-Gm-Message-State: AOJu0Ywu6i7g9vRO8wBLkEzbYxCn2EqTICs4v2PckvHrUED0XRNN8SHY
+	gJM9e99b7dpg3XSMpfoY+t83bY5YWBvGxiP0CvQ9DLm/a2OY0/3iJrF8HLQ1cMiiVfs=
+X-Gm-Gg: ASbGncv2X06EIJboEgkvcmlzYJ9JUkMWNmVorRSSXdAzyzMy10Ndk+8E+1moULfTRIh
+	Z7HrdyhiDvpY1uISACOarkuF3bv/GSvINUhM/ugTuLHjKyZBpywVuH0E+n38fzgS6dlVssmvRLj
+	hCzhKJq81VkxJC6ZeslRwtva1Jl8okntI0EJYz85RDbozVOgGFrwIVr1bGq+/XJQpoTaPQc24YH
+	gDEgvOKNujmTKUmzja9RGw87JI4U+Op2jhSMwGHrx1LZCiZPTaDeSgti3TM8CZPZzZy5n3/TdrB
+	Ig+H9b/Pu3bRtYZSpbgdn3WakWyKJqIylfe0JHjZ4Z68f0kV/mv+xT6hTtTMm2a5cNlAY3Obq43
+	8fWDYEfP+ZQSAaPjkJx9dbmTyXaArLQZpZFz0xbKWas0/gaheSKK9Wt7Dp8EVwtdD/IzWJx5JHH
+	r8YHJ4+NvWypBhKzHn5q1kIK9BCtFmjC1aafUiRf8XhyMZ3AYFrA==
+X-Google-Smtp-Source: AGHT+IGc66idt8JicKNR4ASpYKwcPBT7B7V1xyFwPjccrBV0T7qHsz7RhYJ/3ncWmVy4NaDDTRu4iw==
+X-Received: by 2002:a05:6402:40ce:b0:647:62ba:123b with SMTP id 4fb4d7f45d1cf-647a6a23982mr4411205a12.9.1764882658250;
+        Thu, 04 Dec 2025 13:10:58 -0800 (PST)
+Received: from geekom-a8 (net-93-66-99-25.cust.vodafonedsl.it. [93.66.99.25])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-647b2ec319csm2106940a12.3.2025.12.04.13.10.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Dec 2025 13:10:58 -0800 (PST)
+From: Massimiliano Pellizzer <mpellizzer.dev@gmail.com>
+To: clm@fb.com,
+	dsterba@suse.com
+Cc: linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Massimiliano Pellizzer <mpellizzer.dev@gmail.com>
+Subject: [PATCH v2] btrfs: remove dead assignment in prepare_one_folio()
+Date: Thu,  4 Dec 2025 22:09:59 +0100
+Message-ID: <20251204210959.9672-1-mpellizzer.dev@gmail.com>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251128174804.293605-1-mpellizzer.dev@gmail.com> <20251203212145.GC3589713@zen.localdomain>
-In-Reply-To: <20251203212145.GC3589713@zen.localdomain>
-From: Massimiliano Pellizzer <mpellizzer.dev@gmail.com>
-Date: Thu, 4 Dec 2025 21:51:00 +0100
-X-Gm-Features: AWmQ_blCdeefseGUKBr5m-W1tllc8Pmn58vZCk4DhLvy1elZSCIrrkSGWQ0pPGo
-Message-ID: <CALUEkOes_HJnWDbM0wHOiU6s0VVL3twQUwkxg+yzt4-OBz1YMw@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: remove dead assignment in prepare_one_folio()
-To: Boris Burkov <boris@bur.io>
-Cc: clm@fb.com, dsterba@suse.com, linux-btrfs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Dec 3, 2025 at 10:21=E2=80=AFPM Boris Burkov <boris@bur.io> wrote:
->
-> On Fri, Nov 28, 2025 at 05:47:55PM +0000, Massimiliano Pellizzer wrote:
-> > In the error path of prepare_one_folio(), we assign ret =3D 0
-> > before jumping to the again label to retry the operation.
-> > However, ret is immediately overwritten by
-> > ret =3D set_folio_extent_mapped(folio).
-> >
-> > The zero assignment is never observerd by any code path,
-> > therefore it can be safely removed.
-> >
-> > No functional change.
->
-> This looks fine to me. But given the fact that we are setting ret =3D 0
-> before entering the again: loop, this code is maintaining that
-> (unneeded) invariant. So I think we should remove both or neither.
->
-> I would lean towards removing both, but I don't feel strongly about it.
->
-> Thanks,
-> Boris
->
+In prepare_one_folio(), ret is initialized to 0 at declaration,
+and in an error path we assign ret = 0 before jumping to the
+again label to retry the operation. However, ret is immediately
+overwritten by ret = set_folio_extent_mapped(folio) after the
+again label.
 
-Hi Boris,
+Both assignments are never observed by any code path,
+therefore they can be safely removed.
 
-Good point. You are right, both assignments serve no purpose
-since ret is immediately overwritten after the again label.
+No functional change.
 
-I'll send a v2 that removes both the initialization and the assignment
-before the goto.
+Signed-off-by: Massimiliano Pellizzer <mpellizzer.dev@gmail.com>
+---
+v2: Remove also the initial ret = 0 assignment for consistency
 
-Thanks for the review,
-Massimiliano
+ fs/btrfs/file.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-> >
-> > Signed-off-by: Massimiliano Pellizzer <mpellizzer.dev@gmail.com>
-> > ---
-> >  fs/btrfs/file.c | 1 -
-> >  1 file changed, 1 deletion(-)
-> >
-> > diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-> > index 7a501e73d880..7d875aa261d1 100644
-> > --- a/fs/btrfs/file.c
-> > +++ b/fs/btrfs/file.c
-> > @@ -877,7 +877,6 @@ static noinline int prepare_one_folio(struct inode =
-*inode, struct folio **folio_
-> >               /* The folio is already unlocked. */
-> >               folio_put(folio);
-> >               if (!nowait && ret =3D=3D -EAGAIN) {
-> > -                     ret =3D 0;
-> >                       goto again;
-> >               }
-> >               return ret;
-> > --
-> > 2.51.0
-> >
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index 7a501e73d880..9e2c2f2cd03f 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -859,7 +859,7 @@ static noinline int prepare_one_folio(struct inode *inode, struct folio **folio_
+ 	fgf_t fgp_flags = (nowait ? FGP_WRITEBEGIN | FGP_NOWAIT : FGP_WRITEBEGIN) |
+ 			  fgf_set_order(write_bytes);
+ 	struct folio *folio;
+-	int ret = 0;
++	int ret;
+ 
+ again:
+ 	folio = __filemap_get_folio(inode->i_mapping, index, fgp_flags, mask);
+@@ -877,7 +877,6 @@ static noinline int prepare_one_folio(struct inode *inode, struct folio **folio_
+ 		/* The folio is already unlocked. */
+ 		folio_put(folio);
+ 		if (!nowait && ret == -EAGAIN) {
+-			ret = 0;
+ 			goto again;
+ 		}
+ 		return ret;
+-- 
+2.51.0
+
 
