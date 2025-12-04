@@ -1,54 +1,54 @@
-Return-Path: <linux-btrfs+bounces-19504-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19505-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53E1ACA23FB
-	for <lists+linux-btrfs@lfdr.de>; Thu, 04 Dec 2025 04:20:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A3CEFCA241E
+	for <lists+linux-btrfs@lfdr.de>; Thu, 04 Dec 2025 04:31:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 1E9083003071
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Dec 2025 03:20:18 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 4505230454DD
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Dec 2025 03:31:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB96E2FCC1E;
-	Thu,  4 Dec 2025 03:20:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD1642BEC2C;
+	Thu,  4 Dec 2025 03:31:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="Se+EGvS0"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="flMF+fkH"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD5502D0638
-	for <linux-btrfs@vger.kernel.org>; Thu,  4 Dec 2025 03:20:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 780F9398FA8
+	for <linux-btrfs@vger.kernel.org>; Thu,  4 Dec 2025 03:31:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764818410; cv=none; b=jzcNXw+Olw178dkPmmTYc6aCrQLQUZZUJMpvP2ahpevXI9n8gXkvNAOvP+u+AakKcL5Da1RzyJ1FGP7Xc+QMPjef4hhzyz2cuGHe285QwyTil6dbeN8NYmtvJzmkC82+F9kBJ0lxuiGKvVGS+8NIa1/o4xqs4Cq49wad6O+T2wE=
+	t=1764819083; cv=none; b=CVh3YjK8B8o6bjxEONMM0ks2w49Ebes5KVegT03ZOwFB72rIo6GO0XXNPTxSaLAIRsit0MgX8gYAXFoVus9TMVFrM8L8jPhhXSBKdiIO0wpVnsrDH6AE5UcdbNKfPPWR26Z3T9MCeN1Aa8+V0lmaIKbqgdK8VzX1dhgigJsJ444=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764818410; c=relaxed/simple;
-	bh=ObAPagHi57zIIuf04BfrQYTUDw95uT2PybqZckozOAE=;
+	s=arc-20240116; t=1764819083; c=relaxed/simple;
+	bh=Xwd+vQbU6CuSubAHko/ptjnCGIoFwYXneU3IxKTJaU8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=uKWMQQSsVSoNqHcjYNLeZrhF1tdtk+EKMaN5ghie2RqERAcJKtuMj4jMyqxdPfNkHT0LQLK+VhLydKWWleQ9d9PLCQStqt+4PXdrTtB5SoN3yHMNPF+YVHzLdFupo18ichnypNUrRujXruXvFqx08fFBNWGes91ebwgd/W86p+I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=Se+EGvS0; arc=none smtp.client-ip=212.227.15.19
+	 In-Reply-To:Content-Type; b=Bbn+m5EupMlTmZn/38/34ltw4PW9mBjKBlCmek8IanErLdhDrGb9ihKlgDbJeMg8U9xQOkeWGg0dOCwRTFDSN9epH4o2HV7v8ZhPdcmNAliCxCxDnjvrDOMfFwtnBpnBqnAZQ9srPg1RTqnrb87jyvvvhDuwUkUK3iezE/FIR2I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=flMF+fkH; arc=none smtp.client-ip=212.227.15.15
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1764818397; x=1765423197; i=quwenruo.btrfs@gmx.com;
-	bh=wXsA+DLoZVzzlcsa63cgqYPGCrHut/Rv0fyrLKjNyXw=;
+	s=s31663417; t=1764819075; x=1765423875; i=quwenruo.btrfs@gmx.com;
+	bh=8t7Sy9qzZDnctFaVAcwXGIEXAv/GVyhw33dyLDf+iHc=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=Se+EGvS0UallMPtUBWc+8xe4HLYgiqWUC6tlXpjpT1toe+aFpQoFO+EO2lz7OIX3
-	 OrAH7Mm897/p4RToFgk8+WFyLYaHHDWsbvUvmtTWovYJpQZKK12RyqKWpE1kGPMTo
-	 Oi/CTF6DefMzTZtWEQuXEewvY6JSpunJ6ek1MpqnXFej7bmXXlAaTYmwc/AxD/Xru
-	 sZH+GzB/gspqxDfXlChIgIbpzkP6IHnO8jERN9t/vSse2Zno1GT0l9A+IRN+eYuhW
-	 NgZ0EWtCI3f3zi9fP5wzb125Mvkzs7L0U8MT4F0MLc/3/d1ojW+lpy8hz8zWriNBm
-	 t+gj7VRThRkzl6mwBw==
+	b=flMF+fkHc+yoXLfnIy9WdUrV4CsEPIHymgb2wwYdHp/KAMyVI3Nmz48GQ6hh3m2M
+	 n85JwQQW+f/tjJSOJ3r2LXESGnJszZtWUVJGPIZ8eUIWmVmI9Av9IuONkAPYlct2e
+	 e3Dmz5jiQ/sv/GhfduBWhvlhX/ZXfKN1FVOTUsBatKtqHqD4T1JYGFN5r14QTlPVK
+	 FT48UIv4EwGHMxD0MNnmCBOB4UOh2Mic9dcmU++UhK82flz06+AKhkaGXGjl+WEHw
+	 aTY0M75IG5ISJj8oKrOw456BuKsc5OluG6VZvRO7oa9rAsEeT9BQrNKDrZZAxsDDL
+	 QwwLvAM7dCvCU8n2fQ==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MHG8g-1vDkLM2F04-0080e3; Thu, 04
- Dec 2025 04:19:57 +0100
-Message-ID: <c7cf2a0b-8ee8-4527-9b50-dee1916fa1d1@gmx.com>
-Date: Thu, 4 Dec 2025 13:49:53 +1030
+Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MmUHj-1vrIP52TDN-00d2NH; Thu, 04
+ Dec 2025 04:31:15 +0100
+Message-ID: <05ea4e9f-87aa-472c-a239-7f4f9faa93e9@gmx.com>
+Date: Thu, 4 Dec 2025 14:01:10 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -56,11 +56,11 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/3] btrfs: relax squota parent qgroup deletion rule
+Subject: Re: [PATCH 1/3] btrfs: fix qgroup_snapshot_quick_inherit() squota bug
 To: Boris Burkov <boris@bur.io>, linux-btrfs@vger.kernel.org,
  kernel-team@fb.com
 References: <cover.1764796022.git.boris@bur.io>
- <4b63df0e26492b520b8b145e1d95e356ad89d51a.1764796022.git.boris@bur.io>
+ <f9b72f1440cd4c4f63dbe224256afb65c0671a4e.1764796022.git.boris@bur.io>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -87,202 +87,231 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
  +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
  HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <4b63df0e26492b520b8b145e1d95e356ad89d51a.1764796022.git.boris@bur.io>
+In-Reply-To: <f9b72f1440cd4c4f63dbe224256afb65c0671a4e.1764796022.git.boris@bur.io>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:LL0k2WTSZyFXbI6lLs/kXdCdZdMQChZa8m0jcAsi5i8zQ+Gx0Fu
- patnp/OS5dRS+xIQtdtfZIFEnKc7y2PipX7q575qASHoHtuYzFbN8Skc3ROleVogFXesrzO
- GBVD+Z2xU6LQhnkFoT9s2SlqT0SfMKgJ5fOsteZGp+55CaZ5zZMJXFoLzZ9/6HJNj/jncx3
- UqTMliKQtMzXSJg2ZYe6A==
+X-Provags-ID: V03:K1:uE+YBwOljFkDdow/jhLM0wQQsXmBHtxEgFoMQdhgIgc8xE2ne5H
+ cUifX8zkft+92eLPHW3CXBdWflK9ADEzIELpG2Q9CmK7zzgkQ8WGl3y/nGWCcSsIO2bYkju
+ 9ighrsyCJ55CAcpWb7csV3ZlNfpO6z6Yalr/Z8XlHGPxLY+hr9Ebom1MrYXyAEIJn+uYtQL
+ Z3D5SFX0KPqRtcUgVIzGg==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:q7Li8LxinxI=;dggep+L1P6Aq9NLZ7wsFcvtmBfg
- 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
- AiaZ0BG4=
+UI-OutboundReport: notjunk:1;M01:P0:qjsWBp4hNmU=;7Rl7ixQvDxy/7lfEg5QKi17cfEJ
+ W6XVEzBFE5a+TiyLCeDWHZiAhHQOJkUgDPaEwOHiZ37PQrG3mEU6GzQIQ/E9y1lJ4KEHzbHi1
+ uLcjL2C423lY8NUAE93vhZKNTmJuEuxWKa05XwXTzMD0zbRDJFsuvY6/gdfaWqNEaubL2JnG+
+ +jtMeNASThPtIQonr57utz/NUH/MUHCKSco5x2srnhlGKDqd3ulOd43+7aTiU0lqlTBTgFqp9
+ JrZniVwqyPkcjIgyfByCmE4cgLgN+hhl9OYHKRb905J06Ht8hB8xXaC99+tHLNSjDApaaQ+NR
+ 1xXC6VzRUu7RLCunOoYgtb4oz4asr6OEAQAbw2AnMUgw2tEKAOqygAE2ULMnuVpjbuyMvb9/Q
+ wyGBxoUwa3BVvesWj9+NHypkyaRawJ9XAZYcKVNtgemi0FfY5+SYQyq7tNd8xeWzbYpxVJa+j
+ F2eNwPZ4w7ZpIKxUlER98kYvVQ0DJYb+SHfGgq4WqTlmn/ZB5Ppdh0GJ1VHvovsM0nnQuxOgt
+ aJD5Us05brTLT+g80s4bzOAu2sR+wrwLEnyrNib/gn3N2pQAMI9Sjox15rODQelEyirHh2kUF
+ /ovzwOodTMO3f4xYaxE90X5P40jSTGXrcvwJxs3+Wmf8Enpb+mSzZW/FQ1CYzVjltekvlCIo+
+ qku50byBIR4u4DEf3ep2L42R3JmbsSAydaJTRXv+c2dlW6bNBC0/4haS2EUerEC/iiRF0ljvq
+ EA5qEgS0veTWXUGK8OIGhVq94UBsyyL+zUxqnOgyMVFCyLD68YzMjRh0AR3H2ge26d3Gvk0XB
+ aFO9DaS3fNKWIfkoRimscLlry4/WE1stYvh2haLxOtR+f1o7m68BX0rTGWR9yShpYnyPEpizb
+ CgW9xdL3rG+nGmysjrrNkHPo6RvVScFOH7BguICXFkAGpYf3TSP/sAfK9nCZEq7RxYI+d0phZ
+ +ofOIDfeEvr4hyJ8cWb8EK25k+3OfOpzAmRVyBxxmqDy2YRfwItiajcOCpwKAMGk6Gn9QBydT
+ PHtTsKWVgQr03ETsmWU7NMwICg//PzTqaanfatXaZs2+V+4IzGpyqDU7jxXnIx3fbMsjZJbgo
+ L6rI3g7xYlYSuehoWfZVj21/9z4U0T44X1UgrrELDECy/9pX++1HkG8GKom8d0T9aUpzAlOs5
+ 1YzuCEueo+g0/bWOOmDd5EhqNe8Jd7gFWXtmudtKfLWA9ACsDaRfOCN1uUF95HhtgtX09qHbN
+ BntPR8KT4WLEqzfg0QWvellIP0hjs8QDIKX+MgTZmT9ulg8Lo0Pdv0MP/S6Re5Oqb2oPDHbY+
+ h9kWkGLMSJ+itri53XKeF/6tw7Dk7I3pd2Ke24yqxCRBxINI1xKGDJUOOrtmZUl9Ix99PLm70
+ nSnRiFiQDdhNbA6BqvWmrmxVHKmZqNeNBVdHV5SgE7H/8YLsNbHc3NFYP3Sb58Duz71kQ/q2n
+ 8CVh59sgwAfjiePP/1xSkWk7+4TDoJy87If24FpRPY4EqmksuR9UJ0/1PVGXAGV8swVRRh6TX
+ 7gfJavKt1d0QqxO7Ky5x7bwXI2C54AN3PPLx9GHnUkGXgbdn4bbCbvHYR+I6dx/6BkS78+Fk3
+ 4sxc3SHX8F8bnoXKYZwHBNnyP0abPM9i0rZDvl8t0sTG4LycJxMLA5AqVI6xMXC4qvNoEl7yh
+ 9VDLI0ddrRAFoHYLqn5u/76gdKlqzOZIwPcoOj2kZHyVSudInVO9MSooU/sYif3zqs8u2MBtB
+ bW5jVsZytUT5TOfeJj27nwmLQZQsynfpxfZRCD0FPjenGz06m//MZtgD3BDaCVj3G4tFMMoqq
+ GOcZB664IDtplj1+kE2OpC+/mqPr/Zm7rLV+YpvKv+JBiAw6nwOFTgD3hDJA8+Se6R1IZvc5J
+ weIBt8m7vtA71VhgZWNBVlY1Y4nAoYREKpXRrc9QJymPc+KaI+Au8jq28osjU21PU166AtfgM
+ IaGgasjZ6A+pevj9azLc9c+KG8se8Rp1KQzTBwUXKBrypm5Zc2RPQqhOABT1FEQUZg5E26T25
+ xWCJgvIa4glZpLjsmwxEPa+9VI3D9FD7SmqgFrmz4HY23JKwCONO+cELrXK+EIaHvfh1NhSfa
+ GL1BtB8rPFIAYqh8PSFRxVvDOP2ItE13VbDYQrAKhU+Tm4ZC+gYyS5fMjwo9QcJB74TOSSusz
+ QpclgN34qHmFT+sJC3jOZTkgf9FNHviClEqn2XhY6wKhq41kIt5EpbxqNs/4PCupxD5cHvEqA
+ z/FkSaS9I3EglMrLvvldv7yvIohiTlhdQyLn9RyMEa0nzgQ+HQ8mhknP6ZKWfGVLRPa6+j49q
+ ATl4DA2/lsi4hatkzPZu7hFesj7Gqy1ESfro4XvhCXs61H9qt97g+8nYWtnESNfkY1Mp+awNz
+ +00fV0B5QJBcZanI1JANWJQQa2JfPEKSHhUGh8g8+m3dQcEv2P8DSi227AjHLohYuFM7C3a/K
+ 3CB+unrWM+x2R74pe8JN3dJvYbo3FhTqIIv4EAVBYryVaNQVNqvA4/ulY1e7iSjrGwgT3craO
+ aNR1/g46JeQysa5brbXFDuTaFxKSxd1+D6Jhx6nk3PjYI9pNP65DU/mYoy6HGRS0iAdaCgcES
+ gJM509eeZCcAtFdq7yYEOJz9RhCC7Cd/s+QdjDpaZ7Rum8J92IubXE37NztAcmN54Yx1r6AnD
+ wnuJ8uAYLoNrgPCCmtYQc66udgvFVNAGkMXu+OZ2DhPbmV5Sen4YtDI2UivQUn70/ezDfSCea
+ h1a9d/ydAs3cdmICUyC4oQrD0D3c4eUPCuoPKD7Ztn3M0Tb8ygBRLSqvj0nHD8McDlQSVwDAH
+ H1tQftH7mFSIafCzgyQZYMdy9D09Cg9ZfkhYgtp6iEXfVinq0BpXI3UsB66eib+VX84psGa6u
+ NXzF9FMxy9Hn518aOoOAiizw2IChh5JxU7jDmXgTIzGH9tncF0ajVdTRvr/3gUWPSZ8YvyZGk
+ 1ipXmxMlDU9c6hM5vu0sLkFKv0+LLwUZi9Ym/og1LsuDLPmgbtoD4MeOJQhgDyzbGDrxGmFqT
+ +gnxgASxnUmFdosY5PXkrOQ8yyNKGjkczjcpUuN2abACSADAJQx1NKGyNvawzdCfKOKd/JGnE
+ 0uMmC+DLsWeeLVdPv8EiZd7Bkp8hur4upNA/kGeIxCntDwtLK3W+nuciLtNmMGaSr4i1AM7HZ
+ ZoYm13DhNuPlOwubhdM+zyV4GjHU0/PeCMttzLIG/Bsr4HQ+w7t1RY6aV8orpGz43VCJPAsGS
+ oQOvXJNVHl/VnLbIRwB3aIu0YD+iQFtxjUUqV4GUaSKasAc2yzForLNybXpsZt0H1tmExyURc
+ pwpCNnPDCG2IqCI9cNqaapCxmBWDAvP71OfwtA59nhzWC1FFfSE2rAB1/xwMe9NAOmJNWw73W
+ 0YMpcqs4JwCiH71D2eZZLGMHDLwmq7rm+LAdeK/Xxu/R26+3I5IQkHwwDPv4/ftiy0PpCRz1t
+ kskqljDr0ViRPWolw7YJhGrrqbGSjqotF13iXOGYS+efW68jo42aCQ4Hp7DEC1HvtB0LoQs49
+ eTMn631+lbE2IwtMN9h/6z0Q7nWSZaA+J24wF4ALkKCCeS7bl2lz+MZP4FZ+a7RIDAiXvvPVn
+ d5RghX3Eq9zZGvGXW151BSM7BJdKUSdbsJiT9+G2gCvGKer3UFB+JoTGc7kjzAvmea0AAG8Lt
+ N9PKrO5qe+6xAJuJ1ufzIy4ORGgtR2yCUU2qTNlnvQhksurrJivwk1DQglGPPnnLP5sFKekHS
+ EX4gLKcTxjyL+zJzMW2M5VSLTvYTsp3RERqYBvKs45s3z2y8gxBnS6WYtkHfP3+dmKOYcM/Ka
+ hg0MWLxJ5QEPBfiL8l6pp9rWZDwWsCRXcehWVWlj/JPP255RIA1Fstfx16sfMYSpfZMXjxFri
+ 9G1GSHzjaK21Y93L0be8MOkFvlr3ejzsfNHNJFJs5k/WtFkiAWTtBjd5zByrPX9lDB8tr62uQ
+ 2p3HZz87BL9sHil9kXqvuX0HNv0wEjjIjqCRqWxrZm1uwZU/EemNFWuQMEXps5jahE92IpKya
+ 61kgWSBLdwayQOlhlwIjnx1RxpH/hdI23zH85ZulA6mkzyfw6FZak3S8LeRvaK9knTbuWWgyG
+ YjogeVysb3OZUwCv9ypIEM3+SI9aaAvaUSOFGgrx5QsdNgk4YDWUVI5EdUnKoV4bo+Yg/KbnB
+ 1BjLJq6BXSZxvrYNKZJx75DTByhDILFIKIwvwM36Yed7VjQn97tdFkMByizPMFmSDCIToKp3b
+ bXR4qvKodSBpv4Ob9tbpR6pLaHK3tRHSwgiRYpg1fnXL063OKSDeTMjSudDWCXholfPP+Nlql
+ ONnHCyCC1s/UMvxxqe2COQaoQ77RWHCdnMpWrDoS8AkZdOXMPFNM8jayN6iLm1/f2oLb4vb9Y
+ EDf/tVtSFAx1KkLGA6H2Udeycw2LmoLBfoXHZ+1OStkQCYl6Yu94qaoIoyJybsJ+5ROz+JtpS
+ 5hwGlwkrd0yuhBPoNhmLXeZWkYDsfn44Nr1gHlPw0Lr+SWfK5iDy/TBhw3tDJjQxwnR1sK/U9
+ kyTrj9t6naieTMsQnOYFqqOgoQfMiZNriUO2zKlNmVOAiiP/H26chfY2uxWPnq0x31r8DLO4c
+ DApAZlhzvkPWpUn5Cp4L2QlZGuRv99dou2KTuCF8ahRv7zzVYJQp32Yo7MpRmwSDumE7BJna6
+ zFujly8pKaOXF/FVt1ivzAnjrLUkruMFksRSPsYSSmpl12i1NnUkvQGzkxhmJSFZtmClAcU8e
+ HsSFsvAjGjz4TBimxd6aY63CHOMsgit2SRpYq74uvN3yAruMTit2BH7PB6ovnstW0py6qFKcn
+ 9DWwSixV3udKCSi0zXc89uXjr9rSTBJuZrGB8ul36tz7kF2YotZbHF2dMul8+nvWL1m2xvFKY
+ chitV1HJY8iO9wRn9HORRgL4jxXWcGXzaDvN8nGk+3XKLs2nwvmrFmZMRpO9LL7xMsyYXnY8l
+ NjGxzGXu9pOqSjJFmDVHndNgpKZDW8fIj6rbfLCdsJNW6lSJIgEOAAij3M/AspKZ8cvSn7Ad4
+ HW7cM5lF/UtVZrxCDk5uzc7+cGamMIzsaZtWayRgsQ77CC2TP3MtDT4MS6Tp1m3lAqJKgzPs2
+ ooMzA76nvpd1gu9y3oxWzXpy6kBtuMOQpWwx24BvzGCxXeaVJitK+Koo64gwGukyvcPSHyLDX
+ pVyciEea/zaqxW+XNKLJhWICZL5e3
 
 
 
 =E5=9C=A8 2025/12/4 07:41, Boris Burkov =E5=86=99=E9=81=93:
-> Currently, with squotas, we do not allow removing a parent qgroup with
-> no members if it still has usage accounted to it. This makes it really
-> difficult to recover from accounting bugs, as we have no good way of
-> getting back to 0 usage.
+> qgroup_snapshot_quick_inherit() detects conditions where the snapshot
+> destination would land in the same parent qgroup as the snapshot source
+> subvolume. In this case we can avoid costly qgroup calculations and just
+> add the nodesize of the new snapshot to the parent.
 >=20
-> Instead, allow deletion (it's safe at 0 members..) while still warning
-> about the inconsistency by adding a squota parent check.
+> However, in the case of squotas this is actually a double count, and
+> also an undercount for deeper qgroup nestings.
 >=20
-> Signed-off-by: Boris Burkov <boris@bur.io>
-> ---
->   fs/btrfs/qgroup.c | 51 +++++++++++++++++++++++++++++++++--------------
->   1 file changed, 36 insertions(+), 15 deletions(-)
+> The following annotated script shows the issue:
 >=20
-> diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-> index 9e7e0c2e98ac..731ab71ff8ef 100644
-> --- a/fs/btrfs/qgroup.c
-> +++ b/fs/btrfs/qgroup.c
-> @@ -1458,6 +1458,7 @@ static void qgroup_iterator_clean(struct list_head=
- *head)
->   	}
->   }
->  =20
-> +
+>    btrfs quota enable --simple "$mnt"
+>=20
+>    # Create 2-level qgroup hierarchy
+>    btrfs qgroup create 2/100 "$mnt"  # Q2 (level 2)
+>    btrfs qgroup create 1/100 "$mnt"  # Q1 (level 1)
+>    btrfs qgroup assign 1/100 2/100 "$mnt"
+>=20
+>    # Create base subvolume
+>    btrfs subvolume create "$mnt/base" >/dev/null
+>    base_id=3D$(btrfs subvolume show "$mnt/base" | grep 'Subvolume ID:' |=
+ awk '{print $3}')
+>=20
+>    # Create intermediate snapshot and add to Q1
+>    btrfs subvolume snapshot "$mnt/base" "$mnt/intermediate" >/dev/null
+>    inter_id=3D$(btrfs subvolume show "$mnt/intermediate" | grep 'Subvolu=
+me ID:' | awk '{print $3}')
+>    btrfs qgroup assign "0/$inter_id" 1/100 "$mnt"
+>=20
+>    # Create working snapshot with --inherit (auto-adds to Q1)
+>    # src=3Dintermediate (in only Q1)
+>    # dst=3Dsnap (inheriting only into Q1)
+>    # This double counts the 16k nodesize of the snapshot in Q1, and
+>    # undercounts it in Q2.
+>    btrfs subvolume snapshot -i 1/100 "$mnt/intermediate" "$mnt/snap" >/d=
+ev/null
+>    snap_id=3D$(btrfs subvolume show "$mnt/snap" | grep 'Subvolume ID:' |=
+ awk '{print $3}')
+>=20
+>    # Fully complete snapshot creation
+>    sync
+>=20
+>    # Delete working snapshot
+>    # Q1 and Q2 will lose the full snap usage
+>    btrfs subvolume delete "$mnt/snap" >/dev/null
+>=20
+>    # Delete intermediate and remove from Q1
+>    # Q1 and Q2 will lose the full intermediate usage
+>    btrfs qgroup remove "0/$inter_id" 1/100 "$mnt"
+>    btrfs subvolume delete "$mnt/intermediate" >/dev/null
+>=20
+>    # Q1 should be at 0, but still has 16k. Q2 is "correct" at 0 (for now=
+...)
+>=20
+>    # Trigger cleaner, wait for deletions
+>    mount -o remount,sync=3D1 "$mnt"
+>    btrfs subvolume sync "$mnt" "$snap_id"
+>    btrfs subvolume sync "$mnt" "$inter_id"
+>=20
+>    # Remove Q1 from Q2
+>    # Frees 16k more from Q2, underflowing it to 16EiB
+>    btrfs qgroup remove 1/100 2/100 "$mnt"
+>=20
+>    # And show the bad state:
+>    btrfs qgroup show -pc "$mnt"
+>=20
+>          Qgroupid    Referenced    Exclusive Parent   Child   Path
+>          --------    ----------    --------- ------   -----   ----
+>          0/5           16.00KiB     16.00KiB -        -       <toplevel>
+>          0/256         16.00KiB     16.00KiB -        -       base
+>          1/100         16.00KiB     16.00KiB -        -       <0 member =
+qgroups>
+>          2/100         16.00EiB     16.00EiB -        -       <0 member =
+qgroups>
+>=20
+> Fix this by simply not doing this quick inheritance with squotas.
+>=20
+> I suspect that it is also wrong in normal qgroups to not recurse up the
+> qgroup tree in the quick inherit case, though other consistency checks
+> will likely fix it anyway.
 
-A stray new line.
+It's indeed wrong for the regular qgroup:
 
-Otherwise looks good to me. I'll reply on the cover letter.
+  mkfs.btrfs  -f -O quota $dev
+  mount $dev $mnt
+  btrfs subv create $mnt/subv1
+  btrfs qgroup create 1/100 $mnt
+  btrfs qgroup create 2/100 $mnt
+  btrfs qgroup assign 1/100 2/100 $mnt
+  btrfs qgroup assign 0/256 1/100 $mnt
+  btrfs qgroup show -p --sync $mnt
+  Qgroupid    Referenced    Exclusive Parent     Path
+  --------    ----------    --------- ------     ----
+  0/5           16.00KiB     16.00KiB -          <toplevel>
+  0/256         16.00KiB     16.00KiB 1/100      subv1
+  1/100         16.00KiB     16.00KiB 2/100      2/100<1 member qgroup>
+  2/100         16.00KiB     16.00KiB -          <0 member qgroups>
+  # So far so good
+
+  btrfs subv snap -i 1/100 $mnt/subv1 $mnt/snap1
+  btrfs qgroup show -p --sync $mnt
+  Qgroupid    Referenced    Exclusive Parent     Path
+  --------    ----------    --------- ------     ----
+  0/5           16.00KiB     16.00KiB -          <toplevel>
+  0/256         16.00KiB     16.00KiB 1/100      subv1
+  0/257         16.00KiB     16.00KiB 1/100      snap1
+  1/100         32.00KiB     32.00KiB 2/100      2/100<1 member qgroup>
+  2/100         16.00KiB     16.00KiB -          <0 member qgroups>
+  # Just as you suspected, higher qgroup didn't get updated.
+
+  btrfs subv snap -i 1/100 /mnt/btrfs/subv1 /mnt/btrfs/subv2
+  btrfs qgr show -prce /mnt/btrfs/
+
+I'll fix the regular qgroup bug soon.
 
 Thanks,
 Qu
 
->   /*
->    * The easy accounting, we're updating qgroup relationship whose child=
- qgroup
->    * only has exclusive extents.
-> @@ -1730,6 +1731,36 @@ int btrfs_create_qgroup(struct btrfs_trans_handle=
- *trans, u64 qgroupid)
->   	return ret;
->   }
+>=20
+> Fixes: b20fe56cd285 ("btrfs: qgroup: allow quick inherit if snapshot is =
+created and added to the same parent")
+> Signed-off-by: Boris Burkov <boris@bur.io>
+> ---
+>   fs/btrfs/qgroup.c | 3 +++
+>   1 file changed, 3 insertions(+)
+>=20
+> diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+> index 9e2b53e90dcb..d46f2653510d 100644
+> --- a/fs/btrfs/qgroup.c
+> +++ b/fs/btrfs/qgroup.c
+> @@ -3223,6 +3223,9 @@ static int qgroup_snapshot_quick_inherit(struct bt=
+rfs_fs_info *fs_info,
+>   	struct btrfs_qgroup_list *list;
+>   	int nr_parents =3D 0;
 >  =20
-> +static bool can_delete_parent_qgroup(struct btrfs_qgroup *qgroup)
+> +	if (btrfs_qgroup_mode(fs_info) !=3D BTRFS_QGROUP_MODE_FULL)
+> +		return 0;
 > +
-> +{
-> +	ASSERT(btrfs_qgroup_level(qgroup->qgroupid));
-> +	return list_empty(&qgroup->members);
-> +}
-> +
-> +/*
-> + * Return true if we can delete the squota qgroup and false otherwise.
-> + *
-> + * Rules for whether we can delete:
-> + *
-> + * A subvolume qgroup can be removed iff the subvolume is fully deleted=
-, which
-> + * is iff there is 0 usage in the qgroup.
-> + *
-> + * A higher level qgroup can be removed iff it has no members.
-> + * Note: We audit its usage to warn on inconsitencies without blocking =
-deletion.
-> + */
-> +static bool can_delete_squota_qgroup(struct btrfs_fs_info *fs_info, str=
-uct btrfs_qgroup *qgroup)
-> +{
-> +	ASSERT(btrfs_qgroup_mode(fs_info) =3D=3D BTRFS_QGROUP_MODE_SIMPLE);
-> +
-> +	if (btrfs_qgroup_level(qgroup->qgroupid) > 0) {
-> +		squota_check_parent_usage(fs_info, qgroup);
-> +		return can_delete_parent_qgroup(qgroup);
-> +	}
-> +
-> +	return !(qgroup->rfer || qgroup->excl || qgroup->rfer_cmpr || qgroup->=
-excl_cmpr);
-> +}
-> +
->   /*
->    * Return 0 if we can not delete the qgroup (not empty or has children=
- etc).
->    * Return >0 if we can delete the qgroup.
-> @@ -1740,23 +1771,13 @@ static int can_delete_qgroup(struct btrfs_fs_inf=
-o *fs_info, struct btrfs_qgroup
->   	struct btrfs_key key;
->   	BTRFS_PATH_AUTO_FREE(path);
->  =20
-> -	/*
-> -	 * Squota would never be inconsistent, but there can still be case
-> -	 * where a dropped subvolume still has qgroup numbers, and squota
-> -	 * relies on such qgroup for future accounting.
-> -	 *
-> -	 * So for squota, do not allow dropping any non-zero qgroup.
-> -	 */
-> -	if (btrfs_qgroup_mode(fs_info) =3D=3D BTRFS_QGROUP_MODE_SIMPLE &&
-> -	    (qgroup->rfer || qgroup->excl || qgroup->excl_cmpr || qgroup->rfer=
-_cmpr))
-> -		return 0;
-> +	/* Since squotas cannot be inconsistent, they have special rules for d=
-eletion. */
-> +	if (btrfs_qgroup_mode(fs_info) =3D=3D BTRFS_QGROUP_MODE_SIMPLE)
-> +		return can_delete_squota_qgroup(fs_info, qgroup);
->  =20
->   	/* For higher level qgroup, we can only delete it if it has no child.=
- */
-> -	if (btrfs_qgroup_level(qgroup->qgroupid)) {
-> -		if (!list_empty(&qgroup->members))
-> -			return 0;
-> -		return 1;
-> -	}
-> +	if (btrfs_qgroup_level(qgroup->qgroupid))
-> +		return can_delete_parent_qgroup(qgroup);
->  =20
->   	/*
->   	 * For level-0 qgroups, we can only delete it if it has no subvolume
+>   	src =3D find_qgroup_rb(fs_info, srcid);
+>   	if (!src)
+>   		return -ENOENT;
 
 
