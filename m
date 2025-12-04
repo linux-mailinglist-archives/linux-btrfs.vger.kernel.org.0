@@ -1,149 +1,163 @@
-Return-Path: <linux-btrfs+bounces-19524-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19525-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51AE8CA3A5D
-	for <lists+linux-btrfs@lfdr.de>; Thu, 04 Dec 2025 13:45:51 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69DFACA3B93
+	for <lists+linux-btrfs@lfdr.de>; Thu, 04 Dec 2025 14:08:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 421F23093A83
-	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Dec 2025 12:43:53 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 298BD3112470
+	for <lists+linux-btrfs@lfdr.de>; Thu,  4 Dec 2025 13:04:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F6C42FDC29;
-	Thu,  4 Dec 2025 12:43:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="DjWT313j"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 942BC33F388;
+	Thu,  4 Dec 2025 13:04:33 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from esa3.hgst.iphmx.com (esa3.hgst.iphmx.com [216.71.153.141])
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0379B33F8B4
-	for <linux-btrfs@vger.kernel.org>; Thu,  4 Dec 2025 12:43:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.71.153.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E035033F37F
+	for <linux-btrfs@vger.kernel.org>; Thu,  4 Dec 2025 13:04:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764852229; cv=none; b=lBNJ+90C59szmzq/tnsG9OKg+Asjo8PNegPoan28zd8D4yyoN0tEmqjC0qKyriYceiVXR5FG7VkpKqqEl7gYwKF/KD1hjZJKykiIRtxrWay/j9ascOI3AA44T88wyyehNFAsKA7qs9gyZg/ZDofu47qdVbNbhOhDj34KSkMHqiY=
+	t=1764853473; cv=none; b=pFeFLxX8IZ+7G8s48IYptUsi1yqmGUvBdlsDjENuMziEIrQCF1G7FiS/8oNtbC94z+UPCU/r17s9WhJuyi+bhETTeIkUuk207Z6DvJYLD5Q543SbiluaByBWDL5qeaOaRZiTVXLF/6sd7zLBzSFPUlA86Fl9oY2tKlvVkyKUyvc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764852229; c=relaxed/simple;
-	bh=gRgMPpWw1WX2+CmMbXR5XKTvN9Bki+hWY7ngamQRjdM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QivUdVOdso2/Ydyv9MOb/VGah6rNexiGdLVKzmSp38qjSmo8jalvnL2CTDi1bC/HyCIgtb/aTS12NPtA1zyvUziiDNzdnKsV6OfUWdmHoGIqhf4oarhBGOHCAqBu8hgguCYvbJyiRlfyl5SxGuviJAB/uxQvM3JnyXLEKSEVI/k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=DjWT313j; arc=none smtp.client-ip=216.71.153.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1764852227; x=1796388227;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=gRgMPpWw1WX2+CmMbXR5XKTvN9Bki+hWY7ngamQRjdM=;
-  b=DjWT313j3k6ezT5Jz66EiMtx7pITwc6DXcChx+eg0EQr7imQK8ipR8IT
-   FpzN+ts8LE4JvQba7MRbDAqV5FeVfaNQZromGOJrHEu2lkQWo1asSa46w
-   ZOROa03tZiWxzSiwz+Ew/MnpEY0AMZ1PiPBB/EqKQbVyeSh2UJdGrdffR
-   863r3f1qvSmZHptKkUctBctdb9PotYWMJTo3m0JX3w7BuOxNsZpA7h2Or
-   TDvv9CH+S24SRGBFfWPgpg0dziHg/3ofTO86X7ci2Zdz7Y0MGAf5kYGQ4
-   E/H3tDPbvl7Wyh1MAhI7evjxf81W/fSxy+Ieho20itDAIM5hNNo2Xgg1j
-   g==;
-X-CSE-ConnectionGUID: HIRHsPFtSYOMGdn3VBi+gw==
-X-CSE-MsgGUID: 1mlEp1hlTrizZT9AGnU78w==
-X-IronPort-AV: E=Sophos;i="6.20,248,1758556800"; 
-   d="scan'208";a="137266140"
-Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep03.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 04 Dec 2025 20:42:46 +0800
-IronPort-SDR: 693181c6_tIreq7qyuBRh0ihSZ+Wcq+pPBSelgCRrmV0pw8eYVXVSpnI
- yiAymZW+V3BhxgusbrD8Dd2IxuKjmBwVMPxMifw==
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep03.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 04 Dec 2025 04:42:46 -0800
-WDCIronportException: Internal
-Received: from unknown (HELO neo.wdc.com) ([10.224.28.106])
-  by uls-op-cesaip01.wdc.com with ESMTP; 04 Dec 2025 04:42:44 -0800
-From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-To: linux-btrfs@vger.kernel.org
-Cc: Christoph Hellwig <hch@lst.de>,
-	Naohiro Aota <naohiro.aota@wdc.com>,
-	Qu Wenruo <wqu@suse.com>,
-	Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH v3 5/5] btrfs: move btrfs_bio::can_use_append into flags
-Date: Thu,  4 Dec 2025 13:42:27 +0100
-Message-ID: <20251204124227.431678-6-johannes.thumshirn@wdc.com>
-X-Mailer: git-send-email 2.52.0
-In-Reply-To: <20251204124227.431678-1-johannes.thumshirn@wdc.com>
-References: <20251204124227.431678-1-johannes.thumshirn@wdc.com>
+	s=arc-20240116; t=1764853473; c=relaxed/simple;
+	bh=QDNW4p83aYOdjGk0ChnNOgzVr51/3l5A+Qk4GNT2yGs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rUX6yhYRipOPcjfehrl1kl8048friqPTzzz9Tg0YK3e+WZE+pcHAdRxoKc8HlJ4mcW0tMi8SIFyO+bDWMa+zjygpy97zG0wTrUclAVpDsawkGqKKx6maxlA0zgYQTMKNNVGEVlBvP6T5el/wF+4EapmbnciLro0SW/j4Bbj6Bpg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id 758DD68D0D; Thu,  4 Dec 2025 14:04:26 +0100 (CET)
+Date: Thu, 4 Dec 2025 14:04:26 +0100
+From: Christoph Hellwig <hch@lst.de>
+To: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Cc: linux-btrfs@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+	Naohiro Aota <naohiro.aota@wdc.com>, Qu Wenruo <wqu@suse.com>
+Subject: Re: [PATCH v3 1/5] btrfs: zoned: don't zone append to conventional
+ zone
+Message-ID: <20251204130426.GA26743@lst.de>
+References: <20251204124227.431678-1-johannes.thumshirn@wdc.com> <20251204124227.431678-2-johannes.thumshirn@wdc.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251204124227.431678-2-johannes.thumshirn@wdc.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 
-Remove struct btrfs_bio's can_use_append field and move it as a flag into
-the newly introduced flags member of struct btrfs_bio.
+Looks good:
 
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- fs/btrfs/bio.c | 9 +++++----
- fs/btrfs/bio.h | 5 ++---
- 2 files changed, 7 insertions(+), 7 deletions(-)
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 
-diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
-index a1b0dd8b08f5..ad7e930e4bd0 100644
---- a/fs/btrfs/bio.c
-+++ b/fs/btrfs/bio.c
-@@ -499,7 +499,7 @@ static void btrfs_submit_dev_bio(struct btrfs_device *dev, struct bio *bio)
- 	 * For zone append writing, bi_sector must point the beginning of the
- 	 * zone
- 	 */
--	if (btrfs_bio(bio)->can_use_append &&
-+	if (btrfs_bio(bio)->flags & BTRFS_BIO_CAN_USE_APPEND &&
- 	    btrfs_dev_is_sequential(dev, physical)) {
- 		u64 zone_start = round_down(physical, dev->fs_info->zone_size);
- 
-@@ -781,10 +781,11 @@ static bool btrfs_submit_chunk(struct btrfs_bio *bbio, int mirror_num)
- 	if (bio_op(bio) == REQ_OP_WRITE && is_data_bbio(bbio))
- 		bbio->orig_logical = logical;
- 
--	bbio->can_use_append = btrfs_use_zone_append(bbio);
-+	if (btrfs_use_zone_append(bbio))
-+		bbio->flags |= BTRFS_BIO_CAN_USE_APPEND;
- 
- 	map_length = min(map_length, length);
--	if (bbio->can_use_append)
-+	if (bbio->flags & BTRFS_BIO_CAN_USE_APPEND)
- 		map_length = btrfs_append_map_length(bbio, map_length);
- 
- 	if (map_length < length) {
-@@ -839,7 +840,7 @@ static bool btrfs_submit_chunk(struct btrfs_bio *bbio, int mirror_num)
- 			status = errno_to_blk_status(ret);
- 			if (status)
- 				goto fail;
--		} else if (bbio->can_use_append ||
-+		} else if (bbio->flags & BTRFS_BIO_CAN_USE_APPEND ||
- 			   (btrfs_is_zoned(fs_info) && inode &&
- 			    inode->flags & BTRFS_INODE_NODATASUM)) {
- 			ret = btrfs_alloc_dummy_sum(bbio);
-diff --git a/fs/btrfs/bio.h b/fs/btrfs/bio.h
-index d523929b4538..410a500144c1 100644
---- a/fs/btrfs/bio.h
-+++ b/fs/btrfs/bio.h
-@@ -29,6 +29,8 @@ typedef void (*btrfs_bio_end_io_t)(struct btrfs_bio *bbio);
- #define BTRFS_BIO_IS_SCRUB			(1 << 1)
- /* Whether the csum generation for data write is async. */
- #define BTRFS_BIO_ASYNC_CSUM			(1 << 2)
-+/* Whether the bio is written using zone append. */
-+#define BTRFS_BIO_CAN_USE_APPEND		(1 << 3)
- 
- /*
-  * Highlevel btrfs I/O structure.  It is allocated by btrfs_bio_alloc and
-@@ -92,9 +94,6 @@ struct btrfs_bio {
- 
- 	unsigned int flags;
- 
--	/* Whether the bio is written using zone append. */
--	bool can_use_append;
--
- 	/*
- 	 * This member must come last, bio_alloc_bioset will allocate enough
- 	 * bytes for entire btrfs_bio but relies on bio being last.
--- 
-2.52.0
-
+On Thu, Dec 04, 2025 at 01:42:23PM +0100, Johannes Thumshirn wrote:
+> In case of a zoned RAID, it can happen that a data write is targeting a
+> sequential write required zone and a conventional zone. In this case the
+> bio will be marked as REQ_OP_ZONE_APPEND but for the conventional zone,
+> this needs to be REQ_OP_WRITE.
+> 
+> The setting of REQ_OP_ZONE_APPEND is deferred to the last possible time in
+> btrfs_submit_dev_bio(), but the decision if we can use zone append is
+> cached in btrfs_bio.
+> 
+> Cc: Naohiro Aota <naohiro.aota@wdc.com>
+> Cc: Christoph Hellwig <hch@lst.de>
+> Fixes: e9b9b911e03c ("btrfs: add raid stripe tree to features enabled with debug config")
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+> ---
+>  fs/btrfs/bio.c | 20 ++++++++++----------
+>  fs/btrfs/bio.h |  3 +++
+>  2 files changed, 13 insertions(+), 10 deletions(-)
+> 
+> diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
+> index 4a7bef895b97..33149f07e62d 100644
+> --- a/fs/btrfs/bio.c
+> +++ b/fs/btrfs/bio.c
+> @@ -480,6 +480,8 @@ static void btrfs_clone_write_end_io(struct bio *bio)
+>  
+>  static void btrfs_submit_dev_bio(struct btrfs_device *dev, struct bio *bio)
+>  {
+> +	u64 physical = bio->bi_iter.bi_sector << SECTOR_SHIFT;
+> +
+>  	if (!dev || !dev->bdev ||
+>  	    test_bit(BTRFS_DEV_STATE_MISSING, &dev->dev_state) ||
+>  	    (btrfs_op(bio) == BTRFS_MAP_WRITE &&
+> @@ -494,12 +496,14 @@ static void btrfs_submit_dev_bio(struct btrfs_device *dev, struct bio *bio)
+>  	 * For zone append writing, bi_sector must point the beginning of the
+>  	 * zone
+>  	 */
+> -	if (bio_op(bio) == REQ_OP_ZONE_APPEND) {
+> -		u64 physical = bio->bi_iter.bi_sector << SECTOR_SHIFT;
+> +	if (btrfs_bio(bio)->can_use_append &&
+> +	    btrfs_dev_is_sequential(dev, physical)) {
+>  		u64 zone_start = round_down(physical, dev->fs_info->zone_size);
+>  
+>  		ASSERT(btrfs_dev_is_sequential(dev, physical));
+>  		bio->bi_iter.bi_sector = zone_start >> SECTOR_SHIFT;
+> +		bio->bi_opf &= ~REQ_OP_WRITE;
+> +		bio->bi_opf |= REQ_OP_ZONE_APPEND;
+>  	}
+>  	btrfs_debug(dev->fs_info,
+>  	"%s: rw %d 0x%x, sector=%llu, dev=%lu (%s id %llu), size=%u",
+> @@ -747,7 +751,6 @@ static bool btrfs_submit_chunk(struct btrfs_bio *bbio, int mirror_num)
+>  	u64 logical = bio->bi_iter.bi_sector << SECTOR_SHIFT;
+>  	u64 length = bio->bi_iter.bi_size;
+>  	u64 map_length = length;
+> -	bool use_append = btrfs_use_zone_append(bbio);
+>  	struct btrfs_io_context *bioc = NULL;
+>  	struct btrfs_io_stripe smap;
+>  	blk_status_t status;
+> @@ -775,8 +778,10 @@ static bool btrfs_submit_chunk(struct btrfs_bio *bbio, int mirror_num)
+>  	if (bio_op(bio) == REQ_OP_WRITE && is_data_bbio(bbio))
+>  		bbio->orig_logical = logical;
+>  
+> +	bbio->can_use_append = btrfs_use_zone_append(bbio);
+> +
+>  	map_length = min(map_length, length);
+> -	if (use_append)
+> +	if (bbio->can_use_append)
+>  		map_length = btrfs_append_map_length(bbio, map_length);
+>  
+>  	if (map_length < length) {
+> @@ -805,11 +810,6 @@ static bool btrfs_submit_chunk(struct btrfs_bio *bbio, int mirror_num)
+>  	}
+>  
+>  	if (btrfs_op(bio) == BTRFS_MAP_WRITE) {
+> -		if (use_append) {
+> -			bio->bi_opf &= ~REQ_OP_WRITE;
+> -			bio->bi_opf |= REQ_OP_ZONE_APPEND;
+> -		}
+> -
+>  		if (is_data_bbio(bbio) && bioc && bioc->use_rst) {
+>  			/*
+>  			 * No locking for the list update, as we only add to
+> @@ -836,7 +836,7 @@ static bool btrfs_submit_chunk(struct btrfs_bio *bbio, int mirror_num)
+>  			status = errno_to_blk_status(ret);
+>  			if (status)
+>  				goto fail;
+> -		} else if (use_append ||
+> +		} else if (bbio->can_use_append ||
+>  			   (btrfs_is_zoned(fs_info) && inode &&
+>  			    inode->flags & BTRFS_INODE_NODATASUM)) {
+>  			ret = btrfs_alloc_dummy_sum(bbio);
+> diff --git a/fs/btrfs/bio.h b/fs/btrfs/bio.h
+> index 56279b7f3b2a..d6da9ed08bfa 100644
+> --- a/fs/btrfs/bio.h
+> +++ b/fs/btrfs/bio.h
+> @@ -92,6 +92,9 @@ struct btrfs_bio {
+>  	/* Whether the csum generation for data write is async. */
+>  	bool async_csum;
+>  
+> +	/* Whether the bio is written using zone append. */
+> +	bool can_use_append;
+> +
+>  	/*
+>  	 * This member must come last, bio_alloc_bioset will allocate enough
+>  	 * bytes for entire btrfs_bio but relies on bio being last.
+> -- 
+> 2.52.0
+---end quoted text---
 
