@@ -1,244 +1,804 @@
-Return-Path: <linux-btrfs+bounces-19536-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19538-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22149CA63FB
-	for <lists+linux-btrfs@lfdr.de>; Fri, 05 Dec 2025 07:40:36 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0693CA65AD
+	for <lists+linux-btrfs@lfdr.de>; Fri, 05 Dec 2025 08:17:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id DA3703064797
-	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Dec 2025 06:39:45 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 62C0B3084CD2
+	for <lists+linux-btrfs@lfdr.de>; Fri,  5 Dec 2025 07:17:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6807B26E179;
-	Fri,  5 Dec 2025 06:39:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABD3B2F3C3E;
+	Fri,  5 Dec 2025 07:08:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="p0hdImGR";
-	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="lPCQr/FF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gDIc5b3I"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from esa1.hgst.iphmx.com (esa1.hgst.iphmx.com [68.232.141.245])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4EB526560A
-	for <linux-btrfs@vger.kernel.org>; Fri,  5 Dec 2025 06:39:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=68.232.141.245
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764916784; cv=fail; b=o2WxwAwNcWrrWqNYOUUV2FxLDiSWgdO0h7boLV3vGijverpgy3AALtLMauMso6vSzx/dzKjmoels6AccjBMHIBGDc+P8h4HPKXvq1YMTZaL8+9n/IMbDAIMUR+eslkfiA18tikLN4Hs58VkniGA/YPVT700U+9G4KfMANJVkT20=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764916784; c=relaxed/simple;
-	bh=M8gEqNCNi0LWzlYabMc2A06c1FQk78H2rcIetX4RXD0=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=T9+TBMGig74hEkYwFWlk7uDWoPPBHOC74VPNoI5qZrVLp/rqb6pXrjpwVXm8N+AqsxwqwiD9esM4OT7qc+qICb4FfI93jXME4JEwZSHRhmXk7CbhH1DwoZrcPcTZtKEUgVH7Lq2/V0m6AkJWBiR/9SBGlEUokwplF5ntXBYejvo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=p0hdImGR; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=lPCQr/FF; arc=fail smtp.client-ip=68.232.141.245
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1764916782; x=1796452782;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=M8gEqNCNi0LWzlYabMc2A06c1FQk78H2rcIetX4RXD0=;
-  b=p0hdImGR2TWTratJx91Y7xEKh1MuftvT3NtrzYkD9O/y0UGKBqh2jJJH
-   +PZkt+95il/5hHABx7lkzZr16Fq99Ui2ZWFXxHYLV4KRki5LL/mXlvDrx
-   Jv/1ndszJihCE6mFvon0ztaNFFhYtZZHrjfKjH9B7RoY2jNluj/mOH7FR
-   nsXzYMvEQSBRk/KLxOPiaaGHN+cgE0enuCInghDR4pt9iJRQNJEf6871G
-   ferO2A1651+hmo2rFy/pNTavT+ezErIBWBtFrLqr8/xTyHBwEH5mJzXxg
-   PNvgGzAm3vkn9vfFbZ5gy6x8uF8c03LeS7bhDjeqjOrIDtwQL9qGAXXll
-   A==;
-X-CSE-ConnectionGUID: P/8RdPwAR5GKZtDS1bnwsQ==
-X-CSE-MsgGUID: n0uaq7hLQ/qQH0iXul6iRg==
-X-IronPort-AV: E=Sophos;i="6.20,251,1758556800"; 
-   d="scan'208";a="136456889"
-Received: from mail-westus3azon11010047.outbound.protection.outlook.com (HELO PH7PR06CU001.outbound.protection.outlook.com) ([52.101.201.47])
-  by ob1.hgst.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 05 Dec 2025 14:39:35 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=SxkuaojKjjmTuOkACKq6uLK1ptcvhEXrkVE9VqiaMLRzgCFmiDeYiY4HO+MmMJn+2TxR2bebZ1qmqL4rl5TCXvFxCZHFKLV/E/6L9GfV4s0C0DdEzOGIQC5jvZuMO1Khq6roKjiH0jgJehIy0+Z9Qf800Y/6UryBzNeDIfUG1GLQf02+dw1Ya4QuvZgYlK76olIqv7Pt/G2QfNbXp4E07UcETot/8b/Whqwt74MOXeEwcrHm+ip0xpK3UVDZZLocP04eZBhRHU+SfPsXQV8XFQGrEov35MY+IsUL7kMs8VEQ1B+F3kd4TTl5wjCVSWGCyk2XDMU7zN2XEdKImW78Cg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=M8gEqNCNi0LWzlYabMc2A06c1FQk78H2rcIetX4RXD0=;
- b=w6euaLeGKz0FHPCKT3QtITD72EZFKVvhVOFRiHYfZfhCp2wrEaaCj33WmcGW2lLZ3/TSDJoYcz5AURwehwhQtQPok3kucZ+DN2DhDFzM8LCr8I+Vmmh3tlnXfYO7dm3RLQV3Q4M7eO/OnriAF9UNMqJYo2z6cvmSZn2mxot8RlO29TwIHEtBNUSZ4hcvQFxAAkxiUSS2e/rStztLcASdQ7cZb5dkzLvVRFv3mZe25BYSgS1K6wDPN0uT8VbGdh0rKiQyWZzdgkJx7Xe9cRoc5amP3RD8uo5ygwZqEh9/hNvZaiw4gbFas7hb0b2oAgXLbWkNhm/KXrkhnKrFNxh8NQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=M8gEqNCNi0LWzlYabMc2A06c1FQk78H2rcIetX4RXD0=;
- b=lPCQr/FFi0SxcMUN1HOBZTVGyHN4w1BZDc3+Or5cW1xZexJ2ipESb1iqyrGRDcNVKjdNa6xgSFqxlXQZiGANbTiche2zTawcjkPofGxqjmtqxrpL27j00jOc16OXsw1k13QAAYmt+cKHj0efX0hsfIP1tWgqZoQRpLSGPEYGmdw=
-Received: from LV8PR04MB8984.namprd04.prod.outlook.com (2603:10b6:408:18b::13)
- by SN7PR04MB8530.namprd04.prod.outlook.com (2603:10b6:806:322::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9388.9; Fri, 5 Dec
- 2025 06:39:33 +0000
-Received: from LV8PR04MB8984.namprd04.prod.outlook.com
- ([fe80::9ba6:7273:90bc:53a8]) by LV8PR04MB8984.namprd04.prod.outlook.com
- ([fe80::9ba6:7273:90bc:53a8%5]) with mapi id 15.20.9388.003; Fri, 5 Dec 2025
- 06:39:33 +0000
-From: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To: WenRuo Qu <wqu@suse.com>, "linux-btrfs@vger.kernel.org"
-	<linux-btrfs@vger.kernel.org>
-CC: hch <hch@lst.de>, Naohiro Aota <Naohiro.Aota@wdc.com>
-Subject: Re: [PATCH v3 2/5] btrfs: move btrfs_bio::csum_search_commit_root
- into flags
-Thread-Topic: [PATCH v3 2/5] btrfs: move btrfs_bio::csum_search_commit_root
- into flags
-Thread-Index: AQHcZRt6NJ0sNq33702Fpi2BYGH0b7USC7+AgACN3QA=
-Date: Fri, 5 Dec 2025 06:39:32 +0000
-Message-ID: <02f6380c-39d1-4634-b21c-78b81aaacc52@wdc.com>
-References: <20251204124227.431678-1-johannes.thumshirn@wdc.com>
- <20251204124227.431678-3-johannes.thumshirn@wdc.com>
- <35a62029-142b-4882-a238-81baf00f5f1f@suse.com>
-In-Reply-To: <35a62029-142b-4882-a238-81baf00f5f1f@suse.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Mozilla Thunderbird
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: LV8PR04MB8984:EE_|SN7PR04MB8530:EE_
-x-ms-office365-filtering-correlation-id: b169b85b-2950-4dd1-e98b-08de33c90ce3
-x-ld-processed: b61c8803-16f3-4c35-9b17-6f65f441df86,ExtAddr
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam:
- BCL:0;ARA:13230040|366016|19092799006|376014|1800799024|10070799003|38070700021;
-x-microsoft-antispam-message-info:
- =?utf-8?B?VEg1dXZ3U2UwUVc5bFhteFl2Q1dGUC9MNU4zSkx3enE0VW1zVzFTejI3V3RR?=
- =?utf-8?B?dW9XVnRqTVAwTmtHbU5KWFM3cVpUVUhpTlJxRjJHWUdxd2RFTTFqVFZrWCtj?=
- =?utf-8?B?NjJPd29ubERodUxYcE5ZOUZNL2t4b0N6cjdzcVR4NjNjcVBuWnZsUkFvcWJx?=
- =?utf-8?B?QlBicXkwRTljalJYUGMyTG1kM1Q1WWNKK2c2OEVrV2Y4Z0taakZVelVwaGpY?=
- =?utf-8?B?bHI3c3hNblFzUmpjdGF3a2JyQ0JNRzRVRDNkeVhrTkhJOVFDZjVLcWRKdXJm?=
- =?utf-8?B?NUJCQjA0THR1a0hraVJkcFVZanpmZGFTNWQ3ZVBqN3ZWZkhUZVZnMHhBMmxZ?=
- =?utf-8?B?OWtXeVBJeGNZcEFNZk1xYWtSK3V0VUVJZytrN25pY0M1VWpPZ1h6ZEZmdUM0?=
- =?utf-8?B?OC9xY1QvcTJRUVczTUk5TUc3WDVITDJldHlEdFJ3WGJVakpqWHJCK2lnQnlX?=
- =?utf-8?B?VmRoZEpWQi9NdzRjWjJmNXI3ckhYN1hTV01JVm5KNzdZWWxiZ2dsMjhYM29l?=
- =?utf-8?B?TUs2L054enNZZEZudUhqc05QYmFaUkNtcUFHbkZFcERtK3o0UXFIZnY3QmM3?=
- =?utf-8?B?WFVzR3cwZTJlSFZwMmlxenhjenhLQzVZQStSVGpHbDBHQjR6bVJUaHFIRzNW?=
- =?utf-8?B?TFZHZm1IS3hBSm1QZG5SNnlUWVlZbFZ0WGVqZUxwZ1ErVkV1SkZ1dERsQ1ZN?=
- =?utf-8?B?eVpVNTJKVXZjR1FQUHkxbWtEblhCbEkwdlFIczlHTldxQkxNZXkrYzZEbWVp?=
- =?utf-8?B?amlvVjBDdU80cUdNMWx0dXA4NjFzZmdZaFdzM2RNY3ZBT2xndXZoTGxDR25N?=
- =?utf-8?B?dlIwNjdzdzlIWFpaMmNzTHRFWEJsTUdCazJLSTMyaHIrYW1NOURSS2g5WHh4?=
- =?utf-8?B?SDNaTW9wZk42UnNROUFjQlJEWXppL0JmRkFOWERLVytrYmtnOUpGVXEvQXpw?=
- =?utf-8?B?bUJWN0R6S0ltbmJYeExkM2REWmNvelZHK0dSQTZUbmVtdFpXdzZyTWhKbSsz?=
- =?utf-8?B?dkhTNFVZSjg4THVNS0h6Z3hnUHFaekR2UENJZk9kMXlWS0JpZFRlQnl1WDRV?=
- =?utf-8?B?ZkZwUXZtcGo1V1ZpRnh2RmswQ1V2M0VhSG83eS8vbFRrT1Q2ay9NRnc0WG9B?=
- =?utf-8?B?Ky9WVjY0RzVaVFZSUXNzMmhzM2k5SW5xbjdnZEloUTZaVkxwRG9XL2kyMmtw?=
- =?utf-8?B?Qzk5dEdZVk9wb2w5Y2w0eTF6QTEyYTVCMGZVdGJhNm9ldWZEaFBwSk9tR3dh?=
- =?utf-8?B?d05oME5WMXVPYWxJWUdaMGhORUVPdWtkVmg2dFpudTdMR25GZXloazBpbCs2?=
- =?utf-8?B?RE96K20wWXNkbWp2Z0xBRWRTSWFibnFrNWgvMU9UMDcrRlpoaDZyc1lDdTZE?=
- =?utf-8?B?elc0WkdBaFlKMEkyc0xGYnIvenprL2V3SWJKRHc3eGxZL3JEUUN2L0ZSL1VM?=
- =?utf-8?B?UmdzeXNleXB0M1JEYUVQQVFSMlJSa0RCcjFvTHBCRE5hNXhwQnZsZ2hNdy9C?=
- =?utf-8?B?cWIxLzZ2K2I0Q3llL2FqTTBHQ0d2Q3ZTNjhPZXdzZWRBUG16ZWdsRTV3MkZh?=
- =?utf-8?B?eW1MRUhkTkNCNjVXWk5iNHQyRFB2MTNVUmJLWldSRmk3ZzdBTjVnNlRwT2FY?=
- =?utf-8?B?VFpFdlMvWnprMEl0a3kyZTdDVmxLc3VrSG5KQUM3MU91cGEwTmt2bzgzVllP?=
- =?utf-8?B?TFh0SzVHcDZpWUxqUEp5cGJHRG1VMkRRSGJYTFowOEZjOVl6b2xsM3dFdGtF?=
- =?utf-8?B?am9YY0s2WTdQbjE0YWlEWFJtZmlUT3BHVWkxWWZJVDRCT3VMb2ZsSjFBTW1G?=
- =?utf-8?B?c2JYWEczRDdZV0g3VDUxb2ZFa29lUEorTHZNNnZxTnYyVm1hSUdzY3hJRXM5?=
- =?utf-8?B?ck1tNmZ3ajhqUWs1VlowNEFVaUVvODZGZERZcDdCUVN1emtKUXRxM0hYMjdL?=
- =?utf-8?B?bGsvT1g4UjFjbVhjQlVEQjQyQVlzUHV5Q2Rsb0d3QTJYL2ZKUGx0eW5FMTU4?=
- =?utf-8?B?eWU1cVkzWjlFLzZQMlZlaGJGM2xla0pYWnY5Q1RVb3dyQjZweG5maFVSaDFj?=
- =?utf-8?Q?ZYG8MJ?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV8PR04MB8984.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(19092799006)(376014)(1800799024)(10070799003)(38070700021);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?NWxBM3AyUmJORFA2U2NOOW5ZMFB0bVZIeEM1K0pMTFZQRnpNLy9EM2ozK0Ix?=
- =?utf-8?B?bGMvOXZGVW93MTluV0JodDU4dmFtR0lXU09QQVpUWTJEa052eUlCSDBVRUdl?=
- =?utf-8?B?eEJZUExqak8wWlk3TXpCK1QxQ2NXUUorcW9RbGdodHQxdEtYNEQrSFVBT3FI?=
- =?utf-8?B?SVAxMUZTZThlV013UStHZlpFbGl1NmxIeDVFb0cwVURIc2VBdTBWL21QMURr?=
- =?utf-8?B?VjdDN1BqM3NvcFIzREhPcjdjWFpaSUlUYjJBOGxxSysyTlZIdnVtcERtZEg0?=
- =?utf-8?B?b0p1eXNBd0REV0d5c1BGb2RpU0hvUUJRdE8xd2NYdVdPL0puZ3N4S0tNdkhx?=
- =?utf-8?B?UHd0RWwvUGxGQTdXRUpUd1NUK3AwYTVHRTIydXBJYkc2SnpjenFNc1BnaDFq?=
- =?utf-8?B?WXR6U3gvYUE2MktKalNoL05LVWRQc29PZVhXMzhwTUlXT2lnYkpyYUk2cUNm?=
- =?utf-8?B?MmtOakxXYXBJTHBzMXA2S3NzWFZhcmIyQzRaMXRSK3NYSmdyZDJFd0o0RDVW?=
- =?utf-8?B?MGMwSnV6Q1ZzeDRBOGYvY2pZNnhMZWQ0U2tFNWJXZ0FFWkw5WFVNSFBpdll5?=
- =?utf-8?B?VDBmdEVGdTZ0N1FxS2h5V2ZMcS9iOERxMGFQSTNqbk9nTytzaEk4ZEZOdFhU?=
- =?utf-8?B?ZnpIYnJyUCt2VExObysyamMwcmZiTCsyYWx0QmowMGhGVTAzK1BsV1Y3R0Ry?=
- =?utf-8?B?MHpKQlY2cDJXWU1zaVhtVVI5S2xtTWNxRVRqRWpjSUZBWE12NFBUdVRDck1B?=
- =?utf-8?B?cVFSMnhQcHB6UEtyQmk3ZHoxL0dKNHNHSDdRRDcraDYwNnY1MC9BWHM3ZXFx?=
- =?utf-8?B?YjhsVGhPTFNlcTZrRDZ6Zk1iL0xVenNZb0c3MGtZUXduU043MmRLaStnSjZM?=
- =?utf-8?B?em1YYksvK0pFQWMrZVM5YkEwQ1FFNk9pOEozWmpYT2ZXWXBBb3V5eVR0MGFV?=
- =?utf-8?B?cEN0L29hNVQ1elFvWitaVVhMRUlnaFA3S3ZGUXA5MDU5MjREV3cwWXpIZm9F?=
- =?utf-8?B?UnBYSTc1NFNtQThKL01lNFJKM2I4SVZkMFQ1K0RnZXIwWVlUT24vbDdjdnVo?=
- =?utf-8?B?N0lWNTUwNGo0THVhL0xINDJZRW9RQ0I2TXAxRXhjL1A5RW1TUFVHV3FkTUZM?=
- =?utf-8?B?T3RaRVNMN1VmMUFvaFZaMVJJR3JkeFpZSnIrbHVmL2YzVVJGK1lyclErQVgv?=
- =?utf-8?B?ZkcrT1g3T1EvMGI3OEpySCswdytrMnZvelcvSGlEQkpTdjRaMTY2bC94V0FK?=
- =?utf-8?B?VS9iQ3oyT1M2ay9PUzZZM2Yyb3dlUEJ6azVTdFptb2daQUMwYnkrZ1dvQ3Rq?=
- =?utf-8?B?UTAybGI2TEJuU0p4anc2RldsUFpRMnFzT1V6TTl4WWVOUXI3aFFsUHFVYyt0?=
- =?utf-8?B?WElNZm84Q1lnTWdoRWRUQ1NKMHZ2Z25OWHNic1RTYTBQL2JZenI2ZXlOd0pr?=
- =?utf-8?B?cEhWZEMzN2ZqUXY5ZHFPZ1ZLMVl0MU5VWHpUbzZVQ3Y1dlBvanBNWll6RFI4?=
- =?utf-8?B?blZ6Ulg1K2lIOSt4eGV5Z2xLNkdSL2U3bmEzOFNCNDFUTEJhY1Vka2tid3h3?=
- =?utf-8?B?TnFYRG5Oc0FlcnNiYkRSUUtOR2ppRGNVR2xiTDlhNXU4eHlsK2pSd2VlbUJu?=
- =?utf-8?B?d1Nnd21KMkx4Q1BHUjE1UmR4MFE2Tkh4cXdkWnZ4dUJraFl5TzNGTFJKZGo2?=
- =?utf-8?B?aHA1aW1oUTk4UEk2cUdPVVFiYnJRc1pSdzVGK1ByWlRPYzhRK09xck9WR1Rl?=
- =?utf-8?B?YlMyVDB2NlFNVWM5dkpUNnlNeUJ3c0tYUE0yb0RRVThKQ2F6V0IvS1JrOWtq?=
- =?utf-8?B?T3gyR1ZkQXZNckkzaWpOeVZaSVZoSVcxS3EvUWRKZE9uMlNkMjQ0TExST1dB?=
- =?utf-8?B?UzhDSThOZ3laVFM4OHpGa3llZkVKeFFOU3VTa3NUbUc3ajdlTUV3dkwyalhR?=
- =?utf-8?B?U3ZQUUdYYlJLcWdScm9qbERNOXE3NEwwa2NFMDV2bE9iOHFKc01jVWpHQXVo?=
- =?utf-8?B?eGNMK2I0aHR4bXRYbDA0ZkpnVzMwdFJSbXA2clpiK2ozYURkTDNkVFNOTmhP?=
- =?utf-8?B?V0ZWMlZkMTFSYTJleEsxamI3bzU2UW12dXlhMzg0NUpGdzBRQzUwYkUyVzBx?=
- =?utf-8?B?ZmFFN0lycFJwK2U2cE1wd252QksxYWhTVFdtL1hISFNFM1g5ZFpzNmo5dSth?=
- =?utf-8?B?bWlTdkpURHVmMnV5NjVPOTBDUFZlNlkrV3dmaVZYQmQvcDNQaXovY3UwMTNx?=
- =?utf-8?B?bzA3dHo4UW9tWE5xbTBMMi9tVXdRPT0=?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <6AD7D4E62174A24986BBF753F39E5931@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9C832F5483;
+	Fri,  5 Dec 2025 07:08:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1764918522; cv=none; b=Az3X1u7jjPDDlX1zZW2cKpUZa6UTv5P7imPQgEzIuHup+waddSEB3gMwdoqVvDe/8MYJt7lUtJrYNjKf7hP9zFKim1yvers20WuHl7wmhAeaimZwgpER8nNqXha5p2nybM/ETX6pOT6rqFhtcQXtz7HMEfwhLc4krQ30Dt3rJ8k=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1764918522; c=relaxed/simple;
+	bh=wcKtzuNQstQtm7xjejYVUb6CkqP/umvDjH3sGgYob7Y=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=P3BE072HTqGm2Km9uWd5xp+Q0oj/Pve4Dsely9xNiKpBiQCmLUp/9qV5shvGsDQQgAUk/U2KERqUuKj3HJH1eJBuzyi/l0VqL3H87cTwhpabTzGdcEoz6BuxBTcaluu5YUZvTT743kBZ0FaTAB8cbJUnAQ6/oLGKhhUTj8G8x98=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gDIc5b3I; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED89FC4CEF1;
+	Fri,  5 Dec 2025 07:08:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1764918522;
+	bh=wcKtzuNQstQtm7xjejYVUb6CkqP/umvDjH3sGgYob7Y=;
+	h=From:To:Cc:Subject:Date:From;
+	b=gDIc5b3IemU+09aEaIoMmZGVCIoPF2+TsCBlC2E/TgG1JvOQoCLPZC6kXp6lPkVmx
+	 vPJQHoQqDoqSllOOX2xJWVAWrrVqz5YP7lLDzxqggD8EXVsHLkCMJGsgsPg9AsQZK5
+	 AnJCUaJe21hnFc9kS7ppLljn7tZb0fO0nNuyFIIUtkVQH/W32aKQkB2fDsIRCMDgas
+	 wEDViHRUZbieJRFYt8NkSdxKhAaR1YA5jGT2XcjP+q5mMrp5i/wE9iRS6Hz+NIIsXe
+	 Hoq+2fCfr2IvWm+YRWLiWATgdPFAflrv2wKKvcKYwD622YK2rj3WMUJjLaWPLqzClZ
+	 JvWLVWfg2MPrw==
+From: Eric Biggers <ebiggers@kernel.org>
+To: linux-btrfs@vger.kernel.org,
+	David Sterba <dsterba@suse.com>,
+	Chris Mason <clm@fb.com>
+Cc: linux-crypto@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Eric Biggers <ebiggers@kernel.org>,
+	Ard Biesheuvel <ardb@kernel.org>
+Subject: [PATCH v2] btrfs: switch to library APIs for checksums
+Date: Thu,  4 Dec 2025 23:04:54 -0800
+Message-ID: <20251205070454.118592-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	/b2pbvOM2a1+iJA3SlGaGjiHNcGoPthrn9l2n8757r3an/xej/UYjGQjywzQSR3/ax0vY8+PNdWS//W/O0zHFtL4YHtBFQNrYOJzDJuVFzXy++MGFCle4gHxobwa8lM+dRb9gaRGDxWk5qDk6R6S6P+VUv5ieKXvWRVW22+PJ8fXxrIaEHJaNVhd0/YKjUtnITmnLGNU01Od/JTuBSseuj79JNn+yLwxOXj8TcCeM84y52Yd8eZU/SS+0pp+LXPl9E62OvbXwPKCJdYz63k6BPjkGDioK1WdLYma5YaEA+JkWDgfKzade+0WJz73PPh3N/8hElFDpiWgEip3YkfYltn5OKpfijsYp9HnqgxnY6riCE5yTeaIx50Nbmec0H0g7JSVWixZx6U+oe9Ir+2YyvuIzvJBM/c7G0dHr5Qbs7tSBCsL/aoCD9/iXUIg3NtxVSeB6jJuYKWi8W8QK0aIjh9VM1EbHeBRFQGa5EYiGZtjBNq+zlm0+KvY+TKa3g1kL2ejOapu6J7OalvPGosNX2Q0o8+xyDmAMpmp2dlMyR+8IbT0MFWaVa27YQaNhj2W3U/9cASehBoSEdv+84MOQzDKLLyBthTcgK0bEAvPZsOuqytu8Q/U0m1WSS4Qv1qU
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: LV8PR04MB8984.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b169b85b-2950-4dd1-e98b-08de33c90ce3
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Dec 2025 06:39:33.0731
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: mKfLTRc4nXSO58lJc7ORd6WyZatKZmXrVUs/v211reKzxrPbR93oyzcEjedMUU3Ie+ohMVHM3QVHgENlLUTHXZr1+RjiWNfJv+kT/ycjbXU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR04MB8530
+Content-Transfer-Encoding: 8bit
 
-T24gMTIvNC8yNSAxMToxMiBQTSwgUXUgV2VucnVvIHdyb3RlOg0KPiBVbnNpZ25lZCBpbnQgaXMg
-YSBsaXR0bGUgb3ZlcmtpbGxlZCBpbiB0aGlzIGNhc2UuDQo+IFdlIGhhdmUgYXQgbW9zdCA0IGJp
-dHMgc28gZmFyLCBidXQgdW5zaWduZWQgaW50IGlzIHUzMi4NCj4NCj4gSSB0aGluayB1c2luZyBi
-b29sIGJpdGZpZWxkcyBpcyBtb3JlIHNwYWNlIGVmZmljaWVudCwgYW5kIHRoZSBiaXRmaWVsZHMN
-Cj4gbWVtYmVycyBhcmUgYWxsIHNldCB3aXRob3V0IHJhY2UsIGl0IHNob3VsZCBiZSBzYWZlLg0K
-Pg0KPiBGdXJ0aGVybW9yZSBJIGFsc28gdHJpZWQgdG8gcmVkdWNlIHRoZSB3aWR0aCBvZiBtaXJy
-b3JfbnVtLCB3aXRoIGFsbA0KPiB0aG9zZSB3b3JrIGFuZCBwcm9wZXJseSByZS1vcmRlciB0aGUg
-bWVtYmVycywgSSBjYW4gcmVkdWNlIDggYnl0ZXMgZnJvbQ0KPiBidHJmc19iaW86DQo+DQo+ICAg
-ICAgICAgICB9IF9fYXR0cmlidXRlX18oKF9fYWxpZ25lZF9fKDgpKSk7ICAgICAgICAgICAgICAg
-LyogICAgMTYgICAxMjAgKi8NCj4gICAgICAgICAgIC8qIC0tLSBjYWNoZWxpbmUgMiBib3VuZGFy
-eSAoMTI4IGJ5dGVzKSB3YXMgOCBieXRlcyBhZ28gLS0tICovDQo+ICAgICAgICAgICBidHJmc19i
-aW9fZW5kX2lvX3QgICAgICAgICBlbmRfaW87ICAgICAgICAgICAgICAgLyogICAxMzYgICAgIDgg
-Ki8NCj4gICAgICAgICAgIHZvaWQgKiAgICAgICAgICAgICAgICAgICAgIHByaXZhdGU7ICAgICAg
-ICAgICAgICAvKiAgIDE0NCAgICAgOCAqLw0KPiAgICAgICAgICAgYXRvbWljX3QgICAgICAgICAg
-ICAgICAgICAgcGVuZGluZ19pb3M7ICAgICAgICAgIC8qICAgMTUyICAgICA0ICovDQo+ICAgICAg
-ICAgICB1OCAgICAgICAgICAgICAgICAgICAgICAgICBtaXJyb3JfbnVtOyAgICAgICAgICAgLyog
-ICAxNTYgICAgIDEgKi8NCj4gICAgICAgICAgIGJsa19zdGF0dXNfdCAgICAgICAgICAgICAgIHN0
-YXR1czsgICAgICAgICAgICAgICAvKiAgIDE1NyAgICAgMSAqLw0KPiAgICAgICAgICAgYm9vbCAg
-ICAgICAgICAgICAgICAgICAgICAgY3N1bV9zZWFyY2hfY29tbWl0X3Jvb3Q6MTsgLyogICAxNTg6
-DQo+IDAgIDEgKi8NCj4gICAgICAgICAgIGJvb2wgICAgICAgICAgICAgICAgICAgICAgIGlzX3Nj
-cnViOjE7ICAgICAgICAgICAvKiAgIDE1ODogMSAgMSAqLw0KPiAgICAgICAgICAgYm9vbCAgICAg
-ICAgICAgICAgICAgICAgICAgYXN5bmNfY3N1bToxOyAgICAgICAgIC8qICAgMTU4OiAyICAxICov
-DQo+DQo+ICAgICAgICAgICAvKiBYWFggNSBiaXRzIGhvbGUsIHRyeSB0byBwYWNrICovDQo+ICAg
-ICAgICAgICAvKiBYWFggMSBieXRlIGhvbGUsIHRyeSB0byBwYWNrICovDQo+DQo+ICAgICAgICAg
-ICBzdHJ1Y3Qgd29ya19zdHJ1Y3QgICAgICAgICBlbmRfaW9fd29yazsgICAgICAgICAgLyogICAx
-NjAgICAgMzIgKi8NCj4gICAgICAgICAgIC8qIC0tLSBjYWNoZWxpbmUgMyBib3VuZGFyeSAoMTky
-IGJ5dGVzKSAtLS0gKi8NCj4gICAgICAgICAgIHN0cnVjdCBiaW8gICAgICAgICAgICAgICAgIGJp
-byBfX2F0dHJpYnV0ZV9fKChfX2FsaWduZWRfXyg4KSkpOw0KPiAvKiAgIDE5MiAgIDExMiAqLw0K
-Pg0KPiAgICAgICAgICAgLyogWFhYIGxhc3Qgc3RydWN0IGhhcyAxIGhvbGUgKi8NCj4NCj4gICAg
-ICAgICAgIC8qIHNpemU6IDMwNCwgY2FjaGVsaW5lczogNSwgbWVtYmVyczogMTMgKi8NCj4NCj4g
-VGhlIG9sZCBzaXplIGlzIDMxMiwgc28gYSA4IGJ5dGVzIGltcHJvdmVtZW50IG9uIHRoZSBzaXpl
-IG9mIGJ0cmZzX2Jpby4NCg0KVGhhdCdzIGRlZmluaXRlbHkgbW9yZSB0aGUga2luZCBvZiBpbXBy
-b3ZlbWVudCBleHBlY3RlZCwgY2FuIHlvdSBzZW5kIGEgDQpwYXRjaCBmb3IgaXQ/IE1lYW53aGls
-ZSBJJ3ZlIHB1c2hlZCAxLzUgdG8gZm9yLW5leHQuDQoNCg==
+Make btrfs use the library APIs instead of crypto_shash, for all
+checksum computations.  This has many benefits:
+
+- Allows future checksum types, e.g. XXH3 or CRC64, to be more easily
+  supported.  Only a library API will be needed, not crypto_shash too.
+
+- Eliminates the overhead of the generic crypto layer, including an
+  indirect call for every function call and other API overhead.  A
+  microbenchmark of btrfs_check_read_bio() with crc32c checksums shows a
+  speedup from 658 cycles to 608 cycles per 4096-byte block.
+
+- Decreases the stack usage of btrfs by reducing the size of checksum
+  contexts from 384 bytes to 240 bytes, and by eliminating the need for
+  some functions to declare a checksum context at all.
+
+- Increases reliability.  The library functions always succeed and
+  return void.  In contrast, crypto_shash can fail and return errors.
+  Also, the library functions are guaranteed to be available when btrfs
+  is loaded; there's no longer any need to use module softdeps to try to
+  work around the crypto modules sometimes not being loaded.
+
+- Fixes a bug where blake2b checksums didn't work on kernels booted with
+  fips=1.  Since btrfs checksums are for integrity only, it's fine for
+  them to use non-FIPS-approved algorithms.
+
+Note that with having to handle 4 algorithms instead of just 1-2, this
+commit does result in a slightly positive diffstat.  That being said,
+this wouldn't have been the case if btrfs had actually checked for
+errors from crypto_shash, which technically it should have been doing.
+
+Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
+Signed-off-by: Eric Biggers <ebiggers@kernel.org>
+---
+
+v2: rebased onto latest mainline, now that both the crypto library and
+    btrfs pull requests for 6.19 have been merged
+
+ fs/btrfs/Kconfig       |  8 ++--
+ fs/btrfs/compression.c |  1 -
+ fs/btrfs/disk-io.c     | 68 ++++++++----------------------
+ fs/btrfs/file-item.c   |  4 --
+ fs/btrfs/fs.c          | 96 ++++++++++++++++++++++++++++++++++++------
+ fs/btrfs/fs.h          | 23 +++++++---
+ fs/btrfs/inode.c       | 10 ++---
+ fs/btrfs/scrub.c       | 16 +++----
+ fs/btrfs/super.c       |  4 --
+ fs/btrfs/sysfs.c       |  6 +--
+ 10 files changed, 133 insertions(+), 103 deletions(-)
+
+diff --git a/fs/btrfs/Kconfig b/fs/btrfs/Kconfig
+index 4438637c8900..bf7feff2fe44 100644
+--- a/fs/btrfs/Kconfig
++++ b/fs/btrfs/Kconfig
+@@ -2,24 +2,22 @@
+ 
+ config BTRFS_FS
+ 	tristate "Btrfs filesystem support"
+ 	select BLK_CGROUP_PUNT_BIO
+ 	select CRC32
+-	select CRYPTO
+-	select CRYPTO_CRC32C
+-	select CRYPTO_XXHASH
+-	select CRYPTO_SHA256
+-	select CRYPTO_BLAKE2B
++	select CRYPTO_LIB_BLAKE2B
++	select CRYPTO_LIB_SHA256
+ 	select ZLIB_INFLATE
+ 	select ZLIB_DEFLATE
+ 	select LZO_COMPRESS
+ 	select LZO_DECOMPRESS
+ 	select ZSTD_COMPRESS
+ 	select ZSTD_DECOMPRESS
+ 	select FS_IOMAP
+ 	select RAID6_PQ
+ 	select XOR_BLOCKS
++	select XXHASH
+ 	depends on PAGE_SIZE_LESS_THAN_256KB
+ 
+ 	help
+ 	  Btrfs is a general purpose copy-on-write filesystem with extents,
+ 	  writable snapshotting, support for multiple devices and many more
+diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+index 7dda6cc68379..a3878e79f6df 100644
+--- a/fs/btrfs/compression.c
++++ b/fs/btrfs/compression.c
+@@ -19,11 +19,10 @@
+ #include <linux/psi.h>
+ #include <linux/slab.h>
+ #include <linux/sched/mm.h>
+ #include <linux/log2.h>
+ #include <linux/shrinker.h>
+-#include <crypto/hash.h>
+ #include "misc.h"
+ #include "ctree.h"
+ #include "fs.h"
+ #include "btrfs_inode.h"
+ #include "bio.h"
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 89149fac804c..401ede9da21e 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -16,11 +16,10 @@
+ #include <linux/semaphore.h>
+ #include <linux/error-injection.h>
+ #include <linux/crc32c.h>
+ #include <linux/sched/mm.h>
+ #include <linux/unaligned.h>
+-#include <crypto/hash.h>
+ #include "ctree.h"
+ #include "disk-io.h"
+ #include "transaction.h"
+ #include "btrfs_inode.h"
+ #include "bio.h"
+@@ -60,30 +59,23 @@
+ 				 BTRFS_SUPER_FLAG_METADUMP_V2)
+ 
+ static int btrfs_cleanup_transaction(struct btrfs_fs_info *fs_info);
+ static void btrfs_error_commit_super(struct btrfs_fs_info *fs_info);
+ 
+-static void btrfs_free_csum_hash(struct btrfs_fs_info *fs_info)
+-{
+-	if (fs_info->csum_shash)
+-		crypto_free_shash(fs_info->csum_shash);
+-}
+-
+ /*
+  * Compute the csum of a btree block and store the result to provided buffer.
+  */
+ static void csum_tree_block(struct extent_buffer *buf, u8 *result)
+ {
+ 	struct btrfs_fs_info *fs_info = buf->fs_info;
+ 	int num_pages;
+ 	u32 first_page_part;
+-	SHASH_DESC_ON_STACK(shash, fs_info->csum_shash);
++	struct btrfs_csum_ctx csum;
+ 	char *kaddr;
+ 	int i;
+ 
+-	shash->tfm = fs_info->csum_shash;
+-	crypto_shash_init(shash);
++	btrfs_csum_init(&csum, fs_info->csum_type);
+ 
+ 	if (buf->addr) {
+ 		/* Pages are contiguous, handle them as a big one. */
+ 		kaddr = buf->addr;
+ 		first_page_part = fs_info->nodesize;
+@@ -92,25 +84,25 @@ static void csum_tree_block(struct extent_buffer *buf, u8 *result)
+ 		kaddr = folio_address(buf->folios[0]);
+ 		first_page_part = min_t(u32, PAGE_SIZE, fs_info->nodesize);
+ 		num_pages = num_extent_pages(buf);
+ 	}
+ 
+-	crypto_shash_update(shash, kaddr + BTRFS_CSUM_SIZE,
+-			    first_page_part - BTRFS_CSUM_SIZE);
++	btrfs_csum_update(&csum, kaddr + BTRFS_CSUM_SIZE,
++			  first_page_part - BTRFS_CSUM_SIZE);
+ 
+ 	/*
+ 	 * Multiple single-page folios case would reach here.
+ 	 *
+ 	 * nodesize <= PAGE_SIZE and large folio all handled by above
+-	 * crypto_shash_update() already.
++	 * btrfs_csum_update() already.
+ 	 */
+ 	for (i = 1; i < num_pages && INLINE_EXTENT_BUFFER_PAGES > 1; i++) {
+ 		kaddr = folio_address(buf->folios[i]);
+-		crypto_shash_update(shash, kaddr, PAGE_SIZE);
++		btrfs_csum_update(&csum, kaddr, PAGE_SIZE);
+ 	}
+ 	memset(result, 0, BTRFS_CSUM_SIZE);
+-	crypto_shash_final(shash, result);
++	btrfs_csum_final(&csum, result);
+ }
+ 
+ /*
+  * we can't consider a given block up to date unless the transid of the
+  * block matches the transid in the parent node's pointer.  This is how we
+@@ -158,22 +150,19 @@ static bool btrfs_supported_super_csum(u16 csum_type)
+  * algorithm. Pass the raw disk superblock data.
+  */
+ int btrfs_check_super_csum(struct btrfs_fs_info *fs_info,
+ 			   const struct btrfs_super_block *disk_sb)
+ {
+-	char result[BTRFS_CSUM_SIZE];
+-	SHASH_DESC_ON_STACK(shash, fs_info->csum_shash);
+-
+-	shash->tfm = fs_info->csum_shash;
++	u8 result[BTRFS_CSUM_SIZE];
+ 
+ 	/*
+ 	 * The super_block structure does not span the whole
+ 	 * BTRFS_SUPER_INFO_SIZE range, we expect that the unused space is
+ 	 * filled with zeros and is included in the checksum.
+ 	 */
+-	crypto_shash_digest(shash, (const u8 *)disk_sb + BTRFS_CSUM_SIZE,
+-			    BTRFS_SUPER_INFO_SIZE - BTRFS_CSUM_SIZE, result);
++	btrfs_csum(fs_info->csum_type, (const u8 *)disk_sb + BTRFS_CSUM_SIZE,
++		   BTRFS_SUPER_INFO_SIZE - BTRFS_CSUM_SIZE, result);
+ 
+ 	if (memcmp(disk_sb->csum, result, fs_info->csum_size))
+ 		return 1;
+ 
+ 	return 0;
+@@ -1249,11 +1238,10 @@ void btrfs_free_fs_info(struct btrfs_fs_info *fs_info)
+ 	percpu_counter_destroy(&fs_info->ordered_bytes);
+ 	if (percpu_counter_initialized(em_counter))
+ 		ASSERT(percpu_counter_sum_positive(em_counter) == 0);
+ 	percpu_counter_destroy(em_counter);
+ 	percpu_counter_destroy(&fs_info->dev_replace.bio_counter);
+-	btrfs_free_csum_hash(fs_info);
+ 	btrfs_free_stripe_hash_table(fs_info);
+ 	btrfs_free_ref_cache(fs_info);
+ 	kfree(fs_info->balance_ctl);
+ 	kfree(fs_info->delayed_root);
+ 	free_global_roots(fs_info);
+@@ -2003,25 +1991,12 @@ static int btrfs_init_workqueues(struct btrfs_fs_info *fs_info)
+ 	}
+ 
+ 	return 0;
+ }
+ 
+-static int btrfs_init_csum_hash(struct btrfs_fs_info *fs_info, u16 csum_type)
++static void btrfs_init_csum_hash(struct btrfs_fs_info *fs_info, u16 csum_type)
+ {
+-	struct crypto_shash *csum_shash;
+-	const char *csum_driver = btrfs_super_csum_driver(csum_type);
+-
+-	csum_shash = crypto_alloc_shash(csum_driver, 0, 0);
+-
+-	if (IS_ERR(csum_shash)) {
+-		btrfs_err(fs_info, "error allocating %s hash for checksum",
+-			  csum_driver);
+-		return PTR_ERR(csum_shash);
+-	}
+-
+-	fs_info->csum_shash = csum_shash;
+-
+ 	/* Check if the checksum implementation is a fast accelerated one. */
+ 	switch (csum_type) {
+ 	case BTRFS_CSUM_TYPE_CRC32:
+ 		if (crc32_optimizations() & CRC32C_OPTIMIZATION)
+ 			set_bit(BTRFS_FS_CSUM_IMPL_FAST, &fs_info->flags);
+@@ -2031,14 +2006,12 @@ static int btrfs_init_csum_hash(struct btrfs_fs_info *fs_info, u16 csum_type)
+ 		break;
+ 	default:
+ 		break;
+ 	}
+ 
+-	btrfs_info(fs_info, "using %s (%s) checksum algorithm",
+-			btrfs_super_csum_name(csum_type),
+-			crypto_shash_driver_name(csum_shash));
+-	return 0;
++	btrfs_info(fs_info, "using %s checksum algorithm",
++		   btrfs_super_csum_name(csum_type));
+ }
+ 
+ static int btrfs_replay_log(struct btrfs_fs_info *fs_info,
+ 			    struct btrfs_fs_devices *fs_devices)
+ {
+@@ -3312,16 +3285,13 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
+ 		btrfs_release_disk_super(disk_super);
+ 		goto fail_alloc;
+ 	}
+ 
+ 	fs_info->csum_size = btrfs_super_csum_size(disk_super);
++	fs_info->csum_type = csum_type;
+ 
+-	ret = btrfs_init_csum_hash(fs_info, csum_type);
+-	if (ret) {
+-		btrfs_release_disk_super(disk_super);
+-		goto fail_alloc;
+-	}
++	btrfs_init_csum_hash(fs_info, csum_type);
+ 
+ 	/*
+ 	 * We want to check superblock checksum, the type is stored inside.
+ 	 * Pass the whole disk block of size BTRFS_SUPER_INFO_SIZE (4k).
+ 	 */
+@@ -3711,22 +3681,19 @@ static void btrfs_end_super_write(struct bio *bio)
+ static int write_dev_supers(struct btrfs_device *device,
+ 			    struct btrfs_super_block *sb, int max_mirrors)
+ {
+ 	struct btrfs_fs_info *fs_info = device->fs_info;
+ 	struct address_space *mapping = device->bdev->bd_mapping;
+-	SHASH_DESC_ON_STACK(shash, fs_info->csum_shash);
+ 	int i;
+ 	int ret;
+ 	u64 bytenr, bytenr_orig;
+ 
+ 	atomic_set(&device->sb_write_errors, 0);
+ 
+ 	if (max_mirrors == 0)
+ 		max_mirrors = BTRFS_SUPER_MIRROR_MAX;
+ 
+-	shash->tfm = fs_info->csum_shash;
+-
+ 	for (i = 0; i < max_mirrors; i++) {
+ 		struct folio *folio;
+ 		struct bio *bio;
+ 		struct btrfs_super_block *disk_super;
+ 		size_t offset;
+@@ -3746,13 +3713,12 @@ static int write_dev_supers(struct btrfs_device *device,
+ 		    device->commit_total_bytes)
+ 			break;
+ 
+ 		btrfs_set_super_bytenr(sb, bytenr_orig);
+ 
+-		crypto_shash_digest(shash, (const char *)sb + BTRFS_CSUM_SIZE,
+-				    BTRFS_SUPER_INFO_SIZE - BTRFS_CSUM_SIZE,
+-				    sb->csum);
++		btrfs_csum(fs_info->csum_type, (const u8 *)sb + BTRFS_CSUM_SIZE,
++			   BTRFS_SUPER_INFO_SIZE - BTRFS_CSUM_SIZE, sb->csum);
+ 
+ 		folio = __filemap_get_folio(mapping, bytenr >> PAGE_SHIFT,
+ 					    FGP_LOCK | FGP_ACCESSED | FGP_CREAT,
+ 					    GFP_NOFS);
+ 		if (IS_ERR(folio)) {
+diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
+index 14e5257f0f04..568f0e0ebdf6 100644
+--- a/fs/btrfs/file-item.c
++++ b/fs/btrfs/file-item.c
+@@ -6,11 +6,10 @@
+ #include <linux/bio.h>
+ #include <linux/slab.h>
+ #include <linux/pagemap.h>
+ #include <linux/highmem.h>
+ #include <linux/sched/mm.h>
+-#include <crypto/hash.h>
+ #include "messages.h"
+ #include "ctree.h"
+ #include "disk-io.h"
+ #include "transaction.h"
+ #include "bio.h"
+@@ -767,11 +766,10 @@ int btrfs_lookup_csums_bitmap(struct btrfs_root *root, struct btrfs_path *path,
+ 
+ static void csum_one_bio(struct btrfs_bio *bbio, struct bvec_iter *src)
+ {
+ 	struct btrfs_inode *inode = bbio->inode;
+ 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
+-	SHASH_DESC_ON_STACK(shash, fs_info->csum_shash);
+ 	struct bio *bio = &bbio->bio;
+ 	struct btrfs_ordered_sum *sums = bbio->sums;
+ 	struct bvec_iter iter = *src;
+ 	phys_addr_t paddr;
+ 	const u32 blocksize = fs_info->sectorsize;
+@@ -779,12 +777,10 @@ static void csum_one_bio(struct btrfs_bio *bbio, struct bvec_iter *src)
+ 	const u32 nr_steps = blocksize / step;
+ 	phys_addr_t paddrs[BTRFS_MAX_BLOCKSIZE / PAGE_SIZE];
+ 	u32 offset = 0;
+ 	int index = 0;
+ 
+-	shash->tfm = fs_info->csum_shash;
+-
+ 	btrfs_bio_for_each_block(paddr, bio, &iter, step) {
+ 		paddrs[(offset / step) % nr_steps] = paddr;
+ 		offset += step;
+ 
+ 		if (IS_ALIGNED(offset, blocksize)) {
+diff --git a/fs/btrfs/fs.c b/fs/btrfs/fs.c
+index feb0a2faa837..fe0502751397 100644
+--- a/fs/btrfs/fs.c
++++ b/fs/btrfs/fs.c
+@@ -1,22 +1,21 @@
+ // SPDX-License-Identifier: GPL-2.0
+ 
++#include <linux/crc32.h>
+ #include "messages.h"
+ #include "fs.h"
+ #include "accessors.h"
+ #include "volumes.h"
+ 
+ static const struct btrfs_csums {
+ 	u16		size;
+ 	const char	name[10];
+-	const char	driver[12];
+ } btrfs_csums[] = {
+ 	[BTRFS_CSUM_TYPE_CRC32] = { .size = 4, .name = "crc32c" },
+ 	[BTRFS_CSUM_TYPE_XXHASH] = { .size = 8, .name = "xxhash64" },
+ 	[BTRFS_CSUM_TYPE_SHA256] = { .size = 32, .name = "sha256" },
+-	[BTRFS_CSUM_TYPE_BLAKE2] = { .size = 32, .name = "blake2b",
+-				     .driver = "blake2b-256" },
++	[BTRFS_CSUM_TYPE_BLAKE2] = { .size = 32, .name = "blake2b" },
+ };
+ 
+ /* This exists for btrfs-progs usages. */
+ u16 btrfs_csum_type_size(u16 type)
+ {
+@@ -35,25 +34,94 @@ const char *btrfs_super_csum_name(u16 csum_type)
+ {
+ 	/* csum type is validated at mount time. */
+ 	return btrfs_csums[csum_type].name;
+ }
+ 
+-/*
+- * Return driver name if defined, otherwise the name that's also a valid driver
+- * name.
+- */
+-const char *btrfs_super_csum_driver(u16 csum_type)
++size_t __attribute_const__ btrfs_get_num_csums(void)
+ {
+-	/* csum type is validated at mount time */
+-	return btrfs_csums[csum_type].driver[0] ?
+-		btrfs_csums[csum_type].driver :
+-		btrfs_csums[csum_type].name;
++	return ARRAY_SIZE(btrfs_csums);
+ }
+ 
+-size_t __attribute_const__ btrfs_get_num_csums(void)
++void btrfs_csum(u16 csum_type, const u8 *data, size_t len, u8 *out)
+ {
+-	return ARRAY_SIZE(btrfs_csums);
++	switch (csum_type) {
++	case BTRFS_CSUM_TYPE_CRC32:
++		put_unaligned_le32(~crc32c(~0, data, len), out);
++		break;
++	case BTRFS_CSUM_TYPE_XXHASH:
++		put_unaligned_le64(xxh64(data, len, 0), out);
++		break;
++	case BTRFS_CSUM_TYPE_SHA256:
++		sha256(data, len, out);
++		break;
++	case BTRFS_CSUM_TYPE_BLAKE2:
++		blake2b(NULL, 0, data, len, out, 32);
++		break;
++	default:
++		BUG(); /* csum type is validated at mount time. */
++	}
++}
++
++void btrfs_csum_init(struct btrfs_csum_ctx *ctx, u16 csum_type)
++{
++	ctx->csum_type = csum_type;
++	switch (ctx->csum_type) {
++	case BTRFS_CSUM_TYPE_CRC32:
++		ctx->crc32 = ~0;
++		break;
++	case BTRFS_CSUM_TYPE_XXHASH:
++		xxh64_reset(&ctx->xxh64, 0);
++		break;
++	case BTRFS_CSUM_TYPE_SHA256:
++		sha256_init(&ctx->sha256);
++		break;
++	case BTRFS_CSUM_TYPE_BLAKE2:
++		blake2b_init(&ctx->blake2b, 32);
++		break;
++	default:
++		BUG(); /* csum type is validated at mount time. */
++	}
++}
++
++void btrfs_csum_update(struct btrfs_csum_ctx *ctx, const u8 *data, size_t len)
++{
++	switch (ctx->csum_type) {
++	case BTRFS_CSUM_TYPE_CRC32:
++		ctx->crc32 = crc32c(ctx->crc32, data, len);
++		break;
++	case BTRFS_CSUM_TYPE_XXHASH:
++		xxh64_update(&ctx->xxh64, data, len);
++		break;
++	case BTRFS_CSUM_TYPE_SHA256:
++		sha256_update(&ctx->sha256, data, len);
++		break;
++	case BTRFS_CSUM_TYPE_BLAKE2:
++		blake2b_update(&ctx->blake2b, data, len);
++		break;
++	default:
++		BUG(); /* csum type is validated at mount time. */
++	}
++}
++
++void btrfs_csum_final(struct btrfs_csum_ctx *ctx, u8 *out)
++{
++	switch (ctx->csum_type) {
++	case BTRFS_CSUM_TYPE_CRC32:
++		put_unaligned_le32(~ctx->crc32, out);
++		break;
++	case BTRFS_CSUM_TYPE_XXHASH:
++		put_unaligned_le64(xxh64_digest(&ctx->xxh64), out);
++		break;
++	case BTRFS_CSUM_TYPE_SHA256:
++		sha256_final(&ctx->sha256, out);
++		break;
++	case BTRFS_CSUM_TYPE_BLAKE2:
++		blake2b_final(&ctx->blake2b, out);
++		break;
++	default:
++		BUG(); /* csum type is validated at mount time. */
++	}
+ }
+ 
+ /*
+  * We support the following block sizes for all systems:
+  *
+diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
+index 0f7e1ef27891..6e67057bd30f 100644
+--- a/fs/btrfs/fs.h
++++ b/fs/btrfs/fs.h
+@@ -1,10 +1,12 @@
+ /* SPDX-License-Identifier: GPL-2.0 */
+ 
+ #ifndef BTRFS_FS_H
+ #define BTRFS_FS_H
+ 
++#include <crypto/blake2b.h>
++#include <crypto/sha2.h>
+ #include <linux/blkdev.h>
+ #include <linux/sizes.h>
+ #include <linux/time64.h>
+ #include <linux/compiler.h>
+ #include <linux/math.h>
+@@ -22,10 +24,11 @@
+ #include <linux/workqueue.h>
+ #include <linux/wait.h>
+ #include <linux/wait_bit.h>
+ #include <linux/sched.h>
+ #include <linux/rbtree.h>
++#include <linux/xxhash.h>
+ #include <uapi/linux/btrfs.h>
+ #include <uapi/linux/btrfs_tree.h>
+ #include "extent-io-tree.h"
+ #include "async-thread.h"
+ #include "block-rsv.h"
+@@ -33,11 +36,10 @@
+ 
+ struct inode;
+ struct super_block;
+ struct kobject;
+ struct reloc_control;
+-struct crypto_shash;
+ struct ulist;
+ struct btrfs_device;
+ struct btrfs_block_group;
+ struct btrfs_root;
+ struct btrfs_fs_devices;
+@@ -840,13 +842,14 @@ struct btrfs_fs_info {
+ 	u32 sectorsize;
+ 	/* ilog2 of sectorsize, use to avoid 64bit division */
+ 	u32 sectorsize_bits;
+ 	u32 block_min_order;
+ 	u32 block_max_order;
++	u32 stripesize;
+ 	u32 csum_size;
+ 	u32 csums_per_leaf;
+-	u32 stripesize;
++	u16 csum_type;
+ 
+ 	/*
+ 	 * Maximum size of an extent. BTRFS_MAX_EXTENT_SIZE on regular
+ 	 * filesystem, on zoned it depends on the device constraints.
+ 	 */
+@@ -854,12 +857,10 @@ struct btrfs_fs_info {
+ 
+ 	/* Block groups and devices containing active swapfiles. */
+ 	spinlock_t swapfile_pins_lock;
+ 	struct rb_root swapfile_pins;
+ 
+-	struct crypto_shash *csum_shash;
+-
+ 	/* Type of exclusive operation running, protected by super_lock */
+ 	enum btrfs_exclusive_operation exclusive_operation;
+ 
+ 	/*
+ 	 * Zone size > 0 when in ZONED mode, otherwise it's used for a check
+@@ -1047,12 +1048,24 @@ void btrfs_exclop_balance(struct btrfs_fs_info *fs_info,
+ int btrfs_check_ioctl_vol_args_path(const struct btrfs_ioctl_vol_args *vol_args);
+ 
+ u16 btrfs_csum_type_size(u16 type);
+ int btrfs_super_csum_size(const struct btrfs_super_block *s);
+ const char *btrfs_super_csum_name(u16 csum_type);
+-const char *btrfs_super_csum_driver(u16 csum_type);
+ size_t __attribute_const__ btrfs_get_num_csums(void);
++struct btrfs_csum_ctx {
++	u16 csum_type;
++	union {
++		u32 crc32;
++		struct xxh64_state xxh64;
++		struct sha256_ctx sha256;
++		struct blake2b_ctx blake2b;
++	};
++};
++void btrfs_csum(u16 csum_type, const u8 *data, size_t len, u8 *out);
++void btrfs_csum_init(struct btrfs_csum_ctx *ctx, u16 csum_type);
++void btrfs_csum_update(struct btrfs_csum_ctx *ctx, const u8 *data, size_t len);
++void btrfs_csum_final(struct btrfs_csum_ctx *ctx, u8 *out);
+ 
+ static inline bool btrfs_is_empty_uuid(const u8 *uuid)
+ {
+ 	return uuid_is_null((const uuid_t *)uuid);
+ }
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index c4bee47829ed..873851a1a354 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -1,11 +1,10 @@
+ // SPDX-License-Identifier: GPL-2.0
+ /*
+  * Copyright (C) 2007 Oracle.  All rights reserved.
+  */
+ 
+-#include <crypto/hash.h>
+ #include <linux/kernel.h>
+ #include <linux/bio.h>
+ #include <linux/blk-cgroup.h>
+ #include <linux/file.h>
+ #include <linux/fs.h>
+@@ -3392,24 +3391,23 @@ void btrfs_calculate_block_csum_pages(struct btrfs_fs_info *fs_info,
+ 				      const phys_addr_t paddrs[], u8 *dest)
+ {
+ 	const u32 blocksize = fs_info->sectorsize;
+ 	const u32 step = min(blocksize, PAGE_SIZE);
+ 	const u32 nr_steps = blocksize / step;
+-	SHASH_DESC_ON_STACK(shash, fs_info->csum_shash);
++	struct btrfs_csum_ctx csum;
+ 
+-	shash->tfm = fs_info->csum_shash;
+-	crypto_shash_init(shash);
++	btrfs_csum_init(&csum, fs_info->csum_type);
+ 	for (int i = 0; i < nr_steps; i++) {
+ 		const phys_addr_t paddr = paddrs[i];
+ 		void *kaddr;
+ 
+ 		ASSERT(offset_in_page(paddr) + step <= PAGE_SIZE);
+ 		kaddr = kmap_local_page(phys_to_page(paddr)) + offset_in_page(paddr);
+-		crypto_shash_update(shash, kaddr, step);
++		btrfs_csum_update(&csum, kaddr, step);
+ 		kunmap_local(kaddr);
+ 	}
+-	crypto_shash_final(shash, dest);
++	btrfs_csum_final(&csum, dest);
+ }
+ 
+ /*
+  * Verify the checksum for a single sector without any extra action that depend
+  * on the type of I/O.
+diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+index a40ee41f42c6..1a60e631d801 100644
+--- a/fs/btrfs/scrub.c
++++ b/fs/btrfs/scrub.c
+@@ -4,11 +4,10 @@
+  */
+ 
+ #include <linux/blkdev.h>
+ #include <linux/ratelimit.h>
+ #include <linux/sched/mm.h>
+-#include <crypto/hash.h>
+ #include "ctree.h"
+ #include "discard.h"
+ #include "volumes.h"
+ #include "disk-io.h"
+ #include "ordered-data.h"
+@@ -716,11 +715,11 @@ static void scrub_verify_one_metadata(struct scrub_stripe *stripe, int sector_nr
+ 	struct btrfs_fs_info *fs_info = stripe->bg->fs_info;
+ 	const u32 sectors_per_tree = fs_info->nodesize >> fs_info->sectorsize_bits;
+ 	const u64 logical = stripe->logical + (sector_nr << fs_info->sectorsize_bits);
+ 	void *first_kaddr = scrub_stripe_get_kaddr(stripe, sector_nr);
+ 	struct btrfs_header *header = first_kaddr;
+-	SHASH_DESC_ON_STACK(shash, fs_info->csum_shash);
++	struct btrfs_csum_ctx csum;
+ 	u8 on_disk_csum[BTRFS_CSUM_SIZE];
+ 	u8 calculated_csum[BTRFS_CSUM_SIZE];
+ 
+ 	/*
+ 	 * Here we don't have a good way to attach the pages (and subpages)
+@@ -758,21 +757,20 @@ static void scrub_verify_one_metadata(struct scrub_stripe *stripe, int sector_nr
+ 			      header->chunk_tree_uuid, fs_info->chunk_tree_uuid);
+ 		return;
+ 	}
+ 
+ 	/* Now check tree block csum. */
+-	shash->tfm = fs_info->csum_shash;
+-	crypto_shash_init(shash);
+-	crypto_shash_update(shash, first_kaddr + BTRFS_CSUM_SIZE,
+-			    fs_info->sectorsize - BTRFS_CSUM_SIZE);
++	btrfs_csum_init(&csum, fs_info->csum_type);
++	btrfs_csum_update(&csum, first_kaddr + BTRFS_CSUM_SIZE,
++			  fs_info->sectorsize - BTRFS_CSUM_SIZE);
+ 
+ 	for (int i = sector_nr + 1; i < sector_nr + sectors_per_tree; i++) {
+-		crypto_shash_update(shash, scrub_stripe_get_kaddr(stripe, i),
+-				    fs_info->sectorsize);
++		btrfs_csum_update(&csum, scrub_stripe_get_kaddr(stripe, i),
++				  fs_info->sectorsize);
+ 	}
+ 
+-	crypto_shash_final(shash, calculated_csum);
++	btrfs_csum_final(&csum, calculated_csum);
+ 	if (memcmp(calculated_csum, on_disk_csum, fs_info->csum_size) != 0) {
+ 		scrub_bitmap_set_meta_error(stripe, sector_nr, sectors_per_tree);
+ 		scrub_bitmap_set_error(stripe, sector_nr, sectors_per_tree);
+ 		btrfs_warn_rl(fs_info,
+ "scrub: tree block %llu mirror %u has bad csum, has " BTRFS_CSUM_FMT " want " BTRFS_CSUM_FMT,
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index 1999533b52be..a37b71091014 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -2700,9 +2700,5 @@ static int __init init_btrfs_fs(void)
+ late_initcall(init_btrfs_fs);
+ module_exit(exit_btrfs_fs)
+ 
+ MODULE_DESCRIPTION("B-Tree File System (BTRFS)");
+ MODULE_LICENSE("GPL");
+-MODULE_SOFTDEP("pre: crc32c");
+-MODULE_SOFTDEP("pre: xxhash64");
+-MODULE_SOFTDEP("pre: sha256");
+-MODULE_SOFTDEP("pre: blake2b-256");
+diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+index 1f64c132b387..7f00e4babbc1 100644
+--- a/fs/btrfs/sysfs.c
++++ b/fs/btrfs/sysfs.c
+@@ -9,11 +9,10 @@
+ #include <linux/spinlock.h>
+ #include <linux/completion.h>
+ #include <linux/bug.h>
+ #include <linux/list.h>
+ #include <linux/string_choices.h>
+-#include <crypto/hash.h>
+ #include "messages.h"
+ #include "ctree.h"
+ #include "discard.h"
+ #include "disk-io.h"
+ #include "send.h"
+@@ -1302,14 +1301,13 @@ BTRFS_ATTR(, metadata_uuid, btrfs_metadata_uuid_show);
+ static ssize_t btrfs_checksum_show(struct kobject *kobj,
+ 				   struct kobj_attribute *a, char *buf)
+ {
+ 	struct btrfs_fs_info *fs_info = to_fs_info(kobj);
+ 	u16 csum_type = btrfs_super_csum_type(fs_info->super_copy);
++	const char *csum_name = btrfs_super_csum_name(csum_type);
+ 
+-	return sysfs_emit(buf, "%s (%s)\n",
+-			  btrfs_super_csum_name(csum_type),
+-			  crypto_shash_driver_name(fs_info->csum_shash));
++	return sysfs_emit(buf, "%s (%s-lib)\n", csum_name, csum_name);
+ }
+ 
+ BTRFS_ATTR(, checksum, btrfs_checksum_show);
+ 
+ static ssize_t btrfs_exclusive_operation_show(struct kobject *kobj,
+
+base-commit: 43dfc13ca972988e620a6edb72956981b75ab6b0
+-- 
+2.52.0
+
 
