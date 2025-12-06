@@ -1,157 +1,143 @@
-Return-Path: <linux-btrfs+bounces-19549-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19550-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 531A5CAA7AD
-	for <lists+linux-btrfs@lfdr.de>; Sat, 06 Dec 2025 15:03:13 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA822CAAF88
+	for <lists+linux-btrfs@lfdr.de>; Sun, 07 Dec 2025 00:54:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id AED083011B08
-	for <lists+linux-btrfs@lfdr.de>; Sat,  6 Dec 2025 14:03:11 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 60972305A81E
+	for <lists+linux-btrfs@lfdr.de>; Sat,  6 Dec 2025 23:54:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6853B2FE580;
-	Sat,  6 Dec 2025 14:03:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35F202D24BF;
+	Sat,  6 Dec 2025 23:54:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GjoT4CXI"
+	dkim=pass (2048-bit key) header.d=colorremedies.com header.i=@colorremedies.com header.b="eAhtlxUH";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="lX3rV+KF"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from fhigh-b1-smtp.messagingengine.com (fhigh-b1-smtp.messagingengine.com [202.12.124.152])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2AAF2FE56E;
-	Sat,  6 Dec 2025 14:03:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A44241DDC2C
+	for <linux-btrfs@vger.kernel.org>; Sat,  6 Dec 2025 23:54:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.152
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765029787; cv=none; b=mvhvbosAuH2DunD49qUuYWMjMncFBuix4boErECXP3U+OBORhUVDcb131P6r3/TBiYX4pCb5rLG2r6Yf1vRM8W4QvwWihFPUOUl758wS0kaJi2jH+1O6W08Pw37hh/e+Dtl32qkUdL4j9bM0SyE3XUjnHqEr3UApLaDjqJLpxIA=
+	t=1765065257; cv=none; b=FTJd3KqNb3n7S5gcPzsJP8NrPsGqtgyZaDw2Q/U/l1UvljB4x8TYXrY0/mdXXiWk3UNBDJWMTJcGijF+9gh64WDb45CLhpURP4w7LFOILgriJQgxqNJYY2n3K+z+c7oCmBoV7wmI9eki/eOXKp1YLZ0u3YGUwXEU3jOU3h6x0Ck=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765029787; c=relaxed/simple;
-	bh=Cv1rkLZwSfO1XqtszF2yVxBBqj1l4Zku5hCFCCY0NwA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=YahB10cZD0zm59lwKo9ziXMaOuS3U95ECe+Vfr0FLBPGVC8QYyHcaFsztjI4QmaGb9GbMs1eO12uauvtbDfDnEiT5Vdo1njTVJCPgCp2tVC1SwlYic+CNdgGRrunXY4GiTRKMLB6CegaX6ixOGacMlxJ6Q+b8rXEIBGzW62AvMU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GjoT4CXI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4E72C4CEF5;
-	Sat,  6 Dec 2025 14:03:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1765029787;
-	bh=Cv1rkLZwSfO1XqtszF2yVxBBqj1l4Zku5hCFCCY0NwA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=GjoT4CXIWDISJjpNHdODKMI7ORpeOM6JM50B7NlcekVvyq3TqvaHAvB/a7Zvv/Ymx
-	 RsEk+oVM7wcD7OmlVMfM8PZRkSe/doZE5A77rcmJcgqLzks7u83/ytqI+ZBU5nEXXF
-	 ubwEVrPSiCfzza7guhoAszU7xERkvugmxkG7jP5YRud2RxTWPQVSgLVF9x0JIiwokx
-	 iOZo7lF4whHR+3RV3j62m9NCJGTKQr5hcdT041NtVRZKC37KIvFWIbaj2+XAWTRZFF
-	 Zc3wPgE5nSr7ZHFWBatI5zwGfpfjSfmIssfBVtT9QT8UXR3+VtXOG3A/60oR3JbKAO
-	 tm5gukIXMD8gQ==
-From: Sasha Levin <sashal@kernel.org>
-To: patches@lists.linux.dev,
-	stable@vger.kernel.org
-Cc: Qu Wenruo <wqu@suse.com>,
-	David Sterba <dsterba@suse.com>,
-	Sasha Levin <sashal@kernel.org>,
-	clm@fb.com,
-	linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.18-5.10] btrfs: scrub: always update btrfs_scrub_progress::last_physical
-Date: Sat,  6 Dec 2025 09:02:12 -0500
-Message-ID: <20251206140252.645973-7-sashal@kernel.org>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20251206140252.645973-1-sashal@kernel.org>
-References: <20251206140252.645973-1-sashal@kernel.org>
+	s=arc-20240116; t=1765065257; c=relaxed/simple;
+	bh=UcM0YrVU7G4dT4eOkiUisPAr3aZfm/gQqHlntIy1A0g=;
+	h=MIME-Version:Date:From:To:Message-Id:Subject:Content-Type; b=pogVxOmPZfJxUmftQ2HG7rimvpVd2T674zK0EbIgZPzDNYZkW5ymR7MuiIj/oBVbBgBoLMsy4P0UyWkXsNMmHstb2MkknZLvKwtTvyd6XcuEWXe0TYv+5eEX4gDcepvt3wIWEd9IsnXNI2zvBvuW4K80wwfIuFsOs7zK9OwFXyo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=colorremedies.com; spf=pass smtp.mailfrom=colorremedies.com; dkim=pass (2048-bit key) header.d=colorremedies.com header.i=@colorremedies.com header.b=eAhtlxUH; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=lX3rV+KF; arc=none smtp.client-ip=202.12.124.152
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=colorremedies.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=colorremedies.com
+Received: from phl-compute-01.internal (phl-compute-01.internal [10.202.2.41])
+	by mailfhigh.stl.internal (Postfix) with ESMTP id CE06B7A01A9
+	for <linux-btrfs@vger.kernel.org>; Sat,  6 Dec 2025 18:54:13 -0500 (EST)
+Received: from phl-imap-01 ([10.202.2.91])
+  by phl-compute-01.internal (MEProxy); Sat, 06 Dec 2025 18:54:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	colorremedies.com; h=cc:content-transfer-encoding:content-type
+	:content-type:date:date:from:from:in-reply-to:message-id
+	:mime-version:reply-to:subject:subject:to:to; s=fm1; t=
+	1765065253; x=1765151653; bh=GVyuvDv1d6sGxDkq4nHggxfcVZJ3xf2VA3N
+	sLTWAlmg=; b=eAhtlxUHGYPIgxFOht13MLC+W0pHVePmZq2hz39+/ORSe/cT7sh
+	9PP5zv+F7KCQSLWzhvdNezdEapWNRcPdhFu4CZeyA0fn6mFqwcRPBRWTpRRY8Bci
+	xX6WjK6QWxBI62P02BshIgHxLAPaeXVrlFIt3vIzuanxi74Wk4ND+wG9pZpZN9Sx
+	DPAtCG43/kzRdT2uCNAMOfHkX8OvKvTtHLxCx4hG6DftEKCuVeX2/AJbRndCMDW5
+	xJix86+mZbWhPUyFPGiERGczT4ofvDzuuzH2sQLlhhVd+/9FrWYK2OZ1OByYvYcG
+	Cni20tZWh6TieIOPLuYyz/3tCCKpQorlpVA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-transfer-encoding:content-type
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+	1765065253; x=1765151653; bh=GVyuvDv1d6sGxDkq4nHggxfcVZJ3xf2VA3N
+	sLTWAlmg=; b=lX3rV+KFHEi8CnfGjlE6LDRGT0IeeEBRxhQiE6fyXO3iEPPKmLM
+	zt0W8e8BkR5T59TuKbCGTnKWa4sZ/fLP/EepkUGfRw87nmBVJKL0qXu7v5P0kKsi
+	f0iaY0qW0h+ySjepcgX3mcMXqUVWzYB42f4eyFWdiTK9HFxqp9eRBWLwCS/YZVmy
+	nIxmTzEtrCL5LcutvmjbdqoKUQ1OS4Ix6jl2uhDg4oPLcqFoh0zAz5ubQlnx+Hvb
+	zhl67TrUxyvzqrJlImis9dKT861aZGRwb0L2XGdDh/1SZKL8WcRvCC45gcL2ooC1
+	lmcilY/ftE9+mML/xFCdycUbXQuhVaLZIdA==
+X-ME-Sender: <xms:JcI0aXlzpkCI5juzAEoT_wFwTpUILdvKg_V735mC4iw4p6cDFyDhiQ>
+    <xme:JcI0aVq0uE-GtXAPddaETx2XJRhbhrBrl656IhJeSn27kx8UFuRyR-KdDVUq98oXL
+    O1a1V3HJWeQsgRkkDmyXvAfmt5AQgnPYw1rUW0d6o_6C24QYqzl4bYc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdduvdefudcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
+    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
+    hrpefoggffhffvkffutgfgsehtjeertdertddtnecuhfhrohhmpedfvehhrhhishcuofhu
+    rhhphhihfdcuoegthhhrihhssegtohhlohhrrhgvmhgvughivghsrdgtohhmqeenucggtf
+    frrghtthgvrhhnpeelfeeuudeiieffveejteefleefjeehvdefvedtfeevgedvtdeiueeh
+    feejvdfghfenucffohhmrghinheprhgvughhrghtrdgtohhmnecuvehluhhsthgvrhfuih
+    iivgeptdenucfrrghrrghmpehmrghilhhfrhhomheptghhrhhishestgholhhorhhrvghm
+    vgguihgvshdrtghomhdpnhgspghrtghpthhtohepuddpmhhouggvpehsmhhtphhouhhtpd
+    hrtghpthhtoheplhhinhhugidqsghtrhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:JcI0aZUKRN04OPzGjDqzFk2FWoNdfjMBw5WoYiBNRDd4V8fY7P8L8g>
+    <xmx:JcI0aZjgS7cJ4kI5CYqhA15NUJ_uQ1fy3xvRM1C8WmA4FsIMJNFrXg>
+    <xmx:JcI0aSQmXLSD1Fc7sksaqp4WC24F2Yv1_LzdyLhmS8Go4266x-xzlg>
+    <xmx:JcI0aUGCW7gvN8EGk1lAyEpUh7KkNLWVseFHu5x27C6jA926dlfuqg>
+    <xmx:JcI0afpbbWAJ4oklHLG6bKtu_AnaJ_DuCJXEU_r2QAlR16gSUdwtnz5I>
+Feedback-ID: i07814636:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id 85DCF18C004E; Sat,  6 Dec 2025 18:54:13 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.18
-Content-Transfer-Encoding: 8bit
+X-ThreadId: Ao4TdNMJRVfg
+Date: Sat, 06 Dec 2025 16:53:53 -0700
+From: "Chris Murphy" <chris@colorremedies.com>
+To: "Btrfs BTRFS" <linux-btrfs@vger.kernel.org>
+Message-Id: <80f8e3f6-b42e-4dee-b1d0-4fa0d2b8c01a@app.fastmail.com>
+Subject: 6.17.8 on POWER10, WARNING fs/btrfs/extent_map.c:422 btrfs_unpin_extent_cache,
+ forced readonly
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-From: Qu Wenruo <wqu@suse.com>
+kernel 6.17.8-300.fc43.ppc64le on a VM
 
-[ Upstream commit 54df8b80cc63aa0f22c4590cad11542731ed43ff ]
+Downstream bug report, includes full kernel messages
+https://bugzilla.redhat.com/show_bug.cgi?id=2419731
 
-[BUG]
-When a scrub failed immediately without any byte scrubbed, the returned
-btrfs_scrub_progress::last_physical will always be 0, even if there is a
-non-zero @start passed into btrfs_scrub_dev() for resume cases.
+Possibly relevant: 
+>BTRFS info (device vda3): forcing free space tree for sector size 4096 with page size 65536
 
-This will reset the progress and make later scrub resume start from the
-beginning.
+Excerpt of the call trace:
 
-[CAUSE]
-The function btrfs_scrub_dev() accepts a @progress parameter to copy its
-updated progress to the caller, there are cases where we either don't
-touch progress::last_physical at all or copy 0 into last_physical:
-
-- last_physical not updated at all
-  If some error happened before scrubbing any super block or chunk, we
-  will not copy the progress, leaving the @last_physical untouched.
-
-  E.g. failed to allocate @sctx, scrubbing a missing device or even
-  there is already a running scrub and so on.
-
-  All those cases won't touch @progress at all, resulting the
-  last_physical untouched and will be left as 0 for most cases.
-
-- Error out before scrubbing any bytes
-  In those case we allocated @sctx, and sctx->stat.last_physical is all
-  zero (initialized by kvzalloc()).
-  Unfortunately some critical errors happened during
-  scrub_enumerate_chunks() or scrub_supers() before any stripe is really
-  scrubbed.
-
-  In that case although we will copy sctx->stat back to @progress, since
-  no byte is really scrubbed, last_physical will be overwritten to 0.
-
-[FIX]
-Make sure the parameter @progress always has its @last_physical member
-updated to @start parameter inside btrfs_scrub_dev().
-
-At the very beginning of the function, set @progress->last_physical to
-@start, so that even if we error out without doing progress copying,
-last_physical is still at @start.
-
-Then after we got @sctx allocated, set sctx->stat.last_physical to
-@start, this will make sure even if we didn't get any byte scrubbed, at
-the progress copying stage the @last_physical is not left as zero.
-
-This should resolve the resume progress reset problem.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
-
-LLM Generated explanations, may be completely bogus:
+Dec  6 21:37:22 buildvm-ppc64le-12 kernel: ------------[ cut here ]------------
+Dec  6 21:37:22 buildvm-ppc64le-12 kernel: WARNING: CPU: 5 PID: 3085920 at fs/btrfs/extent_map.c:422 btrfs_unpin_extent_cache+0x84/0x1b0
+Dec  6 21:37:22 buildvm-ppc64le-12 kernel: Modules linked in: wireguard curve25519_ppc64le libcurve25519_generic vxlan vrf ip6_vti xfrm6_tunnel ip_vti sit macvtap tap macvlan ipip tunnel4 ip6_gre ip6_tunnel tunnel6 ip_gre ip_tunnel gre 8021q garp mrp team sch_tbf bridge stp llc veth sch_ingress sch_sfq dummy can_bcm sctp ip6_udp_tunnel udp_tunnel bluetooth can_j1939 can_isotp can_raw can ib_core overlay tun nfsv3 nfs_acl bonding tls rfkill nfs lockd grace nfs_localio netfs nft_reject_ipv6 nf_reject_ipv6 nft_reject nft_ct nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 nf_tables binfmt_misc xfs joydev virtio_net net_failover virtio_balloon vmx_crypto failover auth_rpcgss sunrpc loop nfnetlink vsock_loopback vmw_vsock_virtio_transport_common zram lz4hc_compress vsock lz4_compress bochs pseries_wdt i2c_dev fuse aes_gcm_p10_crypto crypto_simd cryptd
+Dec  6 21:37:22 buildvm-ppc64le-12 kernel: CPU: 5 UID: 0 PID: 3085920 Comm: kworker/u46:11 Not tainted 6.17.8-300.fc43.ppc64le #1 PREEMPT(voluntary) 
+Dec  6 21:37:22 buildvm-ppc64le-12 kernel: Hardware name: IBM pSeries (emulated by qemu) POWER10 (architected) 0x800200 0xf000006 of:SLOF,HEAD hv:linux,kvm pSeries
+Dec  6 21:37:22 buildvm-ppc64le-12 kernel: Workqueue: btrfs-endio-write btrfs_work_helper
+Dec  6 21:37:22 buildvm-ppc64le-12 systemd[1]: Stopping machine-b2a4df599bc44a58bf9bfb55f7c9fd5b.scope - Container b2a4df599bc44a58bf9bfb55f7c9fd5b...
+Dec  6 21:37:22 buildvm-ppc64le-12 kernel: REGS: c0000000129ff960 TRAP: 0700   Not tainted  (6.17.8-300.fc43.ppc64le)
+Dec  6 21:37:22 buildvm-ppc64le-12 systemd[1]: machine-b2a4df599bc44a58bf9bfb55f7c9fd5b.scope: Deactivated successfully.
+Dec  6 21:37:22 buildvm-ppc64le-12 kernel: MSR:  800000000282b033 <SF,VEC,VSX,EE,FP,ME,IR,DR,RI,LE>  CR: 24000484  XER: 200400b4
+Dec  6 21:37:22 buildvm-ppc64le-12 systemd[1]: Stopped machine-b2a4df599bc44a58bf9bfb55f7c9fd5b.scope - Container b2a4df599bc44a58bf9bfb55f7c9fd5b.
+Dec  6 21:37:22 buildvm-ppc64le-12 kernel: CFAR: c000000000a9154c IRQMASK: 0 #012GPR00: c000000000a92158 c0000000129ffc00 c00000000265a900 0000000000000000 #012GPR04: 0000000000088000 0000000000001000 0000000000000001 0000000000000000 #012GPR08: 0000000000080000 0000000000000001 0000000000088000 0000015b51c5a005 #012GPR12: c00000051a328208 c00000097fff7f00 0000000000000000 0000000000000000 #012GPR16: 0000000000000000 c00000023f51e5f8 0000000000000000 0000000000000000 #012GPR20: c00000000d383c10 c000000021887000 0000000000000000 0000000000001000 #012GPR24: 0000000000088000 c000000021887000 0000000000001000 c00000023f51e5f0 #012GPR28: 0000000000015493 0000000000088000 c00000023f51e5c8 0000000000000000 
+Dec  6 21:37:22 buildvm-ppc64le-12 systemd[1]: machine-b2a4df599bc44a58bf9bfb55f7c9fd5b.scope: Consumed 19min 29.517s CPU time, 1.5G memory peak.
+Dec  6 21:37:22 buildvm-ppc64le-12 kernel: NIP [c000000000a92164] btrfs_unpin_extent_cache+0x84/0x1b0
+Dec  6 21:37:22 buildvm-ppc64le-12 systemd-machined[952]: Machine b2a4df599bc44a58bf9bfb55f7c9fd5b terminated.
+Dec  6 21:37:22 buildvm-ppc64le-12 kernel: LR [c000000000a92158] btrfs_unpin_extent_cache+0x78/0x1b0
+Dec  6 21:37:22 buildvm-ppc64le-12 kernel: Call Trace:
+Dec  6 21:37:22 buildvm-ppc64le-12 kernel: [c0000000129ffc00] [c000000000a92158] btrfs_unpin_extent_cache+0x78/0x1b0 (unreliable)
+Dec  6 21:37:22 buildvm-ppc64le-12 kernel: [c0000000129ffca0] [c000000000a75088] btrfs_finish_one_ordered+0x458/0xe00
+Dec  6 21:37:22 buildvm-ppc64le-12 kernel: [c0000000129ffdf0] [c000000000a9c640] finish_ordered_fn+0x20/0x40
+Dec  6 21:37:22 buildvm-ppc64le-12 kernel: [c0000000129ffe10] [c000000000ac1468] btrfs_work_helper+0x118/0x2c0
+Dec  6 21:37:22 buildvm-ppc64le-12 kernel: [c0000000129ffe60] [c0000000002897b4] process_one_work+0x1d4/0x530
+Dec  6 21:37:22 buildvm-ppc64le-12 kernel: [c0000000129fff10] [c00000000028a61c] worker_thread+0x2dc/0x450
+Dec  6 21:37:22 buildvm-ppc64le-12 kernel: [c0000000129fff90] [c000000000298878] kthread+0x188/0x1a0
+Dec  6 21:37:22 buildvm-ppc64le-12 kernel: [c0000000129fffe0] [c00000000000ded8] start_kernel_thread+0x14/0x18
+Dec  6 21:37:22 buildvm-ppc64le-12 kernel: Code: e9290208 7d394b78 48e63f4d 60000000 38c00001 7fe3fb78 7f45d378 7fa4eb78 4bfff215 7c690074 7c7f1b78 7929d182 <0b090000> 2c230000 41820084 e9030018 
+Dec  6 21:37:22 buildvm-ppc64le-12 kernel: ---[ end trace 0000000000000000 ]---
+Dec  6 21:37:22 buildvm-ppc64le-12 kernel: BTRFS warning (device vda3): no extent map found for inode 304326735 (root 256) when unpinning extent range [557056, 561152), generation 87187
+Dec  6 21:37:22 buildvm-ppc64le-12 kernel: ------------[ cut here ]------------
+Dec  6 21:37:22 buildvm-ppc64le-12 kernel: BTRFS: Transaction aborted (error -2)
 
 
 
- fs/btrfs/scrub.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
-index ba20d9286a340..cff67ed630196 100644
---- a/fs/btrfs/scrub.c
-+++ b/fs/btrfs/scrub.c
-@@ -3039,6 +3039,10 @@ int btrfs_scrub_dev(struct btrfs_fs_info *fs_info, u64 devid, u64 start,
- 	unsigned int nofs_flag;
- 	bool need_commit = false;
- 
-+	/* Set the basic fallback @last_physical before we got a sctx. */
-+	if (progress)
-+		progress->last_physical = start;
-+
- 	if (btrfs_fs_closing(fs_info))
- 		return -EAGAIN;
- 
-@@ -3057,6 +3061,7 @@ int btrfs_scrub_dev(struct btrfs_fs_info *fs_info, u64 devid, u64 start,
- 	sctx = scrub_setup_ctx(fs_info, is_dev_replace);
- 	if (IS_ERR(sctx))
- 		return PTR_ERR(sctx);
-+	sctx->stat.last_physical = start;
- 
- 	ret = scrub_workers_get(fs_info);
- 	if (ret)
--- 
-2.51.0
-
+--
+Chris Murphy
 
