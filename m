@@ -1,159 +1,187 @@
-Return-Path: <linux-btrfs+bounces-19578-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19579-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27A91CAE1F4
-	for <lists+linux-btrfs@lfdr.de>; Mon, 08 Dec 2025 20:54:23 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF845CAE25C
+	for <lists+linux-btrfs@lfdr.de>; Mon, 08 Dec 2025 21:19:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 5401D30573A6
-	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Dec 2025 19:54:14 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 9D367300B33D
+	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Dec 2025 20:19:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 180662FB962;
-	Mon,  8 Dec 2025 19:54:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1512B28750A;
+	Mon,  8 Dec 2025 20:19:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ARuSp7jW";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="cvCAMudx";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="XbfRJOVa";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="5hrrrWTR"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="cGuTp1f+"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7514E15624B
-	for <linux-btrfs@vger.kernel.org>; Mon,  8 Dec 2025 19:54:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E47E52236E3
+	for <linux-btrfs@vger.kernel.org>; Mon,  8 Dec 2025 20:19:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765223653; cv=none; b=p0U8HLKKks69HMu6ZRjelXoraNDcIG8N6Eifs3+gTSZGILEDYxiR/gyspdTtyU9vdPq2juTjrS5543dVuMkD96NsT/huy+w48jbgVe+Z5NcR5CsKfkCkBLhnB23lxXT3BF51+bmwDhifq39fihH5n+kIem2bEN0F7ShxHQQcP1c=
+	t=1765225157; cv=none; b=Kl1D/MzH6pFoUxTB6Dp7SHpHO9UbNhzlFYAd5N0H5veXIB9subCxT34B6On5V9L7s31RE6A9IBqebVM7IwjnQQQVx9qVfoHjXhW6mqr+0lVDA6xgEbEf7+cmhlusTJpmfli2Sj1uFSH+tV+YNbSn+lFxfDVsZmJCWX8/O+rrkjc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765223653; c=relaxed/simple;
-	bh=mgQaJil7zTWcf6GcSoQeHqOv+os/9xoXIWko4k1Ttc8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=B3N9fTpTyCIaxJ3gN53uk1xsepopcZZW4l5J1Sr/cmbt08L9YMi51m+c6YiQ60tETC5fIdhSWIkTUWxxddeoN9x3dUaYsTVOuQEi0CkWy95y9vIYpLn2eMuptw23I3yo6i1gCv4hFcAi3/6bXCHPukaVfJcIoQ0Q2j277yG/7Ig=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ARuSp7jW; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=cvCAMudx; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=XbfRJOVa; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=5hrrrWTR; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 99346336FD;
-	Mon,  8 Dec 2025 19:54:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1765223649;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vmQ9zqGFME2P38nVS0AMgHW5jmWzz7HB4Sy0cZkebHQ=;
-	b=ARuSp7jWY5iG+XCZ9KAQrKQL5ofLy6Oahw1e0IcvJZBLqwiLgHV6pcaQawjiNVIUcbPurU
-	G9AuzUxxIwgGA+re5fitoSa5PeE/7/JB6MEXlgboENR5u966fuPjhoMk2zS1mmZX2TN7fF
-	80INyr3cbRt2F8dH+TWrF0fLy1oWii0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1765223649;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vmQ9zqGFME2P38nVS0AMgHW5jmWzz7HB4Sy0cZkebHQ=;
-	b=cvCAMudxhslmxe2duiU6eEKoao41jmf8bnKx96prCv8s5RaSotLJGL3WfezqD/mqxuIl/0
-	1BNrbb6m1MqpehBw==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1765223648;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vmQ9zqGFME2P38nVS0AMgHW5jmWzz7HB4Sy0cZkebHQ=;
-	b=XbfRJOVaV0ITRoKAT2PYIedfKBsYUbp/D0OL2HzgmHlF3VAL9+q9cacN7lM8FW3ESfpY8O
-	X4SXG2uT8rIdFdBCZZ+RxUgKAMsn5b+CE16vRB2f41BW+MlYMLlgzvtdOy+YDseK/bcKwo
-	qIXzSuDiu/aCvoWY7ZYIWnfjH2yTfxo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1765223648;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vmQ9zqGFME2P38nVS0AMgHW5jmWzz7HB4Sy0cZkebHQ=;
-	b=5hrrrWTRKf2teAfDr3DAiosXYGZKjUPh40A4TbjumrPJTM99IQiBPIxnAILBUB+s5AW5zx
-	RBngDgMPpc7VnvAg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 874CC3EA63;
-	Mon,  8 Dec 2025 19:54:08 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 1XzYIOAsN2kbYgAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Mon, 08 Dec 2025 19:54:08 +0000
-Date: Mon, 8 Dec 2025 20:54:07 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org, mssola@mssola.com,
-	syzbot+b44d4a4885bc82af2a06@syzkaller.appspotmail.com
-Subject: Re: [PATCH] Revert "btrfs: add ASSERTs on prealloc in qgroup
- functions"
-Message-ID: <20251208195407.GC4859@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <65fee7dc5c82e194d20be47bb3772949e4ec22c8.1765185918.git.wqu@suse.com>
+	s=arc-20240116; t=1765225157; c=relaxed/simple;
+	bh=9p12sB92oPH4gzrV3tu266AoAzXV9Zc9MNekahsOqJ0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=N+m8ql5Nhz1jJ+mzte7WBzWTMCQUSn/f6LT+2Hwbi71Y4m9WDYI/BnOXPdPOKJx1KNwjdYXFn53sxYyQI2iYoZZd6jHvxz4ENn67BHVZmE09vxLxOxHIMe613iTFqJ8kz+aRw/4XvJhMJe5aI+xHdxZoee1+vl19p/2dQEarK0k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=cGuTp1f+; arc=none smtp.client-ip=209.85.221.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-42b3b0d76fcso2892431f8f.3
+        for <linux-btrfs@vger.kernel.org>; Mon, 08 Dec 2025 12:19:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1765225153; x=1765829953; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=7FHJmygbcwhVHlDzhafnQD0TGYsW3qLvxXuiy6nIo84=;
+        b=cGuTp1f+gJtxK59Rhfh6+AjSZV9lMMN/NflKuIa8HVoObntBe8YFEFazj3Rk/FvvoQ
+         Bazzmbjy1UMLG6NoFACO2zYNngML0UDJJLs3m/q7bIwT5XUIO0gmQZPSopNxHoHBAj/l
+         /IMmnbzOMzM9RddXNtmqNXPXtwZSVdsG/8x7PxXePErplH+FwtVKfvYVuNyeIMhRiDhN
+         qQEnimj9kQ056J3qpIiKhMqN4mtSggrtEseAMTZEdm6JHlLiZNpfe8pURp1bU2+Gkmr6
+         LdhZv0eOQAJ+EqnoCI9O5H4ynlCOP26jUkZiRgGIdljj6bqx1VnWLCApZs+RuMDWuCrb
+         387g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1765225153; x=1765829953;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7FHJmygbcwhVHlDzhafnQD0TGYsW3qLvxXuiy6nIo84=;
+        b=tLiPdxOl8rjjz295cSwsBTxJPovudTv5CHQ2U9C8+u7vQpNJ3xEC3hVvYz/XjaQZtC
+         voqSe0dkBdMHojL+vVEeCWntSRzCH0yAbNAaFj2X9W64QR9Jw9vVKYRi9NqJiiXTtGyN
+         zz1VsjsGoOUfn1hUp5uQtfdGDX9Sr4Tpt+ZGun8mwsHId93ZnDzDZ+8I1qQhYDnB4bH7
+         8z99iGQu3tnrjTtluGkRxGfJo2pZjNbdQ7mlddHNKgXarx8ckMuqc2a7DWGoRMMHacYg
+         0uqz+VTTr6prS8ISTd51zaw1hDq03zuThDmiq09rcjq3jwm5lwSS4fhXtTx5w+TQcMiJ
+         +EaA==
+X-Forwarded-Encrypted: i=1; AJvYcCUnoKoPgLzB4towZEFQILPttblGULekIbmhlxaH357k7LOfwVTHzSuUQ7LFMpmLVqMTCUxIBxHMu44YWw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzgDiUWDydKa1KMoofnsjPySuvNAa7CTTPZZHOwkZFYW5r6U2wz
+	xiERUBSZQ2FSjCoUdilmycarJO+PX74crzwG8ZWzynqLJAX1ZRHWPfMan8F524EFEiU=
+X-Gm-Gg: ASbGncvIAWuzHkdWeqU/XSZ/1SEpkB7xz+iH8jE+e4+QtvEjpzY0PWXxmphnZRG12Sk
+	1ipTSg3YKANIUN29pCoF33vhomgOHeJtDUu5ogBB0ylAnw9wlL17DsIZRulQHBPmg/2b1fPi3JZ
+	Y7ItSgaeEJgQVT+aHvssHeeSSrj04uZ6kiLbq5zTD5H6FIcXZaH7m2dbe6gwyt7LZXxRwaOFnWG
+	Jk+aJcN6s7f2OLnNiPDb3JwxwTsCDVjZ18s7Lv59AkDpUOHtF3YuCju2C4TYdoP0AgHm0VUxLwR
+	LMwcyqYN0BqnzEgaDkb/KNWg+cC7bygHlxsqjbISQsd4GJbrRaS7OTDs9XfhwbsM0tgXFy8tLAz
+	J1qBXK1iTFXuB+Xns0WJI2VDJGSW3L6gRKZL4VTN6YZfBg39eGf2zCBbNbN8aP6BVD+kMHrYjWY
+	sB/QDecIwrrlXbgSbR2tLW04fzWYRB26wEF54HjMs=
+X-Google-Smtp-Source: AGHT+IG3Ih3Qt01HVR+RenzqAIb/whVG755qHOqjuRl8M1XcsVe72fZ+hSsCd+woGu6kKYQJlHt5fg==
+X-Received: by 2002:a05:6000:613:b0:42b:4177:7135 with SMTP id ffacd0b85a97d-42f89f6f794mr9079169f8f.41.1765225153152;
+        Mon, 08 Dec 2025 12:19:13 -0800 (PST)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-34a47c184bdsm77582a91.2.2025.12.08.12.19.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Dec 2025 12:19:12 -0800 (PST)
+Message-ID: <a9b53a9a-ddcb-4113-8769-40a918223ecf@suse.com>
+Date: Tue, 9 Dec 2025 06:49:06 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <65fee7dc5c82e194d20be47bb3772949e4ec22c8.1765185918.git.wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spamd-Result: default: False [-2.50 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	NEURAL_HAM_SHORT(-0.20)[-0.990];
-	MIME_GOOD(-0.10)[text/plain];
-	TAGGED_RCPT(0.00)[b44d4a4885bc82af2a06];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	URIBL_BLOCKED(0.00)[suse.cz:replyto,twin.jikos.cz:mid,suse.com:email,imap1.dmz-prg2.suse.org:helo,appspotmail.com:email];
-	RCVD_TLS_ALL(0.00)[];
-	RCPT_COUNT_THREE(0.00)[4];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,appspotmail.com:email,twin.jikos.cz:mid,suse.com:email];
-	RCVD_COUNT_TWO(0.00)[2];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -2.50
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] btrfs: Optimize the timing of prealloc memory allocation
+To: Edward Adam Davis <eadavis@qq.com>,
+ syzbot+b44d4a4885bc82af2a06@syzkaller.appspotmail.com
+Cc: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
+ linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+ syzkaller-bugs@googlegroups.com
+References: <693683ba.a70a0220.38f243.0091.GAE@google.com>
+ <tencent_0974B3778967163D1736C0971436F24B5C09@qq.com>
+Content-Language: en-US
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
+ Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
+ fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
+ 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
+ V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
+ rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
+ cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
+ qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
+ /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
+ o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
+ JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+In-Reply-To: <tencent_0974B3778967163D1736C0971436F24B5C09@qq.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Mon, Dec 08, 2025 at 07:55:48PM +1030, Qu Wenruo wrote:
-> This reverts commit 252877a8701530fde861a4f27710c1e718e97caa.
+
+
+在 2025/12/8 21:35, Edward Adam Davis 写道:
+> Too many abnormal exits can cause the prealloc assertion to fail, as
+> reported by syzbot in [1].
 > 
-> Commit 252877a87015 ("btrfs: add ASSERTs on prealloc in qgroup
-> functions") tries to remove the kfree() on preallocated qgroup during
-> several call sites, but it can not be more wrong:
+> Move the prealloc memory allocation to before it is actually used.
 > 
-> - btrfs_quota_enable()
-> - btrfs_create_qgroup()
->   If add_qgroup_item() failed, we go out_free_path() and at that time
->   @prealloc is not yet utilized and will trigger the new ASSERT().
+> [1]
+> assertion failed: prealloc == NULL :: 0, in fs/btrfs/qgroup.c:3529
+> kernel BUG at fs/btrfs/qgroup.c:3529!
+> Call Trace:
+>   <TASK>
+>   create_subvol+0x5ad/0x18f0 fs/btrfs/ioctl.c:570
+>   btrfs_mksubvol+0x6e4/0x12c0 fs/btrfs/ioctl.c:928
+>   __btrfs_ioctl_snap_create+0x2b2/0x730 fs/btrfs/ioctl.c:1201
+>   btrfs_ioctl_snap_create+0x131/0x180 fs/btrfs/ioctl.c:1259
+>   btrfs_ioctl+0xb4d/0xd00 fs/btrfs/ioctl.c:-1
+
+There is already a full revert, and your fix misses all the other error 
+cases.
+
+https://lore.kernel.org/linux-btrfs/20251208195407.GC4859@twin.jikos.cz/T/#t
+
+
 > 
-> - btrfs_qgroup_inherit()
->   If qgroup_auto_inherit() failed, @prealloc is not yet utilized and
->   will trigger the new ASSERT()
-> 
+> Fixes: 252877a87015 ("btrfs: add ASSERTs on prealloc in qgroup functions")
 > Reported-by: syzbot+b44d4a4885bc82af2a06@syzkaller.appspotmail.com
-> Link: https://lore.kernel.org/linux-btrfs/69369331.a70a0220.38f243.009e.GAE@google.com/
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> Closes: https://syzkaller.appspot.com/bug?extid=b44d4a4885bc82af2a06
+> Tested-by: syzbot+b44d4a4885bc82af2a06@syzkaller.appspotmail.com
+> Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+> ---
+>   fs/btrfs/qgroup.c | 10 ++++++----
+>   1 file changed, 6 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+> index 9e2b53e90dcb..ac5380520152 100644
+> --- a/fs/btrfs/qgroup.c
+> +++ b/fs/btrfs/qgroup.c
+> @@ -3289,10 +3289,6 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
+>   	if (!btrfs_qgroup_enabled(fs_info))
+>   		return 0;
+>   
+> -	prealloc = kzalloc(sizeof(*prealloc), GFP_NOFS);
+> -	if (!prealloc)
+> -		return -ENOMEM;
+> -
+>   	/*
+>   	 * There are only two callers of this function.
+>   	 *
+> @@ -3388,6 +3384,12 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
+>   		}
+>   	}
+>   
+> +	prealloc = kzalloc(sizeof(*prealloc), GFP_NOFS);
+> +	if (!prealloc) {
+> +		ret = -ENOMEM;
+> +		goto out;
+> +	}
+> +
+>   	spin_lock(&fs_info->qgroup_lock);
+>   
+>   	dstgroup = add_qgroup_rb(fs_info, prealloc, objectid);
 
-Right, this needs a full revert and it's a recent commit so the code has
-not diverged yet.
-
-Reviewed-by: David Sterba <dsterba@suse.com>
 
