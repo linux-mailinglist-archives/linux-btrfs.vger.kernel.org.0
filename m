@@ -1,75 +1,73 @@
-Return-Path: <linux-btrfs+bounces-19561-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19562-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 628E5CACF33
-	for <lists+linux-btrfs@lfdr.de>; Mon, 08 Dec 2025 12:05:52 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43D17CAD0CA
+	for <lists+linux-btrfs@lfdr.de>; Mon, 08 Dec 2025 13:11:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 3A02A3017841
-	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Dec 2025 11:05:51 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id B8CC53061EB9
+	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Dec 2025 12:10:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5895313279;
-	Mon,  8 Dec 2025 11:05:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B72C12F28FB;
+	Mon,  8 Dec 2025 12:10:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="an092luI"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Y2ExzLcj"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from out162-62-57-137.mail.qq.com (out162-62-57-137.mail.qq.com [162.62.57.137])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 652A23128C9;
-	Mon,  8 Dec 2025 11:05:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.137
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2703A2D94A1
+	for <linux-btrfs@vger.kernel.org>; Mon,  8 Dec 2025 12:10:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765191946; cv=none; b=FRa93V6QFD2ukvL2KUr+meqfMPMr1KLN09F14men4h2/BXAph/YNbZnK2IpCIJKwIZnLVeguZ8wue/iWgL6B8KPnQy5sRXJzz1aHNOVshHDO0RwHzbfkGpFCB+MLeZ6HDJ1AurycuGeSwg6oGuSjGCDOR0DqhKW/lSmBPlILWjQ=
+	t=1765195837; cv=none; b=lDP0AarPS8NbkQvSvVIC6bGdisDGCKbxEoLuuFwfkQ2v8Ig4QnXgYTbwzNJIV7iH0Qq7dNxifxeK0EZVhN7U3Kta9ha1Cr1BaZLj55KGbVww16KImE/y1CUi3vzsS01QqqdhbCpM0mmP5xu/4kWZLZp+/1RnGSNBzXLtBlql3uI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765191946; c=relaxed/simple;
-	bh=24oq/abDmr2j7N6dcDSRqRDGAa1kZKqYHrC9eGDtyp8=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=Tm3+FhQXYInrC81N4cNE/qMO1l5YgKAHf/rlJSLirQE1ttSimx8Kv+9Y7TsMCotSZbG/W6Lw4FVoZjtWX7zHCR0QaGYrmto+Tpo4CFi41Eu50DIj2kh/eUGeUJR3m+sU9vZpTWZeO9Gh/dSc9C9IvbWcNo9PAXtQkmtrgX7wvPA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=an092luI; arc=none smtp.client-ip=162.62.57.137
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1765191930; bh=wMvx19vJI1RxYB9avH18Q90mZsemEo3rPfpApitslBA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=an092luIe5lXSiW0vO6FNCvFdBxBnCG9sb8Q+hFY4XV3wgOq93j6/vw4nLgm6IAOr
-	 v5GsSsEdxTqWp7eXKqlHM3e9Q/GGVWtnygkrsyiJHecHF1mZ5K9MR7diDtgkJjc86w
-	 JP38guGboRJE7xoTLMo83DLIA58L3EBm8uSCl+ew=
-Received: from lxu-ped-host.. ([111.201.7.117])
-	by newxmesmtplogicsvrsza53-0.qq.com (NewEsmtp) with SMTP
-	id 15A86A7A; Mon, 08 Dec 2025 19:05:26 +0800
-X-QQ-mid: xmsmtpt1765191926tyr2219d5
-Message-ID: <tencent_0974B3778967163D1736C0971436F24B5C09@qq.com>
-X-QQ-XMAILINFO: M7zNVLTahEeK87eS38fFB2d9wTa14j646hOEFby0VVjHJiKMR2fikZKgf6PRar
-	 UBBlFgyVlIyZcbVLJQyLDbKB5K5f2juUKaxX4L0R3plB3aeZeHMNekPcwtiWyTeViCgYEvBHQSLU
-	 Kx3LA/FKfaM1X2DfpOvNzZJ9VQ1FcsAvVZtcQhkSths/YgGFVc7bioJqE0gMmt850kmt6j6LCye6
-	 puoF6T+zflrJgDrOlI2pUe7lUpi8tcWXui01i/iherXN5noIvZItJIBxYwRNfowBQPgmKHa+drV6
-	 aAqP/l0nW340glLSNd3Yp+Cyi7hwsR8R9d6rE968HwIfJ3lBXLLswkHkaUSz4PaBiMfjewUV+Ivr
-	 MTlgCLvN2OCyElFw1GGTH+FXMYt74kcr9IA4N96NEJ+u22CEf9Ki5HOqjaIsUsVQmI5Elczoz+VZ
-	 xbeca8yC4kAV6n21wXMGAKiD0iLXietfqi2r4/KcYrdem2dKuiDRJbj1+cuy1BJTB3XNOnlW3f0K
-	 p+KwB+DsRWp/IjmJMZOhy7EvypvyjJ9MoDMlWHGZD/NIOMrkaBkM0I+3VDZ673vs75CoCbf+MLSR
-	 l0S0iRbLXbsQgG0GqlvSVr6X7q/o4ejiS2tqs0Ci7glUdYA7S8hD8rWHIJrhxCkoKtMydk2XsUiD
-	 mSbewpe0b/qGZo8YlZOOIat/qzus9dTCYJPiAqjLNbydQijLWuBXTv98tKer/+TIidJsa7OFjypU
-	 6keLulZ9sTVr64csduGGWGZI08c7vh6Z0axmN3H3s2YNe5IVncqXi3X2il94cNE3d+uMrD8l+FFO
-	 2/OhBw49ous1cbSvArcnjtqtEpJAQ7uC/rrUjKge2pyz9jycMaMxMfxPVl9nkvhGvmo+yLWvhzKZ
-	 rpklBEpi+LqldCBtKy57PRb4bUBIK1MGVbHCJ5O9OmQKqPF041bleGDqGDm8nGkic+5BCs+Mj3KX
-	 gkHftwU3/24Qq7qNQiX2GdKe9KB7sA4WTJ2Vkpnmpikquh5Wpv3UFLADdXGadGwPH/WP2WGSYq/N
-	 2GwW+pgw==
-X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
-From: Edward Adam Davis <eadavis@qq.com>
-To: syzbot+b44d4a4885bc82af2a06@syzkaller.appspotmail.com
-Cc: clm@fb.com,
-	dsterba@suse.com,
-	josef@toxicpanda.com,
+	s=arc-20240116; t=1765195837; c=relaxed/simple;
+	bh=S/R/+Uk+LTZcWsw9GFQtjbZ0Vh6QPzpbP3UybfCI9FU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=il4LUlO/p99tzQG4v3FH6EsEEjk42eh40YDtdNCNHTKOGG+cLpyvUCp1irFNpYBF9MANrKwCM4OuhLqH2UV+coPOhOO7uohORGYfOBajy5ejFRuLA8kAssFNcMACLCG7MsOyD6jWh3S1AFVTmaXAm5xuJ2Qenl9g2PgGz6lMkZc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Y2ExzLcj; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1765195834;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=I3Ugs4PfXVw3YdaIIC3p55RTQO4ZnhtjaIUa7FSWYKA=;
+	b=Y2ExzLcjfndyxUj8Sge46vSmxF5SEDC17WUB11iMvuqD7l1kVW9Ynhzf+rDG9SjknZTpN+
+	nk2bMHsFE7oVrzHOw66AoaVH8WBhveq2xL6r8KScm0OM7K0cawiUlgc2yaGZivmU9Kjcmx
+	yfohyl9K8y+q2AJ0ExWmHijdY4nL4ro=
+Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-530-MajWwowAOrG8YikhUpIiYA-1; Mon,
+ 08 Dec 2025 07:10:28 -0500
+X-MC-Unique: MajWwowAOrG8YikhUpIiYA-1
+X-Mimecast-MFC-AGG-ID: MajWwowAOrG8YikhUpIiYA_1765195827
+Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id D5D1C1956096;
+	Mon,  8 Dec 2025 12:10:26 +0000 (UTC)
+Received: from pasta.fast.eng.rdu2.dc.redhat.com (unknown [10.44.34.3])
+	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id E93251955F24;
+	Mon,  8 Dec 2025 12:10:21 +0000 (UTC)
+From: Andreas Gruenbacher <agruenba@redhat.com>
+To: Christoph Hellwig <hch@infradead.org>,
+	Jens Axboe <axboe@kernel.dk>,
+	Chris Mason <clm@fb.com>,
+	David Sterba <dsterba@suse.com>,
+	Satya Tangirala <satyat@google.com>
+Cc: Andreas Gruenbacher <agruenba@redhat.com>,
+	linux-block@vger.kernel.org,
 	linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: [PATCH] btrfs: Optimize the timing of prealloc memory allocation
-Date: Mon,  8 Dec 2025 19:05:26 +0800
-X-OQ-MSGID: <20251208110525.483918-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <693683ba.a70a0220.38f243.0091.GAE@google.com>
-References: <693683ba.a70a0220.38f243.0091.GAE@google.com>
+	linux-raid@vger.kernel.org,
+	dm-devel@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: [RFC 00/12] bio cleanups
+Date: Mon,  8 Dec 2025 12:10:07 +0000
+Message-ID: <20251208121020.1780402-1-agruenba@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -77,61 +75,149 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
 
-Too many abnormal exits can cause the prealloc assertion to fail, as
-reported by syzbot in [1].
+Hello,
 
-Move the prealloc memory allocation to before it is actually used.
+we are not quite careful enough about setting bio->bi_status in all
+places (see BACKGROUND below).  This patch queue tries to fix this by
+systematically eliminating the direct assignments to bi_status sprinkled
+all throughout the code.  Please comment.
 
-[1]
-assertion failed: prealloc == NULL :: 0, in fs/btrfs/qgroup.c:3529
-kernel BUG at fs/btrfs/qgroup.c:3529!
-Call Trace:
- <TASK>
- create_subvol+0x5ad/0x18f0 fs/btrfs/ioctl.c:570
- btrfs_mksubvol+0x6e4/0x12c0 fs/btrfs/ioctl.c:928
- __btrfs_ioctl_snap_create+0x2b2/0x730 fs/btrfs/ioctl.c:1201
- btrfs_ioctl_snap_create+0x131/0x180 fs/btrfs/ioctl.c:1259
- btrfs_ioctl+0xb4d/0xd00 fs/btrfs/ioctl.c:-1
 
-Fixes: 252877a87015 ("btrfs: add ASSERTs on prealloc in qgroup functions")
-Reported-by: syzbot+b44d4a4885bc82af2a06@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=b44d4a4885bc82af2a06
-Tested-by: syzbot+b44d4a4885bc82af2a06@syzkaller.appspotmail.com
-Signed-off-by: Edward Adam Davis <eadavis@qq.com>
----
- fs/btrfs/qgroup.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+The first patch ("bio: rename bio_chain arguments") is an loosely
+related cleanup.  The remaining changes are:
 
-diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index 9e2b53e90dcb..ac5380520152 100644
---- a/fs/btrfs/qgroup.c
-+++ b/fs/btrfs/qgroup.c
-@@ -3289,10 +3289,6 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
- 	if (!btrfs_qgroup_enabled(fs_info))
- 		return 0;
- 
--	prealloc = kzalloc(sizeof(*prealloc), GFP_NOFS);
--	if (!prealloc)
--		return -ENOMEM;
--
- 	/*
- 	 * There are only two callers of this function.
- 	 *
-@@ -3388,6 +3384,12 @@ int btrfs_qgroup_inherit(struct btrfs_trans_handle *trans, u64 srcid,
- 		}
- 	}
- 
-+	prealloc = kzalloc(sizeof(*prealloc), GFP_NOFS);
-+	if (!prealloc) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
-+
- 	spin_lock(&fs_info->qgroup_lock);
- 
- 	dstgroup = add_qgroup_rb(fs_info, prealloc, objectid);
+- Use bio_io_error() in more places.
+
+- Add a bio_set_errno() helper for setting bi_status based on an errno.
+  Use this helper throughout the code.
+
+- Add a bio_set_status() helper for setting bi_status to a blk_status_t
+  status code.  Use this helper in places in the code where it's
+  necessary, or at least useful without adding any overhead.
+
+And on top of that, we have two more cleanups:
+
+- Add a bio_endio_errno() helper that combines bio_set_errno() and
+  bio_endio().
+
+- Add a bio_endio_status() helper that combines bio_set_status() and
+  bio_endio().
+
+The patches are currently based on v6.18.
+
+GIT tree:
+https://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2.git/log/?h=bio-cleanups
+
+With these changes, only a few direct assignments to bio->bi_status
+remain, in BTRFS and in MD, and SOME OF THOSE MAY BE UNSAFE.  Could the
+maintainers of those subsystems please have a look?
+
+Once the remaining direct assignments to bi_status are gone, we may want
+to think about "write protecting" bi_status to prevent unintended new
+direct assignments from creeping back in.
+
+
+BACKGROUND
+
+'struct bio' objects start out with their bi_status field initialized to
+BLK_STS_OK (0).  When the bio completes, that field needs to be left
+unchanged in case of success, and set to a BLK_STS_* error code
+otherwise.
+
+This is important when bios are chained (bio_chain()) because then,
+multiple execution contexts will race updating the same bi_status field.
+When an execution context resets bi_status to BLK_STS_OK (0) during bio
+completion, this could hide the error code of the adjacent bio in the
+chain.
+
+When more than a single bio fails in a chain, we know that the resulting
+bi_status will not be BLK_STS_OK, but we don't know which of the status
+error codes will win.
+
+
+CRYPTO FALLBACK (SATYA TANGIRALA?)
+
+Related to chained bios but unrelated to setting bio->bi_status,
+blk_crypto_fallback_encrypt_bio() in block/blk-crypto-fallback.c swaps
+out bi_private and bi_end_io and reuses the same bio for downcalls, then
+restores those fields in blk_crypto_fallback_decrypt_endio() before
+calling bio_endio() again on the same bio.  This will at the very least
+break with chained bios because it will mess up __bi_remaining.
+
+
+Thanks,
+Andreas
+
+Andreas Gruenbacher (12):
+  bio: rename bio_chain arguments
+  bio: use bio_io_error more often
+  bio: add bio_set_errno
+  bio: use bio_set_errno in more places
+  bio: add bio_set_status
+  bio: don't check target->bi_status on error
+  bio: use bio_set_status for BLK_STS_* status codes
+  bio: use bio_set_status in some more places
+  bio: switch to bio_set_status in submit_bio_noacct
+  bio: never set bi_status to BLK_STS_OK during completion
+  bio: add bio_endio_errno
+  bio: add bio_endio_status
+
+ block/bio-integrity-auto.c       |  3 +--
+ block/bio.c                      | 25 ++++++++++++-------------
+ block/blk-core.c                 | 10 ++++------
+ block/blk-crypto-fallback.c      | 22 +++++++++++-----------
+ block/blk-crypto-internal.h      |  2 +-
+ block/blk-crypto.c               |  4 ++--
+ block/blk-merge.c                |  6 ++----
+ block/blk-mq.c                   | 11 ++++-------
+ block/fops.c                     |  6 ++----
+ block/t10-pi.c                   |  2 +-
+ drivers/block/aoe/aoecmd.c       |  8 ++++----
+ drivers/block/aoe/aoedev.c       |  2 +-
+ drivers/block/drbd/drbd_int.h    |  3 +--
+ drivers/block/drbd/drbd_req.c    |  9 +++------
+ drivers/block/ps3vram.c          |  3 +--
+ drivers/block/zram/zram_drv.c    |  4 ++--
+ drivers/md/bcache/bcache.h       |  3 +--
+ drivers/md/bcache/request.c      |  8 +++-----
+ drivers/md/dm-cache-target.c     |  9 +++++----
+ drivers/md/dm-ebs-target.c       |  2 +-
+ drivers/md/dm-flakey.c           |  2 +-
+ drivers/md/dm-integrity.c        | 30 +++++++++++-------------------
+ drivers/md/dm-mpath.c            |  6 ++----
+ drivers/md/dm-pcache/dm_pcache.c |  3 +--
+ drivers/md/dm-raid1.c            |  7 +++----
+ drivers/md/dm-thin.c             |  5 ++---
+ drivers/md/dm-vdo/data-vio.c     |  3 +--
+ drivers/md/dm-verity-target.c    |  2 +-
+ drivers/md/dm-writecache.c       |  7 +++----
+ drivers/md/dm-zoned-target.c     |  2 +-
+ drivers/md/dm.c                  |  4 +---
+ drivers/md/md.c                  |  8 +++-----
+ drivers/md/raid1-10.c            |  3 +--
+ drivers/md/raid1.c               |  2 +-
+ drivers/md/raid10.c              | 18 +++++++-----------
+ drivers/md/raid5.c               |  4 ++--
+ drivers/nvdimm/btt.c             |  4 ++--
+ drivers/nvdimm/pmem.c            |  7 ++-----
+ fs/btrfs/bio.c                   |  8 ++++----
+ fs/btrfs/direct-io.c             |  2 +-
+ fs/btrfs/raid56.c                |  6 ++----
+ fs/crypto/bio.c                  |  2 +-
+ fs/erofs/fileio.c                |  2 +-
+ fs/erofs/fscache.c               |  4 ++--
+ fs/f2fs/data.c                   |  6 +++---
+ fs/f2fs/segment.c                |  3 +--
+ fs/iomap/ioend.c                 |  3 +--
+ fs/verity/verify.c               |  2 +-
+ fs/xfs/xfs_aops.c                |  3 +--
+ fs/xfs/xfs_zone_alloc.c          |  2 +-
+ include/linux/bio.h              | 30 +++++++++++++++++++++++++++---
+ 51 files changed, 153 insertions(+), 179 deletions(-)
+
 -- 
-2.43.0
+2.51.0
 
 
