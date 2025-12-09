@@ -1,113 +1,245 @@
-Return-Path: <linux-btrfs+bounces-19586-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19587-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4D1CCAE62A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 09 Dec 2025 00:10:02 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1333CCAE779
+	for <lists+linux-btrfs@lfdr.de>; Tue, 09 Dec 2025 01:16:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id F30AA300A548
-	for <lists+linux-btrfs@lfdr.de>; Mon,  8 Dec 2025 23:09:45 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 134CF301C3DC
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Dec 2025 00:16:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B3E92DCF6B;
-	Mon,  8 Dec 2025 23:09:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E027221F11;
+	Tue,  9 Dec 2025 00:16:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MTSpj3xy"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SEV/vrr/"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEC96231A23;
-	Mon,  8 Dec 2025 23:09:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 621D52153FB;
+	Tue,  9 Dec 2025 00:16:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765235383; cv=none; b=mhHtogpKLSQO7opyvngT448hK8IkD1e0Fhv5AVWiRp655RGuNa2Wv5htqq5XOIYiiRDBZAQjKm381QBV6e8OAKa4uEdcrXsHmhLpAE/v0ra3celFyd99t+L96brL3XzzBN31aWQKoJ8HgQ+7cNt3OH83nUmU04/iV+AodDqu2I0=
+	t=1765239405; cv=none; b=ua4cPDOYPxLMzsLBLzSX0sN+TOFiDaSMG0MtffHeHBpBXmc5xLefUg5AdQwTQ2FbWWrhFvJMSqq6dcf8wVvhu0WgnRN1PRZE7VM5P01+zAZFCxBFMoKIj0N67TIcQOkAgBhh5XbD5QVsA5EDZ9Bn0PE9WOq4PlgBJ+Ub8GwxB+A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765235383; c=relaxed/simple;
-	bh=Niaz3OcyWSvPRamO7EM3GBNmwSKLzayrhD3s1w1flwE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CEKngomtk+r3XoVYtHjalz3JniLsonvkIFxjUrkJLRDREbvqr5bcjJ/eOqoJy29SFmXvqRnZbX7CjK4ZecwcjbdmsuQros+7vQxRsYpMwhGnwmNb8Wrv31P0U8baxna1Unu7xJ8hhe/sAdfAgf4E9pYaqb0NjeC40aRTWun+sbU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MTSpj3xy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BAE73C4CEF1;
-	Mon,  8 Dec 2025 23:09:42 +0000 (UTC)
+	s=arc-20240116; t=1765239405; c=relaxed/simple;
+	bh=OpNSX1v9idoEn+6GZ+Br/BSw8EWqZDVgpOB95jDvS00=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=Xddw/ZdiP8jmS3CgERPKldajEJh0CFI2iVIYNWKhE8IuRi0gRNfKW7C9mKVmnac+Hz4mxNpdau4U6z/cgOj9ATiMk1YYc1AMVsJkt97N4ciyx0BzV//y9lim4hqAn56WYiHzkEJtZR8I8BOzvoUIqTUEvGEd0750Bjn1Y8r7tvI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SEV/vrr/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A168C4CEF1;
+	Tue,  9 Dec 2025 00:16:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1765235383;
-	bh=Niaz3OcyWSvPRamO7EM3GBNmwSKLzayrhD3s1w1flwE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=MTSpj3xyjjSbLZM1CNLcX4tZbJVrhLIpcC0UFb2X/3jpkCEEnCWToZDrDVWXNP0eq
-	 PrliHsn7YP+n5w4KcoqUSM6KBPVBTkL4fV9n1QuIpSqa4m+moJEO8MdSIDst6FG51O
-	 bZPurH8gFvWBv9K2BKd/DpsKH3yJkWyBm8Kyn0hWTAoGLXwrtQyFZL4nKBWnFs237M
-	 FIQOuwPlBRe0dhUh98yZLh0ckC38aZRwLYUfitw8LDs0JRPwswKsNUda8txeVcgk5S
-	 frzvAREFqLH7FfutqIxS/zoGFZrvorln6IRSRTVwrjXZ/9nzHKZ4Idh8/V3ZgnnZBb
-	 +2crndx5xb0ug==
-Date: Mon, 8 Dec 2025 15:09:41 -0800
-From: Eric Biggers <ebiggers@kernel.org>
-To: linux-crypto@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
-	"Jason A . Donenfeld" <Jason@zx2c4.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Thorsten Blum <thorsten.blum@linux.dev>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	David Laight <david.laight@runbox.com>,
-	David Sterba <dsterba@suse.com>, llvm@lists.linux.dev,
+	s=k20201202; t=1765239404;
+	bh=OpNSX1v9idoEn+6GZ+Br/BSw8EWqZDVgpOB95jDvS00=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=SEV/vrr/bQK34Obzntn7eYxt/o1BYfMemoLPmHcej0OerVg0dm1xdYXhLlHPTM6/h
+	 c+zZQGSw+OvESLTLJdaNHiB/zIV/k35LX/F6jX/tyaTW1ObVKjWlu0di1n8JnF2VZ+
+	 Vkh/m/qT2rJyEQCzfVevKQTIfDebgbK2xSB8GUzg7f1LlmzXfNj+Dyjr3Co4FjH2/3
+	 opPGbdI7QRotaamZwVx98/4zfYSQgfMzSE51dsd/F1Db7NRbJknisgWD7hEhM7n9OJ
+	 IRfJOQKXbSeYc1rfc7rU5Hr6IAi4zKFB8bs41QDllzfjNcoa+Kd2NqxNVuMteC1JS8
+	 6p5CCy/KAyWxw==
+From: Sasha Levin <sashal@kernel.org>
+To: patches@lists.linux.dev,
+	stable@vger.kernel.org
+Cc: Filipe Manana <fdmanana@suse.com>,
+	Qu Wenruo <wqu@suse.com>,
+	David Sterba <dsterba@suse.com>,
+	Sasha Levin <sashal@kernel.org>,
+	clm@fb.com,
 	linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2] lib/crypto: blake2b: Roll up BLAKE2b round loop on
- 32-bit
-Message-ID: <20251208230941.GB1853@quark>
-References: <20251205050330.89704-1-ebiggers@kernel.org>
+Subject: [PATCH AUTOSEL 6.18-6.6] btrfs: abort transaction on item count overflow in __push_leaf_left()
+Date: Mon,  8 Dec 2025 19:14:58 -0500
+Message-ID: <20251209001610.611575-6-sashal@kernel.org>
+X-Mailer: git-send-email 2.51.0
+In-Reply-To: <20251209001610.611575-1-sashal@kernel.org>
+References: <20251209001610.611575-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251205050330.89704-1-ebiggers@kernel.org>
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.18
+Content-Transfer-Encoding: 8bit
 
-On Thu, Dec 04, 2025 at 09:03:30PM -0800, Eric Biggers wrote:
-> BLAKE2b has a state of 16 64-bit words.  Add the message data in and
-> there are 32 64-bit words.  With the current code where all the rounds
-> are unrolled to enable constant-folding of the blake2b_sigma values,
-> this results in a very large code size on 32-bit kernels, including a
-> recurring issue where gcc uses a large amount of stack.
-> 
-> There's just not much benefit to this unrolling when the code is already
-> so large.  Let's roll up the rounds when !CONFIG_64BIT.
-> 
-> To avoid having to duplicate the code, just write code once using a
-> loop, and conditionally use 'unrolled_full' from <linux/unroll.h>.
-> 
-> Then, fold the now-unneeded ROUND() macro into the loop.  Finally, also
-> remove the now-unneeded override of the stack frame size warning.
-> 
-> Code size improvements for blake2b_compress_generic():
-> 
->                   Size before (bytes)    Size after (bytes)
->                   -------------------    ------------------
->     i386, gcc           27584                 3632
->     i386, clang         18208                 3248
->     arm32, gcc          19912                 2860
->     arm32, clang        21336                 3344
-> 
-> Running the BLAKE2b benchmark on a !CONFIG_64BIT kernel on an x86_64
-> processor shows a 16384B throughput change of 351 => 340 MB/s (gcc) or
-> 442 MB/s => 375 MB/s (clang).  So clearly not much of a slowdown either.
-> But also that microbenchmark also effectively disregards cache usage,
-> which is important in practice and is far better in the smaller code.
-> 
-> Note: If we rolled up the loop on x86_64 too, the change would be
-> 7024 bytes => 1584 bytes and 1960 MB/s => 1396 MB/s (gcc), or
-> 6848 bytes => 1696 bytes and 1920 MB/s => 1263 MB/s (clang).
-> Maybe still worth it, though not quite as clearly beneficial.
-> 
-> Fixes: 91d689337fe8 ("crypto: blake2b - add blake2b generic implementation")
-> Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
-> Signed-off-by: Eric Biggers <ebiggers@kernel.org>
+From: Filipe Manana <fdmanana@suse.com>
 
-Applied to https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git/log/?h=libcrypto-fixes
+[ Upstream commit 5d8222a50ad37c98455da08b33ce49fe6b726c72 ]
 
-- Eric
+If we try to push an item count from the right leaf that is greater than
+the number of items in the leaf, we just emit a warning. This should
+never happen but if it does we get an underflow in the new number of
+items in the right leaf and chaos follows from it. So replace the warning
+with proper error handling, by aborting the transaction and returning
+-EUCLEAN, and proper logging by using btrfs_crit() instead of WARN(),
+which gives us proper formatting and information about the filesystem.
+
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+
+LLM Generated explanations, may be completely bogus:
+
+## Commit Analysis: btrfs: abort transaction on item count overflow in
+__push_leaf_left()
+
+### 1. COMMIT MESSAGE ANALYSIS
+
+**Key points:**
+- Fixes an item count overflow condition where `push_items >
+  right_nritems`
+- Currently only emits a WARN() but continues execution
+- If triggered, causes "an underflow in the new number of items in the
+  right leaf and chaos follows"
+- Replaces warning with proper error handling (abort transaction, return
+  -EUCLEAN)
+
+**Tags:**
+- No `Cc: stable@vger.kernel.org` tag
+- No `Fixes:` tag
+- Has two `Reviewed-by:` tags (Qu Wenruo and David Sterba - btrfs
+  maintainer)
+
+### 2. CODE CHANGE ANALYSIS
+
+**Before (problematic):**
+```c
+if (push_items > right_nritems)
+    WARN(1, KERN_CRIT "push items %d nr %u\n", push_items,
+right_nritems);
+// Continues execution despite the error!
+```
+
+**After (fixed):**
+```c
+if (unlikely(push_items > right_nritems)) {
+    ret = -EUCLEAN;
+    btrfs_abort_transaction(trans, ret);
+    btrfs_crit(fs_info, "push items (%d) > right leaf items (%u)",
+               push_items, right_nritems);
+    goto out;
+}
+```
+
+**Technical mechanism of the bug:**
+- `__push_leaf_left()` pushes items from right leaf to left leaf in
+  btrfs B-tree
+- If `push_items > right_nritems`, later code does `right_nritems -=
+  push_items`
+- Since `right_nritems` is `u32`, this causes an **integer underflow**
+- The underflowed value is then set via `btrfs_set_header_nritems(right,
+  right_nritems)`
+- This corrupts the B-tree structure, leading to filesystem corruption
+
+### 3. CLASSIFICATION
+
+- **Type:** Bug fix - upgrading inadequate error handling to proper
+  abort
+- **Not adding features:** Purely defensive error handling improvement
+- **Severity:** Prevents potential filesystem/data corruption
+- **Pattern:** Converts warn-and-continue to abort-and-return on
+  corruption detection
+
+### 4. SCOPE AND RISK ASSESSMENT
+
+| Factor | Assessment |
+|--------|------------|
+| Lines changed | ~10 lines |
+| Files touched | 1 (fs/btrfs/ctree.c) |
+| Complexity | Very low |
+| Subsystem maturity | btrfs is mature and widely used |
+| Regression risk | **Near zero** - if condition never triggers,
+behavior unchanged; if it does, abort is safer than corruption |
+
+The change uses existing infrastructure (`btrfs_abort_transaction`,
+`goto out` path) that's already present and tested.
+
+### 5. USER IMPACT
+
+- **Affected users:** All btrfs users
+- **Code location:** Core B-tree code - fundamental to all btrfs
+  operations
+- **If bug triggers:** Filesystem corruption, potentially unmountable
+  filesystem
+- **Frequency:** Described as "should never happen" but defensive check
+  was already there
+
+### 6. STABILITY INDICATORS
+
+- Two reviewers from btrfs team
+- Signed off by btrfs maintainer (David Sterba)
+- Conservative, defensive fix with well-understood behavior
+
+### 7. DEPENDENCY CHECK
+
+- Self-contained fix with no dependencies
+- Uses existing error handling patterns present in all stable trees
+- This code has existed in btrfs for many years
+
+### DECISION RATIONALE
+
+**For backporting:**
+1. **Prevents data corruption** - the most critical category of bugs for
+   filesystems
+2. **Minimal risk** - the fix cannot cause regression in normal
+   operation
+3. **Small and surgical** - ~10 lines, single file, obvious correctness
+4. **Well-reviewed** - two experienced btrfs developers signed off
+5. **Core subsystem** - btrfs is used in production by enterprise users
+   relying on stable trees
+6. **Integer underflow** - these are exactly the type of bugs stable
+   trees want fixed
+
+**Against backporting:**
+1. No explicit `Cc: stable` tag
+2. No `Fixes:` tag
+3. Condition described as "should never happen"
+
+**Assessment:** While the maintainer didn't explicitly request stable
+backport, the fix meets all stable criteria:
+- Obviously correct (straightforward error handling)
+- Fixes a real bug (underflow leading to corruption)
+- Small and contained (10 lines, 1 file)
+- No new features
+
+The severity of the potential consequence (filesystem corruption)
+combined with the trivial risk of the fix makes this an appropriate
+stable candidate. Filesystems are exactly where defensive hardening
+matters most for stable users.
+
+**YES**
+
+ fs/btrfs/ctree.c | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+index 561658aca018b..3acb3027584d7 100644
+--- a/fs/btrfs/ctree.c
++++ b/fs/btrfs/ctree.c
+@@ -3398,9 +3398,13 @@ static noinline int __push_leaf_left(struct btrfs_trans_handle *trans,
+ 	btrfs_set_header_nritems(left, old_left_nritems + push_items);
+ 
+ 	/* fixup right node */
+-	if (push_items > right_nritems)
+-		WARN(1, KERN_CRIT "push items %d nr %u\n", push_items,
+-		       right_nritems);
++	if (unlikely(push_items > right_nritems)) {
++		ret = -EUCLEAN;
++		btrfs_abort_transaction(trans, ret);
++		btrfs_crit(fs_info, "push items (%d) > right leaf items (%u)",
++			   push_items, right_nritems);
++		goto out;
++	}
+ 
+ 	if (push_items < right_nritems) {
+ 		push_space = btrfs_item_offset(right, push_items - 1) -
+-- 
+2.51.0
+
 
