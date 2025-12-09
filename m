@@ -1,29 +1,29 @@
-Return-Path: <linux-btrfs+bounces-19606-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19607-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CA4ECB0AFE
-	for <lists+linux-btrfs@lfdr.de>; Tue, 09 Dec 2025 18:16:18 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0AEF4CB0AE0
+	for <lists+linux-btrfs@lfdr.de>; Tue, 09 Dec 2025 18:11:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 595E9307DC6E
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Dec 2025 17:11:48 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 77E00301D873
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Dec 2025 17:11:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B27FA329E63;
-	Tue,  9 Dec 2025 17:11:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4BC032A3C0;
+	Tue,  9 Dec 2025 17:11:54 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E588B329E6C
-	for <linux-btrfs@vger.kernel.org>; Tue,  9 Dec 2025 17:11:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 575AC328614
+	for <linux-btrfs@vger.kernel.org>; Tue,  9 Dec 2025 17:11:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765300307; cv=none; b=dGq8htAQXBIR+utxCoqZpBPqPu84UhnPA5ZvmAkvkGGLB4zAQErfY8VC8HKaYh+gBQg9bXBoSy78q1niX7L7z//zU5quGBChLEZaDOLGPNBxi/mrNdlcEEGzvkDsBl6htrXiDioWbDdaFFsr0yba0AbZ/kDReXthGTKBZ++xsQg=
+	t=1765300314; cv=none; b=CSpD9q6AJB2ZOsWy1xnNzMFm6E7dE8x/KWvplsNxvSLlZoUljer2yNSsTVn0TB+sKzZHWZfVlJG3Y6v/6ArIXEp/vH5MKlp+ihv4z1/ZhdIs5745pQHrpCp3YctsWcf5r0Np0sM9wH1ggq7SKNDHl2CAc4Lf2cXDN1aePWty12E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765300307; c=relaxed/simple;
-	bh=KwxfKqvHD/4in8Wi75LkTy4y2o/4E/3MxBR3N74e0p0=;
+	s=arc-20240116; t=1765300314; c=relaxed/simple;
+	bh=ODmyhvmSqjJRiHjjp+h95PFG/RFYikhvJBI8lpn7HxE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qt16ho5p+C5VEj9vPQnI+yaq9/ayzgWU4LNbDyrwQXDQBUPo05Ym122Uuhi+dluJlhnXmaHbew7ouynXefufzEEL95gaN4sagEJ30LOdZBETKbynk9z+3xvcPmZ3qA5PlQi7lNcVSSKoFSz9UnaK4IDq1TTC8Q1trkt3+VzJJTQ=
+	 MIME-Version; b=Z1+1zaDcUMbT3LHBKYUbMnXsmzdwpIsYzn/oXLclSAZq6g41fBUYV3SbdAwbhs1iQE0Yabg97DO/mIU/P2NefooRJKI1O0ZU52Jv8OwUQIO+EycwNPoV9dbyiejxPd4zJzb4BqMwAMz1UHpQf2REQTQepRXW92m1iGaLb5/b44A=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
@@ -31,26 +31,26 @@ Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id BF8873375E;
-	Tue,  9 Dec 2025 17:11:32 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id E34A4337AC;
+	Tue,  9 Dec 2025 17:11:34 +0000 (UTC)
 Authentication-Results: smtp-out1.suse.de;
 	none
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AE7543EA63;
-	Tue,  9 Dec 2025 17:11:32 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DCC9E3EA63;
+	Tue,  9 Dec 2025 17:11:34 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id alaVKkRYOGm2aQAAD6G6ig
-	(envelope-from <dsterba@suse.com>); Tue, 09 Dec 2025 17:11:32 +0000
+	id yB/lNUZYOGm4aQAAD6G6ig
+	(envelope-from <dsterba@suse.com>); Tue, 09 Dec 2025 17:11:34 +0000
 From: David Sterba <dsterba@suse.com>
 To: linux-btrfs@vger.kernel.org
 Cc: David Sterba <dsterba@suse.com>
-Subject: [PATCH 1/3] btrfs: simplify internal btrfs_printk helpers
-Date: Tue,  9 Dec 2025 18:10:30 +0100
-Message-ID: <4de50956926faa7e474d0b705819dddffadc3121.1765299883.git.dsterba@suse.com>
+Subject: [PATCH 2/3] btrfs: pass level to _btrfs_printk() to avoid parsing level from string
+Date: Tue,  9 Dec 2025 18:10:31 +0100
+Message-ID: <f884e72071839aeb0f8b77e79a6ae2d0bc8adf78.1765299883.git.dsterba@suse.com>
 X-Mailer: git-send-email 2.51.1
 In-Reply-To: <cover.1765299883.git.dsterba@suse.com>
 References: <cover.1765299883.git.dsterba@suse.com>
@@ -68,7 +68,7 @@ X-Spamd-Result: default: False [-4.00 / 50.00];
 	REPLY(-4.00)[]
 X-Spam-Flag: NO
 X-Spam-Score: -4.00
-X-Rspamd-Queue-Id: BF8873375E
+X-Rspamd-Queue-Id: E34A4337AC
 X-Rspamd-Pre-Result: action=no action;
 	module=replies;
 	Message is reply to one we originated
@@ -76,76 +76,195 @@ X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Rspamd-Action: no action
 X-Spam-Level: 
 
-The printk() can be compiled out depending on CONFIG_PRINTK, this is
-reflected in our helpers. The indirection is provided by btrfs_printk()
-used in the ratelimited and RCU wrapper macros.
+There's code in _btrfs_printk() to parse the message level from the
+input string so we can augment the message with the level description
+for better visibility in the logs.
 
-Drop the btrfs_printk() helper and define the ratelimit and RCU helpers
-directly when CONFIG_PRINTK is undefined. This will allow further
-changes to the _btrfs_printk() interface (which is internal), any
-message in other code should use the level-specific helpers.
+The parsing code has evolved over time, see commits:
+
+- 40f7828b36e3b9 ("btrfs: better handle btrfs_printk() defaults")
+
+- 262c5e86fec7cf ("printk/btrfs: handle more message headers")
+
+- 533574c6bc30cf ("btrfs: use printk_get_level and printk_skip_level, add __printf, fix fallout")
+
+- 4da35113426d16 ("btrfs: add varargs to btrfs_error")
+
+As we are using the specific level helpers everywhere we can simply pass
+the message level so we don't have to parse it. The proper printk()
+message header is created as KERN_SOH + "level".
 
 Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/messages.h | 18 +++++++++++++-----
- 1 file changed, 13 insertions(+), 5 deletions(-)
+ fs/btrfs/messages.c | 26 ++++++------------------
+ fs/btrfs/messages.h | 49 ++++++++++++++++++++++-----------------------
+ 2 files changed, 30 insertions(+), 45 deletions(-)
 
+diff --git a/fs/btrfs/messages.c b/fs/btrfs/messages.c
+index 2f853de4447398..6190777924bff5 100644
+--- a/fs/btrfs/messages.c
++++ b/fs/btrfs/messages.c
+@@ -211,33 +211,19 @@ static struct ratelimit_state printk_limits[] = {
+ 	RATELIMIT_STATE_INIT(printk_limits[7], DEFAULT_RATELIMIT_INTERVAL, 100),
+ };
+ 
+-void __cold _btrfs_printk(const struct btrfs_fs_info *fs_info, const char *fmt, ...)
++__printf(3, 4) __cold
++void _btrfs_printk(const struct btrfs_fs_info *fs_info, unsigned int level, const char *fmt, ...)
+ {
+-	char lvl[PRINTK_MAX_SINGLE_HEADER_LEN + 1] = "\0";
+ 	struct va_format vaf;
+ 	va_list args;
+-	int kern_level;
+-	const char *type = logtypes[4];
+-	struct ratelimit_state *ratelimit = &printk_limits[4];
++	const char *type = logtypes[level];
++	struct ratelimit_state *ratelimit = &printk_limits[level];
+ 
+ #ifdef CONFIG_PRINTK_INDEX
+ 	printk_index_subsys_emit("%sBTRFS %s (device %s): ", NULL, fmt);
+ #endif
+ 
+ 	va_start(args, fmt);
+-
+-	while ((kern_level = printk_get_level(fmt)) != 0) {
+-		size_t size = printk_skip_level(fmt) - fmt;
+-
+-		if (kern_level >= '0' && kern_level <= '7') {
+-			memcpy(lvl, fmt,  size);
+-			lvl[size] = '\0';
+-			type = logtypes[kern_level - '0'];
+-			ratelimit = &printk_limits[kern_level - '0'];
+-		}
+-		fmt += size;
+-	}
+-
+ 	vaf.fmt = fmt;
+ 	vaf.va = &args;
+ 
+@@ -247,10 +233,10 @@ void __cold _btrfs_printk(const struct btrfs_fs_info *fs_info, const char *fmt,
+ 			char statestr[STATE_STRING_BUF_LEN];
+ 
+ 			btrfs_state_to_string(fs_info, statestr);
+-			_printk("%sBTRFS %s (device %s%s): %pV\n", lvl, type,
++			_printk(KERN_SOH "%dBTRFS %s (device %s%s): %pV\n", level, type,
+ 				fs_info->sb->s_id, statestr, &vaf);
+ 		} else {
+-			_printk("%sBTRFS %s: %pV\n", lvl, type, &vaf);
++			_printk(KERN_SOH "%dBTRFS %s: %pV\n", level, type, &vaf);
+ 		}
+ 	}
+ 
 diff --git a/fs/btrfs/messages.h b/fs/btrfs/messages.h
-index d8c0bd17dcdaf0..7049976342a57a 100644
+index 7049976342a57a..d4e4cad0609255 100644
 --- a/fs/btrfs/messages.h
 +++ b/fs/btrfs/messages.h
-@@ -23,9 +23,6 @@ void btrfs_no_printk(const struct btrfs_fs_info *fs_info, const char *fmt, ...)
+@@ -23,19 +23,18 @@ void btrfs_no_printk(const struct btrfs_fs_info *fs_info, const char *fmt, ...)
  
  #ifdef CONFIG_PRINTK
  
--#define btrfs_printk(fs_info, fmt, args...)				\
--	_btrfs_printk(fs_info, fmt, ##args)
--
- __printf(2, 3)
- __cold
- void _btrfs_printk(const struct btrfs_fs_info *fs_info, const char *fmt, ...);
-@@ -34,6 +31,13 @@ void _btrfs_printk(const struct btrfs_fs_info *fs_info, const char *fmt, ...);
+-__printf(2, 3)
+-__cold
+-void _btrfs_printk(const struct btrfs_fs_info *fs_info, const char *fmt, ...);
++__printf(3, 4) __cold
++void _btrfs_printk(const struct btrfs_fs_info *fs_info, unsigned int level, const char *fmt, ...);
  
- #define btrfs_printk(fs_info, fmt, args...) \
+ #else
+ 
+-#define btrfs_printk(fs_info, fmt, args...) \
++#define btrfs_printk_in_rcu(fs_info, level, fmt, args...)		\
  	btrfs_no_printk(fs_info, fmt, ##args)
-+
-+#define btrfs_printk_in_rcu(fs_info, fmt, args...)			\
-+	btrfs_no_printk(fs_info, fmt, ##args)
-+
-+#define btrfs_printk_rl_in_rcu(fs_info, fmt, args...)			\
-+	btrfs_no_printk(fs_info, fmt, ##args)
-+
+ 
+-#define btrfs_printk_in_rcu(fs_info, fmt, args...)			\
++#define btrfs_printk_in_rcu(fs_info, level, fmt, args...)		\
+ 	btrfs_no_printk(fs_info, fmt, ##args)
+ 
+-#define btrfs_printk_rl_in_rcu(fs_info, fmt, args...)			\
++#define btrfs_printk_rl_in_rcu(fs_info, level, fmt, args...)		\
+ 	btrfs_no_printk(fs_info, fmt, ##args)
+ 
  #endif
+@@ -44,38 +43,38 @@ void _btrfs_printk(const struct btrfs_fs_info *fs_info, const char *fmt, ...);
+  * Print a message with filesystem info, enclosed in RCU protection.
+  */
+ #define btrfs_crit(fs_info, fmt, args...) \
+-	btrfs_printk_in_rcu(fs_info, KERN_CRIT fmt, ##args)
++	btrfs_printk_in_rcu(fs_info, LOGLEVEL_CRIT, fmt, ##args)
+ #define btrfs_err(fs_info, fmt, args...) \
+-	btrfs_printk_in_rcu(fs_info, KERN_ERR fmt, ##args)
++	btrfs_printk_in_rcu(fs_info, LOGLEVEL_ERR, fmt, ##args)
+ #define btrfs_warn(fs_info, fmt, args...) \
+-	btrfs_printk_in_rcu(fs_info, KERN_WARNING fmt, ##args)
++	btrfs_printk_in_rcu(fs_info, LOGLEVEL_WARNING, fmt, ##args)
+ #define btrfs_info(fs_info, fmt, args...) \
+-	btrfs_printk_in_rcu(fs_info, KERN_INFO fmt, ##args)
++	btrfs_printk_in_rcu(fs_info, LOGLEVEL_INFO, fmt, ##args)
  
  /*
-@@ -78,10 +82,12 @@ void _btrfs_printk(const struct btrfs_fs_info *fs_info, const char *fmt, ...);
- #define btrfs_debug_rl(fs_info, fmt, args...)	do { (void)(fs_info); } while(0)
- #endif
+  * Wrappers that use a ratelimited printk
+  */
+ #define btrfs_crit_rl(fs_info, fmt, args...) \
+-	btrfs_printk_rl_in_rcu(fs_info, KERN_CRIT fmt, ##args)
++	btrfs_printk_rl_in_rcu(fs_info, LOGLEVEL_CRIT, fmt, ##args)
+ #define btrfs_err_rl(fs_info, fmt, args...) \
+-	btrfs_printk_rl_in_rcu(fs_info, KERN_ERR fmt, ##args)
++	btrfs_printk_rl_in_rcu(fs_info, LOGLEVEL_ERR, fmt, ##args)
+ #define btrfs_warn_rl(fs_info, fmt, args...) \
+-	btrfs_printk_rl_in_rcu(fs_info, KERN_WARNING fmt, ##args)
++	btrfs_printk_rl_in_rcu(fs_info, LOGLEVEL_WARNING, fmt, ##args)
+ #define btrfs_info_rl(fs_info, fmt, args...) \
+-	btrfs_printk_rl_in_rcu(fs_info, KERN_INFO fmt, ##args)
++	btrfs_printk_rl_in_rcu(fs_info, LOGLEVEL_INFO, fmt, ##args)
  
-+#ifdef CONFIG_PRINTK
-+
- #define btrfs_printk_in_rcu(fs_info, fmt, args...)	\
- do {							\
- 	rcu_read_lock();				\
--	btrfs_printk(fs_info, fmt, ##args);		\
-+	_btrfs_printk(fs_info, fmt, ##args);		\
- 	rcu_read_unlock();				\
+ #if defined(CONFIG_DYNAMIC_DEBUG)
+ #define btrfs_debug(fs_info, fmt, args...)				\
+ 	_dynamic_func_call_no_desc(fmt, btrfs_printk_in_rcu,		\
+-				   fs_info, KERN_DEBUG fmt, ##args)
++				   fs_info, LOGLEVEL_DEBUG, fmt, ##args)
+ #define btrfs_debug_rl(fs_info, fmt, args...)				\
+ 	_dynamic_func_call_no_desc(fmt, btrfs_printk_rl_in_rcu,		\
+-				   fs_info, KERN_DEBUG fmt, ##args)
++				   fs_info, LOGLEVEL_DEBUG, fmt, ##args)
+ #elif defined(DEBUG)
+ #define btrfs_debug(fs_info, fmt, args...) \
+-	btrfs_printk_in_rcu(fs_info, KERN_DEBUG fmt, ##args)
++	btrfs_printk_in_rcu(fs_info, LOGLEVEL_DEBUG, fmt, ##args)
+ #define btrfs_debug_rl(fs_info, fmt, args...) \
+-	btrfs_printk_rl_in_rcu(fs_info, KERN_DEBUG fmt, ##args)
++	btrfs_printk_rl_in_rcu(fs_info, LOGLEVEl_DEBUG, fmt, ##args)
+ #else
+ /* When printk() is no_printk(), expand to no-op. */
+ #define btrfs_debug(fs_info, fmt, args...)	do { (void)(fs_info); } while(0)
+@@ -84,14 +83,14 @@ void _btrfs_printk(const struct btrfs_fs_info *fs_info, const char *fmt, ...);
+ 
+ #ifdef CONFIG_PRINTK
+ 
+-#define btrfs_printk_in_rcu(fs_info, fmt, args...)	\
+-do {							\
+-	rcu_read_lock();				\
+-	_btrfs_printk(fs_info, fmt, ##args);		\
+-	rcu_read_unlock();				\
++#define btrfs_printk_in_rcu(fs_info, level, fmt, args...)	\
++do {								\
++	rcu_read_lock();					\
++	_btrfs_printk(fs_info, level, fmt, ##args);		\
++	rcu_read_unlock();					\
  } while (0)
  
-@@ -93,10 +99,12 @@ do {								\
+-#define btrfs_printk_rl_in_rcu(fs_info, fmt, args...)		\
++#define btrfs_printk_rl_in_rcu(fs_info, level, fmt, args...)	\
+ do {								\
+ 	static DEFINE_RATELIMIT_STATE(_rs,			\
+ 		DEFAULT_RATELIMIT_INTERVAL,			\
+@@ -99,7 +98,7 @@ do {								\
  								\
  	rcu_read_lock();					\
  	if (__ratelimit(&_rs))					\
--		btrfs_printk(fs_info, fmt, ##args);		\
-+		_btrfs_printk(fs_info, fmt, ##args);		\
+-		_btrfs_printk(fs_info, fmt, ##args);		\
++		_btrfs_printk(fs_info, level, fmt, ##args);	\
  	rcu_read_unlock();					\
  } while (0)
  
-+#endif
-+
- #ifdef CONFIG_BTRFS_ASSERT
- 
- __printf(1, 2)
 -- 
 2.51.1
 
