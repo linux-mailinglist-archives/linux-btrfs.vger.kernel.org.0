@@ -1,81 +1,85 @@
-Return-Path: <linux-btrfs+bounces-19592-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19593-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45FE1CAED1C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 09 Dec 2025 04:38:12 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5BAA8CAED19
+	for <lists+linux-btrfs@lfdr.de>; Tue, 09 Dec 2025 04:38:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 5C9EC302AE02
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Dec 2025 03:38:07 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 617AA300F18B
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Dec 2025 03:38:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C875F30101A;
-	Tue,  9 Dec 2025 03:38:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0215D30149F;
+	Tue,  9 Dec 2025 03:38:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aOt6Pr4h"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BxMRYxC2"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pg1-f193.google.com (mail-pg1-f193.google.com [209.85.215.193])
+Received: from mail-pf1-f194.google.com (mail-pf1-f194.google.com [209.85.210.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B92262253EE
-	for <linux-btrfs@vger.kernel.org>; Tue,  9 Dec 2025 03:38:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D47792F1FCF
+	for <linux-btrfs@vger.kernel.org>; Tue,  9 Dec 2025 03:38:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765251485; cv=none; b=htdy7PuJBpyQS6+0o2++RI0znAtPFZpU01Zf3CSzKR6f3WgPcAV4XVzpe3YTRD1NsO7AlNounDCsOhgUVaAkDomQFagffrJEeIxJzGxnFDUGMNC+YWD6TfaFOftMu1BhFPZblfKejVUsC3xgPFL1+u9huJMhyvUs1aUoAnrfaqY=
+	t=1765251486; cv=none; b=M2B3QcKdOmizAnGaS4quqqVsNDAqubMFAJ6w0iL7DFTPQLh+7gx08hLZd3vTL4A77NL8qq1zteMbzK0dVZ0uLX+PNG7PeSLLV1VUFUZHQLC965PWqSMGZIvDo3LizdIexm5BKnUnidyDESPARhaX2IUsMvQklcXFOi2KndebGgc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765251485; c=relaxed/simple;
-	bh=VaAYZHvvfpbMb8OfBXvulLEmbIGaXIBJjXKjzfKzMco=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=AZ6ap/aGxQnp+QImSDfN5wcUwnowQoC9O+f+mEaEaZ2GOqfnpymje/sBlsQ04Y7ofESu4uYg0Mk7kHZg5ZW7hMX904q6GF0xGkRtkNsA+8DoamZ6A4TiTSjyQqBmxVw+pQIdUJ/6DSQU5Xf3UmvvCSb3x0qLti1Pgk/2Zx2t71E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aOt6Pr4h; arc=none smtp.client-ip=209.85.215.193
+	s=arc-20240116; t=1765251486; c=relaxed/simple;
+	bh=yB3RyEj/oqUKbBmIeSSavLlNVpLyvwmVpRrygxIXVNo=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=P4TfEuMWGqmqSCpFiLmMkaOYmUdA4UxAlNl5tnDffXFR8UyIfT5Kzhkjbhz2AGKxo+CNo1/YPVXtNb3hI7IUmSTnJzONbVQV0oV2iG3rkSHfbCF2uslpOa68HL2F5/4hVn98tp20nKIKQ3lxop0jtkiAt5TzRZl3TsCvKY1YZMk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BxMRYxC2; arc=none smtp.client-ip=209.85.210.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f193.google.com with SMTP id 41be03b00d2f7-be9ab2335beso107073a12.0
-        for <linux-btrfs@vger.kernel.org>; Mon, 08 Dec 2025 19:38:02 -0800 (PST)
+Received: by mail-pf1-f194.google.com with SMTP id d2e1a72fcca58-7b90db89b09so564190b3a.0
+        for <linux-btrfs@vger.kernel.org>; Mon, 08 Dec 2025 19:38:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1765251482; x=1765856282; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=OiqU/pK81ad7+w/vQEMY0EJJdoqSmprGQQgxAo5DdU4=;
-        b=aOt6Pr4hl2KKvbkM1a2Xk7cRODXKydo0VcXfDu7WSZPJ48GD33lMSc2xwo0yROQKET
-         NIPnjfb046f/YmvGfeWm7m7bAtzEeist9P/FBV69N4sbizlxmdakc7q6WV3jvLkuZSTd
-         /zV6eUb3HrOAhQSW5ehR/IFCZizUGVxtCX8wOOWs69nKvMqjHGZFnKuAOAgIt/rP0jpr
-         uEg5UHvTD1uCmgbtlEUEdNFizAiVVrKl0QMcgEvsfIAOQuP69717OOUY6l2GyH++JWiS
-         LJ23aGLjiMWal7s+mfWs+BBU8W3nf9zdZEtNA+1NpWZvZfMBq/0BYaiC9ENGuQ+xv8w/
-         BHMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765251482; x=1765856282;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1765251484; x=1765856284; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=OiqU/pK81ad7+w/vQEMY0EJJdoqSmprGQQgxAo5DdU4=;
-        b=TJ//D8kQJkHo/YjTZSHRuYUZSyW6BN8qGiVmuWZjAc+cS/z6UsyfgnR6hw/oM9mt0v
-         4OfvEP1vDiX9j8eIURFOTlc3t23xUM/pTZ5bDmRMP87bdsp/NSXZ7AwYSJvsFAeeg8Mh
-         2LLrfPdP5/mEcWKq2GKrVpFnv+ONnhuZs5Zn2DNSYbPfMnKNMopKl3MAzIjmLpMzdxdF
-         GD5Ksfc2dWASAhlwp6YEFmbC7ZhEsJpqNWvFJTYuam4CH1Zi0vOiNJ3T1CNTf1AUogCQ
-         fmOGgWy3JsrOy/m2+zoybiJfncfo9hGGflbr7mPxcUn2KlVYJ3aE3liAGsse8oifPMcv
-         hxmg==
-X-Gm-Message-State: AOJu0YxSOUZYTpe0RWxhnHalJ/6RcEtvhL/xTD7CWp7ZU7cDYwztH3NW
-	8jv0fysmDnQhT+yWQI9qcEOayF5I1GuXmc8p5Bpac0odidXfg+hCCh6ai1fMdo7FDM2PuQ==
-X-Gm-Gg: ASbGncuR5ASphlhuEczq12AE/ya3mQ5mMMDC/2aK+k0VVUj17Mxa4c08fsjdpePctx3
-	HmNl1I6Nn8W9SZq8DGyOV0MDFyw32tw1he7HIjPhAdgOuXcOo5Q8/aohdVuPaZrE3lYQ1ETLJxZ
-	lpLPmSweDg1yXgvmkfbBFA00AZ2R49excnN/sbd8Fp2FlU8ywkTuEWk3l7WuFp8EwngdxU7iq8l
-	mr/vYmsgH++NZHx4tga6EM//zf0zx7/xLWCnkav3Cxqn7zluFGMIC6diNlAE3G0I7qDp3uAFiap
-	XLSSgSuwT/PxH1V7dXsqazuO/BtbO0k7+QSxbXw9UbLx+oboE0UnFV4I4bkz9waRVJTkUOtaNyv
-	EbG69wcNElLgb+UV1cfFQa21w1E3svdD0GvKnZE+6yv4xgbf70ZEpUUUsOyDaag6Pdm+eTSt8F7
-	W7B3VI5tIPxbUpWAfPvy4j
-X-Google-Smtp-Source: AGHT+IGdrBZRs8gvNLpMsxbCDYF5gjI+2GDTqi6rtsGHajLuZD7l4zQy3fJFqbFxvHTWrwKj7jrRuA==
-X-Received: by 2002:a05:6a00:84e:b0:7e1:afd9:9a66 with SMTP id d2e1a72fcca58-7e8bfb3c5b8mr6721689b3a.2.1765251481928;
-        Mon, 08 Dec 2025 19:38:01 -0800 (PST)
+        bh=uhqf5jwofzMsHmKf1DdMDZm52UhXy3shxr5zhKg0Y5g=;
+        b=BxMRYxC2r3JKcIFgVFIYHsSUV8JDGVx1ybBKpe6bvTwBhwLcfP2uNR8SH8aKGbFFxf
+         iD6V5Qvxcicugp/LA0pnyO93cAGM1lQ6EFGWot4aym1MvORS25oZ6mqKPxqmM6u9mbz5
+         WoFMUTuKrOnVaPUDa0n4cr+xxcbD39W4oT1/O30BfyweORfjI7IdKKLtLRfMnYuBg1XL
+         q5u02OtF/3zAVHw45kfRHIe38ctD/jElSHgcODbuXkmcnExRWq2zM2u+vfv3ME/+qFbw
+         fRsOWVbaUqMYmu7O+ZZ187FGLOP/sbhcWYrKbwa0GFw5jQFm2Vm6Ji7/me1py+Evzo/E
+         UowA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1765251484; x=1765856284;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=uhqf5jwofzMsHmKf1DdMDZm52UhXy3shxr5zhKg0Y5g=;
+        b=pluIiP7MtcArW45caxeeN0DrooKTmm8fLan/QjjMMVGC6yAp3B7tf5JhxHf/xRHq8x
+         Temwo+Co0Cj2ANwCVZNnmYOEYMvnQWxdroPT47MZwFwPTx/gKRE6WLFRoode+rItNxCD
+         8EgWwr3NMrixT/6Eiin2dwDylbGkaFSqTkimS1jOKEaBXAup4QvoQzsTBpIZ0eXeIecG
+         pLvhYXTtcKLZ4YLho7wdSFTac/bol7CXgdw6u5v4Qscc1bBzpDOTyddWwUfJnKuYANWK
+         6GqM7puuTRpeyqE23UtuNL9F8YeYuD2emi8GQyL+CWETFot+l+I1oExZIGN+zbBZSrEY
+         6w/A==
+X-Gm-Message-State: AOJu0Yz0CY69MgAzXI7AR7eFdvn/Vns+u7HPENTwca6PcLOHiGFYH7ze
+	Sv2yKIRqrUNiz7VsXcW3+csRcomVdH/v9HbO3/VZg4HWN389h+BD3kavDQBt6er1bapocg==
+X-Gm-Gg: ASbGncstYQ5LaNLRhaGrYcdOP3PgjJ4db6vD71fcX6X8ouyq99q308MSNckTmIu6WZX
+	Qlj7W6mz/dlF4qRC3Vk4saRmr1oLQs8R3EuYagzoEjzaE7wC4nleycP2b3sxjATkDx/9Go3W6uk
+	0/F2A3X1FUGiJa6GFzJ31ddr0SFcwRXqGwmQoGhfTWHfQ1Bpm3zbvvXBmz/RCiXZwOMXhdkSLZV
+	if3GREZu0GAoUYUUW26yraH3oqkhbDHNPPstamduW+SjaUwyQdEr7bAhGui5GjfUM64+B4l4yy5
+	tky7lzsTwHeeHe4cix5WZ46Qm9yxwR8qxvVvG80KbxWW5kKUqxj5KrdYM4J9+BVbb/+qDac278n
+	b4gaytbezQIMWEwl9PPkj7OOSp3tN2gO5hcooTihnyr7v0KC5tO8/19VjHcoQ+UbID3HqvN64yq
+	2H+DScdyIPixKvu5WV9nzq
+X-Google-Smtp-Source: AGHT+IGA2xlxzo32OI4mRcrxaCJ7840Q8IROcMM4GHYu4vghGFYiVnZZRbhdItgntZPpfh6pZelr3A==
+X-Received: by 2002:a05:6a00:cc1:b0:7b9:e902:45d8 with SMTP id d2e1a72fcca58-7e8c44a8260mr6914659b3a.3.1765251483863;
+        Mon, 08 Dec 2025 19:38:03 -0800 (PST)
 Received: from SaltyKitkat ([195.88.211.122])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7edac47617dsm3923900b3a.42.2025.12.08.19.38.00
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7edac47617dsm3923900b3a.42.2025.12.08.19.38.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Dec 2025 19:38:01 -0800 (PST)
+        Mon, 08 Dec 2025 19:38:03 -0800 (PST)
 From: Sun YangKai <sunk67188@gmail.com>
 To: linux-btrfs@vger.kernel.org
 Cc: Sun YangKai <sunk67188@gmail.com>
-Subject: [PATCH 0/4] btrfs: some cleanups for two ctree functions
-Date: Tue,  9 Dec 2025 11:27:17 +0800
-Message-ID: <20251209033747.31010-1-sunk67188@gmail.com>
+Subject: [PATCH 1/4] btrfs: don't set @return_any for btrfs_search_slot_for_read in btrfs_read_qgroup_config
+Date: Tue,  9 Dec 2025 11:27:18 +0800
+Message-ID: <20251209033747.31010-2-sunk67188@gmail.com>
 X-Mailer: git-send-email 2.51.2
+In-Reply-To: <20251209033747.31010-1-sunk67188@gmail.com>
+References: <20251209033747.31010-1-sunk67188@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -84,29 +88,47 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The first three patches is cleanups for btrfs_search_slot_for_read().
-There're only two callers that set @return_any to 1 and both of them
-is unnecessary. So @return_any and related logic could be removed.
+The call to `btrfs_search_slot_for_read` in `btrfs_read_qgroup_config` is
+intended to find the very first item in the quota root tree to initiate
+iteration.
 
-The last patch is cleanup for btrfs_prev_leaf(). Callers expect a
-valid p->slots[0] to read the item's key. So make sure btrfs_prev_leaf()
-return a valid p->slots[0] and remove related checks in callers.
+The search key is set to all zeros: (0, 0, 0).
 
-Sun YangKai (4):
-  btrfs: don't set @return_any for btrfs_search_slot_for_read in
-    btrfs_read_qgroup_config
-  btrfs: don't set return_any @return_any for btrfs_search_slot_for_read
-    in get_last_extent()
-  btrfs: cleanup btrfs_search_slot_for_read()
-  btrfs: ctree: cleanup btrfs_prev_leaf()
+The current call uses `return_any=1`:
+`btrfs_search_slot_for_read(..., find_higher=1, return_any=1)`
 
- fs/btrfs/ctree.c           | 141 ++++++-------------------------------
- fs/btrfs/ctree.h           |   3 +-
- fs/btrfs/free-space-tree.c |   2 +-
- fs/btrfs/qgroup.c          |  10 +--
- fs/btrfs/send.c            |  22 +++---
- 5 files changed, 40 insertions(+), 138 deletions(-)
+With `find_higher=1`, the function searches for an item greater than
+(0, 0, 0). The `return_any=1` flag provides a fallback: if no higher item
+is found, it attempts to return the next lower item instead.
 
+Since the search key (0, 0, 0) represents the absolute floor of the btrfs
+key space (u64 objectid), there can be no valid key lower than it. The
+`return_any` fallback logic is therefore pointless and misleading in
+this context.
+
+Change `return_any` from `1` to `0` to correctly express the intention:
+find the first item strictly higher than (0, 0, 0), and if no such item
+exists, simply return 'not found' (1) without attempting an unnecessary
+and impossible search for a lower key.
+
+Signed-off-by: Sun YangKai <sunk67188@gmail.com>
+---
+ fs/btrfs/qgroup.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+index 9e2b53e90dcb..d780980e6790 100644
+--- a/fs/btrfs/qgroup.c
++++ b/fs/btrfs/qgroup.c
+@@ -415,7 +415,7 @@ int btrfs_read_qgroup_config(struct btrfs_fs_info *fs_info)
+ 	key.objectid = 0;
+ 	key.type = 0;
+ 	key.offset = 0;
+-	ret = btrfs_search_slot_for_read(quota_root, &key, path, 1, 1);
++	ret = btrfs_search_slot_for_read(quota_root, &key, path, 1, 0);
+ 	if (ret)
+ 		goto out;
+ 
 -- 
 2.51.2
 
