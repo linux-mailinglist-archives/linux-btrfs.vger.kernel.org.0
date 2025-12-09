@@ -1,160 +1,295 @@
-Return-Path: <linux-btrfs+bounces-19591-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19597-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1769FCAED0D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 09 Dec 2025 04:32:42 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49EBBCAED70
+	for <lists+linux-btrfs@lfdr.de>; Tue, 09 Dec 2025 05:05:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 49426302379A
-	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Dec 2025 03:32:21 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A66AB301738D
+	for <lists+linux-btrfs@lfdr.de>; Tue,  9 Dec 2025 04:05:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 455FB2EC092;
-	Tue,  9 Dec 2025 03:32:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60B59262FC1;
+	Tue,  9 Dec 2025 04:05:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="VGLBtrSn";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="awdG7ukz";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="VGLBtrSn";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="awdG7ukz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m6W3Pq8I"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-pg1-f196.google.com (mail-pg1-f196.google.com [209.85.215.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B3752765DF
-	for <linux-btrfs@vger.kernel.org>; Tue,  9 Dec 2025 03:32:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC4C135959
+	for <linux-btrfs@vger.kernel.org>; Tue,  9 Dec 2025 04:05:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765251138; cv=none; b=RiNLflMaMY8av5Vh/eyw2YUcTkwVnLoSgAutCSVVGLiNPbiGlxYcKVo6Pt4dVUDWhpglB++9oefSLbMWDLQ9qvx0HHmL1ilXMjGRjmoFWml4je4ivjmtvyLg8rqUEyCWk2+P7YXgCPohDG2R+tccn9n/+lZgFDm+zEo1qMXzeHQ=
+	t=1765253127; cv=none; b=RhOlDL6mgR24yc25bIl4JN0OyhZrNVIM7Uhu3tM83E2EL9ESt/+pbJJMFGZbBjUUGg0WrMzargvWeHHa4v5kOY8iECpN76hgQZIrCK8dlkY8uUnR1LsL+/ySQL1zK5dQGyCRnQ2jC2Z6yWOyG0gk7V+IPmzOgPWs/6XoY39qqn4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765251138; c=relaxed/simple;
-	bh=iKbUOvozTUcDjWGdk0gFrhHRUlevzyfHRqWi1OObHPY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BWY9TRuDIUF18sVtkKM4fKDZSOdiL7l0JZtbLS/VPRrKBbrLdBaHJ1q8AQdDkfqz8DSiQ6K4FtmjpNxzuvtnP0eseVdrm110LECMcIkAlRIRgQhTENiNwDIv358rqk5ISa/d5x4Te+n3sYOh6SVRwEqscDgQzHIarxY/4Xe8b/4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=VGLBtrSn; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=awdG7ukz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=VGLBtrSn; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=awdG7ukz; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 932255BD8E;
-	Tue,  9 Dec 2025 03:32:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1765251134;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dK5KHqJHuxC0Vq5OqfttGAUtjiXF9FshssrZSe7Fcxg=;
-	b=VGLBtrSnPe8iGZ26utWGY6liH0g1BUcjJjgoQMAuFWtfLILPc37EbKfrR6tZwtw+4xfRTl
-	Ialui0y2c5pbz6+D73lH9Jltrb9zGiZ/8Nndk8Ka/C7Hz7wZk1zJQuApu/blVa5iJSeiZi
-	6j81H9n0f6nP6jNR/3I8QGoq4cNVWC4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1765251134;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dK5KHqJHuxC0Vq5OqfttGAUtjiXF9FshssrZSe7Fcxg=;
-	b=awdG7ukzLJVArLakQLMyksZCPpJAg5z9C6iAP3Q6yywR9OfduKgSIrYDNIJ0PH7SmnyhaQ
-	pdNiTrOJE6iRycAw==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1765251134;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dK5KHqJHuxC0Vq5OqfttGAUtjiXF9FshssrZSe7Fcxg=;
-	b=VGLBtrSnPe8iGZ26utWGY6liH0g1BUcjJjgoQMAuFWtfLILPc37EbKfrR6tZwtw+4xfRTl
-	Ialui0y2c5pbz6+D73lH9Jltrb9zGiZ/8Nndk8Ka/C7Hz7wZk1zJQuApu/blVa5iJSeiZi
-	6j81H9n0f6nP6jNR/3I8QGoq4cNVWC4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1765251134;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dK5KHqJHuxC0Vq5OqfttGAUtjiXF9FshssrZSe7Fcxg=;
-	b=awdG7ukzLJVArLakQLMyksZCPpJAg5z9C6iAP3Q6yywR9OfduKgSIrYDNIJ0PH7SmnyhaQ
-	pdNiTrOJE6iRycAw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 737013EA63;
-	Tue,  9 Dec 2025 03:32:14 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id B5OtGz6YN2kqegAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Tue, 09 Dec 2025 03:32:14 +0000
-Date: Tue, 9 Dec 2025 04:32:13 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Miquel =?iso-8859-1?Q?Sabat=E9_Sol=E0?= <mssola@mssola.com>
-Cc: linux-btrfs@vger.kernel.org, clm@fb.com, dsterba@suse.com,
-	rostedt@goodmis.org, mhiramat@kernel.org,
-	mathieu.desnoyers@efficios.com, linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	syzbot+d991fea1b4b23b1f6bf8@syzkaller.appspotmail.com
-Subject: Re: [PATCH] btrfs: fix NULL dereference on root when tracing inode
- eviction
-Message-ID: <20251209033213.GF4859@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20251021091125.259500-1-mssola@mssola.com>
+	s=arc-20240116; t=1765253127; c=relaxed/simple;
+	bh=uwQVGbH8arQxo1na/1xXehTDV39BWbF3g3ec7VS1PWU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=NqjYn0VkiZp+Wbzr+vGZNulpQXicjAwn15+OvOlhi3hg+tFxjMOF5UTctUeKCAxZGiTmRKBsYS4hamiTEjcj4+bW08wQ4oghjo31vfJH5YKauwxsfxfv1KVvV1l0DP5Oaha0EVSxDsWWs7phCygMnj43slxj+sBO/AorPrfEpI8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m6W3Pq8I; arc=none smtp.client-ip=209.85.215.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f196.google.com with SMTP id 41be03b00d2f7-bdd38966c74so133793a12.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 08 Dec 2025 20:05:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1765253125; x=1765857925; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=MZ99w3seH0Y24VS+NHvC0bPpIi9b0r5W9d89l9mXXPw=;
+        b=m6W3Pq8I7wjeXkvLJOg84mF9xvm6SKak6rINCHmciXhWTZKMrFSiqcLJXx5enA8+74
+         ZXcEc9knW9qqc9F4srzztecmvJcgsDPa4Jua4EJ/bIdzrAdxtfc7YZagRRHpMst3KYv+
+         5gbBqwh5S07h2QhsqfO/ZjJzjL01Ji9WzkNsh0f9gzrn577wavtdct/a/CHlqbzu6xte
+         ryIM8GqJXQ7NgmiFVewmZ/H3Fw4cTQxgpgm3IA3to9uSmsr6wBieUrFpC7In8BbIbzg1
+         XM+3eRf3o6eNruZgyE5NTlCI1P/KLAyEUlcT4kkx+o9oFRwKQ930Zo2jAlbfrmgT3XbX
+         /M1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1765253125; x=1765857925;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=MZ99w3seH0Y24VS+NHvC0bPpIi9b0r5W9d89l9mXXPw=;
+        b=ui0l/+iB23XWuQQYruoHAGvsiDiKIbmB15mHjvAOrw9nOUnsWGkrwl7N2zV2D3UzFw
+         9b813pxoWIRoOm+m1iQux4EswFZIcyfsMnbg4CMZ//WwkRDpcLCy/mJvUwk7ncuYjuRj
+         ejjZ78iSuuaBCOyqgsCypdaPOHIFaHWeK4pPPS5Nw5O6C7xglwkZxxa9IgNbnxPitMAR
+         8WvfYImTqYWJT8HDEW8M6RLmrjR+s4wCkjkH40iSEfsEzD6Y2Sult8YPSWMfGLVpQro9
+         L9Zuk4K9abJSd3G2Gc3bk+VoHPjW+oZezcd9lyG57G22ueFJvruVCkPZa4fjNojSbelj
+         P34w==
+X-Gm-Message-State: AOJu0YyRlpGF1Ae8HRBz8zcRscr9itG4GRrHn7st5GTyjELW6ZQtj/pw
+	Ol7dNVPm4ExE6F3aRLkG6nGPbAHKN9Xch2jN6XxLde/l+cQINZ4TLgoRaupHNXVQGyXa+g==
+X-Gm-Gg: ASbGncu/vmOPi9ii8P/5o1eRGhePM+N5qT9W4luxrCvrujfjQz4ipsoTpYRBazBC0Rn
+	bZdtXBKDG8oon4p4W+EkL61G9p6Kv98HEf+lKFhkb7ROk77UShVsrLmA2VwAtefkW5bgwG7XLHJ
+	ylafLXWH5abF+cy3RMD04tviBnI+UCv/EoOKUdgplBvEeyrIuMBedj9+dB9S2b3Vxn9HGwytQoC
+	W34HEqkkuPJwL0u2f5yURaT1bGjqd6q87zNimcmE2Pxjti8sUGCAmtlOLr2S6kNA+hFOvgF3Sqc
+	rp9/gGYHU2TAoet/5V0l2Cu6AqWo0YTt9OLjNAY3zqh10OtPBZzUXBKr2yTRnczYsuPBuXFs/5N
+	7xGAC+dmsKDwd0lpwi/V7Aaq7LRyhfaWTrrFbGuQjn3HG4HTNefKqvyyPxVKQCh3KsLFrVWoX/4
+	tNDPkJhReLqxcr+5U/zbiLUB0l
+X-Google-Smtp-Source: AGHT+IGvSgPEEp8iXVUfS2F9a5Hsbc9t5fRIEx8Tldk7MXufrDzhdPNyicnZN0BR8keQdA1Ya5wskg==
+X-Received: by 2002:a05:6a00:a16:b0:7ab:9850:25fb with SMTP id d2e1a72fcca58-7e8c04ef208mr6533853b3a.2.1765253125197;
+        Mon, 08 Dec 2025 20:05:25 -0800 (PST)
+Received: from [192.168.1.13] ([45.144.167.102])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7e7ecb848c8sm9905843b3a.9.2025.12.08.20.05.23
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Dec 2025 20:05:24 -0800 (PST)
+Message-ID: <71c01e60-122c-49e4-8391-ed51c4426f60@gmail.com>
+Date: Tue, 9 Dec 2025 12:05:21 +0800
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 4/4] btrfs: ctree: cleanup btrfs_prev_leaf()
+To: linux-btrfs@vger.kernel.org
+References: <20251209033747.31010-1-sunk67188@gmail.com>
+ <20251209033747.31010-5-sunk67188@gmail.com>
+Content-Language: en-US
+From: Sun Yangkai <sunk67188@gmail.com>
+In-Reply-To: <20251209033747.31010-5-sunk67188@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20251021091125.259500-1-mssola@mssola.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spamd-Result: default: False [-2.50 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	NEURAL_HAM_SHORT(-0.20)[-0.994];
-	MIME_GOOD(-0.10)[text/plain];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TAGGED_RCPT(0.00)[d991fea1b4b23b1f6bf8];
-	RCPT_COUNT_SEVEN(0.00)[10];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -2.50
 
-On Tue, Oct 21, 2025 at 11:11:25AM +0200, Miquel Sabaté Solà wrote:
-> When evicting an inode the first thing we do is to setup tracing for it,
-> which implies fetching the root's id. But in btrfs_evict_inode() the
-> root might be NULL, as implied in the next check that we do in
-> btrfs_evict_inode().
-> 
-> Hence, we either should set the ->root_objectid to 0 in case the root is
-> NULL, or we move tracing setup after checking that the root is not
-> NULL. Setting the rootid to 0 at least gives us the possibility to trace
-> this call even in the case when the root is NULL, so that's the solution
-> taken here.
-> 
-> Fixes: 1abe9b8a138c ("Btrfs: add initial tracepoint support for btrfs")
-> Reported-by: syzbot+d991fea1b4b23b1f6bf8@syzkaller.appspotmail.com
-> Closes: https://syzkaller.appspot.com/bug?extid=d991fea1b4b23b1f6bf8
-> Signed-off-by: Miquel Sabaté Solà <mssola@mssola.com>
 
-Added to for-next, thanks.
+
+åœ¨ 2025/12/9 11:27, Sun YangKai å†™é“:
+> There's a common parttern in callers of btrfs_prev_leaf:
+> p->slots[0]-- if p->slots[0] points to a slot with invalid item(nritem).
+> 
+> So just make btrfs_prev_leaf() ensure that path->slots[0] points to a
+> valid slot and cleanup its over complex logic.
+> 
+> Reading and comparing keys in btrfs_prev_leaf() is unnecessary because
+> when got a ret>0 from btrfs_search_slot(), slots[0] points to where we
+> should insert the key. So just slots[0]-- is enough to get the previous
+> item.
+> 
+> And then remove the related logic and cleanup the callers.
+> 
+> ASSERT(path->slots[0] < btrfs_header_nritems(path->nodes[0]))
+> is enough to make sure that nritems != 0 and slots[0] points to a valid
+> btrfs_item.
+> 
+> And getting a `nritems==0` when btrfs_prev_leaf() returns 0 is a logic
+> error because btrfs_pref_leaf() should always
+> 
+> 1. either find a non-empty leaf
+> 2. or return 1
+> 
+> So we can use ASSERT here.
+> 
+> No functional changes.
+> 
+> Signed-off-by: Sun YangKai <sunk67188@gmail.com>
+> ---
+>  fs/btrfs/ctree.c | 100 +++++++++--------------------------------------
+>  1 file changed, 19 insertions(+), 81 deletions(-)
+> 
+> diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+> index bb886f9508e2..07e6433cde61 100644
+> --- a/fs/btrfs/ctree.c
+> +++ b/fs/btrfs/ctree.c
+> @@ -2365,12 +2365,9 @@ int btrfs_search_old_slot(struct btrfs_root *root, const struct btrfs_key *key,
+>  static int btrfs_prev_leaf(struct btrfs_root *root, struct btrfs_path *path)
+>  {
+>  	struct btrfs_key key;
+> -	struct btrfs_key orig_key;
+> -	struct btrfs_disk_key found_key;
+>  	int ret;
+>  
+>  	btrfs_item_key_to_cpu(path->nodes[0], &key, 0);
+> -	orig_key = key;
+>  
+>  	if (key.offset > 0) {
+>  		key.offset--;
+> @@ -2390,48 +2387,12 @@ static int btrfs_prev_leaf(struct btrfs_root *root, struct btrfs_path *path)
+>  	if (ret <= 0)
+>  		return ret;
+>  
+> -	/*
+> -	 * Previous key not found. Even if we were at slot 0 of the leaf we had
+> -	 * before releasing the path and calling btrfs_search_slot(), we now may
+> -	 * be in a slot pointing to the same original key - this can happen if
+> -	 * after we released the path, one of more items were moved from a
+> -	 * sibling leaf into the front of the leaf we had due to an insertion
+> -	 * (see push_leaf_right()).
+> -	 * If we hit this case and our slot is > 0 and just decrement the slot
+> -	 * so that the caller does not process the same key again, which may or
+> -	 * may not break the caller, depending on its logic.
+> -	 */
+> -	if (path->slots[0] < btrfs_header_nritems(path->nodes[0])) {
+> -		btrfs_item_key(path->nodes[0], &found_key, path->slots[0]);
+> -		ret = btrfs_comp_keys(&found_key, &orig_key);
+> -		if (ret == 0) {
+> -			if (path->slots[0] > 0) {
+> -				path->slots[0]--;
+> -				return 0;
+> -			}
+> -			/*
+> -			 * At slot 0, same key as before, it means orig_key is
+> -			 * the lowest, leftmost, key in the tree. We're done.
+> -			 */
+> -			return 1;
+> -		}
+> -	}
+> +	/* There's no smaller keys in the whole tree. */
+> +	if (path->slots[0] == 0)
+> +		return 1;
+>  
+> -	btrfs_item_key(path->nodes[0], &found_key, 0);
+> -	ret = btrfs_comp_keys(&found_key, &key);
+> -	/*
+> -	 * We might have had an item with the previous key in the tree right
+> -	 * before we released our path. And after we released our path, that
+> -	 * item might have been pushed to the first slot (0) of the leaf we
+> -	 * were holding due to a tree balance. Alternatively, an item with the
+> -	 * previous key can exist as the only element of a leaf (big fat item).
+> -	 * Therefore account for these 2 cases, so that our callers (like
+> -	 * btrfs_previous_item) don't miss an existing item with a key matching
+> -	 * the previous key we computed above.
+> -	 */
+> -	if (ret <= 0)
+> -		return 0;
+> -	return 1;
+> +	path->slots[0]--;
+> +	return 0;
+>  }
+>  
+>  /*
+> @@ -2461,19 +2422,10 @@ int btrfs_search_slot_for_read(struct btrfs_root *root,
+>  		if (p->slots[0] >= btrfs_header_nritems(p->nodes[0]))
+>  			return btrfs_next_leaf(root, p);
+>  	} else {
+> -		if (p->slots[0] == 0) {
+> -			ret = btrfs_prev_leaf(root, p);
+> -			if (ret < 0)
+> -				return ret;
+> -			if (!ret) {
+> -				if (p->slots[0] == btrfs_header_nritems(p->nodes[0]))
+> -					p->slots[0]--;
+> -				return 0;
+> -			}
+> -			return 1;
+> -		} else {
+> -			p->slots[0]--;
+> -		}
+> +		if (p->slots[0] == 0)
+> +			return btrfs_prev_leaf(root, p);
+
+I just found we don't need to call btrfs_prev_leaf() here because we've got
+ret==1 and p->slots[0] == 0 from btrfs_search_slot(), which means there's no
+lower key in the whole tree so just return 1 is enough.
+
+> +
+> +		p->slots[0]--;
+>  	}
+>  	return 0;
+>  }
+> @@ -4957,26 +4909,19 @@ int btrfs_previous_item(struct btrfs_root *root,
+>  			int type)
+>  {
+>  	struct btrfs_key found_key;
+> -	struct extent_buffer *leaf;
+> -	u32 nritems;
+>  	int ret;
+>  
+>  	while (1) {
+>  		if (path->slots[0] == 0) {
+>  			ret = btrfs_prev_leaf(root, path);
+> -			if (ret != 0)
+> +			if (ret)
+>  				return ret;
+> -		} else {
+> -			path->slots[0]--;
+> -		}
+> -		leaf = path->nodes[0];
+> -		nritems = btrfs_header_nritems(leaf);
+> -		if (nritems == 0)
+> -			return 1;
+> -		if (path->slots[0] == nritems)
+> +		} else
+>  			path->slots[0]--;
+>  
+> -		btrfs_item_key_to_cpu(leaf, &found_key, path->slots[0]);
+> +		ASSERT(path->slots[0] < btrfs_header_nritems(path->nodes[0]));
+> +
+> +		btrfs_item_key_to_cpu(path->nodes[0], &found_key, path->slots[0]);
+>  		if (found_key.objectid < min_objectid)
+>  			break;
+>  		if (found_key.type == type)
+> @@ -4998,26 +4943,19 @@ int btrfs_previous_extent_item(struct btrfs_root *root,
+>  			struct btrfs_path *path, u64 min_objectid)
+>  {
+>  	struct btrfs_key found_key;
+> -	struct extent_buffer *leaf;
+> -	u32 nritems;
+>  	int ret;
+>  
+>  	while (1) {
+>  		if (path->slots[0] == 0) {
+>  			ret = btrfs_prev_leaf(root, path);
+> -			if (ret != 0)
+> +			if (ret)
+>  				return ret;
+> -		} else {
+> -			path->slots[0]--;
+> -		}
+> -		leaf = path->nodes[0];
+> -		nritems = btrfs_header_nritems(leaf);
+> -		if (nritems == 0)
+> -			return 1;
+> -		if (path->slots[0] == nritems)
+> +		} else
+>  			path->slots[0]--;
+>  
+> -		btrfs_item_key_to_cpu(leaf, &found_key, path->slots[0]);
+> +		ASSERT(path->slots[0] < btrfs_header_nritems(path->nodes[0]));
+> +
+> +		btrfs_item_key_to_cpu(path->nodes[0], &found_key, path->slots[0]);
+>  		if (found_key.objectid < min_objectid)
+>  			break;
+>  		if (found_key.type == BTRFS_EXTENT_ITEM_KEY ||
+
 
