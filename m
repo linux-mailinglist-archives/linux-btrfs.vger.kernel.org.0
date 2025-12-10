@@ -1,63 +1,63 @@
-Return-Path: <linux-btrfs+bounces-19628-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19629-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 630AFCB38AF
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Dec 2025 17:58:49 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52025CB3B44
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Dec 2025 18:58:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 81FAD307978D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Dec 2025 16:56:51 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 69E4D3037883
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Dec 2025 17:58:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AF873176E3;
-	Wed, 10 Dec 2025 16:56:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B4572FD1D3;
+	Wed, 10 Dec 2025 17:58:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=uni-stuttgart.de header.i=@rus.uni-stuttgart.de header.b="MuyO1Z4m"
+	dkim=pass (2048-bit key) header.d=uni-stuttgart.de header.i=@rus.uni-stuttgart.de header.b="KDyXSODp"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mxex1.tik.uni-stuttgart.de (mxex1.tik.uni-stuttgart.de [129.69.192.20])
+Received: from mxex2.tik.uni-stuttgart.de (mxex2.tik.uni-stuttgart.de [129.69.192.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CB0930DD22
-	for <linux-btrfs@vger.kernel.org>; Wed, 10 Dec 2025 16:56:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=129.69.192.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D9E428467C
+	for <linux-btrfs@vger.kernel.org>; Wed, 10 Dec 2025 17:58:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=129.69.192.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765385809; cv=none; b=OErtzSqBbkdGYoCASd85dtW3tFz8Tiahq/epeEcXrMF56sPa38oXY37E0fohNlVQO5c6aoZab3LJuFz1HXteslLsx3xalUrlwAoFdFqEYbhE03FQo0Lv43akK6Fe7ggOJQHF4d2ulG9h6R+KQVS3Dbl1GyaCluQ19bkShqdn1XI=
+	t=1765389504; cv=none; b=M6PDWDa88KWcN07YO2bdeIi2yGSx1Qzwi94EBwG1O/pcpl1TGhvKbZzw7SOBmZ0SeUBg0fLoVkG35SHyyJdTHJf0Rzh9XkkPcrswh6NwYEbCUsYkMXrdz3yfSmYtkIOC3PnRQW11kNBfMLTnEOIvik9EhpMa7Nf1Zv/NGKPnL1Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765385809; c=relaxed/simple;
-	bh=d6znZNRqmW49gWBzIBgShd5mzVGNWzU6vsy5c1LhGfQ=;
+	s=arc-20240116; t=1765389504; c=relaxed/simple;
+	bh=xCD9wmyD99lCoWgZtoLI6WV5w7WqL2q+uGStyR/Z1cI=;
 	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=C+aQ8PQcJauGfYnhfE10jxUlDyxc+2YNRbqxiOfSmVxhOyrLsImYN8JrDrOFy8Gjk5Z37cyDnKQCJ/gPT/LRaFP6ZNI0fBrcE2NZvr6w1Uf6qdAoPBtnVdDb8yoRWHwDHelcVaZ8+QADTaw/zrs7W6CeQH3oFPrdq92/Fqifrrg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rus.uni-stuttgart.de; spf=pass smtp.mailfrom=rus.uni-stuttgart.de; dkim=pass (2048-bit key) header.d=uni-stuttgart.de header.i=@rus.uni-stuttgart.de header.b=MuyO1Z4m; arc=none smtp.client-ip=129.69.192.20
+	 Content-Disposition; b=VfIYI/KwLco/4DkwDAOg00/w0DJO0hvREXw2LEPZggtn5nVbMnVcQYIRnkET5f2ihibYrZPBVPys1pNLDWEZfXvXmHuYKyztHxtf06zJ0fqmaMUI23uMAnqf6965TRdiBHmsY2/22xylM+1uLBQ1D5+1uEvMY68k0i5nRalJP04=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rus.uni-stuttgart.de; spf=pass smtp.mailfrom=rus.uni-stuttgart.de; dkim=pass (2048-bit key) header.d=uni-stuttgart.de header.i=@rus.uni-stuttgart.de header.b=KDyXSODp; arc=none smtp.client-ip=129.69.192.21
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rus.uni-stuttgart.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rus.uni-stuttgart.de
 Received: from localhost (localhost [127.0.0.1])
-	by mxex1.tik.uni-stuttgart.de (Postfix) with ESMTP id 6D06860B72
-	for <linux-btrfs@vger.kernel.org>; Wed, 10 Dec 2025 17:50:43 +0100 (CET)
+	by mxex2.tik.uni-stuttgart.de (Postfix) with ESMTP id 7326D60DF1
+	for <linux-btrfs@vger.kernel.org>; Wed, 10 Dec 2025 18:52:24 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=uni-stuttgart.de;
 	 h=x-mailer:user-agent:content-disposition:content-type
 	:content-type:mime-version:message-id:subject:subject:from:from
-	:date:date; s=dkim; i=@rus.uni-stuttgart.de; t=1765385441; x=
-	1767124242; bh=d6znZNRqmW49gWBzIBgShd5mzVGNWzU6vsy5c1LhGfQ=; b=M
-	uyO1Z4mz/gbY4zM339YTjWdbWnv5eBmEmwQhwJnJYrAgnPsKMPxw/Hcf+iA/2Kly
-	xo+yNDGuJiFUAlSoyUuIzStJN/JZs89LGLtgne1Dm2ST53CPYL7aIw/eBPCybSYk
-	VOplw90mLymiSl9QBJMhkW0pIF4STJ7iG30H3Pn6qZd6cqBcjPmKQVuYCCN9KDBW
-	6Uk1p0qPgrUzu4YfZ9wHghczvMSWKufIvVJ1jGe+aLYVEV/YDfwOM3GsvTd9KAaO
-	+lUN6spgKn7rVrW2Ulwog/CetKZU861qfc6UMHvS4Z0f012nuqXRw2pZQI/Vro6E
-	YXvNzislvCuLnDaJzTgfg==
-X-Virus-Scanned: USTUTT mailrelay AV services at mxex1.tik.uni-stuttgart.de
-Received: from mxex1.tik.uni-stuttgart.de ([127.0.0.1])
- by localhost (mxex1.tik.uni-stuttgart.de [127.0.0.1]) (amavis, port 10031)
- with ESMTP id DJN7JYZlaQJy for <linux-btrfs@vger.kernel.org>;
- Wed, 10 Dec 2025 17:50:41 +0100 (CET)
+	:date:date; s=dkim; i=@rus.uni-stuttgart.de; t=1765389142; x=
+	1767127943; bh=xCD9wmyD99lCoWgZtoLI6WV5w7WqL2q+uGStyR/Z1cI=; b=K
+	DyXSODpfpiq6yd7XOgUECtwcN4pw4rNFgUV1Y2cWvP1m5kYcQKL3xIRiKCGGqLei
+	+ziCq/jZhTHjI5zPgkSY1ggQX5MxSM4VD3HnyXRSy0nuw6O6mPLUcIlGrZcAgwYK
+	TI4IH9+6WubOsai359Z5yOpHRvQ9p6eRyqKVliLu8SIdfuIWp5SWAvVG3+fIfcfa
+	GRqWp2DgO96z580TnV7R+UVBMjucX4ftLrhxpdOqTTF0J/adHXfurdpQ4RqYixpo
+	1bOM5k8W/rmA37gHFXBjJHKp9hiG1bHR5a2ThN0/FW0xlLnQSwyMMEW2ddUM5AlE
+	bmp1zS8KBOzSBFy0lLpfg==
+X-Virus-Scanned: USTUTT mailrelay AV services at mxex2.tik.uni-stuttgart.de
+Received: from mxex2.tik.uni-stuttgart.de ([127.0.0.1])
+ by localhost (mxex2.tik.uni-stuttgart.de [127.0.0.1]) (amavis, port 10031)
+ with ESMTP id fhCm8MCz2UgI for <linux-btrfs@vger.kernel.org>;
+ Wed, 10 Dec 2025 18:52:22 +0100 (CET)
 Received: from authenticated client
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mxex1.tik.uni-stuttgart.de (Postfix) with ESMTPSA
-Date: Wed, 10 Dec 2025 17:50:41 +0100
+	by mxex2.tik.uni-stuttgart.de (Postfix) with ESMTPSA
+Date: Wed, 10 Dec 2025 18:52:22 +0100
 From: Ulli Horlacher <framstag@rus.uni-stuttgart.de>
 To: linux-btrfs@vger.kernel.org
-Subject: booting from degraded RAID1?
-Message-ID: <20251210165041.GA585304@tik.uni-stuttgart.de>
+Subject: command to list all devices of all filesystems?
+Message-ID: <20251210175222.GA590927@tik.uni-stuttgart.de>
 Mail-Followup-To: linux-btrfs@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -71,23 +71,41 @@ User-Agent: Mutt/1.5.23 (2014-03-12)
 X-Mailer: smtpsend-20240729
 
 
-(I am using Ubuntu 24.04 with kernel 6.8)
-
-I have read that booting from a degraded RAID1 filesystem (eg with one
-dead disk) is not possible, because systemd waits forever for the second
-partition.
-
-Is there a HOWTO/best-practise what to do in this event?
-
-I have create my root/boot filesystem this way:
-
-root@mux22:~# mkfs.btrfs -m raid1 -d raid1 /dev/sda4 /dev/sdb4
+I have a RAID1 filesystem:
 
 root@mux22:~# btrfs filesystem show /dev/sda4
 Label: 'M22'  uuid: 9329698e-bbb0-4047-bcef-863e584f314b
         Total devices 2 FS bytes used 144.00KiB
         devid    1 size 64.00GiB used 2.01GiB path /dev/sda4
         devid    2 size 64.00GiB used 2.01GiB path /dev/sdb4
+
+But lsblk, df and mount shows me only the first device:
+
+root@mux22:~# lsblk -o NAME,UUID,MOUNTPOINT /dev/sda /dev/sdb
+NAME   UUID                                 MOUNTPOIN
+sda
+|-sda1
+|-sda2 774F-1CB7
+|-sda3 fb1524a1-54a6-4688-ba16-6d1678d71b64
+|-sda4 9329698e-bbb0-4047-bcef-863e584f314b /mnt/tmp
+|-sda5 46c63421-65a7-4c49-8dcb-ea485182437d
+`-sda6
+sdb
+|-sdb1
+|-sdb2 08C5-01F2
+|-sdb3 82a88cda-9315-41d0-ab45-b656cb19f715
+|-sdb4 9329698e-bbb0-4047-bcef-863e584f314b
+|-sdb5 483b9508-11d0-4b94-b525-618c9e3336ef
+`-sdb6 2d368a60-27c4-44ad-9b88-42268f1f65cb
+
+root@mux22:~# df /mnt/tmp
+Filesystem     1K-blocks  Used Available Use% Mounted on
+/dev/sda4       67108864  5776  66051072   1% /mnt/tmp
+
+root@mux22:~# mount | grep /mnt
+/dev/sda4 on /mnt/mnt type btrfs (rw,relatime,ssd,discard=async,space_cache=v2,subvolid=5,subvol=/)
+
+Id there a command which lists all devices of all mounted filesystems?
 
 
 -- 
@@ -96,5 +114,5 @@ Rechenzentrum TIK
 Universitaet Stuttgart         E-Mail: horlacher@tik.uni-stuttgart.de
 Allmandring 30a                Tel:    ++49-711-68565868
 70569 Stuttgart (Germany)      WWW:    https://www.tik.uni-stuttgart.de/
-REF:<20251210165041.GA585304@tik.uni-stuttgart.de>
+REF:<20251210175222.GA590927@tik.uni-stuttgart.de>
 
