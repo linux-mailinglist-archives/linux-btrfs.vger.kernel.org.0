@@ -1,347 +1,205 @@
-Return-Path: <linux-btrfs+bounces-19618-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19619-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44D15CB2751
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Dec 2025 09:50:42 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13ED2CB278E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Dec 2025 09:57:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 1EF56303524A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Dec 2025 08:50:29 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id DD8873099D35
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Dec 2025 08:56:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C728C3019CB;
-	Wed, 10 Dec 2025 08:50:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABA5D2C15B0;
+	Wed, 10 Dec 2025 08:56:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="bYKuc97b"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="q7He0Bvn"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 705231EFFB4
-	for <linux-btrfs@vger.kernel.org>; Wed, 10 Dec 2025 08:50:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFB4F194A6C
+	for <linux-btrfs@vger.kernel.org>; Wed, 10 Dec 2025 08:56:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765356627; cv=none; b=RtdTBGoR3/AscL3uWqFv+Mj6NRMqBgpReBgLhv21tZOhVRsFK5ZsxGkTpEu8Hewhi5zUsPZSyuQGTF5E0FVcXznY7vjCKKXtYod568W78qJLM0OTU3CGzBpsHunsmQ1Sh7i2L0D/DQNFnfDE/1lYNwt2+qtZNNBEL+kPhVe5mdk=
+	t=1765357010; cv=none; b=jCOoxuAVwan6g7BWBERQvQekCXbrJtniLWtZJ8y228UVcWe+zfBsTVawyQMICPf7M0/dOG2ZTsfm+utBWkCjbcPt10u7yZ5aD9d7Bj6395GFmUwygg49wuiYtb7q7IwjVoY6Ukio3/8QLksLMEQTa5CtaiHWMT+TnPJ0yyQukiw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765356627; c=relaxed/simple;
-	bh=xACxhM9c9ASzjpd5SktpLQE+U7MQ//p8B1CT/c5Lzto=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JucQRrCpALPppRSLpjgLGQBf8IbYlipr6h3Exb93ACZUR9byk3uDFbwnia+FMoKilxfFv/HXgGh2YXznFMGEYdsg1qzME0/zCtXf5BtPGzpMsl3fN3TPvKbfFoyOG/je3AbfdV0V+qujfyaL+if7bIgSLF8aj8DKyUZKgBFr+DY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=bYKuc97b; arc=none smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-4779adb38d3so61420495e9.2
-        for <linux-btrfs@vger.kernel.org>; Wed, 10 Dec 2025 00:50:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1765356623; x=1765961423; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=++Di7vHS5OWxq4kt9P5CwRICjbjak9JxFjzLldBUrew=;
-        b=bYKuc97bnqn0TkiD0/Mkc9qqkkrpbJqU+sjQJhjuBNc54jSceQ2yWKgrlbJhjGv7Vp
-         3S5HV4vBkvHwB1+yGsmcL3uEY+5VgWsxCFiDkfZW/BV/kj46WJO96N9ElI1sJE5Qz9m9
-         7EyrIh0hhBaWNnvSfnqzhspCIKK8apUU/9Cx2Du2gwwBM4u3lyt1TC/rdNmUVs81EALf
-         1QJvZsgVJA//dn9DeRzmnGKGjmVim/t1p/xG9nsG+IhtcosGGsMRRhrUzPYmasme7DuR
-         ypWs/DAFGBLo5tg2isXVXppz/BEYjRtBy2B/8nUy6RGWbwbUJMiJZX/P36AGpEo/6DVY
-         V4XA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765356623; x=1765961423;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=++Di7vHS5OWxq4kt9P5CwRICjbjak9JxFjzLldBUrew=;
-        b=FBu/rJSW8WBWpuBaJtzkcfZ9VzV6KphbfINrWraj/xmofByjTWiTZz9+keDYsoMijs
-         ANKA8q26oaLa55yH1XKQ0SWtzRP4uFHCKDPS2IcQ+4RTKeo7WEX2IhldS0sr5jLQAG23
-         Rpi7YKqR7nqyDrsJniXmvubSOHB5Cg+xJ+27J64hm7Kuw3WZmL3yhmBONlCDdgChxLF3
-         onxAkXcy02ATjNShW2WjkGKZjjWH5sBWtsb2eiFyt8AZRgEvdfisbragNmZ8UCDDm7vX
-         otG8V3eUbYUOeJxqMRsXenrTryyv+mYvo3NW6FFhpCq2P01lqcRiJ/pNuXH5mxy5/tAC
-         cRNQ==
-X-Gm-Message-State: AOJu0YyuSaQyZMJoAnl9sa5ORnM6LI4xUXSLAEj9OS9oO9kbJEG4hqM9
-	hZ308Py3feFY9HaRRMmlOdTUpRiePeequP9ntG3niVu7ywIo9hSsAaBSHYCA/JN7g38=
-X-Gm-Gg: ASbGncutR+ydFohE4xgOV22RQCB6QkT8X4uRKD6WrULqi98DHQgiTVXj7UtBolPvqqL
-	GuEywfwUTeo2PWXUkC/Jdr/tb/FtXfCbfaQNQ2z2pmOdam0ey6gS8ts8i8hlh85ZTG0mL2KC1Az
-	GGNIzIGazz/FKj/WFqq8+HZvLwC7LyoweEzanqXz7umdTPnRNxN3OEwJOWTVtE1Tk4bSIehKPNU
-	g+hroHOlivalHCrYB44jQHMrgXUBIE3bvB1e/nvmSXL6REMBEkTcVn0uSbDDyARSk3miIzrESRl
-	39EHmwI/bges+ZdBRok9rKzYZXiqHlFwV8kxjqkluGeRpblX7N48AwMFwJQVVFnuGF29YFCdreY
-	at4udglG2r5RijJ7bbO2wBAFM1G0wM8xHirbolZxT888Kz/QLkjTfMSsPvie/gSCuXDmtH1li3T
-	uP8fb1De12OgPe5KFXVoIdu4hFr/k1ido9It0OMXWrkrk2TYE0rQ==
-X-Google-Smtp-Source: AGHT+IFcNU+hGc1YkDSHChkZSf64/iz+G1askmvctNUJ7ccY0DC52iyKawfO+BaUxmZvWwauDwFryQ==
-X-Received: by 2002:a05:600c:1910:b0:477:b734:8c22 with SMTP id 5b1f17b1804b1-47a8376e3d9mr15733425e9.8.1765356622514;
-        Wed, 10 Dec 2025 00:50:22 -0800 (PST)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7e2a0a0066asm18424061b3a.29.2025.12.10.00.50.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Dec 2025 00:50:21 -0800 (PST)
-Message-ID: <3c610ad4-b091-4fe2-9c18-689d6f9d3af3@suse.com>
-Date: Wed, 10 Dec 2025 19:20:18 +1030
+	s=arc-20240116; t=1765357010; c=relaxed/simple;
+	bh=UHuN3iLY1cXN0pdLxecS81CT3dPJ8TwUcS2BgPIecaY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=md0RXBQKktvj6kRPd6tTOV3EuRmrBWv0c5kUyDBRyepZQ1Z7NR2keMdjbZyubKAqhQlhGn+jXEiSNtgQoxJrcmPKKdylPsQBV8k+4YRM8HCtwDLSleb86IFt+YbYQZQSOMIZdRL33zkOU8AyK/1GkgF5my6HOOpEOXLU3Rg8aaQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=q7He0Bvn; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69A85C4CEF1
+	for <linux-btrfs@vger.kernel.org>; Wed, 10 Dec 2025 08:56:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1765357009;
+	bh=UHuN3iLY1cXN0pdLxecS81CT3dPJ8TwUcS2BgPIecaY=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=q7He0BvnuluhrM858kAQuDCn6xPfo8Se5W/278A/jbHQuDnC2A53pl3kluw8Bb6ZX
+	 dyrDKEY3y/sD+ZBo3UVrRyjf0F0zQDOaZd285yFyui/VwolmZoA0rnE6BBkGkVQY+V
+	 FEQOL8VVvbwJSGNGZbPcDweDFsfB7bCZ1vA87ooayA5mUsgARayszZrKZHg1K1MJFj
+	 EKaRXZ9lQmXONDVSoO64LnKc/7v7UYxomZ+fuLQozG8WibdJm66MtR98sYwGyWSsAi
+	 /s1ngMcMejGkZs9cFZJW9ieK/5hkK5gw1eS058d6yEoU3m+hcO7FKw7b+Ti6ZuvrRl
+	 gfLR6rsJLfmEQ==
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-b79d6a70fc8so303284266b.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 10 Dec 2025 00:56:49 -0800 (PST)
+X-Gm-Message-State: AOJu0YzYhXnz9p+9knfaAY2ZzRXl3qqsBMyiGpBg/FTLMA8tgZYo+YZa
+	chU1Fxopc1EVTqFJla+IH5SBUlGz7OnguJJPWufaTEYjnVJVufgZopzgVfwMAWBwILtc0uPsadV
+	7tZuIdfjE2DUtJbFBFpsNFqBsQqGn808=
+X-Google-Smtp-Source: AGHT+IFXrSoaZqtFUOqwmKSCay008If1XE7jf25NfBEm4WoYdexbWz3Wz+z3K8WXK5gBpl23CZihtlssnEC+EN4h/j4=
+X-Received: by 2002:a17:907:9690:b0:b7c:532b:cc99 with SMTP id
+ a640c23a62f3a-b7ce844815emr148614666b.46.1765357007964; Wed, 10 Dec 2025
+ 00:56:47 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] btrfs: make sure all ordered extents beyond EOF are
- properly truncated
-To: Filipe Manana <fdmanana@kernel.org>
-Cc: linux-btrfs@vger.kernel.org, Boris Burkov <boris@bur.io>
-References: <349a50a207bb672f4d8e48ddfb70da10707902e5.1764057885.git.wqu@suse.com>
- <CAL3q7H5Ue-fSHHUF8daFkp-yZ9QWbKVpdZgbWKrT_gT-4XckgQ@mail.gmail.com>
-Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <CAL3q7H5Ue-fSHHUF8daFkp-yZ9QWbKVpdZgbWKrT_gT-4XckgQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <2d0cc7c454a8cb80219ab4c218fa73843ff5f809.1764131228.git.wqu@suse.com>
+In-Reply-To: <2d0cc7c454a8cb80219ab4c218fa73843ff5f809.1764131228.git.wqu@suse.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Wed, 10 Dec 2025 08:56:10 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H7q783cixa=8njX4Zc_sPQ6D-exmK1fph7X_unj_XyQGg@mail.gmail.com>
+X-Gm-Features: AQt7F2qCBHKeSmACPuiEkNvWi80nuwB4ofZI_k08Uzi_74GDP1STPmSVr5mNAKo
+Message-ID: <CAL3q7H7q783cixa=8njX4Zc_sPQ6D-exmK1fph7X_unj_XyQGg@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: search for larger extent maps inside btrfs_do_readpage()
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, Nov 26, 2025 at 4:28=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
+>
+> [CORNER CASE]
+> If we have the following file extents layout, btrfs_get_extent() can
+> return a smaller hole during read, and cause unnecessary extra tree
+> searches:
+>
+>         item 6 key (257 EXTENT_DATA 0) itemoff 15810 itemsize 53
+>                 generation 9 type 1 (regular)
+>                 extent data disk byte 13631488 nr 4096
+>                 extent data offset 0 nr 4096 ram 4096
+>                 extent compression 0 (none)
+>
+>         item 7 key (257 EXTENT_DATA 32768) itemoff 15757 itemsize 53
+>                 generation 9 type 1 (regular)
+>                 extent data disk byte 13635584 nr 4096
+>                 extent data offset 0 nr 4096 ram 4096
+>                 extent compression 0 (none)
+>
+> In above case, range [0, 4K) and [32K, 36K) are regular extents, and
+> there is a hole in range [4K, 32K), and the fs has "no-holes" feature,
+> meaning the hole will not have a file extent item.
+>
+> [INEFFICIENCY]
+> Assume the system has 4K page size, and we're doing readahead for range
+> [4K, 32K), no large folio yet.
+>
+>  btrfs_readahead() for range [4K, 32K)
+>  |- btrfs_do_readpage() for folio 4K
+>  |  |- get_extent_map() for range [4K, 8K)
+>  |     |- btrfs_get_extent() for range [4K, 8K)
+>  |        We hit item 6, then for the next item 7.
+>  |        At this stage we know range [4K, 32K) is a hole.
+>  |        But our search range is only [4K, 8K), not reaching 32K, thus
+>  |        we go into not_found: tag, returning a hole em for [4K, 8K).
+>  |
+>  |- btrfs_do_readpage() for folio 8K
+>  |  |- get_extent_map() for range [8K, 12K)
+>  |     |- btrfs_get_extent() for range [8K, 12K)
+>  |        We hit the same item 6, and then item 7.
+>  |        But still we goto not_found tag, inserting a new hole em,
+>  |        which will be merged with previous one.
+>  |
+>  | [ Repeat the same btrfs_get_extent() calls until the end ]
+>
+> So we're calling btrfs_get_extent() again and again, just for a
+> different part of the same hole range [4K, 32K).
+>
+> [ENHANCEMENT]
+> Make btrfs_do_readpage() to search for a larger extent map if readahead
+> is involved.
+>
+> For btrfs_readahead() we have bio_ctrl::ractl set, and lock extents for
+> the whole readahead range.
+>
+> If we find bio_ctrl::ractl is set, we can use that end range as extent
+> map search end, this allows btrfs_get_extent() to return a much larger
+> hole, thus reduce the need to call btrfs_get_extent() again and again.
+>
+>  btrfs_readahead() for range [4K, 32K)
+>  |- btrfs_do_readpage() for folio 4K
+>  |  |- get_extent_map() for range [4K, 32K)
+>  |     |- btrfs_get_extent() for range [4K, 32K)
+>  |        We hit item 6, then for the next item 7.
+>  |        At this stage we know range [4K, 32K) is a hole.
+>  |        So the hole em for range [4K, 32K) is returned.
+>  |
+>  |- btrfs_do_readpage() for folio 8K
+>  |  |- get_extent_map() for range [8K, 32K)
+>  |     The cached hole em range [4K, 32K) covers the range,
+>  |     and reuse that em.
+>  |
+>  | [ Repeat the same btrfs_get_extent() calls until the end ]
+>
+> Now we only call btrfs_get_extent() once for the whole range [4K, 32K),
+> other than the old 8 times.
+>
+> Although again I do not expect much difference for the real world
+> performance.
 
+Why don't you measure it?
 
-在 2025/11/25 21:15, Filipe Manana 写道:
-> On Tue, Nov 25, 2025 at 8:08 AM Qu Wenruo <wqu@suse.com> wrote:
->>
->> [POSSIBLE BUG]
->> If there are multiple ordered extents beyond EOF, at folio writeback
->> time we may only truncate the first ordered extent, but leaving the
->> remaining ones finished but not marked as truncated.
->>
->> Since those OEs are not marked as truncated, it will still insert an
->> file extent item, and may lead to false missing csum errors during
->> "btrfs check".
->>
->> [CAUSE]
->> Since we have bs < ps support for a while and experimental large data
->> folios are also going to graduate from experimental features soon, we
->> can have the following folio to be written back:
->>
->>    fs block size 4K
->>    page size 4K, folio size 64K.
->>
->>             0        16K      32K                  64K
->>             |<---------------- Dirty -------------->|
->>             |<-OE A->|<-OE B->|<----- OE C -------->|
->>                 |
->>                 i_size 4K.
->>
->> In above case we need to submit the writeback for the range [0, 4K).
->> For range [4K, 64K) there is no need to submit any IO but mark the
->> involved OEs (OE A, B, C) all as truncated.
->>
->> However during the EOF handling, patch "btrfs: truncate ordered extent
->> when skipping writeback past i_size" only calls
->> btrfs_lookup_first_ordered_range() once, thus only got OE A and mark it
->> as truncated.
-> 
-> And there's a reason why the patch only looks for one ordered extent.
-> 
-> Because there shouldn't be more than one: btrfs_truncate() calls
-> btrfs_wait_ordered_range() when we truncate the size of a file to a
-> smaller value.
-> The range goes from the new i_size, rounded down by sector size, to
-> (u64)-1. And btrfs_wait_ordered_range() flushed any delalloc besides
-> waiting for ordered extents.
+>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  fs/btrfs/extent_io.c | 11 ++++++++++-
+>  1 file changed, 10 insertions(+), 1 deletion(-)
+>
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index 2d32dfc34ae3..c8c8d3659135 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -997,6 +997,8 @@ static int btrfs_do_readpage(struct folio *folio, str=
+uct extent_map **em_cached,
+>         struct btrfs_fs_info *fs_info =3D inode_to_fs_info(inode);
+>         u64 start =3D folio_pos(folio);
+>         const u64 end =3D start + folio_size(folio) - 1;
+> +       const u64 locked_end =3D bio_ctrl->ractl ? (readahead_pos(bio_ctr=
+l->ractl) +
+> +                              readahead_length(bio_ctrl->ractl) - 1) : e=
+nd;
 
-Couldn't something like 18de34daa7c6 ("btrfs: truncate ordered extent 
-when skipping writeback past i_size") happen? E.g. with more holes:
+This is a rather long expression, it's more readable with an if-else statem=
+ent.
 
-     0          16K    32K     36K   48K    52K   60K    64K
-     |//////////|      |///////|     |//////|     |//////|
+Thanks.
 
-The range [0, 64k) is inside a large folio or just a single page (64K 
-page size), and above "//" range is dirtied by buffered write.
-
-Then we truncate the inode size to 16K, which set the inode size to 16K 
-first, then call btrfs_truncate() which triggers 
-btrfs_wait_ordered_range()->btrfs_fdatawrite_range() to do the writeback.
-
-Then we start writing back the large folio 0 for range [0, 64K), 
-creating ordered extents for [0, 16K), [32K, 36K), [48K, 52K), [60K, 64K).
-
-Then call extent_writepage_io() to do the submission, which will only 
-submit [0, 16K).
-And the current code will only mark OE [32K, 36K) as truncated, missing 
-[48K, 52K) and [60K, 64K).
-
-Normally the file extent item insertion and later truncation (which 
-drops all the inserted file extents) are inside the same transaction.
-
-But if the transaction committed after the file extent items insertion 
-but before the transaction dropping file extent items, then power loss 
-happened, we got the same ordered extents beyond EOF and without csum.
-
-Or did I miss something?
-
-Thanks,
-Qu
-
-> 
-> So how can we find more than one ordered extent after this?
-> 
-> I think this changelog should explain that, it makes no mention of
-> this detail about btrfs_truncate().
-> 
-> Thanks.
-> 
-> 
->>
->> But OE B and C are not marked as truncated, they will finish as usual,
->> which will leave a regular file extent item to be inserted beyond EOF,
->> and without any data checksum.
->>
->> [FIX]
->> Introduce a new helper, btrfs_mark_ordered_io_truncated(), to handle all
->> OEs of a range, and mark them all as truncated.
->>
->> With that helper, all OEs (A B and C) will be marked as truncated.
->> OE B and C will have 0 truncated_len, preventing any file extent item to
->> be inserted from them.
->>
->> Reviewed-by: Boris Burkov <boris@bur.io>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
->> ---
->> Changelog:
->> v2:
->> - Fix the ASSERT() inside btrfs_mark_ordered_io_truncated()
->>    Since the range passed in is to the end of the folio during writeback
->>    path, there is no guarantee that there is always one or more ordered
->>    extents covering the full range.
->>
->>    This get triggered during fsstress runs, especially common on bs < ps
->>    cases.
->>
->>    Remove the ASSERT() and exit the oe search instead.
->>
->> Resend:
->> - Move the patch out of the series 'btrfs: reduce btrfs_get_extent()
->>    calls for buffered write path'
->>    As this is a bug fix, which needs a little higher priority than
->>    the remaining optimizations.
->>
->> - Fix various grammar errors
->>
->> - Use @end to replace duplicated calculations
->>
->> - Remove the Fixes: tag
->>    The involved patch is not yet merged upstream.
->>    Just mention the patch subject inside the commit message.
->> ---
->>   fs/btrfs/extent_io.c    | 19 +------------------
->>   fs/btrfs/ordered-data.c | 33 +++++++++++++++++++++++++++++++++
->>   fs/btrfs/ordered-data.h |  2 ++
->>   3 files changed, 36 insertions(+), 18 deletions(-)
->>
->> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
->> index 2d32dfc34ae3..2044b889c887 100644
->> --- a/fs/btrfs/extent_io.c
->> +++ b/fs/btrfs/extent_io.c
->> @@ -1725,24 +1725,7 @@ static noinline_for_stack int extent_writepage_io(struct btrfs_inode *inode,
->>                  cur = folio_pos(folio) + (bit << fs_info->sectorsize_bits);
->>
->>                  if (cur >= i_size) {
->> -                       struct btrfs_ordered_extent *ordered;
->> -
->> -                       ordered = btrfs_lookup_first_ordered_range(inode, cur,
->> -                                                                  folio_end - cur);
->> -                       /*
->> -                        * We have just run delalloc before getting here, so
->> -                        * there must be an ordered extent.
->> -                        */
->> -                       ASSERT(ordered != NULL);
->> -                       spin_lock(&inode->ordered_tree_lock);
->> -                       set_bit(BTRFS_ORDERED_TRUNCATED, &ordered->flags);
->> -                       ordered->truncated_len = min(ordered->truncated_len,
->> -                                                    cur - ordered->file_offset);
->> -                       spin_unlock(&inode->ordered_tree_lock);
->> -                       btrfs_put_ordered_extent(ordered);
->> -
->> -                       btrfs_mark_ordered_io_finished(inode, folio, cur,
->> -                                                      end - cur, true);
->> +                       btrfs_mark_ordered_io_truncated(inode, folio, cur, end - cur);
->>                          /*
->>                           * This range is beyond i_size, thus we don't need to
->>                           * bother writing back.
->> diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
->> index a421f7db9eec..3c0b89164139 100644
->> --- a/fs/btrfs/ordered-data.c
->> +++ b/fs/btrfs/ordered-data.c
->> @@ -546,6 +546,39 @@ void btrfs_mark_ordered_io_finished(struct btrfs_inode *inode,
->>          spin_unlock(&inode->ordered_tree_lock);
->>   }
->>
->> +/*
->> + * Mark any ordered extents io inside the specified range as truncated.
->> + */
->> +void btrfs_mark_ordered_io_truncated(struct btrfs_inode *inode, struct folio *folio,
->> +                                    u64 file_offset, u32 len)
->> +{
->> +       const u64 end = file_offset + len;
->> +       u64 cur = file_offset;
->> +
->> +       ASSERT(file_offset >= folio_pos(folio));
->> +       ASSERT(end <= folio_pos(folio) + folio_size(folio));
->> +
->> +       while (cur < end) {
->> +               u32 cur_len = end - cur;
->> +               struct btrfs_ordered_extent *ordered;
->> +
->> +               ordered = btrfs_lookup_first_ordered_range(inode, cur, cur_len);
->> +
->> +               if (!ordered)
->> +                       break;
->> +               scoped_guard(spinlock, &inode->ordered_tree_lock) {
->> +                       set_bit(BTRFS_ORDERED_TRUNCATED, &ordered->flags);
->> +                       ordered->truncated_len = min(ordered->truncated_len,
->> +                                                    cur - ordered->file_offset);
->> +               }
->> +               cur_len = min(cur_len, ordered->file_offset + ordered->num_bytes - cur);
->> +               btrfs_put_ordered_extent(ordered);
->> +
->> +               cur += cur_len;
->> +       }
->> +       btrfs_mark_ordered_io_finished(inode, folio, file_offset, len, true);
->> +}
->> +
->>   /*
->>    * Finish IO for one ordered extent across a given range.  The range can only
->>    * contain one ordered extent.
->> diff --git a/fs/btrfs/ordered-data.h b/fs/btrfs/ordered-data.h
->> index 1e6b0b182b29..dd4cdc1a8b78 100644
->> --- a/fs/btrfs/ordered-data.h
->> +++ b/fs/btrfs/ordered-data.h
->> @@ -169,6 +169,8 @@ void btrfs_finish_ordered_extent(struct btrfs_ordered_extent *ordered,
->>   void btrfs_mark_ordered_io_finished(struct btrfs_inode *inode,
->>                                      struct folio *folio, u64 file_offset,
->>                                      u64 num_bytes, bool uptodate);
->> +void btrfs_mark_ordered_io_truncated(struct btrfs_inode *inode, struct folio *folio,
->> +                                    u64 file_offset, u32 len);
->>   bool btrfs_dec_test_ordered_pending(struct btrfs_inode *inode,
->>                                      struct btrfs_ordered_extent **cached,
->>                                      u64 file_offset, u64 io_size);
->> --
->> 2.52.0
->>
->>
-
+>         u64 extent_offset;
+>         u64 last_byte =3D i_size_read(inode);
+>         struct extent_map *em;
+> @@ -1036,7 +1038,14 @@ static int btrfs_do_readpage(struct folio *folio, =
+struct extent_map **em_cached,
+>                         end_folio_read(folio, true, cur, blocksize);
+>                         continue;
+>                 }
+> -               em =3D get_extent_map(BTRFS_I(inode), folio, cur, end - c=
+ur + 1, em_cached);
+> +               /*
+> +                * Search extent map for the whole locked range.
+> +                * This will allow btrfs_get_extent() to return a larger =
+hole
+> +                * when possible.
+> +                * This can reduce duplicated btrfs_get_extent() calls fo=
+r large
+> +                * holes.
+> +                */
+> +               em =3D get_extent_map(BTRFS_I(inode), folio, cur, locked_=
+end - cur + 1, em_cached);
+>                 if (IS_ERR(em)) {
+>                         end_folio_read(folio, false, cur, end + 1 - cur);
+>                         return PTR_ERR(em);
+> --
+> 2.52.0
+>
+>
 
