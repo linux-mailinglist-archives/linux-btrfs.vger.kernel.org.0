@@ -1,265 +1,137 @@
-Return-Path: <linux-btrfs+bounces-19623-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19624-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58AD7CB2F4B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Dec 2025 13:54:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 30B7ACB2F63
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Dec 2025 13:58:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E64293114940
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Dec 2025 12:54:50 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 7E5FF306AE1D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Dec 2025 12:58:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B50F52EB5C4;
-	Wed, 10 Dec 2025 12:54:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD4B6318139;
+	Wed, 10 Dec 2025 12:58:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y+KSScxT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rpf40yhI"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0366D27C866
-	for <linux-btrfs@vger.kernel.org>; Wed, 10 Dec 2025 12:54:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1838A2741BC
+	for <linux-btrfs@vger.kernel.org>; Wed, 10 Dec 2025 12:58:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765371289; cv=none; b=YqxQQis5pLdGgfZMs+gzXX9axUOoDEGCzVJhXhu29nYQv/9o364mIiuh4LASrw2QRGq5s2cgbu4nhAsqGaYTW4tEPKYgvoNz3G3VLvD2MPxXz8NgBDS0na9E7YSLqAefW6o912YAUD4W9rsFLVwKx3NSyKIu4e05lE3FGdf/c3I=
+	t=1765371504; cv=none; b=ksHJbV3858z+a83mDKeTf/9jm920ql1LO8DFkjLxq7zlx9z8oDBP1BtgtDT8YDn/GzYDUMY5eRB1VL5xDaoF5kaFQ/X1vFBLwiXh/+5QGOA3B9IZZOywAu9IFws5ydP+DITK/ao6EKNUm9L6oaXL4wiae4Yxs8HWVk9DEsjRA3A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765371289; c=relaxed/simple;
-	bh=Vux7umLABYnuwkHEMQMEOVjnVtqlHvfUmD4cvUObbic=;
+	s=arc-20240116; t=1765371504; c=relaxed/simple;
+	bh=NZfdv2mgM1JJrRO/oZRPoSsJvKth5gdElf4JIuWifg0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PU57cPka+inpfJClxJwsCHXJRWUSNMg29tQdtgk7O5Sx1UVN3CUzOFDpXmgJ1h0Kp2Cj9V3gp7qtlCpVn2G5M7UGXcLOVlgwrP8gTx9P2kMbt4wp0U2SbJicNkDPZ7m10WOrAiP3EJyFqK6gDKsw0/88K4BOTCo0k/P+KQ6it/Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y+KSScxT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6FD51C19421
-	for <linux-btrfs@vger.kernel.org>; Wed, 10 Dec 2025 12:54:47 +0000 (UTC)
+	 To:Cc:Content-Type; b=Sntp3Jk4FgNllXqKdFdf8WNM2Vjs6+BI96IlpB5zYSYuhzYY3JGzFZgOnxvjNHE3baMkQvNTZO1h5TAroEk9QqIuwAhyAAa2qURwtcipJ9B+ipBaXRZNi12/TeeiicU5Sudq1E3TEVIfXFYQJSc9Bawb9+lJYsGFl0nbIOazZes=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rpf40yhI; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96E13C113D0
+	for <linux-btrfs@vger.kernel.org>; Wed, 10 Dec 2025 12:58:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1765371287;
-	bh=Vux7umLABYnuwkHEMQMEOVjnVtqlHvfUmD4cvUObbic=;
+	s=k20201202; t=1765371503;
+	bh=NZfdv2mgM1JJrRO/oZRPoSsJvKth5gdElf4JIuWifg0=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=Y+KSScxTqpNT4NJ1Dx8WN0itcnPrzvmB6UsZkZq8zf8uf1w83er1XwB8zPLQztrD4
-	 SgKxSofVwx8Jhw7bvZgTmuZeNsc8ZaBKrrpCeEUwLNdBaVESgLG17ui8gLUUAGOUIz
-	 1ItmUsZnSM/cPGsSMatSoHasBcmICQweigh0XAzyN+gLunKsXVG1Dwp7OsgwBguRGC
-	 0530fFfZZ1QSGCiRw+xIBDDrKQKC4YyI6rPdn881lytqZ0kvVDrPOTxN/lvHTHmAup
-	 M/sc8MFw7UTO5F9zg4GPjnEQMemZAcwA2ZE5bh9thPajM3Kjyol/Con3iea4L0Kb0v
-	 kiXBc6ewAM+Nw==
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-b725ead5800so904553666b.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 10 Dec 2025 04:54:47 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVCdDn3lc7AzgO0AuIIJ5DPaxma0sM7mIu4LcQeQX9kuGXzaS0WfObslxdSR9FpOpt464ZW1bwNzKgKHQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzTBebGkLLEKanTeCft2dqP3R/Kv7UyFl6uxQkXX0daBlnLKihw
-	KwvIX0JPGK2pZIgQKIVcbZ+MeJBC4URmVGJcAZAkBfsEa4kcI1KF7wSosbPxiyMiymUwohmFL+Q
-	OoqRYZQjgcA2/6xa3OutOBb6WTiud810=
-X-Google-Smtp-Source: AGHT+IF5FnOGYb7hlLNpfSZJtBjzoX9tu+7c+DHPYqE+r5uqbjeJJMqqpFKC8egm2S26W+7E0yZBdu4IzzPP+ZdkzUc=
-X-Received: by 2002:a17:906:6a09:b0:b73:6838:802c with SMTP id
- a640c23a62f3a-b7ce84f9aadmr247977966b.42.1765371285965; Wed, 10 Dec 2025
- 04:54:45 -0800 (PST)
+	b=rpf40yhIkswQd9pgfXyqpEdpnHElHdfsAaAnjqBEVoxliyK/1t4DAFNbcIJahhfdg
+	 e0sXJhPPjbONib/KVKxOP3Gq0oYqnCDq4R0BzuaFcEs+XNm/uP2vtwYQ2MF3d8d/pd
+	 0qCKshUWw/xEOFY+y2Wrm1SH47sLmAxsRKZgOpGW0KtK3+NyUGa1DSciGbMh00wqRC
+	 KPikkDO5BULGK+By5hWOD2BNh1vqq5Qtzr2CpTMjgA6PrTQvlGwu3MiEqnO2PU6mmm
+	 X4dYH943Ojh/pG5M675Ab871QSs5Q+zxPUeNbhm/fUdKcfxNBrbwJk4PZMsyCERbjS
+	 EH5/F/P641ytA==
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-b736ffc531fso400717566b.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 10 Dec 2025 04:58:23 -0800 (PST)
+X-Gm-Message-State: AOJu0YwIEqX3ix+uj4v68vMAuIjhuxCgYRFTj6mMLiaUMPrixDR63p2Y
+	Gj2380MnOLUK6VA6KpkvGcMag9Z0iI+S/W7gf4k3WC8PrhcLdb2jrKEhIaImPsiMxVjmnAwhIfd
+	s/HVdFgIBkweE0ptv4jdJCotEITsUPoY=
+X-Google-Smtp-Source: AGHT+IH+XYRtQZN71gPgnnviYVQPPXXnBifFtDvq9T3m16l/qIVedXBuLe0UJcfLmG7AHkV/4ecM0H51/xyIR0oxOiI=
+X-Received: by 2002:a17:907:da2:b0:b73:43ee:a262 with SMTP id
+ a640c23a62f3a-b7ce847d2f4mr267602466b.51.1765371502169; Wed, 10 Dec 2025
+ 04:58:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <2d0cc7c454a8cb80219ab4c218fa73843ff5f809.1764131228.git.wqu@suse.com>
- <CAL3q7H7q783cixa=8njX4Zc_sPQ6D-exmK1fph7X_unj_XyQGg@mail.gmail.com> <b77d5f0e-ac09-4f64-940c-623ef3c7811b@gmx.com>
-In-Reply-To: <b77d5f0e-ac09-4f64-940c-623ef3c7811b@gmx.com>
+References: <20251210053932.149358-1-johannes.thumshirn@wdc.com>
+In-Reply-To: <20251210053932.149358-1-johannes.thumshirn@wdc.com>
 From: Filipe Manana <fdmanana@kernel.org>
-Date: Wed, 10 Dec 2025 12:54:09 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H6OShOKC_ZR1ggFqsJsTz0dWm8BSbtg5sb1vgGJ2=Su0w@mail.gmail.com>
-X-Gm-Features: AQt7F2rxNmNDKkt9LmZcU8m3gHbKikizudp9pfJDtuFy7fz4NCyq8D1opBBrj2o
-Message-ID: <CAL3q7H6OShOKC_ZR1ggFqsJsTz0dWm8BSbtg5sb1vgGJ2=Su0w@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: search for larger extent maps inside btrfs_do_readpage()
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Date: Wed, 10 Dec 2025 12:57:45 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H7OzV-NeAV2i43JTjJxN0f=2SGdT0uWaz8-NDP6U8W0fw@mail.gmail.com>
+X-Gm-Features: AQt7F2q4ebsw0T97Xp1b9CxEMfkX2I0IpeINZBshpk0J4Cn1VBYMPucLnqBqfnM
+Message-ID: <CAL3q7H7OzV-NeAV2i43JTjJxN0f=2SGdT0uWaz8-NDP6U8W0fw@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: rename btrfs_create_block_group_cache to btrfs_create_block_group
+To: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Cc: linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Dec 10, 2025 at 9:32=E2=80=AFAM Qu Wenruo <quwenruo.btrfs@gmx.com> =
-wrote:
+On Wed, Dec 10, 2025 at 5:40=E2=80=AFAM Johannes Thumshirn
+<johannes.thumshirn@wdc.com> wrote:
 >
+> 'struct btrfs_block_group' used to be called 'struct
+> btrfs_block_group_cache' but got renamed to btrfs_block_group with
+> commit 32da5386d9a4 ("btrfs: rename btrfs_block_group_cache").
 >
+> Rename btrfs_create_block_group_cache() to btrfs_create_block_group() to
+> reflect that change.
 >
-> =E5=9C=A8 2025/12/10 19:26, Filipe Manana =E5=86=99=E9=81=93:
-> > On Wed, Nov 26, 2025 at 4:28=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
-> >>
-> >> [CORNER CASE]
-> >> If we have the following file extents layout, btrfs_get_extent() can
-> >> return a smaller hole during read, and cause unnecessary extra tree
-> >> searches:
-> >>
-> >>          item 6 key (257 EXTENT_DATA 0) itemoff 15810 itemsize 53
-> >>                  generation 9 type 1 (regular)
-> >>                  extent data disk byte 13631488 nr 4096
-> >>                  extent data offset 0 nr 4096 ram 4096
-> >>                  extent compression 0 (none)
-> >>
-> >>          item 7 key (257 EXTENT_DATA 32768) itemoff 15757 itemsize 53
-> >>                  generation 9 type 1 (regular)
-> >>                  extent data disk byte 13635584 nr 4096
-> >>                  extent data offset 0 nr 4096 ram 4096
-> >>                  extent compression 0 (none)
-> >>
-> >> In above case, range [0, 4K) and [32K, 36K) are regular extents, and
-> >> there is a hole in range [4K, 32K), and the fs has "no-holes" feature,
-> >> meaning the hole will not have a file extent item.
-> >>
-> >> [INEFFICIENCY]
-> >> Assume the system has 4K page size, and we're doing readahead for rang=
-e
-> >> [4K, 32K), no large folio yet.
-> >>
-> >>   btrfs_readahead() for range [4K, 32K)
-> >>   |- btrfs_do_readpage() for folio 4K
-> >>   |  |- get_extent_map() for range [4K, 8K)
-> >>   |     |- btrfs_get_extent() for range [4K, 8K)
-> >>   |        We hit item 6, then for the next item 7.
-> >>   |        At this stage we know range [4K, 32K) is a hole.
-> >>   |        But our search range is only [4K, 8K), not reaching 32K, th=
-us
-> >>   |        we go into not_found: tag, returning a hole em for [4K, 8K)=
-.
-> >>   |
-> >>   |- btrfs_do_readpage() for folio 8K
-> >>   |  |- get_extent_map() for range [8K, 12K)
-> >>   |     |- btrfs_get_extent() for range [8K, 12K)
-> >>   |        We hit the same item 6, and then item 7.
-> >>   |        But still we goto not_found tag, inserting a new hole em,
-> >>   |        which will be merged with previous one.
-> >>   |
-> >>   | [ Repeat the same btrfs_get_extent() calls until the end ]
-> >>
-> >> So we're calling btrfs_get_extent() again and again, just for a
-> >> different part of the same hole range [4K, 32K).
-> >>
-> >> [ENHANCEMENT]
-> >> Make btrfs_do_readpage() to search for a larger extent map if readahea=
-d
-> >> is involved.
-> >>
-> >> For btrfs_readahead() we have bio_ctrl::ractl set, and lock extents fo=
-r
-> >> the whole readahead range.
-> >>
-> >> If we find bio_ctrl::ractl is set, we can use that end range as extent
-> >> map search end, this allows btrfs_get_extent() to return a much larger
-> >> hole, thus reduce the need to call btrfs_get_extent() again and again.
-> >>
-> >>   btrfs_readahead() for range [4K, 32K)
-> >>   |- btrfs_do_readpage() for folio 4K
-> >>   |  |- get_extent_map() for range [4K, 32K)
-> >>   |     |- btrfs_get_extent() for range [4K, 32K)
-> >>   |        We hit item 6, then for the next item 7.
-> >>   |        At this stage we know range [4K, 32K) is a hole.
-> >>   |        So the hole em for range [4K, 32K) is returned.
-> >>   |
-> >>   |- btrfs_do_readpage() for folio 8K
-> >>   |  |- get_extent_map() for range [8K, 32K)
-> >>   |     The cached hole em range [4K, 32K) covers the range,
-> >>   |     and reuse that em.
-> >>   |
-> >>   | [ Repeat the same btrfs_get_extent() calls until the end ]
-> >>
-> >> Now we only call btrfs_get_extent() once for the whole range [4K, 32K)=
-,
-> >> other than the old 8 times.
-> >>
-> >> Although again I do not expect much difference for the real world
-> >> performance.
-> >
-> > Why don't you measure it?
->
-> Because it's a very tiny difference.
+> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 
-That's not a reason to not post measurements.
-The sentence that is in the changelog gives the idea there was no
-attempt to measure anything.
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
+> ---
+>  fs/btrfs/block-group.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 >
-> I tried this on aarch64 with 64K page size and 4K fs block size, which
-> should have the best result, reading a 1GiB hole with buffered read.
+> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+> index 08b14449fabe..a52642e88585 100644
+> --- a/fs/btrfs/block-group.c
+> +++ b/fs/btrfs/block-group.c
+> @@ -2266,7 +2266,7 @@ static int exclude_super_stripes(struct btrfs_block=
+_group *cache)
+>         return 0;
+>  }
 >
-> The average (32 runs) buffered read times are:
+> -static struct btrfs_block_group *btrfs_create_block_group_cache(
+> +static struct btrfs_block_group *btrfs_create_block_group(
+>                 struct btrfs_fs_info *fs_info, u64 start)
+>  {
+>         struct btrfs_block_group *cache;
+> @@ -2370,7 +2370,7 @@ static int read_one_block_group(struct btrfs_fs_inf=
+o *info,
 >
-> - Before: 0.20823 s
-> - After:  0.20635 s
+>         ASSERT(key->type =3D=3D BTRFS_BLOCK_GROUP_ITEM_KEY);
 >
-> Resulting an improve of 0.9% improvement.
+> -       cache =3D btrfs_create_block_group_cache(info, key->objectid);
+> +       cache =3D btrfs_create_block_group(info, key->objectid);
+>         if (!cache)
+>                 return -ENOMEM;
 >
-> Not to mention buffered read itself can be noisy, as memory
-> pressure/reclaim can easily affect the result more.
-
-Yes, that all can affect results, but to measure things we don't need
-anything overcomplicated...
-
-Just measure how long it takes to read a large enough hole, either
-from user space or track the total time spent in btrfs_do_readpage()
-with bpftrace for example.
-Just making sure the page cache is clean before each measure is enough.
-
+> @@ -2491,7 +2491,7 @@ static int fill_dummy_bgs(struct btrfs_fs_info *fs_=
+info)
+>                 struct btrfs_block_group *bg;
 >
-> I can put that part into the changelog if you wish.
-
-I don't see why not posting results... In fact when a patch claims
-better performance, it should be backed by numbers and provide some
-information about how the test was done, no matter how small the
-difference.
-
-Thanks.
-
+>                 map =3D rb_entry(node, struct btrfs_chunk_map, rb_node);
+> -               bg =3D btrfs_create_block_group_cache(fs_info, map->start=
+);
+> +               bg =3D btrfs_create_block_group(fs_info, map->start);
+>                 if (!bg) {
+>                         ret =3D -ENOMEM;
+>                         break;
+> @@ -2886,7 +2886,7 @@ struct btrfs_block_group *btrfs_make_block_group(st=
+ruct btrfs_trans_handle *tran
 >
-> Thanks,
-> Qu
+>         btrfs_set_log_full_commit(trans);
 >
-> >
-> >>
-> >> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> >> ---
-> >>   fs/btrfs/extent_io.c | 11 ++++++++++-
-> >>   1 file changed, 10 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> >> index 2d32dfc34ae3..c8c8d3659135 100644
-> >> --- a/fs/btrfs/extent_io.c
-> >> +++ b/fs/btrfs/extent_io.c
-> >> @@ -997,6 +997,8 @@ static int btrfs_do_readpage(struct folio *folio, =
-struct extent_map **em_cached,
-> >>          struct btrfs_fs_info *fs_info =3D inode_to_fs_info(inode);
-> >>          u64 start =3D folio_pos(folio);
-> >>          const u64 end =3D start + folio_size(folio) - 1;
-> >> +       const u64 locked_end =3D bio_ctrl->ractl ? (readahead_pos(bio_=
-ctrl->ractl) +
-> >> +                              readahead_length(bio_ctrl->ractl) - 1) =
-: end;
-> >
-> > This is a rather long expression, it's more readable with an if-else st=
-atement.
-> >
-> > Thanks.
-> >
-> >>          u64 extent_offset;
-> >>          u64 last_byte =3D i_size_read(inode);
-> >>          struct extent_map *em;
-> >> @@ -1036,7 +1038,14 @@ static int btrfs_do_readpage(struct folio *foli=
-o, struct extent_map **em_cached,
-> >>                          end_folio_read(folio, true, cur, blocksize);
-> >>                          continue;
-> >>                  }
-> >> -               em =3D get_extent_map(BTRFS_I(inode), folio, cur, end =
-- cur + 1, em_cached);
-> >> +               /*
-> >> +                * Search extent map for the whole locked range.
-> >> +                * This will allow btrfs_get_extent() to return a larg=
-er hole
-> >> +                * when possible.
-> >> +                * This can reduce duplicated btrfs_get_extent() calls=
- for large
-> >> +                * holes.
-> >> +                */
-> >> +               em =3D get_extent_map(BTRFS_I(inode), folio, cur, lock=
-ed_end - cur + 1, em_cached);
-> >>                  if (IS_ERR(em)) {
-> >>                          end_folio_read(folio, false, cur, end + 1 - c=
-ur);
-> >>                          return PTR_ERR(em);
-> >> --
-> >> 2.52.0
-> >>
-> >>
-> >
+> -       cache =3D btrfs_create_block_group_cache(fs_info, chunk_offset);
+> +       cache =3D btrfs_create_block_group(fs_info, chunk_offset);
+>         if (!cache)
+>                 return ERR_PTR(-ENOMEM);
+>
+> --
+> 2.52.0
+>
 >
 
