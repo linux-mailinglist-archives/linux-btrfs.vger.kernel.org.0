@@ -1,145 +1,130 @@
-Return-Path: <linux-btrfs+bounces-19626-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19627-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32522CB2F79
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Dec 2025 14:03:27 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DA24CB3057
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Dec 2025 14:29:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 101FE300728E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Dec 2025 13:03:26 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 21F0C304ED9D
+	for <lists+linux-btrfs@lfdr.de>; Wed, 10 Dec 2025 13:28:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C1773203AB;
-	Wed, 10 Dec 2025 13:03:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ABD73254BD;
+	Wed, 10 Dec 2025 13:28:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YHV3Nyyn"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m/0VNokm"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC06A19D07A
-	for <linux-btrfs@vger.kernel.org>; Wed, 10 Dec 2025 13:03:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21E3E2EBBB4
+	for <linux-btrfs@vger.kernel.org>; Wed, 10 Dec 2025 13:28:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765371804; cv=none; b=Y9BJrBUuIgJ/BRAUsd5JXNZISKtcrU56ckHlAIxf9Q+gmIWDwbrC2tXW9WaleT0reHfBXcnDoYJbV3hh7ZfyFuGYkZ3loNKo6tpiL98OrNMdX9BODGW0krf2P8QAi8hCsW7K5c1UPbO5Gf0gjiQCGeSPPGD5GQJvzZfFsuRqGXE=
+	t=1765373297; cv=none; b=Kj0+hJQFLRGTVpLYzO66DsbtXIrMsVAR4sE/OO9eGDgxT2LpOc7muOQh1l6fge0HjzEitE6su3p+kds5pB0mW5SL2b61AzY+nicwzD/YGVQ23Iz9hqiJtyZFug0gp16ZTTpNNjyyJ/EEZsVzRIRF+B3/goHcYGPWgvXvdUD+yNM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765371804; c=relaxed/simple;
-	bh=WUNbnK32HJZeeK32aH2T01vCUfGXwgDgGrgqj63bf38=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=t41IjSeFiT2WEf4lEW8zJWsnunHs+yW0nN7FGR/k3tRx17o92c28G8BLcBsqSoFe//YH7jF0hYO0iqKilnduDoVSQ09DpnfC5hw0+ZGa0n6T1/HNYx8RVgzob2UT3TiMpBOrZQiC8JGrUOJuywF45kJICcj4Kj2VdMvdWP+D3m4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YHV3Nyyn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 532ABC19422
-	for <linux-btrfs@vger.kernel.org>; Wed, 10 Dec 2025 13:03:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1765371804;
-	bh=WUNbnK32HJZeeK32aH2T01vCUfGXwgDgGrgqj63bf38=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=YHV3NyynReyaJ2waB0qm2grP+aQ4tsqndeHw5iw8Ua0YWuIAUZHdMBOYOuHIvLhRC
-	 xNasH0SAHW4hPVR4Ab2EA7zbV17J5no2KH/ol6GuDqgyZ5rfFMsMmGUiH199Q5UDnR
-	 TwY/ZbRGr0s0+S6jKdafYD5VmMH561LRZc43Ff8RMPs/60Yne3ewZl9mjyIfGrA2AF
-	 DrkF89zi60mBOv/YD5TMyGhVYlLGVyu5vwnyFAAc6s0R8tzrahIy9503SJ/mhx4Y5g
-	 fuCNJPIMlZFSbaCtGgcR2KYVgMCfEw/quKIuuPcInfU2JWLoudIN8II4ZZQ3Efmchz
-	 wRXTvkXNsIodw==
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-b73545723ebso65369766b.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 10 Dec 2025 05:03:24 -0800 (PST)
-X-Gm-Message-State: AOJu0Yw3lInExOm0k0H1PDZWMkTm/JzLV58rUBVsR8wdL0ASghvfuz0T
-	it+Rx+tv2u8OEkmivzvje+Fjphi0sDD8q0m7yXhdN2LK2jEjj4pSbYOLcY60BSit/IRxdkBk9ef
-	AM0OboYp+3x1Di4IcvHqPh4VrxCgUDQI=
-X-Google-Smtp-Source: AGHT+IGj9133cPvshYnM8H0CbEsXnEd707YS0U+vgz1jgmFaJ08OApcW+TCgk5CH4aAyTOzdxYwbJFIOBUqZE+hw2OE=
-X-Received: by 2002:a17:907:7244:b0:b79:de59:4002 with SMTP id
- a640c23a62f3a-b7ce82d34d8mr224398266b.2.1765371802846; Wed, 10 Dec 2025
- 05:03:22 -0800 (PST)
+	s=arc-20240116; t=1765373297; c=relaxed/simple;
+	bh=0y96Rg/Sc/DZKTjXrB2SLvbAEQwO5jU1Mj9ZyK0f/uQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=m3TXW9h+O7nmsLsv0bvlRNcwLZlGn5QEHnKdcrfuhGK8VADTm/Yd5an4W3JjHNj2m38mn8B0I6JbskRhoTeBf04UoqnIzxp3RkyMOZHGdNt32nl3f5OduAoLDte+W2Ei7bAJbhY6uKS74Ygr5eRtHo4Wrw1YSiJF9e9lNtSKIlI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m/0VNokm; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-7f121c00dedso2092608b3a.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 10 Dec 2025 05:28:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1765373295; x=1765978095; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=a0EoHRAJjLBPvzSiHbkVQuwxwrsFggD1yN2TuQx/kfs=;
+        b=m/0VNokmyc7yF00ImCp0qEuOLjjAXB+9E/yDJP2413iN5aquFAvWL+geNEcn45A5vH
+         P8OMpgIF2jHwMaqPEsFbysnMlnRSodC2qZyW9sCsakk2k+9vMp0HR2ki2vihjMAtFPLp
+         Fd5BgXiDrl3rtO40hY6JnpKSqDflJxZDi42/CbCRP0dHezhBdOIhLeojrX2seHYd5Zkp
+         ekFbtIrIOETvMJbQLUClgWYoIu1yyzf6RbbYpB2oxbwJeHgebdCO5Ss+Hqk2n9QqLSzx
+         NAZKj9QU70yrZTXS+a3PzpO/kpVN72BbNSf8ACgGLnp7mDIsfUlGaRA0TGBelz8Eg8wI
+         VyyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1765373295; x=1765978095;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=a0EoHRAJjLBPvzSiHbkVQuwxwrsFggD1yN2TuQx/kfs=;
+        b=FSVTx6uBwt4pkETBgYUdnvjudWvXX+xJLUC2Si3LcUDIRVswqC1sxgwM6qRZtVNIUe
+         S/89VX0Sl/u55b0K7WEL1eK9Tn3Te4V8uvAeuJLdnmB7w9aGUF6JpcuGNxk57l1RGZkQ
+         kBqsZsfC95rBQkEdrd7DK2BEMxb/GFqQhpRy28E6P234pXoqQfhb5r0vam7lM7vKlZpm
+         gIo4/NSOkL8kD23MC1JRp6NDQxVU6+xx8sV+lfi2C3BPDNI+vLpV+yFo9fxODbzNb3Rt
+         B3sAy34gEqsvNsPhGYSq0YMNa+gwcZDddZcCaGBp2YZdgJu8QGSsILMA6+K1LcxjPhiw
+         lB0Q==
+X-Gm-Message-State: AOJu0Yz48wMu2n6aYdO0uoYPIQo2+GsZ8hsFVfwJ7yp476mXuI+Q+YEi
+	us7CvWMVB9SAyafKb+Z7MKMpEyOwsqJ8IDs/+Vg4S+6cI+lixsMGIyOg
+X-Gm-Gg: ASbGnctEGbM0fbtaeJBTOqIG8jESKiD5P/jkw1v2IV9z3cbg7FDchUiXVh6t8QTAf3l
+	iwj1WCY34GYhZYtGNv6sX3wT+Ua3aVyA2I38MQnrFpflrOrCVCvIsW6uMmYh3ah+4E1M1TTCA2R
+	bk/mtGaHlY76NiHFuexc1T3WKp32O6nVR9gWhJmE0dt/sd1899w0Fvc7jE7nvpWWhViuvQBXdHJ
+	EZUN09lOvtysZGpRUnaUFmY49SapVIO6IEBvTNAg/fbmOO7y9Imr9h4RtgKN40vA8MIJF/KC71q
+	Bqn7XN1lwLDTnHHAsoS+3YGFZH+lFUfKf7VB9lqgQv0DZe1LqxoQLA74NIrTD0W9oQQSwFqyPLp
+	1TF903n8nfpyR/pPn/xq+Lc0/w1f+2b2UugXe/c3HViwt7lLEO01G0ly6fiDonsYQJL5FY/g9Sq
+	vBYoBZKVkpphiVICBQBoZrS0bblCzaEUXq8ddsbtITJxDAjOnlfLBAwD9e4Q+yl6yga50=
+X-Google-Smtp-Source: AGHT+IH3DAL63v5RtYmyafCCdGI7zA1aGFzW2ktPKp/miOeQXmJX/6zfEPMPaSCoKE/7giEgdyRpzg==
+X-Received: by 2002:a05:6a20:7f91:b0:364:144a:d21c with SMTP id adf61e73a8af0-366e0ef01f9mr2401134637.26.1765373295222;
+        Wed, 10 Dec 2025 05:28:15 -0800 (PST)
+Received: from deepanshu-kernel-hacker.. ([2405:201:682f:389d:ff8a:290f:c19a:6d03])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-bf748c6bcacsm17435261a12.0.2025.12.10.05.28.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Dec 2025 05:28:14 -0800 (PST)
+From: Deepanshu Kartikey <kartikey406@gmail.com>
+To: clm@fb.com,
+	dsterba@suse.com,
+	miaox@cn.fujitsu.com
+Cc: linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Deepanshu Kartikey <kartikey406@gmail.com>,
+	syzbot+eadd98df8bceb15d7fed@syzkaller.appspotmail.com
+Subject: [PATCH] btrfs: fix memory leak of fs_devices in degraded seed device path
+Date: Wed, 10 Dec 2025 18:58:07 +0530
+Message-ID: <20251210132807.3263207-1-kartikey406@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251210110442.11866-1-johannes.thumshirn@wdc.com>
-In-Reply-To: <20251210110442.11866-1-johannes.thumshirn@wdc.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Wed, 10 Dec 2025 13:02:45 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H4ArKoO+yrUQiAsVcybTJgDOKTNn5zJOz_F_Cj_mt82OA@mail.gmail.com>
-X-Gm-Features: AQt7F2pReJ6r50IWqVMfe3TEqFjFhMY4XfbOokjtEoEZ0TAyiWLaS0zLQS2o-Vs
-Message-ID: <CAL3q7H4ArKoO+yrUQiAsVcybTJgDOKTNn5zJOz_F_Cj_mt82OA@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: print block-group type for zoned statistics
-To: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Cc: linux-btrfs@vger.kernel.org, Naohiro Aota <naohiro.aota@wdc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Dec 10, 2025 at 11:06=E2=80=AFAM Johannes Thumshirn
-<johannes.thumshirn@wdc.com> wrote:
->
-> When printing the zoned statistics, also include the block-group type in
-> the block-group listing output.
->
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-> ---
->  fs/btrfs/sysfs.c | 18 ++++++++++++++++--
->  1 file changed, 16 insertions(+), 2 deletions(-)
->
-> diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-> index 7f00e4babbc1..5411e5275f83 100644
-> --- a/fs/btrfs/sysfs.c
-> +++ b/fs/btrfs/sysfs.c
-> @@ -1188,6 +1188,20 @@ static ssize_t btrfs_commit_stats_store(struct kob=
-ject *kobj,
->  }
->  BTRFS_ATTR_RW(, commit_stats, btrfs_commit_stats_show, btrfs_commit_stat=
-s_store);
->
-> +static const char *btrfs_block_group_type_name(u64 flags)
-> +{
-> +       switch (flags & BTRFS_BLOCK_GROUP_TYPE_MASK) {
-> +       case BTRFS_BLOCK_GROUP_SYSTEM:
-> +               return "SYSTEM";
-> +       case BTRFS_BLOCK_GROUP_METADATA:
-> +               return "METADATA";
-> +       case BTRFS_BLOCK_GROUP_DATA:
-> +               return "DATA";
+In open_seed_devices(), when find_fsid() fails and we're in DEGRADED
+mode, a new fs_devices is allocated via alloc_fs_devices() but is never
+added to the seed_list before returning. This contrasts with the normal
+path where fs_devices is properly added via list_add().
 
-Can we have mixed block groups for zoned?
+If any error occurs later in read_one_dev() or btrfs_read_chunk_tree(),
+the cleanup code iterates seed_list to free seed devices, but this
+orphaned fs_devices is never found and never freed, causing a memory
+leak. Any devices allocated via add_missing_dev() and attached to this
+fs_devices are also leaked.
 
-Otherwise we miss a:
+Fix this by adding the newly allocated fs_devices to seed_list in the
+degraded path, consistent with the normal path.
 
-case BTRFS_BLOCK_GROUP_METADATA | BTRFS_BLOCK_GROUP_DATA:
-    return "DATA+METADATA";
+Fixes: 5f37583569442 ("Btrfs: move the missing device to its own fs device list")
+Reported-by: syzbot+eadd98df8bceb15d7fed@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=eadd98df8bceb15d7fed
+Tested-by: syzbot+eadd98df8bceb15d7fed@syzkaller.appspotmail.com
+Signed-off-by: Deepanshu Kartikey <kartikey406@gmail.com>
+---
+ fs/btrfs/volumes.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Just like we do in space_info_flag_to_str(), which is very similar to
-this function by the way.
-Maybe we can have a common function to repeat duplicated logic.
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index ae1742a35e76..13c514684cfb 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -7128,6 +7128,7 @@ static struct btrfs_fs_devices *open_seed_devices(struct btrfs_fs_info *fs_info,
+ 
+ 		fs_devices->seeding = true;
+ 		fs_devices->opened = 1;
++		list_add(&fs_devices->seed_list, &fs_info->fs_devices->seed_list);
+ 		return fs_devices;
+ 	}
+ 
+-- 
+2.43.0
 
-Thanks.
-
-> +       default:
-> +               return "UNKNOWN";
-> +       }
-> +}
-> +
->  static ssize_t btrfs_zoned_stats_show(struct kobject *kobj,
->                                       struct kobj_attribute *a, char *buf=
-)
->  {
-> @@ -1229,9 +1243,9 @@ static ssize_t btrfs_zoned_stats_show(struct kobjec=
-t *kobj,
->         ret +=3D sysfs_emit_at(buf, ret, "active zones:\n");
->         list_for_each_entry(bg, &fs_info->zone_active_bgs, active_bg_list=
-) {
->                 ret +=3D sysfs_emit_at(buf, ret,
-> -                                    "\tstart: %llu, wp: %llu used: %llu,=
- reserved: %llu, unusable: %llu\n",
-> +                                    "\tstart: %llu, wp: %llu used: %llu,=
- reserved: %llu, unusable: %llu (%s)\n",
->                                      bg->start, bg->alloc_offset, bg->use=
-d,
-> -                                    bg->reserved, bg->zone_unusable);
-> +                                    bg->reserved, bg->zone_unusable, btr=
-fs_block_group_type_name(bg->flags));
->         }
->         spin_unlock(&fs_info->zone_active_bgs_lock);
->         return ret;
-> --
-> 2.52.0
->
->
 
