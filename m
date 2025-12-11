@@ -1,83 +1,83 @@
-Return-Path: <linux-btrfs+bounces-19645-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19646-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06B85CB4FA4
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Dec 2025 08:26:01 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 245DFCB4FA7
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Dec 2025 08:26:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 45DDE3013552
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Dec 2025 07:25:19 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 2086B3014631
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Dec 2025 07:25:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 152C32C21EA;
-	Thu, 11 Dec 2025 07:25:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A04F32C21E8;
+	Thu, 11 Dec 2025 07:25:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DeLe26LI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gi56/D6v"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mail-pf1-f195.google.com (mail-pf1-f195.google.com [209.85.210.195])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C69372C158E
-	for <linux-btrfs@vger.kernel.org>; Thu, 11 Dec 2025 07:25:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6129F2BF00D
+	for <linux-btrfs@vger.kernel.org>; Thu, 11 Dec 2025 07:25:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765437917; cv=none; b=AAUvIvgoljNKk910HqThagVoefnsHXnDm0jznL40ZP0tmBqDQ0WGUrqbiZsCGv6nPXXEAf6SWL2+Y0SbW42wUNjq4v7bjpvY6/Oarq+QJQMJDLppWLgE/BF3OwJ8ItKURnQgV3e/0BQn7RSV1l/KzC/QATtCQZyHRS8iCSBwE8A=
+	t=1765437921; cv=none; b=mu5LiwhMlAxaMOym2AZZWueamH5PU8n0rcN6BLuCu1ut7Hn7PZ+uwk5CrexiNC2GlTJLTIUKGgzFcDjUjsZ8mEprLkHDAUGPL/QM6Hq/qaFbx+4snHWVfENse3O8otHKaEhajBQmWvw/QODA6cWjyZzFfyxiNFBj0MMP2surF/g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765437917; c=relaxed/simple;
-	bh=Jzm/u+48bpj/SwHSE+D/qS2Krv5QJkOmiJm7hxCHE/M=;
+	s=arc-20240116; t=1765437921; c=relaxed/simple;
+	bh=wnYEnO2YaH5q88OX6h78fgnL+5SBTZEDvgyFxCV7p5U=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=j5lHCdqQOeT401agxc+Wx5JQQWg/rXBLRIE2w8DaW6AKQP3bz3VDPKqpI7vmycPd+dnUGQBFRAJL7lEwy8yNSiF9lbf7DfSORJAAlQOZsIQMYt4U/4jZqF9ACBm4MW3ylNjMs9UNFthr3mwuceD9+p1SQoGgz0cHK8d6p4lqFlg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DeLe26LI; arc=none smtp.client-ip=209.85.210.195
+	 MIME-Version; b=cF0WLsY3uCJbQ4LkGiWx+EEpCNRXQJcwTeEdnSb0QIPZRKuIYHGLd++zYM7+Wg3B/Ix8r+J1rJ2jeuQOrGnfsqU00kEJZhwaTPgwac/x+IWVMMpm7nA96gB2id/NWD4XQvGHm6HfGpyYu534u50kAA0RhWTPbvfAb5VsXBRUtzI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gi56/D6v; arc=none smtp.client-ip=209.85.210.195
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f195.google.com with SMTP id d2e1a72fcca58-7ab689d3fa0so18303b3a.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 10 Dec 2025 23:25:15 -0800 (PST)
+Received: by mail-pf1-f195.google.com with SMTP id d2e1a72fcca58-7ae1c96ece1so16898b3a.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 10 Dec 2025 23:25:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1765437915; x=1766042715; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1765437919; x=1766042719; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=mlARIGs80GJDx30smShBN0HEx8tV5NNSLOVArjbr/60=;
-        b=DeLe26LI4SSBZ+tJqms+afpv6K1FIlcOs/TnVZc/k0s7AEhIa+aA3WhlyNioSbq4gI
-         F1pV2eLeSmR5qdSfBKFbSXDAdFFBKZSJW2jTFWMo1S0U741HXGdV2RJmrBOqTtFlHxds
-         2HEs51QbZNfZkz8LrmbXfoPp2L2dWBOi6BvVgi9nvm2WGlage0AR/SSuQNo9cqOPk7Km
-         IT3A5/r08F8BNP8klZEwntWXC+WaiZz60X4om42qz3lmI6Ju1MSfhGSyhoNk9/BCPmIU
-         yWJLwlHaQN3w3WmkDWtl4SQfIVNwYwJvKj0AiYtdaoMRO8N5SRLPnstTJJUtv4iRB5yN
-         99uw==
+        bh=k3qXMHFKyFO5Cn5pTawlTqNWz8osVV4QMh+AG6riMGE=;
+        b=gi56/D6vY9McQuGDRmF4/9sJPRONsH0vPiKpmnxv+2Laa5Qg++Zini9z9cmwaap/83
+         SMby2xlBQUoOxNuoiG0leHPo/hVWlZRqGXCz7KyemW/cmITMLkjORC6ou/MMuf3FpTkA
+         p3svgSudSIDf8f0W0rYlXJHE/WYqjwEeyPEG7Hh0YeBtWLBgt5Ck2LhsuOssycir9vOi
+         Gy9SMnWVPPWqxoAsGRj3mc1mnVpGS6vPiUplQv41phgmTyDL7K9E02ip+YLOodE6058/
+         Ej4B6IkpcdsM3EXCQDH2PlCZ1WYzqLcXOvREOMjSWMbhr3IBHKNcKL3zQhj1sGvMbt5n
+         6beg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765437915; x=1766042715;
+        d=1e100.net; s=20230601; t=1765437919; x=1766042719;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=mlARIGs80GJDx30smShBN0HEx8tV5NNSLOVArjbr/60=;
-        b=MJF9mze6PFEBtBzcAGMJAR7KpfEqzNVckpXaZ0TiX7uDUOJJiig3LJcNMdXMiQYvV3
-         b2RxV3rUtqMLrKwlwOy87wWjYNcVaUXgM6ySEMUQhmR5KoUNJikfckbbbtaUPmOXwD0A
-         W+bAzFctm7BWXuPABgUkRDMT/+x/jVvsKdOeHAwZWKDnMnd3XEVNlmAwtbopIa3Fk9HV
-         OdJY53T06u+rXJSDhjiE62/gkTeXpcnLvT442+cSbI8WXvVJbMOgZIqtR3dGsody3khZ
-         G6R0pUtjdip5/nhUQaYqu7clKdUsprGYRPIrEZrm2aBWHw85N2pCxg65zBRFY27wvv+N
-         ZGXQ==
-X-Gm-Message-State: AOJu0YyczQleVxSqLhTnePkVDY46Fj1o6e4leRISuLt+Q5jUM0BtzWgb
-	RGEKwSgfMtcRPkwUIrQopB0VTcwJYJ1y02IFn+0ClsHGqFHbYv4m6q1kXn81Zhydd78WdA==
-X-Gm-Gg: AY/fxX4P9MO+Mx0FoWkr77wA1ZbBB4JeUwV6kZ4Yxnlhj14IbjhsuPnz4oCtBnME3Ve
-	0Ytt3hDQWnKR0meDyFBmtmYZQFQYI1b97lwGSkY16bY4wea4puU/DnTCeEn7yDNoGTLmzUnum0D
-	JDGHCK6ZC/ULxz+a0G+e+G4biKrX0ztLZocEVsK+aKp5MDuJqzk25o3eYDNfhstwHI6EqVtS6ls
-	180AW9Rs0W5I+cBOU+yguBPX9HyM5B5amQkwh9PxX6XHfv8MCfdd9XNecfMCfQ0XRoo0JRkzVkF
-	YBCUG/wDc8sdnX7ufZR8UALdadHwnpA2xzUompnSQJ5ldQOpqz14iFPoobTmN2tu+B5d8C0/ph6
-	M/+XQFvOc3IiQQePIc6jrDfIw1z9znqcRsKKu6mBkfhl6ZvIR+Rh7Eewb01SJaiE31vXiCF/kPW
-	cWcyTWfewB3OhQ/snub5YK
-X-Google-Smtp-Source: AGHT+IHArd4ux/YDjpatU4dQ5/XzjScO70CDQ+PM5c4jlk4idyrdSM/BSRVi0RJGkTcKgsDyI2aBWQ==
-X-Received: by 2002:a05:6a00:12d4:b0:7ab:3883:36 with SMTP id d2e1a72fcca58-7f4f9130237mr1091526b3a.4.1765437915162;
-        Wed, 10 Dec 2025 23:25:15 -0800 (PST)
+        bh=k3qXMHFKyFO5Cn5pTawlTqNWz8osVV4QMh+AG6riMGE=;
+        b=VNiG4Afi+0K/vxC4BF/FehcdthTZCJMUXRUbCishP2/lNY/1cjDfmv5gJdU3XPU2p4
+         YswwdmpJVck7xe7TNIjz46OAKODQExzsW2DfxmtDoUexE4rAwoBlWGXFz+qz+y3nG+t0
+         6HcGpVCyDac7/6W4zP+IAT7Xm+WvUFF7h5jwvU3VGdM+yNz0SY/3pLEW9VKYsnfYKGOr
+         h5RUc47nvY3M1X//l+cVeUyUwgQwOecBgrrDkv3RJWcArpY+SS4YsZdq+R+ohG9xFHIU
+         VaKgsqdyxhxfekVF4Vob1Y9zUx0sQoBlYeDu4noUg5msntkY37VK6VVqfGjXZDTd4gBQ
+         NkSQ==
+X-Gm-Message-State: AOJu0YwNjS2j/eU/lyoWLBle+RJzwqke8n9lxS+o6EmI5OUz5IT20eIl
+	2L4tqrQBauPmrDJtV0QoGK56i/poa8YbwdpX3znpwfZ3A7deqV1XXfr2BrbS5si5Z0wqdA==
+X-Gm-Gg: AY/fxX6axNGVnqb1lITf8EfUwdDSy0a8LCGfbJY8H7sTwKW+3ma6xZaRQAURHDY/627
+	67E8wQcB9CN1hd9JMyHgqm6B3F6Jj4aNHtS6+Q9bBSqhBoShZeM5x9FPtZdQNqLLP9vIRcppK3H
+	wyqDCJoGHRGi0wcjoBP/ofaifAGAJ9pghQtN6f/bj1+gI/YW7IG/vXftiFaYk4C+3Il1+vg8gif
+	siZbV57cWGdtnWlMCyrHIZA2OSIkcBEfoMWQq/GnDIj800mHPsGw9AgvmTEeAemvWuRsNzxSxyZ
+	9KhIhQOJD9K/Pe8R7l6uvCfG7FHiKhqdFQv0SPg1m804Nsmn4JoYEjbn6y9/aaERORfP0mSyELS
+	3jjLY5Ojptxw6QbygDuaztvMyLS7iUG1C5itGBaOdxSWdBziW8BWbYYdIjpmGkRU8KumkiK7Gfi
+	iNtsRKNEOcP6aaZcCw5CzF
+X-Google-Smtp-Source: AGHT+IHtbYimDQXU+GBuTIiTSAHYGy/Ydn0ZwlLBI0EI7aWo9j7b/Uv8M82AE6y30Vzkl87wEElOgw==
+X-Received: by 2002:a05:6a20:7486:b0:341:fcbf:90b9 with SMTP id adf61e73a8af0-366e2469302mr3927095637.4.1765437918592;
+        Wed, 10 Dec 2025 23:25:18 -0800 (PST)
 Received: from SaltyKitkat ([195.88.211.122])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7f4c4ab4984sm1526520b3a.33.2025.12.10.23.25.12
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7f4c4ab4984sm1526520b3a.33.2025.12.10.23.25.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Dec 2025 23:25:14 -0800 (PST)
+        Wed, 10 Dec 2025 23:25:18 -0800 (PST)
 From: Sun YangKai <sunk67188@gmail.com>
 To: linux-btrfs@vger.kernel.org
 Cc: fdmanana@kernel.org,
 	Sun YangKai <sunk67188@gmail.com>
-Subject: [PATCH v2 3/4] btrfs: cleanup btrfs_search_slot_for_read()
-Date: Thu, 11 Dec 2025 15:22:18 +0800
-Message-ID: <20251211072442.15920-5-sunk67188@gmail.com>
+Subject: [PATCH v2 4/4] btrfs: ctree: cleanup btrfs_prev_leaf()
+Date: Thu, 11 Dec 2025 15:22:19 +0800
+Message-ID: <20251211072442.15920-6-sunk67188@gmail.com>
 X-Mailer: git-send-email 2.51.2
 In-Reply-To: <20251211072442.15920-2-sunk67188@gmail.com>
 References: <20251211072442.15920-2-sunk67188@gmail.com>
@@ -89,241 +89,238 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-- Now @return_any is not used by any caller, remove it and related logic.
+There's a common parttern in callers of btrfs_prev_leaf:
+p->slots[0]-- if p->slots[0] points to a slot with invalid item(nritem).
 
-- @for_read is used as boolean, so convert it from int to bool.
+So just make btrfs_prev_leaf() ensure that path->slots[0] points to a
+valid slot and cleanup its over complex logic.
 
-- This function is only meaningful when called with p->lowest_level == 0,
-  add assertion for that.
+And then remove the related logic and cleanup the callers.
 
-No functional change.
+This will make things much simpler.
+
+No functional changes.
+
+A. Details about changes in callers:
+
+ASSERT(path->slots[0] < btrfs_header_nritems(path->nodes[0])) in callers
+is enough to make sure that nritems != 0 and slots[0] points to a valid
+btrfs_item.
+
+And getting a `nritems==0` when btrfs_prev_leaf() returns 0 is a logic
+error because btrfs_pref_leaf() should always
+
+1. either find a non-empty leaf
+2. or return 1
+
+So we can use ASSERT safely here.
+
+B. Details about cleanup of btrfs_prev_leaf().
+
+The previous implementation works like this:
+
+0) Get a previous key by "dec by 1" of the original key. Let's call it
+   search key. It's obvious that search key is less than original key
+   and there's no key between them.
+
+1) Call btrfs_search_slot() with search key.
+
+2) If we got an error or an exact match, early return.
+
+3) If p->slots[0] points to the original item, p->slots[0]-- to make sure
+   that we will not return the same item again. This may happen because
+   there might be some tree balancing happened so the original item is no
+   longer at slot 0.
+
+4) Check if the key of the item at slot 0 is (less than the original key
+   / less than or equal to search key) to verify if we got a previous leaf.
+
+However, 3) and 4) are over complex. We only need to check if
+p->slots[0] == 0 because:
+
+3a) If p->slots[0] == 0, there's no key less than or equal to search key
+    in the tree, which means the original key is lowest in the tree. In
+    this case, there's no previous leaf, we should return 1.
+
+3b) If p->slots[0] != 0, using p->slots[0]-- is enough to get a valid
+    previous item neither missing anything nor return the original item
+    again because:
+
+    i) p->slots[0] == nritems, which means all keys in the leaf are less
+       than search key so the leaf is a previous leaf. We only need to
+       p->slots[0]-- to get a valid previous item.
+
+    ii) p->slots[0] < nritems, p->slots[0] points to an item whose key
+        is greater than search key(probably the original item if it was
+        not deleted), and p->slots[0] - 1 points to an item whose key is
+        less than search key. So use p->slots[0]-- to get the previous
+        item and we will neigher miss anything nor return the original
+        item again. This handles the case 3) in original implementation.
 
 Signed-off-by: Sun YangKai <sunk67188@gmail.com>
 ---
- fs/btrfs/ctree.c           | 48 +++++++-------------------------------
- fs/btrfs/ctree.h           |  3 +--
- fs/btrfs/free-space-tree.c |  2 +-
- fs/btrfs/qgroup.c          | 10 ++++----
- fs/btrfs/send.c            | 12 +++++-----
- 5 files changed, 21 insertions(+), 54 deletions(-)
+ fs/btrfs/ctree.c | 99 ++++++++++--------------------------------------
+ 1 file changed, 19 insertions(+), 80 deletions(-)
 
 diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index a48b4befbee7..0a0157db0b0c 100644
+index 0a0157db0b0c..3026d956c7fb 100644
 --- a/fs/btrfs/ctree.c
 +++ b/fs/btrfs/ctree.c
-@@ -2450,22 +2450,15 @@ static int btrfs_prev_leaf(struct btrfs_root *root, struct btrfs_path *path)
-  * instead the next or previous item should be returned.
-  * When find_higher is true, the next higher item is returned, the next lower
-  * otherwise.
-- * When return_any and find_higher are both true, and no higher item is found,
-- * return the next lower instead.
-- * When return_any is true and find_higher is false, and no lower item is found,
-- * return the next higher instead.
-- * It returns 0 if any item is found, 1 if none is found (tree empty), and
-- * < 0 on error
-+ * It returns 0 if any item is found, 1 if none is found and < 0 on error
-  */
- int btrfs_search_slot_for_read(struct btrfs_root *root,
- 			       const struct btrfs_key *key,
--			       struct btrfs_path *p, int find_higher,
--			       int return_any)
-+			       struct btrfs_path *p, bool find_higher)
+@@ -2376,12 +2376,9 @@ int btrfs_search_old_slot(struct btrfs_root *root, const struct btrfs_key *key,
+ static int btrfs_prev_leaf(struct btrfs_root *root, struct btrfs_path *path)
  {
+ 	struct btrfs_key key;
+-	struct btrfs_key orig_key;
+-	struct btrfs_disk_key found_key;
  	int ret;
--	struct extent_buffer *leaf;
  
--again:
-+	ASSERT(p->lowest_level == 0);
- 	ret = btrfs_search_slot(NULL, root, key, p, 0, 0);
+ 	btrfs_item_key_to_cpu(path->nodes[0], &key, 0);
+-	orig_key = key;
+ 
+ 	if (key.offset > 0) {
+ 		key.offset--;
+@@ -2401,48 +2398,12 @@ static int btrfs_prev_leaf(struct btrfs_root *root, struct btrfs_path *path)
  	if (ret <= 0)
  		return ret;
-@@ -2476,47 +2469,22 @@ int btrfs_search_slot_for_read(struct btrfs_root *root,
- 	 * to the first free slot in the previous leaf, i.e. at an invalid
- 	 * item.
- 	 */
--	leaf = p->nodes[0];
--
- 	if (find_higher) {
--		if (p->slots[0] >= btrfs_header_nritems(leaf)) {
--			ret = btrfs_next_leaf(root, p);
--			if (ret <= 0)
--				return ret;
--			if (!return_any)
--				return 1;
+ 
+-	/*
+-	 * Previous key not found. Even if we were at slot 0 of the leaf we had
+-	 * before releasing the path and calling btrfs_search_slot(), we now may
+-	 * be in a slot pointing to the same original key - this can happen if
+-	 * after we released the path, one of more items were moved from a
+-	 * sibling leaf into the front of the leaf we had due to an insertion
+-	 * (see push_leaf_right()).
+-	 * If we hit this case and our slot is > 0 and just decrement the slot
+-	 * so that the caller does not process the same key again, which may or
+-	 * may not break the caller, depending on its logic.
+-	 */
+-	if (path->slots[0] < btrfs_header_nritems(path->nodes[0])) {
+-		btrfs_item_key(path->nodes[0], &found_key, path->slots[0]);
+-		ret = btrfs_comp_keys(&found_key, &orig_key);
+-		if (ret == 0) {
+-			if (path->slots[0] > 0) {
+-				path->slots[0]--;
+-				return 0;
+-			}
 -			/*
--			 * no higher item found, return the next
--			 * lower instead
+-			 * At slot 0, same key as before, it means orig_key is
+-			 * the lowest, leftmost, key in the tree. We're done.
 -			 */
--			return_any = 0;
--			find_higher = 0;
--			btrfs_release_path(p);
--			goto again;
+-			return 1;
 -		}
-+		if (p->slots[0] >= btrfs_header_nritems(p->nodes[0]))
-+			return btrfs_next_leaf(root, p);
+-	}
++	/* There's no smaller keys in the whole tree. */
++	if (path->slots[0] == 0)
++		return 1;
+ 
+-	btrfs_item_key(path->nodes[0], &found_key, 0);
+-	ret = btrfs_comp_keys(&found_key, &key);
+-	/*
+-	 * We might have had an item with the previous key in the tree right
+-	 * before we released our path. And after we released our path, that
+-	 * item might have been pushed to the first slot (0) of the leaf we
+-	 * were holding due to a tree balance. Alternatively, an item with the
+-	 * previous key can exist as the only element of a leaf (big fat item).
+-	 * Therefore account for these 2 cases, so that our callers (like
+-	 * btrfs_previous_item) don't miss an existing item with a key matching
+-	 * the previous key we computed above.
+-	 */
+-	if (ret <= 0)
+-		return 0;
+-	return 1;
++	path->slots[0]--;
++	return 0;
+ }
+ 
+ /*
+@@ -2473,19 +2434,11 @@ int btrfs_search_slot_for_read(struct btrfs_root *root,
+ 		if (p->slots[0] >= btrfs_header_nritems(p->nodes[0]))
+ 			return btrfs_next_leaf(root, p);
  	} else {
- 		if (p->slots[0] == 0) {
- 			ret = btrfs_prev_leaf(root, p);
- 			if (ret < 0)
- 				return ret;
- 			if (!ret) {
--				leaf = p->nodes[0];
--				if (p->slots[0] == btrfs_header_nritems(leaf))
-+				if (p->slots[0] == btrfs_header_nritems(p->nodes[0]))
- 					p->slots[0]--;
- 				return 0;
- 			}
--			if (!return_any)
--				return 1;
--			/*
--			 * no lower item found, return the next
--			 * higher instead
--			 */
--			return_any = 0;
--			find_higher = 1;
--			btrfs_release_path(p);
--			goto again;
-+			return 1;
- 		} else {
--			--p->slots[0];
-+			p->slots[0]--;
- 		}
+-		if (p->slots[0] == 0) {
+-			ret = btrfs_prev_leaf(root, p);
+-			if (ret < 0)
+-				return ret;
+-			if (!ret) {
+-				if (p->slots[0] == btrfs_header_nritems(p->nodes[0]))
+-					p->slots[0]--;
+-				return 0;
+-			}
++		/* We have no lower key in the tree. */
++		if (p->slots[0] == 0)
+ 			return 1;
+-		} else {
+-			p->slots[0]--;
+-		}
++
++		p->slots[0]--;
  	}
  	return 0;
-diff --git a/fs/btrfs/ctree.h b/fs/btrfs/ctree.h
-index 692370fc07b2..4b7b8ce7e211 100644
---- a/fs/btrfs/ctree.h
-+++ b/fs/btrfs/ctree.h
-@@ -595,8 +595,7 @@ int btrfs_search_old_slot(struct btrfs_root *root, const struct btrfs_key *key,
- 			  struct btrfs_path *p, u64 time_seq);
- int btrfs_search_slot_for_read(struct btrfs_root *root,
- 			       const struct btrfs_key *key,
--			       struct btrfs_path *p, int find_higher,
--			       int return_any);
-+			       struct btrfs_path *p, bool find_higher);
- void btrfs_release_path(struct btrfs_path *p);
- struct btrfs_path *btrfs_alloc_path(void);
- void btrfs_free_path(struct btrfs_path *p);
-diff --git a/fs/btrfs/free-space-tree.c b/fs/btrfs/free-space-tree.c
-index 1ad2ad384b9e..88c46950f5d2 100644
---- a/fs/btrfs/free-space-tree.c
-+++ b/fs/btrfs/free-space-tree.c
-@@ -1089,7 +1089,7 @@ static int populate_free_space_tree(struct btrfs_trans_handle *trans,
- 	key.offset = 0;
+ }
+@@ -4969,26 +4922,19 @@ int btrfs_previous_item(struct btrfs_root *root,
+ 			int type)
+ {
+ 	struct btrfs_key found_key;
+-	struct extent_buffer *leaf;
+-	u32 nritems;
+ 	int ret;
  
- 	extent_root = btrfs_extent_root(trans->fs_info, key.objectid);
--	ret = btrfs_search_slot_for_read(extent_root, &key, path, 1, 0);
-+	ret = btrfs_search_slot_for_read(extent_root, &key, path, true);
- 	if (ret < 0)
- 		goto out_locked;
- 	/*
-diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index d780980e6790..bd458ba537ba 100644
---- a/fs/btrfs/qgroup.c
-+++ b/fs/btrfs/qgroup.c
-@@ -415,7 +415,7 @@ int btrfs_read_qgroup_config(struct btrfs_fs_info *fs_info)
- 	key.objectid = 0;
- 	key.type = 0;
- 	key.offset = 0;
--	ret = btrfs_search_slot_for_read(quota_root, &key, path, 1, 0);
-+	ret = btrfs_search_slot_for_read(quota_root, &key, path, true);
- 	if (ret)
- 		goto out;
- 
-@@ -530,7 +530,7 @@ int btrfs_read_qgroup_config(struct btrfs_fs_info *fs_info)
- 	key.objectid = 0;
- 	key.type = BTRFS_QGROUP_RELATION_KEY;
- 	key.offset = 0;
--	ret = btrfs_search_slot_for_read(quota_root, &key, path, 1, 0);
-+	ret = btrfs_search_slot_for_read(quota_root, &key, path, true);
- 	if (ret)
- 		goto out;
  	while (1) {
-@@ -1088,7 +1088,7 @@ int btrfs_quota_enable(struct btrfs_fs_info *fs_info,
- 	key.offset = 0;
+ 		if (path->slots[0] == 0) {
+ 			ret = btrfs_prev_leaf(root, path);
+-			if (ret != 0)
++			if (ret)
+ 				return ret;
+-		} else {
+-			path->slots[0]--;
+-		}
+-		leaf = path->nodes[0];
+-		nritems = btrfs_header_nritems(leaf);
+-		if (nritems == 0)
+-			return 1;
+-		if (path->slots[0] == nritems)
++		} else
+ 			path->slots[0]--;
  
- 	btrfs_release_path(path);
--	ret = btrfs_search_slot_for_read(tree_root, &key, path, 1, 0);
-+	ret = btrfs_search_slot_for_read(tree_root, &key, path, true);
- 	if (ret > 0)
- 		goto out_add_root;
- 	if (unlikely(ret < 0)) {
-@@ -1130,7 +1130,7 @@ int btrfs_quota_enable(struct btrfs_fs_info *fs_info,
- 				goto out_free_path;
- 			}
- 			ret = btrfs_search_slot_for_read(tree_root, &found_key,
--							 path, 1, 0);
-+							 path, true);
- 			if (unlikely(ret < 0)) {
- 				btrfs_abort_transaction(trans, ret);
- 				goto out_free_path;
-@@ -3692,7 +3692,7 @@ static int qgroup_rescan_leaf(struct btrfs_trans_handle *trans,
- 				fs_info->qgroup_rescan_progress.objectid);
- 	ret = btrfs_search_slot_for_read(extent_root,
- 					 &fs_info->qgroup_rescan_progress,
--					 path, 1, 0);
-+					 path, true);
+-		btrfs_item_key_to_cpu(leaf, &found_key, path->slots[0]);
++		ASSERT(path->slots[0] < btrfs_header_nritems(path->nodes[0]));
++
++		btrfs_item_key_to_cpu(path->nodes[0], &found_key, path->slots[0]);
+ 		if (found_key.objectid < min_objectid)
+ 			break;
+ 		if (found_key.type == type)
+@@ -5010,26 +4956,19 @@ int btrfs_previous_extent_item(struct btrfs_root *root,
+ 			struct btrfs_path *path, u64 min_objectid)
+ {
+ 	struct btrfs_key found_key;
+-	struct extent_buffer *leaf;
+-	u32 nritems;
+ 	int ret;
  
- 	btrfs_debug(fs_info,
- 		    "current progress key " BTRFS_KEY_FMT ", search_slot ret %d",
-diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index eae596b80ec0..471e81a8e844 100644
---- a/fs/btrfs/send.c
-+++ b/fs/btrfs/send.c
-@@ -1234,7 +1234,7 @@ static int get_inode_path(struct btrfs_root *root,
- 	key.type = BTRFS_INODE_REF_KEY;
- 	key.offset = 0;
+ 	while (1) {
+ 		if (path->slots[0] == 0) {
+ 			ret = btrfs_prev_leaf(root, path);
+-			if (ret != 0)
++			if (ret)
+ 				return ret;
+-		} else {
+-			path->slots[0]--;
+-		}
+-		leaf = path->nodes[0];
+-		nritems = btrfs_header_nritems(leaf);
+-		if (nritems == 0)
+-			return 1;
+-		if (path->slots[0] == nritems)
++		} else
+ 			path->slots[0]--;
  
--	ret = btrfs_search_slot_for_read(root, &key, p, 1, 0);
-+	ret = btrfs_search_slot_for_read(root, &key, p, true);
- 	if (ret < 0)
- 		return ret;
- 	if (ret)
-@@ -1979,7 +1979,7 @@ static int get_first_ref(struct btrfs_root *root, u64 ino,
- 	key.type = BTRFS_INODE_REF_KEY;
- 	key.offset = 0;
- 
--	ret = btrfs_search_slot_for_read(root, &key, path, 1, 0);
-+	ret = btrfs_search_slot_for_read(root, &key, path, true);
- 	if (ret < 0)
- 		return ret;
- 	if (!ret)
-@@ -2475,7 +2475,7 @@ static int send_subvol_begin(struct send_ctx *sctx)
- 	key.offset = 0;
- 
- 	ret = btrfs_search_slot_for_read(send_root->fs_info->tree_root,
--				&key, path, 1, 0);
-+				&key, path, true);
- 	if (ret < 0)
- 		return ret;
- 	if (ret)
-@@ -6195,7 +6195,7 @@ static int is_extent_unchanged(struct send_ctx *sctx,
- 	key.objectid = ekey->objectid;
- 	key.type = BTRFS_EXTENT_DATA_KEY;
- 	key.offset = ekey->offset;
--	ret = btrfs_search_slot_for_read(sctx->parent_root, &key, path, 0, 0);
-+	ret = btrfs_search_slot_for_read(sctx->parent_root, &key, path, false);
- 	if (ret < 0)
- 		return ret;
- 	if (ret)
-@@ -6320,7 +6320,7 @@ static int get_last_extent(struct send_ctx *sctx, u64 offset)
- 	key.objectid = sctx->cur_ino;
- 	key.type = BTRFS_EXTENT_DATA_KEY;
- 	key.offset = offset;
--	ret = btrfs_search_slot_for_read(root, &key, path, 0, 0);
-+	ret = btrfs_search_slot_for_read(root, &key, path, false);
- 	if (ret < 0)
- 		return ret;
- 	ASSERT(ret == 0);
-@@ -7288,7 +7288,7 @@ static int full_send_tree(struct send_ctx *sctx)
- 	sctx->last_reloc_trans = fs_info->last_reloc_trans;
- 	up_read(&fs_info->commit_root_sem);
- 
--	ret = btrfs_search_slot_for_read(send_root, &key, path, 1, 0);
-+	ret = btrfs_search_slot_for_read(send_root, &key, path, true);
- 	if (ret < 0)
- 		return ret;
- 	if (ret)
+-		btrfs_item_key_to_cpu(leaf, &found_key, path->slots[0]);
++		ASSERT(path->slots[0] < btrfs_header_nritems(path->nodes[0]));
++
++		btrfs_item_key_to_cpu(path->nodes[0], &found_key, path->slots[0]);
+ 		if (found_key.objectid < min_objectid)
+ 			break;
+ 		if (found_key.type == BTRFS_EXTENT_ITEM_KEY ||
 -- 
 2.51.2
 
