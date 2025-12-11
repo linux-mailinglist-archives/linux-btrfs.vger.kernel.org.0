@@ -1,202 +1,123 @@
-Return-Path: <linux-btrfs+bounces-19641-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19642-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 387A3CB4F83
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Dec 2025 08:17:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A083CB4F98
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Dec 2025 08:25:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 4E98C300B985
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Dec 2025 07:17:13 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 20C183008FBD
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Dec 2025 07:25:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 48E58262FC1;
-	Thu, 11 Dec 2025 07:17:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF7F62C21E8;
+	Thu, 11 Dec 2025 07:25:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OlQ+js9n"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IWHkzR9e"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pl1-f196.google.com (mail-pl1-f196.google.com [209.85.214.196])
+Received: from mail-pg1-f194.google.com (mail-pg1-f194.google.com [209.85.215.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 114F8946A
-	for <linux-btrfs@vger.kernel.org>; Thu, 11 Dec 2025 07:17:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A21411FECBA
+	for <linux-btrfs@vger.kernel.org>; Thu, 11 Dec 2025 07:25:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765437431; cv=none; b=lejMsmWLYO2C5vTqjdXTkqzIyvNMYA/wh2JVWDeGDVGKsrsUc0eo49rvEaU0A2UPSJ/MK97nfQzbdljJrIsv+4j+JmvHzx13M+eKVbNbJBJ7qLNpy8Kpe7OM5mJM7vFhJfizaoJVEvpBJsQ1hH7gfxeejZWC7a250nPyfTieVTA=
+	t=1765437909; cv=none; b=ZSA4K3h5jkSsmqF1/kKjh3YZ8GTAx0YncR7iWNQ0CXLotAA5k1QuP83omp9O2bhsV7WhC2ZklZStvy0k7H+dyIj8qQO0UxduAWrwDSMkRKh6xR+4M6UP1yEoXJ1SFjBsQH64fXoZts5S602EUWprZV8y7KLw0hns96T19+zYVjE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765437431; c=relaxed/simple;
-	bh=RoYhH/S2ptmHsRuZcom2NQx3F0JZEY1OdTVTOZkbnSE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=eQ8eE4aARhVNnxKkm5ttAJh9m4ZxYVAr+mHbKwQOvl42bSZV/oMNOo4oe+VKknnrCIZ6DfK9wKRgcL2yWnTkLFrFNISpTnN0EitaGU0UrtW44/Be8kNMOAh4XJ3/9XqBKWEKG1/gLEqvAoPCle4cB6EFCImfjD4mzPfh8+foM6U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OlQ+js9n; arc=none smtp.client-ip=209.85.214.196
+	s=arc-20240116; t=1765437909; c=relaxed/simple;
+	bh=/3V+JZhda9mznwxE/BYDbFPeu0Pj5Fc+r2OGPcoaN0I=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Y2AEmrc2Hz7L7KKczYznGZ+h+sRB/2Kw3E6uRUk7hxhwos2gKBynKRY0bySCNq9XTp4LnAO/ySAmunUyJTDCSC0d6HoH/TnwZs7LDa6L+zWezNAa+Vic4BfmUr+ASdSYTGYr8pg+eZ4CkxDL3B/sGS+EEKRIa1mg5IRXADCWiXM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IWHkzR9e; arc=none smtp.client-ip=209.85.215.194
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f196.google.com with SMTP id d9443c01a7336-295395ceda3so1178975ad.2
-        for <linux-btrfs@vger.kernel.org>; Wed, 10 Dec 2025 23:17:07 -0800 (PST)
+Received: by mail-pg1-f194.google.com with SMTP id 41be03b00d2f7-be9ab2335beso9239a12.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 10 Dec 2025 23:25:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1765437427; x=1766042227; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=yI6UdI0qnexS8Z4kYsCUrg2aCpCKnKcTaEhvfgwfpDM=;
-        b=OlQ+js9nMBWuiA6GKaR83263nkSpRkU47ZgeB1BCn3SxEugezXrE+D1AeRo8I85EZj
-         Mc4jKJs7u6X2h+1ZJvsYPkp8UfXUBrFdzFdrga5MIEQxdSUDK9gdtSIIWevpbLbn1ZjL
-         5a/TdcQCjzHm+VWmRjv7tmsnXstyPFF3zLV5/Ht8v4MBTZQs3Ga8OgtOTtqMxgYUVhyT
-         15/k2cVhY0eZzvR34l/w7Yyxu51EOiNX6OpaBcxsbpgKsgiGmKw0ohZYjRwMIqMRCkR9
-         arhpWw7fAMq2oAkJWvFgwt9sknPgSa8GR2AZ6fouEY+fqEDbAUeA32axhuHAxCsz4y3Q
-         l8oQ==
+        d=gmail.com; s=20230601; t=1765437907; x=1766042707; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/HDLu0IlhQKOCd/Q+dHXUw6d/SJ0PWHGGqYky9xUaFM=;
+        b=IWHkzR9eD7VPHg7XgIhEk2ythb48JeTQJIGVr/QY/Tq3qU58h35ouhLecNI/0ZO80d
+         v3xqyixGj127Cn4snF4KceUrPTRLhvDJ6P7er8xletsjAbHMpIGFtnbt1og5LRjhfXit
+         WfdafSI1QUQpC/pBl/4cCKHIN4/dRm5EyFoAZ4+bTuGy3F6j0dwOubghaxBYecp4VxZj
+         Wh9fS3f+/qbW/1NlVF/fcwXgx5x42G40OLG7bVuBmFNywxBb5KgtJHu4jyaFTnN3aJbI
+         8SfHLTfrByTKzTQkPPw/VDj26gPAdakvq2AIsfrPXfPlYiV+LS//JJN6MDMJMhqRUj8I
+         BFCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765437427; x=1766042227;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=yI6UdI0qnexS8Z4kYsCUrg2aCpCKnKcTaEhvfgwfpDM=;
-        b=PxlVk4hUYz04RAMtUDIBUEf50XKezF2KrgFHOSGrMvmcsE3y4UjZP7w+N0306hedyD
-         pipUKv9jSjoPi0OCmX7Pl0JwLvPfL2Q3clpa8sJ2NwRJ2RoHvdGwr1EacFuDnNqBhvTb
-         yFu1285dn4SVCAaFUN9uIU+XNpXNu4AiHcS5E3ssIVFO/75XQZxN5oFLZ+84d8RlEjms
-         CM7ULq99rC7lMQ2urKS5MXmjNdocFjpgUWTJQV49JwreDgYUN0yc8qbrtxJCqy6Pxty3
-         VI2BtNVcXo7cPFSvSjqMsko6Q2z9gWLxlxSyIVt0QeVYDhGd1CFF96/QwS6mNwCxc8d7
-         V13A==
-X-Forwarded-Encrypted: i=1; AJvYcCXid4obH4uDaV2n9TJGfwnDPJeK3gPhGhwCM5PEz4lW8Oh4MBBlkH82hCSZFTucFs9mBF09Li816ilyAg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwRxY4ik+Gxb7jsCSn1fG7bmbNBPv3QOvp1DPhAi7YgHfyOXbje
-	aXFb6FCm19zuY9hWwOzXv3AuV7kUnx2fqwUzY09+JxlEKDA/xyao/uoVPSQzzCVzbFbT9w==
-X-Gm-Gg: AY/fxX6Z7TLFcXLFboSLqMppByLKteWWuDt98aPHrYQwDTuPZuPLuOp9Obzr3Qscv6X
-	h+WxP4LH1LEerZmj64EXGpWYJ04ojJBUkEklY2y0GPCyjtNKAqLh26Z2x9h72Xf0ns8VhIiG0fY
-	d1YBzAqOacA+aKh2+dS7nyPAoAtgQDDdDJMAikklnkBnqEXQa3VyF1Z8fduQK69bjDbig3ifg2Y
-	V+yfLmKMyNtInkKGausBtaCEDYF+xal3rB2jVT5TIdZuqrVilOvlm132L/vq0JykHHdVtu7fQpM
-	sx2qS3LaoRD9wZm8RNYEdz+Xlz33yBG4cw7X5gqx+7VzQoC5t5SA7orY6Hqs/md5r4wM52aIWOs
-	e84E3HwHLDzGsCd2vMtuov2qRLOBw6kIBZyDqB8yTbD/Ll8nTJmauBCxh8NZcBVN3194aBPaVfj
-	WdlsOc/aWuBD8Qxh64nsWuIlrm7KvR8hwnEiWGZuGjCJ36Dusk7LDacg==
-X-Google-Smtp-Source: AGHT+IEjKo7oqMpStT27/QwoftSJ7EzMJesAr2utdUer9t7P6qjBKY1ubOiCJL1cLlmjgAgo2yALTA==
-X-Received: by 2002:a17:903:f8e:b0:295:2cab:dbc2 with SMTP id d9443c01a7336-29eed2b6fa3mr12044255ad.6.1765437427138;
-        Wed, 10 Dec 2025 23:17:07 -0800 (PST)
-Received: from [192.168.1.13] (tk2-240-29809.vs.sakura.ne.jp. [160.16.197.63])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29eea01723bsm14382285ad.62.2025.12.10.23.17.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 10 Dec 2025 23:17:06 -0800 (PST)
-Message-ID: <d8037cc1-ba03-4bab-8165-0b0d2fdff58f@gmail.com>
-Date: Thu, 11 Dec 2025 15:17:02 +0800
+        d=1e100.net; s=20230601; t=1765437907; x=1766042707;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/HDLu0IlhQKOCd/Q+dHXUw6d/SJ0PWHGGqYky9xUaFM=;
+        b=bd8jkyjHXUhqHL3AmW2W+H0/xbteKUYzLKM7NV6uxkcAjYbgGWiRiUJB75ZtqTu6Y4
+         7BKDn6J7meS1g+53ieuhONmS25q1F+Ar8LODAGLSpNuQJGpvsriVlQtmxlFa6eVPEjJp
+         6WGo7KCGtnn1VkaERF7OX1Ph9p0+p1ogUhe9zPzIe6bYbjVOMrPCk72pJZDY4efFEhA9
+         U+qhWu3Grjk+GoR+SOv2k9IimGKBPkV7hYCcQmH8uaLEg+RDX/ao5O6tZ0ZwA7tCSpV0
+         +2gojQCDGFWRFWaCyThCMV4slS2574ckpi/FipDunlJBQ1JRmYTIPbTRY1Nc+AVhRo5y
+         zoMg==
+X-Gm-Message-State: AOJu0YyZpaF7z/oDyYzXHBWij/gJPZEnqB1VDEaw0h8KDdnJOFbGTt5i
+	FuZSlRhd89qWCELtXKeIwP9pnbaaTXyqlBjWFjvKiEIgkPM70LjrqaI3PWj5BqunTp+VyA==
+X-Gm-Gg: AY/fxX5vaMyZEWFPwgTcmhS5MRsg1gas2PG8vhtPvg835GwP1s8dRirtcSOZqMd+a8B
+	tLpyQEejiCHmrXbatU4L8myI3Qr9jI+UlMRUogXohxA5F9xGStYZuKOtY9dCg8FR1ATOMqkVvjp
+	jbNhZtb4ueLF9nDNAn3A03qLiUMKMyV2CDlfiHkxW8B7b6bItb8hTWqkPPtVEuKIpWdQ6pELSBN
+	saqQ08WYbLIoThtl5tXL43KqqV+6ZUISy6JM3KDVBWpAAAkDoBsIX5cmH0cfYsYSMNbw5g/z1kL
+	3dHnGBMXT1LfQdLNBHwvTDMKQ1TS6xi/JFIKgzuBqe5MA9gfx/JgHwtVMJ72StyxhhNEtubknWe
+	QxUA6SKgOqu9NrTYZV6FG6QHFKVHDQ78pJ55BR2NXRuOErw5B3nFpCYcf/SiYR+QLhH8KN5f10s
+	NLMSsjN/F5tvmhDqlPxyIPKLTq/5W63nw=
+X-Google-Smtp-Source: AGHT+IF+0w706pGBv9Giih76ZQNJlVjCpJroMZvFpKvH9lqXRIuLQVB1s3Vf13mRBK37swoYGr8R0A==
+X-Received: by 2002:a05:6a00:1145:b0:7b6:ebcb:63fa with SMTP id d2e1a72fcca58-7f4f4b317c7mr1229436b3a.0.1765437906859;
+        Wed, 10 Dec 2025 23:25:06 -0800 (PST)
+Received: from SaltyKitkat ([195.88.211.122])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7f4c4ab4984sm1526520b3a.33.2025.12.10.23.25.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Dec 2025 23:25:06 -0800 (PST)
+From: Sun YangKai <sunk67188@gmail.com>
+To: linux-btrfs@vger.kernel.org
+Cc: fdmanana@kernel.org,
+	Sun YangKai <sunk67188@gmail.com>
+Subject: [PATCH v2 0/4] btrfs: some cleanups for two ctree functions
+Date: Thu, 11 Dec 2025 15:22:15 +0800
+Message-ID: <20251211072442.15920-2-sunk67188@gmail.com>
+X-Mailer: git-send-email 2.51.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] btrfs: search for larger extent maps inside
- btrfs_do_readpage()
-To: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <7b5888df903f412b05831ea5302e586cf38c231f.1765434313.git.wqu@suse.com>
-Content-Language: en-US
-From: Sun Yangkai <sunk67188@gmail.com>
-In-Reply-To: <7b5888df903f412b05831ea5302e586cf38c231f.1765434313.git.wqu@suse.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
+The first three patches is cleanups for btrfs_search_slot_for_read().
+There're only two callers that set @return_any to 1 and both of them
+is unnecessary. So @return_any and related logic could be removed.
 
+The last patch is cleanup for btrfs_prev_leaf(). Callers expect a
+valid p->slots[0] to read the item's key. So make sure btrfs_prev_leaf()
+return a valid p->slots[0] and remove related checks in callers.
 
-在 2025/12/11 14:25, Qu Wenruo 写道:
-> [CORNER CASE]
-> If we have the following file extents layout, btrfs_get_extent() can
-> return a smaller hole during read, and cause unnecessary extra tree
-> searches:
-> 
-> 	item 6 key (257 EXTENT_DATA 0) itemoff 15810 itemsize 53
-> 		generation 9 type 1 (regular)
-> 		extent data disk byte 13631488 nr 4096
-> 		extent data offset 0 nr 4096 ram 4096
-> 		extent compression 0 (none)
-> 
-> 	item 7 key (257 EXTENT_DATA 32768) itemoff 15757 itemsize 53
-> 		generation 9 type 1 (regular)
-> 		extent data disk byte 13635584 nr 4096
-> 		extent data offset 0 nr 4096 ram 4096
-> 		extent compression 0 (none)
-> 
-> In above case, range [0, 4K) and [32K, 36K) are regular extents, and
-> there is a hole in range [4K, 32K), and the fs has "no-holes" feature,
-> meaning the hole will not have a file extent item.
-> 
-> [INEFFICIENCY]
-> Assume the system has 4K page size, and we're doing readahead for range
-> [4K, 32K), no large folio yet.
-> 
->  btrfs_readahead() for range [4K, 32K)
->  |- btrfs_do_readpage() for folio 4K
->  |  |- get_extent_map() for range [4K, 8K)
->  |     |- btrfs_get_extent() for range [4K, 8K)
->  |        We hit item 6, then for the next item 7.
->  |        At this stage we know range [4K, 32K) is a hole.
->  |        But our search range is only [4K, 8K), not reaching 32K, thus
->  |        we go into not_found: tag, returning a hole em for [4K, 8K).
->  |
->  |- btrfs_do_readpage() for folio 8K
->  |  |- get_extent_map() for range [8K, 12K)
->  |     |- btrfs_get_extent() for range [8K, 12K)
->  |        We hit the same item 6, and then item 7.
->  |        But still we goto not_found tag, inserting a new hole em,
->  |        which will be merged with previous one.
->  |
->  | [ Repeat the same btrfs_get_extent() calls until the end ]
-> 
-> So we're calling btrfs_get_extent() again and again, just for a
-> different part of the same hole range [4K, 32K).
-> 
-> [ENHANCEMENT]
-> Make btrfs_do_readpage() to search for a larger extent map if readahead
-> is involved.
-> 
-> For btrfs_readahead() we have bio_ctrl::ractl set, and lock extents for
-> the whole readahead range.
-> 
-> If we find bio_ctrl::ractl is set, we can use that end range as extent
-> map search end, this allows btrfs_get_extent() to return a much larger
-> hole, thus reduce the need to call btrfs_get_extent() again and again.
+No functional changes.
 
-I like the idea to reduce unnecessary tree searches. After reading more context
-about this, I wonder why we don't set the length of the hole as it is when
-searching the extent? So no matter how long the hole is, we could just return
-its range in one search.
+Changelog:
+V2:
 
-> 
->  btrfs_readahead() for range [4K, 32K)
->  |- btrfs_do_readpage() for folio 4K
->  |  |- get_extent_map() for range [4K, 32K)
->  |     |- btrfs_get_extent() for range [4K, 32K)
->  |        We hit item 6, then for the next item 7.
->  |        At this stage we know range [4K, 32K) is a hole.
->  |        So the hole em for range [4K, 32K) is returned.
->  |
->  |- btrfs_do_readpage() for folio 8K
->  |  |- get_extent_map() for range [8K, 32K)
->  |     The cached hole em range [4K, 32K) covers the range,
->  |     and reuse that em.
->  |
->  | [ Repeat the same btrfs_get_extent() calls until the end ]
-> 
-> Now we only call btrfs_get_extent() once for the whole range [4K, 32K),
-> other than the old 8 times.
-> 
-> Such change will reduce the overhead of reading large holes a little.
-> For current experimental build (with larger folios) on aarch64, there
-> will be a tiny but consistent ~1% improvement reading a large hole file:
-> 
->  Reading a 1GiB sparse file (all hole) using xfs_io, with 64K block
->  size, the result is the time needed to read the whole file, reported
->  from xfs_io.
-> 
->  32 runs, experimental build (with large folios).
-> 
->  64K page size, 4K fs block size.
-> 
->  - Avg before: 0.20823 s
->  - Avg after:  0.20635 s
->  - Diff:   -0.9%
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
-> Changelog:
-> v2:
-> - Add a benchmark result for the enhancement
-> - Use if () to assigned @locked_end
->   This drops the const prefix thought.
+- Add assertion in btrfs_search_slot_for_read() to prevent misuse
+- Remove unnecessary call btrfs_prev_leaf in btrfs_search_slot_for_read()
+- Add details about changes in patch 4
+
+Sun YangKai (4):
+  btrfs: don't set @return_any for btrfs_search_slot_for_read in
+    btrfs_read_qgroup_config
+  btrfs: don't set return_any @return_any for btrfs_search_slot_for_read
+    in get_last_extent()
+  btrfs: cleanup btrfs_search_slot_for_read()
+  btrfs: ctree: cleanup btrfs_prev_leaf()
+
+ fs/btrfs/ctree.c           | 143 +++++++------------------------------
+ fs/btrfs/ctree.h           |   3 +-
+ fs/btrfs/free-space-tree.c |   2 +-
+ fs/btrfs/qgroup.c          |  10 +--
+ fs/btrfs/send.c            |  22 +++---
+ 5 files changed, 42 insertions(+), 138 deletions(-)
+
+-- 
+2.51.2
+
 
