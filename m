@@ -1,265 +1,246 @@
-Return-Path: <linux-btrfs+bounces-19639-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19640-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D3308CB4DDD
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Dec 2025 07:23:59 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5582BCB4DF0
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Dec 2025 07:25:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 3011F3010CE7
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Dec 2025 06:23:26 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 52782300A9E2
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Dec 2025 06:25:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 557D5286418;
-	Thu, 11 Dec 2025 06:23:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24CE928850D;
+	Thu, 11 Dec 2025 06:25:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="UGbeqsLb";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="OU/L7EQM"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-oo1-f78.google.com (mail-oo1-f78.google.com [209.85.161.78])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A16122D785
-	for <linux-btrfs@vger.kernel.org>; Thu, 11 Dec 2025 06:23:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.78
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1473D18C933
+	for <linux-btrfs@vger.kernel.org>; Thu, 11 Dec 2025 06:25:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765434204; cv=none; b=MZLB1CPu0IjWVBI3ulMEjBX5j79+eAON6a0mSOpGmg/9v1eJbJggt5m0ZyEovDI5Elzug3+dpbK/BmbaKqsmfMth2a4qpVEHYxt1Lll+vIsCNBrrezZGyPX9KB14+48GhLr9H1mlkR1H/2rSy3FfJVIx7zw4VTtXTEacQCBB1U0=
+	t=1765434351; cv=none; b=S50ADn8GHrt0JSrj1/fd3B1/EgIVTe7ukyRfvz9qW75Ckv+IpXQYpTD0TsfmH2zwZ60d8GlIIokzARyEoabgMO7F+34aO72ANDxPS5g3KvDVlSeCLMaw30Nfg2eVXLYtNKsu0QHmoD5/sBhNqCv7NzJEaGXyg9vn6ZQQQOW9Qs0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765434204; c=relaxed/simple;
-	bh=8+KVcNiJN5JFRlir9aikWtOUKNeAelbQU6uUFJ14MKc=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=HjTMPpYuQB3tMZBrc+8+3lddt47DsRUFlApns6DU98xUwy/RoNbniQQgDu/WVQ3oztZKLi1BsCE5Ey14D2ZD6jZjUSy+kdYqVre2ztG00hfFcxoMnpa5dJVobTUQA27EeGMIDeY5sa41tHWGXLSV+TL3S+EVxk2tstVpPORRse0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.161.78
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-oo1-f78.google.com with SMTP id 006d021491bc7-65b2fb9d54bso997261eaf.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 10 Dec 2025 22:23:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765434202; x=1766039002;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=pDYt87XHF/+m9DDrKKMEeZN6IhYeBSH3J+MEDa6S870=;
-        b=caHcratZ4govZCWwsANcUPLD2Iz9TurL04qfO2XCfXOR4ufl3hHl/HBqDLoQhpVr9O
-         3fNOMrds4tqIesOWQ7UVrcQu7b7mTGfvYBtcyK9qwEO0HoaCrX1oEQhXDdOW0oj6UgLq
-         SXJWFfIyBbwuETx7kQfMAoQAF2BZ81mA/1THurd2NJh/IIxJ3Tpd1A3dBF7Qt4yJ7JWd
-         85+FcI0sZ4QRvyEtYpm0H5BRVA8+gBZ0rWZ9Tg3lKBU1QwRS1fJjS1GKJM6ewRxaC4+Y
-         IoavqwRNc7+JqCoZqQy5kDqUoLIqJMjUjyUbc16RwgQww4/a8GpUtrZCMBkXkd/OMcdH
-         16gQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW+HYZo39RWiChkRuz788dDDZswfySuC1EEAlNESSd2v6fVLE3hfXL9nJmunAMK7+DX47mNYLbwX9ysOA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxJyOfkCcnBkNHHRbP/jx0c7fFPDAvGwuvfelj3NEzpRNY8EM+o
-	oCWkaS1jYo6nGJ4phvEUovsHhqu4lMuxLbTo1hV9Z9meD3Y+Rr+Uigiuup/KytQTScpMTF9J+IB
-	VQYHak3OsGiVv+/2Gzgp2KQo02bBt7KJpCWCrTGVrnyZvPg5WmEQvOioUvVc=
-X-Google-Smtp-Source: AGHT+IGxMBJUvZAuzmWjJmInuhi0bv8bDVNIST0Ak1oSHsiVDxG376bpBLFm8vMBtPEHbNcdoFQwkHzElGtMLVzMdhDhIHUEDwm9
+	s=arc-20240116; t=1765434351; c=relaxed/simple;
+	bh=mGmTlGY7L/r4mcNbVIrJMt0XiRwwNiF9lvGKR9qPfm4=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=ClFVds60LuTLbChofYVlSCZ/L0FqwjIoBHpOZ2eUfYVUrdiohTmFBe2NslReQ/H/7MpWHPumlcLR2VKdjPpk617WH1Xc63CoNMzdo8Rajo9qVE0T1ljudmxb9m1OOgzqJ5ZdssB6LaSRm4HhSFb3M6tmO6Qx6qijG/MG6dKHmJ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=UGbeqsLb; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=OU/L7EQM; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 08BB23370C
+	for <linux-btrfs@vger.kernel.org>; Thu, 11 Dec 2025 06:25:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1765434347; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=r9tZXSv9IXdS7luFkJGGedbqlnA3BYeHHcvt+LduRK4=;
+	b=UGbeqsLbeHrY3+5L7W+LtwLeFkNdvPfFpIF0sRFVq96cdHaEtUH6/qMvyTdLpMjeK1jWGP
+	DnX2vyb42x5acif83M80y7H9lWW4O5Ol2iOsH/ZCiJBm8tU9BGnQq+rY+ZVwGxOH4wCbAJ
+	IctQA5FkjgTcnuw+GNrkE60pHOMa0Ls=
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1765434346; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=r9tZXSv9IXdS7luFkJGGedbqlnA3BYeHHcvt+LduRK4=;
+	b=OU/L7EQMNrVK6JYjiLSfx69dLlnVT3jqYI/KQR4Y3iGtw5snYuT6oWELk2T05Taqu+u8IH
+	1z+7DTxarNEwCxY6eHMXNBtDzzwtzrnVENFPOWuO536kle/x88aOn89WLQeCP4MYdvx0zd
+	2LH0OF6Pp50JL8t7RAlyt7b6BcU3acc=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3EA0F3EA63
+	for <linux-btrfs@vger.kernel.org>; Thu, 11 Dec 2025 06:25:45 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 9/1FAOljOmmuVwAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Thu, 11 Dec 2025 06:25:45 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH v2] btrfs: search for larger extent maps inside btrfs_do_readpage()
+Date: Thu, 11 Dec 2025 16:55:23 +1030
+Message-ID: <7b5888df903f412b05831ea5302e586cf38c231f.1765434313.git.wqu@suse.com>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a4a:e0d3:0:b0:659:9a49:8e2b with SMTP id
- 006d021491bc7-65b37f71c6bmr585207eaf.29.1765434202311; Wed, 10 Dec 2025
- 22:23:22 -0800 (PST)
-Date: Wed, 10 Dec 2025 22:23:22 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <693a635a.a70a0220.33cd7b.0029.GAE@google.com>
-Subject: [syzbot] [btrfs?] memory leak in qgroup_reserve_data
-From: syzbot <syzbot+2f8aa76e6acc9fce6638@syzkaller.appspotmail.com>
-To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Spam-Flag: NO
+X-Spam-Score: -2.70
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.70 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	MIME_GOOD(-0.10)[text/plain];
+	NEURAL_HAM_SHORT(-0.10)[-0.483];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCPT_COUNT_ONE(0.00)[1];
+	ARC_NA(0.00)[];
+	TO_DN_NONE(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.com:mid]
 
-Hello,
+[CORNER CASE]
+If we have the following file extents layout, btrfs_get_extent() can
+return a smaller hole during read, and cause unnecessary extra tree
+searches:
 
-syzbot found the following issue on:
+	item 6 key (257 EXTENT_DATA 0) itemoff 15810 itemsize 53
+		generation 9 type 1 (regular)
+		extent data disk byte 13631488 nr 4096
+		extent data offset 0 nr 4096 ram 4096
+		extent compression 0 (none)
 
-HEAD commit:    ba65a4e7120a Merge tag 'clk-for-linus' of git://git.kernel..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=149a1992580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=69400c231dedfdcf
-dashboard link: https://syzkaller.appspot.com/bug?extid=2f8aa76e6acc9fce6638
-compiler:       gcc (Debian 12.2.0-14+deb12u1) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=17674ec2580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=129a1992580000
+	item 7 key (257 EXTENT_DATA 32768) itemoff 15757 itemsize 53
+		generation 9 type 1 (regular)
+		extent data disk byte 13635584 nr 4096
+		extent data offset 0 nr 4096 ram 4096
+		extent compression 0 (none)
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/35dd946c3f76/disk-ba65a4e7.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/4279760dbda5/vmlinux-ba65a4e7.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/66920d2c9825/bzImage-ba65a4e7.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/a1009b9f463a/mount_0.gz
-  fsck result: OK (log: https://syzkaller.appspot.com/x/fsck.log?x=15666eb4580000)
+In above case, range [0, 4K) and [32K, 36K) are regular extents, and
+there is a hole in range [4K, 32K), and the fs has "no-holes" feature,
+meaning the hole will not have a file extent item.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+2f8aa76e6acc9fce6638@syzkaller.appspotmail.com
+[INEFFICIENCY]
+Assume the system has 4K page size, and we're doing readahead for range
+[4K, 32K), no large folio yet.
 
-BUG: memory leak
-unreferenced object 0xffff888108c93440 (size 64):
-  comm "syz.0.25", pid 6287, jiffies 4294945820
-  hex dump (first 32 bytes):
-    00 10 00 00 00 00 00 00 01 00 00 00 00 00 00 00  ................
-    50 36 c9 08 81 88 ff ff 50 36 c9 08 81 88 ff ff  P6......P6......
-  backtrace (crc 5115bfd6):
-    kmemleak_alloc_recursive include/linux/kmemleak.h:44 [inline]
-    slab_post_alloc_hook mm/slub.c:4953 [inline]
-    slab_alloc_node mm/slub.c:5258 [inline]
-    __kmalloc_cache_noprof+0x3b2/0x570 mm/slub.c:5766
-    kmalloc_noprof include/linux/slab.h:957 [inline]
-    extent_changeset_alloc fs/btrfs/extent_io.h:203 [inline]
-    qgroup_reserve_data+0x42c/0x4d0 fs/btrfs/qgroup.c:4199
-    btrfs_qgroup_reserve_data+0x9a/0xb0 fs/btrfs/qgroup.c:4257
-    btrfs_check_data_free_space+0x101/0x200 fs/btrfs/delalloc-space.c:164
-    btrfs_page_mkwrite+0x180/0xd30 fs/btrfs/file.c:1888
-    do_page_mkwrite+0x6c/0x100 mm/memory.c:3528
-    wp_page_shared mm/memory.c:3929 [inline]
-    do_wp_page+0x4fe/0x1d50 mm/memory.c:4148
-    handle_pte_fault mm/memory.c:6289 [inline]
-    __handle_mm_fault+0x125f/0x1e50 mm/memory.c:6411
-    handle_mm_fault+0x31c/0x630 mm/memory.c:6580
-    do_user_addr_fault+0x34f/0xba0 arch/x86/mm/fault.c:1336
-    handle_page_fault arch/x86/mm/fault.c:1476 [inline]
-    exc_page_fault+0x64/0xb0 arch/x86/mm/fault.c:1532
-    asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:618
+ btrfs_readahead() for range [4K, 32K)
+ |- btrfs_do_readpage() for folio 4K
+ |  |- get_extent_map() for range [4K, 8K)
+ |     |- btrfs_get_extent() for range [4K, 8K)
+ |        We hit item 6, then for the next item 7.
+ |        At this stage we know range [4K, 32K) is a hole.
+ |        But our search range is only [4K, 8K), not reaching 32K, thus
+ |        we go into not_found: tag, returning a hole em for [4K, 8K).
+ |
+ |- btrfs_do_readpage() for folio 8K
+ |  |- get_extent_map() for range [8K, 12K)
+ |     |- btrfs_get_extent() for range [8K, 12K)
+ |        We hit the same item 6, and then item 7.
+ |        But still we goto not_found tag, inserting a new hole em,
+ |        which will be merged with previous one.
+ |
+ | [ Repeat the same btrfs_get_extent() calls until the end ]
 
-BUG: memory leak
-unreferenced object 0xffff888108c93640 (size 64):
-  comm "syz.0.25", pid 6287, jiffies 4294945820
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 ff 0f 00 00 00 00 00 00  ................
-    50 34 c9 08 81 88 ff ff 50 34 c9 08 81 88 ff ff  P4......P4......
-  backtrace (crc d90ae07a):
-    kmemleak_alloc_recursive include/linux/kmemleak.h:44 [inline]
-    slab_post_alloc_hook mm/slub.c:4953 [inline]
-    slab_alloc_node mm/slub.c:5258 [inline]
-    __kmalloc_cache_noprof+0x3b2/0x570 mm/slub.c:5766
-    kmalloc_noprof include/linux/slab.h:957 [inline]
-    kzalloc_noprof include/linux/slab.h:1094 [inline]
-    ulist_prealloc+0x7a/0xd0 fs/btrfs/ulist.c:114
-    extent_changeset_prealloc fs/btrfs/extent_io.h:213 [inline]
-    set_extent_bit+0x104/0xc40 fs/btrfs/extent-io-tree.c:1083
-    btrfs_set_record_extent_bits+0x56/0xa0 fs/btrfs/extent-io-tree.c:1868
-    qgroup_reserve_data+0x116/0x4d0 fs/btrfs/qgroup.c:4206
-    btrfs_qgroup_reserve_data+0x9a/0xb0 fs/btrfs/qgroup.c:4257
-    btrfs_check_data_free_space+0x101/0x200 fs/btrfs/delalloc-space.c:164
-    btrfs_page_mkwrite+0x180/0xd30 fs/btrfs/file.c:1888
-    do_page_mkwrite+0x6c/0x100 mm/memory.c:3528
-    wp_page_shared mm/memory.c:3929 [inline]
-    do_wp_page+0x4fe/0x1d50 mm/memory.c:4148
-    handle_pte_fault mm/memory.c:6289 [inline]
-    __handle_mm_fault+0x125f/0x1e50 mm/memory.c:6411
-    handle_mm_fault+0x31c/0x630 mm/memory.c:6580
-    do_user_addr_fault+0x34f/0xba0 arch/x86/mm/fault.c:1336
-    handle_page_fault arch/x86/mm/fault.c:1476 [inline]
-    exc_page_fault+0x64/0xb0 arch/x86/mm/fault.c:1532
-    asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:618
+So we're calling btrfs_get_extent() again and again, just for a
+different part of the same hole range [4K, 32K).
 
-BUG: memory leak
-unreferenced object 0xffff8881294d0cc0 (size 64):
-  comm "syz.0.25", pid 6288, jiffies 4294945820
-  hex dump (first 32 bytes):
-    00 10 00 00 00 00 00 00 01 00 00 00 00 00 00 00  ................
-    d0 03 4d 29 81 88 ff ff d0 03 4d 29 81 88 ff ff  ..M)......M)....
-  backtrace (crc 99a57742):
-    kmemleak_alloc_recursive include/linux/kmemleak.h:44 [inline]
-    slab_post_alloc_hook mm/slub.c:4953 [inline]
-    slab_alloc_node mm/slub.c:5258 [inline]
-    __kmalloc_cache_noprof+0x3b2/0x570 mm/slub.c:5766
-    kmalloc_noprof include/linux/slab.h:957 [inline]
-    extent_changeset_alloc fs/btrfs/extent_io.h:203 [inline]
-    qgroup_reserve_data+0x42c/0x4d0 fs/btrfs/qgroup.c:4199
-    btrfs_qgroup_reserve_data+0x9a/0xb0 fs/btrfs/qgroup.c:4257
-    btrfs_check_data_free_space+0x101/0x200 fs/btrfs/delalloc-space.c:164
-    btrfs_page_mkwrite+0x180/0xd30 fs/btrfs/file.c:1888
-    do_page_mkwrite+0x6c/0x100 mm/memory.c:3528
-    wp_page_shared mm/memory.c:3929 [inline]
-    do_wp_page+0x4fe/0x1d50 mm/memory.c:4148
-    handle_pte_fault mm/memory.c:6289 [inline]
-    __handle_mm_fault+0x125f/0x1e50 mm/memory.c:6411
-    handle_mm_fault+0x31c/0x630 mm/memory.c:6580
-    do_user_addr_fault+0x239/0xba0 arch/x86/mm/fault.c:1387
-    handle_page_fault arch/x86/mm/fault.c:1476 [inline]
-    exc_page_fault+0x64/0xb0 arch/x86/mm/fault.c:1532
-    asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:618
+[ENHANCEMENT]
+Make btrfs_do_readpage() to search for a larger extent map if readahead
+is involved.
 
-BUG: memory leak
-unreferenced object 0xffff8881294d03c0 (size 64):
-  comm "syz.0.25", pid 6288, jiffies 4294945820
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 ff 0f 00 00 00 00 00 00  ................
-    d0 0c 4d 29 81 88 ff ff d0 0c 4d 29 81 88 ff ff  ..M)......M)....
-  backtrace (crc edd2342):
-    kmemleak_alloc_recursive include/linux/kmemleak.h:44 [inline]
-    slab_post_alloc_hook mm/slub.c:4953 [inline]
-    slab_alloc_node mm/slub.c:5258 [inline]
-    __kmalloc_cache_noprof+0x3b2/0x570 mm/slub.c:5766
-    kmalloc_noprof include/linux/slab.h:957 [inline]
-    kzalloc_noprof include/linux/slab.h:1094 [inline]
-    ulist_prealloc+0x7a/0xd0 fs/btrfs/ulist.c:114
-    extent_changeset_prealloc fs/btrfs/extent_io.h:213 [inline]
-    set_extent_bit+0x104/0xc40 fs/btrfs/extent-io-tree.c:1083
-    btrfs_set_record_extent_bits+0x56/0xa0 fs/btrfs/extent-io-tree.c:1868
-    qgroup_reserve_data+0x116/0x4d0 fs/btrfs/qgroup.c:4206
-    btrfs_qgroup_reserve_data+0x9a/0xb0 fs/btrfs/qgroup.c:4257
-    btrfs_check_data_free_space+0x101/0x200 fs/btrfs/delalloc-space.c:164
-    btrfs_page_mkwrite+0x180/0xd30 fs/btrfs/file.c:1888
-    do_page_mkwrite+0x6c/0x100 mm/memory.c:3528
-    wp_page_shared mm/memory.c:3929 [inline]
-    do_wp_page+0x4fe/0x1d50 mm/memory.c:4148
-    handle_pte_fault mm/memory.c:6289 [inline]
-    __handle_mm_fault+0x125f/0x1e50 mm/memory.c:6411
-    handle_mm_fault+0x31c/0x630 mm/memory.c:6580
-    do_user_addr_fault+0x239/0xba0 arch/x86/mm/fault.c:1387
-    handle_page_fault arch/x86/mm/fault.c:1476 [inline]
-    exc_page_fault+0x64/0xb0 arch/x86/mm/fault.c:1532
-    asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:618
+For btrfs_readahead() we have bio_ctrl::ractl set, and lock extents for
+the whole readahead range.
 
-BUG: memory leak
-unreferenced object 0xffff888108c93600 (size 64):
-  comm "syz.0.25", pid 6287, jiffies 4294945820
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    10 36 c9 08 81 88 ff ff 10 36 c9 08 81 88 ff ff  .6.......6......
-  backtrace (crc cafc2d90):
-    kmemleak_alloc_recursive include/linux/kmemleak.h:44 [inline]
-    slab_post_alloc_hook mm/slub.c:4953 [inline]
-    slab_alloc_node mm/slub.c:5258 [inline]
-    __kmalloc_cache_noprof+0x3b2/0x570 mm/slub.c:5766
-    kmalloc_noprof include/linux/slab.h:957 [inline]
-    extent_changeset_alloc fs/btrfs/extent_io.h:203 [inline]
-    qgroup_reserve_data+0x42c/0x4d0 fs/btrfs/qgroup.c:4199
-    btrfs_qgroup_reserve_data+0x2e/0xb0 fs/btrfs/qgroup.c:4250
-    btrfs_check_data_free_space+0x101/0x200 fs/btrfs/delalloc-space.c:164
-    btrfs_page_mkwrite+0x180/0xd30 fs/btrfs/file.c:1888
-    do_page_mkwrite+0x6c/0x100 mm/memory.c:3528
-    wp_page_shared mm/memory.c:3929 [inline]
-    do_wp_page+0x4fe/0x1d50 mm/memory.c:4148
-    handle_pte_fault mm/memory.c:6289 [inline]
-    __handle_mm_fault+0x125f/0x1e50 mm/memory.c:6411
-    handle_mm_fault+0x31c/0x630 mm/memory.c:6580
-    do_user_addr_fault+0x34f/0xba0 arch/x86/mm/fault.c:1336
-    handle_page_fault arch/x86/mm/fault.c:1476 [inline]
-    exc_page_fault+0x64/0xb0 arch/x86/mm/fault.c:1532
-    asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:618
+If we find bio_ctrl::ractl is set, we can use that end range as extent
+map search end, this allows btrfs_get_extent() to return a much larger
+hole, thus reduce the need to call btrfs_get_extent() again and again.
 
-connection error: failed to recv *flatrpc.ExecutorMessageRawT: EOF
+ btrfs_readahead() for range [4K, 32K)
+ |- btrfs_do_readpage() for folio 4K
+ |  |- get_extent_map() for range [4K, 32K)
+ |     |- btrfs_get_extent() for range [4K, 32K)
+ |        We hit item 6, then for the next item 7.
+ |        At this stage we know range [4K, 32K) is a hole.
+ |        So the hole em for range [4K, 32K) is returned.
+ |
+ |- btrfs_do_readpage() for folio 8K
+ |  |- get_extent_map() for range [8K, 32K)
+ |     The cached hole em range [4K, 32K) covers the range,
+ |     and reuse that em.
+ |
+ | [ Repeat the same btrfs_get_extent() calls until the end ]
 
+Now we only call btrfs_get_extent() once for the whole range [4K, 32K),
+other than the old 8 times.
 
+Such change will reduce the overhead of reading large holes a little.
+For current experimental build (with larger folios) on aarch64, there
+will be a tiny but consistent ~1% improvement reading a large hole file:
+
+ Reading a 1GiB sparse file (all hole) using xfs_io, with 64K block
+ size, the result is the time needed to read the whole file, reported
+ from xfs_io.
+
+ 32 runs, experimental build (with large folios).
+
+ 64K page size, 4K fs block size.
+
+ - Avg before: 0.20823 s
+ - Avg after:  0.20635 s
+ - Diff:   -0.9%
+
+Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Changelog:
+v2:
+- Add a benchmark result for the enhancement
+- Use if () to assigned @locked_end
+  This drops the const prefix thought.
+---
+ fs/btrfs/extent_io.c | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index a4b74023618d..6caaf6b6fdce 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -998,11 +998,17 @@ static int btrfs_do_readpage(struct folio *folio, struct extent_map **em_cached,
+ 	u64 start = folio_pos(folio);
+ 	const u64 end = start + folio_size(folio) - 1;
+ 	u64 extent_offset;
++	u64 locked_end;
+ 	u64 last_byte = i_size_read(inode);
+ 	struct extent_map *em;
+ 	int ret = 0;
+ 	const size_t blocksize = fs_info->sectorsize;
+ 
++	if (bio_ctrl->ractl)
++		locked_end = readahead_pos(bio_ctrl->ractl) + readahead_length(bio_ctrl->ractl) - 1;
++	else
++		locked_end = end;
++
+ 	ret = set_folio_extent_mapped(folio);
+ 	if (ret < 0) {
+ 		folio_unlock(folio);
+@@ -1036,7 +1042,14 @@ static int btrfs_do_readpage(struct folio *folio, struct extent_map **em_cached,
+ 			end_folio_read(folio, true, cur, blocksize);
+ 			continue;
+ 		}
+-		em = get_extent_map(BTRFS_I(inode), folio, cur, end - cur + 1, em_cached);
++		/*
++		 * Search extent map for the whole locked range.
++		 * This will allow btrfs_get_extent() to return a larger hole
++		 * when possible.
++		 * This can reduce duplicated btrfs_get_extent() calls for large
++		 * holes.
++		 */
++		em = get_extent_map(BTRFS_I(inode), folio, cur, locked_end - cur + 1, em_cached);
+ 		if (IS_ERR(em)) {
+ 			end_folio_read(folio, false, cur, end + 1 - cur);
+ 			return PTR_ERR(em);
+-- 
+2.52.0
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
