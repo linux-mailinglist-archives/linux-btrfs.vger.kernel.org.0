@@ -1,81 +1,79 @@
-Return-Path: <linux-btrfs+bounces-19676-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19677-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 161FECB7631
-	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Dec 2025 00:28:05 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1AA0CB76C1
+	for <lists+linux-btrfs@lfdr.de>; Fri, 12 Dec 2025 00:55:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 19A0E30145B6
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Dec 2025 23:27:58 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 68A523003847
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Dec 2025 23:55:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9F762C237F;
-	Thu, 11 Dec 2025 23:27:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3456F2DC773;
+	Thu, 11 Dec 2025 23:55:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="AGEER5FT"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="dUWM39PL"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F159260569
-	for <linux-btrfs@vger.kernel.org>; Thu, 11 Dec 2025 23:27:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 714D5267729
+	for <linux-btrfs@vger.kernel.org>; Thu, 11 Dec 2025 23:55:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765495676; cv=none; b=X2G6CB6QsCrc6sod3pFlx0xdV5Grco+Vx7pmiq1CTE8Bs+nuxLyyrrEmv44l2YVqPqMcL+V8Z5KOR2lk1ZGbZ6MrOWuJyMmr1VtBQg5wn2JAqOz3n3NDxxlx2twTfgByeK8Ogd9q5UCQK8F1k7AR3CQkmNFlNsWRGIjIukZLUe8=
+	t=1765497327; cv=none; b=GCsqLpxl0p5rfxSR9B2BVDo9kbatbTznLNZGJHpMKgQez3PoWO5hjUvNLTrv/QMWEiSwSxGYJkJ7X/HVxL/5q0mB6xqy+thRIG7bTXKRSxX8QYuVswa60RUIQVdP4tGuBrbFRHyyySwEEyd/n2UkJLQ/P5RQQ56A8O3/hZjkMlg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765495676; c=relaxed/simple;
-	bh=ErYrXsseykqL4vyJcZpv7WuBvkHSV25tTr6eG/X2dOI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=Sgo+RSQwiau31WjjLI34M2+SGS9tK65yiswJgERYxid80rkWGA/iXdupPWOd7mM/v53KcPH2P+4Tf8+zpKy4Md0esuitSjMjMLutQNLhPCcaI/mzC2lhmgM1jeRKkU94Liu4pCzkqpVuqpRO3acsCQonO8iihmEQnm77JhaBkQA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=AGEER5FT; arc=none smtp.client-ip=209.85.128.46
+	s=arc-20240116; t=1765497327; c=relaxed/simple;
+	bh=DfyJG5pXuo8UbFyuUmBIW7BQ6lvNn/kzEkXGzgccCmc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=P6g/IRD+02GMmpUi/mOAw6xXT/0vuihlDpFFz9YcRZcG7FBBTBrrcnQbm7eXMSEefYDhWeI4gVmy84885rQORKzJSH9SBuQEd5DBcf6y9mXgVmBav4UVmATn+td15xzaYb0/Tq9dBuYTt3at/F3nRpG9zBiHg0eA3jdalwSscOc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=dUWM39PL; arc=none smtp.client-ip=209.85.128.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-47775fb6c56so5334475e9.1
-        for <linux-btrfs@vger.kernel.org>; Thu, 11 Dec 2025 15:27:52 -0800 (PST)
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-47a80d4a065so4928925e9.2
+        for <linux-btrfs@vger.kernel.org>; Thu, 11 Dec 2025 15:55:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1765495671; x=1766100471; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1765497323; x=1766102123; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=fYC9VHReEvX3Minrq38RSpVZe17Y9HGfiy5EpKAJvjM=;
-        b=AGEER5FTjAph0iSFK4jrhBdp4HGYOjehNMGhVts6COP1fiZvhGdnRJf9FJENFN2Uhk
-         nmr6N9AYVjcAu0tPjPJ5duJ55xGwWWuFkQ+PmrJEQW8PoP0KTvAwkMjEDCDYxG7FAHeh
-         HTlpEHJMT7uZPcmoVXdXW5l7cG4FDZ9HOd1H1r/IFX68DlXjeFV0dOWAAbcgcGROjf4b
-         ajtH2CzO9uuv9o2Irlzy+2WAPiFiNP8srVE/nnKiRfFEc34A8arZnDPVgggGPPLH6ku+
-         X/WiwtbsrQ6el5y15BmwivpuxOjmpJINrh+7HFHsp83B7hfdIAN+dJqnU9kLjQT8gXoT
-         MUIw==
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=h45n5mTZUR7eR6k8c732Tpj4q4YJmSJHzrpU0dL1c94=;
+        b=dUWM39PL9WLpjRaQ7hczLKzeJ/B1XHnm7BN/JgNQTqzBL1J5Qrk4d4V+jlKj1rQSJu
+         E1S/CfW/sdVen9nAPDJXKjGG6868LRKeaAU1mP2uwb6xA4rm0WKnJIccNj2votenRoFq
+         sxj+9q8KvLKqMaj4bMpqZ8hUo9igWXeBMKPYs/KWFW9EAq2fQr4pANDTgoNIvslrIQxP
+         NHRQVjGnWPG+SK5BJ4AA9FtZyAJj2DbABOI8mUM2saBJg9dZWEn4LQ3NHealKlSlOcca
+         BI2nDQ6bYZHzXNBuJT5lmVLYPrUmDfxbgUCPDhW/uqxsygwxPkeWEsorle5dKlUQW0iZ
+         2SBQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765495671; x=1766100471;
+        d=1e100.net; s=20230601; t=1765497323; x=1766102123;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=fYC9VHReEvX3Minrq38RSpVZe17Y9HGfiy5EpKAJvjM=;
-        b=nGKjh+YnnABa7ZASIZCZwjXs1st6LaY1+GRRNxpQBqDJAC3aS4hrzfMqD4P4KQBs/x
-         aP3fXPHh1iDECSkhvnI8DpFFVzCHFpTGQQ5rLO/+vjYSI7A2AXefksmPc+uiI4tqxmt5
-         D+mmPzFZKGpTQKzHxbMGxJ+QPbFPl2YdAtt3EEJDOYvp2ZZEGUyq7GLfwiupu0UkEPkI
-         xFzOhji/3iXYpM4g3Ok0RtSFwMfFtzaphUtWeepJPcsk67U8frRJ5U1KkKALdthJK9sD
-         ny0qCAKicbEWpZYuyAJQMIwimT6ouqLTlYrAqFVFpAty7O+wokjF98pqwuI1NC9xKml2
-         5SIA==
-X-Forwarded-Encrypted: i=1; AJvYcCX7z46LGaY+IaIaVxGPvItpIcPGZU94IU3yHX8hQBJQle/wEVOAghlBH9uv1ooPMTtzdUZ85OeTB0Wptg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzUVrRFcmXT6qlC5D6xSpq2FMgDA5mANfHAdy0tssRQJriLB/Mr
-	3Q9lyup3+TYNBpO8Q6tAPIpOKKDtjWlqVmzp75IFqrmwIF3DdPsFfezfOKNMqYvMcwlDyRBaGQ5
-	1PTgY
-X-Gm-Gg: AY/fxX48DdM88ZL/2uWko3sv3MJCyEFaThriGRlV/qjFs0Z/NIHnnDHOQL+SbROgUrU
-	gdkzt+sEWp8hlOFTGtLuvj+acRg24IcOf+ItK/bvmTq0WHLqEpCoB58AYdldMCcdhBVXeRhRejj
-	k1IHVbS3Ljqm7Vcbjfjh7Fiwy1Yj+mgQHgQfChJuKK+sGVrmHXoH1Y9jF4kkDk6zI+kAOuJ8pPg
-	Js2vpD/X0Bm4m0Oob3nxHmbR8Z4uC7P0EGejFdVxdhvJpTD7ZESz3ZVxpRG2hZrgpVzeiTvAaFs
-	hqLXkODxB32PURf0yzCfys6mQ+iydJx7hCb2Mh/g7Wk6F3A33z0tK9rjnSbSMDdfXtCMOoQFA6c
-	8DR98z8fV2ue99G+xf1vIJzCgU0/OwH/4sLkT9Cwk/WXzeW4/cenJJsI6KuYb7W22IWzc+lPXU4
-	DAqbG9h5FFv0FxItxpZ6JRVjOqsvpNxR5z9+331KQ=
-X-Google-Smtp-Source: AGHT+IEWyyRzNb6JcIliJhyBJL2Ou9WabpnUcbp3AdLXrFnPDn3FcyW6fgfZP3XhkJbZEtATKnV19g==
-X-Received: by 2002:a05:600c:1991:b0:479:3a87:208f with SMTP id 5b1f17b1804b1-47a8f9164d5mr484545e9.36.1765495671496;
-        Thu, 11 Dec 2025 15:27:51 -0800 (PST)
+        bh=h45n5mTZUR7eR6k8c732Tpj4q4YJmSJHzrpU0dL1c94=;
+        b=RcWCZzWzX3OPrpZrQZJ9vsk0wJHtrOM+wh9kx+iOGxKQlUppqXrzzI0TBeMAVJ/SVt
+         x7lgpljenWG/km9q+HBkS7FRZniwdTvjMwZIsstqYlZem8vjT0JesnAVqdSFdEGntXEe
+         K8Oa/GdxHcl763cNVNI26TsV1MCNvxU91w7Qy9SH3OFfvGVM97lD+w5/hzaGezNf5tsB
+         UHP2S7BsQpHbUEHtX8JfpJ5Nd7Qy9Uk4DpgTWEtbDqr5TiW6eqI6At4pge8JPqUmilW5
+         4Bx+m8nxnTO02hQc4zUiIGZ06lFJmJML7Tr++KhU0UsS4KJJbOoy8kDSOixZUGGzfTM5
+         DMIQ==
+X-Gm-Message-State: AOJu0Yx5O62mKH934jpddsLCtBpGOAWaMBd3PpMhp/ldqIrdFEWr9AU9
+	fqeP+WF3/A3UB49MlFPP/sk+8bJaqKkPzggcNcRhqZ7JlEWT0KBkxNE+htaZ5BMUL9Y=
+X-Gm-Gg: AY/fxX5cB1vh8/zJ3oIMOYPQCFLbBajwZMR044SKgLOri0d7R1L96DAfyue3yTsNeHr
+	hsKDvfbFu2XyWN0LcHiA94j4qErtqx+NIRsYbOuavCtn38MywTOsWsN52zpl6LKh9vZVTFCSEra
+	yCCQ/LC+Id6dkXkowsX3hCdfX5uJJWsneR0GfCnqycMb4UbN0HWFZ3A+T4dnxP3mFVZbWwdmBKd
+	ypnU9pXp3BI3l4JYD39WFJzE9BfXQnOOngBgbcCvcsM5+6/EFUixwRVeJ/gT44XUQPQpUet8Ww5
+	hbkEu/L5Aih3rKM0Qu7Oun7MCV/4tr1n2q7PDPBe7+bA8H1/dmO+zREbQuy0Gu7EreuADyfCGLK
+	BoJfyz/swEnu0EUkyJAobL/WNHMlTl531x/fMzoERA4zgcJSboHwAA/125Qbgy6o2K/eKfxLj7R
+	IcnIyXz6ljfkFITJpUnSCYiyV8Vk3xLjsNbPihzkE=
+X-Google-Smtp-Source: AGHT+IE0VIqcnNOll5EeFVrt4q++DKOVTx3G19SmlYOtL4MHrgIE5w/dVv3oj+zxhWiP0CAyJBaj2g==
+X-Received: by 2002:a05:600c:3b9f:b0:47a:7aa0:175a with SMTP id 5b1f17b1804b1-47a8f90da0fmr1028795e9.26.1765497322714;
+        Thu, 11 Dec 2025 15:55:22 -0800 (PST)
 Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7f5ab7d87e8sm1715590b3a.25.2025.12.11.15.27.49
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-34abe3daf33sm74879a91.10.2025.12.11.15.55.19
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 11 Dec 2025 15:27:51 -0800 (PST)
-Message-ID: <06ad95b1-3384-42a8-8351-7274d202765d@suse.com>
-Date: Fri, 12 Dec 2025 09:57:47 +1030
+        Thu, 11 Dec 2025 15:55:22 -0800 (PST)
+Message-ID: <123e2014-59e0-4c0a-905f-c2fee4455eb8@suse.com>
+Date: Fri, 12 Dec 2025 10:25:17 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -83,10 +81,13 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: fix changeset leak on mmap write after failure to
- reserve metadata
-To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <ab2ab25d0598c04467a62e9e88c9131cec159c48.1765454225.git.fdmanana@suse.com>
+Subject: Re: [PATCH] btrfs: fix memory leak of fs_devices in degraded seed
+ device path
+To: Deepanshu Kartikey <kartikey406@gmail.com>, clm@fb.com, dsterba@suse.com,
+ miaox@cn.fujitsu.com
+Cc: linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+ syzbot+eadd98df8bceb15d7fed@syzkaller.appspotmail.com
+References: <20251210132807.3263207-1-kartikey406@gmail.com>
 Content-Language: en-US
 From: Qu Wenruo <wqu@suse.com>
 Autocrypt: addr=wqu@suse.com; keydata=
@@ -113,25 +114,32 @@ Autocrypt: addr=wqu@suse.com; keydata=
  /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
  o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
  JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <ab2ab25d0598c04467a62e9e88c9131cec159c48.1765454225.git.fdmanana@suse.com>
+In-Reply-To: <20251210132807.3263207-1-kartikey406@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
 
 
-在 2025/12/11 22:27, fdmanana@kernel.org 写道:
-> From: Filipe Manana <fdmanana@suse.com>
+在 2025/12/10 23:58, Deepanshu Kartikey 写道:
+> In open_seed_devices(), when find_fsid() fails and we're in DEGRADED
+> mode, a new fs_devices is allocated via alloc_fs_devices() but is never
+> added to the seed_list before returning. This contrasts with the normal
+> path where fs_devices is properly added via list_add().
 > 
-> If the call to btrfs_delalloc_reserve_metadata() fails we jump to the
-> 'out_noreserve' label and there we never free the extent_changeset
-> allocated by the previous call to btrfs_check_data_free_space() (if
-> qgroups are enabled). Fix this by calling extent_changeset_free() under
-> the 'out_noreserve' label.
+> If any error occurs later in read_one_dev() or btrfs_read_chunk_tree(),
+> the cleanup code iterates seed_list to free seed devices, but this
+> orphaned fs_devices is never found and never freed, causing a memory
+> leak. Any devices allocated via add_missing_dev() and attached to this
+> fs_devices are also leaked.
 > 
-> Fixes: 6599716de2d6 ("btrfs: fix -ENOSPC mmap write failure on NOCOW files/extents")
-> Reported-by: syzbot+2f8aa76e6acc9fce6638@syzkaller.appspotmail.com
-> Link: https://lore.kernel.org/linux-btrfs/693a635a.a70a0220.33cd7b.0029.GAE@google.com/
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> Fix this by adding the newly allocated fs_devices to seed_list in the
+> degraded path, consistent with the normal path.
+> 
+> Fixes: 5f37583569442 ("Btrfs: move the missing device to its own fs device list")
+> Reported-by: syzbot+eadd98df8bceb15d7fed@syzkaller.appspotmail.com
+> Closes: https://syzkaller.appspot.com/bug?extid=eadd98df8bceb15d7fed
+> Tested-by: syzbot+eadd98df8bceb15d7fed@syzkaller.appspotmail.com
+> Signed-off-by: Deepanshu Kartikey <kartikey406@gmail.com>
 
 Reviewed-by: Qu Wenruo <wqu@suse.com>
 
@@ -139,28 +147,20 @@ Thanks,
 Qu
 
 > ---
->   fs/btrfs/file.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
+>   fs/btrfs/volumes.c | 1 +
+>   1 file changed, 1 insertion(+)
 > 
-> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-> index 1e0ff3d7210d..e42fd2beb1e3 100644
-> --- a/fs/btrfs/file.c
-> +++ b/fs/btrfs/file.c
-> @@ -2019,13 +2019,14 @@ static vm_fault_t btrfs_page_mkwrite(struct vm_fault *vmf)
->   	else
->   		btrfs_delalloc_release_space(inode, data_reserved, page_start,
->   					     reserved_space, true);
-> -	extent_changeset_free(data_reserved);
->   out_noreserve:
->   	if (only_release_metadata)
->   		btrfs_check_nocow_unlock(inode);
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index ae1742a35e76..13c514684cfb 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -7128,6 +7128,7 @@ static struct btrfs_fs_devices *open_seed_devices(struct btrfs_fs_info *fs_info,
 >   
->   	sb_end_pagefault(inode->vfs_inode.i_sb);
->   
-> +	extent_changeset_free(data_reserved);
-> +
->   	if (ret < 0)
->   		return vmf_error(ret);
+>   		fs_devices->seeding = true;
+>   		fs_devices->opened = 1;
+> +		list_add(&fs_devices->seed_list, &fs_info->fs_devices->seed_list);
+>   		return fs_devices;
+>   	}
 >   
 
 
