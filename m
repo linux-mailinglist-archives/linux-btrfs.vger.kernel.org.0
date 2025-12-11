@@ -1,167 +1,190 @@
-Return-Path: <linux-btrfs+bounces-19636-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19637-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E32EACB489F
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Dec 2025 03:16:05 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 84E61CB4C74
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Dec 2025 06:39:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id E2E863011EF9
-	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Dec 2025 02:16:04 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D21AB3011ECF
+	for <lists+linux-btrfs@lfdr.de>; Thu, 11 Dec 2025 05:39:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56AE32C0303;
-	Thu, 11 Dec 2025 02:16:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51796286897;
+	Thu, 11 Dec 2025 05:39:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="II+OuEnT";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="II+OuEnT"
+	dkim=pass (1024-bit key) header.d=synology.com header.i=@synology.com header.b="McFqgjzR"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.synology.com (mail.synology.com [211.23.38.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD83C2BE02D
-	for <linux-btrfs@vger.kernel.org>; Thu, 11 Dec 2025 02:15:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C89081DF27F
+	for <linux-btrfs@vger.kernel.org>; Thu, 11 Dec 2025 05:39:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=211.23.38.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765419360; cv=none; b=Bxl1c8VpzE0kHe46NMGJhAxETN5f7TpKDpIaSEUHGIOKM3hImkReWcbunfODMxPaMyvj6B+Jve9j71Nk/OCqo41ATkFCQhcLoNBp+vcBa6pSpfT0ZjOXQeN7RtJhhR8Le0TXzxNJ68IZ/2QtbY0sV5Tgp8fMyZJo751H9E9K7jU=
+	t=1765431585; cv=none; b=XfnJ8jhWQAZwd0YrctcQq32Q9t1KpWLNT/pb5NN/tJp/h3rvEA53Hw2BHDIeyi8Rx3MA01jd4JySVnScpMJ+tpfCrWdAS3a5m6AihZm+3WofJwvYzGA/WFwsGdQTzULu3ktegtr3SmgjddZ+i02VVWt0GiptCxX/EUWPrSSvFtc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765419360; c=relaxed/simple;
-	bh=MB1Bwk+SADTi5i40WrVyZ2SDBdFQdCbL2Pi3DphCtLg=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=t+/xqj/md+SKuQM9tuctID04yLJpGXNqQ2WsSp7EAywJpJwfdXCIaP00MgoZXbRl+3EWlSIcyOqaUNmODjvYUvO1sB9+/jjWC/RPscRWlG3CQmQKgVhEMYmv2vAQIphCh7JS1ldr/C1VCmn/2Hzr3fbVxZp9Ic+P0269wBh/2xA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=II+OuEnT; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=II+OuEnT; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id BD5D7336F6
-	for <linux-btrfs@vger.kernel.org>; Thu, 11 Dec 2025 02:15:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1765419339; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hkaez2Gm5VTNtcYOfB9kqrbTG+vQQGb1/ZFO/GlQHHs=;
-	b=II+OuEnTbf0yjs+QEkAtrnjjASE5O6FxKocCpx0vIwaa4hkAkf+aAYVz4oniQv6gVijC9X
-	pa5fXQxSn18EutKvzbUosz80k2JH6n57yQiZMf7ZB13Np6FdBpIiYrXCFEX91uUSbxZ/Gj
-	70AzMHr77zrH2iGF0aqN/21jI3Pju5s=
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=II+OuEnT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1765419339; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hkaez2Gm5VTNtcYOfB9kqrbTG+vQQGb1/ZFO/GlQHHs=;
-	b=II+OuEnTbf0yjs+QEkAtrnjjASE5O6FxKocCpx0vIwaa4hkAkf+aAYVz4oniQv6gVijC9X
-	pa5fXQxSn18EutKvzbUosz80k2JH6n57yQiZMf7ZB13Np6FdBpIiYrXCFEX91uUSbxZ/Gj
-	70AzMHr77zrH2iGF0aqN/21jI3Pju5s=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 01D1C3EA63
-	for <linux-btrfs@vger.kernel.org>; Thu, 11 Dec 2025 02:15:38 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id yLOSLUopOmmBAQAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Thu, 11 Dec 2025 02:15:38 +0000
-From: Qu Wenruo <wqu@suse.com>
+	s=arc-20240116; t=1765431585; c=relaxed/simple;
+	bh=5LBFJ4/Qvgd+IBGRlamZa71p6AaisHQhTmOIQSDEX5M=;
+	h=From:To:Cc:Subject:Date:Message-Id:Content-Type:MIME-Version; b=lVHexNN6ktpocUQLtir0sV0g1dbsXaEgaS90poVOsihobl+KepQcF2tR+LmhY3hdl/fN8ZHmWlhOOnuWRRIX8GNpifCYZ55rrDpKxSY0XYHky4/P6jkzlIGAX/V7UBFPdUjsT29BQtMGQgfyr48KCH3nOM7Jhini8TGQ52xfATs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=synology.com; spf=pass smtp.mailfrom=synology.com; dkim=pass (1024-bit key) header.d=synology.com header.i=@synology.com header.b=McFqgjzR; arc=none smtp.client-ip=211.23.38.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=synology.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=synology.com
+From: robbieko <robbieko@synology.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synology.com; s=123;
+	t=1765431036; bh=5LBFJ4/Qvgd+IBGRlamZa71p6AaisHQhTmOIQSDEX5M=;
+	h=From:To:Cc:Subject:Date;
+	b=McFqgjzRYKHLZViJJOF98gLI68POp/v0QcA7D4IvujImFpzTr/i6WNeGSHa6lluiq
+	 EohiKy4qjGgdDWtyqctvOBez0w5KcMT0RzYmwWwEFLoLtjCEzZ2ZTFVAuH7ZBwW2dq
+	 /0H3oAQfSXV29XMLMQqwwah/u5Qk2cw+qlPx9uN8=
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/2] btrfs: add an ASSERT() to catch ordered extents without datasum
-Date: Thu, 11 Dec 2025 12:45:18 +1030
-Message-ID: <4d0eff22caa7217a4c1972a755043ee3324c5348.1765418669.git.wqu@suse.com>
-X-Mailer: git-send-email 2.52.0
-In-Reply-To: <cover.1765418669.git.wqu@suse.com>
-References: <cover.1765418669.git.wqu@suse.com>
+Cc: Robbie Ko <robbieko@synology.com>
+Subject: [PATCH] btrfs: fix deadlock in wait_current_trans() due to ignored transaction type
+Date: Thu, 11 Dec 2025 13:30:33 +0800
+Message-Id: <20251211053033.31566-1-robbieko@synology.com>
+X-Synology-MCP-Status: no
+X-Synology-Spam-Status: score=0, required 6, WHITELIST_FROM_ADDRESS 0
+X-Synology-Spam-Flag: no
+X-Synology-Virus-Status: no
+Content-Type: text/plain
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-0.994];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_ONE(0.00)[1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email,suse.com:dkim,suse.com:mid];
-	DWL_DNSWL_BLOCKED(0.00)[suse.com:dkim];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	RCVD_TLS_ALL(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	DKIM_TRACE(0.00)[suse.com:+]
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spam-Level: 
-X-Rspamd-Queue-Id: BD5D7336F6
-X-Spam-Flag: NO
-X-Spam-Score: -3.01
 
-Inside btrfs_finish_one_ordered(), there are only very limited
-situations where the OE has no checksum:
+From: Robbie Ko <robbieko@synology.com>
 
-- The OE is completely truncated or error happened
-  In that case no file extent is going to be inserted.
+When wait_current_trans() is called during start_transaction(), it
+currently waits for a blocked transaction without considering whether
+the given transaction type actually needs to wait for that particular
+transaction state. The btrfs_blocked_trans_types[] array already defines
+which transaction types should wait for which transaction states, but
+this check was missing in wait_current_trans().
 
-- The inode has NODATASUM flag
+This can lead to a deadlock scenario involving two transactions and
+pending ordered extents:
+  1. Transaction A is in TRANS_STATE_COMMIT_DOING state
+  2. A worker processing an ordered extent calls start_transaction()
+     with TRANS_JOIN
+  3. join_transaction() returns -EBUSY because Transaction A is in
+     TRANS_STATE_COMMIT_DOING
+  4. Transaction A moves to TRANS_STATE_UNBLOCKED and completes
+  5. A new Transaction B is created (TRANS_STATE_RUNNING)
+  6. The ordered extent from step 2 is added to Transaction B's
+     pending ordered extents
+  7. Transaction B immediately starts commit by another task and
+     enters TRANS_STATE_COMMIT_START
+  8. The worker finally reaches wait_current_trans(), sees Transaction B
+     in TRANS_STATE_COMMIT_START (a blocked state), and waits
+     unconditionally
+  9. However, TRANS_JOIN should NOT wait for TRANS_STATE_COMMIT_START
+     according to btrfs_blocked_trans_types[]
+  10. Transaction B is waiting for pending ordered extents to complete
+  11. Deadlock: Transaction B waits for ordered extent, ordered extent
+      waits for Transaction B
 
-- The inode belongs to data reloc tree
+This can be illustrated by the following call stacks:
+  CPU0                              CPU1
+                                    btrfs_finish_ordered_io()
+                                      start_transaction(TRANS_JOIN)
+                                        join_transaction()
+                                          # -EBUSY (Transaction A is
+                                          # TRANS_STATE_COMMIT_DOING)
+  # Transaction A completes
+  # Transaction B created
+  # ordered extent added to
+  # Transaction B's pending list
+  btrfs_commit_transaction()
+    # Transaction B enters
+    # TRANS_STATE_COMMIT_START
+    # waiting for pending ordered
+    # extents
+                                        wait_current_trans()
+                                          # waits for Transaction B
+                                          # (should not wait!)
 
-Add an ASSERT() using the last two cases, which will help us to catch
-problems described in commit 18de34daa7c6 ("btrfs: truncate ordered
-extent when skipping writeback past i_size"), and prevent future similar
-cases.
+Task bstore_kv_sync in btrfs_commit_transaction waiting for ordered
+extents:
+  __schedule+0x2e7/0x8a0
+  schedule+0x64/0xe0
+  btrfs_commit_transaction+0xbf7/0xda0 [btrfs]
+  btrfs_sync_file+0x342/0x4d0 [btrfs]
+  __x64_sys_fdatasync+0x4b/0x80
+  do_syscall_64+0x33/0x40
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
+Task kworker in wait_current_trans waiting for transaction commit:
+  Workqueue: btrfs-syno_nocow btrfs_work_helper [btrfs]
+  __schedule+0x2e7/0x8a0
+  schedule+0x64/0xe0
+  wait_current_trans+0xb0/0x110 [btrfs]
+  start_transaction+0x346/0x5b0 [btrfs]
+  btrfs_finish_ordered_io.isra.0+0x49b/0x9c0 [btrfs]
+  btrfs_work_helper+0xe8/0x350 [btrfs]
+  process_one_work+0x1d3/0x3c0
+  worker_thread+0x4d/0x3e0
+  kthread+0x12d/0x150
+  ret_from_fork+0x1f/0x30
+
+Fix this by passing the transaction type to wait_current_trans() and
+checking btrfs_blocked_trans_types[cur_trans->state] against the given
+type before deciding to wait. This ensures that transaction types which
+are allowed to join during certain blocked states will not unnecessarily
+wait.
+
+Signed-off-by: Robbie Ko <robbieko@synology.com>
 ---
- fs/btrfs/inode.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ fs/btrfs/transaction.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 461725c8ccd7..740de9436d24 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -3226,6 +3226,21 @@ int btrfs_finish_one_ordered(struct btrfs_ordered_extent *ordered_extent)
- 		goto out;
- 	}
+diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+index 05ee4391c83a..a8988e5af730 100644
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -520,13 +520,14 @@ static inline int is_transaction_blocked(struct btrfs_transaction *trans)
+  * when this is done, it is safe to start a new transaction, but the current
+  * transaction might not be fully on disk.
+  */
+-static void wait_current_trans(struct btrfs_fs_info *fs_info)
++static void wait_current_trans(struct btrfs_fs_info *fs_info, unsigned int type)
+ {
+ 	struct btrfs_transaction *cur_trans;
  
-+	/*
-+	 * If we have no data checksum, either the OE is:
-+	 * - Fully truncated
-+	 *   Those ones won't reach here.
-+	 *
-+	 * - No data checksum
-+	 *
-+	 * - Belongs to data reloc inode
-+	 *   Which doesn't have csum attached to OE, but cloned
-+	 *   from original chunk.
-+	 */
-+	if (list_empty(&ordered_extent->list))
-+		ASSERT(inode->flags & BTRFS_INODE_NODATASUM ||
-+		       btrfs_is_data_reloc_root(inode->root));
-+
- 	ret = add_pending_csums(trans, &ordered_extent->list);
- 	if (unlikely(ret)) {
- 		btrfs_abort_transaction(trans, ret);
+ 	spin_lock(&fs_info->trans_lock);
+ 	cur_trans = fs_info->running_transaction;
+-	if (cur_trans && is_transaction_blocked(cur_trans)) {
++	if (cur_trans && is_transaction_blocked(cur_trans) &&
++		(btrfs_blocked_trans_types[cur_trans->state] & type)) {
+ 		refcount_inc(&cur_trans->use_count);
+ 		spin_unlock(&fs_info->trans_lock);
+ 
+@@ -701,12 +702,12 @@ start_transaction(struct btrfs_root *root, unsigned int num_items,
+ 		sb_start_intwrite(fs_info->sb);
+ 
+ 	if (may_wait_transaction(fs_info, type))
+-		wait_current_trans(fs_info);
++		wait_current_trans(fs_info, type);
+ 
+ 	do {
+ 		ret = join_transaction(fs_info, type);
+ 		if (ret == -EBUSY) {
+-			wait_current_trans(fs_info);
++			wait_current_trans(fs_info, type);
+ 			if (unlikely(type == TRANS_ATTACH ||
+ 				     type == TRANS_JOIN_NOSTART))
+ 				ret = -ENOENT;
+@@ -1003,7 +1004,7 @@ int btrfs_wait_for_commit(struct btrfs_fs_info *fs_info, u64 transid)
+ 
+ void btrfs_throttle(struct btrfs_fs_info *fs_info)
+ {
+-	wait_current_trans(fs_info);
++	wait_current_trans(fs_info, TRANS_START);
+ }
+ 
+ bool btrfs_should_end_transaction(struct btrfs_trans_handle *trans)
 -- 
-2.52.0
+2.17.1
 
+
+Disclaimer: The contents of this e-mail message and any attachments are confidential and are intended solely for addressee. The information may also be legally privileged. This transmission is sent in trust, for the sole purpose of delivery to the intended recipient. If you have received this transmission in error, any use, reproduction or dissemination of this transmission is strictly prohibited. If you are not the intended recipient, please immediately notify the sender by reply e-mail or phone and delete this message and its attachments, if any.
 
