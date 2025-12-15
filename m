@@ -1,238 +1,236 @@
-Return-Path: <linux-btrfs+bounces-19739-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19740-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D369BCBD463
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Dec 2025 10:51:22 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id CBC84CBD5E1
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Dec 2025 11:31:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 2CF25300E814
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Dec 2025 09:51:16 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id F2A953022AB0
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Dec 2025 10:31:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E7BA31577B;
-	Mon, 15 Dec 2025 09:51:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 043B331579B;
+	Mon, 15 Dec 2025 10:30:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="CtXFnu9s"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cwEinBBc"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B3F317A31C
-	for <linux-btrfs@vger.kernel.org>; Mon, 15 Dec 2025 09:51:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1848F3164D6
+	for <linux-btrfs@vger.kernel.org>; Mon, 15 Dec 2025 10:30:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765792273; cv=none; b=rMKyEV5IyRMQsAQnpBVsDN0ukWZUou87/mRKxtqrHlo/9TxNAjfBkJC0AdXc9cO7ulXjm9THmrnLdQtaBgubL/LSWqWST8xKOzFEUj+xqHJOKEZ0jy5o9RKTigwraATZFwYqY/KYuPsVtIkW7Oku6OudF7ZLjjrjELEv1KIW/k0=
+	t=1765794658; cv=none; b=WWTza/c2hkmJ7clfiqWS7nKkFeR9dzkhfyDXcdOf8U8ldL5ohlKqBzdT87SfzXkfD+tDiCJYu1RRRpC1EKsm+BrE1/7mkDhqAPEHX7Asr05FGPAGewzQJ1p9k0+EPdCbLVUq02rKy5qICLXc5KWyZR0DgIVmR7Ap5YCG5qKoe6c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765792273; c=relaxed/simple;
-	bh=lDn6SNANa/xoI8jJ1suVN8XCMFhZjudJx1sr57Runtk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Ftpnf+DMKHhhpQzxmLyrQ1YjXXY8N01QmG5/PTdUBAlqBRALNOm/iRMhpMFXGmjCFjMwOXt1pKMt6IPA6961tzUj39QVDGNXlkXimkGyOY/3iM5Wgy/oxfVZyrQN9d38bAgDNa6ul8ukboggVPFx4XbuEHlL3VOAQfVEB436AP0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=CtXFnu9s; arc=none smtp.client-ip=212.227.17.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1765792259; x=1766397059; i=quwenruo.btrfs@gmx.com;
-	bh=V4njnLBV4tKrPPgQdxqgCtXepGMIINfTNVb1wRXrq8A=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=CtXFnu9sROD3ipQls974i+7OR3TOXAfyhe3bEVnfFAs5XuRu+0A/WGGOirsNo8Jk
-	 If0Gs0ZZJHLAbyoRKC4ZucjTufbaBsn0R30K342JU/+JgRcQOKKI/XWtvf/xRHBAu
-	 UwXwzjCZwAG0gyBViOQHEMpBW0aC4OckZqPF90hSmGRVQjb2IDSW2W+guEkTRBMMp
-	 6UBTJ5OSxtGswsYX7ihmdNNgmA3u3Y6HtLLW1bAZw0ENs1c30Dreps1BYi6NYXnAN
-	 0kFB4IT1f6OKXOAcu5r+6wqyIGVrA16mMUiT7grlbS+jgRaM08G3safymzOWPxLMj
-	 62LTNA9IQagSX0XwRg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MhD2Y-1vzAvI39dK-00n2No; Mon, 15
- Dec 2025 10:50:59 +0100
-Message-ID: <f2bec37c-0230-48d0-993a-157b4a9031cb@gmx.com>
-Date: Mon, 15 Dec 2025 20:20:56 +1030
+	s=arc-20240116; t=1765794658; c=relaxed/simple;
+	bh=+r2w1ecQLoZPkZjVkkgUEkPMN72cyX+DP7bG8vMJJos=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=W7XZwl5bp7dEXC1M38k9Qh6B7u+GjCuILT65Y9lMS5u5biZUbcAaN45F9KfPVBPK7qk3/gg9sTA1vi4dzc//yMklFL91HEYDBpuhmWlz3NaBqpbCypOChNZMnSkEhgLUkz6Ultx33Tp3prfLZQ1f5aNWNllldtfJHmEltg5lSS0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cwEinBBc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E491DC4CEF5
+	for <linux-btrfs@vger.kernel.org>; Mon, 15 Dec 2025 10:30:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1765794657;
+	bh=+r2w1ecQLoZPkZjVkkgUEkPMN72cyX+DP7bG8vMJJos=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=cwEinBBc4h/zWLBEcpdkncwAN+jTJ3yeyl2IUHWAnNTVa1NGh5NtqaQBo+kvcK46q
+	 1kypIWFr7jmdm1nQ65+VyUxxyq4SA9Ieqnr9q4NS86CIjADuSXlbHmSqMRFJVEP3cn
+	 J2HhwAcv7Epasp2ODi7JQoszjtD5/Dpw311ZeNOFvZb3W0TtSsYHK62OfW0iHdXA+U
+	 QGBTbjfkYzfFKG9En9jgDl8m+tDnUEg9b6xbYGWOxrJKt15KsnsGyENf+G+SMs8YK7
+	 Q5fg40tedanyFsJz5Et6TJ3Pgkw2a8ZKNlmw3XHKXRMY8nIGI+ZX86bxnJK4N/z82a
+	 PIazwyjgIqa7w==
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-6419aaced59so5144292a12.0
+        for <linux-btrfs@vger.kernel.org>; Mon, 15 Dec 2025 02:30:57 -0800 (PST)
+X-Gm-Message-State: AOJu0YyOWDLbWOSzhdEEz4KDidy9AyY3Dix2QZnTxzZM55gNePUhQnGU
+	ToPXgERHrCBGTLFOQN4hQV6iPAjlI96G540wZCT8Vaw4bwfQ8yTqIFw9TpoblGW0sf3ObVfWUPw
+	F+ZjYhflA0oI22WWLZoLMMRJSPSCzM1o=
+X-Google-Smtp-Source: AGHT+IF/i6RcCtVzz2hH97nzOeqf+OTGfAy4NTG0WR7smtJxXq9YCv6Q6zQNRyt58+QsKRt0LuiLC9YrLLg2fYqyeLc=
+X-Received: by 2002:a17:907:2d11:b0:b73:70db:49ab with SMTP id
+ a640c23a62f3a-b7d237743f2mr990500966b.35.1765794656500; Mon, 15 Dec 2025
+ 02:30:56 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/3] btrfs: update stale comment in
- __cow_file_range_inline()
-To: Filipe Manana <fdmanana@kernel.org>
+References: <b9ce1fd6cf3ef17a4d4b24a71d51792c6979fe68.1765744373.git.wqu@suse.com>
+In-Reply-To: <b9ce1fd6cf3ef17a4d4b24a71d51792c6979fe68.1765744373.git.wqu@suse.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Mon, 15 Dec 2025 10:30:19 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H5ThZf4NmB_VAXbhbf_YumC79KwE9VzAVyW16HDCa7HZQ@mail.gmail.com>
+X-Gm-Features: AQt7F2ohkRanfEm-nsHyoElrXcFioNz_gFdh-aJIvc8YI_eVrkpF8kEa8K1gZCQ
+Message-ID: <CAL3q7H5ThZf4NmB_VAXbhbf_YumC79KwE9VzAVyW16HDCa7HZQ@mail.gmail.com>
+Subject: Re: [PATCH v3] btrfs: add an ASSERT() to catch ordered extents with
+ incorrect csums
+To: Qu Wenruo <wqu@suse.com>
 Cc: linux-btrfs@vger.kernel.org
-References: <cover.1765743479.git.fdmanana@suse.com>
- <edd0445538783749845d7b1911737237a41595ff.1765743479.git.fdmanana@suse.com>
- <24e5d07f-322d-4eba-9aaf-e9f4be027bd6@gmx.com>
- <CAL3q7H6Vkz53Edf=i2+yKpqs7mQt_qqZiveV43L1qU8cK8WEvw@mail.gmail.com>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <CAL3q7H6Vkz53Edf=i2+yKpqs7mQt_qqZiveV43L1qU8cK8WEvw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:S40Aexffo3sq3GLo6w4NAbMsK+7czbYH+5vC/9maE4/zUnzVCCF
- AVKl8kqqZtFQNaqb3Z2XSFBmvrYDI6YqcVDDqcNHli+n4f2HZXLjrtjCwdPkBj40YaLYubA
- ruSvkXR4N2Gm4/O8Z7AE6Py0kqxgIJPWWLGWkUns2/kOLOsRWyEnAxElPldmkHwRmx/Z9uj
- phUenJTw6RFscv+WYZtQg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:xGFuibg8Sa8=;COvkiD6mKApvVufYVFy3zamV0Xt
- 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
- yILRerIk=
 
+On Sun, Dec 14, 2025 at 8:33=E2=80=AFPM Qu Wenruo <wqu@suse.com> wrote:
+>
+> Inspired by recent bug fix like 18de34daa7c6 ("btrfs: truncate ordered
+> extent when skipping writeback past i_size"), and the patch "btrfs: fix
+> beyond-EOF write handling", if we can catch ordered extents with
+> incorrect checksums, the above bugs will be caught much easier.
 
+So reading "incorrect checksums", both in this paragraph and in the
+subject, gives the idea that the checksums don't match the data...
+I find it very misleading.
 
-=E5=9C=A8 2025/12/15 20:19, Filipe Manana =E5=86=99=E9=81=93:
-> On Mon, Dec 15, 2025 at 9:47=E2=80=AFAM Qu Wenruo <quwenruo.btrfs@gmx.co=
-m> wrote:
->>
->>
->>
->> =E5=9C=A8 2025/12/15 20:08, fdmanana@kernel.org =E5=86=99=E9=81=93:
->>> From: Filipe Manana <fdmanana@suse.com>
->>>
->>> We mention that the reserved data space is page size aligned but that'=
-s
->>> not true anymore, as it's sector size aligned instead.
->>> In commit 0bb067ca64e3 ("btrfs: fix the qgroup data free range for inl=
-ine
->>> data extents") we updated the amount passed to btrfs_qgroup_free_data(=
-)
->>> from page size to sector size, but forgot to update the comment.
->>>
->>> Signed-off-by: Filipe Manana <fdmanana@suse.com>
->>> ---
->>>    fs/btrfs/inode.c | 2 +-
->>>    1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
->>> index f1ead789146b..6ae36cc5bcda 100644
->>> --- a/fs/btrfs/inode.c
->>> +++ b/fs/btrfs/inode.c
->>> @@ -676,7 +676,7 @@ static noinline int __cow_file_range_inline(struct=
- btrfs_inode *inode,
->>>        /*
->>>         * Don't forget to free the reserved space, as for inlined exte=
-nt
->>>         * it won't count as data extent, free them directly here.
->>> -      * And at reserve time, it's always aligned to page size, so
->>> +      * And at reserve time, it's always aligned to sector size, so
->>>         * just free one page here.
->>
->> There is still a "page" reference here.
->=20
-> Ah yes, I will update it before pushing to for-next, thanks.
+I would phrase it as "ordered extents missing checksum ranges" or just
+"ordered extents missing checksums".
 
-Oh, forgot my tag.
+>
+> Introduce the following extra checks for an ordered extent at
+> btrfs_finish_one_ordered(), before inserting an file extent item:
+>
+> - Skip data reloc inodes first
+>   A data reloc inode represents a block group during relocation, which
+>   can have ranges that have csum but some without.
+>   So we can not easily check them.
+>
+> - NODATACOW OEs, NODATASUM inodes must have no csums
+>   NODATACOW implies NODATASUM, and it's pretty obvious that NODATASUM
+>   inode should not have ordered extents with csums.
+>
+> - Compressed file extents must have csum covering the on-disk range
+>   Even if a compressed file extents is truncated, the csum is calculated
+>   using the on-disk extent, thus the csum must still cover the on-disk
+>   length.
+>
+> - Truncated regular file extents must have csum for the truncated length
+>
+> - The remaining regular file extents must have csum for the whole length
+>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+> Changelog:
+> v3:
+> - Fix a compiler warning when CONFIG_BTRFS_ASSERT is not selected
+>   By hiding the oe_csum_bytes() and the main part of assert_oe_csums()
+>   behind that config.
+>
+> v2:
+> - Updated to check all possible combinations
+>   Previously version can only detect the OEs in patch "btrfs: fix
+>   beyond-EOF write handling" where the OE has no csum at all, but can
+>   not detect OEs that has partial csums.
+> ---
+>  fs/btrfs/inode.c | 68 ++++++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 68 insertions(+)
+>
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 461725c8ccd7..28227d43b082 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -3090,6 +3090,72 @@ static int insert_ordered_extent_file_extent(struc=
+t btrfs_trans_handle *trans,
+>                                            update_inode_bytes, oe->qgroup=
+_rsv);
+>  }
+>
+> +#ifdef CONFIG_BTRFS_ASSERT
+> +static u64 oe_csum_bytes(struct btrfs_ordered_extent *oe)
+> +{
+> +       struct btrfs_ordered_sum *sum;
+> +       u64 ret =3D 0;
+> +
+> +       list_for_each_entry(sum, &oe->list, list)
+> +               ret +=3D sum->len;
+> +       return ret;
+> +}
+> +#endif
+> +
+> +#define ASSERT_OE(cond, oe)                            \
+> +       ASSERT(cond,                                    \
+> +"root=3D%lld ino=3D%llu file_pos=3D%llu num_bytes=3D%llu ram_bytes=3D%ll=
+u truncated_len=3D%lld csum_bytes=3D%llu disk_bytenr=3D%llu disk_num_bytes=
+=3D%llu flags=3D0x%lx", \
+> +              btrfs_root_id((oe)->inode->root),        \
+> +              btrfs_ino((oe)->inode),                  \
+> +              (oe)->file_offset, (oe)->num_bytes,      \
+> +              (oe)->ram_bytes, (oe)->truncated_len,    \
+> +              oe_csum_bytes(oe),                       \
+> +              (oe)->disk_bytenr, (oe)->disk_num_bytes, \
+> +              (oe)->flags);
+> +
+> +static void assert_oe_csums(struct btrfs_ordered_extent *oe)
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+Both here and in oe_csum_bytes(), the oe can be made const.
 
-Thanks,
-Qu
+> +{
+> +#ifdef CONFIG_BTRFS_ASSERT
+> +       struct btrfs_inode *inode =3D oe->inode;
+> +       const u64 csum_bytes =3D oe_csum_bytes(oe);
+> +
+> +       /*
+> +        * Skip data reloc inodes. They are for relocation and they
+> +        * can have ranges with csum and ranges without.
+> +        */
+> +       if (btrfs_is_data_reloc_root(inode->root))
+> +               return;
+> +
+> +       /*
+> +        * There should be no csum for NODATACOW (implies NOCSUM),
+> +        * NODATASUM inode.
 
->=20
->>
->> Other than that it looks good to me.
->>
->> Thanks,
->> Qu
->>
->>>         *
->>>         * If we fallback to non-inline (ret =3D=3D 1) due to -ENOSPC, =
-then we need
->>
+A bit confusing, especially because NOCSUM does not exist, it's NODATASUM.
+Just say "There are no checksums for NODATACOW and NODATASUM".
+Or say nothing at all, as it's pretty obvious and doesn't add any
+value as the code below is trivial to read.
 
+> +        */
+> +       if (test_bit(BTRFS_ORDERED_NOCOW, &oe->flags) ||
+> +           inode->flags & BTRFS_INODE_NODATASUM) {
+> +               ASSERT_OE(csum_bytes =3D=3D 0, oe);
+> +               return;
+> +       }
+> +       /* For compressed OE, csum must cover the on-disk range. */
+> +       if (test_bit(BTRFS_ORDERED_COMPRESSED, &oe->flags)) {
+> +               ASSERT_OE(oe->disk_num_bytes =3D=3D csum_bytes, oe);
+> +               return;
+> +       }
+> +
+> +       /* For truncated uncompressed OE, the csum must cover the truncat=
+ed length. */
+> +       if (test_bit(BTRFS_ORDERED_TRUNCATED, &oe->flags)) {
+> +               ASSERT_OE(oe->truncated_len =3D=3D csum_bytes, oe);
+> +               return;
+> +       }
+> +
+> +       /*
+> +        * The remaining case is untruncated regular extents.
+> +        *
+> +        * The csum must cover the whole range.
+
+csum -> csums, since we can have several csum items in the ordered
+extent's list.
+Also the new line seems superfluous.
+
+Thanks.
+
+> +        */
+> +       ASSERT_OE(oe->num_bytes =3D=3D csum_bytes, oe);
+> +#endif
+> +}
+> +
+>  /*
+>   * As ordered data IO finishes, this gets called so we can finish
+>   * an ordered extent if the range of bytes in the file it covers are
+> @@ -3170,6 +3236,8 @@ int btrfs_finish_one_ordered(struct btrfs_ordered_e=
+xtent *ordered_extent)
+>
+>         trans->block_rsv =3D &inode->block_rsv;
+>
+> +       assert_oe_csums(ordered_extent);
+> +
+>         ret =3D btrfs_insert_raid_extent(trans, ordered_extent);
+>         if (unlikely(ret)) {
+>                 btrfs_abort_transaction(trans, ret);
+> --
+> 2.52.0
+>
+>
 
