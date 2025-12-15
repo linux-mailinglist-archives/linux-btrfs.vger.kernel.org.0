@@ -1,204 +1,175 @@
-Return-Path: <linux-btrfs+bounces-19759-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19760-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60B91CBF906
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Dec 2025 20:37:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 674DECBF999
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Dec 2025 20:50:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B2F033032FF5
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Dec 2025 19:35:53 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 1405F3019BC8
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Dec 2025 19:50:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92653337B89;
-	Mon, 15 Dec 2025 19:28:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 485B3341654;
+	Mon, 15 Dec 2025 19:50:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="TSe9PrE8";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="sCUzlH0r";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="TSe9PrE8";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="sCUzlH0r"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Y+Uje66a";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Y+Uje66a"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32E22330304
-	for <linux-btrfs@vger.kernel.org>; Mon, 15 Dec 2025 19:28:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 833F0326948
+	for <linux-btrfs@vger.kernel.org>; Mon, 15 Dec 2025 19:50:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765826914; cv=none; b=OBwSNYc4xGQT3UrVrXkuh641BxX7ycQggaCVdx4pR1JpCfKmKIqy7u83GvmRzC1114Ks51sJoFaTPgt7GRfPYimxB30Jgo23By3tXSQGyclauyIRqxk/6nJ0XFTVFG1pQzi/yvP2XtgD0zkhlof5BrR+f8fEEddhuYQv57kE9dU=
+	t=1765828218; cv=none; b=HXGMDynY3bHNBf6dXWeH2TjHmw7hhcF9ONaBVj9ayls0YYSaEhEtMyMjDd3Ke5bjaKi+oeFWkE76bZjClHUOPEJH5SMDgOy4ltXHDupGcP9ybGZ8vDWJCEX+rY+X3Q5UcvEde4g+JFpTWTr9R5TnxiF9j1tPfjqaWpw1nNSkzTU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765826914; c=relaxed/simple;
-	bh=05Cnj9xOCGgFE/uSYBddwDdXiREwvlgLflviRLhMp/k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=d01RfP2+FikKMVxHTsa5O+SCar1yAzgbp93VM+YlJ4ruBa/Enpb5B7j9cxjQY1VG04p951203VpUZe/Jse+ETIPojCBNSKezu3Ahrf/7c5hjkdvKdfCYcwgO4MNlgIsOGiGH+11O3XOglVhnrQ0J9a6YBsNDBGkV4ag+2RTDthk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=TSe9PrE8; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=sCUzlH0r; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=TSe9PrE8; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=sCUzlH0r; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	s=arc-20240116; t=1765828218; c=relaxed/simple;
+	bh=2sQ9BlKvbFvjXc/W7mZXOOJO66vI/aVli1ip2xycNyM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=uvd3CHRKnFYql1z3fYCOkcnmWnFPoOOQeDsRhg6VrVBwiD7OEBVcL8CJCpDvoD5/iLTh2+Y4tCGZFeBffKvANV5B5PUX7nvCnCbJi5ErwODjq19twHrTzef0X/Ydxb9jYc8uekFcGb62E7Kfupj63sHnAZ+u0NxBRE95CdKviP0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Y+Uje66a; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Y+Uje66a; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 1BD505BCD8;
-	Mon, 15 Dec 2025 19:28:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1765826911;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZYr/8bhCCtOOdIKDV9nCPViHW+zJIVCIL8PNtARp2rs=;
-	b=TSe9PrE83ptU3Xg++biZdVr+fgfVR5312L2t7MkIVp7aycuZIF+UA7eay9a52C2tSBScEH
-	xvy+s7kqTOSPsMgGe0CA+PfNiCuEoSsQ3ywpbtseWdQhxUh25IOr+4pBBHXaPV4Q6hIdFl
-	DTGGlnouY0rdx/BYZUtTlBO6zrvL7Bo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1765826911;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZYr/8bhCCtOOdIKDV9nCPViHW+zJIVCIL8PNtARp2rs=;
-	b=sCUzlH0rQODw79AXYtDYbmKE/up74VUgYjUlT1BXOkHyDt8Ksgo4yI6FwjIvXRw4R2sPjJ
-	X3LjScpgfV+UtRBg==
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 49AA75BCD8;
+	Mon, 15 Dec 2025 19:50:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1765828212; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=xcgNbX3BfJasmZckpC9TyM9kPMW9YZTUEZgiWaIKEU0=;
+	b=Y+Uje66aIqKKxJeMR/mxDy/GrqZzI0D967YqFfPGTwR2rNbonmCLfRsAyPMnuJRigZBbUt
+	JlffHuQnfH1ERnRhEQqbO0uIIw29gnP4RWY5kDbrLLIBmPy/ob4LxKC+siSjM4BMlRBos/
+	aZsnuw6iTwgs9H68L4LI3mVBxX9PEYI=
 Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1765826911;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZYr/8bhCCtOOdIKDV9nCPViHW+zJIVCIL8PNtARp2rs=;
-	b=TSe9PrE83ptU3Xg++biZdVr+fgfVR5312L2t7MkIVp7aycuZIF+UA7eay9a52C2tSBScEH
-	xvy+s7kqTOSPsMgGe0CA+PfNiCuEoSsQ3ywpbtseWdQhxUh25IOr+4pBBHXaPV4Q6hIdFl
-	DTGGlnouY0rdx/BYZUtTlBO6zrvL7Bo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1765826911;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZYr/8bhCCtOOdIKDV9nCPViHW+zJIVCIL8PNtARp2rs=;
-	b=sCUzlH0rQODw79AXYtDYbmKE/up74VUgYjUlT1BXOkHyDt8Ksgo4yI6FwjIvXRw4R2sPjJ
-	X3LjScpgfV+UtRBg==
+	dkim=pass header.d=suse.com header.s=susede1 header.b=Y+Uje66a
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1765828212; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=xcgNbX3BfJasmZckpC9TyM9kPMW9YZTUEZgiWaIKEU0=;
+	b=Y+Uje66aIqKKxJeMR/mxDy/GrqZzI0D967YqFfPGTwR2rNbonmCLfRsAyPMnuJRigZBbUt
+	JlffHuQnfH1ERnRhEQqbO0uIIw29gnP4RWY5kDbrLLIBmPy/ob4LxKC+siSjM4BMlRBos/
+	aZsnuw6iTwgs9H68L4LI3mVBxX9PEYI=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EBF4D3EA63;
-	Mon, 15 Dec 2025 19:28:30 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3E90C3EA63;
+	Mon, 15 Dec 2025 19:50:12 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id k4VuOV5hQGnILAAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Mon, 15 Dec 2025 19:28:30 +0000
-Date: Mon, 15 Dec 2025 20:28:25 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Qu Wenruo <wqu@suse.com>
-Cc: Kai Krakow <kai@kaishome.de>, linux-btrfs@vger.kernel.org,
-	Eli Venter <eli@genedx.com>
-Subject: Re: [PATCH] btrfs: harden __reserve_bytes() with space_info==NULL
-Message-ID: <20251215192825.GI3195@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20251213200920.1808679-1-kai@kaishome.de>
- <350e9b44-7a16-4c3f-a54f-5b6b3f4931f3@suse.com>
- <CAC2ZOYtgvzThSVX7tsajF=czm3JaYzpKjCsJB72Tw3_35Notzw@mail.gmail.com>
- <4a4c04ff-3855-467c-af75-77c6ddf27098@suse.com>
- <CAC2ZOYvY1x-vx9rUs-tZ2J_oHjX-pj7C1muFwvnH5NHSHn0ntw@mail.gmail.com>
- <684a6f99-0df8-428a-8e57-294a38b8788e@suse.com>
+	id pBrqDnRmQGmnPwAAD6G6ig
+	(envelope-from <dsterba@suse.com>); Mon, 15 Dec 2025 19:50:12 +0000
+From: David Sterba <dsterba@suse.com>
+To: torvalds@linux-foundation.org
+Cc: David Sterba <dsterba@suse.com>,
+	linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs fixes for 6.19-rc2
+Date: Mon, 15 Dec 2025 20:50:02 +0100
+Message-ID: <cover.1765827039.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <684a6f99-0df8-428a-8e57-294a38b8788e@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Flag: NO
-X-Spam-Score: -3.99
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.99 / 50.00];
+X-Spamd-Result: default: False [-3.01 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	NEURAL_HAM_SHORT(-0.19)[-0.947];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCVD_TLS_ALL(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
+	MX_GOOD(-0.01)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:dkim,suse.com:mid];
 	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_THREE(0.00)[4];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,twin.jikos.cz:mid,suse.cz:replyto,suse.com:email];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	TO_DN_SOME(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
 	RCVD_COUNT_TWO(0.00)[2];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
+	RCVD_TLS_ALL(0.00)[];
+	RCPT_COUNT_THREE(0.00)[4];
+	DKIM_TRACE(0.00)[suse.com:+]
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spam-Level: 
+X-Rspamd-Queue-Id: 49AA75BCD8
+X-Spam-Flag: NO
+X-Spam-Score: -3.01
 
-On Sun, Dec 14, 2025 at 09:01:41AM +1030, Qu Wenruo wrote:
-> 
-> 
-> 在 2025/12/14 08:13, Kai Krakow 写道:
-> > Am Sa., 13. Dez. 2025 um 22:15 Uhr schrieb Qu Wenruo <wqu@suse.com>:
-> [...]
-> >>
-> >> So if you really want to change a member, do a proper in-memory update
-> >> only, and find a way (e.g. a new dirty dev list) to tell the fs to
-> >> update the device item at commit time.
-> > 
-> > I don't want to steal your time,
-> 
-> I'm totally fine discussing the implementation details here.
-> 
-> > but is this a better approach?
-> > https://gist.github.com/kakra/aa3eb8473cc05c1d3dd000160a5ee481
-> 
-> Unfortunately as long as if you're trying to do any metadata 
-> modification, e.g. calling btrfs_update_device(), it will be a huge change.
-> 
-> 
-> My idea would be something like this:
-> 
-> btrfs_dev_info_type_store()
-> {
-> 	btrfs_device *device = container_of();
-> 
-> 	/* Do the proper locking. */
-> 
-> 	WRITE_ONCE(device->type, type);
-> 	if (!list_empty(&dev->dirty_list))
-> 		list_add_tail(&fs_info->dirty_dev_list, &dev->dirty_list);
+Hi,
 
-	set_bit(BTRFS_FS_NEED_TRANS_COMMIT, &fs_info->flags);
-	wake_up_process(fs_info->transaction_kthread);
+please pull the following fixes. Thanks.
 
-I don't think it would be wise to wait until the transaction is
-committed before returning from the store handler. We don't do that for
-other similar changes either so the write becomes permanent after a
-sync, using eg. 'btrfs fi sync'.
+- fix missing btrfs_path release after printing a relocation error
+  message
 
-> 	return len;
-> }
-> 
-> 
-> Then inside btrfs_commit_transaction(), I do not yet have a good idea on 
-> the timing, but I guess it can done before btrfs_start_delalloc_flush().
-> 
-> Do something like this to write those dirty devices to chunk tree:
-> 
-> btrfs_commit_transaction()
-> {
-> 	list_for_each_entry(dev, &fs_info->dirty_dev_list, dirty_list) {
-> 		ret = btrfs_update_device(dev);
-> 	}
-> 
-> 	/* The remaining code. */
-> 	ret = btrfs_start_delalloc_flush();
-> }
+- fix extent changeset leak on mmap write after failure to reserve
+  metadata
 
-This should work. The placement depends on what is changed and how it's
-related to the current transaction.
+- fix fs devices list structure freeing, it could be potentially leaked
+  under some circumstances
+
+- tree log fixes:
+
+  - fix incremental directory logging where inodes for new dentries were
+    incorrectly skipped
+
+  - don't log conflicting inode if it's a directory moved in the current
+    transaction
+
+- regression fixes:
+
+  - fix incorrect btrfs_path freeing when it's auto-cleaned
+
+  - revert commit simplifying preallocation of temporary structures in
+    qgroup functions, some cases were not handled properly
+
+----------------------------------------------------------------
+The following changes since commit 9e0e6577b3e5e5cf7c1acd178eb648e8f830ba17:
+
+  btrfs: remove unnecessary inode key in btrfs_log_all_parents() (2025-11-25 01:53:33 +0100)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.19-rc1-tag
+
+for you to fetch changes up to 37343524f000d2a64359867d7024a73233d3b438:
+
+  btrfs: fix changeset leak on mmap write after failure to reserve metadata (2025-12-12 16:33:18 +0100)
+
+----------------------------------------------------------------
+Dan Carpenter (1):
+      btrfs: tests: fix double btrfs_path free in remove_extent_ref()
+
+Deepanshu Kartikey (1):
+      btrfs: fix memory leak of fs_devices in degraded seed device path
+
+Filipe Manana (3):
+      btrfs: don't log conflicting inode if it's a dir moved in the current transaction
+      btrfs: do not skip logging new dentries when logging a new name
+      btrfs: fix changeset leak on mmap write after failure to reserve metadata
+
+Qu Wenruo (2):
+      Revert "btrfs: add ASSERTs on prealloc in qgroup functions"
+      btrfs: fix a potential path leak in print_data_reloc_error()
+
+ fs/btrfs/file.c               |  3 ++-
+ fs/btrfs/inode.c              |  1 +
+ fs/btrfs/qgroup.c             | 27 ++++---------------------
+ fs/btrfs/tests/qgroup-tests.c |  1 -
+ fs/btrfs/tree-log.c           | 46 +++++++++++++++++++++++++++++++++++--------
+ fs/btrfs/volumes.c            |  1 +
+ 6 files changed, 46 insertions(+), 33 deletions(-)
 
