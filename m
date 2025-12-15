@@ -1,49 +1,49 @@
-Return-Path: <linux-btrfs+bounces-19735-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19734-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id AFC19CBD33F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Dec 2025 10:39:04 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32D77CBD324
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Dec 2025 10:38:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 945873017381
+	by sto.lore.kernel.org (Postfix) with ESMTP id 547FC3017F34
 	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Dec 2025 09:38:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78F78329E7C;
-	Mon, 15 Dec 2025 09:38:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5F8F329E54;
+	Mon, 15 Dec 2025 09:38:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p/ix+HX1"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tox1r/qh"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 548A12DC352
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D73FD329E56
 	for <linux-btrfs@vger.kernel.org>; Mon, 15 Dec 2025 09:38:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765791514; cv=none; b=qVO+W0+CcbdE0lCfjTLc+Qwc2SS+bUgFpWIbRZ3AlBTynHb1p40UeM7Fn4YctQNJgO5137ILde257xllnE5G54TNOg/hQzCFU5G9j3Iv7it88TYmu9xkElM+Oyq93zI8YMNrlWXqSb338iZeSrtwppeg8yF5zmzfrAF2x6u5wRQ=
+	t=1765791513; cv=none; b=iitNi+fPuHhUwDFzH+DDm9MQ0GXKRBTuA9FOsNP1K4HGE1+oFbOv4oC3tjgLl9T5YPGBfKDUHV85ZKpfo6GJ998ViE7DWG3c2849Ekin1oynSRTy+B1axV4aWNA1FYzLZK1iFmDrd3A+r/AZ+sbtNWS1YuRBNHLvWBIwFGgGhtE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765791514; c=relaxed/simple;
-	bh=ssojhsNSwNgkhrRY6bHEljf9kr/VidLlRAnAegiR+cg=;
+	s=arc-20240116; t=1765791513; c=relaxed/simple;
+	bh=HQFhzQigSTIWYhAnlrpcJH/YFScZid6pB0U5Am9jdCw=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TZkiCcweX0EJhjKAPLUMe+Cu0JPWF9yrPBXSfT3K4iBoi7XH/ek6Pxt3n3Obu0cc37HQ0B2TSQobbUqq8hCdn2laYrGq+ufokUn/gCKNtPOUDZmb8p31S7Gdp41l6KOvW3C/JLt3cncD+b7JJGno4opPjCbNF+nUk7gTcw2Z0xU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p/ix+HX1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C2BFC19425
-	for <linux-btrfs@vger.kernel.org>; Mon, 15 Dec 2025 09:38:32 +0000 (UTC)
+	 MIME-Version; b=aM+g/KKk3Zvs5JaHl8V/gOSm/l2Io4pSDcvAt889gBMbM+8wHqJ7mKfRVEyEOQv1b7mbjF5KTS7tMdOl3mKC7ULFgyORim9zjRbt9s9DWwEBOCoBTh0ZwZMO43V88w2ytxKf/fA1d6vb2FVJlQHxddC4jUXr9UgHfeONNLLYgfk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tox1r/qh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C2F4C19422
+	for <linux-btrfs@vger.kernel.org>; Mon, 15 Dec 2025 09:38:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1765791512;
-	bh=ssojhsNSwNgkhrRY6bHEljf9kr/VidLlRAnAegiR+cg=;
+	s=k20201202; t=1765791513;
+	bh=HQFhzQigSTIWYhAnlrpcJH/YFScZid6pB0U5Am9jdCw=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=p/ix+HX18irbg9pXkCQSublbsAugLpRAAyq6s4xYsqqmc3AnD/UmP2w8ijyEkpSnN
-	 AjiZNkfF4sdDkus8Fev0I+Q4vHpJTeK6jnal3CKMhvloNarjzjcXY5B1KnzOY571TV
-	 +VDZMgstTOGbH+5SKrs64+pvrdeYIOX2D9BDo3H3TYfGdodqYWeHyY8z1mVUTGrQZj
-	 ldnYfX3JqPUMLtwd2ebxh29OZeCRzPRy4zwj4gYcS5RyNqgmSn+HNwSxASvXawc1Z4
-	 mDN4owBcxnQTeJZAoCijW8dQ90EG/RH9sGg4hQPgarnh6wfccBLv+wN/LWRRAaAMyU
-	 SliHoadVoPiNA==
+	b=tox1r/qhi+s1NR7Z8iGWZB1UiVLC/alEocWee46N8qMykD0RuqyVBPSIwkw7itFlE
+	 AQ4VODGkwaa3w1FPL2EU0T1vCpLBVLkA9+gajecnuh7yWOvcVVBvmu615zAhV7Kehj
+	 LQE/ibR/OF8SeEDcKHosIa5qzFDoJYp+sMk5VbEB8SdOAaul0ncNcNhHjLOnsI3JkK
+	 GbIifbrKSLRQ4wFQZTBvDsRbgUPGQ3MUEK2Jh3ZLdPN97rbLTEstb/Libt2AJQUbhQ
+	 lCtPrLukQjn16M0913hpWgAxCoVil0icX90Q7cmauCvqVVI9b89DpaNTwTB2JQIeny
+	 bzezCIMqJ4vdw==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/3] btrfs: fix reservation leak in some error paths when inserting inline extent
-Date: Mon, 15 Dec 2025 09:38:26 +0000
-Message-ID: <2b8666d39b9c50459a1ef6468d4db175bd1016f0.1765743479.git.fdmanana@suse.com>
+Subject: [PATCH 3/3] btrfs: update stale comment in __cow_file_range_inline()
+Date: Mon, 15 Dec 2025 09:38:27 +0000
+Message-ID: <edd0445538783749845d7b1911737237a41595ff.1765743479.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <cover.1765743479.git.fdmanana@suse.com>
 References: <cover.1765743479.git.fdmanana@suse.com>
@@ -57,58 +57,30 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-If we fail to allocate a path or join a transaction, we return from
-__cow_file_range_inline() without freeing the reserved qgroup data,
-resulting in a leak. Fix this by ensuring we call btrfs_qgroup_free_data()
-in such cases.
+We mention that the reserved data space is page size aligned but that's
+not true anymore, as it's sector size aligned instead.
+In commit 0bb067ca64e3 ("btrfs: fix the qgroup data free range for inline
+data extents") we updated the amount passed to btrfs_qgroup_free_data()
+from page size to sector size, but forgot to update the comment.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/inode.c | 16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
+ fs/btrfs/inode.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 605589f29da7..f1ead789146b 100644
+index f1ead789146b..6ae36cc5bcda 100644
 --- a/fs/btrfs/inode.c
 +++ b/fs/btrfs/inode.c
-@@ -619,19 +619,22 @@ static noinline int __cow_file_range_inline(struct btrfs_inode *inode,
- 	struct btrfs_drop_extents_args drop_args = { 0 };
- 	struct btrfs_root *root = inode->root;
- 	struct btrfs_fs_info *fs_info = root->fs_info;
--	struct btrfs_trans_handle *trans;
-+	struct btrfs_trans_handle *trans = NULL;
- 	u64 data_len = (compressed_size ?: size);
- 	int ret;
- 	struct btrfs_path *path;
- 
- 	path = btrfs_alloc_path();
--	if (!path)
--		return -ENOMEM;
-+	if (!path) {
-+		ret = -ENOMEM;
-+		goto out;
-+	}
- 
- 	trans = btrfs_join_transaction(root);
- 	if (IS_ERR(trans)) {
--		btrfs_free_path(path);
--		return PTR_ERR(trans);
-+		ret = PTR_ERR(trans);
-+		trans = NULL;
-+		goto out;
- 	}
- 	trans->block_rsv = &inode->block_rsv;
- 
-@@ -682,7 +685,8 @@ static noinline int __cow_file_range_inline(struct btrfs_inode *inode,
- 	if (ret <= 0)
- 		btrfs_qgroup_free_data(inode, NULL, 0, fs_info->sectorsize, NULL);
- 	btrfs_free_path(path);
--	btrfs_end_transaction(trans);
-+	if (trans)
-+		btrfs_end_transaction(trans);
- 	return ret;
- }
- 
+@@ -676,7 +676,7 @@ static noinline int __cow_file_range_inline(struct btrfs_inode *inode,
+ 	/*
+ 	 * Don't forget to free the reserved space, as for inlined extent
+ 	 * it won't count as data extent, free them directly here.
+-	 * And at reserve time, it's always aligned to page size, so
++	 * And at reserve time, it's always aligned to sector size, so
+ 	 * just free one page here.
+ 	 *
+ 	 * If we fallback to non-inline (ret == 1) due to -ENOSPC, then we need
 -- 
 2.47.2
 
