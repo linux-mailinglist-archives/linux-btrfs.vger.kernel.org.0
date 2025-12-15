@@ -1,475 +1,245 @@
-Return-Path: <linux-btrfs+bounces-19730-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19731-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BC80CBD071
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Dec 2025 09:49:49 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 685A8CBD160
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Dec 2025 10:02:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 441483013973
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Dec 2025 08:49:11 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 02FD3300C359
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Dec 2025 09:02:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4CFC3321D3;
-	Mon, 15 Dec 2025 08:49:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E025032ABCE;
+	Mon, 15 Dec 2025 09:02:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="vDWXTZbr";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="gpAXw873"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="OCFbNciw"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C7CF331A71
-	for <linux-btrfs@vger.kernel.org>; Mon, 15 Dec 2025 08:49:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BB192E5B05
+	for <linux-btrfs@vger.kernel.org>; Mon, 15 Dec 2025 09:02:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765788549; cv=none; b=cdRxFkiafqLvqHnmmy0N36eFegb4a/Rl+6wugkiNAnjKXbb1qzrTrgjCPDZW4vti/Jy1h6vJrd/o+FyYO8K3AWrGLU/ikBY3V98etY5QjIBFfOlhkUGcidki8bkCMLeVfX+3NWgl5fitHak44i3fUl+IQXFu9VwxYxBUd3KrB6U=
+	t=1765789354; cv=none; b=T068qyPYYVp6kXcC3bQ9RrxmFKYp9AL91zntsh7ZnBiks2WzKiGtcSkUWuCWw0plvv2bXdEuLUFh82N1jLD43aP7F4TVW3j9E9XyXNLNHaL+XhxfRah4bERedgl1HZvySlmfmIaQaecVyeztOVTmxDVqCSRzSdjEb7dvtIo96e8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765788549; c=relaxed/simple;
-	bh=bXwWkdsEf/t8HUCvsuk5DpVVwm5aupxfBwjB/P10jIE=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=aBXDG57H5gfM9uliaar8HXElvtGJr2gLvzFRRMUnpDQWh5EdU6ft/K/VmggG4GJ6GcgNnK/B5qgfUCdbpibRAH3KFdKwkdmw9BYpfgTan2saLmccj1H7gGD6HZ1mr75ljxNRnbsPRV/B+uRir8psvrxQloZt3bd+OfHWjmZj2dI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=vDWXTZbr; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=gpAXw873; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 2A64A5BD16
-	for <linux-btrfs@vger.kernel.org>; Mon, 15 Dec 2025 08:49:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1765788543; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=h8q04Br37CQ8RWU+8WBegq8yd2vDF1T0fqlL4Xa5qXc=;
-	b=vDWXTZbre0hXLsZFBz4c5FSNRzlCY3/gY1LAEdzrxDglvThRiVH6xLMaA2X0/SmYKRwN5F
-	534W20CMdwGn4/mxqxi2ASfimumZNG5XQWi0+IxalbE2mJsTUShIpd3MnI7bv2CRjyeGOB
-	4aBUqhjA796Om4g4YVEeRklPmZYvjKA=
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=gpAXw873
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1765788542; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=h8q04Br37CQ8RWU+8WBegq8yd2vDF1T0fqlL4Xa5qXc=;
-	b=gpAXw8731VCBsmTZQXSdYdBKwaEd3XaA/KQxyEDPYIiPZ5MR6g9uHSC3WzIg0gksArxfZ7
-	3rRsAqyGo6c/a1eFbu0VIV0ttQ/x6BRqU0D1XYNZTOyImgB6Kmj565SyjrJgsp1gRtGVgQ
-	pYBKOvxWA8OiNKVm2cMjIkQLUiADD1M=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 61A083EA63
-	for <linux-btrfs@vger.kernel.org>; Mon, 15 Dec 2025 08:49:01 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id PIXTCH3LP2lVaQAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Mon, 15 Dec 2025 08:49:01 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: refactor the main loop of cow_file_range()
-Date: Mon, 15 Dec 2025 19:18:43 +1030
-Message-ID: <5ff61d63a33409de2b821562613ebb3ac0da9bae.1765788497.git.wqu@suse.com>
-X-Mailer: git-send-email 2.52.0
+	s=arc-20240116; t=1765789354; c=relaxed/simple;
+	bh=VJurncpOvYHmnIRuvgqmPrcytTSOPBAhRH6OugvA8Yo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=QVBGRgXelcu54tL5Hoy/572BWNHAoymAzlXrP1lU9DuSQ+swMjaY+l+XJmKMHz5+RDs2fYupTdG+vYGsRFWguH3bkSS4obO+J4NR3KFDWQdL2ldZhFilvEfCt86RiEUdqD15iotPTs6sXvFlQid76vonj87e4+r3IEXqnzbwixc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=OCFbNciw; arc=none smtp.client-ip=212.227.17.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1765789349; x=1766394149; i=quwenruo.btrfs@gmx.com;
+	bh=tHNOSQNhFtCkeD/CW94MRqs9wRgs/y7c/YcSecf6LlU=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=OCFbNciwv4oFKLU0guYLMFY/vHdN63U7Hl7ueHzAq8Tencu1ILPxB/VF8ZUDKl1S
+	 i7MHD0isluS5744wQ52vdBc+khZdw9x69QFBIePH/yBJT689hkn5pe6IelxrAmyxZ
+	 ZOSYXJ8t4wZQ+d/tmywjGuSlcxoAC5jvacEpaA0z4Fb6KuJqVoLziYHP27pzE+Ovz
+	 80ZWrq/VzqeXXjZxGEulqZjtPbgnrFhMSzfYd+tyq25aaKbWX/jyfDiwpuBOYPkMC
+	 MU0FwjhRg+qMF/ZJiXqpQxCF9WsTcxQWK3Dp+niX+W8iVjkhwiUh8tQj8z9/7xa68
+	 4YVduNn7w71b15tGLw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MatRT-1w162Y1To3-00lSut; Mon, 15
+ Dec 2025 10:02:29 +0100
+Message-ID: <20a1aecc-aaf3-4fe1-8b4a-5c5bb8ba92a8@gmx.com>
+Date: Mon, 15 Dec 2025 19:32:26 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: kernel 6.17 and 6.18, WARNING: CPU: 5 PID: 7181 at
+ fs/btrfs/inode.c:4297 __btrfs_unlink_inode, forced readonly
+To: Chris Murphy <lists@colorremedies.com>, Qu WenRuo <wqu@suse.com>,
+ Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+References: <e2095d93-fa47-46b2-b894-0918b6ce348c@app.fastmail.com>
+ <d9ab1004-a7ff-4939-9692-0c8f32df27a9@suse.com>
+ <651e259c-ac24-49d0-8eba-4d9c7c9f11c8@app.fastmail.com>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
+ sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
+ xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
+ naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
+ tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
+ 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
+ VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
+ CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
+ B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
+ Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
+ +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
+ HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
+In-Reply-To: <651e259c-ac24-49d0-8eba-4d9c7c9f11c8@app.fastmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:FGvGODmtkuXNlsFT0PNaRad3D/kwtPjwkyPo+7s/lADwvQaMNOn
+ U6BOgeG6Cb4yvfmurTRR5fKArtA3no5u0oIuypxRjXnHPBugbrbqxqACSmSxMfqFzWf+H/g
+ 1/MEVhRwh17DS7juq9TvaaMa1MvDWp+C9iWHETsoWfFqu7JYPfMWXKVUlh/rPq7a6lGtxIg
+ OUdgxZYeqpsIiG4YQ7e5Q==
 X-Spam-Flag: NO
-X-Spam-Score: -3.01
-X-Rspamd-Queue-Id: 2A64A5BD16
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-0.994];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCPT_COUNT_ONE(0.00)[1];
-	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	FROM_EQ_ENVFROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:dkim,suse.com:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	RCVD_TLS_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	DKIM_TRACE(0.00)[suse.com:+]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Level: 
+UI-OutboundReport: notjunk:1;M01:P0:rtS2u8ghK3U=;YuX4fGvQkPmSrghGyXrYWMOpj+w
+ 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
 
-Currently inside the main loop of cow_file_range(), we do the following
-sequence:
 
-- Reserve an extent
-- Lock the IO tree range
-- Create an IO extent map
-- Create an ordered extent
 
-Every step will need extra steps to do cleanup in the following order:
+=E5=9C=A8 2025/12/12 04:31, Chris Murphy =E5=86=99=E9=81=93:
+>=20
+>=20
+> On Wed, Dec 10, 2025, at 6:55 PM, Qu Wenruo wrote:
+>> =E5=9C=A8 2025/12/11 11:58, Chris Murphy =E5=86=99=E9=81=93:
+>>> User reports root file system going read-only at some point after star=
+tup. Seems to be when a Firefox cache file is accessed.
+>>>
+>>> Initial report is kernel 6.17.8-300.fc43.x86_64, but the problem also =
+happens with 6.18.0-65.fc44.x86_64.
+>>>
+>>> User previously discovered bad RAM and has replaced it, so I guess it'=
+s possible we have a bad write that made it to disk despite write time tre=
+e checker (?) and now can't handle the issue when reading the file. But I =
+haven't seen this kind of error or call trace before, so I'm not sure what=
+ to recommend next. If --repair can fix it.
+>>
+>> This looks like a previous memory corruption caused on-disk metadata
+>> corruption.
+>>
+>> Tree-checker is not a memtest tool, it can only detect very obvious
+>> problems, it can not do cross-reference, and unfortunately this is exac=
+t
+>> cross-reference case.
+>>
+>> For this particular one, I'd recommend to do a "btrfs check --repair"
+>> then "btrfs check" to verify.
+>=20
+> Looks like --repair changed from "errors 4" to "errors 6"
+>=20
+>=20
+> [1/8] checking log
+> [2/8] checking root items
+> [3/8] checking extents
+> [4/8] checking free space tree
+> [5/8] checking fs roots
+> 	unresolved ref dir 1924 index 0 namelen 40 name AC1E6A9C763DC6BC77494D6=
+E8DE724C240D36C9E filetype 1 errors 6, no dir index, no inode ref
 
-- Drop the newly created extent map
-- Unlock extent range and cleanup the involved folios
-- Free the reserved extent
+And repair again?
 
-However currently the error handling is done inconsistently:
+If after repair, readonly check still shows error, I can craft a quick=20
+fix branch for the reporter.
 
-- Extent map drop is handled in a dedicated tag
-  Out of the main loop, make it much harder to track.
+Thanks,
+Qu
 
-- The extent unlock and folios cleanup is done separately
-  The extent is unlocked through btrfs_unlock_extent(), then
-  extent_clear_unlock_delalloc() again in a dedicated tag.
-  Meanwhile all other callsites (compression/encoded/nocow) all just
-  call extent_clear_unlock_delalloc() to handle unlock and folio clean
-  up in one go.
-
-- Reserved extent freeing is handled in a dedicated tag
-  Out of the main loop, make it much harder to track.
-
-- Error handling of btrfs_reloc_clone_csums() is relying out-of-loop
-  tags
-  This is due to the special requirement to finish ordered extents to
-  handle the metadata reserved space.
-
-Enhance the error handling and align the behavior by:
-
-- Introduce a dedicated cow_one_range() helper
-  Which do the reserve/lock/allocation in the helper.
-
-  And also handle the errors inside the helper.
-  No more dedicated tags out of the main loop.
-
-- Use a single extent_clear_unlock_delalloc() to unlock and cleanup
-  folios
-
-- Move the btrfs_reloc_clone_csums() error handling into the new helper
-  Thankfully it's not that complex compared to other cases.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/inode.c | 247 +++++++++++++++++++++++++++--------------------
- 1 file changed, 144 insertions(+), 103 deletions(-)
-
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 28227d43b082..9d35b465c4cd 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -1252,6 +1252,135 @@ u64 btrfs_get_extent_allocation_hint(struct btrfs_inode *inode, u64 start,
- 	return alloc_hint;
- }
- 
-+/*
-+ * Handle COW for one range.
-+ *
-+ * @ins:		The key representing the allocated range.
-+ * @file_offset:	The file offset of the COW range
-+ * @num_bytes:		The expected length of the COW range
-+ *			The actually allocated length can be smaller than it.
-+ * @min_alloc_size:	The minimal extent size.
-+ * @alloc_hint:		The hint for the extent allocator.
-+ * @ret_alloc_size:	The COW range handles by this function.
-+ *
-+ * Return 0 if everything is fine and update @ret_alloc_size updated.
-+ * The range is still locked, and caller should unlock the range after
-+ * everything is done or for error handling.
-+ *
-+ * Return <0 for error and @is updated for where the extra cleanup
-+ * should happen. The range [file_offset, file_offset + ret_alloc_size) will
-+ * be cleaned up by this function.
-+ */
-+static int cow_one_range(struct btrfs_inode *inode, struct folio *locked_folio,
-+			 struct btrfs_key *ins, struct extent_state **cached,
-+			 u64 file_offset, u32 num_bytes, u32 min_alloc_size,
-+			 u64 alloc_hint, u32 *ret_alloc_size)
-+{
-+	struct btrfs_root *root = inode->root;
-+	struct btrfs_fs_info *fs_info = root->fs_info;
-+	struct btrfs_ordered_extent *ordered;
-+	struct btrfs_file_extent file_extent;
-+	struct extent_map *em;
-+	u32 cur_len = 0;
-+	u64 cur_end;
-+	int ret;
-+
-+	ret = btrfs_reserve_extent(root, num_bytes, num_bytes, min_alloc_size,
-+				   0, alloc_hint, ins, true, true);
-+	if (ret < 0) {
-+		*ret_alloc_size = cur_len;
-+		return ret;
-+	}
-+
-+	cur_len = ins->offset;
-+	cur_end = file_offset + cur_len - 1;
-+
-+	file_extent.disk_bytenr = ins->objectid;
-+	file_extent.disk_num_bytes = ins->offset;
-+	file_extent.num_bytes = ins->offset;
-+	file_extent.ram_bytes = ins->offset;
-+	file_extent.offset = 0;
-+	file_extent.compression = BTRFS_COMPRESS_NONE;
-+
-+	/*
-+	 * Locked range will be released either during error clean up (inside
-+	 * this function or by the caller for previously successful ranges) or
-+	 * after the whole range is finished.
-+	 */
-+	btrfs_lock_extent(&inode->io_tree, file_offset, cur_end, cached);
-+	em = btrfs_create_io_em(inode, file_offset, &file_extent,
-+				BTRFS_ORDERED_REGULAR);
-+	if (IS_ERR(em)) {
-+		ret = PTR_ERR(em);
-+		goto free_reserved;
-+	}
-+	btrfs_free_extent_map(em);
-+
-+	ordered = btrfs_alloc_ordered_extent(inode, file_offset, &file_extent,
-+					     1U << BTRFS_ORDERED_REGULAR);
-+	if (IS_ERR(ordered)) {
-+		btrfs_drop_extent_map_range(inode, file_offset, cur_end, false);
-+		ret = PTR_ERR(ordered);
-+		goto free_reserved;
-+	}
-+
-+	if (btrfs_is_data_reloc_root(root)) {
-+		ret = btrfs_reloc_clone_csums(ordered);
-+
-+		/*
-+		 * Only drop cache here, and process as normal.
-+		 *
-+		 * We must not allow extent_clear_unlock_delalloc()
-+		 * at free_reserved: label to free meta of this ordered
-+		 * extent, as its meta should be freed by
-+		 * btrfs_finish_ordered_io().
-+		 *
-+		 * So we must continue until @start is increased to
-+		 * skip current ordered extent.
-+		 */
-+		if (ret)
-+			btrfs_drop_extent_map_range(inode, file_offset,
-+						    cur_end, false);
-+	}
-+	btrfs_put_ordered_extent(ordered);
-+	btrfs_dec_block_group_reservations(fs_info, ins->objectid);
-+	/*
-+	 * Error handling for btrfs_reloc_clone_csums().
-+	 *
-+	 * Treat the range as finished, thus only clear EXTENT_LOCKED | EXTENT_DELALLOC.
-+	 * The accounting will be done by ordered extents.
-+	 */
-+	if (unlikely(ret < 0)) {
-+		btrfs_cleanup_ordered_extents(inode, file_offset, cur_len);
-+		extent_clear_unlock_delalloc(inode, file_offset, cur_end, locked_folio, cached,
-+					     EXTENT_LOCKED | EXTENT_DELALLOC,
-+					     PAGE_UNLOCK | PAGE_START_WRITEBACK |
-+					     PAGE_END_WRITEBACK);
-+		mapping_set_error(inode->vfs_inode.i_mapping, -EIO);
-+	}
-+	*ret_alloc_size = cur_len;
-+	return ret;
-+
-+free_reserved:
-+	extent_clear_unlock_delalloc(inode, file_offset, cur_end, locked_folio, cached,
-+				     EXTENT_LOCKED | EXTENT_DELALLOC |
-+				     EXTENT_DELALLOC_NEW |
-+				     EXTENT_DEFRAG | EXTENT_DO_ACCOUNTING,
-+				     PAGE_UNLOCK | PAGE_START_WRITEBACK |
-+				     PAGE_END_WRITEBACK);
-+	btrfs_qgroup_free_data(inode, NULL, file_offset, cur_len, NULL);
-+	btrfs_dec_block_group_reservations(fs_info, ins->objectid);
-+	btrfs_free_reserved_extent(fs_info, ins->objectid, ins->offset, true);
-+	mapping_set_error(inode->vfs_inode.i_mapping, -EIO);
-+	*ret_alloc_size = cur_len;
-+	/*
-+	 * We should not return -EAGAIN where it's a special return code for
-+	 * zoned to catch btrfs_reserved_extent().
-+	 */
-+	ASSERT(ret != -EAGAIN);
-+	return ret;
-+}
-+
- /*
-  * when extent_io.c finds a delayed allocation range in the file,
-  * the call backs end up in this code.  The basic idea is to
-@@ -1288,11 +1417,10 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
- 	u64 alloc_hint = 0;
- 	u64 orig_start = start;
- 	u64 num_bytes;
--	u64 cur_alloc_size = 0;
--	u64 min_alloc_size;
--	u64 blocksize = fs_info->sectorsize;
-+	u32 min_alloc_size;
-+	u32 blocksize = fs_info->sectorsize;
-+	u32 cur_alloc_size = 0;
- 	struct btrfs_key ins;
--	struct extent_map *em;
- 	unsigned clear_bits;
- 	unsigned long page_ops;
- 	int ret = 0;
-@@ -1361,16 +1489,14 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
- 		min_alloc_size = fs_info->sectorsize;
- 
- 	while (num_bytes > 0) {
--		struct btrfs_ordered_extent *ordered;
--		struct btrfs_file_extent file_extent;
-+		ret = cow_one_range(inode, locked_folio, &ins, &cached, start,
-+				    num_bytes, min_alloc_size, alloc_hint, &cur_alloc_size);
- 
--		ret = btrfs_reserve_extent(root, num_bytes, num_bytes,
--					   min_alloc_size, 0, alloc_hint,
--					   &ins, true, true);
- 		if (ret == -EAGAIN) {
- 			/*
--			 * btrfs_reserve_extent only returns -EAGAIN for zoned
--			 * file systems, which is an indication that there are
-+			 * cow_one_range() only returns -EAGAIN for zoned
-+			 * file systems (from btrfs_reserve_extent()), which
-+			 * is an indication that there are
- 			 * no active zones to allocate from at the moment.
- 			 *
- 			 * If this is the first loop iteration, wait for at
-@@ -1399,79 +1525,14 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
- 		}
- 		if (ret < 0)
- 			goto out_unlock;
--		cur_alloc_size = ins.offset;
- 
--		file_extent.disk_bytenr = ins.objectid;
--		file_extent.disk_num_bytes = ins.offset;
--		file_extent.num_bytes = ins.offset;
--		file_extent.ram_bytes = ins.offset;
--		file_extent.offset = 0;
--		file_extent.compression = BTRFS_COMPRESS_NONE;
-+		/* We should not allocate an extent larger than requested.*/
-+		ASSERT(cur_alloc_size <= num_bytes);
- 
--		/*
--		 * Locked range will be released either during error clean up or
--		 * after the whole range is finished.
--		 */
--		btrfs_lock_extent(&inode->io_tree, start, start + cur_alloc_size - 1,
--				  &cached);
--
--		em = btrfs_create_io_em(inode, start, &file_extent,
--					BTRFS_ORDERED_REGULAR);
--		if (IS_ERR(em)) {
--			btrfs_unlock_extent(&inode->io_tree, start,
--					    start + cur_alloc_size - 1, &cached);
--			ret = PTR_ERR(em);
--			goto out_reserve;
--		}
--		btrfs_free_extent_map(em);
--
--		ordered = btrfs_alloc_ordered_extent(inode, start, &file_extent,
--						     1U << BTRFS_ORDERED_REGULAR);
--		if (IS_ERR(ordered)) {
--			btrfs_unlock_extent(&inode->io_tree, start,
--					    start + cur_alloc_size - 1, &cached);
--			ret = PTR_ERR(ordered);
--			goto out_drop_extent_cache;
--		}
--
--		if (btrfs_is_data_reloc_root(root)) {
--			ret = btrfs_reloc_clone_csums(ordered);
--
--			/*
--			 * Only drop cache here, and process as normal.
--			 *
--			 * We must not allow extent_clear_unlock_delalloc()
--			 * at out_unlock label to free meta of this ordered
--			 * extent, as its meta should be freed by
--			 * btrfs_finish_ordered_io().
--			 *
--			 * So we must continue until @start is increased to
--			 * skip current ordered extent.
--			 */
--			if (ret)
--				btrfs_drop_extent_map_range(inode, start,
--							    start + cur_alloc_size - 1,
--							    false);
--		}
--		btrfs_put_ordered_extent(ordered);
--
--		btrfs_dec_block_group_reservations(fs_info, ins.objectid);
--
--		if (num_bytes < cur_alloc_size)
--			num_bytes = 0;
--		else
--			num_bytes -= cur_alloc_size;
-+		num_bytes -= cur_alloc_size;
- 		alloc_hint = ins.objectid + ins.offset;
- 		start += cur_alloc_size;
- 		cur_alloc_size = 0;
--
--		/*
--		 * btrfs_reloc_clone_csums() error, since start is increased
--		 * extent_clear_unlock_delalloc() at out_unlock label won't
--		 * free metadata of current ordered extent, we're OK to exit.
--		 */
--		if (ret)
--			goto out_unlock;
- 	}
- 	extent_clear_unlock_delalloc(inode, orig_start, end, locked_folio, &cached,
- 				     EXTENT_LOCKED | EXTENT_DELALLOC, page_ops);
-@@ -1480,11 +1541,6 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
- 		*done_offset = end;
- 	return ret;
- 
--out_drop_extent_cache:
--	btrfs_drop_extent_map_range(inode, start, start + cur_alloc_size - 1, false);
--out_reserve:
--	btrfs_dec_block_group_reservations(fs_info, ins.objectid);
--	btrfs_free_reserved_extent(fs_info, ins.objectid, ins.offset, true);
- out_unlock:
- 	/*
- 	 * Now, we have three regions to clean up:
-@@ -1521,24 +1577,9 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
- 	page_ops = PAGE_UNLOCK | PAGE_START_WRITEBACK | PAGE_END_WRITEBACK;
- 
- 	/*
--	 * For the range (2). If we reserved an extent for our delalloc range
--	 * (or a subrange) and failed to create the respective ordered extent,
--	 * then it means that when we reserved the extent we decremented the
--	 * extent's size from the data space_info's bytes_may_use counter and
--	 * incremented the space_info's bytes_reserved counter by the same
--	 * amount. We must make sure extent_clear_unlock_delalloc() does not try
--	 * to decrement again the data space_info's bytes_may_use counter,
--	 * therefore we do not pass it the flag EXTENT_CLEAR_DATA_RESV.
--	 */
--	if (cur_alloc_size) {
--		extent_clear_unlock_delalloc(inode, start,
--					     start + cur_alloc_size - 1,
--					     locked_folio, &cached, clear_bits,
--					     page_ops);
--		btrfs_qgroup_free_data(inode, NULL, start, cur_alloc_size, NULL);
--	}
--
--	/*
-+	 * For the range (2) the error handling is done by cow_one_range() itself.
-+	 * Nothing needs to be done.
-+	 *
- 	 * For the range (3). We never touched the region. In addition to the
- 	 * clear_bits above, we add EXTENT_CLEAR_DATA_RESV to release the data
- 	 * space_info's bytes_may_use counter, reserved in
-@@ -1553,7 +1594,7 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
- 				       end - start - cur_alloc_size + 1, NULL);
- 	}
- 	btrfs_err(fs_info,
--"%s failed, root=%llu inode=%llu start=%llu len=%llu cur_offset=%llu cur_alloc_size=%llu: %d",
-+"%s failed, root=%llu inode=%llu start=%llu len=%llu cur_offset=%llu cur_alloc_size=%u: %d",
- 		  __func__, btrfs_root_id(inode->root),
- 		  btrfs_ino(inode), orig_start, end + 1 - orig_start,
- 		  start, cur_alloc_size, ret);
--- 
-2.52.0
+> ERROR: errors found in fs roots
+> Opening filesystem to check...
+> Checking filesystem on /dev/sda3
+> UUID: afdbb979-0b91-499b-976c-0244ba2ed38f
+> found 140964491264 bytes used, error(s) found
+> total csum bytes: 136339904
+> total tree bytes: 969474048
+> total fs tree bytes: 751108096
+> total extent tree bytes: 62439424
+> btree space waste bytes: 178561905
+> file data blocks allocated: 490371264512
+>   referenced 162984435712
+>=20
+> End user has btrfs-image before and after repair if that's useful. But a=
+dditional --repair attempts do not appear to fix the "errors 6" message - =
+and the kernel still produces a warning and goes read-only if the file is =
+accessed.
+>=20
+>=20
+>=20
 
 
