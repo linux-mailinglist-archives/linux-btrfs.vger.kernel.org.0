@@ -1,133 +1,205 @@
-Return-Path: <linux-btrfs+bounces-19750-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19751-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0780CBEE79
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Dec 2025 17:29:53 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B66CCBF6F2
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Dec 2025 19:31:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 88F1C3050F74
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Dec 2025 16:24:40 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 8934C3016CCB
+	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Dec 2025 18:27:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B58A30FC1F;
-	Mon, 15 Dec 2025 16:24:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F43A268690;
+	Mon, 15 Dec 2025 18:27:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="TeH3Q+Xy"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="eatnPw43";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="QS7UkUGn";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="UJ+9s2Kf";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="a0+126/G"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from esa3.hgst.iphmx.com (esa3.hgst.iphmx.com [216.71.153.141])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6AD730FF1D
-	for <linux-btrfs@vger.kernel.org>; Mon, 15 Dec 2025 16:24:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.71.153.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0CC7271A6D
+	for <linux-btrfs@vger.kernel.org>; Mon, 15 Dec 2025 18:27:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765815879; cv=none; b=AH29yOyO8ecUql25gbZVULo7EojQv53tVia4tu5ACUV3IdmsOzu8E1zqVypFRlVq7pQlvo2rftRLsyk11aHSaN/dDP4Nd9i1KhC+wShkQfZdqLMN/ZinQxvYUPKgMbuMSCGgnohbvmxH8epvddy/4XuR+zUWJpVHJoQJ4kqtiZo=
+	t=1765823265; cv=none; b=WFbp+1br0Oqua/XXyCaMVtyP23qKv5xZQXYMxeDPFecULOWz1hrWpcTDcm+aRXkt50l91UEG/RA+AzUgYHtEbXamqyUernGzo4MGMYsenwEePxKY4hEmPsTwR33NWgOzDOGPJB1DAsvYKgQpJ6MSjyD2AukXKZPKKZyfOLRtIa0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765815879; c=relaxed/simple;
-	bh=bUt68zIj4gWMRPWlS+6snZGubMzUnKs5q3+ZVXyFZTA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=md9ojS+Wpjyht6lZpUBdB7EF8oel47HHvSSpxkWFsSxL3ixhxCQG3WST3VS4271qgFpY/vBU23RRZMiwX5XxyXmkhTzkpAv6ZVI80HV+kGq6rWO9FuHez3ZwsXcybDn90uB9BKcPsIMjTQFFkHNrNbzQlhARRPSe1TLSw0NuTJM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=TeH3Q+Xy; arc=none smtp.client-ip=216.71.153.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1765815878; x=1797351878;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=bUt68zIj4gWMRPWlS+6snZGubMzUnKs5q3+ZVXyFZTA=;
-  b=TeH3Q+Xy3DTEhPPzFXnYr1ct/VMa2Su9Npnyg7xwv9L7i3hZlu9Rflrj
-   AbUud9R6JKW18d0C7mKxaGcOpeEK2naa1w664FQD8SZtPkReTZL8oDaPD
-   +mpaYs+rxFSm/hf+I2YmJBCZXVEWAoNvsAIDwO+xDTcmB2ZgXkeeLToI3
-   D3qS5H6hLWPYw10P5hbAWRsyh2rimq2j6Zg/KBU/Oagitxo4KuQZB+CLk
-   rs/NSG6/r+hsnr2QxEl/ksekbmwuBsnjQ/TjulIHNjNwEPsD3bMLc+LXv
-   1HiB7Tb5NHdh3lqpiy4UYjL2NS7K1BlQdwHD4eEimJUHP6WOVlRoTQOOC
-   g==;
-X-CSE-ConnectionGUID: d6Ek6SzNRrmXehgz4WUkuA==
-X-CSE-MsgGUID: mW/v7zShRMaOVwzxgXkqtw==
-X-IronPort-AV: E=Sophos;i="6.21,151,1763395200"; 
-   d="scan'208";a="137916737"
-Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 16 Dec 2025 00:24:36 +0800
-IronPort-SDR: 69403643_9rL+QgfqfGlYJnmQY0uxNACr43XWpvcQAQCy7ARFbAiqrd2
- ZJ7RQXWVf47Lj5rbzDZIFeuWsYzCIueutJaASHQ==
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 15 Dec 2025 08:24:36 -0800
-WDCIronportException: Internal
-Received: from unknown (HELO neo.fritz.box) ([10.224.28.125])
-  by uls-op-cesaip02.wdc.com with ESMTP; 15 Dec 2025 08:24:33 -0800
-From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-To: linux-btrfs@vger.kernel.org
-Cc: Naohiro Aota <naohiro.aota@wdc.com>,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Filipe Manana <fdmanana@suse.com>,
-	Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH v4 3/3] btrfs: zoned: print block-group type for zoned statistics
-Date: Mon, 15 Dec 2025 17:24:20 +0100
-Message-ID: <20251215162420.238275-4-johannes.thumshirn@wdc.com>
-X-Mailer: git-send-email 2.52.0
-In-Reply-To: <20251215162420.238275-1-johannes.thumshirn@wdc.com>
-References: <20251215162420.238275-1-johannes.thumshirn@wdc.com>
+	s=arc-20240116; t=1765823265; c=relaxed/simple;
+	bh=ZpEEWd3W7s/OPB4IoO4OTEjwEFrvzXP5ZvwDzoV2ID0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=T3M1XO5vgw3ypEoSUOAAL4CfSiy4OntguPInf7q1Jz41z8Ww1va9rTClulmtF5dGq7LxLu6sBaGiYV8vsbR5GEm5HE2hMeSgNJ6j1IpKtOO3FFhZpIveAQq0i/T0MIWTrFXNpDX9wqMCuFSfFDF78z+xbkB9DrjRuSvhCY+cvsA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=eatnPw43; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=QS7UkUGn; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=UJ+9s2Kf; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=a0+126/G; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 16B4A336F9;
+	Mon, 15 Dec 2025 18:27:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1765823262;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kVfEEMvG0YXZ1ksN0MHBFHziQtswAIIOuNianF7RZpo=;
+	b=eatnPw43Zt+uJ6z5BqMeVPfNNYVHWqcO7MUfuFNPg5N57i4LoqLxPFYhqR7j8WR+kvb6G0
+	USYpWAFXWBY0OuQ7LlXkVgstY2ZFdRQsl09uEjJUpP8lSbKPBkTCZ3CnqGIQ0fQx6o6ogT
+	mS4ofxvZ71pneL/6qg4LZysoIKNrv84=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1765823262;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kVfEEMvG0YXZ1ksN0MHBFHziQtswAIIOuNianF7RZpo=;
+	b=QS7UkUGnFVsaTHV+834Eri4JJNCXCEsrmyUEJGJ3Jdzee27O3R/nxQxp6ZSuudOUJIHX4h
+	gTg6/iVe+frssJBg==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1765823261;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kVfEEMvG0YXZ1ksN0MHBFHziQtswAIIOuNianF7RZpo=;
+	b=UJ+9s2KfZe1aJmqMgvA1T2jNfvfKhe7oax9E4UDOHbY8v3x/xBJduTP7KLFug5PAXhhjs/
+	gJeHwI9EB3/rkH9JD6BP34tZL7B66i4nNoSG5UdVpoZMzzqTMLC4oFC67Pq+arSWA8/O9B
+	uMl7LT5XQdoOo53BFJJknyoOSq/OnD0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1765823261;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kVfEEMvG0YXZ1ksN0MHBFHziQtswAIIOuNianF7RZpo=;
+	b=a0+126/Gwzhv5UTYMztnajp5nT+0XWJ2gUKDn5oQJF07b8NE8KiqPYlwFs9d2bAYUUj8dG
+	0KBOC+wHM6A9HCDQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id F3A023EA63;
+	Mon, 15 Dec 2025 18:27:40 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id m5JNOxxTQGm7dgAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Mon, 15 Dec 2025 18:27:40 +0000
+Date: Mon, 15 Dec 2025 19:27:35 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
+Subject: Re: [PATCH v2] fstests: generic/746: update the parser to handle
+ block group tree
+Message-ID: <20251215182735.GB3195@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20251205071726.159577-1-wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251205071726.159577-1-wqu@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spamd-Result: default: False [-3.95 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.15)[-0.730];
+	MIME_GOOD(-0.10)[text/plain];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_SOME(0.00)[];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+	RCPT_COUNT_THREE(0.00)[3];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo,suse.cz:replyto]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: -3.95
 
-When printing the zoned statistics, also include the block-group type in
-the block-group listing output.
+On Fri, Dec 05, 2025 at 05:47:26PM +1030, Qu Wenruo wrote:
+> [FALSE ALERT]
+> The test case will fail on btrfs if the new block-group-tree feature is
+> enabled:
+> 
+> FSTYP         -- btrfs
+> PLATFORM      -- Linux/x86_64 btrfs-vm 6.18.0-rc6-custom+ #321 SMP PREEMPT_DYNAMIC Sun Nov 23 16:34:33 ACDT 2025
+> MKFS_OPTIONS  -- -O block-group-tree /dev/mapper/test-scratch1
+> MOUNT_OPTIONS -- /dev/mapper/test-scratch1 /mnt/scratch
+> 
+> generic/746 44s ... [failed, exit status 1]- output mismatch (see xfstests-dev/results//generic/746.out.bad)
+>     --- tests/generic/746.out	2024-06-27 13:55:51.286338519 +0930
+>     +++ xfstests-dev/results//generic/746.out.bad	2025-11-28 07:47:17.039827837 +1030
+>     @@ -2,4 +2,4 @@
+>      Generating garbage on loop...done.
+>      Running fstrim...done.
+>      Detecting interesting holes in image...done.
+>     -Comparing holes to the reported space from FS...done.
+>     +Comparing holes to the reported space from FS...Sectors 256-2111 are not marked as free!
+>     ...
+>     (Run 'diff -u xfstests-dev/tests/generic/746.out xfstests-dev/results//generic/746.out.bad'  to see the entire diff)
+> 
+> [CAUSE]
+> Sectors [256, 2048) are the from the reserved first 1M free space.
+> Sectors [2048, 2112) are the leading free space in the chunk tree.
+> Sectors [2112, 2144) is the first tree block in the chunk tree.
+> 
+> However the reported free sectors from get_free_sectors() looks like this:
+> 
+>   2144 10566
+>   10688 11711
+>   ...
+> 
+> Note that there should be a free sector range in [2048, 2112) but it's
+> not reported in get_free_sectors().
+> 
+> The get_free_sectors() call is fs dependent, and for btrfs it's using
+> parse-extent-tree.awk script to handle the extent tree dump.
+> 
+> The script uses BLOCK_GROUP_ITEM items to detect the beginning of a
+> block group so that it can calculate the hole between the beginning of a
+> block group and the first data/metadata item.
+> 
+> However block-group-tree feature moves BLOCK_GROUP_ITEM items to a
+> dedicated tree, making the existing script unable to parse the free
+> space at the beginning of a block group.
+> 
+> [FIX]
+> Introduce a new script, parse-free-space.py, that accepts two tree
+> dumps:
+> 
+> - block group tree dump
+>   If the fs has block-group-tree feature, it's the block group tree
+>   dump.
+>   Otherwise the regular extent tree dump is enough.
+> 
+> - extent tree dump
+>   The usual extent tree dump.
+> 
+> With a dedicated block group tree dump, the script can correctly handle
+> the beginning part of free space, no matter if block-group-tree feature
+> is enabled or not.
+> 
+> And with this parser, the old parse-extent-tree.awk can be retired.
+> 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+> Changelog:
+> v2:
+> - Add extra requirement for python3 if the fs is btrfs
+> - Utilize $PYTHON3_PROG other than calling the script directly
+> - Add the comment on we need single DATA/METADATA profiles
 
-The updated output looks as follows:
-
- device /dev/vda mounted on /mnt with fstype btrfs
-         active block-groups: 9
-           reclaimable: 0
-           unused: 2
-           need reclaim: false
-         data relocation block-group: 3221225472
-         active zones:
-           start: 1073741824, wp: 268419072 used: 268419072, reserved: 0, unusable: 0 (DATA)
-           start: 1342177280, wp: 0 used: 0, reserved: 0, unusable: 0 (DATA)
-           start: 1610612736, wp: 81920 used: 16384, reserved: 16384, unusable: 49152 (SYSTEM)
-           start: 1879048192, wp: 2031616 used: 1458176, reserved: 65536, unusable: 507904 (METADATA)
-           start: 2147483648, wp: 268419072 used: 268419072, reserved: 0, unusable: 0 (DATA)
-           start: 2415919104, wp: 268419072 used: 268419072, reserved: 0, unusable: 0 (DATA)
-           start: 2684354560, wp: 268419072 used: 268419072, reserved: 0, unusable: 0 (DATA)
-           start: 2952790016, wp: 65536 used: 65536, reserved: 0, unusable: 0 (DATA)
-           start: 3221225472, wp: 0 used: 0, reserved: 0, unusable: 0 (DATA)
-
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-Reviewed-by: Naohiro Aota <naohiro.aota@wdc.com>
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- fs/btrfs/zoned.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-index 6125df428568..2aa3fa3cef2c 100644
---- a/fs/btrfs/zoned.c
-+++ b/fs/btrfs/zoned.c
-@@ -3023,6 +3023,7 @@ void btrfs_show_zoned_stats(struct btrfs_fs_info *fs_info, struct seq_file *s)
- 		u64 used;
- 		u64 reserved;
- 		u64 zone_unusable;
-+		const char *typestr = btrfs_space_info_type_str(bg->space_info);
- 
- 		spin_lock(&bg->lock);
- 		start = bg->start;
-@@ -3033,8 +3034,8 @@ void btrfs_show_zoned_stats(struct btrfs_fs_info *fs_info, struct seq_file *s)
- 		spin_unlock(&bg->lock);
- 
- 		seq_printf(s,
--			   "\t  start: %llu, wp: %llu used: %llu, reserved: %llu, unusable: %llu\n",
--			   start, alloc_offset, used, reserved, zone_unusable);
-+			   "\t  start: %llu, wp: %llu used: %llu, reserved: %llu, unusable: %llu (%s)\n",
-+			   start, alloc_offset, used, reserved, zone_unusable, typestr);
- 	}
- 	spin_unlock(&fs_info->zone_active_bgs_lock);
- }
--- 
-2.52.0
-
+Reviewed-by: David Sterba <dsterba@suse.com>
 
