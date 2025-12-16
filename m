@@ -1,80 +1,54 @@
-Return-Path: <linux-btrfs+bounces-19803-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19804-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8A88CC530A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Dec 2025 22:17:05 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B818CC530D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Dec 2025 22:18:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 5F9CF30419B4
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Dec 2025 21:16:32 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C6E563017F31
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Dec 2025 21:17:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C64B312801;
-	Tue, 16 Dec 2025 21:16:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D51F6310652;
+	Tue, 16 Dec 2025 21:17:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="fEUTS7rV"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="XiQKz3tx"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9D96285CAE
-	for <linux-btrfs@vger.kernel.org>; Tue, 16 Dec 2025 21:16:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C4A0182B8
+	for <linux-btrfs@vger.kernel.org>; Tue, 16 Dec 2025 21:17:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765919790; cv=none; b=U1/xPLrdd15ikSi9hGxP66yJpTc16VjxRHs4Zr7tL3TArjHeZYW8R/GU3xRKxgWfDTnWwT2cZdMxDJmIs5i3E2NTnST7XW+ytJbR6+KfqjNPcvbwdZ7kXk4z08uRZ85Y6Q1M5i7ppCcIszX44oA+/lnA2sby4i1xd1ApUjfgtnI=
+	t=1765919836; cv=none; b=Sdq8DUSOTk7ATQi+cDqAR26RZDvEt/MeYuekACBQshmXioNxiM9qcHfC8NzdHOE7IFY7jQpuFpSFvwSkBAFNdau5mznMr7Hn2fIndsyZi6zSzj8o5KAjS9t2SNYbiYHB3B47lwF/bw2nCXnV7dcQGstiQZ23kEk2/KCag2OQk7s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765919790; c=relaxed/simple;
-	bh=/MgQ7o33P9sRVzt0SfPFUEUi8OazanJGM1B8Ok0bITo=;
+	s=arc-20240116; t=1765919836; c=relaxed/simple;
+	bh=kWZLBSGv8M30w1r9asBeG2Gz0ecpOrWi0+kWE3kDpRY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=Nnbk0BIfYU6hmJ4AlQD6p1EaPPUeiBtvgMZralgDXrIBV+Je2axKbTtOH977tp9UaCFRLPGAjupSxkacJLppQvimn8QMHawNRm/kviSMqHwym++s93v1/hyM3ZUZDhyo7gww61pW3WFDCXvitpsSrMveApYV71J4QJWB6U+1G44=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=fEUTS7rV; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-47a95efd2ceso29598385e9.2
-        for <linux-btrfs@vger.kernel.org>; Tue, 16 Dec 2025 13:16:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1765919786; x=1766524586; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=Y2bNcmrvGh0DP6RG2YwkPYXrKG82aiySbLmvVEd9C0g=;
-        b=fEUTS7rVJLVwFaxkiBFNHs6Hx7nMlItM5eGExIbZnfMWsU7FukRCmvQn9rhavi5RwW
-         7SYSGs3vd+UjwKp5eLxnuULwmAEZkmLxF+LV9qGma7rrSbh8G+b0a9+pvkZ8QyO+29Mk
-         IFbQ6RprbxSclzd3bJJ6Lge1myqqgKCPA94yOQCm8dtUAa1ryOFNs24vVCx8va0pDsFS
-         U1lc4u22Pf3ax5utXVwzXFDXqeDPv1PFmsXePwRSHrk5/n9VZ49MDtQPu9CG5kMc1Vfs
-         tmcO45aQ+vmgb08fxvu3DLiVvlUcga6CdAjtPzMT561qXNqBKzmENORXJUjm5m4Ait2k
-         6MMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765919786; x=1766524586;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Y2bNcmrvGh0DP6RG2YwkPYXrKG82aiySbLmvVEd9C0g=;
-        b=v+td8fxT3mNI+FvuRc2hTj1NYf23nCd8lV18PTPbw0YGK+fEGC07bGrxvwqkMyN40N
-         PDyQjMmVirTzr6VNrTbyGA9QZxqVuZbZVxwvQ1q63I/5RkyTvaq1exeSwVIO53/mcX1I
-         yaYuYM3RbhTK1n3EnGGbP66wgBHKEDu8ysxQu3ZQOTGu2VpOcLj7Sr9q0u+aNVfPK058
-         Q47YqnfWU7HXK+sWofX+jPzAjo9aRlFGilxuT7CxhWU0HgRUch0Ly3+HiUqAMoWVdCvY
-         I0EQwmx4Ph9PnGoG00NZ68c6jU8mBYf+jnsF6dGycgr1tpibrPdaT8vrQVqiZA23QNPs
-         7jKg==
-X-Forwarded-Encrypted: i=1; AJvYcCXAGDabLXpql4WLrAAZ/W7QbbDs6+2F2yexrMNCceXWKISer4I7F+MHDmaF9xfUtnm7vJ8Qqok+83zLAg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwJLDb+rWJ1Dd+6RkH/oj7ZnutAfpiud7pzcgW/JcgM2VIDSnHW
-	P/ggyjF4lNKjgh2tpiCulXBNe4eV/CJRn6jlzcVlRQoH7BmPdnfbE2tjBWZ1w34bf14=
-X-Gm-Gg: AY/fxX6fSLyggHjiuJ/JXK74L6TUEa8cvtujNV5AmZJtEnWf3g5TS8fdxYWo72tWu5C
-	nMbVkT3/+FFOkKaUY0zs+xXqHYYtVEttrrSrbx3F/Qy2ptanMpHHZWX3v/e96ZIRAb4acsR6YcL
-	sI3eFO0Sa4Iz/R+NBujvwpgQa5/SEDPmVNPWkqDoPak4zIWrqozYb7HZAvswN/c3p67P16q96Lp
-	gDNA2hTR5ybRgK7YOzsX6IXA3w9oCBE7tsy4lNaW4P0h64Yr1mTLQPl2wWCBkgMur7QNpvIm5x7
-	rNAArwmFYsrOZMffmYkuZ6OQyX6ehvEoDo4TdO3mpDd0LkmoJboubMaMTW7m0GAT56zELqUVoqp
-	WL7RDOdZeS5l/XLPQnlxzeeRsAOc8mx2/JU3Og/sGrHMpM17TuBjOanz2qxgiCjCBUmXK0iuVpD
-	d3fa3VJ+z+pq+kCOujhZqD3Xj6FVZx1Xwpz3mqUkA=
-X-Google-Smtp-Source: AGHT+IGBHQag3LizC0Eslv/3IQ5IffGYPBP436IpIkPc/U4H6LGSE/qHv61bemkxKFKr71z/QeM/VQ==
-X-Received: by 2002:a05:600c:4e90:b0:477:557b:691d with SMTP id 5b1f17b1804b1-47a942cd40dmr138344255e9.25.1765919785756;
-        Tue, 16 Dec 2025 13:16:25 -0800 (PST)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7fcbb11ec17sm479667b3a.42.2025.12.16.13.16.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 16 Dec 2025 13:16:25 -0800 (PST)
-Message-ID: <58390da3-ae35-49c6-929e-dd313c4fc62c@suse.com>
-Date: Wed, 17 Dec 2025 07:46:21 +1030
+	 In-Reply-To:Content-Type; b=IZfgPEtWFA4036wyTIqhjkOMbVG6QcJHaC1e7jNocb8wgby8ziPbhHpW5LwGf5SB1XfQWv+kuzCoj4dGrjK+SPd90YVYDEEf3TKbcOL0CARXNYcwNXojNd3/LEKbehLlcVK9F6vm+YBfGxbZOL/L2Cb0snvsPMqADtrvj2PcF5c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=XiQKz3tx; arc=none smtp.client-ip=212.227.17.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1765919831; x=1766524631; i=quwenruo.btrfs@gmx.com;
+	bh=qyRC1lr6pckZnPFTmSkAwZJRRRo97mTTBdZAdZngEQY=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=XiQKz3txSxG2PWkauIBpUDMRFusHmW3KU4ypm5ysE6GtJ8yNUN+NvcsIUVR4LjtU
+	 dVkq7Fr2lUKJk1p9ryozVEP798fMLx6iH/oMHO3ZoQrFM5lnqhMvXSyRFdb2UFucI
+	 bpPcgfgstl1Kx6bKEbfADSssjXi2gj02qwlpv+3yOE5raMRVorJdK2qrNmyys0sMO
+	 7t5fMiS9oqmsXH/YnIwbJLmFq5zF8g4iWBeAwi6s/9gTtKlwD7POx2cMB0ZKo9stG
+	 8yvbclbddOmD9kHq0GcL496pk2nFrsOlDZftm5iIc3I6jpJ3ZgnGkCRcOWdjv00VS
+	 UlMjd1KNR1Argg9qWg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MG9kC-1vm9ko2B8m-007T4R; Tue, 16
+ Dec 2025 22:17:11 +0100
+Message-ID: <3433a1ee-f639-4ce1-a823-02d2957045d9@gmx.com>
+Date: Wed, 17 Dec 2025 07:47:07 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -82,276 +56,169 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: release path before initializing extent tree in
- btrfs_read_locked_inode()
+Subject: Re: [PATCH] btrfs: avoid transaction commit on error in
+ del_balance_item()
 To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <d3b2797ff1161a809b1935ed0e1ce31d6110cc33.1765897890.git.fdmanana@suse.com>
+References: <de940c4488c9be72d8df22f48651b3c2f7d2978f.1765900568.git.fdmanana@suse.com>
 Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
  8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
  1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
  9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
  gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <d3b2797ff1161a809b1935ed0e1ce31d6110cc33.1765897890.git.fdmanana@suse.com>
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
+ sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
+ xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
+ naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
+ tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
+ 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
+ VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
+ CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
+ B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
+ Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
+ +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
+ HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
+In-Reply-To: <de940c4488c9be72d8df22f48651b3c2f7d2978f.1765900568.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:0gVp4fvsOpKbkwNCIqgoE4wc65RgcqmrWVGqMHZ4A0DGL9DcvS4
+ jCgao8e3s8MTNDDkG9P1FzCvvqQI7ZyOZAvXJDUNebq7gkEIjll6ceZppYTegX9x6ht2VQe
+ gg+1v3q3kdm2LpsOtCABMwHo8nbCXl2aO9w5WzyJSAsr8Zpc3BkQJrfOUH4lKbXDkxFiNyI
+ pGacelFFN0ZbpOYH/XQ4w==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:bgm/4VKdoVU=;3uyz9wjDIv8zr32u7GdxDB+UL6w
+ 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
+ MwFJvpnk=
 
 
 
-在 2025/12/17 01:42, fdmanana@kernel.org 写道:
+=E5=9C=A8 2025/12/17 02:26, fdmanana@kernel.org =E5=86=99=E9=81=93:
 > From: Filipe Manana <fdmanana@suse.com>
-> 
-> In btrfs_read_locked_inode() we are calling btrfs_init_file_extent_tree()
-> while holding a path with a read locked leaf from a subvolume tree, and
-> btrfs_init_file_extent_tree() may do a GFP_KERNEL allocation, which can
-> trigger reclaim.
-> 
-> This can create a circular lock dependency which lockdep warns about with
-> the following splat:
-> 
->     [27386.164433] ======================================================
->     [27386.164574] WARNING: possible circular locking dependency detected
->     [27386.164583] 6.18.0+ #4 Tainted: G     U
->     [27386.164591] ------------------------------------------------------
->     [27386.164599] kswapd0/117 is trying to acquire lock:
->     [27386.164606] ffff8d9b6333c5b8 (&delayed_node->mutex){+.+.}-{3:3}, at:
->     __btrfs_release_delayed_node.part.0+0x39/0x2f0
->     [27386.164625]
->                    but task is already holding lock:
->     [27386.164633] ffffffffa4ab8ce0 (fs_reclaim){+.+.}-{0:0}, at:
->     balance_pgdat+0x195/0xc60
->     [27386.164646]
->                    which lock already depends on the new lock.
-> 
->     [27386.164657]
->                    the existing dependency chain (in reverse order) is:
->     [27386.164667]
->                    -> #2 (fs_reclaim){+.+.}-{0:0}:
->     [27386.164677]        fs_reclaim_acquire+0x9d/0xd0
->     [27386.164685]        __kmalloc_cache_noprof+0x59/0x750
->     [27386.164694]        btrfs_init_file_extent_tree+0x90/0x100
->     [27386.164702]        btrfs_read_locked_inode+0xc3/0x6b0
->     [27386.164710]        btrfs_iget+0xbb/0xf0
->     [27386.164716]        btrfs_lookup_dentry+0x3c5/0x8e0
->     [27386.164724]        btrfs_lookup+0x12/0x30
->     [27386.164731]        lookup_open.isra.0+0x1aa/0x6a0
->     [27386.164739]        path_openat+0x5f7/0xc60
->     [27386.164746]        do_filp_open+0xd6/0x180
->     [27386.164753]        do_sys_openat2+0x8b/0xe0
->     [27386.164760]        __x64_sys_openat+0x54/0xa0
->     [27386.164768]        do_syscall_64+0x97/0x3e0
->     [27386.164776]        entry_SYSCALL_64_after_hwframe+0x76/0x7e
->     [27386.164784]
->                    -> #1 (btrfs-tree-00){++++}-{3:3}:
->     [27386.164794]        lock_release+0x127/0x2a0
->     [27386.164801]        up_read+0x1b/0x30
->     [27386.164808]        btrfs_search_slot+0x8e0/0xff0
->     [27386.164817]        btrfs_lookup_inode+0x52/0xd0
->     [27386.164825]        __btrfs_update_delayed_inode+0x73/0x520
->     [27386.164833]        btrfs_commit_inode_delayed_inode+0x11a/0x120
->     [27386.164842]        btrfs_log_inode+0x608/0x1aa0
->     [27386.164849]        btrfs_log_inode_parent+0x249/0xf80
->     [27386.164857]        btrfs_log_dentry_safe+0x3e/0x60
->     [27386.164865]        btrfs_sync_file+0x431/0x690
->     [27386.164872]        do_fsync+0x39/0x80
->     [27386.164879]        __x64_sys_fsync+0x13/0x20
->     [27386.164887]        do_syscall_64+0x97/0x3e0
->     [27386.164894]        entry_SYSCALL_64_after_hwframe+0x76/0x7e
->     [27386.164903]
->                    -> #0 (&delayed_node->mutex){+.+.}-{3:3}:
->     [27386.164913]        __lock_acquire+0x15e9/0x2820
->     [27386.164920]        lock_acquire+0xc9/0x2d0
->     [27386.164927]        __mutex_lock+0xcc/0x10a0
->     [27386.164934]        __btrfs_release_delayed_node.part.0+0x39/0x2f0
->     [27386.164944]        btrfs_evict_inode+0x20b/0x4b0
->     [27386.164952]        evict+0x15a/0x2f0
->     [27386.164958]        prune_icache_sb+0x91/0xd0
->     [27386.164966]        super_cache_scan+0x150/0x1d0
->     [27386.164974]        do_shrink_slab+0x155/0x6f0
->     [27386.164981]        shrink_slab+0x48e/0x890
->     [27386.164988]        shrink_one+0x11a/0x1f0
->     [27386.164995]        shrink_node+0xbfd/0x1320
->     [27386.165002]        balance_pgdat+0x67f/0xc60
->     [27386.165321]        kswapd+0x1dc/0x3e0
->     [27386.165643]        kthread+0xff/0x240
->     [27386.165965]        ret_from_fork+0x223/0x280
->     [27386.166287]        ret_from_fork_asm+0x1a/0x30
->     [27386.166616]
->                    other info that might help us debug this:
-> 
->     [27386.167561] Chain exists of:
->                      &delayed_node->mutex --> btrfs-tree-00 --> fs_reclaim
-> 
->     [27386.168503]  Possible unsafe locking scenario:
-> 
->     [27386.169110]        CPU0                    CPU1
->     [27386.169411]        ----                    ----
->     [27386.169707]   lock(fs_reclaim);
->     [27386.169998]                                lock(btrfs-tree-00);
->     [27386.170291]                                lock(fs_reclaim);
->     [27386.170581]   lock(&delayed_node->mutex);
->     [27386.170874]
->                     *** DEADLOCK ***
-> 
->     [27386.171716] 2 locks held by kswapd0/117:
->     [27386.171999]  #0: ffffffffa4ab8ce0 (fs_reclaim){+.+.}-{0:0}, at:
->     balance_pgdat+0x195/0xc60
->     [27386.172294]  #1: ffff8d998344b0e0 (&type->s_umount_key#40){++++}-
->     {3:3}, at: super_cache_scan+0x37/0x1d0
->     [27386.172596]
->                    stack backtrace:
->     [27386.173183] CPU: 11 UID: 0 PID: 117 Comm: kswapd0 Tainted: G     U
->     6.18.0+ #4 PREEMPT(lazy)
->     [27386.173185] Tainted: [U]=USER
->     [27386.173186] Hardware name: ASUS System Product Name/PRIME B560M-A
->     AC, BIOS 2001 02/01/2023
->     [27386.173187] Call Trace:
->     [27386.173187]  <TASK>
->     [27386.173189]  dump_stack_lvl+0x6e/0xa0
->     [27386.173192]  print_circular_bug.cold+0x17a/0x1c0
->     [27386.173194]  check_noncircular+0x175/0x190
->     [27386.173197]  __lock_acquire+0x15e9/0x2820
->     [27386.173200]  lock_acquire+0xc9/0x2d0
->     [27386.173201]  ? __btrfs_release_delayed_node.part.0+0x39/0x2f0
->     [27386.173204]  __mutex_lock+0xcc/0x10a0
->     [27386.173206]  ? __btrfs_release_delayed_node.part.0+0x39/0x2f0
->     [27386.173208]  ? __btrfs_release_delayed_node.part.0+0x39/0x2f0
->     [27386.173211]  ? __btrfs_release_delayed_node.part.0+0x39/0x2f0
->     [27386.173213]  __btrfs_release_delayed_node.part.0+0x39/0x2f0
->     [27386.173215]  btrfs_evict_inode+0x20b/0x4b0
->     [27386.173217]  ? lock_acquire+0xc9/0x2d0
->     [27386.173220]  evict+0x15a/0x2f0
->     [27386.173222]  prune_icache_sb+0x91/0xd0
->     [27386.173224]  super_cache_scan+0x150/0x1d0
->     [27386.173226]  do_shrink_slab+0x155/0x6f0
->     [27386.173228]  shrink_slab+0x48e/0x890
->     [27386.173229]  ? shrink_slab+0x2d2/0x890
->     [27386.173231]  shrink_one+0x11a/0x1f0
->     [27386.173234]  shrink_node+0xbfd/0x1320
->     [27386.173236]  ? shrink_node+0xa2d/0x1320
->     [27386.173236]  ? shrink_node+0xbd3/0x1320
->     [27386.173239]  ? balance_pgdat+0x67f/0xc60
->     [27386.173239]  balance_pgdat+0x67f/0xc60
->     [27386.173241]  ? finish_task_switch.isra.0+0xc4/0x2a0
->     [27386.173246]  kswapd+0x1dc/0x3e0
->     [27386.173247]  ? __pfx_autoremove_wake_function+0x10/0x10
->     [27386.173249]  ? __pfx_kswapd+0x10/0x10
->     [27386.173250]  kthread+0xff/0x240
->     [27386.173251]  ? __pfx_kthread+0x10/0x10
->     [27386.173253]  ret_from_fork+0x223/0x280
->     [27386.173255]  ? __pfx_kthread+0x10/0x10
->     [27386.173257]  ret_from_fork_asm+0x1a/0x30
->     [27386.173260]  </TASK>
-> 
-> This is because:
-> 
-> 1) The fsync task is holding an inode's delayed node mutex (for a
->     directory) while calling __btrfs_update_delayed_inode() and that needs
->     to do a search on the subvolume's btree (therefore read lock some
->     extent buffers);
-> 
-> 2) The lookup task, at btrfs_lookup(), triggered reclaim with the
->     GFP_KERNEL allocation done by btrfs_init_file_extent_tree() while
->     holding a read lock on a subvolume leaf;
-> 
-> 3) The reclaim triggered kswapd which is doing inode eviction for the
->     directory inode the fsync task is using as an argument to
->     btrfs_commit_inode_delayed_inode() - but in that call chain we are
->     trying to read lock the same leaf that the lookup task is holding
->     while calling btrfs_init_file_extent_tree() and doing the GFP_KERNEL
->     allocation.
-> 
-> Fix this by calling btrfs_init_file_extent_tree() after we don't need the
-> path anymore and release it in btrfs_read_locked_inode().
-> 
-> Reported-by: Thomas Hellström <thomas.hellstrom@linux.intel.com>
-> Link: https://lore.kernel.org/linux-btrfs/6e55113a22347c3925458a5d840a18401a38b276.camel@linux.intel.com/
-> Fixes: 8679d2687c35 ("btrfs: initialize inode::file_extent_tree after i_mode has been set")
+>=20
+> There's no point in committing the transaction if we failed to delete th=
+e
+> item, since we haven't done anything before. Also stop using two variabl=
+es
+> for tracking the return value and use only 'ret'.
+>=20
 > Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> ---
->   fs/btrfs/inode.c | 19 ++++++++++++++-----
->   1 file changed, 14 insertions(+), 5 deletions(-)
-> 
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index 457624de84a0..a8ce2bf53b82 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -4043,11 +4043,6 @@ static int btrfs_read_locked_inode(struct btrfs_inode *inode, struct btrfs_path
->   	btrfs_set_inode_mapping_order(inode);
->   
->   cache_index:
-> -	ret = btrfs_init_file_extent_tree(inode);
-> -	if (ret)
-> -		goto out;
-> -	btrfs_inode_set_file_extent_range(inode, 0,
-> -			round_up(i_size_read(vfs_inode), fs_info->sectorsize));
->   	/*
->   	 * If we were modified in the current generation and evicted from memory
->   	 * and then re-read we need to do a full sync since we don't have any
-> @@ -4158,6 +4153,20 @@ static int btrfs_read_locked_inode(struct btrfs_inode *inode, struct btrfs_path
->   		break;
->   	}
->   
-> +	/*
-> +	 * We don't need the path anymore, so release it to avoid holding a read
-> +	 * lock on a leaf while calling btrfs_init_file_extent_tree(), which can
-> +	 * allocate memory that triggers reclaim (GFP_KERNEL) and cause a locking
-> +	 * dependency.
-> +	 */
-> +	btrfs_release_path(path);
-
-We can release the path earlier, the last path usage is 
-btrfs_load_inode_props(), we can release the path after that "if 
-(first_xattr_slot != -1) {}" check.
-
-Other than that looks good to me.
 
 Reviewed-by: Qu Wenruo <wqu@suse.com>
-
-
-BTW, it doesn't looks a good practice of passing btrfs_path pointer 
-around for btrfs_read_locked_inode().
-
-Either it's btrfs_iget(), which allocates a path only for this call and 
-immediately free it, or it's btrfs_iget_path() which is only utilized by 
-free-space-cache and no one is really utilizing the path anyway.
-
-Thus it's better to just allocate the path inside 
-btrfs_read_locked_inode() to minimize the lifespan.
-Of course this should be another dedicated cleanup.
 
 Thanks,
 Qu
 
+
+> ---
+>   fs/btrfs/volumes.c | 8 ++++----
+>   1 file changed, 4 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index d580d8669668..102f7b85206c 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -3689,7 +3689,7 @@ static int del_balance_item(struct btrfs_fs_info *=
+fs_info)
+>   	struct btrfs_trans_handle *trans;
+>   	struct btrfs_path *path;
+>   	struct btrfs_key key;
+> -	int ret, err;
+> +	int ret;
+>  =20
+>   	path =3D btrfs_alloc_path();
+>   	if (!path)
+> @@ -3716,9 +3716,9 @@ static int del_balance_item(struct btrfs_fs_info *=
+fs_info)
+>   	ret =3D btrfs_del_item(trans, root, path);
+>   out:
+>   	btrfs_free_path(path);
+> -	err =3D btrfs_commit_transaction(trans);
+> -	if (err && !ret)
+> -		ret =3D err;
+> +	if (ret =3D=3D 0)
+> +		ret =3D btrfs_commit_transaction(trans);
 > +
-> +	ret = btrfs_init_file_extent_tree(inode);
-> +	if (ret)
-> +		goto out;
-> +	btrfs_inode_set_file_extent_range(inode, 0,
-> +			  round_up(i_size_read(vfs_inode), fs_info->sectorsize));
-> +
->   	btrfs_sync_inode_flags_to_i_flags(inode);
->   
->   	ret = btrfs_add_inode_to_root(inode, true);
+>   	return ret;
+>   }
+>  =20
 
 
