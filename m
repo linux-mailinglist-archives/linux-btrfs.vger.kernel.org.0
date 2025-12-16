@@ -1,250 +1,164 @@
-Return-Path: <linux-btrfs+bounces-19765-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19766-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D2D3CC034C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Dec 2025 00:43:43 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68815CC06DD
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Dec 2025 02:14:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 5AB73304E14F
-	for <lists+linux-btrfs@lfdr.de>; Mon, 15 Dec 2025 23:41:00 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 957F43022AA0
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Dec 2025 01:14:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3108732ABCE;
-	Mon, 15 Dec 2025 23:41:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41DE1239E7D;
+	Tue, 16 Dec 2025 01:14:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="L5D5DoFT";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="L5D5DoFT"
+	dkim=pass (2048-bit key) header.d=mikkel.cc header.i=@mikkel.cc header.b="UU2PtI2g"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED42232937C
-	for <linux-btrfs@vger.kernel.org>; Mon, 15 Dec 2025 23:40:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F601C8E6
+	for <linux-btrfs@vger.kernel.org>; Tue, 16 Dec 2025 01:14:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765842059; cv=none; b=ldnv2EkujfoFZGXK76m6p2c4VAc0TVl8WkW4cSFD4lBXxklqyg7hafEE5m5A+ylrrqZkV+tE5hKlD5oUuq+qAy1G/UdehIbN9vmm5pArHWo1XAYfN+2De/5gc69mFnj35nB1LNJQYlOarrqaW7qjCGyFBicggJ51iMHkFUoduO0=
+	t=1765847665; cv=none; b=phl0eF8QYLeunAwVpPQURTXc/EVP4J43h7n32qlW/XajcFkz5mIPq02i0yRbmbgFBR7+9yqVBP6cc9IX5ZNUVKpKADKU6jG4o9NCo1BNumr266ub5NZfyUJYCENnfovcmfxIdY8uSWk9cTxD/2PaLG63fj6Wwk/Hwrj16vjqNCQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765842059; c=relaxed/simple;
-	bh=U34WLcFVbkwYEP0VwKDKJ2PqK8Q6xQm35wPoeSWeER0=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=Huy5FeSqGJbADY/hk+JaVU+GSWiwmWX632+jhahe8zBHV9YRcFv9OORGfUyEQzwt2rJmoppo0X+VVnEbbxMtFwDUwth06jyxOlX5nk9L874P2ABEosVVe1OnsPjIyymKnfdNpSGIuEC0oS4WOAO1jT6W8rAVodXlthzf4AGga/g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=L5D5DoFT; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=L5D5DoFT; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 84AC9336AB
-	for <linux-btrfs@vger.kernel.org>; Mon, 15 Dec 2025 23:40:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1765842053; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=HdwC6g9aSObP2PJFlZesH8UHcG534pIxFAzRLoPJdCk=;
-	b=L5D5DoFTWPUTsRjNSlgAS9bYqzrQci3kx08BQ1KVAOMlLkaioz3r6vQc0ClkC9ane3Qhs3
-	wLo+TeBBfGmIoY3tiubMz3P6BdO0+5Wxn5J5iaD3L8nckjW8bLCg1or7fNnhdsnVzfvpIr
-	dALwK6Qb6INPNbjQlvYUp0uwSt3UwvU=
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=L5D5DoFT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1765842053; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=HdwC6g9aSObP2PJFlZesH8UHcG534pIxFAzRLoPJdCk=;
-	b=L5D5DoFTWPUTsRjNSlgAS9bYqzrQci3kx08BQ1KVAOMlLkaioz3r6vQc0ClkC9ane3Qhs3
-	wLo+TeBBfGmIoY3tiubMz3P6BdO0+5Wxn5J5iaD3L8nckjW8bLCg1or7fNnhdsnVzfvpIr
-	dALwK6Qb6INPNbjQlvYUp0uwSt3UwvU=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B6D7F3EA63
-	for <linux-btrfs@vger.kernel.org>; Mon, 15 Dec 2025 23:40:52 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 8hsCHYScQGnIDAAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Mon, 15 Dec 2025 23:40:52 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v4] btrfs: add an ASSERT() to catch ordered extents missing checksums
-Date: Tue, 16 Dec 2025 10:10:30 +1030
-Message-ID: <169dd70fb9c36f34aa32cc0894b13c981d9edc83.1765842002.git.wqu@suse.com>
-X-Mailer: git-send-email 2.52.0
+	s=arc-20240116; t=1765847665; c=relaxed/simple;
+	bh=Vvgle8S/EAJWeYsSZ/4/5XMl4HCd52fUVlb1pDqZJE8=;
+	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
+	 In-Reply-To:References; b=nnDE8FUzyTDpKWONhXh/s3OUDU9/oVk52iuKdfZ+aZPFjIBMg+bVEIHXeDZHPdrduaAwcXmlubYq+l9LVI2rk0WHcFt3NjdExweAyfAf3jpO4ZDfXZCxNpuH40q/QmZpYHWJMreyjhwOFnfZUlH+wMjD6sXhNI7vr9mVT1CdIwg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mikkel.cc; spf=pass smtp.mailfrom=mikkel.cc; dkim=pass (2048-bit key) header.d=mikkel.cc header.i=@mikkel.cc header.b=UU2PtI2g; arc=none smtp.client-ip=95.215.58.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mikkel.cc
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mikkel.cc
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Flag: NO
-X-Spam-Score: -3.01
-X-Rspamd-Queue-Id: 84AC9336AB
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-0.994];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	RCPT_COUNT_ONE(0.00)[1];
-	MIME_TRACE(0.00)[0:+];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	FROM_HAS_DN(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:dkim,suse.com:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DKIM_TRACE(0.00)[suse.com:+]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Level: 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mikkel.cc; s=key1;
+	t=1765847659; h=from:from:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=apUIh6FOV0xXhe0Kvjw47fKl1r66rid8/zqSYuHcpg8=;
+	b=UU2PtI2gJC/e9BZL0IYXahHiJLVIhIlx1E6ZNfapW4HkY9MgcYrxSzmu9HQQhh1WOvL0i4
+	6XczeqQKYwIEmzDL3r474/1yGchAM+pHq+W9HxnMARZKgNkCp0VD8B69RfHkCcKJM99zeK
+	axEfBDgyrD4Z7mSHp5P6LFQDK2VWh9F2yHu8Qe6IVBLfmiAEwleB3NXoMAsGodGkCHp+Mg
+	fJMRpTSGu016Y7dKr5oMnTDwahWudlVjFXpKbxMT24dvUxYQkEPVWQsSVoBANQ+H4pGekY
+	bKQekdWny0A2brKy1Uanh+SkKnXfXxCnqudrSZRVi4jO/3I12rpxAVhqNA1IdA==
+Date: Tue, 16 Dec 2025 01:14:14 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: mikkel@mikkel.cc
+Message-ID: <bc11ac085b08b3e55e79d1d5ffb85d7a62672b6b@mikkel.cc>
+Reply-To: mikkel+btrfs@mikkel.cc
+TLS-Required: No
+Subject: Re: kernel 6.17 and 6.18, WARNING: CPU: 5 PID: 7181 at
+ fs/btrfs/inode.c:4297 __btrfs_unlink_inode, forced readonly
+To: "Qu Wenruo" <wqu@suse.com>, mikkel+btrfs@mikkel.cc,
+ lists@colorremedies.com
+Cc: linux-btrfs@vger.kernel.org, quwenruo.btrfs@gmx.com
+In-Reply-To: <4960584d-eb14-40ee-a039-c1ca27f20a05@suse.com>
+References: <3187ffcc-bbaa-45a3-9839-bb266f188b47@app.fastmail.com>
+ <acefecca-9fbb-4268-a26a-b889756019e7@mikkel.cc>
+ <4960584d-eb14-40ee-a039-c1ca27f20a05@suse.com>
+X-Migadu-Flow: FLOW_OUT
 
-Inspired by recent bug fix like 18de34daa7c6 ("btrfs: truncate ordered
-extent when skipping writeback past i_size"), and the patch "btrfs: fix
-beyond-EOF write handling", if we can catch ordered extents missing
-checksums, the above bugs will be caught much easier.
+On Tuesday, December 16, 2025 12:05:54 AM Central European Standard Time =
+Qu=20
+Wenruo=20wrote:
 
-Introduce the following extra checks for an ordered extent at
-btrfs_finish_one_ordered(), before inserting an file extent item:
+>=20
+>=20=E5=9C=A8 2025/12/16 08:31, Mikkel Jeppesen =E5=86=99=E9=81=93:
+>  Hi there. Affected user here :)
+>=20=20
+>=20 On Monday, December 15, 2025 3:47:13 PM Central European Standard Ti=
+me
+>  Chris
+>=20=20
+>=20 Murphy wrote:
+>  > ...
+>  > >> Looks like --repair changed from "errors 4" to "errors 6"
+>  > >>=20
+>=20 > >>=20
+>=20 > >> [1/8] checking log
+>  > >> [2/8] checking root items
+>  > >> [3/8] checking extents
+>  > >> [4/8] checking free space tree
+>  > >> [5/8] checking fs roots
+>  > >>=20
+>=20 > >> unresolved ref dir 1924 index 0 namelen 40 name
+>  > >> AC1E6A9C763DC6BC77494D6E8DE724C240D36C9E filetype 1 errors 6, no =
+dir
+>  > >> index, no inode ref
+>  > >
+>  > > And repair again?
+>  >=20
+>=20 > No change.
+>  >=20
+>=20 > sudo btrfs-image -t 16 -c 9 -ss /dev/sda3 fs_post_repair.img
+>  >=20
+>=20 > https://paste.mikkel.cc/gNwpLmyw
+>  >=20
+>=20 > > If after repair, readonly check still shows error, I can craft a
+>  > > quick
+>  > >=20
+>=20 > > fix branch for the reporter.
+>  >=20
+>=20 > I'll check to see if they still have the file system. I asked them=
+ to
+>=20=20
+>=20 make a
+>=20=20
+>=20 > btrfs-image before starting over. Thanks Qu!
+>=20=20
+>=20 I installed a new F43 install on a different SSD, so I still have th=
+e
+>  affected
+>=20=20
+>=20 file system/install available for any testing.
+>=20=20
+>=20 Thanks a lot. If your fs doesn't contain confidential info in the fi=
+le
+>  names (btrfs-image dump doesn't contain regular data, but may still
+>  contain inlined data), a regular btrfs-image dump would be the best wa=
+y
+>  for us to test.
+>=20=20
+>=20 Unfortunately this corruption involves filename, thus the "-s"/"-ss"
+>  option is screwing up the result.
+=20
+There=20shouldn't be any issues there. I hadn't used the system for much =
+other=20
+than=20one steam game before this happened.
+Here's the image:
+https://paste.mikkel.cc/FH3jEN9z
 
-- Skip data reloc inodes first
-  A data reloc inode represents a block group during relocation, which
-  can have ranges that have checksums but some without.
-  So we need to skip them to avoid false alerts.
+>=20
+>=20If there is confidential filenames involved, please provide the
+>  following dump from the original fs:
+>=20=20
+>=20 # btrfs ins dump-tree <device> | grep -C 7
+>  "AC1E6A9C763DC6BC77494D6E8DE724C240D36C9E"
+>=20=20
+>=20 And unfortunately we will need to communicate for each new dump, so =
+this
+>  will take some time.
+>=20
+That's=20all good. I'm heading off for tonight, but I'll try and keep an =
+eye on=20
+my=20email when I'm home :)
 
-- NODATACOW ordered extents, NODATASUM inodes must have no checksum
-  NODATACOW implies NODATASUM, and it's pretty obvious that NODATASUM
-  inodes should not have ordered extents with checksums.
-
-- Compressed file extents must have checksums covering the on-disk range
-  Even if a compressed file extents is truncated, the checksums are
-  calculated using the on-disk compressed extent, thus the checksums must
-  cover the whole on-disk compressed extent.
-
-- Truncated regular file extents must have checksum for the truncated
-  length
-
-- The remaining regular file extents must have checksums for the whole
-  length
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-Changelog:
-v4:
-- Rewords about the checksum problems
-  Instead of "incorrect" checksums, use "missing" checksums to reduce
-  confusion
-
-- Constify the ordered extent parameters
-
-- Rename involved functions to use "ordered_extent_" prefix
-
-v3:
-- Fix a compiler warning when CONFIG_BTRFS_ASSERT is not selected
-  By hiding the oe_csum_bytes() and the main part of assert_oe_csums()
-  behind that config.
-
-v2:
-- Updated to check all possible combinations
-  Previously version can only detect the OEs in patch "btrfs: fix
-  beyond-EOF write handling" where the OE has no csum at all, but can
-  not detect OEs that has partial csums.
----
- fs/btrfs/inode.c | 64 ++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 64 insertions(+)
-
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 461725c8ccd7..3df8f174d32c 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -3090,6 +3090,68 @@ static int insert_ordered_extent_file_extent(struct btrfs_trans_handle *trans,
- 					   update_inode_bytes, oe->qgroup_rsv);
- }
- 
-+#ifdef CONFIG_BTRFS_ASSERT
-+static u64 ordered_extent_csum_bytes(const struct btrfs_ordered_extent *oe)
-+{
-+	struct btrfs_ordered_sum *sum;
-+	u64 ret = 0;
-+
-+	list_for_each_entry(sum, &oe->list, list)
-+		ret += sum->len;
-+	return ret;
-+}
-+#endif
-+
-+#define ASSERT_ORDERED_EXTENT(cond, oe)			\
-+	ASSERT(cond,					\
-+"root=%lld ino=%llu file_pos=%llu num_bytes=%llu ram_bytes=%llu truncated_len=%lld csum_bytes=%llu disk_bytenr=%llu disk_num_bytes=%llu flags=0x%lx", \
-+	       btrfs_root_id((oe)->inode->root),	\
-+	       btrfs_ino((oe)->inode),			\
-+	       (oe)->file_offset, (oe)->num_bytes,	\
-+	       (oe)->ram_bytes, (oe)->truncated_len,	\
-+	       ordered_extent_csum_bytes(oe),		\
-+	       (oe)->disk_bytenr, (oe)->disk_num_bytes, \
-+	       (oe)->flags);
-+
-+static void assert_ordered_extent_csums(const struct btrfs_ordered_extent *oe)
-+{
-+#ifdef CONFIG_BTRFS_ASSERT
-+	struct btrfs_inode *inode = oe->inode;
-+	const u64 csum_bytes = ordered_extent_csum_bytes(oe);
-+
-+	/*
-+	 * Skip data reloc inodes. They are for relocation and they
-+	 * can have ranges with csum and ranges without.
-+	 */
-+	if (btrfs_is_data_reloc_root(inode->root))
-+		return;
-+
-+	if (test_bit(BTRFS_ORDERED_NOCOW, &oe->flags) ||
-+	    inode->flags & BTRFS_INODE_NODATASUM) {
-+		ASSERT_ORDERED_EXTENT(csum_bytes == 0, oe);
-+		return;
-+	}
-+
-+	/* For compressed OE, csums must cover the on-disk range. */
-+	if (test_bit(BTRFS_ORDERED_COMPRESSED, &oe->flags)) {
-+		ASSERT_ORDERED_EXTENT(oe->disk_num_bytes == csum_bytes, oe);
-+		return;
-+	}
-+
-+	/* For truncated uncompressed OE, the csums must cover the truncated length. */
-+	if (test_bit(BTRFS_ORDERED_TRUNCATED, &oe->flags)) {
-+		ASSERT_ORDERED_EXTENT(oe->truncated_len == csum_bytes, oe);
-+		return;
-+	}
-+
-+	/*
-+	 * The remaining case is untruncated regular extents.
-+	 * The csums must cover the whole range.
-+	 */
-+	ASSERT_ORDERED_EXTENT(oe->num_bytes == csum_bytes, oe);
-+#endif
-+}
-+
- /*
-  * As ordered data IO finishes, this gets called so we can finish
-  * an ordered extent if the range of bytes in the file it covers are
-@@ -3170,6 +3232,8 @@ int btrfs_finish_one_ordered(struct btrfs_ordered_extent *ordered_extent)
- 
- 	trans->block_rsv = &inode->block_rsv;
- 
-+	assert_ordered_extent_csums(ordered_extent);
-+
- 	ret = btrfs_insert_raid_extent(trans, ordered_extent);
- 	if (unlikely(ret)) {
- 		btrfs_abort_transaction(trans, ret);
--- 
-2.52.0
-
+>=20
+>=20And before posting the content of above dump, make sure no confidenti=
+al
+>  filename is involved.
+>=20=20
+>=20 Thanks,
+>  Qu
+>=20=20
+>=20 Thanks for the quick and good responses to this! :)
+>
 
