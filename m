@@ -1,145 +1,175 @@
-Return-Path: <linux-btrfs+bounces-19786-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19787-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B816CC22BC
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Dec 2025 12:24:28 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA3FCCC23F7
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Dec 2025 12:30:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 6FAC830836D0
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Dec 2025 11:20:29 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 383543005D1D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Dec 2025 11:30:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8A4E33D6CC;
-	Tue, 16 Dec 2025 11:20:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC89233F378;
+	Tue, 16 Dec 2025 11:30:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Y/SUlIF3";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="DdQ/gxxi"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YRmL5g34"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6387533D6DC
-	for <linux-btrfs@vger.kernel.org>; Tue, 16 Dec 2025 11:20:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC5FB39FD9
+	for <linux-btrfs@vger.kernel.org>; Tue, 16 Dec 2025 11:30:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765884023; cv=none; b=Lx9x6sX+awzXH5O/T6HvSL9mpYBIeAxFnebk2pcKOgT5iziG3GuLAxJit3PTW7H+VyjqnNX7d2Qz3J/fuMLz06DSJ1qE5E19EsWfAvn3XvAv0iHu2G7KE0+stTwOtpgxL++cu0QMErMm8eIk2VG7sqnJoStl0NvSW0LUiI6n8zs=
+	t=1765884601; cv=none; b=T3vdH+GMJK1WgGQB+8c1Ww2EE7UqVPW0PoYMUS4SIvbImNCJexEnoBFv0vWMA8hPbb/PXAFMFs4FZUgykcjHA3gEG8wY0D7uCNJnbTqg2+iU1cpp7xzqF9ZWimZSQABevjWFVpyMEwxs3jSVinakJju5yrwXOON5kQ51bmgH1ig=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765884023; c=relaxed/simple;
-	bh=Ir34V/AA4/Kn53Xt2wU7m430i1aPoGLugyeX+Sg5NA4=;
+	s=arc-20240116; t=1765884601; c=relaxed/simple;
+	bh=5samc4X41bC97gMRrjNZ2YN86r6TPnJh/JmOBB8ZuhA=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=pVIsSMeHKAc4HPjl9SFXsHo4QImpDbkS+8R7WaCVRyjFayIeMIrZX9pW3ZrYAAWn/SrQLp0KPkyGSEzp5ChGfg6Rr4y5CjF/TO8LuYMi5bhb9RGu7bMrvsvVfqXeJJECzZ2JmWnGwSxJiT8ewPGDeo8Cj/pfSZ1QI6MYhZw1tfE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Y/SUlIF3; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=DdQ/gxxi; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1765884020;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TWRZ0JhI9nv9UkoCkjiIAGd+WxbLXiOF8HjIaXhWnLA=;
-	b=Y/SUlIF3xZtgfWnV+nd8PsBUXGzc1qvXwum9v4WxfmIlMV6UZyruB3Jcsx7u5ywHzRQfdl
-	QL7sSlkJyF8GXpTYdTUhNLESg48fX5j9qmbUOAOd7UOHEn4waj4tWICfTonDme9RlYjPQN
-	wEucxWW393E3DnzU4KBzthBrIJ1SPms=
-Received: from mail-yx1-f71.google.com (mail-yx1-f71.google.com
- [74.125.224.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-202-lxz8mzURNlu5aRKJ5_E0NQ-1; Tue, 16 Dec 2025 06:20:19 -0500
-X-MC-Unique: lxz8mzURNlu5aRKJ5_E0NQ-1
-X-Mimecast-MFC-AGG-ID: lxz8mzURNlu5aRKJ5_E0NQ_1765884018
-Received: by mail-yx1-f71.google.com with SMTP id 956f58d0204a3-644721f9e80so6390089d50.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 16 Dec 2025 03:20:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1765884018; x=1766488818; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TWRZ0JhI9nv9UkoCkjiIAGd+WxbLXiOF8HjIaXhWnLA=;
-        b=DdQ/gxxiM4Q4+mxpMmDf0BNn0HUobvKwTPeLKuTLP3nIL2dVN9LPiwN9cttrOvM98R
-         8FuQ/TEdOXvM866VsORzsMktkaFzRgijcmY+6fgUZscV8t/+E7+2D3j9s4K8JXdUI8tB
-         rWc3opUwh659zS+Tmzld3uOYxsSFnoEvFXdurSYoJIhGNM66WRphPfHeee1Vm5xyGi+J
-         lUt3gsO34maU2lsY+khRBqyljf82AsQMgLa4MjGQD9pUoQSlCyAtqTDHRqS6YM3ry++v
-         ELq0i8kb7e69vPyMnWCzwjZa+SqIVuCrR+LV2KOuwIaP2n+dT3RGdv2SzXcQklQMNBTh
-         msMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765884018; x=1766488818;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=TWRZ0JhI9nv9UkoCkjiIAGd+WxbLXiOF8HjIaXhWnLA=;
-        b=HzvvXDOSavddYqcHDqW4joBSk/hHlzFaISbi9+ITlfInQBFn88bAezf3MOmXIQgsqd
-         MHXHJPUiXBUwPenK69v8ssF5qH40vN9xmuENV6kQxlcuAkSq3hw60tvN+2HnzqtGP6Tj
-         ACNBYIjI5BnJipeeTQdEQ+9HreMs+2Ot7KlDsyuOAHouoRK5cP8fWoZkEq0tP780g9lD
-         5uXfSHIZNVuH2zckBWZ15z7MTal1wplvQSQno3GXo0ZdZx3iUmcy1Lfv54dpsH8jPys+
-         IIzQ/yNQxizRXpLcDvTgaWoERNMrVR/2VCNHmcuZKRX6DjtimFlX7julLU9u9jfYc8Ax
-         92uw==
-X-Forwarded-Encrypted: i=1; AJvYcCX0LPKWWwfiGtcjJmzkmLfWeADma9gricPORKmDiu50O0wWHkr74tV4nZhTrqxrG7VnrDyjTGXpCkc+AA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyAmo5ORicUXWqjJ9hhbl8G5L5SZeW7BGoEg6EQQTaW8L3KbKwC
-	hUGClcwKOA6QeQJrvE6/IUot4Msf8TTAOe8CCisiNafLDr/lD+7YEA17uFzO7OpBEAQFOtwmfsM
-	uACHqBX/i2wN8u+mdp0fROIIzPriPqOv3EKTHm294L9SE7th0N96lfzQdZDXtCFZvudVzjub3LQ
-	qc3+gxyLEmeZNLApMNWJVSOjDCM0kBHa6Ofb+b6gY=
-X-Gm-Gg: AY/fxX5Cb2MdLCJ5AsVn3MgInBBOsm5PY/ESnM0WJskAxiS7P+27Bl2PaV2vn1Bd81V
-	yJfmvkYqkLx1ax//+Gb6iszaWBbRoACWEoXbekNGWzYE1+m8cxjInIyNJGM4ah/uav7+WkfORlG
-	sjF74q08Q5xhCM47VgZhlFzBs4iDBuNTjMJ+XqZaNU5v5l8djbFNQ6KRxjyD+VtvDw
-X-Received: by 2002:a05:690e:118a:b0:641:f5bc:695c with SMTP id 956f58d0204a3-64555661ec4mr12407309d50.72.1765884018380;
-        Tue, 16 Dec 2025 03:20:18 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHE1hRYagai5ZNpwc4wQBEIkmKE4t8Gn5ugUaYPF0w5F6afO5UP4qTUeJlKU6zAyLz8ccdYL4yR/SJoQvAZlXU=
-X-Received: by 2002:a05:690e:118a:b0:641:f5bc:695c with SMTP id
- 956f58d0204a3-64555661ec4mr12407292d50.72.1765884018076; Tue, 16 Dec 2025
- 03:20:18 -0800 (PST)
+	 To:Cc:Content-Type; b=EPMWTqdgnKYSS7RFaY+NRYqqdlLIiSXInK5MMupVzX2HkO6McZUldZLMVTtnBYHIsecGm3x3xPjcXyqabGkQx4MbzirLnrXIaEKFo4MjMXoKt53IWRlnZ2yd4R+jPBSW7q2q8ucoTJn4r7cyp6bR2QyJIKIsRwlZbpLuTU71fbY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YRmL5g34; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C17EAC4CEF5
+	for <linux-btrfs@vger.kernel.org>; Tue, 16 Dec 2025 11:30:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1765884600;
+	bh=5samc4X41bC97gMRrjNZ2YN86r6TPnJh/JmOBB8ZuhA=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=YRmL5g34ZAr+kezbZb5n1eQfgbO00GtRhflSrfD4JniZTVgXBEzIBoxlh55TSTw2V
+	 UzLOfqJWODsci1JW1KRWI+85DTs4yF7PiFTOioEsJ6f2VmDgpcki2Zce327FZqdzjo
+	 hCW1rxVap8N0NPYfbseh++BbeUxtOSOgEps9voseWpcBeIxWn+kmbhHFI6QzIpnmdI
+	 gyt1mZKFYZRw1f0VbcRsDLGGFqO2dOduMXBOoNVWmlB8ilTbw88JH/ygLRO+h4Crp7
+	 pLWYOkv268R6rg9rWWdcVC5DUlNZCpk+JOjiqVeJp/mkrh1C+UbtG1v5jfDZ5FaGD6
+	 nIoZPCeSTfUbA==
+Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-b79f8f7ea43so963026766b.2
+        for <linux-btrfs@vger.kernel.org>; Tue, 16 Dec 2025 03:30:00 -0800 (PST)
+X-Gm-Message-State: AOJu0Ywb7o4VL749evHBZI5SwBGR8GCHkcEXqIj4bHLSh2EYUx2+Uavw
+	2nRDfMtBJ+sjRYFcgLqtbVU24cIpBjTaBahxRtRDHWmc3Bc4Jcr+WaZoR/DZbVygZ6lHQbKOzvZ
+	7g+YN5xxDqeYYEmsEBE8yEuGrj0I6M7k=
+X-Google-Smtp-Source: AGHT+IFHo6l8+7e0xUbPQfSch+c5e+ulOtunQKDByjQyQneOw+/xNfsaCuk9Twp+RhjBlGMCvdHP95wQmjawpe99bYg=
+X-Received: by 2002:a17:906:2092:b0:b7f:f730:3fd6 with SMTP id
+ a640c23a62f3a-b7ff73063a3mr133838666b.62.1765884598973; Tue, 16 Dec 2025
+ 03:29:58 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251208121020.1780402-1-agruenba@redhat.com> <20251208121020.1780402-7-agruenba@redhat.com>
- <aUERRp7S1A5YXCm4@infradead.org> <CAHc6FU6QCfqTM9zCREdp3o0UzFX99q2QqXgOiNkN8OtnhWYZVQ@mail.gmail.com>
- <aUE3_ubz172iThdl@infradead.org>
-In-Reply-To: <aUE3_ubz172iThdl@infradead.org>
-From: Andreas Gruenbacher <agruenba@redhat.com>
-Date: Tue, 16 Dec 2025 12:20:07 +0100
-X-Gm-Features: AQt7F2q5uYepYK7esYO29pN2NRPzWpk3ITk8uPFpAWNLoGj4HZrc4JFHmQEXPKs
-Message-ID: <CAHc6FU4OeAYgvXGE+QZrAJPqERLS3v7q64uSoVtxJjG0AdZvCA@mail.gmail.com>
-Subject: Re: [RFC 06/12] bio: don't check target->bi_status on error
-To: Christoph Hellwig <hch@infradead.org>
-Cc: Jens Axboe <axboe@kernel.dk>, Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>, 
-	linux-block@vger.kernel.org, linux-btrfs@vger.kernel.org, 
-	linux-raid@vger.kernel.org, dm-devel@lists.linux.dev, 
-	linux-kernel@vger.kernel.org
+References: <79e1be995894f1c987a54c6298c36459a756b672.1765081384.git.wqu@suse.com>
+In-Reply-To: <79e1be995894f1c987a54c6298c36459a756b672.1765081384.git.wqu@suse.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Tue, 16 Dec 2025 11:29:22 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H7PAUkGfAc6KBFryYX5E0-oMQYca0q8B666E7ZkEu9XiA@mail.gmail.com>
+X-Gm-Features: AQt7F2qjSSzs8ruHT48iCsx2woXQWL8Y7bnFl4mTSUVsU1geOG3yQLuylIjIlgk
+Message-ID: <CAL3q7H7PAUkGfAc6KBFryYX5E0-oMQYca0q8B666E7ZkEu9XiA@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: avoid access-byoned-folio for bs > ps encoded writes
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 16, 2025 at 11:44=E2=80=AFAM Christoph Hellwig <hch@infradead.o=
-rg> wrote:
-> On Tue, Dec 16, 2025 at 09:41:49AM +0100, Andreas Gruenbacher wrote:
-> > On Tue, Dec 16, 2025 at 8:59=E2=80=AFAM Christoph Hellwig <hch@infradea=
-d.org> wrote:
-> > > On Mon, Dec 08, 2025 at 12:10:13PM +0000, Andreas Gruenbacher wrote:
-> > > > In a few places, target->bi_status is set to source->bi_status only=
- if
-> > > > source->bi_status is not 0 and target->bi_status is (still) 0.  Her=
-e,
-> > > > checking the value of target->bi_status before setting it is an
-> > > > unnecessary micro optimization because we are already on an error p=
-ath.
-> > >
-> > > What is source and target here?  I have a hard time trying to follow
-> > > what this is trying to do.
-> >
-> > Not sure, what would you suggest instead?
+On Sun, Dec 7, 2025 at 4:24=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
 >
-> I still don't understand what you're saying here at all, or what this is
-> trying to fix or optimize.
+> [POTENTIAL BUG]
+> If the system page size is 4K and fs block size is 8K, and max_inline
+> mount option is set to 6K, we can inline a 6K sized data extent.
+>
+> Then a encoded write submitted a compressed extent which is at file
+> offset 0, and the compressed length is 6K, which is allowed to be inlined=
+.
+>
+> Now a read beyond page boundary is triggered inside write_extent_buffer()
+> from insert_inline_extent().
+>
+> [CAUSE]
+> Currently the function __cow_file_range_inline() can only accept a
+> single folio.
+>
+> For regular compressed write path, we always allocate the compressed
+> folios using the minimal order matching the block size, thus the
+> @compressed_folio should always cover a full fs block thus it is fine.
+>
+> But for encoded writes, they allocate page size folios, this means we
+> can hit a case where the compressed data is smaller than block size but
+> still larger than page size, in that case __cow_file_range_inline() will
+> be called with @compressed_size larger than a page.
+>
+> In that case we will trigger a read beyond the folio inside
+> insert_inline_extent().
+>
+> Thankfully this is not that common, as the default max_inline is only
+> 2048 bytes, smaller than PAGE_SIZE, and bs > ps support is still
+> experimental.
+>
+> [FIX]
+> We need to either allow insert_inline_extent() to accept a page array to
+> properly support such case, or reject such inline extent.
+>
+> The latter is a much simpler solution, and considering bs > ps will stay
+> as a corner case and non-default max_inline will be even rarer, I don't
+> think we really need to fulfill such niche.
+>
+> So just reject any inline extent that's larger than PAGE_SIZE, and add
+> an extra ASSERT() to insert_inline_extent() to catch such beyond-boundary
+> access.
+>
+> Fixes: ec20799064c8 ("btrfs: enable encoded read/write/send for bs > ps c=
+ases")
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  fs/btrfs/inode.c | 18 ++++++++++++++++--
+>  1 file changed, 16 insertions(+), 2 deletions(-)
+>
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 0cbac085cdaf..2f6be047c6ad 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -482,10 +482,12 @@ static int insert_inline_extent(struct btrfs_trans_=
+handle *trans,
+>          * The compressed size also needs to be no larger than a sector.
+>          * That's also why we only need one page as the parameter.
+>          */
+> -       if (compressed_folio)
+> +       if (compressed_folio) {
+>                 ASSERT(compressed_size <=3D sectorsize);
+> -       else
+> +               ASSERT(compressed_size <=3D PAGE_SIZE);
 
-When we have this construct in the code and we know that status is not 0:
+Don't forget to update the comment above and replace sector by page.
 
-  if (!bio->bi_status)
-    bio->bi_status =3D status;
+Also, typo in the subject:  byoned -> beyond.
 
-we can just do this instead:
+Thanks.
 
-  bio>bi_status =3D status;
-
-Andreas
-
+> +       } else {
+>                 ASSERT(compressed_size =3D=3D 0);
+> +       }
+>
+>         if (compressed_size && compressed_folio)
+>                 cur_size =3D compressed_size;
+> @@ -572,6 +574,18 @@ static bool can_cow_file_range_inline(struct btrfs_i=
+node *inode,
+>         if (offset !=3D 0)
+>                 return false;
+>
+> +       /*
+> +        * Even for bs > ps cases, cow_file_range_inline() can only accep=
+t a
+> +        * single folio.
+> +        *
+> +        * This can be problematic and cause access beyond page boundary =
+if a
+> +        * page sized folio is passed into that function.
+> +        * And encoded write is doing exactly that.
+> +        * So here limits the inlined extent size to PAGE_SIZE.
+> +        */
+> +       if (size > PAGE_SIZE || compressed_size > PAGE_SIZE)
+> +               return false;
+> +
+>         /* Inline extents are limited to sectorsize. */
+>         if (size > fs_info->sectorsize)
+>                 return false;
+> --
+> 2.52.0
+>
+>
 
