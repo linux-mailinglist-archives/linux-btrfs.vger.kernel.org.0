@@ -1,127 +1,146 @@
-Return-Path: <linux-btrfs+bounces-19781-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19782-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04CC6CC1A05
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Dec 2025 09:45:46 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 295D8CC1C3E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Dec 2025 10:25:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D0931303CF4D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Dec 2025 08:42:08 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 341D7303938D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Dec 2025 09:24:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9977732C951;
-	Tue, 16 Dec 2025 08:42:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83387343D7F;
+	Tue, 16 Dec 2025 09:24:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fy5qbIw1";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="bQx2whWG"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="crG2gYvA";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="crG2gYvA"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B85C2C0F7D
-	for <linux-btrfs@vger.kernel.org>; Tue, 16 Dec 2025 08:42:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A700343216
+	for <linux-btrfs@vger.kernel.org>; Tue, 16 Dec 2025 09:24:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765874525; cv=none; b=GIyYT/IY0IcJLS+LEo6hGaaiV6IOLXY1wvll+jS19BO+tRuHThnFhMrmcxdnyp5RmSmaU8k9iAgUO5V2WD4hdl7+vzXAfjoJKkgibBKsaqPd//oIenatjenbOVALB663H1q93o3VSbRZroVE7tcOvlJt1i4XRqyfZlU/fCJsuuM=
+	t=1765877053; cv=none; b=SeGTgoPKW683dGNmkatAmXBOB+zh6YmzrJr1mZ1Ii9GY13fBtKJhr+aP+KSKQlRwiPaXO1L5iPeZh0iGwu1IOedXrAYPNNq2hR7XaVgvnukIqqS5Z7PwJrm4AKAs5co5LkN5Zm5bFN8F0S/Y3YN4wM+jfpRwrNEM6Yq4lskE4TU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765874525; c=relaxed/simple;
-	bh=LeSPLdw8CyUvLD+Wsks/a84DYfWD8ihFZCgPW/k/oKg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rVKea4GCWai5kx0ZhfMrPQbC7hBIKzylfMZKK8//xkYkf5UUi+lT0woP24Jixo4RfRY3HEF1yIfWkVfK59fzQw2IuudYcXpR6Rsb4CxlFmNFmwXkqyVMX0RGY1q9rZXDzYsCq99u38frVu/2FWSKv/Kuis+CCl34jsrV0DHVoyo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fy5qbIw1; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=bQx2whWG; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1765874522;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bedoI72M4dzcfCaw0bozxUr5koxef0u+N35NgEwFoMY=;
-	b=fy5qbIw1alUUbM/YYniIOuT7YA70oy/gyNnI76x26iHVwvPjoPKoSs1xfqd9+l9Lfu4ILf
-	CwGeGXhg5Zw00oyFICAglt8D4guJll3wNqM43IQJRVDZ23ZLA7iDt05XehcWdT9ZUY9GST
-	9WLGqapYsEEAAKseUW3im9AhlOZz8ow=
-Received: from mail-yx1-f71.google.com (mail-yx1-f71.google.com
- [74.125.224.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-66-9-EHQMV_OSGSDWwsKgOwIQ-1; Tue, 16 Dec 2025 03:42:01 -0500
-X-MC-Unique: 9-EHQMV_OSGSDWwsKgOwIQ-1
-X-Mimecast-MFC-AGG-ID: 9-EHQMV_OSGSDWwsKgOwIQ_1765874521
-Received: by mail-yx1-f71.google.com with SMTP id 956f58d0204a3-64651279fbdso706755d50.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 16 Dec 2025 00:42:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1765874521; x=1766479321; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bedoI72M4dzcfCaw0bozxUr5koxef0u+N35NgEwFoMY=;
-        b=bQx2whWGC7/zTs/T2taZQ2SwQ3sakREVj/mczAXJf6or4kz4UIjWV/oNhg0zGhWj3v
-         KypdbgOP2xq1nMAKubDDT1siuotr2dc8rusCHUa7yS8PGPBDd995LZvMQQObPaKmLB/Q
-         nQBJBE+FN8Wd0fJuYhOw1E1eWJcmCIdlKnCir5FbILdQt3KTi452ES1minrzUioHQfYA
-         RVUEKq8n4ei11Vts3aI2jnWql8uqcI9SlwrTZC4gb5SqFu4n818CNXv5Ziljxrnpwfo5
-         9RI5S/wmuHmLvtfO04JzEEKdgiHfei0mZKzQQiVmOhhkmudtm+a1SQW/M6BvojVOwIaQ
-         AlWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765874521; x=1766479321;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=bedoI72M4dzcfCaw0bozxUr5koxef0u+N35NgEwFoMY=;
-        b=wDLpgukSN6H9nx+KYU4kpl5I4HC7FwRG4OeHJlPHeWMPimMmK5BlmNFNJB7DYbawV4
-         x7bmRsGKF3DS8c8LV93LkdI1c4+gVZTOFOGu47jxI5gR3d7/Vs1kgL+b0bdeT6B/kujh
-         alVw1tWdemVHQUlCiiMzaPmEQ9Sp+uZty1qr8CbA6Ki1raiVkgcn9jFuglsVyd6pgbsU
-         ZR9Sx+JyGQBGBQ4qU2A6ds1ie5ABBoBFH9N1pe7SJz7SWXPNTB3V+dwn70nVt6ccub+H
-         w3vIYGdf//y9vpDWtI1vh1sGi2vx/FcgUB2o4o4FNL3mfsYUbFd9F/Lkah3ED/2eCFhw
-         +miQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUY2MsUvek1EMpWjqUFBbjTvtnKhXqzAEeb8urw26TlC6ep8L+RmR22ITuBbJ0VA/Xn1dWaX0VK/b1Vsg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyJ0pACAHxqskBVzvEEtk3g/WUjdEb/pmUrRzU6oWmodd52F2dr
-	5PMjnrqGHk2MMox8vHXgtNmGDE1ZOpQDZ4p3mZMPd9dTR/TSOXe56HGxFDgdSWPnzraKj4ZSQvf
-	2Bv1J82ac3uO0zTfnx6syudjdvUT/oylsgjmExiILSVRfuGvmCSDnG3hBAY+h8Im5atCVIBsYAc
-	/eXBERE8/uYnnsj5aILY1ETE2CE56/QiIzLeNx4UWNWI/9ii4=
-X-Gm-Gg: AY/fxX4pfF2yEJTlK86CCoOW+bqFRNuRTHRIZrHCgjgw0pgPO1HWp/mTAiWayhJPmID
-	jc0VzXC+BMkzL/mbIWkktdK+yZmGX4VgvRGhwYpMFoo/dzKLnhN+4Exdq2GNs+2MZRORNAKMcmt
-	AROHUs4eBZT5AnYo+LbCY96M8sIqSbBdBTfgfNn/Vy4+rVPqPfnlPqqvg2wWQJa1q6
-X-Received: by 2002:a05:690e:130c:b0:641:f5bc:699c with SMTP id 956f58d0204a3-64555664965mr11300523d50.74.1765874520966;
-        Tue, 16 Dec 2025 00:42:00 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGsdXWnoFL9I7pAq/MaIAVAy9awQVMPdeIdCZyZ8gA28f/XjQGXPGkhfCfGI1rJgvn170eyS00H/OkJzbKACvU=
-X-Received: by 2002:a05:690e:130c:b0:641:f5bc:699c with SMTP id
- 956f58d0204a3-64555664965mr11300511d50.74.1765874520647; Tue, 16 Dec 2025
- 00:42:00 -0800 (PST)
+	s=arc-20240116; t=1765877053; c=relaxed/simple;
+	bh=ExMlSLOWhboVgs6japmiG0M0nzARFizm720ByrqR3lw=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=PZrwmnbHeyyfzBlIhKIDYhiNwim2Yiu00tdUt1gFOz9DpW5pMzhqa8Ile08x5IJUaXEApTK4U9k8cGwaCXOSTVM3ufakaLBDOQ1YExNjIzgO3Kge/dBkc3lsHPJqNGmW2n9XL9lwUE43JY1SUAl+SDTrujs966o9ItHc0vgFftg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=crG2gYvA; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=crG2gYvA; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 1A65133692
+	for <linux-btrfs@vger.kernel.org>; Tue, 16 Dec 2025 09:24:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1765877047; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=GnTH7wuWeSL+jqOlLxjZyBluvoi5Ejg18Gt2UuRNd5M=;
+	b=crG2gYvALT0E8Nq8KwpGICYymgfysgY3lNkm7cFFa3ofUwccoDdjqcLO9v6TOAU3O2qBso
+	EKpbelycfXisGMQTZvOWw7sMJW/9gce2M4FKkViuVkNXwFXa+q/REGXyEvQJrEdnTaNBpB
+	Fzn2mX+k2ovV2bPZM+ShFD1AuxhMN2U=
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=crG2gYvA
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1765877047; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=GnTH7wuWeSL+jqOlLxjZyBluvoi5Ejg18Gt2UuRNd5M=;
+	b=crG2gYvALT0E8Nq8KwpGICYymgfysgY3lNkm7cFFa3ofUwccoDdjqcLO9v6TOAU3O2qBso
+	EKpbelycfXisGMQTZvOWw7sMJW/9gce2M4FKkViuVkNXwFXa+q/REGXyEvQJrEdnTaNBpB
+	Fzn2mX+k2ovV2bPZM+ShFD1AuxhMN2U=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5670F3EA63
+	for <linux-btrfs@vger.kernel.org>; Tue, 16 Dec 2025 09:24:06 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id HqWiBjYlQWlKNQAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Tue, 16 Dec 2025 09:24:06 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH v2 0/2] btrfs-progs: enhance detection on unknown keys in subvolumes
+Date: Tue, 16 Dec 2025 19:53:46 +1030
+Message-ID: <cover.1765876829.git.wqu@suse.com>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251208121020.1780402-1-agruenba@redhat.com> <20251208121020.1780402-7-agruenba@redhat.com>
- <aUERRp7S1A5YXCm4@infradead.org>
-In-Reply-To: <aUERRp7S1A5YXCm4@infradead.org>
-From: Andreas Gruenbacher <agruenba@redhat.com>
-Date: Tue, 16 Dec 2025 09:41:49 +0100
-X-Gm-Features: AQt7F2oWOgXF4BWLyQhRHkpji9S9Pl-ufTycpWlGBJkrm01TM2UaID084bN-gCY
-Message-ID: <CAHc6FU6QCfqTM9zCREdp3o0UzFX99q2QqXgOiNkN8OtnhWYZVQ@mail.gmail.com>
-Subject: Re: [RFC 06/12] bio: don't check target->bi_status on error
-To: Christoph Hellwig <hch@infradead.org>
-Cc: Jens Axboe <axboe@kernel.dk>, Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>, 
-	linux-block@vger.kernel.org, linux-btrfs@vger.kernel.org, 
-	linux-raid@vger.kernel.org, dm-devel@lists.linux.dev, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-0.995];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCPT_COUNT_ONE(0.00)[1];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	FROM_EQ_ENVFROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:mid,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	RCVD_TLS_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	DKIM_TRACE(0.00)[suse.com:+]
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spam-Level: 
+X-Rspamd-Queue-Id: 1A65133692
+X-Spam-Flag: NO
+X-Spam-Score: -3.01
 
-On Tue, Dec 16, 2025 at 8:59=E2=80=AFAM Christoph Hellwig <hch@infradead.or=
-g> wrote:
-> On Mon, Dec 08, 2025 at 12:10:13PM +0000, Andreas Gruenbacher wrote:
-> > In a few places, target->bi_status is set to source->bi_status only if
-> > source->bi_status is not 0 and target->bi_status is (still) 0.  Here,
-> > checking the value of target->bi_status before setting it is an
-> > unnecessary micro optimization because we are already on an error path.
->
-> What is source and target here?  I have a hard time trying to follow
-> what this is trying to do.
+[CHANGELOG]
+v2:
+- Add a new test case
 
-Not sure, what would you suggest instead?
+This is inspired by a real world bitflip corruption, where an INODE_REF
+is now 8 (an unknown key type), causing btrfs-check to freak out and the
+existing INODE_REF/DIR_ITEM/DIR_INDEX repair is not cutting this
+particular case for the original mode.
 
-Thanks,
-Andreas
+Lowmem mode is better, but for this particular image it's too large and
+lowmem is too slow to be practical.
+
+As the first step, detect and report such unknown keys in subvolume
+trees as an error.
+
+With a new test case for it.
+
+In the long run we should allow btrfs-check --repair to delete such
+unknown keys.
+
+Qu Wenruo (2):
+  btrfs-progs: enhance detection on unknown inode keys
+  btrfs-progs: add a test case for unknown keys in subvolume trees
+
+ check/main.c                                     |   7 +++++++
+ check/mode-lowmem.c                              |   5 +++--
+ check/mode-lowmem.h                              |   1 +
+ tests/fsck-tests/069-unknown-fs-tree-key/test.sh |  14 ++++++++++++++
+ .../unknown_key_empty.img.xz                     | Bin 0 -> 2084 bytes
+ 5 files changed, 25 insertions(+), 2 deletions(-)
+ create mode 100755 tests/fsck-tests/069-unknown-fs-tree-key/test.sh
+ create mode 100644 tests/fsck-tests/069-unknown-fs-tree-key/unknown_key_empty.img.xz
+
+--
+2.52.0
 
 
