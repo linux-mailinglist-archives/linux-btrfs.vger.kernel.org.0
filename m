@@ -1,254 +1,228 @@
-Return-Path: <linux-btrfs+bounces-19790-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19791-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E88E0CC3E27
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Dec 2025 16:21:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DE23CC4182
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Dec 2025 17:01:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 46A75305B914
-	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Dec 2025 15:16:48 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id AF2F730EB67D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 16 Dec 2025 15:53:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 697DB359F91;
-	Tue, 16 Dec 2025 15:16:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E3A835BDDE;
+	Tue, 16 Dec 2025 15:36:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="goKu+mPy"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Gy1rP0u9"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A699433031F
-	for <linux-btrfs@vger.kernel.org>; Tue, 16 Dec 2025 15:16:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF87835B145
+	for <linux-btrfs@vger.kernel.org>; Tue, 16 Dec 2025 15:36:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765898205; cv=none; b=jT1+9SEhHfGk73MjI8rHYjyOF8PfJPu5G7sXFnLvTRJynd0Tp0qQ80xD7QPllOBnpOoxU/wxUl1AvHTOglhloj4y4hnyPiPKg2LDpWLoRDWKMDChsHEEMqc7+aoHCuoW7HndnnUhVvQosBxey0lAISa+EVPiJSj9lIVl6KK5g5U=
+	t=1765899390; cv=none; b=rJjvE10v4MUGJWTWepc8RfCg3OLHbdkC79IePcciAmteFUiBN3lhp/DOQyFseH2+xhAO118uC+8dbA6slgIC9iNp3Fc0XhoPwJQtppFKQkqLGAkuFMfkFxz2bi1i4h7f+AmDDtuPwySub90pPecD2rHnhyfTVGVzjXYq8G50bVU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765898205; c=relaxed/simple;
-	bh=YmsoTLjjpmYCZOS6hApqZWV85tctTYC7rB+GDVVV0zM=;
+	s=arc-20240116; t=1765899390; c=relaxed/simple;
+	bh=s08UAP8wzh3kwOeHxiEGtjDfN9WoLYy7XhQJdPk7c4I=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=krtXom7Cw5/QsHWqC/HZ29eV4JZr8I9fMg3hpFkB8/PJH7rryZ3byRTns/Xp8Nxr74B7+ltc4eF0DZDDTSTs22OTSLDUwgJv12YI1jA9dDX0xcPvfXGS0aZcYUT78gvDkAfWd7ZTR996uuJMO711FBXy0VjAVxH/MLMTnQPc0zE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=goKu+mPy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4165AC19422
-	for <linux-btrfs@vger.kernel.org>; Tue, 16 Dec 2025 15:16:45 +0000 (UTC)
+	 To:Cc:Content-Type; b=O0ZR45TTWr4yslaWXwMcwjUU7ArlcwpoFSB7VxigvPDPwetXgMMcJOUj2J/FR0eJdAVhxtFF6IpHDPN/eGv63ZFBmP90OFUE8BwX+tbOsepnZ6w51FLaS66Cp8cu6AtZ0mQ+ENkw2GWnRhgjmnOcKXX8B5iQ0M2d7I3dOItzDuU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Gy1rP0u9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C112C113D0
+	for <linux-btrfs@vger.kernel.org>; Tue, 16 Dec 2025 15:36:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1765898205;
-	bh=YmsoTLjjpmYCZOS6hApqZWV85tctTYC7rB+GDVVV0zM=;
+	s=k20201202; t=1765899390;
+	bh=s08UAP8wzh3kwOeHxiEGtjDfN9WoLYy7XhQJdPk7c4I=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=goKu+mPyVyTyGCYG0LElP8ByUMnqNOTqAw/aQkPBK4jDMhcW0VTeQCJrND1H//M1P
-	 /mKD37HZCaW1MOw0ZRkVUnB8n+iMRCq16VcbcyHns6bZlVq86DeAlmgCpUNl4tR7qQ
-	 xvR8zsbXECeUf9qNGK8VQnI+nwFa3EOZ0vDVssnkMLLhmdFl68u/kcVrHUnU2xqEE2
-	 f/xHbPTYVUNvEJLuePUppvuPx7qu0Dn5BkCbiiKRS8ePerRlU/9douD/1clXIGG8iB
-	 WtX/Dmvq4iUXo6vYYugGqSUOkYqf6lsEe4idUvgb1Hj6y9rGE20lvnn/KeBvIVfo8y
-	 Q8zSvAirBUiGQ==
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-b7ffbf4284dso75734266b.3
-        for <linux-btrfs@vger.kernel.org>; Tue, 16 Dec 2025 07:16:45 -0800 (PST)
-X-Gm-Message-State: AOJu0YwllBrRjWyFX/ncO665EunDNesw06RSqz/wzcpzzvdz1ciPtzwz
-	eiK0spE3zR0Zd17IRdMBfbnIZFQr9clAg53DdeTkdFFV6sKkqcbbkEHK3DTMDCf5kb8CMPyXZSd
-	HGb09roDhkGP6egEdjLt1+rttWwcQEbc=
-X-Google-Smtp-Source: AGHT+IEidc5BFKdDqYp/kSGLM9IkL1oGZcykfzsAgjbI4C+FDBzldlFSt3ymtGeyw0P0pckzCWZ4e8XjagIkDwt98sM=
-X-Received: by 2002:a17:906:f59b:b0:b73:76c5:8f7c with SMTP id
- a640c23a62f3a-b7d238d3445mr1494841566b.43.1765898203725; Tue, 16 Dec 2025
- 07:16:43 -0800 (PST)
+	b=Gy1rP0u9VaaLerSmp+oX5ZFGMZb9R8mQlOUIXQuNn3cTW/0BwC89WaOlRhmiMYRbw
+	 FTo0qFAlj/rcTeBYYxWMZClxxh/JT8Pk58cDRGiqhqESfThVnPWOgf7AfEHYEJaU56
+	 c8erKm555V703zJPZMAv2wGwYfVHOScAzk1OBvzP12Nn1qQVdT7l+kXQQYIVA1qvaU
+	 EA7HYOzCwH+JckSFAIQVcfNDbsALbAI5+vZvO5+Kb77kF+MGPQ9mK9sbHdI6IXR/7N
+	 5P5Hjy4W50xL0k3zrUYaRtTtvbjq0u6x1u9XydRHdzYcYRRwSYx7I1bzOwYGmSAZJ1
+	 81C57HIBKTHYA==
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-b79ea617f55so352897766b.3
+        for <linux-btrfs@vger.kernel.org>; Tue, 16 Dec 2025 07:36:30 -0800 (PST)
+X-Gm-Message-State: AOJu0YzIW0J2wLmIYHNgzmULI5IEdriasFPQ+PiHQWM8mtbG4mStA3EF
+	q3npHJylrxmvonTXGi4LtdVieMFhzMksMT3ok+FkxNpW0GbouxoT1lV2DrGFaLxh0oPOZZ2aVqx
+	6eOcN/5qUGfOdzS4TQwUIDlXY28t9JI4=
+X-Google-Smtp-Source: AGHT+IGcwlVsQwOED7axdXd+76GL0DNNjL/UjC26giICb5xoguVAM4oz3jyvf2+eMxHU8V0nxRBmQSlQoCqbBnVwqKY=
+X-Received: by 2002:a17:907:6e90:b0:b7a:1be1:86e8 with SMTP id
+ a640c23a62f3a-b7d23b8f5bdmr1284001466b.64.1765899388783; Tue, 16 Dec 2025
+ 07:36:28 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <6e55113a22347c3925458a5d840a18401a38b276.camel@linux.intel.com>
-In-Reply-To: <6e55113a22347c3925458a5d840a18401a38b276.camel@linux.intel.com>
+References: <169dd70fb9c36f34aa32cc0894b13c981d9edc83.1765842002.git.wqu@suse.com>
+In-Reply-To: <169dd70fb9c36f34aa32cc0894b13c981d9edc83.1765842002.git.wqu@suse.com>
 From: Filipe Manana <fdmanana@kernel.org>
-Date: Tue, 16 Dec 2025 15:16:06 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H6CRWKYCHAu9PnuGygxqb-fkXjs2rAUO1D5hP=giFdUMw@mail.gmail.com>
-X-Gm-Features: AQt7F2or1KvJ_CvgYnNKLpzrMjPIu6VqWA4_Sr8wi7quT7RXnWsXMAKoAqwxdGU
-Message-ID: <CAL3q7H6CRWKYCHAu9PnuGygxqb-fkXjs2rAUO1D5hP=giFdUMw@mail.gmail.com>
-Subject: Re: btrfs lockdep splat while paging
-To: =?UTF-8?Q?Thomas_Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>
-Cc: linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>
+Date: Tue, 16 Dec 2025 15:35:51 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H54oK0nuo=O=s9Kmn2orwGO-MHJjvKvME2bLxqWZQVskA@mail.gmail.com>
+X-Gm-Features: AQt7F2okeX1JnTHGj0Z-EaV5FqgG5zr62jbciSFBMAmoo2vIGiHMKFn6RpFrCbU
+Message-ID: <CAL3q7H54oK0nuo=O=s9Kmn2orwGO-MHJjvKvME2bLxqWZQVskA@mail.gmail.com>
+Subject: Re: [PATCH v4] btrfs: add an ASSERT() to catch ordered extents
+ missing checksums
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Dec 16, 2025 at 1:07=E2=80=AFPM Thomas Hellstr=C3=B6m
-<thomas.hellstrom@linux.intel.com> wrote:
+On Mon, Dec 15, 2025 at 11:43=E2=80=AFPM Qu Wenruo <wqu@suse.com> wrote:
 >
-> Hi
+> Inspired by recent bug fix like 18de34daa7c6 ("btrfs: truncate ordered
+> extent when skipping writeback past i_size"), and the patch "btrfs: fix
+> beyond-EOF write handling", if we can catch ordered extents missing
+> checksums, the above bugs will be caught much easier.
 >
-> I've been seing the below lockdep splat [1] for quite some time during
-> paging to disc and  since it seems persistent I figure it's a bit hard
-> to trigger and nobody's looking at fixing it.
-
-No one's been looking at fixing it probably because no one reported it befo=
-re.
-
-I've just sent a fix for it:
-
-https://lore.kernel.org/linux-btrfs/d3b2797ff1161a809b1935ed0e1ce31d6110cc3=
-3.1765897890.git.fdmanana@suse.com/
-
-Thanks for the report.
-
-
+> Introduce the following extra checks for an ordered extent at
+> btrfs_finish_one_ordered(), before inserting an file extent item:
 >
-> May I also suggest to add the following lockdep priming *iff* the
-> delayed_node->mutex is really intended to be taken during reclaim. This
-> will make a similar lockdep splat turn up much earlier without need to
-> wait for paging:
+> - Skip data reloc inodes first
+>   A data reloc inode represents a block group during relocation, which
+>   can have ranges that have checksums but some without.
+>   So we need to skip them to avoid false alerts.
 >
-> diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
-> index ce6e9f8812e0..4d76d93957f4 100644
-> --- a/fs/btrfs/delayed-inode.c
-> +++ b/fs/btrfs/delayed-inode.c
-> @@ -61,6 +61,9 @@ static inline void btrfs_init_delayed_node(
->         delayed_node->ins_root =3D RB_ROOT_CACHED;
->         delayed_node->del_root =3D RB_ROOT_CACHED;
->         mutex_init(&delayed_node->mutex);
-> +       fs_reclaim_acquire(GFP_KERNEL);
-> +       might_lock(&delayed_node->mutex);
-> +       fs_reclaim_release(GFP_KERNEL);
->         INIT_LIST_HEAD(&delayed_node->n_list);
->         INIT_LIST_HEAD(&delayed_node->p_list);
+> - NODATACOW ordered extents, NODATASUM inodes must have no checksum
+>   NODATACOW implies NODATASUM, and it's pretty obvious that NODATASUM
+>   inodes should not have ordered extents with checksums.
+>
+> - Compressed file extents must have checksums covering the on-disk range
+>   Even if a compressed file extents is truncated, the checksums are
+>   calculated using the on-disk compressed extent, thus the checksums must
+>   cover the whole on-disk compressed extent.
+>
+> - Truncated regular file extents must have checksum for the truncated
+>   length
+>
+> - The remaining regular file extents must have checksums for the whole
+>   length
+>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+
+Looks good now, thanks.
+
+> ---
+> Changelog:
+> v4:
+> - Rewords about the checksum problems
+>   Instead of "incorrect" checksums, use "missing" checksums to reduce
+>   confusion
+>
+> - Constify the ordered extent parameters
+>
+> - Rename involved functions to use "ordered_extent_" prefix
+>
+> v3:
+> - Fix a compiler warning when CONFIG_BTRFS_ASSERT is not selected
+>   By hiding the oe_csum_bytes() and the main part of assert_oe_csums()
+>   behind that config.
+>
+> v2:
+> - Updated to check all possible combinations
+>   Previously version can only detect the OEs in patch "btrfs: fix
+>   beyond-EOF write handling" where the OE has no csum at all, but can
+>   not detect OEs that has partial csums.
+> ---
+>  fs/btrfs/inode.c | 64 ++++++++++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 64 insertions(+)
+>
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 461725c8ccd7..3df8f174d32c 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -3090,6 +3090,68 @@ static int insert_ordered_extent_file_extent(struc=
+t btrfs_trans_handle *trans,
+>                                            update_inode_bytes, oe->qgroup=
+_rsv);
 >  }
 >
+> +#ifdef CONFIG_BTRFS_ASSERT
+> +static u64 ordered_extent_csum_bytes(const struct btrfs_ordered_extent *=
+oe)
+> +{
+> +       struct btrfs_ordered_sum *sum;
+> +       u64 ret =3D 0;
+> +
+> +       list_for_each_entry(sum, &oe->list, list)
+> +               ret +=3D sum->len;
+> +       return ret;
+> +}
+> +#endif
+> +
+> +#define ASSERT_ORDERED_EXTENT(cond, oe)                        \
+> +       ASSERT(cond,                                    \
+> +"root=3D%lld ino=3D%llu file_pos=3D%llu num_bytes=3D%llu ram_bytes=3D%ll=
+u truncated_len=3D%lld csum_bytes=3D%llu disk_bytenr=3D%llu disk_num_bytes=
+=3D%llu flags=3D0x%lx", \
+> +              btrfs_root_id((oe)->inode->root),        \
+> +              btrfs_ino((oe)->inode),                  \
+> +              (oe)->file_offset, (oe)->num_bytes,      \
+> +              (oe)->ram_bytes, (oe)->truncated_len,    \
+> +              ordered_extent_csum_bytes(oe),           \
+> +              (oe)->disk_bytenr, (oe)->disk_num_bytes, \
+> +              (oe)->flags);
+> +
+> +static void assert_ordered_extent_csums(const struct btrfs_ordered_exten=
+t *oe)
+> +{
+> +#ifdef CONFIG_BTRFS_ASSERT
+> +       struct btrfs_inode *inode =3D oe->inode;
+> +       const u64 csum_bytes =3D ordered_extent_csum_bytes(oe);
+> +
+> +       /*
+> +        * Skip data reloc inodes. They are for relocation and they
+> +        * can have ranges with csum and ranges without.
+> +        */
+> +       if (btrfs_is_data_reloc_root(inode->root))
+> +               return;
+> +
+> +       if (test_bit(BTRFS_ORDERED_NOCOW, &oe->flags) ||
+> +           inode->flags & BTRFS_INODE_NODATASUM) {
+> +               ASSERT_ORDERED_EXTENT(csum_bytes =3D=3D 0, oe);
+> +               return;
+> +       }
+> +
+> +       /* For compressed OE, csums must cover the on-disk range. */
+> +       if (test_bit(BTRFS_ORDERED_COMPRESSED, &oe->flags)) {
+> +               ASSERT_ORDERED_EXTENT(oe->disk_num_bytes =3D=3D csum_byte=
+s, oe);
+> +               return;
+> +       }
+> +
+> +       /* For truncated uncompressed OE, the csums must cover the trunca=
+ted length. */
+> +       if (test_bit(BTRFS_ORDERED_TRUNCATED, &oe->flags)) {
+> +               ASSERT_ORDERED_EXTENT(oe->truncated_len =3D=3D csum_bytes=
+, oe);
+> +               return;
+> +       }
+> +
+> +       /*
+> +        * The remaining case is untruncated regular extents.
+> +        * The csums must cover the whole range.
+> +        */
+> +       ASSERT_ORDERED_EXTENT(oe->num_bytes =3D=3D csum_bytes, oe);
+> +#endif
+> +}
+> +
+>  /*
+>   * As ordered data IO finishes, this gets called so we can finish
+>   * an ordered extent if the range of bytes in the file it covers are
+> @@ -3170,6 +3232,8 @@ int btrfs_finish_one_ordered(struct btrfs_ordered_e=
+xtent *ordered_extent)
 >
-> Thanks,
-> Thomas
+>         trans->block_rsv =3D &inode->block_rsv;
 >
-> [1]:
-> [27386.164433] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> [27386.164574] WARNING: possible circular locking dependency detected
-> [27386.164583] 6.18.0+ #4 Tainted: G     U
-> [27386.164591] ------------------------------------------------------
-> [27386.164599] kswapd0/117 is trying to acquire lock:
-> [27386.164606] ffff8d9b6333c5b8 (&delayed_node->mutex){+.+.}-{3:3}, at:
-> __btrfs_release_delayed_node.part.0+0x39/0x2f0
-> [27386.164625]
->                but task is already holding lock:
-> [27386.164633] ffffffffa4ab8ce0 (fs_reclaim){+.+.}-{0:0}, at:
-> balance_pgdat+0x195/0xc60
-> [27386.164646]
->                which lock already depends on the new lock.
->
-> [27386.164657]
->                the existing dependency chain (in reverse order) is:
-> [27386.164667]
->                -> #2 (fs_reclaim){+.+.}-{0:0}:
-> [27386.164677]        fs_reclaim_acquire+0x9d/0xd0
-> [27386.164685]        __kmalloc_cache_noprof+0x59/0x750
-> [27386.164694]        btrfs_init_file_extent_tree+0x90/0x100
-> [27386.164702]        btrfs_read_locked_inode+0xc3/0x6b0
-> [27386.164710]        btrfs_iget+0xbb/0xf0
-> [27386.164716]        btrfs_lookup_dentry+0x3c5/0x8e0
-> [27386.164724]        btrfs_lookup+0x12/0x30
-> [27386.164731]        lookup_open.isra.0+0x1aa/0x6a0
-> [27386.164739]        path_openat+0x5f7/0xc60
-> [27386.164746]        do_filp_open+0xd6/0x180
-> [27386.164753]        do_sys_openat2+0x8b/0xe0
-> [27386.164760]        __x64_sys_openat+0x54/0xa0
-> [27386.164768]        do_syscall_64+0x97/0x3e0
-> [27386.164776]        entry_SYSCALL_64_after_hwframe+0x76/0x7e
-> [27386.164784]
->                -> #1 (btrfs-tree-00){++++}-{3:3}:
-> [27386.164794]        lock_release+0x127/0x2a0
-> [27386.164801]        up_read+0x1b/0x30
-> [27386.164808]        btrfs_search_slot+0x8e0/0xff0
-> [27386.164817]        btrfs_lookup_inode+0x52/0xd0
-> [27386.164825]        __btrfs_update_delayed_inode+0x73/0x520
-> [27386.164833]        btrfs_commit_inode_delayed_inode+0x11a/0x120
-> [27386.164842]        btrfs_log_inode+0x608/0x1aa0
-> [27386.164849]        btrfs_log_inode_parent+0x249/0xf80
-> [27386.164857]        btrfs_log_dentry_safe+0x3e/0x60
-> [27386.164865]        btrfs_sync_file+0x431/0x690
-> [27386.164872]        do_fsync+0x39/0x80
-> [27386.164879]        __x64_sys_fsync+0x13/0x20
-> [27386.164887]        do_syscall_64+0x97/0x3e0
-> [27386.164894]        entry_SYSCALL_64_after_hwframe+0x76/0x7e
-> [27386.164903]
->                -> #0 (&delayed_node->mutex){+.+.}-{3:3}:
-> [27386.164913]        __lock_acquire+0x15e9/0x2820
-> [27386.164920]        lock_acquire+0xc9/0x2d0
-> [27386.164927]        __mutex_lock+0xcc/0x10a0
-> [27386.164934]        __btrfs_release_delayed_node.part.0+0x39/0x2f0
-> [27386.164944]        btrfs_evict_inode+0x20b/0x4b0
-> [27386.164952]        evict+0x15a/0x2f0
-> [27386.164958]        prune_icache_sb+0x91/0xd0
-> [27386.164966]        super_cache_scan+0x150/0x1d0
-> [27386.164974]        do_shrink_slab+0x155/0x6f0
-> [27386.164981]        shrink_slab+0x48e/0x890
-> [27386.164988]        shrink_one+0x11a/0x1f0
-> [27386.164995]        shrink_node+0xbfd/0x1320
-> [27386.165002]        balance_pgdat+0x67f/0xc60
-> [27386.165321]        kswapd+0x1dc/0x3e0
-> [27386.165643]        kthread+0xff/0x240
-> [27386.165965]        ret_from_fork+0x223/0x280
-> [27386.166287]        ret_from_fork_asm+0x1a/0x30
-> [27386.166616]
->                other info that might help us debug this:
->
-> [27386.167561] Chain exists of:
->                  &delayed_node->mutex --> btrfs-tree-00 --> fs_reclaim
->
-> [27386.168503]  Possible unsafe locking scenario:
->
-> [27386.169110]        CPU0                    CPU1
-> [27386.169411]        ----                    ----
-> [27386.169707]   lock(fs_reclaim);
-> [27386.169998]                                lock(btrfs-tree-00);
-> [27386.170291]                                lock(fs_reclaim);
-> [27386.170581]   lock(&delayed_node->mutex);
-> [27386.170874]
->                 *** DEADLOCK ***
->
-> [27386.171716] 2 locks held by kswapd0/117:
-> [27386.171999]  #0: ffffffffa4ab8ce0 (fs_reclaim){+.+.}-{0:0}, at:
-> balance_pgdat+0x195/0xc60
-> [27386.172294]  #1: ffff8d998344b0e0 (&type->s_umount_key#40){++++}-
-> {3:3}, at: super_cache_scan+0x37/0x1d0
-> [27386.172596]
->                stack backtrace:
-> [27386.173183] CPU: 11 UID: 0 PID: 117 Comm: kswapd0 Tainted: G     U
-> 6.18.0+ #4 PREEMPT(lazy)
-> [27386.173185] Tainted: [U]=3DUSER
-> [27386.173186] Hardware name: ASUS System Product Name/PRIME B560M-A
-> AC, BIOS 2001 02/01/2023
-> [27386.173187] Call Trace:
-> [27386.173187]  <TASK>
-> [27386.173189]  dump_stack_lvl+0x6e/0xa0
-> [27386.173192]  print_circular_bug.cold+0x17a/0x1c0
-> [27386.173194]  check_noncircular+0x175/0x190
-> [27386.173197]  __lock_acquire+0x15e9/0x2820
-> [27386.173200]  lock_acquire+0xc9/0x2d0
-> [27386.173201]  ? __btrfs_release_delayed_node.part.0+0x39/0x2f0
-> [27386.173204]  __mutex_lock+0xcc/0x10a0
-> [27386.173206]  ? __btrfs_release_delayed_node.part.0+0x39/0x2f0
-> [27386.173208]  ? __btrfs_release_delayed_node.part.0+0x39/0x2f0
-> [27386.173211]  ? __btrfs_release_delayed_node.part.0+0x39/0x2f0
-> [27386.173213]  __btrfs_release_delayed_node.part.0+0x39/0x2f0
-> [27386.173215]  btrfs_evict_inode+0x20b/0x4b0
-> [27386.173217]  ? lock_acquire+0xc9/0x2d0
-> [27386.173220]  evict+0x15a/0x2f0
-> [27386.173222]  prune_icache_sb+0x91/0xd0
-> [27386.173224]  super_cache_scan+0x150/0x1d0
-> [27386.173226]  do_shrink_slab+0x155/0x6f0
-> [27386.173228]  shrink_slab+0x48e/0x890
-> [27386.173229]  ? shrink_slab+0x2d2/0x890
-> [27386.173231]  shrink_one+0x11a/0x1f0
-> [27386.173234]  shrink_node+0xbfd/0x1320
-> [27386.173236]  ? shrink_node+0xa2d/0x1320
-> [27386.173236]  ? shrink_node+0xbd3/0x1320
-> [27386.173239]  ? balance_pgdat+0x67f/0xc60
-> [27386.173239]  balance_pgdat+0x67f/0xc60
-> [27386.173241]  ? finish_task_switch.isra.0+0xc4/0x2a0
-> [27386.173246]  kswapd+0x1dc/0x3e0
-> [27386.173247]  ? __pfx_autoremove_wake_function+0x10/0x10
-> [27386.173249]  ? __pfx_kswapd+0x10/0x10
-> [27386.173250]  kthread+0xff/0x240
-> [27386.173251]  ? __pfx_kthread+0x10/0x10
-> [27386.173253]  ret_from_fork+0x223/0x280
-> [27386.173255]  ? __pfx_kthread+0x10/0x10
-> [27386.173257]  ret_from_fork_asm+0x1a/0x30
-> [27386.173260]  </TASK>
+> +       assert_ordered_extent_csums(ordered_extent);
+> +
+>         ret =3D btrfs_insert_raid_extent(trans, ordered_extent);
+>         if (unlikely(ret)) {
+>                 btrfs_abort_transaction(trans, ret);
+> --
+> 2.52.0
 >
 >
 
