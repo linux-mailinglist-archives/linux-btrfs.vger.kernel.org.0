@@ -1,211 +1,273 @@
-Return-Path: <linux-btrfs+bounces-19832-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19833-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id AAAF8CC7BC7
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Dec 2025 14:02:48 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 364AECC7D89
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Dec 2025 14:33:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 793AD3002D3E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Dec 2025 13:00:47 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C2EA930A320F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Dec 2025 13:31:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6B6C352943;
-	Wed, 17 Dec 2025 12:42:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37AEE363C65;
+	Wed, 17 Dec 2025 13:22:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="a56aVGMj";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="EM2At4C2";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="a56aVGMj";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="EM2At4C2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j73ctGfQ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA3D9350A18
-	for <linux-btrfs@vger.kernel.org>; Wed, 17 Dec 2025 12:42:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D2E63624B2
+	for <linux-btrfs@vger.kernel.org>; Wed, 17 Dec 2025 13:22:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765975352; cv=none; b=OUzbrgLEK2QAuIIqz5Q9H4qOQxf3Uq2PhuUMYhBXSYlsoKWH7uwwhnPr7fCDoPgI00et/6FHlr1KHDfmq1GbY+z8NLbjL60cbD1Yw0SEspeScMpAt43wkHaq4X/ssT8IAGcEBZhufNjOvgmT0WKmKUOHz5gfJ+bemb0/RObueco=
+	t=1765977766; cv=none; b=EwuUSjYMhLgJ3EJrfpPDDeXBwLluQhOHrPG6kdJDdHutpmMA7TzPT6NYaR8m579fMIdV1SuXZxVe/jsLBlfJRLRYutpMxcHdw01ZswlqBnBO3/2p/X1HhsZzfYUDhIAulueJRKNDJD8LCQFR36NzpF29d0yTxe4lvPWYaHhbSew=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765975352; c=relaxed/simple;
-	bh=BgyZH9Lq6PUbACHJrPVyiXxQg8gNucfjWaGUktOVPvA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=f5vy8ejvRGEjO++L8SG4qc+mKCSIgrR/HctJmyPiKlz16ESr209myZBnW1atUXGXjW8HixeGf5SVlRswwBYYUO/HW42GGYU9gcb8W1StZENotOIf/5xqDi+W/WfOH8czq1Mxu506Yg8+O5BxHfA/0jcETG02+a/QGvEWXlSapSg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=a56aVGMj; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=EM2At4C2; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=a56aVGMj; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=EM2At4C2; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 186F85BCF8;
-	Wed, 17 Dec 2025 12:42:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1765975345; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MvZL3WPwwLagDUEBdiS3N24cxsJRy97UBGLmu0SgiWg=;
-	b=a56aVGMj0kst528k5fM83MBSiUUP1ExJ6+hm7lKF4DuthbszXMhLRK/4prA/Xi3veetPsL
-	1FxXQGEYI6xeyYruR72CLCodkv7S0DG7gCJocLY2hiU3g32mscOCAVLKTQfytgbtlvc/h3
-	N3zyCJl7agpHI8TlOxMklJ9D7MzAOPA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1765975345;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MvZL3WPwwLagDUEBdiS3N24cxsJRy97UBGLmu0SgiWg=;
-	b=EM2At4C2BKWwLeD76Gc7lnI11b5w81+nDNLjgylvh8PQ29xLBA5OEhNJCJw0CzZQrz9PFD
-	EowZTDQSfM684EDA==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=a56aVGMj;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=EM2At4C2
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1765975345; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MvZL3WPwwLagDUEBdiS3N24cxsJRy97UBGLmu0SgiWg=;
-	b=a56aVGMj0kst528k5fM83MBSiUUP1ExJ6+hm7lKF4DuthbszXMhLRK/4prA/Xi3veetPsL
-	1FxXQGEYI6xeyYruR72CLCodkv7S0DG7gCJocLY2hiU3g32mscOCAVLKTQfytgbtlvc/h3
-	N3zyCJl7agpHI8TlOxMklJ9D7MzAOPA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1765975345;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MvZL3WPwwLagDUEBdiS3N24cxsJRy97UBGLmu0SgiWg=;
-	b=EM2At4C2BKWwLeD76Gc7lnI11b5w81+nDNLjgylvh8PQ29xLBA5OEhNJCJw0CzZQrz9PFD
-	EowZTDQSfM684EDA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E58B43EA63;
-	Wed, 17 Dec 2025 12:42:24 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id ZTlhNzClQmnEJQAAD6G6ig
-	(envelope-from <jack@suse.cz>); Wed, 17 Dec 2025 12:42:24 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 3CC90A0927; Wed, 17 Dec 2025 13:42:20 +0100 (CET)
-Date: Wed, 17 Dec 2025 13:42:20 +0100
-From: Jan Kara <jack@suse.cz>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Christian Brauner <brauner@kernel.org>, 
-	Al Viro <viro@zeniv.linux.org.uk>, David Sterba <dsterba@suse.com>, Jan Kara <jack@suse.cz>, 
-	Mike Marshall <hubcap@omnibond.com>, Martin Brandenburg <martin@omnibond.com>, 
-	Carlos Maiolino <cem@kernel.org>, Stefan Roesch <shr@fb.com>, Jeff Layton <jlayton@kernel.org>, 
-	linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	gfs2@lists.linux.dev, io-uring@vger.kernel.org, devel@lists.orangefs.org, 
-	linux-unionfs@vger.kernel.org, linux-mtd@lists.infradead.org, linux-xfs@vger.kernel.org, 
-	linux-nfs@vger.kernel.org
-Subject: Re: [PATCH 08/10] fs: add support for non-blocking timestamp updates
-Message-ID: <2hnq54zc4x2fpxkpuprnrutrwfp3yi5ojntu3e3xfcpeh6ztei@2fwwsemx4y5z>
-References: <20251217061015.923954-1-hch@lst.de>
- <20251217061015.923954-9-hch@lst.de>
+	s=arc-20240116; t=1765977766; c=relaxed/simple;
+	bh=z6m7YZ5p+GMupyBEaaIe4HqZuMHLSkQl7d9frkWnRDY=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=Upf3VQzTJ7GTi5zVFg9gAvvl1F6bU9fthfBzVhFgvCnvVHZmN/P8N1UMF+0yFSYtkT4D1Gcb6dCfyYcsa3j1X+MHzhQ5eCT9izvsTyu7E4TF4c6YqvTpC/XD9Sfbo3qJuLWXQcNRrcHbteO8gAx4BXMABhsiABEAQYMeqUrvSkI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j73ctGfQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6086CC4CEF5
+	for <linux-btrfs@vger.kernel.org>; Wed, 17 Dec 2025 13:22:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1765977765;
+	bh=z6m7YZ5p+GMupyBEaaIe4HqZuMHLSkQl7d9frkWnRDY=;
+	h=From:To:Subject:Date:From;
+	b=j73ctGfQc3RI0BIJTYybj4163oedcOdoV2btcfw189MH2r3Url79DYg1whLWYflU5
+	 4MQKPNsl9gkI72GzIlqaviUIAP0wCsOnfCwlFIPRnmOWbRdHf0OkMrrwdRWEVPlnZA
+	 yyRGNIYSNk+wkg/Iet0RLN2gu5ehIaMEEv7HS9kGBrJ/XEtnQK1Aes2+7UmbS+U2HE
+	 g0Q8D6KPGyPPyhtWOY2TMXTPPpXWoArVpV83pkDCOMzhI+XVkaEx3ylA9Idr2jTwhw
+	 P3VBca7Zxbta7Wr06CuBIjdEQqXK6tNGju4oQvEpoV//i+nAykS41uU4l/mKpeFLTG
+	 bM7S5+H2DP8NA==
+From: fdmanana@kernel.org
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: tag as unlikely error conditions in the transaction commit path
+Date: Wed, 17 Dec 2025 13:22:41 +0000
+Message-ID: <bb3d28f50f56238ef6d8db65ddce28d1f53009d4.1765977733.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.47.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251217061015.923954-9-hch@lst.de>
-X-Spam-Flag: NO
-X-Spam-Score: -4.01
-X-Rspamd-Queue-Id: 186F85BCF8
-X-Spamd-Result: default: False [-4.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[20];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:dkim,lst.de:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCVD_TLS_LAST(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Level: 
+Content-Transfer-Encoding: 8bit
 
-On Wed 17-12-25 07:09:41, Christoph Hellwig wrote:
-> Currently file_update_time_flags unconditionally returns -EAGAIN if any
-> timestamp needs to be updated and IOCB_NOWAIT is passed.  This makes
-> non-blocking direct writes impossible on file systems with granular
-> enough timestamps.
-> 
-> Add a S_NOWAIT to ask for timestamps to not block, and return -EAGAIN in
-> all methods for now.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> Reviewed-by: Jeff Layton <jlayton@kernel.org>
+From: Filipe Manana <fdmanana@suse.com>
 
-...
+Errors are unexpected during the transaction commit path, and when they
+happen we abort the transaction (by calling cleanup_transaction() under
+the label 'cleanup_transaction' in btrfs_commit_transaction()). So mark
+every error check in the transaction commit path as unlikely, to hint the
+compiler so that it can possibly generate better code, and make it clear
+for a reader about being unexpected.
 
-> @@ -2110,12 +2110,26 @@ int inode_update_timestamps(struct inode *inode, int *flags)
->  		now = inode_set_ctime_current(inode);
->  		if (!timespec64_equal(&now, &ctime))
->  			updated |= S_CTIME;
-> -		if (!timespec64_equal(&now, &mtime)) {
-> -			inode_set_mtime_to_ts(inode, now);
-> +		if (!timespec64_equal(&now, &mtime))
->  			updated |= S_MTIME;
-> +
-> +		if (IS_I_VERSION(inode)) {
-> +			if (*flags & S_NOWAIT) {
-> +				/*
-> +				 * Error out if we'd need timestamp updates, as
-> +				 * the generally requires blocking to dirty the
-> +				 * inode in one form or another.
-> +				 */
-> +				if (updated && inode_iversion_need_inc(inode))
-> +					goto bail;
+On a x86_84 box using gcc 14.2.0-19 from Debian, this resulted in a slight
+reduction of the module's text size.
 
-I'm confused here. What the code does is that if S_NOWAIT is set and
-i_version needs increment we bail. However the comment as well as the
-changelog speaks about timestamps needing update and not about i_version.
-And intuitively I agree that if any timestamp is updated, inode needs
-dirtying and thus we should bail regardless of whether i_version is updated
-as well or not. What am I missing?
+Before:
 
-								Honza
+  $ size fs/btrfs/btrfs.ko
+     text	   data	    bss	    dec	    hex	filename
+  1939476	 172568	  15592	2127636	 207714	fs/btrfs/btrfs.ko
 
-> +			} else {
-> +				if (inode_maybe_inc_iversion(inode, updated))
-> +					updated |= S_VERSION;
-> +			}
->  		}
-> -		if (IS_I_VERSION(inode) && inode_maybe_inc_iversion(inode, updated))
-> -			updated |= S_VERSION;
-> +
-> +		if (updated & S_MTIME)
-> +			inode_set_mtime_to_ts(inode, now);
->  	} else {
->  		now = current_time(inode);
->  	}
-> @@ -2131,6 +2145,9 @@ int inode_update_timestamps(struct inode *inode, int *flags)
->  
->  	*flags = updated;
->  	return 0;
-> +bail:
-> +	*flags = 0;
-> +	return -EAGAIN;
->  }
->  EXPORT_SYMBOL(inode_update_timestamps);
->  
+After:
+
+  $ size fs/btrfs/btrfs.ko
+     text	   data	    bss	    dec	    hex	filename
+  1939044	 172568	  15592	2127204	 207564	fs/btrfs/btrfs.ko
+
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/transaction.c | 44 +++++++++++++++++++++---------------------
+ 1 file changed, 22 insertions(+), 22 deletions(-)
+
+diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+index 206872d757c8..267f6f753f56 100644
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -1515,7 +1515,7 @@ static noinline int commit_fs_roots(struct btrfs_trans_handle *trans)
+ 
+ 			btrfs_free_log(trans, root);
+ 			ret2 = btrfs_update_reloc_root(trans, root);
+-			if (ret2)
++			if (unlikely(ret2))
+ 				return ret2;
+ 
+ 			/* see comments in should_cow_block() */
+@@ -1532,7 +1532,7 @@ static noinline int commit_fs_roots(struct btrfs_trans_handle *trans)
+ 			ret2 = btrfs_update_root(trans, fs_info->tree_root,
+ 						&root->root_key,
+ 						&root->root_item);
+-			if (ret2)
++			if (unlikely(ret2))
+ 				return ret2;
+ 			spin_lock(&fs_info->fs_roots_radix_lock);
+ 		}
+@@ -1687,11 +1687,11 @@ static noinline int create_pending_snapshot(struct btrfs_trans_handle *trans,
+ 						&pending->dentry->d_name, 0,
+ 						&fname);
+ 	memalloc_nofs_restore(nofs_flags);
+-	if (pending->error)
++	if (unlikely(pending->error))
+ 		goto free_pending;
+ 
+ 	pending->error = btrfs_get_free_objectid(tree_root, &objectid);
+-	if (pending->error)
++	if (unlikely(pending->error))
+ 		goto free_fname;
+ 
+ 	/*
+@@ -1707,7 +1707,7 @@ static noinline int create_pending_snapshot(struct btrfs_trans_handle *trans,
+ 						     &pending->block_rsv,
+ 						     to_reserve,
+ 						     BTRFS_RESERVE_NO_FLUSH);
+-		if (pending->error)
++		if (unlikely(pending->error))
+ 			goto clear_skip_qgroup;
+ 	}
+ 
+@@ -1719,7 +1719,7 @@ static noinline int create_pending_snapshot(struct btrfs_trans_handle *trans,
+ 				      trans->bytes_reserved, 1);
+ 	parent_root = parent_inode->root;
+ 	ret = record_root_in_trans(trans, parent_root, 0);
+-	if (ret)
++	if (unlikely(ret))
+ 		goto fail;
+ 	cur_time = current_time(&parent_inode->vfs_inode);
+ 
+@@ -1736,7 +1736,7 @@ static noinline int create_pending_snapshot(struct btrfs_trans_handle *trans,
+ 	dir_item = btrfs_lookup_dir_item(NULL, parent_root, path,
+ 					 btrfs_ino(parent_inode),
+ 					 &fname.disk_name, 0);
+-	if (dir_item != NULL && !IS_ERR(dir_item)) {
++	if (unlikely(dir_item != NULL && !IS_ERR(dir_item))) {
+ 		pending->error = -EEXIST;
+ 		goto dir_item_existed;
+ 	} else if (IS_ERR(dir_item)) {
+@@ -1873,7 +1873,7 @@ static noinline int create_pending_snapshot(struct btrfs_trans_handle *trans,
+ 	else if (btrfs_qgroup_mode(fs_info) == BTRFS_QGROUP_MODE_SIMPLE)
+ 		ret = btrfs_qgroup_inherit(trans, btrfs_root_id(root), objectid,
+ 					   btrfs_root_id(parent_root), pending->inherit);
+-	if (ret < 0)
++	if (unlikely(ret < 0))
+ 		goto fail;
+ 
+ 	ret = btrfs_insert_dir_item(trans, &fname.disk_name,
+@@ -1939,7 +1939,7 @@ static noinline int create_pending_snapshots(struct btrfs_trans_handle *trans)
+ 	list_for_each_entry_safe(pending, next, head, list) {
+ 		list_del(&pending->list);
+ 		ret = create_pending_snapshot(trans, pending);
+-		if (ret)
++		if (unlikely(ret))
+ 			break;
+ 	}
+ 	return ret;
+@@ -2258,7 +2258,7 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
+ 
+ 		if (run_it) {
+ 			ret = btrfs_start_dirty_block_groups(trans);
+-			if (ret)
++			if (unlikely(ret))
+ 				goto lockdep_trans_commit_start_release;
+ 		}
+ 	}
+@@ -2308,7 +2308,7 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
+ 			ret = READ_ONCE(prev_trans->aborted);
+ 
+ 			btrfs_put_transaction(prev_trans);
+-			if (ret)
++			if (unlikely(ret))
+ 				goto lockdep_release;
+ 			spin_lock(&fs_info->trans_lock);
+ 		}
+@@ -2338,11 +2338,11 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
+ 	extwriter_counter_dec(cur_trans, trans->type);
+ 
+ 	ret = btrfs_start_delalloc_flush(fs_info);
+-	if (ret)
++	if (unlikely(ret))
+ 		goto lockdep_release;
+ 
+ 	ret = btrfs_run_delayed_items(trans);
+-	if (ret)
++	if (unlikely(ret))
+ 		goto lockdep_release;
+ 
+ 	/*
+@@ -2357,7 +2357,7 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
+ 
+ 	/* some pending stuffs might be added after the previous flush. */
+ 	ret = btrfs_run_delayed_items(trans);
+-	if (ret) {
++	if (unlikely(ret)) {
+ 		btrfs_lockdep_release(fs_info, btrfs_trans_num_writers);
+ 		goto cleanup_transaction;
+ 	}
+@@ -2429,7 +2429,7 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
+ 	 * core function of the snapshot creation.
+ 	 */
+ 	ret = create_pending_snapshots(trans);
+-	if (ret)
++	if (unlikely(ret))
+ 		goto unlock_reloc;
+ 
+ 	/*
+@@ -2443,11 +2443,11 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
+ 	 * the nodes and leaves.
+ 	 */
+ 	ret = btrfs_run_delayed_items(trans);
+-	if (ret)
++	if (unlikely(ret))
+ 		goto unlock_reloc;
+ 
+ 	ret = btrfs_run_delayed_refs(trans, U64_MAX);
+-	if (ret)
++	if (unlikely(ret))
+ 		goto unlock_reloc;
+ 
+ 	/*
+@@ -2459,7 +2459,7 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
+ 	WARN_ON(cur_trans != trans->transaction);
+ 
+ 	ret = commit_fs_roots(trans);
+-	if (ret)
++	if (unlikely(ret))
+ 		goto unlock_reloc;
+ 
+ 	/* commit_fs_roots gets rid of all the tree log roots, it is now
+@@ -2472,11 +2472,11 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
+ 	 * new_roots. So let's do quota accounting.
+ 	 */
+ 	ret = btrfs_qgroup_account_extents(trans);
+-	if (ret < 0)
++	if (unlikely(ret < 0))
+ 		goto unlock_reloc;
+ 
+ 	ret = commit_cowonly_roots(trans);
+-	if (ret)
++	if (unlikely(ret))
+ 		goto unlock_reloc;
+ 
+ 	/*
+@@ -2562,7 +2562,7 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
+ 	 * to go about their business
+ 	 */
+ 	mutex_unlock(&fs_info->tree_log_mutex);
+-	if (ret)
++	if (unlikely(ret))
+ 		goto scrub_continue;
+ 
+ 	update_commit_stats(fs_info);
+@@ -2575,7 +2575,7 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
+ 	btrfs_trans_state_lockdep_release(fs_info, BTRFS_LOCKDEP_TRANS_SUPER_COMMITTED);
+ 
+ 	ret = btrfs_finish_extent_commit(trans);
+-	if (ret)
++	if (unlikely(ret))
+ 		goto scrub_continue;
+ 
+ 	if (test_bit(BTRFS_TRANS_HAVE_FREE_BGS, &cur_trans->flags))
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.47.2
+
 
