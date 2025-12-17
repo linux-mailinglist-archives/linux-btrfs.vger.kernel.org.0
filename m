@@ -1,48 +1,48 @@
-Return-Path: <linux-btrfs+bounces-19833-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19834-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 364AECC7D89
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Dec 2025 14:33:56 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 233DFCC7D16
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Dec 2025 14:26:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C2EA930A320F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Dec 2025 13:31:21 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 5A0833020CEA
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Dec 2025 13:24:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37AEE363C65;
-	Wed, 17 Dec 2025 13:22:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B3D6274B42;
+	Wed, 17 Dec 2025 13:24:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j73ctGfQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VqjFAw6G"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D2E63624B2
-	for <linux-btrfs@vger.kernel.org>; Wed, 17 Dec 2025 13:22:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2115C251791
+	for <linux-btrfs@vger.kernel.org>; Wed, 17 Dec 2025 13:24:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765977766; cv=none; b=EwuUSjYMhLgJ3EJrfpPDDeXBwLluQhOHrPG6kdJDdHutpmMA7TzPT6NYaR8m579fMIdV1SuXZxVe/jsLBlfJRLRYutpMxcHdw01ZswlqBnBO3/2p/X1HhsZzfYUDhIAulueJRKNDJD8LCQFR36NzpF29d0yTxe4lvPWYaHhbSew=
+	t=1765977853; cv=none; b=I0Q9PfjAy5BLerFnwm6WVN0FcTByYo8tMeaXIe3s7kHzrwg7KwE4nsQ6aOBpDgGIw2IPFkb+OmgVOF3DDaWNm35DPT0g77KKo2JKQ4tg2wSgFgWUh3eUI2CKK0SvcEU9zbfM/7atswjA9C+fjbhxgFtNgNReanUGP41dgIsOluw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765977766; c=relaxed/simple;
-	bh=z6m7YZ5p+GMupyBEaaIe4HqZuMHLSkQl7d9frkWnRDY=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=Upf3VQzTJ7GTi5zVFg9gAvvl1F6bU9fthfBzVhFgvCnvVHZmN/P8N1UMF+0yFSYtkT4D1Gcb6dCfyYcsa3j1X+MHzhQ5eCT9izvsTyu7E4TF4c6YqvTpC/XD9Sfbo3qJuLWXQcNRrcHbteO8gAx4BXMABhsiABEAQYMeqUrvSkI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j73ctGfQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6086CC4CEF5
-	for <linux-btrfs@vger.kernel.org>; Wed, 17 Dec 2025 13:22:45 +0000 (UTC)
+	s=arc-20240116; t=1765977853; c=relaxed/simple;
+	bh=piPX9J+uFHI78p1JaWjUWD9Jv2KX0Xjy6hQd0Gt1O40=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=WfZSaEAMJTOQphU7RCixtAiC2FhaHloeZNffdwrNtNa66oEWUJ3GQhek4oJUe1PGGKtvXYDaV+w21ncRnb08qu0tiJKCzZb8FupUuY0UWNwFQBKzpdAYFnon9p0sVB3ydh7C5D420WDhkSC/B1IHwpt/L44ULApKZdOxszvc18I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VqjFAw6G; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 23DD4C113D0
+	for <linux-btrfs@vger.kernel.org>; Wed, 17 Dec 2025 13:24:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1765977765;
-	bh=z6m7YZ5p+GMupyBEaaIe4HqZuMHLSkQl7d9frkWnRDY=;
+	s=k20201202; t=1765977851;
+	bh=piPX9J+uFHI78p1JaWjUWD9Jv2KX0Xjy6hQd0Gt1O40=;
 	h=From:To:Subject:Date:From;
-	b=j73ctGfQc3RI0BIJTYybj4163oedcOdoV2btcfw189MH2r3Url79DYg1whLWYflU5
-	 4MQKPNsl9gkI72GzIlqaviUIAP0wCsOnfCwlFIPRnmOWbRdHf0OkMrrwdRWEVPlnZA
-	 yyRGNIYSNk+wkg/Iet0RLN2gu5ehIaMEEv7HS9kGBrJ/XEtnQK1Aes2+7UmbS+U2HE
-	 g0Q8D6KPGyPPyhtWOY2TMXTPPpXWoArVpV83pkDCOMzhI+XVkaEx3ylA9Idr2jTwhw
-	 P3VBca7Zxbta7Wr06CuBIjdEQqXK6tNGju4oQvEpoV//i+nAykS41uU4l/mKpeFLTG
-	 bM7S5+H2DP8NA==
+	b=VqjFAw6GbmBrbcTU+VxVIvdUzMbnqOT7u/m3NaNdAGeBcs2oR3CaWPNis5jIMid1o
+	 k7r26IHgrOsLiE2hfJzzBEWMWlrM5MH86LZc88/I+KgQnr7OBK+0ppsX8r0cWA6csD
+	 60mb8XXqIOOG+oCPTQO2St3UvDtH3ZSMyNPfKnff1UrENEUH03bmX2h0B6aGWbIhzg
+	 +dAcOIysG6ZerDlTWpn7/UZ72RnRWtKTMk2jkPLPy7USk+X5LbnYUSwzJkg7kNPX37
+	 K66/9Z9gNvZCZyRMbGUQG5pYDIcUN249hsc+S7B3GEOsdAdh6C6113PWr+toWgsjKM
+	 2bSK6bhQYWLdQ==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: tag as unlikely error conditions in the transaction commit path
-Date: Wed, 17 Dec 2025 13:22:41 +0000
-Message-ID: <bb3d28f50f56238ef6d8db65ddce28d1f53009d4.1765977733.git.fdmanana@suse.com>
+Subject: [PATCH] btrfs: move unlikely checks around btrfs_is_shutdown() into the helper
+Date: Wed, 17 Dec 2025 13:24:08 +0000
+Message-ID: <1a529e03fbbcf4fbb31192fe7be56e0f4650044d.1765977782.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.47.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -54,12 +54,10 @@ Content-Transfer-Encoding: 8bit
 
 From: Filipe Manana <fdmanana@suse.com>
 
-Errors are unexpected during the transaction commit path, and when they
-happen we abort the transaction (by calling cleanup_transaction() under
-the label 'cleanup_transaction' in btrfs_commit_transaction()). So mark
-every error check in the transaction commit path as unlikely, to hint the
-compiler so that it can possibly generate better code, and make it clear
-for a reader about being unexpected.
+Instead of surrounding every caller of btrfs_is_shutdown() with unlikely,
+move the unlikely into the helper itself, like we do in other places in
+btrfs and is common in the kernel outside btrfs too. Also make the fs_info
+argument of btrfs_is_shutdown() const.
 
 On a x86_84 box using gcc 14.2.0-19 from Debian, this resulted in a slight
 reduction of the module's text size.
@@ -68,205 +66,154 @@ Before:
 
   $ size fs/btrfs/btrfs.ko
      text	   data	    bss	    dec	    hex	filename
-  1939476	 172568	  15592	2127636	 207714	fs/btrfs/btrfs.ko
+  1939044	 172568	  15592	2127204	 207564	fs/btrfs/btrfs.ko
 
 After:
 
   $ size fs/btrfs/btrfs.ko
      text	   data	    bss	    dec	    hex	filename
-  1939044	 172568	  15592	2127204	 207564	fs/btrfs/btrfs.ko
+  1938876	 172568	  15592	2127036	 2074bc	fs/btrfs/btrfs.ko
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/transaction.c | 44 +++++++++++++++++++++---------------------
- 1 file changed, 22 insertions(+), 22 deletions(-)
+ fs/btrfs/file.c    | 12 ++++++------
+ fs/btrfs/fs.h      |  4 ++--
+ fs/btrfs/inode.c   |  6 +++---
+ fs/btrfs/ioctl.c   |  2 +-
+ fs/btrfs/reflink.c |  2 +-
+ 5 files changed, 13 insertions(+), 13 deletions(-)
 
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index 206872d757c8..267f6f753f56 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -1515,7 +1515,7 @@ static noinline int commit_fs_roots(struct btrfs_trans_handle *trans)
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index 69edf5f44bda..5d47cff5af42 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -1437,7 +1437,7 @@ ssize_t btrfs_do_write_iter(struct kiocb *iocb, struct iov_iter *from,
+ 	struct btrfs_inode *inode = BTRFS_I(file_inode(file));
+ 	ssize_t num_written, num_sync;
  
- 			btrfs_free_log(trans, root);
- 			ret2 = btrfs_update_reloc_root(trans, root);
--			if (ret2)
-+			if (unlikely(ret2))
- 				return ret2;
- 
- 			/* see comments in should_cow_block() */
-@@ -1532,7 +1532,7 @@ static noinline int commit_fs_roots(struct btrfs_trans_handle *trans)
- 			ret2 = btrfs_update_root(trans, fs_info->tree_root,
- 						&root->root_key,
- 						&root->root_item);
--			if (ret2)
-+			if (unlikely(ret2))
- 				return ret2;
- 			spin_lock(&fs_info->fs_roots_radix_lock);
- 		}
-@@ -1687,11 +1687,11 @@ static noinline int create_pending_snapshot(struct btrfs_trans_handle *trans,
- 						&pending->dentry->d_name, 0,
- 						&fname);
- 	memalloc_nofs_restore(nofs_flags);
--	if (pending->error)
-+	if (unlikely(pending->error))
- 		goto free_pending;
- 
- 	pending->error = btrfs_get_free_objectid(tree_root, &objectid);
--	if (pending->error)
-+	if (unlikely(pending->error))
- 		goto free_fname;
- 
+-	if (unlikely(btrfs_is_shutdown(inode->root->fs_info)))
++	if (btrfs_is_shutdown(inode->root->fs_info))
+ 		return -EIO;
  	/*
-@@ -1707,7 +1707,7 @@ static noinline int create_pending_snapshot(struct btrfs_trans_handle *trans,
- 						     &pending->block_rsv,
- 						     to_reserve,
- 						     BTRFS_RESERVE_NO_FLUSH);
--		if (pending->error)
-+		if (unlikely(pending->error))
- 			goto clear_skip_qgroup;
+ 	 * If the fs flips readonly due to some impossible error, although we
+@@ -2042,7 +2042,7 @@ static int btrfs_file_mmap_prepare(struct vm_area_desc *desc)
+ 	struct file *filp = desc->file;
+ 	struct address_space *mapping = filp->f_mapping;
+ 
+-	if (unlikely(btrfs_is_shutdown(inode_to_fs_info(file_inode(filp)))))
++	if (btrfs_is_shutdown(inode_to_fs_info(file_inode(filp))))
+ 		return -EIO;
+ 	if (!mapping->a_ops->read_folio)
+ 		return -ENOEXEC;
+@@ -3113,7 +3113,7 @@ static long btrfs_fallocate(struct file *file, int mode,
+ 	int blocksize = BTRFS_I(inode)->root->fs_info->sectorsize;
+ 	int ret;
+ 
+-	if (unlikely(btrfs_is_shutdown(inode_to_fs_info(inode))))
++	if (btrfs_is_shutdown(inode_to_fs_info(inode)))
+ 		return -EIO;
+ 
+ 	/* Do not allow fallocate in ZONED mode */
+@@ -3807,7 +3807,7 @@ static int btrfs_file_open(struct inode *inode, struct file *filp)
+ {
+ 	int ret;
+ 
+-	if (unlikely(btrfs_is_shutdown(inode_to_fs_info(inode))))
++	if (btrfs_is_shutdown(inode_to_fs_info(inode)))
+ 		return -EIO;
+ 
+ 	filp->f_mode |= FMODE_NOWAIT | FMODE_CAN_ODIRECT;
+@@ -3822,7 +3822,7 @@ static ssize_t btrfs_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
+ {
+ 	ssize_t ret = 0;
+ 
+-	if (unlikely(btrfs_is_shutdown(inode_to_fs_info(file_inode(iocb->ki_filp)))))
++	if (btrfs_is_shutdown(inode_to_fs_info(file_inode(iocb->ki_filp))))
+ 		return -EIO;
+ 
+ 	if (iocb->ki_flags & IOCB_DIRECT) {
+@@ -3839,7 +3839,7 @@ static ssize_t btrfs_file_splice_read(struct file *in, loff_t *ppos,
+ 				      struct pipe_inode_info *pipe,
+ 				      size_t len, unsigned int flags)
+ {
+-	if (unlikely(btrfs_is_shutdown(inode_to_fs_info(file_inode(in)))))
++	if (btrfs_is_shutdown(inode_to_fs_info(file_inode(in))))
+ 		return -EIO;
+ 
+ 	return filemap_splice_read(in, ppos, pipe, len, flags);
+diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
+index dcb08bec98c4..0dc851b9c51b 100644
+--- a/fs/btrfs/fs.h
++++ b/fs/btrfs/fs.h
+@@ -1146,9 +1146,9 @@ static inline void btrfs_wake_unfinished_drop(struct btrfs_fs_info *fs_info)
+ 	(unlikely(test_bit(BTRFS_FS_STATE_LOG_CLEANUP_ERROR,		\
+ 			   &(fs_info)->fs_state)))
+ 
+-static inline bool btrfs_is_shutdown(struct btrfs_fs_info *fs_info)
++static inline bool btrfs_is_shutdown(const struct btrfs_fs_info *fs_info)
+ {
+-	return test_bit(BTRFS_FS_STATE_EMERGENCY_SHUTDOWN, &fs_info->fs_state);
++	return unlikely(test_bit(BTRFS_FS_STATE_EMERGENCY_SHUTDOWN, &fs_info->fs_state));
+ }
+ 
+ static inline void btrfs_force_shutdown(struct btrfs_fs_info *fs_info)
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index bd6241ce6a78..8a6f49a4a6db 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -901,7 +901,7 @@ static void compress_file_range(struct btrfs_work *work)
+ 	int compress_type = fs_info->compress_type;
+ 	int compress_level = fs_info->compress_level;
+ 
+-	if (unlikely(btrfs_is_shutdown(fs_info)))
++	if (btrfs_is_shutdown(fs_info))
+ 		goto cleanup_and_bail_uncompressed;
+ 
+ 	inode_should_defrag(inode, start, end, end - start + 1, SZ_16K);
+@@ -1319,7 +1319,7 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
+ 	unsigned long page_ops;
+ 	int ret = 0;
+ 
+-	if (unlikely(btrfs_is_shutdown(fs_info))) {
++	if (btrfs_is_shutdown(fs_info)) {
+ 		ret = -EIO;
+ 		goto out_unlock;
  	}
+@@ -2072,7 +2072,7 @@ static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
+ 	 */
+ 	ASSERT(!btrfs_is_zoned(fs_info) || btrfs_is_data_reloc_root(root));
  
-@@ -1719,7 +1719,7 @@ static noinline int create_pending_snapshot(struct btrfs_trans_handle *trans,
- 				      trans->bytes_reserved, 1);
- 	parent_root = parent_inode->root;
- 	ret = record_root_in_trans(trans, parent_root, 0);
--	if (ret)
-+	if (unlikely(ret))
- 		goto fail;
- 	cur_time = current_time(&parent_inode->vfs_inode);
- 
-@@ -1736,7 +1736,7 @@ static noinline int create_pending_snapshot(struct btrfs_trans_handle *trans,
- 	dir_item = btrfs_lookup_dir_item(NULL, parent_root, path,
- 					 btrfs_ino(parent_inode),
- 					 &fname.disk_name, 0);
--	if (dir_item != NULL && !IS_ERR(dir_item)) {
-+	if (unlikely(dir_item != NULL && !IS_ERR(dir_item))) {
- 		pending->error = -EEXIST;
- 		goto dir_item_existed;
- 	} else if (IS_ERR(dir_item)) {
-@@ -1873,7 +1873,7 @@ static noinline int create_pending_snapshot(struct btrfs_trans_handle *trans,
- 	else if (btrfs_qgroup_mode(fs_info) == BTRFS_QGROUP_MODE_SIMPLE)
- 		ret = btrfs_qgroup_inherit(trans, btrfs_root_id(root), objectid,
- 					   btrfs_root_id(parent_root), pending->inherit);
--	if (ret < 0)
-+	if (unlikely(ret < 0))
- 		goto fail;
- 
- 	ret = btrfs_insert_dir_item(trans, &fname.disk_name,
-@@ -1939,7 +1939,7 @@ static noinline int create_pending_snapshots(struct btrfs_trans_handle *trans)
- 	list_for_each_entry_safe(pending, next, head, list) {
- 		list_del(&pending->list);
- 		ret = create_pending_snapshot(trans, pending);
--		if (ret)
-+		if (unlikely(ret))
- 			break;
+-	if (unlikely(btrfs_is_shutdown(fs_info))) {
++	if (btrfs_is_shutdown(fs_info)) {
+ 		ret = -EIO;
+ 		goto error;
  	}
- 	return ret;
-@@ -2258,7 +2258,7 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
+diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+index acb484546b1d..d9e7dd317670 100644
+--- a/fs/btrfs/ioctl.c
++++ b/fs/btrfs/ioctl.c
+@@ -5000,7 +5000,7 @@ static int btrfs_uring_encoded_write(struct io_uring_cmd *cmd, unsigned int issu
  
- 		if (run_it) {
- 			ret = btrfs_start_dirty_block_groups(trans);
--			if (ret)
-+			if (unlikely(ret))
- 				goto lockdep_trans_commit_start_release;
- 		}
- 	}
-@@ -2308,7 +2308,7 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
- 			ret = READ_ONCE(prev_trans->aborted);
+ int btrfs_uring_cmd(struct io_uring_cmd *cmd, unsigned int issue_flags)
+ {
+-	if (unlikely(btrfs_is_shutdown(inode_to_fs_info(file_inode(cmd->file)))))
++	if (btrfs_is_shutdown(inode_to_fs_info(file_inode(cmd->file))))
+ 		return -EIO;
  
- 			btrfs_put_transaction(prev_trans);
--			if (ret)
-+			if (unlikely(ret))
- 				goto lockdep_release;
- 			spin_lock(&fs_info->trans_lock);
- 		}
-@@ -2338,11 +2338,11 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
- 	extwriter_counter_dec(cur_trans, trans->type);
+ 	switch (cmd->cmd_op) {
+diff --git a/fs/btrfs/reflink.c b/fs/btrfs/reflink.c
+index b5fe95baf92e..e746980567da 100644
+--- a/fs/btrfs/reflink.c
++++ b/fs/btrfs/reflink.c
+@@ -870,7 +870,7 @@ loff_t btrfs_remap_file_range(struct file *src_file, loff_t off,
+ 	bool same_inode = dst_inode == src_inode;
+ 	int ret;
  
- 	ret = btrfs_start_delalloc_flush(fs_info);
--	if (ret)
-+	if (unlikely(ret))
- 		goto lockdep_release;
+-	if (unlikely(btrfs_is_shutdown(inode_to_fs_info(file_inode(src_file)))))
++	if (btrfs_is_shutdown(inode_to_fs_info(file_inode(src_file))))
+ 		return -EIO;
  
- 	ret = btrfs_run_delayed_items(trans);
--	if (ret)
-+	if (unlikely(ret))
- 		goto lockdep_release;
- 
- 	/*
-@@ -2357,7 +2357,7 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
- 
- 	/* some pending stuffs might be added after the previous flush. */
- 	ret = btrfs_run_delayed_items(trans);
--	if (ret) {
-+	if (unlikely(ret)) {
- 		btrfs_lockdep_release(fs_info, btrfs_trans_num_writers);
- 		goto cleanup_transaction;
- 	}
-@@ -2429,7 +2429,7 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
- 	 * core function of the snapshot creation.
- 	 */
- 	ret = create_pending_snapshots(trans);
--	if (ret)
-+	if (unlikely(ret))
- 		goto unlock_reloc;
- 
- 	/*
-@@ -2443,11 +2443,11 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
- 	 * the nodes and leaves.
- 	 */
- 	ret = btrfs_run_delayed_items(trans);
--	if (ret)
-+	if (unlikely(ret))
- 		goto unlock_reloc;
- 
- 	ret = btrfs_run_delayed_refs(trans, U64_MAX);
--	if (ret)
-+	if (unlikely(ret))
- 		goto unlock_reloc;
- 
- 	/*
-@@ -2459,7 +2459,7 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
- 	WARN_ON(cur_trans != trans->transaction);
- 
- 	ret = commit_fs_roots(trans);
--	if (ret)
-+	if (unlikely(ret))
- 		goto unlock_reloc;
- 
- 	/* commit_fs_roots gets rid of all the tree log roots, it is now
-@@ -2472,11 +2472,11 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
- 	 * new_roots. So let's do quota accounting.
- 	 */
- 	ret = btrfs_qgroup_account_extents(trans);
--	if (ret < 0)
-+	if (unlikely(ret < 0))
- 		goto unlock_reloc;
- 
- 	ret = commit_cowonly_roots(trans);
--	if (ret)
-+	if (unlikely(ret))
- 		goto unlock_reloc;
- 
- 	/*
-@@ -2562,7 +2562,7 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
- 	 * to go about their business
- 	 */
- 	mutex_unlock(&fs_info->tree_log_mutex);
--	if (ret)
-+	if (unlikely(ret))
- 		goto scrub_continue;
- 
- 	update_commit_stats(fs_info);
-@@ -2575,7 +2575,7 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
- 	btrfs_trans_state_lockdep_release(fs_info, BTRFS_LOCKDEP_TRANS_SUPER_COMMITTED);
- 
- 	ret = btrfs_finish_extent_commit(trans);
--	if (ret)
-+	if (unlikely(ret))
- 		goto scrub_continue;
- 
- 	if (test_bit(BTRFS_TRANS_HAVE_FREE_BGS, &cur_trans->flags))
+ 	if (remap_flags & ~(REMAP_FILE_DEDUP | REMAP_FILE_ADVISORY))
 -- 
 2.47.2
 
