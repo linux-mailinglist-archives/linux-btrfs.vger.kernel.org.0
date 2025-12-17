@@ -1,180 +1,175 @@
-Return-Path: <linux-btrfs+bounces-19824-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19825-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7913ACC680C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Dec 2025 09:15:38 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id A309ACC6942
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Dec 2025 09:29:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 834153023D66
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Dec 2025 08:15:32 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 1CBBE3004626
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Dec 2025 08:29:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5C3733EB04;
-	Wed, 17 Dec 2025 08:08:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="GMq2Qtbq";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="U++wtK8z"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B78EB33B95B;
+	Wed, 17 Dec 2025 08:29:49 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-oo1-f78.google.com (mail-oo1-f78.google.com [209.85.161.78])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E24F8339867
-	for <linux-btrfs@vger.kernel.org>; Wed, 17 Dec 2025 08:08:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FA6F244675
+	for <linux-btrfs@vger.kernel.org>; Wed, 17 Dec 2025 08:29:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.78
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765958925; cv=none; b=jCXpErBmHtsBGb1Bnx2Fg+Ld3f+bdI9V/U/39zJtO6ITxIpNNMu8EeQEs6lkihEhqdJNJMn+ubvHTdrQAx7/QkBhOyploqXqGFXw7QSQxWxxbTqYvMo20rs2uq+hD1ryOfu7jXUT3UkRE5/U5tpIXeDcc9umKiuoqF9/RM3JuBI=
+	t=1765960188; cv=none; b=K+ZrwqdL1Y/wxvYvBE+cbZ7ZQAWMAw+D2FMmepCwpgEvpZxAapB69uP4nOjskeMJ4cZuFb3gupj1AQBLwz3xqv237iWmnAiPF5wW/yCqk90JslmxvUwx8nQNAbSougHqF3iS0WfFlHCADUEIWuKUmAPq9y7E07YEIuYpOL+UQCY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765958925; c=relaxed/simple;
-	bh=sVU+Yzug93zO8VGaGFcB0h/A9mmqcBLoUXvRKHCoGks=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=UU3Dkg3ral7LssyK5jMXXTO+b+0f5UnvhA3r8KXQnxx8oTj5wIWYu8fRFq9cZOzxEkOoj5fqgMkjHLWOC7Xxq3BUV7XoheDhnbognhqx8Pj15lFJTTHTZZLyiSKXFbNpcpbAJnp4s+dVMoQTS1P+vStoS4NsQ6HMhlkS6ufTPEA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=GMq2Qtbq; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=U++wtK8z; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 110C6336C7
-	for <linux-btrfs@vger.kernel.org>; Wed, 17 Dec 2025 08:08:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1765958904; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wx7OQ/oNTT4MOI1KpokKBjIzwKRskwH29SrldQCwatw=;
-	b=GMq2Qtbqul9Q4N2xINpKif8U6GZdHa3ANRzFanYGVOq74vN2FB1UUAi2QpjD2uldruxJIE
-	mUXTMCaRogL38bex8yBxW5rgXBc/GvjidgmdlZLlk7H/csLUrA0pCyVrsf9/tc3ScpRVR0
-	FJ1lLJs0+nhqNLE5SdFwdiML81vD4p4=
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1765958903; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wx7OQ/oNTT4MOI1KpokKBjIzwKRskwH29SrldQCwatw=;
-	b=U++wtK8zMKdvybBVURfwSs7tk5n58m9RX4lNpNrCArTZ7JuQg+DVbSCs3tUojQXskgCVhj
-	Rkn7p9QPWCxsWfy0V9MVeEj8CJRAv2Owvh/HijKdwzc2rDOwRgmXVWp0rl/aqHHh+TNmFh
-	cGCKRsge1OmqHgweywj8z7vRnFZKOe0=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 52E073EA65
-	for <linux-btrfs@vger.kernel.org>; Wed, 17 Dec 2025 08:08:22 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id GMZhBvZkQmmoGQAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Wed, 17 Dec 2025 08:08:22 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 3/3] btrfs-progs: fsck-tests: add a test case for repairing missing INODE_REF
-Date: Wed, 17 Dec 2025 18:38:15 +1030
-Message-ID: <2174d23a6cf83e392fb64a1b9367da60ea1470fe.1765958753.git.wqu@suse.com>
-X-Mailer: git-send-email 2.52.0
-In-Reply-To: <cover.1765958753.git.wqu@suse.com>
-References: <cover.1765958753.git.wqu@suse.com>
+	s=arc-20240116; t=1765960188; c=relaxed/simple;
+	bh=Yo2yfOheYd2QQCuW4V5KjVb+tCEqrKNsHTqv1ceZiv4=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=ZCA124DN6ZFxBQMFePcjw8t15wwWHq/ronwcusdixzusL/b5O/IN00oW2NziLtIB8E/z+/KxUDfTIi4N6r6YuJ781E3tQQSaOaCU5IiBeTxkeIvnk9tUyU4PA9s5jlIH2XU4Xs7Y71YDF/hjHKAYU0XlBRC2vbfV0holS/gSKWg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.161.78
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-oo1-f78.google.com with SMTP id 006d021491bc7-65b153371efso619186eaf.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 17 Dec 2025 00:29:45 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1765960184; x=1766564984;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/5l5YWT+gFM36FSeuF8wxKsKPKWJgnH7Ud+WIs5w/08=;
+        b=CpNc85mfABvxTcXwLon2PlkONzz36p92lpB1yfbl0kt2WOS6GKGf/xGGr/V8Y2+Ew/
+         vqSlwxFsybNNiqrdTLgWWNYQN+QjycF5u3qrVmHqAIZXcorjBkSnl7kcaLeZ9IFCB9xI
+         uXLEHx+sU8Kmc7cbgA0/08WqkVJayVB0qRWeTmX2wWp34xKT9vmugV23D03jF5YUv2r/
+         RWprwzxuCnKPFvmLgXMn4OP0RLOErPn/l6F5aHrzO5BsQaTDnYvuOvJTK32jZnzMX4ec
+         FW+bxuVQKECHZrg6XMQivM/myMTMzXiQzdugc0jtNMiTS/JA8ZiPu4ccpUbp5ctMQPXs
+         FezA==
+X-Forwarded-Encrypted: i=1; AJvYcCX6VONN0N/1gyvPv7rV6LqVWlUYWBN3yEGSVsBu5XcEg3Ue+uVSAbHoc+LOykAzlwmDq0awzzNbHlxNTA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxjKf5ozvPeLVTKOWhdStuQ7xfaW1QHxDGpeSCh0M+DeXsBTABd
+	U0zKKpUHNz5iZCcsmhMmuJD2iMrOeLBc8inkZRkachdTppB+ux8eF061TXAW9s4WsNfY9N2pH6Q
+	kCRSDyaFhNg1LPU0RBtQf4c82D1d/z33OiWH3/hmJ0XCa/zdudEtO5a1Dshw=
+X-Google-Smtp-Source: AGHT+IFoD0ISrA7KSLqLiNYOALRZmAMhP+LiFe14Bd1UQKPPqZ4OqzEzzDsHOXoN2O3n7fotlPzlDMSOAE559EBDrTCZbe0QhGb0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-2.62 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	MIME_GOOD(-0.10)[text/plain];
-	NEURAL_HAM_SHORT(-0.02)[-0.118];
-	RCPT_COUNT_ONE(0.00)[1];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email,imap1.dmz-prg2.suse.org:helo];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	RCVD_TLS_ALL(0.00)[]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -2.62
+X-Received: by 2002:a05:6820:d8d:b0:65b:8181:e18d with SMTP id
+ 006d021491bc7-65b8181e33bmr1510457eaf.28.1765960184779; Wed, 17 Dec 2025
+ 00:29:44 -0800 (PST)
+Date: Wed, 17 Dec 2025 00:29:44 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <694269f8.a70a0220.207337.0046.GAE@google.com>
+Subject: [syzbot] [btrfs?] WARNING in __btrfs_update_delayed_inode (3)
+From: syzbot <syzbot+d85308bac7187ac131d3@syzkaller.appspotmail.com>
+To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-The image is created by removing the INODE_REF for inode 257.
+Hello,
 
-Now both original and lowmem mode should be able to repair it.
+syzbot found the following issue on:
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
+HEAD commit:    9551a26f17d9 Merge tag 'loongarch-6.19' of git://git.kerne..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=141f31b4580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f315601b98a91c0b
+dashboard link: https://syzkaller.appspot.com/bug?extid=d85308bac7187ac131d3
+compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/b23c812ec291/disk-9551a26f.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/8b0564ab1672/vmlinux-9551a26f.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/b8aac5f6fcdb/bzImage-9551a26f.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+d85308bac7187ac131d3@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+BTRFS: Transaction aborted (error -28)
+WARNING: fs/btrfs/delayed-inode.c:1039 at 0x0, CPU#1: syz.1.67/6479
+Modules linked in:
+CPU: 1 UID: 0 PID: 6479 Comm: syz.1.67 Not tainted syzkaller #0 PREEMPT_{RT,(full)} 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/25/2025
+RIP: 0010:__btrfs_update_delayed_inode+0xcc6/0xed0 fs/btrfs/delayed-inode.c:1039
+Code: d1 e1 fd e9 22 01 00 00 e8 57 aa c7 fd 84 c0 74 23 e8 8e d1 e1 fd e9 0f 01 00 00 e8 84 d1 e1 fd 48 8d 3d 5d 2d 05 0b 44 89 ee <67> 48 0f b9 3a e9 2c 01 00 00 e8 3b 97 f4 06 89 c3 31 ff 89 c6 e8
+RSP: 0018:ffffc9000daf7080 EFLAGS: 00010283
+RAX: ffffffff83dea0bc RBX: 00000000ffffffe4 RCX: 0000000000080000
+RDX: ffffc9000d259000 RSI: 00000000ffffffe4 RDI: ffffffff8ee3ce20
+RBP: ffffc9000daf7190 R08: ffff888028a01e40 R09: 0000000000000003
+R10: 0000000000000100 R11: 00000000fffffffb R12: ffff88805e9ad9b0
+R13: 00000000ffffffe4 R14: ffff88803dd5d580 R15: 0000000000000000
+FS:  00007f393a8ee6c0(0000) GS:ffff888126e06000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f87afed8000 CR3: 000000003a514000 CR4: 00000000003526f0
+Call Trace:
+ <TASK>
+ btrfs_update_delayed_inode fs/btrfs/delayed-inode.c:1115 [inline]
+ __btrfs_commit_inode_delayed_items+0x1cfc/0x1e70 fs/btrfs/delayed-inode.c:1138
+ __btrfs_run_delayed_items+0x215/0x540 fs/btrfs/delayed-inode.c:1173
+ btrfs_commit_transaction+0x8cb/0x3b10 fs/btrfs/transaction.c:2343
+ prepare_to_relocate+0x3a1/0x490 fs/btrfs/relocation.c:3479
+ relocate_block_group+0x132/0xd70 fs/btrfs/relocation.c:3504
+ btrfs_relocate_block_group+0x580/0xba0 fs/btrfs/relocation.c:3966
+ btrfs_relocate_chunk+0x12f/0x5d0 fs/btrfs/volumes.c:3424
+ __btrfs_balance+0x190e/0x24f0 fs/btrfs/volumes.c:4197
+ btrfs_balance+0xac2/0x11b0 fs/btrfs/volumes.c:4571
+ btrfs_ioctl_balance+0x3d6/0x610 fs/btrfs/ioctl.c:3525
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:597 [inline]
+ __se_sys_ioctl+0xff/0x170 fs/ioctl.c:583
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xfa/0xf80 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f393c68f749
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f393a8ee038 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007f393c8e5fa0 RCX: 00007f393c68f749
+RDX: 0000200000000180 RSI: 00000000c4009420 RDI: 0000000000000004
+RBP: 00007f393c713f91 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007f393c8e6038 R14: 00007f393c8e5fa0 R15: 00007ffd84049f78
+ </TASK>
+----------------
+Code disassembly (best guess):
+   0:	d1 e1                	shl    %ecx
+   2:	fd                   	std
+   3:	e9 22 01 00 00       	jmp    0x12a
+   8:	e8 57 aa c7 fd       	call   0xfdc7aa64
+   d:	84 c0                	test   %al,%al
+   f:	74 23                	je     0x34
+  11:	e8 8e d1 e1 fd       	call   0xfde1d1a4
+  16:	e9 0f 01 00 00       	jmp    0x12a
+  1b:	e8 84 d1 e1 fd       	call   0xfde1d1a4
+  20:	48 8d 3d 5d 2d 05 0b 	lea    0xb052d5d(%rip),%rdi        # 0xb052d84
+  27:	44 89 ee             	mov    %r13d,%esi
+* 2a:	67 48 0f b9 3a       	ud1    (%edx),%rdi <-- trapping instruction
+  2f:	e9 2c 01 00 00       	jmp    0x160
+  34:	e8 3b 97 f4 06       	call   0x6f49774
+  39:	89 c3                	mov    %eax,%ebx
+  3b:	31 ff                	xor    %edi,%edi
+  3d:	89 c6                	mov    %eax,%esi
+  3f:	e8                   	.byte 0xe8
+
+
 ---
- .../070-missing-inode-ref/.lowmem_repairable     |   0
- .../070-missing-inode-ref/default.img.xz         | Bin 0 -> 2092 bytes
- 2 files changed, 0 insertions(+), 0 deletions(-)
- create mode 100644 tests/fsck-tests/070-missing-inode-ref/.lowmem_repairable
- create mode 100644 tests/fsck-tests/070-missing-inode-ref/default.img.xz
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/tests/fsck-tests/070-missing-inode-ref/.lowmem_repairable b/tests/fsck-tests/070-missing-inode-ref/.lowmem_repairable
-new file mode 100644
-index 000000000000..e69de29bb2d1
-diff --git a/tests/fsck-tests/070-missing-inode-ref/default.img.xz b/tests/fsck-tests/070-missing-inode-ref/default.img.xz
-new file mode 100644
-index 0000000000000000000000000000000000000000..15d95eed391c14630d93be2bf3e665186f816259
-GIT binary patch
-literal 2092
-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
-V7#QB0-LcqsB>guNNR}ls3IGh@4rTxV
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-literal 0
-HcmV?d00001
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
--- 
-2.52.0
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
