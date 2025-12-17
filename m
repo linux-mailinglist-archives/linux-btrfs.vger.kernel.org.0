@@ -1,47 +1,47 @@
-Return-Path: <linux-btrfs+bounces-19842-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19844-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18665CC8B69
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Dec 2025 17:15:26 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 445E6CC8BA6
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Dec 2025 17:18:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 90FA13022F8F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Dec 2025 16:15:25 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id B324C312D49C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 17 Dec 2025 16:11:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B27F632D0E2;
-	Wed, 17 Dec 2025 16:06:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 815C4328B4C;
+	Wed, 17 Dec 2025 16:11:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="knMsZLdZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rezrexzi"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8985327219
-	for <linux-btrfs@vger.kernel.org>; Wed, 17 Dec 2025 16:06:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7756E32254E
+	for <linux-btrfs@vger.kernel.org>; Wed, 17 Dec 2025 16:11:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765987593; cv=none; b=gKcsWvrAZHjEMqk1Zvh7rNGchtW2aSeCt1SYErKDQ1Cr/62fsfSeff8yo8seRYv7Jm0n/n9ooxtnUQMMpItRRJjWmKcmh/vu7M7oLjHgDhHxqUG3mrr/KQD7x84kP05QumvbwKxicqBrxBr1GYpQz8KuX4Th+Pc8SaeESIY4YH0=
+	t=1765987876; cv=none; b=La05aJ5P52owTSVd13cxTCiM473mDaLWQ452tCnhDR9xG6WPM/56L6VIStFGRDz+EPbDBSuXZir7t9FIiP81gdZiiFIYWOk4nQLPnvo2cFiWyvo54lpWqAsCfHsfkMjUKGC+EV4z3czM/voit5PFghAaI60XZD9e3BoQai+1+Z0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765987593; c=relaxed/simple;
+	s=arc-20240116; t=1765987876; c=relaxed/simple;
 	bh=CIkAeU1mpEtsX7FKf7lmh4hfOGPwRSe307l6aeK5MFg=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=js92Gc9RYROML/738nKZproZdQ0jGk48sTF8vZqAmdb7GIMZmRqxsvqxir7WU3o/XON1h+fJDVdmp28du4kKAEdROKA4WPB6OWotv/iS86uuezLRanZ9OD+dQOQxdZc9BBU72uKWqpdE3i0h4ptIz9vUuU+VwKdy79d7n16Hxuc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=knMsZLdZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E57C3C4CEF5
-	for <linux-btrfs@vger.kernel.org>; Wed, 17 Dec 2025 16:06:31 +0000 (UTC)
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=hFW9XEfPPluswCXKcuHYBNnxatIHm98ALhlLefkVcRJhVdq98cjCwuIx5Q9x+9NMsmpYQ2A1biB8Mv/+71qlUu0ejNda7uO5AcHndiXDzFbW6eH2+ZGk+AWWwvMXFXqJpFJF8dOr11dbqtJTGdlDKOYbUv3OzcO8QWHBMTUaGD8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rezrexzi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66210C4CEF5
+	for <linux-btrfs@vger.kernel.org>; Wed, 17 Dec 2025 16:11:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1765987592;
+	s=k20201202; t=1765987875;
 	bh=CIkAeU1mpEtsX7FKf7lmh4hfOGPwRSe307l6aeK5MFg=;
 	h=From:To:Subject:Date:From;
-	b=knMsZLdZOg6qO6Qr9nRhPJo3NE+9igmXG8R47Nwj4gSgVMhD6IUptgFiHXFZDxfoR
-	 BdJQISqXeOjrtPmlS5FQeh376w+aIS7bODMfHox1BkGsmf3BIsFFrXtmdYKunnhG8c
-	 JU5S0x/Hqumatv7TROQtOp1luHsTpDkFkmTRM0aB4e7tqLYi+A/t6vM3eZoahZwJa4
-	 6H3nbTxuVjH++LgTXNBmd/ubnzUAfUnZxN9vldKYTRVXcQFj6xI7YxWScApmTE9Rqy
-	 fTtpa/+PYDXdmpeSMKF0N1Xv7YYJKyVkaMmJcncLkD/57/D0rNNlOxlIdnJeN2Yu1Q
-	 1aQItQqW7Ag5A==
+	b=rezrexzi/k2FJFxAGOhpkeiL0TUA9HBoAsaW+wmDgkI3CYXepQtVH9NP7Ma59R1Ff
+	 NPnK9J6jgqJtfkF8WF6u5/QOshLHbCLPkzj/Xk3nGfcX8bvIe0xU1Tq0oUCLzlHgIX
+	 Ye1c3cyJb4Kw+wbQ9X+od7ZcDm+MnK3JmYP0UxHxiIePPqaEEuZiv0fpGgFNKAGmeT
+	 fKOm0peQKzjYbzoAmRPRYCYhWqc4Ik0gysPbVFd5pNAjre8s+4UikrfkWx2uKv22rp
+	 jgPXteNPKtO/sv+Jt3gmZTz2GXdHt0N6CYY/xnrCjOBMbyn1GTR/50JWob6qX1QsB9
+	 Sp0nYp8AXfwqw==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
 Subject: [PATCH] btrfs: avoid transaction commit on error in insert_balance_item()
-Date: Wed, 17 Dec 2025 16:06:28 +0000
+Date: Wed, 17 Dec 2025 16:11:13 +0000
 Message-ID: <d5f264d5a8be85998a6b65c5be122e56dbea5647.1765987488.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.47.2
 Precedence: bulk
