@@ -1,194 +1,306 @@
-Return-Path: <linux-btrfs+bounces-19873-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19874-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FED6CCDD4D
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Dec 2025 23:35:57 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CC66CCE025
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Dec 2025 00:57:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id CD4453081811
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Dec 2025 22:32:24 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id B9BA8301FC0E
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Dec 2025 23:57:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24F232F3638;
-	Thu, 18 Dec 2025 22:31:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25C182FFF94;
+	Thu, 18 Dec 2025 23:57:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LQ4S7jWA"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="kWvj8Rty";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="kWvj8Rty"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C0CD2417E0;
-	Thu, 18 Dec 2025 22:31:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2949C1E991B
+	for <linux-btrfs@vger.kernel.org>; Thu, 18 Dec 2025 23:57:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766097110; cv=none; b=uUR1ckXug24YllZr1+zMjOuSzH8fJTQRPG8V8/gByzlJ7aG/u5f3wmiAlYFl0G9MqNIsHeRJAXa1cPLzkEi3u0ft7UMT+Mtcy+qsY+Ubt1bCwyK3zBBUVyUWe3Gsi1ZpvQCBUKhDEGclLX22dbQEBE0fFCopges2PxrtTr/qD20=
+	t=1766102249; cv=none; b=nbYxg9aiJF0ivszDTmYRwSP9D4TiFUUUhekyifBzDYDmBaBJ9MQPOjOZvlsQOBeBLZ/8FjZ6Eenq5XKVCLSYRs3tFcfSs5bxnk7RU5Y68SVFLVFYPungzhrO/ErL1pWTrPR3/IIbfEUDdVVQn0Gkx+gc+65djkFqzRos+BpaokA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766097110; c=relaxed/simple;
-	bh=own/YW+jwQswxII/qxW2HPNWs6Q2EnHJVVXWsC138hA=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=V3eZ+7UH3u9tXjcg2mz5hSj42OkD5BPlWkCX+Nji6+yJvEKday4o5P/7a0ywGJTF1lC5//sffS6JCCpOE5ZOhu9pjarjL2iTBpo3VyBp2mdVEudx7TWi8+O7BhDzblS1uZ5nK3s5169hfi9lnbWyVcvRlEOKJBl4Gul9CkFYMO8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LQ4S7jWA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB013C4CEFB;
-	Thu, 18 Dec 2025 22:31:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1766097107;
-	bh=own/YW+jwQswxII/qxW2HPNWs6Q2EnHJVVXWsC138hA=;
-	h=Date:From:Subject:To:Cc:References:In-Reply-To:From;
-	b=LQ4S7jWA2JU3Q4ZOvQsY6EzobdghyZAR6fbE374ejTiDLOvaHBM2/aHcHBBUFgPtH
-	 L4zOEXINKTQ9UokTKcZeyVj1LADNAMaXKgCqOjHqznsTS3f0mpDvTHZDvS+sXUlqAX
-	 A3t1u6iYasV0sB/8JtOaNsSzOQC8U8St1JIkTddw8MdylBhDK2yOntlFn4CvTcM9Kz
-	 JbW/TB1rf6C9rOU1bSaSk9wkxHtsbBk/LuiQn7PS+fkAuGkcqtz1qDDQ8+QzkAbHOC
-	 SSNP7W+3k1qz75yrbWB8PK1+CXIJY9S30KOBO5qpr8H+Crboe/KyLq+amVdWHTRrZS
-	 1QfN7svbNc6wA==
-Message-ID: <480c3c06-7b3c-4150-b347-21057678f619@kernel.org>
-Date: Thu, 18 Dec 2025 23:31:40 +0100
+	s=arc-20240116; t=1766102249; c=relaxed/simple;
+	bh=EQ23TcRDjDGqYcuhCp+nbrTz2SDSF5NOKiSk7BosoHI=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=MbOcWcWU/EWkF4wqVZs9hM3aPEzymVhTtERWQXn+SjmavjGt0ieo246M3pAlCN6o8XNWdEywF7VYqPn3NsSOZ/fUeEzvOXoYbOUJ4frjq/+AYVNWRhLmpb0ASqc7rZWarufz7+dzei1DlEnim9ElM3P2I5kMsHcJPwuTgE8xaXw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=kWvj8Rty; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=kWvj8Rty; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 2CC0A336DB
+	for <linux-btrfs@vger.kernel.org>; Thu, 18 Dec 2025 23:57:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1766102245; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=zg/EevSo5LicSqlLvv8UkiMfPZXm95A7zc/IhvQleMA=;
+	b=kWvj8RtyO2z3moWLPEdx+Zy2VgrewVLPRZo5lTHrPmX0Z7X2Vihs5fJiXO2y5xcr49on8p
+	PV88ORdpsVKNCSQxQnV3B7REvtsskbGxmmpUp3w8y5Tp8R016tJrmryD9Q7VbdJkGuCili
+	JvqqpgYVG52b2KWRDY3dPkFuy6IfsJw=
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1766102245; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=zg/EevSo5LicSqlLvv8UkiMfPZXm95A7zc/IhvQleMA=;
+	b=kWvj8RtyO2z3moWLPEdx+Zy2VgrewVLPRZo5lTHrPmX0Z7X2Vihs5fJiXO2y5xcr49on8p
+	PV88ORdpsVKNCSQxQnV3B7REvtsskbGxmmpUp3w8y5Tp8R016tJrmryD9Q7VbdJkGuCili
+	JvqqpgYVG52b2KWRDY3dPkFuy6IfsJw=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6823F1339B
+	for <linux-btrfs@vger.kernel.org>; Thu, 18 Dec 2025 23:57:24 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 6h/nCuSURGlWfwAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Thu, 18 Dec 2025 23:57:24 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: add mount time auto fix for orphan fst entries
+Date: Fri, 19 Dec 2025 10:27:02 +1030
+Message-ID: <97cbc23b3b3f671ab237ce7b53e4b6bd4898c0a0.1766102221.git.wqu@suse.com>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Vincent Mailhol <mailhol@kernel.org>
-Subject: Re: [PATCH 1/2] kbuild: remove gcc's -Wtype-limits
-To: Dan Carpenter <dan.carpenter@linaro.org>
-Cc: Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nsc@kernel.org>,
- Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
- Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
- Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
- Linus Torvalds <torvalds@linux-foundation.org>,
- linux-kbuild@vger.kernel.org, linux-sparse@vger.kernel.org,
- linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
- dri-devel@lists.freedesktop.org, linux-btrfs@vger.kernel.org
-References: <20251218-remove_wtype-limits-v1-0-735417536787@kernel.org>
- <20251218-remove_wtype-limits-v1-1-735417536787@kernel.org>
- <aURXpAwm-ITVlHMl@stanley.mountain>
-Content-Language: en-US
-Autocrypt: addr=mailhol@kernel.org; keydata=
- xjMEZluomRYJKwYBBAHaRw8BAQdAf+/PnQvy9LCWNSJLbhc+AOUsR2cNVonvxhDk/KcW7FvN
- JFZpbmNlbnQgTWFpbGhvbCA8bWFpbGhvbEBrZXJuZWwub3JnPsKZBBMWCgBBFiEE7Y9wBXTm
- fyDldOjiq1/riG27mcIFAmdfB/kCGwMFCQp/CJcFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcC
- F4AACgkQq1/riG27mcKBHgEAygbvORJOfMHGlq5lQhZkDnaUXbpZhxirxkAHwTypHr4A/joI
- 2wLjgTCm5I2Z3zB8hqJu+OeFPXZFWGTuk0e2wT4JzjgEZx4y8xIKKwYBBAGXVQEFAQEHQJrb
- YZzu0JG5w8gxE6EtQe6LmxKMqP6EyR33sA+BR9pLAwEIB8J+BBgWCgAmFiEE7Y9wBXTmfyDl
- dOjiq1/riG27mcIFAmceMvMCGwwFCQPCZwAACgkQq1/riG27mcJU7QEA+LmpFhfQ1aij/L8V
- zsZwr/S44HCzcz5+jkxnVVQ5LZ4BANOCpYEY+CYrld5XZvM8h2EntNnzxHHuhjfDOQ3MAkEK
-In-Reply-To: <aURXpAwm-ITVlHMl@stanley.mountain>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Spam-Flag: NO
+X-Spam-Score: -2.68
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.68 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	MIME_GOOD(-0.10)[text/plain];
+	NEURAL_HAM_SHORT(-0.08)[-0.391];
+	RCPT_COUNT_ONE(0.00)[1];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid,imap1.dmz-prg2.suse.org:helo];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	RCVD_TLS_ALL(0.00)[]
 
-Hi Dan,
+[BUG]
+Before btrfs-progs v6.16.1 release, mkfs.btrfs can leave free space tree
+entries for deleted chunks:
 
-On 18/12/2025 at 20:36, Dan Carpenter wrote:
-> On Thu, Dec 18, 2025 at 07:50:01PM +0100, Vincent Mailhol wrote:
+ # mkfs.btrfs -f -O fst $dev
+ # btrfs ins dump-tree -t chunk $dev
+ btrfs-progs v6.16
+ chunk tree
+ leaf 22036480 items 4 free space 15781 generation 8 owner CHUNK_TREE
+ leaf 22036480 flags 0x1(WRITTEN) backref revision 1
+	item 0 key (DEV_ITEMS DEV_ITEM 1) itemoff 16185 itemsize 98
+	item 1 key (FIRST_CHUNK_TREE CHUNK_ITEM 13631488) itemoff 16105 itemsize 80
+        ^^^ The first chunk is at 13631488
+	item 2 key (FIRST_CHUNK_TREE CHUNK_ITEM 22020096) itemoff 15993 itemsize 112
+	item 3 key (FIRST_CHUNK_TREE CHUNK_ITEM 30408704) itemoff 15881 itemsize 112
 
-(...)
+ # btrfs ins dump-tree -t free-space-tree $dev
+ btrfs-progs v6.16
+ free space tree key (FREE_SPACE_TREE ROOT_ITEM 0)
+ leaf 30556160 items 13 free space 15918 generation 8 owner FREE_SPACE_TREE
+ leaf 30556160 flags 0x1(WRITTEN) backref revision 1
+ 	item 0 key (1048576 FREE_SPACE_INFO 4194304) itemoff 16275 itemsize 8
+		free space info extent count 1 flags 0
+	item 1 key (1048576 FREE_SPACE_EXTENT 4194304) itemoff 16275 itemsize 0
+		free space extent
+	item 2 key (5242880 FREE_SPACE_INFO 8388608) itemoff 16267 itemsize 8
+		free space info extent count 1 flags 0
+	item 3 key (5242880 FREE_SPACE_EXTENT 8388608) itemoff 16267 itemsize 0
+		free space extent
+	^^^ Above 4 items are all before the first chunk.
+	item 4 key (13631488 FREE_SPACE_INFO 8388608) itemoff 16259 itemsize 8
+		free space info extent count 1 flags 0
+	item 5 key (13631488 FREE_SPACE_EXTENT 8388608) itemoff 16259 itemsize 0
+		free space extent
+	...
 
->> With this, remove gcc's -Wtype-limits. People who still want to catch
->> incorrect comparisons between unsigned integers and zero can now use
->> sparse instead.
->>
->> On a side note, clang also has a -Wtype-limits warning but:
->>
->>   * it is not enabled in the kernel at the moment because, contrary to
->>     gcc, clang did not include it under -Wextra.
->>
->>   * it does not warn if the code results from a macro expansion. So,
->>     if activated, it would not cause as much spam as gcc does.
->>
->>   * -Wtype-limits is split into four sub-warnings [3] meaning that if
->>     it were to be activated, we could select which one to keep.
->>
-> 
-> Sounds good.  I like your Sparse check.
+This can trigger btrfs check errors.
 
-Does it mean I have your Reviewed-by?
+[CAUSE]
+It's a bug in free space tree implementation of btrfs-progs, which
+doesn't delete involved fst entries for the to-be-deleted chunk/block
+group.
 
-> Maybe we should enable the Sparse checking as well because it sounds
-> like they are doing a lot of things right.
+[ENHANCEMENT]
+The mostly common fix is to clear the space cache and rebuild it, but
+that requires a ro->rw remount which may not be possible for rootfs,
+and also relies on users to use "clear_cache" mount option manually.
 
-I am not sure to understand what do you mean by "enable the Sparse checking"?
-The new sparse check I introduced is on by default.
+Here introduce a kernel fix for it, which will delete any entries that
+is before the first block group automatically at the first RW mount.
 
-> I think Smatch catches the
-> same bugs that Clang would but it would be good to have multiple
-> implementations.  The -Wtautological-unsigned-enum-zero-compare trips
-> people up because they aren't necessarily expecting enums to be
-> unsigned.
+For fses without such problem, the overhead is just a single tree
+search and no modification to the free space tree, thus the overhead
+should be minimal.
 
-I do not know enough about Smatch, I will let you judge on that one.
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/disk-io.c         | 10 ++++
+ fs/btrfs/free-space-tree.c | 97 ++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/free-space-tree.h |  1 +
+ 3 files changed, 108 insertions(+)
 
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index e5535bdc5b0c..ebef65f6ea12 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -3034,6 +3034,16 @@ int btrfs_start_pre_rw_mount(struct btrfs_fs_info *fs_info)
+ 		}
+ 	}
+ 
++	/*
++	 * Before btrfs-progs v6.16.1 mkfs.btrfs can leave free space entries
++	 * for deleted temporary chunks.
++	 * Delete them if needed.
++	 */
++	ret = btrfs_fix_orphan_free_space_entries(fs_info);
++	if (ret < 0) {
++		btrfs_warn(fs_info, "failed to fix orphan free space tree entries: %d", ret);
++		goto out;
++	}
+ 	/*
+ 	 * btrfs_find_orphan_roots() is responsible for finding all the dead
+ 	 * roots (with 0 refs), flag them with BTRFS_ROOT_DEAD_TREE and load
+diff --git a/fs/btrfs/free-space-tree.c b/fs/btrfs/free-space-tree.c
+index a66ce9ef3aff..a18cd834e85e 100644
+--- a/fs/btrfs/free-space-tree.c
++++ b/fs/btrfs/free-space-tree.c
+@@ -1710,3 +1710,100 @@ int btrfs_load_free_space_tree(struct btrfs_caching_control *caching_ctl)
+ 	else
+ 		return load_free_space_extents(caching_ctl, path, extent_count);
+ }
++
++static int delete_orphan_free_space_entries(struct btrfs_root *fst_root,
++					    struct btrfs_path *path,
++					    u64 first_bg_bytenr)
++{
++	struct btrfs_trans_handle *trans;
++	int ret;
++
++	trans = btrfs_start_transaction(fst_root, 1);
++	if (IS_ERR(trans))
++		return PTR_ERR(trans);
++
++	while (true) {
++		struct btrfs_key key = { 0 };
++		int i;
++
++		ret = btrfs_search_slot(trans, fst_root, &key, path, -1, 1);
++		if (ret < 0)
++			break;
++		ASSERT(ret > 0);
++
++		for (i = 0; i < btrfs_header_nritems(path->nodes[0]); i++) {
++			btrfs_item_key_to_cpu(path->nodes[0], &key, i);
++			if (key.objectid >= first_bg_bytenr)
++				break;
++		}
++		/* No item to delete, finished. */
++		if (i == 0)
++			break;
++
++		ret = btrfs_del_items(trans, fst_root, path, 0, i);
++		if (ret < 0)
++			break;
++		btrfs_release_path(path);
++	}
++	btrfs_release_path(path);
++	btrfs_end_transaction(trans);
++	btrfs_info(fst_root->fs_info, "deleted orphan free space tree entries");
++	return ret;
++}
++/* Remove any free space entry before the first block group. */
++int btrfs_fix_orphan_free_space_entries(struct btrfs_fs_info *fs_info)
++{
++	BTRFS_PATH_AUTO_RELEASE(path);
++	struct btrfs_key key = {
++		.objectid = BTRFS_FREE_SPACE_TREE_OBJECTID,
++		.type = BTRFS_ROOT_ITEM_KEY,
++		.offset = 0,
++	};
++	struct btrfs_root *root;
++	struct btrfs_block_group *bg;
++	u64 first_bg_bytenr;
++	int ret;
++
++	/*
++	 * Extent tree v2 have multiple global roots based on the block group.
++	 * This means we can not easily grab the global free space tree and locate
++	 * orphan items.
++	 * Furthermore this is still experimental, all users should use the latest
++	 * btrfs-progs anyway.
++	 */
++	if (btrfs_fs_incompat(fs_info, EXTENT_TREE_V2))
++		return 0;
++	if (!btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE))
++		return 0;
++	root = btrfs_global_root(fs_info, &key);
++	if (!root)
++		return 0;
++
++	key.objectid = 0;
++	key.type = 0;
++	key.offset = 0;
++
++	bg = btrfs_lookup_first_block_group(fs_info, 0);
++	if (unlikely(!bg)) {
++		btrfs_err(fs_info, "no block group found");
++		return -EUCLEAN;
++	}
++	first_bg_bytenr = bg->start;
++	btrfs_put_block_group(bg);
++
++	ret = btrfs_search_slot(NULL, root, &key, &path, 0, 0);
++	if (ret < 0)
++		return ret;
++	/* There should not be an all-zero key in fst. */
++	ASSERT(ret > 0);
++
++	/* Empty free space tree. */
++	if (path.slots[0] >= btrfs_header_nritems(path.nodes[0]))
++		return 0;
++
++	btrfs_item_key_to_cpu(path.nodes[0], &key, path.slots[0]);
++	if (key.objectid >= first_bg_bytenr)
++		return 0;
++	btrfs_release_path(&path);
++	return delete_orphan_free_space_entries(root, &path, first_bg_bytenr);
++}
+diff --git a/fs/btrfs/free-space-tree.h b/fs/btrfs/free-space-tree.h
+index 3d9a5d4477fc..c6958976e9c9 100644
+--- a/fs/btrfs/free-space-tree.h
++++ b/fs/btrfs/free-space-tree.h
+@@ -35,6 +35,7 @@ int btrfs_add_to_free_space_tree(struct btrfs_trans_handle *trans,
+ 				 u64 start, u64 size);
+ int btrfs_remove_from_free_space_tree(struct btrfs_trans_handle *trans,
+ 				      u64 start, u64 size);
++int btrfs_fix_orphan_free_space_entries(struct btrfs_fs_info *fs_info);
+ 
+ #ifdef CONFIG_BTRFS_FS_RUN_SANITY_TESTS
+ struct btrfs_free_space_info *
+-- 
+2.52.0
 
-Concerning clang, here are the statistics:
-
-	$ make -s LLVM=1 CFLAGS_KERNEL="-Wtype-limits" 2>&1 | grep -o '\[-W\S*\]' | sort | uniq -c
-	      2 [-Wtautological-type-limit-compare]
-	     15 [-Wtautological-unsigned-enum-zero-compare]$ make -s LLVM=1 CFLAGS_KERNEL="-Wtype-limits"
-
-(done on a linux v6.19-rc1 defconfig with clang v20.1.8)
-
-Not so many warnings, at least, less than what I would have thought!
-
--Wtautological-unsigned-char-zero-compare and
--Wtautological-unsigned-zero-compare gave zero findings. So those two
-can be enabled, I guess? I am still surprised that
--Wtautological-unsigned-zero-compare gives nothing. I would have
-expected some kind of false positives on that one. No sure if I missed
-something here.
-
-
-The two -Wtautological-type-limit-compare are:
-
-	fs/libfs.c:1640:20: warning: result of comparison 'u64' (aka 'unsigned long long') > 18446744073709551615 is always false [-Wtautological-type-limit-compare]
-	 1640 |             (last_fs_page > (pgoff_t)(~0ULL))) {
-	      |              ~~~~~~~~~~~~ ^ ~~~~~~~~~~~~~~~~
-	1 warning generated.
-	block/ioctl.c:765:29: warning: result of comparison 'sector_t' (aka 'unsigned long long') > 18446744073709551615 is always false [-Wtautological-type-limit-compare]
-	  765 |                 if (bdev_nr_sectors(bdev) > ~0UL)
-	      |                     ~~~~~~~~~~~~~~~~~~~~~ ^ ~~~~
-	1 warning generated.
-
-If I got it correctly, those checks are just meant for the case where
-unsigned long are 32 bits.
-
-Because clang does not warn when the code comes from a macro
-expansion, a way to silent these would be to use:
-
-	(last_fs_page > type_max(pgoff_t))
-
-in fs/libfs.c and:
-
-	if (bdev_nr_sectors(bdev) > ULONG_MAX)
-
-in block/ioctl.c.
-
-Well, none of those findings were incorrect to begin with, but
-arguably, the code readability can be improved.
-
-So, I would say why not for -Wtautological-type-limit-compare.
-
-
-Concerning the -Wtautological-unsigned-enum-zero-compare, here is a
-representative finding:
-
-	drivers/video/hdmi.c:1099:20: warning: result of comparison of unsigned enum expression < 0 is always false [-Wtautological-unsigned-enum-zero-compare]
-	 1099 |         if (active_aspect < 0 || active_aspect > 0xf)
-	      |             ~~~~~~~~~~~~~ ^ ~
-
-(all the other 14 findings follow the same pattern).
-
-Here, the code just want to check that a value is in range. This is
-the same logic as gcc's -Wtype-limits: something we do *not* want.
-
-So -Wtautological-unsigned-enum-zero-compare will stay disabled.
-
-In conclusion, I agree that we could enable three of clang's
--Wtype-limits sub-warning. But this is not the scope of that series. I
-would rather prefer to have this as a separate series.
-
-
-Yours sincerely,
-Vincent Mailhol
 
