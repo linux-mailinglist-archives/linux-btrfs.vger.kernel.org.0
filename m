@@ -1,128 +1,153 @@
-Return-Path: <linux-btrfs+bounces-19869-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19870-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF995CCD89E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Dec 2025 21:34:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A7C41CCD8B3
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Dec 2025 21:38:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 6B388301D59E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Dec 2025 20:34:31 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 04F79303659D
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Dec 2025 20:37:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1AAA2C0283;
-	Thu, 18 Dec 2025 20:34:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96C102D8798;
+	Thu, 18 Dec 2025 20:37:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="YdfZq/lB"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="BQ3Upgtt";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Q7Gmt7P2";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="q7+CZkrl";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="YVtqpUWn"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08C0722DFA4
-	for <linux-btrfs@vger.kernel.org>; Thu, 18 Dec 2025 20:34:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 640DE2116E0
+	for <linux-btrfs@vger.kernel.org>; Thu, 18 Dec 2025 20:37:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766090069; cv=none; b=V8XEr5HQWr0C5uEXxFueXo1MCiR90qyBxSzf7hMs7Wo3zSCdfNBqf7kKcjsw8KB71ZdE86xgqcgHQjx5eF6hoBavs68n8sEtm3qO26qLRgiV/CMBKKeKT/6J7qqr27VlXKIQCpv9Wm58TtqduExITNwxWuQ0YGGuNKp2NVN6whU=
+	t=1766090276; cv=none; b=fWSA4l0dPqH9WEo4KKhW0Kp2FVHrR2qkDUzQgPuD7Qj2sPTbrh755xGSwfgoFh3YEBu45uKnGoVVeGE5FviUD8AqcgmqkHhv9y2oEaSJ52+xmu1vNvL7qEFCGChv5vyOipK3yURPVxMWEfM+/xq2+/+2vWMmWbuA9kDLcC1XCSM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766090069; c=relaxed/simple;
-	bh=+RowUUrYtzXa4i9REDNRtB7NHjBBJv9ASqbqnaOrOgY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DY6obUzlG1OjX3Il9zag6Gk2XPINRYVLnZqp0rvAv3zLsSauTL7HWQ78Qu/T8JJhmE1wi7GibX46hkF1DAcQzVlm5HHvLgYM2ZUc4hLguJOC5hhiA7kbgTmJB6Hzzm0QmIDEpdFWSo7MNRnVCIE+5oM3BN6qXhRvHDuiGDbruoE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=YdfZq/lB; arc=none smtp.client-ip=209.85.208.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-6496a8dc5a7so1382889a12.2
-        for <linux-btrfs@vger.kernel.org>; Thu, 18 Dec 2025 12:34:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1766090066; x=1766694866; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=AFdyme3OdkfY6SG6LYuzpXFnNfm347qWal7RaQqaQwE=;
-        b=YdfZq/lBtcT85oHj+5X6OPGw15H6q/cdk42K4YZ/h+fQgHY8MlIv3yQSmW9KRksu2L
-         cHJgTGNJnCjYcSx2k/D8h4CH6J7fPihJPqxNmx1LVLPK40Jp3t4G6qF+sHuJI2QFDdqx
-         xU2n28E61NqVpYB3LxAZsEL1F/s5WAgizN2j0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766090066; x=1766694866;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AFdyme3OdkfY6SG6LYuzpXFnNfm347qWal7RaQqaQwE=;
-        b=P1/djkM0b8aeRWJZpvk1WVyvfXev4aR8f9gw/gsI5WbM5p8xhCyN+7+iWbyPq4sWDf
-         i58sHlbquQkBk5z0v7oc/OE9MCkdcIysRVHB1xH1/HO/8xkPdGaSG1ESPZbWVZj/TQMy
-         54NTi6stSOMpMsghxvmhydHYyieYmultln9t4lOUz6OUSd86EszjPt+NTWn97keebmF6
-         Capkx/4VnNUZyAggXwwFUcPMro4dlf9B40cKlp7pMzJU1dJfLhCcSzts1SuWwkLP0ceQ
-         JS0JYSbTf1h0iv9HIiotHwp+vfhcMyWtW6pm12bqGpacRSPTdrj8BxVAFUYsx2+MR+bD
-         faWg==
-X-Forwarded-Encrypted: i=1; AJvYcCW6xlioYj8ZREosGqe3Mu1rbb9DYeHwSf5vDMeTw1+co+FaczIcch3tZ83TQ5q5UfMR2GNrlm97R5xe3g==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzXYjjJ11yUmpv2ZRP9DWF5jm8tIU8QEocrs9YDbKQE9oYfcmCp
-	+W1wxUAghoevTrzVRhqg/o+PD40VoBzh5BOMlDUQ24E/XzO8EDwXeM6ZktiFJ2J4gm7eFMGgHac
-	u3Q+Ank5x8A==
-X-Gm-Gg: AY/fxX7xiCxxgG4V1U0ul+/DKl3RConkYQ3nxeo+9QtdnxySMieWMfwBx8tbsog0Eld
-	InhP9TRng60zU8z01JGZZOCPlilzuir57zile9/u5eIEvIFpVOtRr1zu8WzYAnVmkrI3mcDiwW5
-	vTxRJNTo3HESZMPj2l3j9NFVoE+AlmJZi1ARDBczgPGK+V4PK7toJaSoU88tlHKmkEcOjpng0d4
-	RsdsEyP7FLu3pIs8t3gHikfB9glgJPOSdF8HosHcLSJbNQNnWZWVzNa02fAjUzf7H+8jmLmBcR2
-	yfY7Dr5L6I13mvCa87+1YJ1Dxlsbw0DngVvDUXmFtneGy/Wt5e4TRfLPWTJ1o3GSb0t5yqA7/9N
-	52eOQudzNlva/FoSsP+2w4bs0E7K630NUw3MuDPl6T6CqDldhav2LJ/Et5OOHgh6XYfhrR5st7V
-	yvdRjktoxdnSrGFuKu5aYule+rnuJ4Ha5OWWMYRzx6zWAFUrJVQxVl93B26Sd9
-X-Google-Smtp-Source: AGHT+IFkYJfxThtQVcgyDq+Jm+ryvDWfjY3p2hzDTla+6rXJ4EaT3kquyHEkdHDzUe1clpcrPp3w/w==
-X-Received: by 2002:a05:6402:5209:b0:64b:4152:a8f2 with SMTP id 4fb4d7f45d1cf-64b8eb72a53mr612771a12.29.1766090066161;
-        Thu, 18 Dec 2025 12:34:26 -0800 (PST)
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com. [209.85.208.45])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-64b91056726sm343074a12.10.2025.12.18.12.34.22
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 18 Dec 2025 12:34:25 -0800 (PST)
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-64b92abe63aso244133a12.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 18 Dec 2025 12:34:22 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWV7y2+8zDSpw+72D6hlTVvTWv96OeDWcJPfw64tVAWwnYIdJedZQ2zoR5LJz1Y3p0i0o8ieSjfVV/D9A==@vger.kernel.org
-X-Received: by 2002:a05:6402:1ec8:b0:647:532f:8efc with SMTP id
- 4fb4d7f45d1cf-64b8ec8f844mr669213a12.33.1766090062459; Thu, 18 Dec 2025
- 12:34:22 -0800 (PST)
+	s=arc-20240116; t=1766090276; c=relaxed/simple;
+	bh=Z3mksCpDKXaOvbQzcv2Al9AQOwRZInoKF/5JVU/vkSc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gpaxNIWmtu2TBKhC/RXwB6tAYVHwG6zcLCOuKAOKLPGpodxKiQFbzXvJ527J9trE3SDrp+sN+RberRJbiz4NAki6tOCzIygpIg+LdlFHIcu/ahe1DcGprBbf35WiA9xyHKH9GjaCXyELQwLDGQ5PwushuDv2hGK+dpHepXmc2qA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=BQ3Upgtt; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Q7Gmt7P2; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=q7+CZkrl; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=YVtqpUWn; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 804025BD95;
+	Thu, 18 Dec 2025 20:37:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1766090273;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=d25VYqp2xI37Jd1hzGUoKBtoU8+z/nwsruboLLkhbpo=;
+	b=BQ3UpgttQ+zRuhf/etVXfJssygjXEJ3bVLcnAUXS1Bg4i7bSY/36cL7HAUOmEmpPoRzAib
+	PHpKrprutantXl4bBmKSXBqBm5xmKGQhheITg3f56OH84TqyRbb4cvlwBMi6zjRKOtbCjn
+	WcJ7NYARRa8oT3RqrOfd8gRd0GJ+z+8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1766090273;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=d25VYqp2xI37Jd1hzGUoKBtoU8+z/nwsruboLLkhbpo=;
+	b=Q7Gmt7P2gWt8BTaG2tdni1ipcvsxloroPnkSa5Orb/xzOCIXSE+GD6XcBXlEqRB9l4uzpQ
+	hdxWqZEmCs3AKnAA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1766090272;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=d25VYqp2xI37Jd1hzGUoKBtoU8+z/nwsruboLLkhbpo=;
+	b=q7+CZkrlV8pM0iFMWfQlVgD1E5ebLIu5CuDcGNw7MLDUUrfmlYDRkzDWWOe/mlCKsVrfwo
+	XI7aDLa4Xt/nlDNQgTlZLw9bYWHYWK/EPilV4AuTnHDxpzuvVCpQzpqrsqcQbuu265seU/
+	wHkE+bkzYfxmtwQaUiPM+rcpzDMmkMo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1766090272;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=d25VYqp2xI37Jd1hzGUoKBtoU8+z/nwsruboLLkhbpo=;
+	b=YVtqpUWn415f2LrJygOwm9euKGUDJ5b2zL0oiNOH4+96VhYsIMB9KItKBo7HlH8Zem6Bfz
+	EcFkfKynPUk5t4BQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 718183EA63;
+	Thu, 18 Dec 2025 20:37:52 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id D/1+GyBmRGlJXAAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Thu, 18 Dec 2025 20:37:52 +0000
+Date: Thu, 18 Dec 2025 21:37:43 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Qiang Ma <maqianga@uniontech.com>
+Cc: clm@fb.com, dsterba@suse.com, linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] btrfs: Fix -Wmaybe-uninitialized warning
+Message-ID: <20251218203743.GU3195@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <20251218081618.2038279-1-maqianga@uniontech.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251218-remove_wtype-limits-v1-0-735417536787@kernel.org> <20251218202644.0bd24aa8@pumpkin>
-In-Reply-To: <20251218202644.0bd24aa8@pumpkin>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Fri, 19 Dec 2025 08:34:05 +1200
-X-Gmail-Original-Message-ID: <CAHk-=wjrNyuMfkU2RHs28TbFGSORk45mkjtzqeB7uhYJx33Vuw@mail.gmail.com>
-X-Gm-Features: AQt7F2qOKBa-zo7QJgMQveUGo5xuaKkhNSphimTCrBEi3RG5l67qg5BeTDIQqhM
-Message-ID: <CAHk-=wjrNyuMfkU2RHs28TbFGSORk45mkjtzqeB7uhYJx33Vuw@mail.gmail.com>
-Subject: Re: [PATCH 0/2] kbuild: remove gcc's -Wtype-limits
-To: David Laight <david.laight.linux@gmail.com>
-Cc: Vincent Mailhol <mailhol@kernel.org>, Nathan Chancellor <nathan@kernel.org>, 
-	Nicolas Schier <nsc@kernel.org>, Nick Desaulniers <nick.desaulniers+lkml@gmail.com>, 
-	Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, 
-	Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>, linux-kbuild@vger.kernel.org, 
-	linux-sparse@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	llvm@lists.linux.dev, dri-devel@lists.freedesktop.org, 
-	linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251218081618.2038279-1-maqianga@uniontech.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Flag: NO
+X-Spam-Score: -3.96
+X-Spam-Level: 
+X-Spamd-Result: default: False [-3.96 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.16)[-0.821];
+	MIME_GOOD(-0.10)[text/plain];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_TLS_ALL(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[5];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,twin.jikos.cz:mid,imap1.dmz-prg2.suse.org:helo];
+	RCVD_COUNT_TWO(0.00)[2];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
 
-On Fri, 19 Dec 2025 at 08:26, David Laight <david.laight.linux@gmail.com> wrote:
->
-> One possibility is to conditionally add _Pragma()
+On Thu, Dec 18, 2025 at 04:16:18PM +0800, Qiang Ma wrote:
+> Fix a -Wmaybe-uninitialized warning by initializing
+> the variable to NULL.
+> 
+> $ make CFLAGS_tree-log.o=-Wmaybe-uninitialized
+> 
+> In file included from fs/btrfs/ctree.h:21,
+>                  from fs/btrfs/tree-log.c:12:
+> fs/btrfs/accessors.h: In function 'replay_one_buffer':
+> fs/btrfs/accessors.h:66:16: warning: 'inode_item' may be used uninitialized [-Wmaybe-uninitialized]
+>    66 |         return btrfs_get_##bits(eb, s, offsetof(type, member));         \
+>       |                ^~~~~~~~~~
+> fs/btrfs/tree-log.c:2803:42: note: 'inode_item' declared here
+>  2803 |                 struct btrfs_inode_item *inode_item;
+>       |                                          ^~~~~~~~~~
+> 
+> Warning was found when compiling using loongarch64-gcc 12.3.1.
 
-No. That compiler warning is pure and utter garbage. I have pointed it
-out fopr *years*, and compiler people don't get it.
-
-So that warning just needs to die. It's shit. It's wrong.
-
-The sparse patch points out that this *can* be done correctly if you a
-compiler person doesn't have their head up their arse.
-
-(And no, I'm not claiming the sparse patch is perfect. I'm only
-claiming the sparse patch is _much_ better. Bit tt could be better
-still, and there could be other valid cases that could be warned for).
-
-The "warn on type limits" is idiotic. It expects programmers to have
-to always track what the exact type limits are, instead of just
-writing safe and obvious code, and it warns about *good* code and.
-
-It's exactly the *wrong* kind of thing to warn about.
-
-               Linus
+We have the -Wmaybe-uninitialized warning enabled per fs/btrfs/
+directory, there are no other known reports fixing the uninitialized
+inode_item so this might be specific to loongarch gcc 12.x. I'll add the
+patch to for-next as we still want to get all the warnings fixed, thanks.
 
