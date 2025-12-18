@@ -1,123 +1,89 @@
-Return-Path: <linux-btrfs+bounces-19854-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19855-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FFB7CCAD3D
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Dec 2025 09:17:35 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91E7CCCB044
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Dec 2025 09:52:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 5C3EF3008317
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Dec 2025 08:17:32 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 48BF4306DCB2
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Dec 2025 08:48:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B524432FA2C;
-	Thu, 18 Dec 2025 08:17:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8076628850C;
+	Thu, 18 Dec 2025 08:48:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=uniontech.com header.i=@uniontech.com header.b="i8AqiMZt"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="HzPXdY1E"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtpbgbr1.qq.com (smtpbgbr1.qq.com [54.207.19.206])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B0912D9EC8;
-	Thu, 18 Dec 2025 08:17:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.207.19.206
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACC5E3A1E88;
+	Thu, 18 Dec 2025 08:47:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766045850; cv=none; b=sJ+4F2wysZPW6OQ5b6ElH02CXrQayYwDBCG9ZYq6aZDo6AziT0iRr23jC2iA3kkez79H6Z/axW5nmcydZR0USP/7fW7Xo3jtoykfKB1gDld/aJjbMBd6Gf84scfcbnQ5XzCApLl0kXWk91sGZ7vISJJ1ES1jGdroQAbng4lCyRc=
+	t=1766047679; cv=none; b=IGtdUIuterZj2204OuGarwjNCjX/PIZXg+sdd2ZLUMFkRRbte495qWDqdJNkctng9/xxm/vwgpjpDFzTpdFVQe0SnBp00tetDSZdBZfrk1tqkosPg4doIHjECEmOpoiQISNju4M1q0O16/6ZxrwIuZ7imlCxT5AcpK3iVcKLUps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766045850; c=relaxed/simple;
-	bh=J2IS8U9a9EtD5utFJy4qj8i174f2l54TnwNC7tUNoyc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=GXDC6w9Lbl+vDyB9qnHIYBzXQgzQBme/V7+dAxq2bwMgbPikjDFVAOz7ezaWik8im29lWZBo+xkIHsPfPfWJ3JGg33ELQYEz54EdIy1n1POH6HTZ5lQzMOUJZP9dSfZeDDqQ4PuRGXoZ2mfcyn7QGvVXS8tq6PQBAL2bxDTO37E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uniontech.com; spf=pass smtp.mailfrom=uniontech.com; dkim=pass (1024-bit key) header.d=uniontech.com header.i=@uniontech.com header.b=i8AqiMZt; arc=none smtp.client-ip=54.207.19.206
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uniontech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=uniontech.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uniontech.com;
-	s=onoh2408; t=1766045803;
-	bh=QMOt8eJN3mjsg5ICNzvJjPyuY+zOmNxK8x4e/QA/JTg=;
-	h=From:To:Subject:Date:Message-Id:MIME-Version;
-	b=i8AqiMZtYrLTUdarEzm7mdi80UlRVUPx9oiOCdqGybOmhrhJQkdFlB2FuvDJBuTCk
-	 Nop7KL5wIqJrHnGUwtsYas0Rjo/HoypzSfwriXcUZZl1w3o8HuEeDKD/beZi16whZV
-	 JAKKhbtM2x4qVVO4hn6NKRQ0eH2gaJgScSoXPr3Q=
-X-QQ-mid: esmtpsz17t1766045798t73a39d12
-X-QQ-Originating-IP: dLhky4rDvNYv/0tJwvWCtG3bpeJNT5YeNUzgT0dy928=
-Received: from localhost.localdomain ( [123.114.60.34])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Thu, 18 Dec 2025 16:16:36 +0800 (CST)
-X-QQ-SSF: 0000000000000000000000000000000
-X-QQ-GoodBg: 1
-X-BIZMAIL-ID: 13799518469486644733
-EX-QQ-RecipientCnt: 5
-From: Qiang Ma <maqianga@uniontech.com>
-To: clm@fb.com,
-	dsterba@suse.com
-Cc: linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Qiang Ma <maqianga@uniontech.com>
-Subject: [PATCH] btrfs: Fix -Wmaybe-uninitialized warning
-Date: Thu, 18 Dec 2025 16:16:18 +0800
-Message-Id: <20251218081618.2038279-1-maqianga@uniontech.com>
-X-Mailer: git-send-email 2.20.1
+	s=arc-20240116; t=1766047679; c=relaxed/simple;
+	bh=S9m2zboCLwOViAtMp05VLj0OKcnpua60sdXGdiJmv4o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UiR19qLE+pRRMklUD2Ml1ADwArGv2oEtUKd2mnbODWH85nYxILw1AxparW23nTSYz/OXB3/SnkFcP+pqmN5uBSYPKoRJhoLH2qrMfgGZQCnF5wnpUZZj9nXLUfKB8GlRM0hRstjEZgB436EpZAfre/YWqvYj2Zr7f3RcIDXkbgY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=HzPXdY1E; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=rCQQPidAxdKKerSDTyfXQFaHt7qwdYyK9WOnuxBnaW8=; b=HzPXdY1EmDxlbqXcSXLgDelxN1
+	1DpWP+/VdWzLkvwNVphiNXdykRZcyAxngokvBdZdmeMhLpDdb6IDnoBiTYm+ohsAew7/uPJ87tpZS
+	y4M8zcfzjlezbo6JgKCd6J3SgmNCkrECuQT2AZlbC+RCRvVa19ev9xYbmk2hlfXzUyG7vngDQy+AL
+	CFyjyBMTZTFvTIGxSr9hgXUUTQlfPqSoV6unpF92hqGA2PwfietvG7fZ25io5XTIihEF0l7YrNU9z
+	XjydrU1ijVUV16tcaBs9u+mVrNzcJcQ5SLTSv6mOHR0vS6ZA0HOIcRt9olgL1druq+VvMK8iHNiH7
+	HiErgalg==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vW9fv-000000085jq-0pIy;
+	Thu, 18 Dec 2025 08:47:55 +0000
+Date: Thu, 18 Dec 2025 00:47:55 -0800
+From: Christoph Hellwig <hch@infradead.org>
+To: Andreas Gruenbacher <agruenba@redhat.com>
+Cc: Christoph Hellwig <hch@infradead.org>, Jens Axboe <axboe@kernel.dk>,
+	Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
+	linux-block@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-raid@vger.kernel.org, dm-devel@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: Re: [RFC 06/12] bio: don't check target->bi_status on error
+Message-ID: <aUO_u7x-4oIfKMei@infradead.org>
+References: <20251208121020.1780402-1-agruenba@redhat.com>
+ <20251208121020.1780402-7-agruenba@redhat.com>
+ <aUERRp7S1A5YXCm4@infradead.org>
+ <CAHc6FU6QCfqTM9zCREdp3o0UzFX99q2QqXgOiNkN8OtnhWYZVQ@mail.gmail.com>
+ <aUE3_ubz172iThdl@infradead.org>
+ <CAHc6FU4OeAYgvXGE+QZrAJPqERLS3v7q64uSoVtxJjG0AdZvCA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: esmtpsz:uniontech.com:qybglogicsvrsz:qybglogicsvrsz3b-0
-X-QQ-XMAILINFO: MmIUUz9KGMMd2tkHFEALn/l7l0VpMd7c5iETnH80T61x/U72t+6qCJs2
-	NTfb/MprU5/R7t4gkkHh78pFlhQx6ajoTm/3oloVDac2YRXhWbG1YFADnsCJkLDBe18rKWe
-	Yr01WMJlzMv83eZGdwp5HeQ5Dq+OD+2806bW2BQ95L2G+JBnk+EsKFneuW0IrIuxrB+/0vu
-	kTMleiVy6cn/TLJ7ebMxZHskD2dXILk10fB0VlBNK2HjdHLwrj1oALHEA8LbLsUFh0D1dN9
-	Jo/0+DSfepl/9wyIRWB2Ba3rd0/JbfWuH6bwlZWz54nft74icT8wkCq/WRuXmxRaY5yzeSW
-	drMs1X+4B3K3jBSK0X2KOi9vIfkyMyI5T7OsKqMDlitenH+u6Z02aaL8jn4zTuRcRVeF5Rh
-	KZfNgxcdnRDQmPYIZQCO/w091VDgIoG/S5ox4jma+0vIiwllxitOy9em43N/EtteMV2mS80
-	SY21mRWznCaVRvjQZRshtx9zYHNMomzoArPNFdd/uIXwH8er54fEAgEa6JxtNDfTZY9bmkp
-	Hl9r/7lJ1/pBPl0VZ6ImUHK61A74zeuCFqrs2i8eShBjeL/6sOgbtwBpa67iTX3Q26w+zRG
-	R+yOXx9RcFrC5LbeK16v9PGxFKmUxyBWl+3vAJiI0aZnCzdrgf4X5OoZjSMyvySR/vw2Sgi
-	aflzIqqI6SumPbw3B30f7Kya7ICYqbMuHNiCbrU3DVaqN1wfvfsCFqzxo2/TgWO6Y/QEH9D
-	hW5Go/qStBcSI5SoW8rgNOrLfUxRGB0/HnzXQRnYIXLHBjILBEkG9BTcUvarAmZlhNqj8Ur
-	mKTLTTI5sHbBYmeVVgi/eTDpbxU/rJk0QurNfmgWb0RxqTXpD87ORmXHdS93igBU4TWv5dB
-	EUDNRKOCFaMbq+433mCeQHTk69oqZ+G7x7dKOWUQZBy28vGfeL4pvHnkDvgX3ylZUUBQG46
-	scWvH2+7HPofNe0UNq8IbIHa8eFK488vTiyJZ2EpM1ogAYmpX7i1uzFbf4GlBP+869DQhI6
-	OuoaJekrwObCH+tGhG
-X-QQ-XMRINFO: NS+P29fieYNw95Bth2bWPxk=
-X-QQ-RECHKSPAM: 0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHc6FU4OeAYgvXGE+QZrAJPqERLS3v7q64uSoVtxJjG0AdZvCA@mail.gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-Fix a -Wmaybe-uninitialized warning by initializing
-the variable to NULL.
+On Tue, Dec 16, 2025 at 12:20:07PM +0100, Andreas Gruenbacher wrote:
+> > I still don't understand what you're saying here at all, or what this is
+> > trying to fix or optimize.
+> 
+> When we have this construct in the code and we know that status is not 0:
+> 
+>   if (!bio->bi_status)
+>     bio->bi_status = status;
+> 
+> we can just do this instead:
+> 
+>   bio>bi_status = status;
 
-$ make CFLAGS_tree-log.o=-Wmaybe-uninitialized
+But this now overrides the previous status instead of preserving the
+first error?
 
-In file included from fs/btrfs/ctree.h:21,
-                 from fs/btrfs/tree-log.c:12:
-fs/btrfs/accessors.h: In function 'replay_one_buffer':
-fs/btrfs/accessors.h:66:16: warning: 'inode_item' may be used uninitialized [-Wmaybe-uninitialized]
-   66 |         return btrfs_get_##bits(eb, s, offsetof(type, member));         \
-      |                ^~~~~~~~~~
-fs/btrfs/tree-log.c:2803:42: note: 'inode_item' declared here
- 2803 |                 struct btrfs_inode_item *inode_item;
-      |                                          ^~~~~~~~~~
-
-Warning was found when compiling using loongarch64-gcc 12.3.1.
-
-Signed-off-by: Qiang Ma <maqianga@uniontech.com>
----
- fs/btrfs/tree-log.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 31edc93a383e..0d6faaaa70f1 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -2798,7 +2798,7 @@ static int replay_one_buffer(struct extent_buffer *eb,
- 
- 	nritems = btrfs_header_nritems(eb);
- 	for (wc->log_slot = 0; wc->log_slot < nritems; wc->log_slot++) {
--		struct btrfs_inode_item *inode_item;
-+		struct btrfs_inode_item *inode_item = NULL;
- 
- 		btrfs_item_key_to_cpu(eb, &wc->log_key, wc->log_slot);
- 
--- 
-2.20.1
 
 
