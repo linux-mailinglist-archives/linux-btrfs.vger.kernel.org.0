@@ -1,107 +1,97 @@
-Return-Path: <linux-btrfs+bounces-19856-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19857-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61993CCB380
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Dec 2025 10:41:07 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id DCE25CCBC8E
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Dec 2025 13:28:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B285F300FF82
-	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Dec 2025 09:36:43 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 720E130413DF
+	for <lists+linux-btrfs@lfdr.de>; Thu, 18 Dec 2025 12:27:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D11F331230;
-	Thu, 18 Dec 2025 09:36:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OCX6rCvl"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5560932E73C;
+	Thu, 18 Dec 2025 12:27:50 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mail-m21472.qiye.163.com (mail-m21472.qiye.163.com [117.135.214.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE33B21773D
-	for <linux-btrfs@vger.kernel.org>; Thu, 18 Dec 2025 09:36:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C00FB322B93
+	for <linux-btrfs@vger.kernel.org>; Thu, 18 Dec 2025 12:27:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.214.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766050601; cv=none; b=TX5H0VZoy/kptpra2xjuWEbq9+8VOWDW2b9ZDRHSDCWESjyRLFCH3z37Sea+DiuDruM0nRnVsoXLHZyF+Ji3eSPk/1QZpRzaEA8U9p19ROKpJkn+CGydMEIBt18LvPgcNAZT4tgUQjhKRGmOSClZTSIra3Cp4tmoVNRFK8kSMG0=
+	t=1766060869; cv=none; b=F+gY3yocAR6G6xwUrQuiUoUMaNogk/dG3gYHZG3qt/PX9BWtbbYWeJ0XxfYF0Mew0Yl18sJoa5lVAg33WIk1+0UaInGDtcjkaKD+X+wdRiVLKAxcRs/GpsSk4VUF6QGai0kgEVUW72SvUthe/s2sxtT+19RuMh+aBnnqGfHr+wQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766050601; c=relaxed/simple;
-	bh=TkiFuc115zhqrCAyDrxjWdTtre8ap8aOdizXh/yaXbQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SVu0Z9r5xyq2WhBPvZcKP5DMCBkw1s3GEZDzI9Ru8RCNlT75u6qdI2ri5MH+p2AagAyuiVzITSaF89/lIQiqUVMLPZhLyyVv0jaqLooW3itXjOUbYM5EsZFAFBUcMKW9jVTb0PNMEPDcsgNst3DojTkNoMubiMTUszCl+NphPo4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OCX6rCvl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60970C4CEFB
-	for <linux-btrfs@vger.kernel.org>; Thu, 18 Dec 2025 09:36:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1766050601;
-	bh=TkiFuc115zhqrCAyDrxjWdTtre8ap8aOdizXh/yaXbQ=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=OCX6rCvlt+D9fxUYwN879zDo+eakGc2fDqdaWd+NzDhziTnQpir+GcEI3XUcb/utT
-	 JvhHcIa3SjBX5f7OHkOkQVgVJ97SjqeTPAmLv0iWo/cKfCJe8n8zLPuLlNpq6PuUYK
-	 2DPF2pPGltVRxh38Fd5ZD87yOoO/IdNBQx7f4WwAzn2fdtxzc/wFIKb9ftkgLGYzQ9
-	 Zo5OT/n39BOyfZDPPrENivMVo4+GzQIP1iVS28u9hHjmv+d3/SEXmye5eaaaGbfWdp
-	 p+xQRH2cnRrv4Lda/58JXBLt3XqDSpRSKr3hbndNERrwcwRO1K9LMHnCxrlrbwzQFR
-	 66T8PAj8FZrnw==
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-64b791b5584so174507a12.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 18 Dec 2025 01:36:41 -0800 (PST)
-X-Gm-Message-State: AOJu0YzvbzQzalUIo9sNoQoa1Wjds53kaQiSIBCX3astajHvIgsGUBES
-	rklawLVa6/6lK6mPR6cEiHaHVY4Tvt/i55F9xAf1irfHlyLSgGAMzqC+EzcHfgxrHZqvN5M8Bed
-	W5tC6StpRLLNAFei71SrtD/svK3YTLHQ=
-X-Google-Smtp-Source: AGHT+IFqyivWis7nvP/Jn7MxlFk0VOsNf80g11gi7FMRH714ABMjXh32QrblBa4fhjh2leTW40z4ECVnt8FJGSRSFVA=
-X-Received: by 2002:a17:906:6a04:b0:b75:7b39:847a with SMTP id
- a640c23a62f3a-b7d23b603c2mr2200252766b.60.1766050599963; Thu, 18 Dec 2025
- 01:36:39 -0800 (PST)
+	s=arc-20240116; t=1766060869; c=relaxed/simple;
+	bh=tBCW3SHUlKal+89QeGRMYtBhzHi/Eul6ICRwm6US6m0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=A2rQ5psP02pN0UDS+fG7sHlmz7UBaaTuaYq14wYPQQ8ld9GhnMBe4J4cSVdNj96cHL+Q4OC4/VQBtm95RfFuDJ7csdJlNAh9clpmyOGVXtc6aTRGuumu/vmq+jMRSh6+jksBbUnd/CH8WPqJUNC/6aGwD4hWcRjESfF2PBmUxAw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=easystack.cn; spf=pass smtp.mailfrom=easystack.cn; arc=none smtp.client-ip=117.135.214.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=easystack.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=easystack.cn
+Received: from localhost.localdomain (unknown [218.94.118.90])
+	by smtp.qiye.163.com (Hmail) with ESMTP id 1487183b4;
+	Thu, 18 Dec 2025 20:22:23 +0800 (GMT+08:00)
+From: Zhen Ni <zhen.ni@easystack.cn>
+To: clm@fb.com,
+	dsterba@suse.com,
+	wqu@suse.com
+Cc: linux-btrfs@vger.kernel.org,
+	Zhen Ni <zhen.ni@easystack.cn>
+Subject: [PATCH] btrfs: remove assertions after btrfs_bio struct changes
+Date: Thu, 18 Dec 2025 20:22:15 +0800
+Message-Id: <20251218122215.1044381-1-zhen.ni@easystack.cn>
+X-Mailer: git-send-email 2.20.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1766032843.git.wqu@suse.com>
-In-Reply-To: <cover.1766032843.git.wqu@suse.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Thu, 18 Dec 2025 09:36:02 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H6gkt1pSTV5=mrv3G9hzJxecDvr8380wc1ti270Xn9jcw@mail.gmail.com>
-X-Gm-Features: AQt7F2q6CtJPblWzGIDSHei0LYXVphRD2F9ijeamvTv7uKEW9G-U1S9jgftxxOA
-Message-ID: <CAL3q7H6gkt1pSTV5=mrv3G9hzJxecDvr8380wc1ti270Xn9jcw@mail.gmail.com>
-Subject: Re: [PATCH 0/2] btrfs: minor bs != ps cases fixes for free space tree enforcing
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-HM-Tid: 0a9b31694e630229kunmec2502006cb07f
+X-HM-MType: 1
+X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+	tZV1koWUFJQjdXWS1ZQUlXWQ8JGhUIEh9ZQVkaH0gdVhlKHx9CSE5CGkhPH1YVFAkWGhdVGRETFh
+	oSFyQUDg9ZV1kYEgtZQVlJSkNVQk9VSkpDVUJLWVdZFhoPEhUdFFlBWU9LSFVKS0lPT09IVUpLS1
+	VKQktLWQY+
 
-On Thu, Dec 18, 2025 at 4:46=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
->
-> I'm update btrfs/131 to remove the v1 cache usage since v1 cache is
-> already marked deprecated.
->
-> With that update, I can run the test on bs < ps and bs > ps cases, the
-> formal failed due to the following reason:
->
-> - Free space cache is always enforced for bs < ps case
->   Even if 'nospace_cache' mount option is provided.
->   This is fixed by the first patch
->
-> And during tests I also exposed a minor problem for bs > ps cases:
->
-> - v1 cache mount is rejected for bs > ps cases
->   That's because we lack the automatic free space tree enforcing for
->   bs > ps cases.
->   This is fixed by the second patch.
->
-> Qu Wenruo (2):
->   btrfs: only enforce free space tree if v1 cache is required for bs <
->     ps cases
->   btrfs: forcing free space tree for bs > ps cases
+Commit 81cea6cd7041 ("btrfs: remove btrfs_bio::fs_info by extracting it
+from btrfs_bio::inode") modified the btrfs_bio structure to make the
+inode field mandatory, making these assertions redundant:
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
+- btrfs_check_read_bio(): inode is validated by btrfs_bio_init()
+- btrfs_submit_bbio(): condition always passes since inode is never NULL
 
-Looks good, thanks.
+Remove these obsolete checks.
 
+Signed-off-by: Zhen Ni <zhen.ni@easystack.cn>
+---
+ fs/btrfs/bio.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
->
->  fs/btrfs/super.c | 12 +++++-------
->  1 file changed, 5 insertions(+), 7 deletions(-)
->
-> --
-> 2.52.0
->
->
+diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
+index fa1d321a2fb8..2b6a97fba1b2 100644
+--- a/fs/btrfs/bio.c
++++ b/fs/btrfs/bio.c
+@@ -307,9 +307,6 @@ static void btrfs_check_read_bio(struct btrfs_bio *bbio, struct btrfs_device *de
+ 	phys_addr_t paddr;
+ 	u32 offset = 0;
+ 
+-	/* Read-repair requires the inode field to be set by the submitter. */
+-	ASSERT(inode);
+-
+ 	/*
+ 	 * Hand off repair bios to the repair code as there is no upper level
+ 	 * submitter for them.
+@@ -899,9 +896,6 @@ static void assert_bbio_alignment(struct btrfs_bio *bbio)
+ 
+ void btrfs_submit_bbio(struct btrfs_bio *bbio, int mirror_num)
+ {
+-	/* If bbio->inode is not populated, its file_offset must be 0. */
+-	ASSERT(bbio->inode || bbio->file_offset == 0);
+-
+ 	assert_bbio_alignment(bbio);
+ 
+ 	while (!btrfs_submit_chunk(bbio, mirror_num))
+-- 
+2.20.1
+
 
