@@ -1,114 +1,159 @@
-Return-Path: <linux-btrfs+bounces-19883-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19884-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF0C2CCE588
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Dec 2025 04:14:33 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85F32CCE78C
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Dec 2025 05:51:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 8B4D93063871
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Dec 2025 03:11:55 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 46C99301895A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Dec 2025 04:51:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E15782C0291;
-	Fri, 19 Dec 2025 03:11:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB857285CB9;
+	Fri, 19 Dec 2025 04:51:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=uniontech.com header.i=@uniontech.com header.b="TF7lV46/"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="pYyUlSZP";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="q/bcX7CV";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="twrITjK+";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="t+9FcmIY"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from bg1.exmail.qq.com (bg1.exmail.qq.com [114.132.124.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEFE81C8626;
-	Fri, 19 Dec 2025 03:11:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.132.124.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61E3220B212
+	for <linux-btrfs@vger.kernel.org>; Fri, 19 Dec 2025 04:51:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766113913; cv=none; b=aKEtDu3mFIBZUuNCXMU42StUJuzLLDFjQ4NX/nx4+NevSyhAGj8ZCTYH1wgcUGlXtGco0Xh8e5mpNW0qGeP5C44Lfo8h8WJEBurTl3ZFdnlxC1VcrJjYMdsEZYzML3FTdtEP/pGs48scfxvvbJ6HK6wryxZdIJML60MEobH9hK8=
+	t=1766119903; cv=none; b=PI8QFjwyBrHBY4ywlOH8xnQQBzKLHNWhnD47rLBuoQbHmnMcCQCy3PUQmR64iBK8+UEI3q9CalKWLJ4GjId46Y+pCvXaoGYnoB3Ll1TumwHMOH+neT7+cgYT73xZiMUERHPgEOoauATPizq4ANu4Gr9DTEc+g1LbAlSkjN7LqYs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766113913; c=relaxed/simple;
-	bh=MEQsly2cu18s4Ki76S+WVKoodGhzFm4h6If9x/o+dAc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aTAYtosC/eoWVLiKl1mQs083O10nvbuv5TuUyZPVojCifw7V9ovUemfrud+ihQdjJJj9EGwxiQRXeFsK4DcMpxtvMTxAVoWP5PdYwqnTy/9RRLwFS0qIOjD9nktEqLsI9yQl477WEOGzhG22iJ7Yq39dbRK8fJTXLoWv8Iq87Ec=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uniontech.com; spf=pass smtp.mailfrom=uniontech.com; dkim=pass (1024-bit key) header.d=uniontech.com header.i=@uniontech.com header.b=TF7lV46/; arc=none smtp.client-ip=114.132.124.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uniontech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=uniontech.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uniontech.com;
-	s=onoh2408; t=1766113870;
-	bh=ZwdVqC9k+Aoo/qerX48MrSUXHssew9RgUratRxFKWDs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From;
-	b=TF7lV46/E2NNAwKIprCthBBflOUGyh7Nryyr7a19mF6esCW9YpEbi7Ysx5QbvYiLz
-	 UXklCLaiPzuZg4CxjfSV3ZoB7L0fRl0+wmkFQct+0OS0l9LIOGvcjEaXG0ubMD1fwN
-	 tkArT9ODxPQ7qg34AG5vDLlr6cOGNB+JcxCbRBns=
-X-QQ-mid: zesmtpgz8t1766113867t60ee65d5
-X-QQ-Originating-IP: rsIbjM5h2eIPBEXu8RtFdpFllTR48Z2nzkrOwOxG5xw=
-Received: from [10.10.74.117] ( [123.114.60.34])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Fri, 19 Dec 2025 11:11:06 +0800 (CST)
-X-QQ-SSF: 0000000000000000000000000000000
-X-QQ-GoodBg: 1
-X-BIZMAIL-ID: 14539837168322263933
-Message-ID: <FE5FE501300F03CD+be7ce18b-7ed9-4284-89af-33ee03272224@uniontech.com>
-Date: Fri, 19 Dec 2025 11:11:05 +0800
+	s=arc-20240116; t=1766119903; c=relaxed/simple;
+	bh=oeJGmG33W6ktlwNCjhuOsTbf7P3SBKanu3vMJStKrPc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WiqXhuvQodYSXbJyRb37ZByOF0mAh74mKGv2A37N9FNdBPZRu+uC8WHfhkqMP+8G1D7mxvM0CqrbvsnYXJeuM1TZAC4z7eFA5MCFZGZe7meMUUtOIz6Ih2tzxiPnkBSm+Vfm1EBn4uz1Ji8YvvuSxR8weyYbgKqN4qQN8vuO71U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=pYyUlSZP; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=q/bcX7CV; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=twrITjK+; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=t+9FcmIY; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 37C015BD05;
+	Fri, 19 Dec 2025 04:51:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1766119899;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=AdJ/0kXsy2UarZzr+GTIpWi9ZRF4BQ4mDf0slnumfYk=;
+	b=pYyUlSZPamQaHUUw+Djuowg/IjfG1Q7na+CEQuOD/PKE9E32zQVV4AKNJzXk63ADp8CLBL
+	QlBb+toai7TvoQttzrGoD6wwXEoovRfivqBxyMudNhIcMHqAi4EwmPwVKQ/4/NJ4gFBnxX
+	l9Pcd8zxqLvpfUURtLnAfudJZfceE0Q=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1766119899;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=AdJ/0kXsy2UarZzr+GTIpWi9ZRF4BQ4mDf0slnumfYk=;
+	b=q/bcX7CVl6Umx1F+y2oWSIbgcRJSnWzVCZRxPlPS46yzVbr9E7amEpaoX4jMbNxUhZCVCN
+	kq6h6aWp0leFm9DA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1766119898;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=AdJ/0kXsy2UarZzr+GTIpWi9ZRF4BQ4mDf0slnumfYk=;
+	b=twrITjK+KXJ5lA0EaJChIO5gsz4O3ZNeY0OojIvjo6PcIkGPICfNCFI/4mk6dmKFr12EfQ
+	QedxhSi9V6LfHYWXmrz4mBmYIWtaFYBeETE/rfNFF1nW9e6V+h7Oy+8+io78squMmS4i5p
+	w/DHBA6ryZ3sSgkmfUu1eM4qXPFj690=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1766119898;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=AdJ/0kXsy2UarZzr+GTIpWi9ZRF4BQ4mDf0slnumfYk=;
+	b=t+9FcmIYDFZrssXqDiwFH68HfccOXWUGHcp8Ffo1Mk15H7d+Zz4qxvHULEPwWg2lo77qWW
+	rTVEVRIc7TJ5uIDw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1784B3EA63;
+	Fri, 19 Dec 2025 04:51:38 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 0rSLBdrZRGkQVQAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Fri, 19 Dec 2025 04:51:38 +0000
+Date: Fri, 19 Dec 2025 05:51:21 +0100
+From: David Sterba <dsterba@suse.cz>
+To: fdmanana@kernel.org
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: tag as unlikely error conditions in the
+ transaction commit path
+Message-ID: <20251219045121.GB3195@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <bb3d28f50f56238ef6d8db65ddce28d1f53009d4.1765977733.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: Fix -Wmaybe-uninitialized warning
-To: dsterba@suse.cz
-Cc: clm@fb.com, dsterba@suse.com, linux-btrfs@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20251218081618.2038279-1-maqianga@uniontech.com>
- <20251218203743.GU3195@twin.jikos.cz>
-Content-Language: en-US
-From: Qiang Ma <maqianga@uniontech.com>
-In-Reply-To: <20251218203743.GU3195@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: zesmtpgz:uniontech.com:qybglogicsvrsz:qybglogicsvrsz3b-0
-X-QQ-XMAILINFO: NyPaQtJYQgeodf7+yLlPzXbTARi+FjqDYEeXBb8Yi2dV1ID80DCCiaGB
-	3G1bca3v5okGtljW3m/8Wgn8vFJFf4R1psaO6sq8CWAceHBAhEEMqEgbZbhwWOOj+mUIbvN
-	cbRhKOlWDaI/Fy1LnOIAF66Mr5srVvENpAQeVXDe99K/GCP04iqVlbvEPvhdJGVuqrLcnAN
-	3Maenw1ooPWmAPsGEj3+JG7N0u2vNdvkBD8PeBvEhxbvjjsceeFCta5GJnnK6CToPt08DpT
-	CG4rIZUl6fpQP8PuoJlA/ewa9P90muCS8YxGgZvsjA065Wytpy0yw0UP772PVIgnflHuK9t
-	Y767r+tp2ZHfy/VrJKd49BVwwnqtPmpNLOc225uhGQAzxd8UeMkBkQjiZ7LGvpjCILUx0x3
-	FBnrskyAUgo6JPRRvAAmKv15oSRAj6im1ui9SsYZhBeE+bQCaTdwTDLvYVEu5grGKhdEUyZ
-	V1lS3BjoqROvqGC4K9r88c4QMwxYODMdJ7fHVhZwrxM4MTKC0sjtwdWsCIPMeY3qgR3j1qq
-	mgkFJV+oEUqTOMM2n3BHSi+DDz1phMQFoVyYo64UilRziROxXLdi2s5J3ue/W4Qj6rJMGgw
-	ad3SIrSxYZx69ijJavjj4UgJ34GWOSiTHvWjaJpdW/0p2KKNllsuy3U0AKFvR7YGJT2eH0K
-	lxZNzg+rkyHByUkB6YDOPuoj51u993pSxlOcmAGL/s2zZ9k6LUfwjXLEuPiDjfzwNhaVDHQ
-	R8WVFXOqISEk1IvwJaMdvADkVLYqd2eAMWzwVnGIj+PmXEyEonmWIMYOXZDgcSyxGw7fTEQ
-	NeDxUhZ5Tsjo7rIM9Nh7xD9PaoD+mXbbaKUsiITGtIKvnV4rd8a3NXf4w5f1R3EE3so4rzQ
-	lglA0jmILpo0HnvktvrR4WihlgV2YbOKgp1LdBCoeV63x8m0fHuMYdjlncYFWA+7J0TNYxe
-	ThDdY6kv5ntlmYR/s2I8S/DNSmbY9hZkPg+zuuLOUE2nvoM0h3XBjjc2EEgDbiJQcGiZ40p
-	WYVKRc6w==
-X-QQ-XMRINFO: M/715EihBoGSf6IYSX1iLFg=
-X-QQ-RECHKSPAM: 0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bb3d28f50f56238ef6d8db65ddce28d1f53009d4.1765977733.git.fdmanana@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spamd-Result: default: False [-3.92 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.12)[-0.609];
+	MIME_GOOD(-0.10)[text/plain];
+	RCPT_COUNT_TWO(0.00)[2];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[twin.jikos.cz:mid,imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.cz:replyto];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	TO_DN_NONE(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: -3.92
 
+On Wed, Dec 17, 2025 at 01:22:41PM +0000, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> Errors are unexpected during the transaction commit path, and when they
+> happen we abort the transaction (by calling cleanup_transaction() under
+> the label 'cleanup_transaction' in btrfs_commit_transaction()). So mark
+> every error check in the transaction commit path as unlikely, to hint the
+> compiler so that it can possibly generate better code, and make it clear
+> for a reader about being unexpected.
+> 
+> On a x86_84 box using gcc 14.2.0-19 from Debian, this resulted in a slight
+> reduction of the module's text size.
+> 
+> Before:
+> 
+>   $ size fs/btrfs/btrfs.ko
+>      text	   data	    bss	    dec	    hex	filename
+>   1939476	 172568	  15592	2127636	 207714	fs/btrfs/btrfs.ko
+> 
+> After:
+> 
+>   $ size fs/btrfs/btrfs.ko
+>      text	   data	    bss	    dec	    hex	filename
+>   1939044	 172568	  15592	2127204	 207564	fs/btrfs/btrfs.ko
+> 
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
-在 2025/12/19 04:37, David Sterba 写道:
-> On Thu, Dec 18, 2025 at 04:16:18PM +0800, Qiang Ma wrote:
->> Fix a -Wmaybe-uninitialized warning by initializing
->> the variable to NULL.
->>
->> $ make CFLAGS_tree-log.o=-Wmaybe-uninitialized
->>
->> In file included from fs/btrfs/ctree.h:21,
->>                   from fs/btrfs/tree-log.c:12:
->> fs/btrfs/accessors.h: In function 'replay_one_buffer':
->> fs/btrfs/accessors.h:66:16: warning: 'inode_item' may be used uninitialized [-Wmaybe-uninitialized]
->>     66 |         return btrfs_get_##bits(eb, s, offsetof(type, member));         \
->>        |                ^~~~~~~~~~
->> fs/btrfs/tree-log.c:2803:42: note: 'inode_item' declared here
->>   2803 |                 struct btrfs_inode_item *inode_item;
->>        |                                          ^~~~~~~~~~
->>
->> Warning was found when compiling using loongarch64-gcc 12.3.1.
-> We have the -Wmaybe-uninitialized warning enabled per fs/btrfs/
-> directory, there are no other known reports fixing the uninitialized
-> inode_item so this might be specific to loongarch gcc 12.x. I'll add the
-Yes, x86 and arm64 did not report this warning issue.
-> patch to for-next as we still want to get all the warnings fixed, thanks.
->
-
+Reviewed-by: David Sterba <dsterba@suse.com>
 
