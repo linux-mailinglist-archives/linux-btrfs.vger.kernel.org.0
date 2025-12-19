@@ -1,47 +1,48 @@
-Return-Path: <linux-btrfs+bounces-19908-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19909-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE35DCD2223
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Dec 2025 23:42:12 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4C71CD21ED
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Dec 2025 23:40:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9983930ACAF3
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Dec 2025 22:40:34 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id E5391300217B
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Dec 2025 22:40:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2803D2C0F6E;
-	Fri, 19 Dec 2025 22:40:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB3F82D0C7F;
+	Fri, 19 Dec 2025 22:40:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UYyUrRMm"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UNUQIvXG"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D6B428DB76;
-	Fri, 19 Dec 2025 22:40:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11B0129BD9A;
+	Fri, 19 Dec 2025 22:40:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766184031; cv=none; b=DgLqjYs27z215YlDKEzB7Uh/op8PUxtzjTEuVKQxA/zDFmuLs0bGmvOCHPoEj6dll1Ssf5qdYTVeXs6wBhqY3Wn/dP0wyCzZTg2LEBGlI/FvG7r0IOBz/Q0g6CohTg23KJgML3ylZfueum1cKuWD4Z6tujZtHCZbeEqtbRdkAMI=
+	t=1766184038; cv=none; b=aZgSHek5Jo07PG01Sxn6w2NOapxRwXCk4EupoKSoFfch3d9eQdd6VvPTScNecZ8cT9HOewtJ290aH53f59Zd47CgF32WvsvFRJNvyKtqHvIyQGkAozvtHyWkrBRh/hkZ7wDO79FQQ65hag1ikRDOUuQ59N6t6ihAMUmxvB6s0ho=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766184031; c=relaxed/simple;
-	bh=CH51omHx3p6qsRzlcGdmz4sS4fZYMW+MUawnsQlkKh8=;
+	s=arc-20240116; t=1766184038; c=relaxed/simple;
+	bh=wtRlhF0E9lAMAS6RF9a/BuSBeDduKYxm9+amQIF8Ki8=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=edXD21bIkK8cd8YqIRjrohT9UoMJanSdhb2ZrW4UKWT9txDYggvOs2WiM+tFop5fh1oxHFD3iBlXnQ9QlJ2Cm5mSFEs2yNpcC44fB092GfoDxVCJTN395pmUZXgMx4rd8VfszO6Q4jA0uEVSGFy2Md4NT28MYzISafrAypMY458=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UYyUrRMm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D4C0C4CEF1;
-	Fri, 19 Dec 2025 22:40:25 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=Ss7dakQCzhhaDfVRT3Vbh0qNBir41WZq+AeMMaXGAdEI2Df4csObz1+QYFKBtLyAGe+9w8U2/RK+hHIhtuFCjAWZMe66zI7rQC2AmLR5tuhmEfn0JIdAKLP/z9u4IzAHOU70kUnYVY6kS9oTMSN4SJnMMB783ir9tVS4wIlf++w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UNUQIvXG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADBBDC4CEF1;
+	Fri, 19 Dec 2025 22:40:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1766184031;
-	bh=CH51omHx3p6qsRzlcGdmz4sS4fZYMW+MUawnsQlkKh8=;
+	s=k20201202; t=1766184037;
+	bh=wtRlhF0E9lAMAS6RF9a/BuSBeDduKYxm9+amQIF8Ki8=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=UYyUrRMmjNfCsp7IYNkf2GE3GqsLbe/e6MI4dGs0mkTAGMNlroOfNKjchxfRho3eN
-	 U0Z6I5DBdmyOcwXb6dHzgLkGBfLnjZlX1d4HSxAQmdoQWNJIEjj++enKKTvImVPJ7O
-	 88EvzRC+HEgvdw4uMY7cg145wzDADRZ/KVU3T8Z4RMtunlavbu431/fY/vLLgJpfa2
-	 tWVwfxcTyTHbIzoXQxPqhGW/XEZu0NPqbLGXwIn6c8E/hrhGU0kZRPUbkPkNYPBhDv
-	 hPK/5kMT6R8yf+usvTRELgXJGyor+GfBx3ZR1dwy12RaGV54UK87jzghOaezPAx/M2
-	 zvno1rWPPLYKw==
+	b=UNUQIvXG+Z9FaVnBja8B5O12NGutk88wN3q4qUUXtsrEUtmP6zi3hGvyuDDs8eRl2
+	 97pimjmV1nv0W5Oq8CmJm8+QY/K47hZiVYq/BNN3POgNAtq7BjAnFrfNI68sajKKB5
+	 s373akfhE5SIDMv/bn8qQJ2bgyNG5LSRWnpsoNGQqjNmL9QB8iztmEf5AKRGksPX8A
+	 /etmXT/1TIGGB0xEErTTk4J6AlXlr1JyTismvhOfTqIz/+vkt96ZiA/H2cu8uimfxa
+	 0vJ9YG3Jq6PRxLHIobJEQQOuQED/ejXO+w8yUFEOxvdDJQ1bwSmP/F3EWXD376Rsym
+	 z0yiB64BHBl7w==
 From: Vincent Mailhol <mailhol@kernel.org>
-Date: Fri, 19 Dec 2025 23:39:46 +0100
-Subject: [PATCH v2 2/4] kbuild: cleanup local -Wno-type-limits exceptions
+Date: Fri, 19 Dec 2025 23:39:47 +0100
+Subject: [PATCH v2 3/4] overflow: Remove is_non_negative() and
+ is_negative()
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -49,8 +50,8 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20251219-remove_wtype-limits-v2-2-2e92b3f566c5@kernel.org>
+Content-Transfer-Encoding: 8bit
+Message-Id: <20251219-remove_wtype-limits-v2-3-2e92b3f566c5@kernel.org>
 References: <20251219-remove_wtype-limits-v2-0-2e92b3f566c5@kernel.org>
 In-Reply-To: <20251219-remove_wtype-limits-v2-0-2e92b3f566c5@kernel.org>
 To: Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nsc@kernel.org>, 
@@ -67,53 +68,63 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
  dri-devel@lists.freedesktop.org, linux-btrfs@vger.kernel.org, 
  linux-hardening@vger.kernel.org, Vincent Mailhol <mailhol@kernel.org>
 X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1412; i=mailhol@kernel.org;
- h=from:subject:message-id; bh=CH51omHx3p6qsRzlcGdmz4sS4fZYMW+MUawnsQlkKh8=;
- b=kA0DAAoW0WQ+QNd/fbMByyZiAGlF1EOjMOByv0n126NSjwuXg8j/IxssPc9TKnxzsAAq/pe6F
- 4iRBAAWCgA5FiEEpncJCyCIcUtWwv050WQ+QNd/fbMFAmlF1EMbFIAAAAAABAAObWFudTIsMi41
- KzEuMTEsMiwyAAoJENFkPkDXf32zwuQBALphDSFKpPBiTOKEVIuE94/+YEsRmjpYZiMQ7lDD4SW
- QAP9FGUN45c8n3tmPLKYM4wGNk16iKXQ0rB7Uoj4K7KqLCQ==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1738; i=mailhol@kernel.org;
+ h=from:subject:message-id; bh=wtRlhF0E9lAMAS6RF9a/BuSBeDduKYxm9+amQIF8Ki8=;
+ b=owGbwMvMwCV2McXO4Xp97WbG02pJDJmuV9zsThw4ZfrOIPRQ++ItJrNPBldduf+xu7xAq26LV
+ 8H6w7ebOyayMIhxMViKKbIsK+fkVugo9A479NcSZg4rE8gQaZEGBiBgYeDLTcwrNdIx0jPVNtQz
+ NNQBMhm4OAVgqo+WMfwVl/scJuBe5eW1+2r48j0sV+Mle7Z4LFaRKLoUMUv+k8p+RobdQlsNlJ8
+ w6fUYRecZ/Qj9LsjFZ//g8Nak6rrsKXMO3+ACAA==
 X-Developer-Key: i=mailhol@kernel.org; a=openpgp;
  fpr=ED8F700574E67F20E574E8E2AB5FEB886DBB99C2
 
-Now that -Wtype-limits is globally deactivated, there is no need for
-local exceptions anymore.
+The is_non_negative() and is_negative() function-like macros just
+exist as a workaround to silence the -Wtype-limits warning. Now that
+this warning is disabled, those two macros have lost their raison
+d'être. Remove them.
 
-Acked-by: David Sterba <dsterba@suse.com>
+This reverts commit dc7fe518b049 ("overflow: Fix -Wtype-limits
+compilation warnings").
+
+Suggested-by: Nicolas Schier <nsc@kernel.org>
+Link: https://lore.kernel.org/all/aUT_yWin_xslnOFh@derry.ads.avm.de
 Signed-off-by: Vincent Mailhol <mailhol@kernel.org>
 ---
 Changelog:
 
-  v1 -> v2: small change in patch description
+  v1 -> v2: new patch
 ---
- drivers/gpu/drm/Makefile | 1 -
- fs/btrfs/Makefile        | 1 -
- 2 files changed, 2 deletions(-)
+ include/linux/overflow.h | 10 ++--------
+ 1 file changed, 2 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/gpu/drm/Makefile b/drivers/gpu/drm/Makefile
-index 0e1c668b46d2..b879a60ca79a 100644
---- a/drivers/gpu/drm/Makefile
-+++ b/drivers/gpu/drm/Makefile
-@@ -22,7 +22,6 @@ subdir-ccflags-y += $(call cc-option, -Wstringop-truncation)
- # The following turn off the warnings enabled by -Wextra
- ifeq ($(findstring 2, $(KBUILD_EXTRA_WARN)),)
- subdir-ccflags-y += -Wno-missing-field-initializers
--subdir-ccflags-y += -Wno-type-limits
- subdir-ccflags-y += -Wno-shift-negative-value
- endif
- ifeq ($(findstring 3, $(KBUILD_EXTRA_WARN)),)
-diff --git a/fs/btrfs/Makefile b/fs/btrfs/Makefile
-index 743d7677b175..40bc2f7e6f6b 100644
---- a/fs/btrfs/Makefile
-+++ b/fs/btrfs/Makefile
-@@ -17,7 +17,6 @@ subdir-ccflags-y += $(condflags)
- # The following turn off the warnings enabled by -Wextra
- subdir-ccflags-y += -Wno-missing-field-initializers
- subdir-ccflags-y += -Wno-sign-compare
--subdir-ccflags-y += -Wno-type-limits
- subdir-ccflags-y += -Wno-shift-negative-value
+diff --git a/include/linux/overflow.h b/include/linux/overflow.h
+index 736f633b2d5f..ab142d60c6b5 100644
+--- a/include/linux/overflow.h
++++ b/include/linux/overflow.h
+@@ -36,12 +36,6 @@
+ #define __type_min(T) ((T)((T)-type_max(T)-(T)1))
+ #define type_min(t)	__type_min(typeof(t))
  
- obj-$(CONFIG_BTRFS_FS) := btrfs.o
+-/*
+- * Avoids triggering -Wtype-limits compilation warning,
+- * while using unsigned data types to check a < 0.
+- */
+-#define is_non_negative(a) ((a) > 0 || (a) == 0)
+-#define is_negative(a) (!(is_non_negative(a)))
+ 
+ /*
+  * Allows for effectively applying __must_check to a macro so we can have
+@@ -201,9 +195,9 @@ static inline bool __must_check __must_check_overflow(bool overflow)
+ 	typeof(d) _d = d;						\
+ 	unsigned long long _a_full = _a;				\
+ 	unsigned int _to_shift =					\
+-		is_non_negative(_s) && _s < 8 * sizeof(*d) ? _s : 0;	\
++		_s >= 0 && _s < 8 * sizeof(*d) ? _s : 0;		\
+ 	*_d = (_a_full << _to_shift);					\
+-	(_to_shift != _s || is_negative(*_d) || is_negative(_a) ||	\
++	(_to_shift != _s || *_d < 0 || _a < 0 ||			\
+ 	(*_d >> _to_shift) != _a);					\
+ }))
+ 
 
 -- 
 2.51.2
