@@ -1,48 +1,47 @@
-Return-Path: <linux-btrfs+bounces-19909-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19910-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4C71CD21ED
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Dec 2025 23:40:43 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCC55CD220B
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Dec 2025 23:41:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id E5391300217B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Dec 2025 22:40:41 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 2BF0830287F5
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Dec 2025 22:40:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB3F82D0C7F;
-	Fri, 19 Dec 2025 22:40:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF4772D6E52;
+	Fri, 19 Dec 2025 22:40:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UNUQIvXG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Qi2gCD/z"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11B0129BD9A;
-	Fri, 19 Dec 2025 22:40:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98D3218FDAF;
+	Fri, 19 Dec 2025 22:40:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766184038; cv=none; b=aZgSHek5Jo07PG01Sxn6w2NOapxRwXCk4EupoKSoFfch3d9eQdd6VvPTScNecZ8cT9HOewtJ290aH53f59Zd47CgF32WvsvFRJNvyKtqHvIyQGkAozvtHyWkrBRh/hkZ7wDO79FQQ65hag1ikRDOUuQ59N6t6ihAMUmxvB6s0ho=
+	t=1766184044; cv=none; b=qmD04eOssYUBEoR5sXU00u33ErBkL+l8ikJF/RrIAiaZv+c7V8VIdV+z/m0KVtmn3HKM/X4iWV69hL3NG3RQcSdksh8PTY4sVYJ7ImTB+wsKnP/Q1heN1u1IMgY2lDwdHm9Zgv8KPPPY2N76kLobbdJD50b8ib0M3bjS6hQVDfw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766184038; c=relaxed/simple;
-	bh=wtRlhF0E9lAMAS6RF9a/BuSBeDduKYxm9+amQIF8Ki8=;
+	s=arc-20240116; t=1766184044; c=relaxed/simple;
+	bh=uAEpBNv+CmgIxmDyHDHgY/r2XzHv2JsQOvxnxQ6j1fI=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=Ss7dakQCzhhaDfVRT3Vbh0qNBir41WZq+AeMMaXGAdEI2Df4csObz1+QYFKBtLyAGe+9w8U2/RK+hHIhtuFCjAWZMe66zI7rQC2AmLR5tuhmEfn0JIdAKLP/z9u4IzAHOU70kUnYVY6kS9oTMSN4SJnMMB783ir9tVS4wIlf++w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UNUQIvXG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADBBDC4CEF1;
-	Fri, 19 Dec 2025 22:40:31 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=h19Ce6YpYUb50H+Edc4WwLWJdYO28QbSCiiS7bsVk9EQ6bw+0YfzcAwef6+v6ahDyKCXqicVB2zIahN4gBLoybmgktdtnL47oBGq7Qt/sOyTA3K810MwOVGvd88b2QBnBsskMSz/+dvm9TPRNJK+wh90futFhOYuXYphtfdwI0c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Qi2gCD/z; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 18457C113D0;
+	Fri, 19 Dec 2025 22:40:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1766184037;
-	bh=wtRlhF0E9lAMAS6RF9a/BuSBeDduKYxm9+amQIF8Ki8=;
+	s=k20201202; t=1766184044;
+	bh=uAEpBNv+CmgIxmDyHDHgY/r2XzHv2JsQOvxnxQ6j1fI=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=UNUQIvXG+Z9FaVnBja8B5O12NGutk88wN3q4qUUXtsrEUtmP6zi3hGvyuDDs8eRl2
-	 97pimjmV1nv0W5Oq8CmJm8+QY/K47hZiVYq/BNN3POgNAtq7BjAnFrfNI68sajKKB5
-	 s373akfhE5SIDMv/bn8qQJ2bgyNG5LSRWnpsoNGQqjNmL9QB8iztmEf5AKRGksPX8A
-	 /etmXT/1TIGGB0xEErTTk4J6AlXlr1JyTismvhOfTqIz/+vkt96ZiA/H2cu8uimfxa
-	 0vJ9YG3Jq6PRxLHIobJEQQOuQED/ejXO+w8yUFEOxvdDJQ1bwSmP/F3EWXD376Rsym
-	 z0yiB64BHBl7w==
+	b=Qi2gCD/zXBNO6PpRplvsyMGPz4YlZ4NQsZq6oJc4WREI1MKf9btW+c0LqUWho8zCy
+	 fMUJ9C7ItN8pdGW9Gg8DiDfbpfqgCcS0ceHQLNXiPQ1xDlDri08JV54M9xr8hrLRgk
+	 xbKpWZrLZMJaAP7JqFYbI0RPXwx7nswt3hlY7Sp99Ul9uCbLKS6kyqRnA0Mhpep8mN
+	 qgMibLS2l3Fk/tPA5vPv08KDPTLUA9HhCHBEIuCvJN1dU9uux0k8V0nSUmjz4OaiEC
+	 MubUbbeHUPFKXNiwdNWROxW4MWuMXgCraVGscMz47UftT+HOFKoj4U3Sz2V/nftcZL
+	 ibYGLe4brERxg==
 From: Vincent Mailhol <mailhol@kernel.org>
-Date: Fri, 19 Dec 2025 23:39:47 +0100
-Subject: [PATCH v2 3/4] overflow: Remove is_non_negative() and
- is_negative()
+Date: Fri, 19 Dec 2025 23:39:48 +0100
+Subject: [PATCH v2 4/4] minmax: remove useless cast in __is_nonneg()
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -50,8 +49,8 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20251219-remove_wtype-limits-v2-3-2e92b3f566c5@kernel.org>
+Content-Transfer-Encoding: 7bit
+Message-Id: <20251219-remove_wtype-limits-v2-4-2e92b3f566c5@kernel.org>
 References: <20251219-remove_wtype-limits-v2-0-2e92b3f566c5@kernel.org>
 In-Reply-To: <20251219-remove_wtype-limits-v2-0-2e92b3f566c5@kernel.org>
 To: Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nsc@kernel.org>, 
@@ -68,63 +67,88 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
  dri-devel@lists.freedesktop.org, linux-btrfs@vger.kernel.org, 
  linux-hardening@vger.kernel.org, Vincent Mailhol <mailhol@kernel.org>
 X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1738; i=mailhol@kernel.org;
- h=from:subject:message-id; bh=wtRlhF0E9lAMAS6RF9a/BuSBeDduKYxm9+amQIF8Ki8=;
- b=owGbwMvMwCV2McXO4Xp97WbG02pJDJmuV9zsThw4ZfrOIPRQ++ItJrNPBldduf+xu7xAq26LV
- 8H6w7ebOyayMIhxMViKKbIsK+fkVugo9A479NcSZg4rE8gQaZEGBiBgYeDLTcwrNdIx0jPVNtQz
- NNQBMhm4OAVgqo+WMfwVl/scJuBe5eW1+2r48j0sV+Mle7Z4LFaRKLoUMUv+k8p+RobdQlsNlJ8
- w6fUYRecZ/Qj9LsjFZ//g8Nak6rrsKXMO3+ACAA==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3094; i=mailhol@kernel.org;
+ h=from:subject:message-id; bh=uAEpBNv+CmgIxmDyHDHgY/r2XzHv2JsQOvxnxQ6j1fI=;
+ b=owGbwMvMwCV2McXO4Xp97WbG02pJDJmuVzxNZFtvnF3k4jDx27zFjimNTiyq3zXCrI4nRH1+V
+ dqSvLm1YyILgxgXg6WYIsuyck5uhY5C77BDfy1h5rAygQyRFmlgAAIWBr7cxLxSIx0jPVNtQz1D
+ Qx0gk4GLUwCm+qE0w1/pFp3T5387dN47sNlnk0aYYfO5KfZrjk1svKgoPkVqdfY1RoatvjXXS3i
+ WnCzmPbUxuFEsZoJjz2mdlXX9B/btOBj4dRYnAA==
 X-Developer-Key: i=mailhol@kernel.org; a=openpgp;
  fpr=ED8F700574E67F20E574E8E2AB5FEB886DBB99C2
 
-The is_non_negative() and is_negative() function-like macros just
-exist as a workaround to silence the -Wtype-limits warning. Now that
-this warning is disabled, those two macros have lost their raison
-d'être. Remove them.
+The function like macro __is_nonneg() casts its argument to (long long)
+in an attempt to silence -Wtype-limits warnings on unsigned values.
 
-This reverts commit dc7fe518b049 ("overflow: Fix -Wtype-limits
-compilation warnings").
+But this workaround is incomplete as proven here:
 
-Suggested-by: Nicolas Schier <nsc@kernel.org>
-Link: https://lore.kernel.org/all/aUT_yWin_xslnOFh@derry.ads.avm.de
+  $ cat foo.c
+  #include <linux/minmax.h>
+
+  int foo(unsigned int a)
+  {
+  	return __is_nonneg(a);
+  }
+  $ make CFLAGS_KERNEL="-Wtype-limits" foo.o
+    CALL    scripts/checksyscalls.sh
+    DESCEND objtool
+    INSTALL libsubcmd_headers
+    CC      foo.o
+  foo.c: In function 'foo':
+  ./include/linux/minmax.h:68:57: warning: comparison is always true due to limited range of data type [-Wtype-limits]
+     68 | #define __is_nonneg(ux) statically_true((long long)(ux) >= 0)
+        |                                                         ^~
+  ./include/linux/compiler.h:350:50: note: in definition of macro 'statically_true'
+    350 | #define statically_true(x) (__builtin_constant_p(x) && (x))
+        |                                                  ^
+  foo.c:5:16: note: in expansion of macro '__is_nonneg'
+      5 |         return __is_nonneg(a);
+        |                ^~~~~~~~~~~
+  ./include/linux/minmax.h:68:57: warning: comparison is always true due to limited range of data type [-Wtype-limits]
+     68 | #define __is_nonneg(ux) statically_true((long long)(ux) >= 0)
+        |                                                         ^~
+  ./include/linux/compiler.h:350:57: note: in definition of macro 'statically_true'
+    350 | #define statically_true(x) (__builtin_constant_p(x) && (x))
+        |                                                         ^
+  foo.c:5:16: note: in expansion of macro '__is_nonneg'
+      5 |         return __is_nonneg(a);
+        |                ^~~~~~~~~~~
+
+And because -Wtype-limits is now globally disabled, such a workaround
+now becomes useless. Remove the __is_nonneg()'s cast and its related
+comment.
+
 Signed-off-by: Vincent Mailhol <mailhol@kernel.org>
 ---
 Changelog:
 
   v1 -> v2: new patch
 ---
- include/linux/overflow.h | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
+ include/linux/minmax.h | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/include/linux/overflow.h b/include/linux/overflow.h
-index 736f633b2d5f..ab142d60c6b5 100644
---- a/include/linux/overflow.h
-+++ b/include/linux/overflow.h
-@@ -36,12 +36,6 @@
- #define __type_min(T) ((T)((T)-type_max(T)-(T)1))
- #define type_min(t)	__type_min(typeof(t))
- 
--/*
-- * Avoids triggering -Wtype-limits compilation warning,
-- * while using unsigned data types to check a < 0.
-- */
--#define is_non_negative(a) ((a) > 0 || (a) == 0)
--#define is_negative(a) (!(is_non_negative(a)))
- 
+diff --git a/include/linux/minmax.h b/include/linux/minmax.h
+index a0158db54a04..3e2e3e539ba1 100644
+--- a/include/linux/minmax.h
++++ b/include/linux/minmax.h
+@@ -52,9 +52,6 @@
  /*
-  * Allows for effectively applying __must_check to a macro so we can have
-@@ -201,9 +195,9 @@ static inline bool __must_check __must_check_overflow(bool overflow)
- 	typeof(d) _d = d;						\
- 	unsigned long long _a_full = _a;				\
- 	unsigned int _to_shift =					\
--		is_non_negative(_s) && _s < 8 * sizeof(*d) ? _s : 0;	\
-+		_s >= 0 && _s < 8 * sizeof(*d) ? _s : 0;		\
- 	*_d = (_a_full << _to_shift);					\
--	(_to_shift != _s || is_negative(*_d) || is_negative(_a) ||	\
-+	(_to_shift != _s || *_d < 0 || _a < 0 ||			\
- 	(*_d >> _to_shift) != _a);					\
- }))
- 
+  * Check whether a signed value is always non-negative.
+  *
+- * A cast is needed to avoid any warnings from values that aren't signed
+- * integer types (in which case the result doesn't matter).
+- *
+  * On 64-bit any integer or pointer type can safely be cast to 'long long'.
+  * But on 32-bit we need to avoid warnings about casting pointers to integers
+  * of different sizes without truncating 64-bit values so 'long' or 'long long'
+@@ -65,7 +62,7 @@
+  * but they are handled by the !is_signed_type() case).
+  */
+ #if __SIZEOF_POINTER__ == __SIZEOF_LONG_LONG__
+-#define __is_nonneg(ux) statically_true((long long)(ux) >= 0)
++#define __is_nonneg(ux) statically_true((ux) >= 0)
+ #else
+ #define __is_nonneg(ux) statically_true( \
+ 	(typeof(__builtin_choose_expr(sizeof(ux) > 4, 1LL, 1L)))(ux) >= 0)
 
 -- 
 2.51.2
