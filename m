@@ -1,198 +1,120 @@
-Return-Path: <linux-btrfs+bounces-19899-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19900-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CB2FCD0778
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Dec 2025 16:14:52 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58A4ECD1198
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Dec 2025 18:18:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A645D30B8B6A
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Dec 2025 15:12:09 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id DABE1307E886
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Dec 2025 17:14:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFF5133A9D6;
-	Fri, 19 Dec 2025 15:12:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E582133BBD2;
+	Fri, 19 Dec 2025 17:14:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="KI19ArTA";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="hh7RDHL5";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="b5aN+xiY";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="UlK0GM+L"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FB2BQVew"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D140833B6DC
-	for <linux-btrfs@vger.kernel.org>; Fri, 19 Dec 2025 15:12:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E316922D781
+	for <linux-btrfs@vger.kernel.org>; Fri, 19 Dec 2025 17:14:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766157126; cv=none; b=f2OYIqk5kte27iBz+HKcixZMInE8kvDX90ZLnLxo63dJW2OD9cyn/GNV/96LyWwva4MlAKJNu85y0/N/ZcscmbZLaTS27mULRjbQ1nbUgVK159qblnwnsMh25KErtYPeQ1uyI5ecuOyZXdecO3IMFW7AqyLt3i+O9R83V9pBqyY=
+	t=1766164489; cv=none; b=nuKz2oMJl1+KSY09gOY55FsKUG+bsXhuc11rRngbPY4O9FMOGdrvfD8O7xBtVmXhJUoiN8aRp3MdsH75gej1MrBb66jp3U9EWMWp5o4x1RkMLJKCtXm1PRONgHRjjLoKmlPowu5Vysqee7wp9nJpHsmMnIFzd0sZqIUdJy/T3hw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766157126; c=relaxed/simple;
-	bh=khSk3JMEwC370gokxLVt2+V81u3kcMruZJtN2TvaSFc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=K/jqwLS8vwqx4gQBl4PO0GaN0ANqP4uCJLRoL0yGibgbMqBnPa9brrUymxTQB7ZuR7Z6ymtBCmulylJchUv3S8E+7FS/4igJ68T71fb2AOAZcpITc6DtfghnM/QOlR/7chZJcPzNvBsdaLX3hNEx6VoMRI49AMT9me1GYpUpgww=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=KI19ArTA; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=hh7RDHL5; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=b5aN+xiY; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=UlK0GM+L; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id C6B6233714;
-	Fri, 19 Dec 2025 15:12:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1766157122; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nm9StvwwiQFX7seFXlICx2z9FzoyRX/N9SPzI43K0Zg=;
-	b=KI19ArTADje7Ef3OPJV1hLzka/GGmcgxpQRR6RSJ7DHa8xN87n5DpWcUrEuP6zcbKNBkjh
-	jdAHIcOy+pP1KDVylL7DduL0D9Z0djbZqkz/dqZTELixx8ReuUvdb+2z6i1Q55oDKPgAyN
-	F2xzcn95MmmXstBZd5eceTZYnIWCjuE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1766157122;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nm9StvwwiQFX7seFXlICx2z9FzoyRX/N9SPzI43K0Zg=;
-	b=hh7RDHL5gn+xmIJE6BzwmatN//9gS67udthbyazRkh3JxbChFHIcaQzU79Hl2FV08I6i1R
-	t44ziy3+n6cOEYBw==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=b5aN+xiY;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=UlK0GM+L
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1766157121; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nm9StvwwiQFX7seFXlICx2z9FzoyRX/N9SPzI43K0Zg=;
-	b=b5aN+xiYhnhbNofq9pLwTKt0OjqkrkmlduPcJsiSUaIIrXwCK2Q9qj5x9rllOIHmzan7Gj
-	lSZylngfV0Tizm6Cb6iQYT6I2X7cikiVJYghY1diH86XV0Tte9zOjItXeuIbMcOMIJ3Y8h
-	+5KI8rTQVHeZlHCTIGuLbkdxU5sGFZY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1766157121;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nm9StvwwiQFX7seFXlICx2z9FzoyRX/N9SPzI43K0Zg=;
-	b=UlK0GM+LwMJgyv+MpnfOq7YkH6maQd48o4ODk32s9ZBPNqUpUWpQQ+PhTj8LW2gM7rc5Zn
-	gNkmYnSNDyk1a8Dw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B9CC53EA63;
-	Fri, 19 Dec 2025 15:12:01 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id EXtULUFrRWmvQgAAD6G6ig
-	(envelope-from <jack@suse.cz>); Fri, 19 Dec 2025 15:12:01 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 764A1A090B; Fri, 19 Dec 2025 16:12:01 +0100 (CET)
-Date: Fri, 19 Dec 2025 16:12:01 +0100
-From: Jan Kara <jack@suse.cz>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Jan Kara <jack@suse.cz>, Christian Brauner <brauner@kernel.org>, 
-	Al Viro <viro@zeniv.linux.org.uk>, David Sterba <dsterba@suse.com>, 
-	Mike Marshall <hubcap@omnibond.com>, Martin Brandenburg <martin@omnibond.com>, 
-	Carlos Maiolino <cem@kernel.org>, Stefan Roesch <shr@fb.com>, Jeff Layton <jlayton@kernel.org>, 
-	linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	gfs2@lists.linux.dev, io-uring@vger.kernel.org, devel@lists.orangefs.org, 
-	linux-unionfs@vger.kernel.org, linux-mtd@lists.infradead.org, linux-xfs@vger.kernel.org, 
-	linux-nfs@vger.kernel.org
-Subject: Re: [PATCH 08/10] fs: add support for non-blocking timestamp updates
-Message-ID: <wynhubqgvknr3fl4umfst62xyacck3avmg6qnbp2na6w7ee3qf@odetcif4kozl>
-References: <20251217061015.923954-1-hch@lst.de>
- <20251217061015.923954-9-hch@lst.de>
- <2hnq54zc4x2fpxkpuprnrutrwfp3yi5ojntu3e3xfcpeh6ztei@2fwwsemx4y5z>
- <20251218061900.GB2775@lst.de>
+	s=arc-20240116; t=1766164489; c=relaxed/simple;
+	bh=dOfzmdQ6XtteHHqpWuXYEoXSYwJ5ISZ1weqIeOWwefQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=lEW8XW2n4B+XDbKQK7RyERIh75mCeV59hhX+/QZxnXtZjQAI3hlB4I6mbbPXk8MaRcZhlMdLGC8DKBJCum4Z9g4+fQFwhotLZqv9Fs2s6EO3ubzfLuTfjDOxPGIzEg4E+oiqmf2gThT9QEUSmRQ2zWhx38jrZpEH9pSe81wmMQ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FB2BQVew; arc=none smtp.client-ip=209.85.210.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-7d26a7e5639so2393822b3a.1
+        for <linux-btrfs@vger.kernel.org>; Fri, 19 Dec 2025 09:14:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1766164487; x=1766769287; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=FI43llsANdqGe6jTH+zTysLdat4X1xckyHWuski/dgo=;
+        b=FB2BQVew76rhabnSRjX0NWFbmefiYUGYy65lQiArx1QoaU4GqDENq895Ty9LvFMosS
+         m7hwLADIga5Xa6w78XywvniLTntt7S8B/qao/WJqYRunwHGgdhTkYqCEWxvK71qU8J/Z
+         MXazKNJ3WUvsz9GGkbQVrbKdNl5clqOBTiU06LPc73/NkGeD+fX4oPVXgKAOOWVg78iB
+         +qCGMKiVYbK3BC7KKh9iuU7Gx2o363n/9aHbfNyGn3tqSm2CNfZAu8wfip54bpJAt+ir
+         6UaU7v/HY/Quukj1KgpXssBHoEHJfvum45Qb2ONhzV2WcqtKL2UIbvTkBgyh5mUYSmBh
+         BY1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1766164487; x=1766769287;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FI43llsANdqGe6jTH+zTysLdat4X1xckyHWuski/dgo=;
+        b=uWKU172M7uVFnWMpI9n5xCMxL11Z1BQlt4VbWMBeVfx9om/Ucnht2mRk1EVbZVKpwl
+         h4yiLokppORFbs3AU0UPJNRXG+8bCgArSXOeQS0gz5TAI5+ughZYP0Nj0lPUqkTdkr1K
+         DmPowNf2/vXMh3XX2cxykDH/9u7nMO7oaCLWQnrKbygl+kMPiZERI/Z3kv7HWnQ9EnRm
+         ZbZzvpGhklFYBFjvGYaHTOW2k7oVNEGdyD1O3+KPTxhJjJrergwesmmvh6p50TazCftO
+         tGfO23hZg6UcBys9UAGgSvjG08OImMBc+aknY2BEKdcsZy94GwFmWy/cHzVDcQ6FMD1b
+         rI2w==
+X-Forwarded-Encrypted: i=1; AJvYcCUsKag6+LevayQn27DJZ7Lw+5A9PNjIMYgg3ZxzUiNH4vsn7DTE7LbRCmxRUcX7DFXEPe9v2X2GvZCF7A==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw0vY2bEeN9hypbcFOBhC3hRuj6agowxanDHjLmR+8Ifh4g0+tt
+	VGMEZF+0P7mslWLmTVelb4an/c1buiWEhceaTZnvt5uQaz1YMcA7CzCTUmxkcLHa
+X-Gm-Gg: AY/fxX7zurRT+e+tJzFfTaKiYNeX20xMiOZv8zrSxNQ73NWpN2x+w6e1zmZsrrJfKmV
+	5RpJlkwH0ZhjyjMjsPwm80mH5ekZY6BLqSraIHUdK1j8firN9cC3EEaVec/NA18jxcHWZwjy1mh
+	ZnwtkOWGM8PJfhrxS1NsZaGj0kqo0yYyXygn0X05oDPIeJIqYi2UUm+WTiu+TNdMdulzZG9SSpz
+	HrE3EtIRznXcmrG0VCtQNZVSg/5IJeDcbBE1ZHMg4TP87dc+nqzYyAA2busCkD8sHeqEXIP1e9O
+	wZUBNsyvVX/MxWMLxdbFNFQ2Ug3LwinHyWMlAySxXe6LxOKmfe1ruEkYH8uLq1VQvbTMeI5z0zS
+	uZMAgpKZI1a5wsO8yhNtEhu+VoVMHrbqYPBCe5jC4wOK78ZEGq6kM1g8M/3CSu4uSC7zTiNvP0t
+	q+mlgKO3jtuMCKvdo7jCzg
+X-Google-Smtp-Source: AGHT+IEi32XXAS6VGNRuRqya6xBow9Yt0eEjyaeRRuCEQInqjEE+xMj/FCOW8zT0x16srCdXUcDczg==
+X-Received: by 2002:a05:6a20:244f:b0:36a:d3c9:efa5 with SMTP id adf61e73a8af0-376aa2f47demr3429123637.52.1766164487023;
+        Fri, 19 Dec 2025 09:14:47 -0800 (PST)
+Received: from archlinux ([205.254.163.105])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-34e772ac1basm2219024a91.10.2025.12.19.09.14.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 19 Dec 2025 09:14:46 -0800 (PST)
+From: Suchit Karunakaran <suchitkarunakaran@gmail.com>
+To: clm@fb.com,
+	dsterba@suse.com,
+	linux-btrfs@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	Suchit Karunakaran <suchitkarunakaran@gmail.com>
+Subject: [PATCH] btrfs: fix NULL pointer dereference in do_abort_log_replay
+Date: Fri, 19 Dec 2025 22:44:34 +0530
+Message-ID: <20251219171434.46411-1-suchitkarunakaran@gmail.com>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251218061900.GB2775@lst.de>
-X-Spamd-Result: default: False [-4.01 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	MISSING_XM_UA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[20];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCVD_COUNT_THREE(0.00)[3];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
-	RCVD_TLS_LAST(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from]
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spam-Level: 
-X-Rspamd-Queue-Id: C6B6233714
-X-Spam-Flag: NO
-X-Spam-Score: -4.01
+Content-Transfer-Encoding: 8bit
 
-On Thu 18-12-25 07:19:00, Christoph Hellwig wrote:
-> On Wed, Dec 17, 2025 at 01:42:20PM +0100, Jan Kara wrote:
-> > > @@ -2110,12 +2110,26 @@ int inode_update_timestamps(struct inode *inode, int *flags)
-> > >  		now = inode_set_ctime_current(inode);
-> > >  		if (!timespec64_equal(&now, &ctime))
-> > >  			updated |= S_CTIME;
-> > > -		if (!timespec64_equal(&now, &mtime)) {
-> > > -			inode_set_mtime_to_ts(inode, now);
-> > > +		if (!timespec64_equal(&now, &mtime))
-> > >  			updated |= S_MTIME;
-> > > +
-> > > +		if (IS_I_VERSION(inode)) {
-> > > +			if (*flags & S_NOWAIT) {
-> > > +				/*
-> > > +				 * Error out if we'd need timestamp updates, as
-> > > +				 * the generally requires blocking to dirty the
-> > > +				 * inode in one form or another.
-> > > +				 */
-> > > +				if (updated && inode_iversion_need_inc(inode))
-> > > +					goto bail;
-> > 
-> > I'm confused here. What the code does is that if S_NOWAIT is set and
-> > i_version needs increment we bail. However the comment as well as the
-> > changelog speaks about timestamps needing update and not about i_version.
-> > And intuitively I agree that if any timestamp is updated, inode needs
-> > dirtying and thus we should bail regardless of whether i_version is updated
-> > as well or not. What am I missing?
-> 
-> With lazytime timestamp updates that don't require i_version updates
-> are performed in-memory only, and we'll only reach this with S_NOWAIT
-> set for those (later in the series, it can't be reached at all as
-> of this patch).
+Coverity reported a NULL pointer dereference issue (CID 1666756) in
+do_abort_log_replay(). When btrfs_alloc_path() fails in
+replay_one_buffer(), wc->subvol_path is NULL, but btrfs_abort_log_replay()
+calls do_abort_log_replay() which unconditionally dereferences
+wc->subvol_path when attempting to print debug information. Fix this by
+adding a NULL check before dereferencing wc->subvol_path in
+do_abort_log_replay().
 
-Ah, I see now. Thanks for explanation. This interplay between filesystem's
-.update_time() helper and inode_update_timestamps() is rather subtle.
-Cannot we move the SB_LAZYTIME checking from .update_time() to
-inode_update_timestamps() to have it all in one function? The hunk you're
-adding to xfs_vn_update_time() later in the series looks like what the
-other filesystems using it will want as well?
+Signed-off-by: Suchit Karunakaran <suchitkarunakaran@gmail.com>
+---
+ fs/btrfs/tree-log.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-BTW, I've noticed that ovl_update_time() and fat_update_time() should be
-safe wrt NOWAIT IO so perhaps you don't have to disable it in your patch
-(or maybe reenable explicitly?).
-
-And I don't really now what orangefs_update_time() is trying to do with its
-__orangefs_setattr() call which just copies the zeroed-out timestamps from
-iattr into the inode? Mike?
-
-								Honza
-
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index 5831754bb01c..2d9d38b82daa 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -190,7 +190,7 @@ static void do_abort_log_replay(struct walk_control *wc, const char *function,
+ 
+ 	btrfs_abort_transaction(wc->trans, error);
+ 
+-	if (wc->subvol_path->nodes[0]) {
++	if (wc->subvol_path && wc->subvol_path->nodes[0]) {
+ 		btrfs_crit(fs_info,
+ 			   "subvolume (root %llu) leaf currently being processed:",
+ 			   btrfs_root_id(wc->root));
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.52.0
+
 
