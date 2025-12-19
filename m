@@ -1,115 +1,109 @@
-Return-Path: <linux-btrfs+bounces-19892-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19893-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2976CCF65A
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Dec 2025 11:37:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 38BCFCCF7E6
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Dec 2025 11:57:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 0385530B860F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Dec 2025 10:33:03 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id B84DB308A3B9
+	for <lists+linux-btrfs@lfdr.de>; Fri, 19 Dec 2025 10:53:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A54152D7394;
-	Fri, 19 Dec 2025 10:33:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C51F03019BE;
+	Fri, 19 Dec 2025 10:53:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UXUzW7Rt"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FQAw3C3U"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78A5A22A4F6
-	for <linux-btrfs@vger.kernel.org>; Fri, 19 Dec 2025 10:32:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 089411FF1C4
+	for <linux-btrfs@vger.kernel.org>; Fri, 19 Dec 2025 10:53:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766140381; cv=none; b=AOannLfaeCMFmpB6S5anl4JSlZ5DEXD8xukD1Op6QrEUob3SK5RYQxtO+Z2Nf2ShySEMXAvDN8ePgxlIFDo4Tapcuer63VT23QOTnIWJRJQ6sHYQvswqSxuKxQb3CAjEmLYBV0Yx+fjYWhVxWtwTfpYKJAKE7ld9hDiSwRvK7So=
+	t=1766141584; cv=none; b=g5L7vcEklzfTEAiQ6Mj+6UechrXeXrO9bdXgCzRNJ+fyxQryY+hO0RlHX+GUTtSMBXpw6U/mNzD0lqF8NN0+DQ7hoZebWk5ADydZUgMzVcwWUzY2elWOhENQygc+NOD/ZBLPmeOiq1FeTXF1LF93mACxt1IvZ3jzfPrCSsby4UM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766140381; c=relaxed/simple;
-	bh=N9a29ixQhoodI4K0FcWH4qF4uc/vPwrZEztDP4/6UYY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ZpRUHSWP3XmezSJ+EJdBabMX8TzwBRWgHcFqg6Se5vIqYiDNSCSi7co6K/MT038j7uYUZh3bm7bCCDX7Xu1zreGgyBembjjdWBGI/nb7WedxN7hs/UftzwTPo6haDBnQvlbMCCtoxroEEngICzCWcJRd7Gkz2buZqaHqaP9Tsac=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UXUzW7Rt; arc=none smtp.client-ip=209.85.128.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-47d182a8c6cso3819095e9.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 19 Dec 2025 02:32:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1766140378; x=1766745178; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=LN0RiP4VaJKIkZXx4Id9qUPVqdrFmfSMAyYyiGl4w1A=;
-        b=UXUzW7RtedJLE4fiLy/JdxHcyoqD5sWoB2P33PUqLDzgVQ+goH1JFKfcdcNO+ZarOK
-         fBATS/THCCbZnmXA8vrvk1ZXFqP3eQ6jdIU12E+RG4FYemWH6KBzv1KwlgFdzbZcu/J/
-         320XmOZijDQxnpmC1xb6/ZrKnQhdHDJEhV5Soq9a+EWhKxid4Ld9srGtIqhtKdqhVz1f
-         70ktvyELJ4ochYROkbRWUpa8ncoSotUXZS81eqtqA/zmktj/p/U+907y6kL65X5ONcyh
-         1YYv1xqfEMnH+eSFoBNq2W+xnTogw4SuFtBm6DW92OnWHgcACGp9jmPs/rUkRepGPJGD
-         kQZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766140378; x=1766745178;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LN0RiP4VaJKIkZXx4Id9qUPVqdrFmfSMAyYyiGl4w1A=;
-        b=W5OPpshhe8yyxfa4dSIO9zJHtT7YgIevdDvzrNQi3SXgZEiOcl67V708cXfrU7iS6h
-         cF3PIS4yBzuBhnF0rWmZUkcam6FZyzYNgNnimkgvsT3UfoxKr7YNgwmYm0PH62C3bXK7
-         WxgJA5bLU9qVksOUpYuVrL0aNAqToXZWNbWSBwm8dcjbMdeULN7u1JsFw89L6d3kIrRP
-         QGZ5kINIFRmDxnrJTtPS+5ouQif10JlDs6Epk5Y3JO9dxaeGs8rThXYgV60jVtmzjVse
-         oU50afqhcvXKCsHMaKKU4MOvJfjoHoAnWureTLQMfW+ZDwnqo2zTfcLvQ8rVh+ZrCtLZ
-         stlA==
-X-Forwarded-Encrypted: i=1; AJvYcCV74JU1K3LBlAkxhUm4nEXaCFXgq3Fzkg5dIM3BXjK2usmdDM5vTE3TnTRS/FhtAtf7vh3q7C6cm9cS+w==@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywxbhu/o2JkAjbrqLhHHDDr1FdTGKpt0WgA2+mLAAwWszHa6B9T
-	ZZKmj6O9c5ZAKlXYpgCj2sNQyqvcMLhmkmR8bTshpabyWTIBNyCeiVcn
-X-Gm-Gg: AY/fxX6eyoMnRAQ+ouvmZmoOamgTZab0hhyyBB/BFGcwJL9+Cn+hzwMAmqPTgrEa01Z
-	WcLMRBzeBVPzuXN27kzSQtXh7mhUTPUT/FH24T5iyZdH4bj50uybBr3PFR4QL2CTX4f3LhUFuQ3
-	WycpdEd2elpv0M4xrsGLtxfkLlaw6W1lbfg3pi3hn+7CVUESzV3IR5DY1x1oJ2f7pflhPHgc6F7
-	7LB2CBKiayS2NKwNVNBO9RXhTeUOJWjLBYv3TVuSP3bS1CQc6GZdXtKUX2VqC1jqHxsred58yXN
-	2RADeWBrVcqaeZkTFZwhkAPt/nuBP6kQiTrpYnoG62d+xDwgQR/AB1T8hxerFFlmc17k/IZH7HI
-	HUqQMWj0uK7viqG+I1oEYGhdSOgvYdQg3YWruOriEfgEor8b5U5GAhn2lhGh1pvXfCqaPBQdJjj
-	R9YobC/y9atQ==
-X-Google-Smtp-Source: AGHT+IHYSFDlihEYg4HnC8bZnP0/P9xZlyj7AJRApPf5PBdUXAv16BVjv2N0J46NcNZ0tjReuEEsrw==
-X-Received: by 2002:a05:600c:6211:b0:45d:e28c:875a with SMTP id 5b1f17b1804b1-47d19598fdemr20194665e9.31.1766140377663;
-        Fri, 19 Dec 2025 02:32:57 -0800 (PST)
-Received: from localhost ([87.254.0.133])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47be3aa7cd0sm35078965e9.8.2025.12.19.02.32.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Dec 2025 02:32:57 -0800 (PST)
-From: Colin Ian King <colin.i.king@gmail.com>
-To: Chris Mason <clm@fb.com>,
-	David Sterba <dsterba@suse.com>,
-	linux-btrfs@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH][next] btrfs: fix spelling mistake "duing" -> "during"
-Date: Fri, 19 Dec 2025 10:31:58 +0000
-Message-ID: <20251219103158.464213-1-colin.i.king@gmail.com>
-X-Mailer: git-send-email 2.51.0
+	s=arc-20240116; t=1766141584; c=relaxed/simple;
+	bh=P2htuzTiuxkZEcIkM2qukJEGvzvzHJ5BQue4QvVYFYo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=X16m0w1F79hEAaPIZKZRyp5ZMHReVuhCTg7nI6RvgobHLC5XK65ShjWd2qA0F/HKj/YnZV7U8J8b31BJ6EyoLc7YyQIb6cGS5kIiYZ7U5Db9bSjoX6vxUJqhb3NPYUPEauXnyE8G1Jduw4loYubzVlD2qPtQbiU0gqn6cZaA80c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FQAw3C3U; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B90D1C19421
+	for <linux-btrfs@vger.kernel.org>; Fri, 19 Dec 2025 10:53:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1766141583;
+	bh=P2htuzTiuxkZEcIkM2qukJEGvzvzHJ5BQue4QvVYFYo=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=FQAw3C3UtoI5HsVvMx3gtWLzYiemR1vD8576t+KAleReWL+qMBhllPcckxedR70m0
+	 aXUrrJCFkn5DIi7+kSl4aRp/CPFzmaNUq5GRhAQEmfEg9XkXmmsoaBwy94hnj6YkTk
+	 LH9sTjAiSyp0U50X8q7EZWwQk9r29AnimhcEUS5bCETrNDlSvQ3rnu1x2GyA1CzvVL
+	 jx9lG2LcbFq5UfDkrxjAGWmYnZHhv6XeuY4t+w3/KXNiJJTTXirHgc9NfKcPOtfcJx
+	 XooSkRkvqYcVt3kd4WIyn0uYmTNJxw/owDjD8gTkRvfKrTw6lenG3PXW0BQhbyRauR
+	 GPT2dPat5zBcA==
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-b736d883ac4so292743866b.2
+        for <linux-btrfs@vger.kernel.org>; Fri, 19 Dec 2025 02:53:03 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUhcqr4Ppl1Pjzfmn/8ds0EBhIoXLo1rnz602oVmbJqUYlwJJyT+NyZZNzPeuKUCfUIIE7Kh15Qu9cBgg==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwrcCtc635P8KN8/M7P50r7UzkydCKAICb4dPBEv7FExeaKThMx
+	+uEeym12jCqIg6OkWYa41HlJ/RfMIlbWZrs44sNsGIHiLecYm3WHImtKxTgHdf+b/8loMn8Y3i0
+	ykOBkUrfLtYfnT8d59tB2+q++xvy67LM=
+X-Google-Smtp-Source: AGHT+IHBbRyP0qULADeGQny2YpM4j1RdcK7iD7xeIdYsXOKHaMfamONPHD01nixQyPOtiqpU6eBH872aI3qooKLm2yA=
+X-Received: by 2002:a17:906:fd84:b0:b7a:1be3:a583 with SMTP id
+ a640c23a62f3a-b80372590e8mr227053066b.64.1766141582320; Fri, 19 Dec 2025
+ 02:53:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+References: <20251219103158.464213-1-colin.i.king@gmail.com>
+In-Reply-To: <20251219103158.464213-1-colin.i.king@gmail.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Fri, 19 Dec 2025 10:52:25 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H4_DvxRKJs1Z-o2AMQ51XTMc1ebCd4UxtX_gOBOThX6fg@mail.gmail.com>
+X-Gm-Features: AQt7F2qK9LzVve5krmy0RuX0DyzSDOyHvex_3tgkrf5_jt1ZmIAUhZiPQk1imk8
+Message-ID: <CAL3q7H4_DvxRKJs1Z-o2AMQ51XTMc1ebCd4UxtX_gOBOThX6fg@mail.gmail.com>
+Subject: Re: [PATCH][next] btrfs: fix spelling mistake "duing" -> "during"
+To: Colin Ian King <colin.i.king@gmail.com>
+Cc: Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org, 
+	kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-There is a spelling mistake in a btrfs error message, fix it.
+On Fri, Dec 19, 2025 at 10:37=E2=80=AFAM Colin Ian King <colin.i.king@gmail=
+.com> wrote:
+>
+> There is a spelling mistake in a btrfs error message, fix it.
+>
+> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+> ---
+>  fs/btrfs/transaction.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+> index 206872d757c8..41e04c808d27 100644
+> --- a/fs/btrfs/transaction.c
+> +++ b/fs/btrfs/transaction.c
+> @@ -1623,7 +1623,7 @@ static int qgroup_account_snapshot(struct btrfs_tra=
+ns_handle *trans,
+>         ret =3D btrfs_write_and_wait_transaction(trans);
+>         if (unlikely(ret))
+>                 btrfs_err(fs_info,
+> -"error while writing out transaction duing qgroup snapshot accounting: %=
+d", ret);
+> +"error while writing out transaction during qgroup snapshot accounting: =
+%d", ret);
 
-Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
----
- fs/btrfs/transaction.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+As this is in a recent patch not yet in Linus' tree, I've updated the
+patch in the github for-next branch (David will later update the for
+branch for linux-next).
 
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index 206872d757c8..41e04c808d27 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -1623,7 +1623,7 @@ static int qgroup_account_snapshot(struct btrfs_trans_handle *trans,
- 	ret = btrfs_write_and_wait_transaction(trans);
- 	if (unlikely(ret))
- 		btrfs_err(fs_info,
--"error while writing out transaction duing qgroup snapshot accounting: %d", ret);
-+"error while writing out transaction during qgroup snapshot accounting: %d", ret);
- 
- out:
- 	/*
--- 
-2.51.0
+Thanks.
 
+>
+>  out:
+>         /*
+> --
+> 2.51.0
+>
+>
 
