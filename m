@@ -1,47 +1,47 @@
-Return-Path: <linux-btrfs+bounces-19917-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19918-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EC5FCD2DAF
-	for <lists+linux-btrfs@lfdr.de>; Sat, 20 Dec 2025 12:03:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D6213CD2DD0
+	for <lists+linux-btrfs@lfdr.de>; Sat, 20 Dec 2025 12:04:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 877183019BD3
-	for <lists+linux-btrfs@lfdr.de>; Sat, 20 Dec 2025 11:03:11 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 3FEB73035D06
+	for <lists+linux-btrfs@lfdr.de>; Sat, 20 Dec 2025 11:03:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68F963090DB;
-	Sat, 20 Dec 2025 11:03:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07B1030ACE3;
+	Sat, 20 Dec 2025 11:03:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kmH08eqv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eSp2z9oh"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A7FC145B3E;
-	Sat, 20 Dec 2025 11:03:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F65C259CBD;
+	Sat, 20 Dec 2025 11:03:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766228588; cv=none; b=PBMH9Fc7uxsjmp99iflfGmgzYBKCOLkgqE44uVZI4hzNtam9Cf+Jo9LM4cgumCqbllRCOiIiMT9bpeH64ByTsU3hg+IZudroYPwi05JLCyxoMxKxtF6rQhy1RO0cyS1hqsmVDocnL06py3IoFOVr5jr8x3HOaDsuPh8Mp2ohK5c=
+	t=1766228594; cv=none; b=I1TUZBU01k27oGnZvsgnV2y+wQ+rMVCaEzw8V2i9T+IqzldchWU5cFujPlAb/YTLVPdguxi4pJmNLlhd8Nz/60LRHN/HAmCK4tndPvY4Xar/n11vgGMD8WmWRrQKz0bpHIPmaeYYV3eZriKP5u+J7ZEcb0X2WRt3LcM3+GecqPs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766228588; c=relaxed/simple;
-	bh=uLJ1iwUNyZ6loiMONY7vTnixCRoajdX9bamzCmel0qA=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=K92gehB0LA+KIU/AqIRS6qqKYL8NPa6Ez3HIZd31ODS0qON/4be7yS7GDXCB6ACJEKChZLePkegstc9w9zgfgoR/IBP+CzHV7ig/A1bFG9okK+SA7Bvl56XvHn7zmbHjZCd5XS5p0AFff3wZisN/7rklSgWVwRx7cOI6SLRNRcQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kmH08eqv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55761C4CEF5;
-	Sat, 20 Dec 2025 11:03:02 +0000 (UTC)
+	s=arc-20240116; t=1766228594; c=relaxed/simple;
+	bh=ap8MRB6u43PIFW27qfddd/82fqc/71rc4wGTDPI7wLo=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=hxKHlPTiqvtQG508PPU8Aea0Y6iotW0eXhKVf11oePxTxxk+Uz6a8p0LjVsYk68DjvYZzKYuLUd36OEF6xTOblpTOHIaDxHbpmGDZaigDFOAMwFXrQpD+YehHazrc3Yl19DmQAcwD+6UBbmLk0IYvj46wZSGCRVU1I8BHIAEN4g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eSp2z9oh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D249C116B1;
+	Sat, 20 Dec 2025 11:03:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1766228587;
-	bh=uLJ1iwUNyZ6loiMONY7vTnixCRoajdX9bamzCmel0qA=;
-	h=From:Subject:Date:To:Cc:From;
-	b=kmH08eqvO+wyPLfsonbbP2CyB5dJnssivzncsh9VBoJwzv5S3wnIPzD725NtwNrIo
-	 kVypGnRnJao+KfLTryOyGnU/zAqE95jHesAwjkmhyXwijszAu5a21LBDS8GulvCnce
-	 HecqW0QPbVWqk+hkQkmfDinrRVkg3AHeeR+eWfailjj27obvk4STLS6tm3Y0elzbaj
-	 vNJ+L7UfJZ+VYcxK4Sqpo80NYbwYsq3a1sWCtw1tq9rlhbUz71vnRhVj92orqE7wCS
-	 izRbE4XvGfVFJlKICq7LEmIkGcf5mc9RXitXOp6iYJl2hJJXRwSRGP7tLc+9L4jydl
-	 k6ruCtW4OkwAw==
+	s=k20201202; t=1766228594;
+	bh=ap8MRB6u43PIFW27qfddd/82fqc/71rc4wGTDPI7wLo=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
+	b=eSp2z9ohjB6vYInRQZAjAFrvEjUyT/DzO1gHOyAbUXyzXq1as2FowCXDAAplhRIFe
+	 i1vcvNC4VrKYrhCs77Nj/tm6WwIh5K7j8tQkObTiQEZLDX1JFIv5L8Zp6bO0cHc5Uf
+	 nhke2tbaUU1z3fYRMkQET3wW9XLiprqu7eIBJbOhsU4Ia+aM/cqdw2W5Vux/Ox9xrB
+	 Mqf05/UXcE2wUGDDse/9rIYUJhTvhWiw36T5XBOwff+aWxfLMeLZPSo8hG44WMfPXC
+	 79M5/xgBIe1zTidgdDSEHpcj4ra2KZ/uF+C22MQnxnC5qG3igk2QrLrpjPgROdlTJm
+	 Q6bd5aMblMu2w==
 From: Vincent Mailhol <mailhol@kernel.org>
-Subject: [PATCH v3 0/3] kbuild: remove gcc's -Wtype-limits
-Date: Sat, 20 Dec 2025 12:02:18 +0100
-Message-Id: <20251220-remove_wtype-limits-v3-0-24b170af700e@kernel.org>
+Date: Sat, 20 Dec 2025 12:02:19 +0100
+Subject: [PATCH v3 1/3] kbuild: remove gcc's -Wtype-limits
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -50,11 +50,9 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIADqCRmkC/22Oyw6CMBBFf4V0bUkfthVW/ocxRsqAjUJxilVj+
- HcrbDRxeSb3njsvEgAdBFJmL4IQXXC+TyBXGbGnY98CdXViIphQXDBFETof4XAfnwPQi+vcGKg
- 1Bqq1rllhBUnNAaFxj9m62y+McL0l+bgcSXUMQK3vUr3Mos55QdFy8gmfXBg9PuePIp/Tyzjf/
- B2PnDJqpFpzo6Q2G7M9A/ZwyT22szCKb0nxXyKSREAhKtkora36kUzT9Aas1pSrKQEAAA==
-X-Change-ID: 20251205-remove_wtype-limits-c77eb46d09c2
+Message-Id: <20251220-remove_wtype-limits-v3-1-24b170af700e@kernel.org>
+References: <20251220-remove_wtype-limits-v3-0-24b170af700e@kernel.org>
+In-Reply-To: <20251220-remove_wtype-limits-v3-0-24b170af700e@kernel.org>
 To: Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nsc@kernel.org>, 
  Nick Desaulniers <nick.desaulniers+lkml@gmail.com>, 
  Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, 
@@ -69,69 +67,113 @@ Cc: Linus Torvalds <torvalds@linux-foundation.org>,
  dri-devel@lists.freedesktop.org, linux-btrfs@vger.kernel.org, 
  linux-hardening@vger.kernel.org, Vincent Mailhol <mailhol@kernel.org>
 X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2019; i=mailhol@kernel.org;
- h=from:subject:message-id; bh=uLJ1iwUNyZ6loiMONY7vTnixCRoajdX9bamzCmel0qA=;
- b=owGbwMvMwCV2McXO4Xp97WbG02pJDJluTRHRbsZVmvGzLGyUrEsM52tXebBfFpwYscXC1ywwk
- 0ns86GOiSwMYlwMlmKKLMvKObkVOgq9ww79tYSZw8oEMkRapIEBCFgY+HIT80qNdIz0TLUN9QwN
- dYBMBi5OAZjqBDWG/4n/+NeouHvwH/Nt05GtlXCte94128D4IueKOA/Zx+u7KhgZOuedn3Rm4wG
- nvshkw82HCwP0+yWyp/85cbv21IIeltq1XAA=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3600; i=mailhol@kernel.org;
+ h=from:subject:message-id; bh=ap8MRB6u43PIFW27qfddd/82fqc/71rc4wGTDPI7wLo=;
+ b=owGbwMvMwCV2McXO4Xp97WbG02pJDJluTTH2PxvED5iem9T/9fZyodSYGb+mLK9ffoWxL+p+h
+ FkPhzFjx0QWBjEuBksxRZZl5ZzcCh2F3mGH/lrCzGFlAhkiLdLAAAQsDHy5iXmlRjpGeqbahnqG
+ hjpAJgMXpwBM9fQYRobrzVs2h7V82sLAk8/wzdbv79rGOl+NXefexIX/WfH09bRmRoaXtQIOKhN
+ vybgals7N2bjbdr6VcsRenz/nWOvPnCk0ruMBAA==
 X-Developer-Key: i=mailhol@kernel.org; a=openpgp;
  fpr=ED8F700574E67F20E574E8E2AB5FEB886DBB99C2
 
-I often read on the mailing list people saying "who cares about W=2
-builds anyway?". At least I do. Not that I want to fix all of them,
-but on some occasions, such as new driver submissions, I have often
-found a couple valid diagnostics in the W=2 output.
+W=2 builds are heavily polluted by the -Wtype-limits warning.
 
-That said, the annoying thing is that W=2 is heavily polluted by one
-warning: -Wtype-limits. Try a gcc W=2 build on any file and see the
-results for yourself. I suspect this to be the reason why so few
-people are using W=2.
+Here are some W=12 statistics on Linux v6.19-rc1 for an x86_64
+defconfig (with just CONFIG_WERROR set to "n") using gcc 14.3.1:
 
-This series removes gcc's -Wtype-limits in an attempt to make W=2 more
-useful. Those who do not use W=2 can continue to not use it if they
-want. Those who, like me, use it for time to time will get an improved
-experience from the reduced spam.
+	 Warning name			count	percent
+	-------------------------------------------------
+	 -Wlogical-op			    2	  0.00 %
+	 -Wmaybe-uninitialized		  138	  0.20 %
+	 -Wunused-macros		  869	  1.24 %
+	 -Wmissing-field-initializers	 1418	  2.02 %
+	 -Wshadow			 2234	  3.19 %
+	 -Wtype-limits			65378	 93.35 %
+	-------------------------------------------------
+	 Total				70039	100.00 %
 
-Patch #1 deactivates -Wtype-limits.  Extra details on statistics, past
-attempts and alternatives are given in the description.
+As we can see, -Wtype-limits represents the vast majority of all
+warnings. The reason behind this is that these warnings appear in
+some common header files, meaning that some unique warnings are
+repeated tens of thousands of times (once per header inclusion).
 
-Patch #2 clean-ups the local kbuild -Wno-type-limits exceptions, while
-patch #3 undoes a local workaround which silenced that warning by
-uglifying the code.
+Add to this the fact that each warning is coupled with a dozen lines
+detailing some macro expansion. The end result is that the W=2 output
+is just too bloated and painful to use.
 
+Three years ago, I proposed in [1] modifying one such header to
+silence that noise. Because the code was not faulty, Linus rejected
+the idea and instead suggested simply removing that warning.
+
+At that time, I could not bring myself to send such a patch because,
+despite its problems, -Wtype-limits would still catch the below bug:
+
+	unsigned int ret;
+
+	ret = check();
+	if (ret < 0)
+		error();
+
+Meanwhile, based on another suggestion from Linus, I added a new check
+to sparse [2] that would catch the above bug without the useless spam.
+
+With this, remove gcc's -Wtype-limits. People who still want to catch
+incorrect comparisons between unsigned integers and zero can now use
+sparse instead.
+
+On a side note, clang also has a -Wtype-limits warning but:
+
+  * it is not enabled in the kernel at the moment because, contrary to
+    gcc, clang did not include it under -Wextra.
+
+  * it does not warn if the code results from a macro expansion. So,
+    if activated, it would not cause as much spam as gcc does.
+
+  * -Wtype-limits is split into four sub-warnings [3] meaning that if
+    it were to be activated, we could select which one to keep.
+
+So there is no present need to explicitly disable -Wtype-limits in
+clang.
+
+[1] linux/bits.h: GENMASK_INPUT_CHECK: reduce W=2 noise by 31% treewide
+Link: https://lore.kernel.org/all/20220308141201.2343757-1-mailhol.vincent@wanadoo.fr/
+
+[2] Warn about "unsigned value that used to be signed against zero"
+Link: https://lore.kernel.org/all/20250921061337.3047616-1-mailhol@kernel.org/
+
+[3] clang's -Wtype-limits
+Link: https://clang.llvm.org/docs/DiagnosticsReference.html#wtype-limits
+
+Reviewed-by: Nicolas Schier <nsc@kernel.org>
 Signed-off-by: Vincent Mailhol <mailhol@kernel.org>
 ---
-Changes in v3:
+ scripts/Makefile.warn | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-  - Remove patch #4.
+diff --git a/scripts/Makefile.warn b/scripts/Makefile.warn
+index 68e6fafcb80c..c593ab1257de 100644
+--- a/scripts/Makefile.warn
++++ b/scripts/Makefile.warn
+@@ -55,6 +55,9 @@ else
+ KBUILD_CFLAGS += -Wno-main
+ endif
+ 
++# Too noisy on range checks and in macros handling both signed and unsigned.
++KBUILD_CFLAGS += -Wno-type-limits
++
+ # These result in bogus false positives
+ KBUILD_CFLAGS += $(call cc-option, -Wno-dangling-pointer)
+ 
+@@ -174,7 +177,6 @@ else
+ 
+ # The following turn off the warnings enabled by -Wextra
+ KBUILD_CFLAGS += -Wno-missing-field-initializers
+-KBUILD_CFLAGS += -Wno-type-limits
+ KBUILD_CFLAGS += -Wno-shift-negative-value
+ 
+ ifdef CONFIG_CC_IS_CLANG
 
-Link to v2: https://lore.kernel.org/r/20251219-remove_wtype-limits-v2-0-2e92b3f566c5@kernel.org
-
-Changes in v2:
-
-  - Add two more patches to clean up some -Wtype-limits workarounds
-  - Collect the Reviewed-by tags.
-
-Link to v1: https://lore.kernel.org/r/20251218-remove_wtype-limits-v1-0-735417536787@kernel.org
-
----
-Vincent Mailhol (3):
-      kbuild: remove gcc's -Wtype-limits
-      kbuild: cleanup local -Wno-type-limits exceptions
-      overflow: Remove is_non_negative() and is_negative()
-
- drivers/gpu/drm/Makefile |  1 -
- fs/btrfs/Makefile        |  1 -
- include/linux/overflow.h | 10 ++--------
- scripts/Makefile.warn    |  4 +++-
- 4 files changed, 5 insertions(+), 11 deletions(-)
----
-base-commit: 3e7f562e20ee87a25e104ef4fce557d39d62fa85
-change-id: 20251205-remove_wtype-limits-c77eb46d09c2
-
-Best regards,
 -- 
-Vincent Mailhol <mailhol@kernel.org>
+2.51.2
 
 
