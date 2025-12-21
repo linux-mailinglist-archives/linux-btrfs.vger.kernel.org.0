@@ -1,58 +1,58 @@
-Return-Path: <linux-btrfs+bounces-19925-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19926-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10C6CCD39E9
-	for <lists+linux-btrfs@lfdr.de>; Sun, 21 Dec 2025 03:52:38 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71EE6CD3A13
+	for <lists+linux-btrfs@lfdr.de>; Sun, 21 Dec 2025 03:53:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 550A73010FD2
-	for <lists+linux-btrfs@lfdr.de>; Sun, 21 Dec 2025 02:52:23 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A5211301FC38
+	for <lists+linux-btrfs@lfdr.de>; Sun, 21 Dec 2025 02:52:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B33071EF36E;
-	Sun, 21 Dec 2025 02:52:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 568561A9FA0;
+	Sun, 21 Dec 2025 02:52:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="EzlY+fFs"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dBP4Gzuk"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC51D17A2F6
-	for <linux-btrfs@vger.kernel.org>; Sun, 21 Dec 2025 02:52:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67A6D1D618A
+	for <linux-btrfs@vger.kernel.org>; Sun, 21 Dec 2025 02:52:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766285542; cv=none; b=NbkbhXt4CxQGPkPKxnJIiDgnqNyD5c7K4RyGsWRa9cVRPOW+eZEBOs3UrGKaiMz547df3Iyd3peUEjnjg9mgs4eSWQnpppZUazjCdvxIMicfOzbIYpiQeOI1F98I66/H37nvuTudaB/pCeVySsX5YRtLA0ZddTmWkYGUExqw6m0=
+	t=1766285567; cv=none; b=aNUZFXCk+i6dwyhusKygBuNzCzWKotXZ6eWdtCm4HzmMrRvx18F0Metz54hRlxdluJ5I4PiERDdxaZZgAtc8bYBymhDkjGzmCIUXHJJV1AJyPbVdnpwg7XhcvUsyEUatbJiCWqai5a5POp7jDSxcZKgnOhlkbSYiKhL4sYZIzqY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766285542; c=relaxed/simple;
+	s=arc-20240116; t=1766285567; c=relaxed/simple;
 	bh=wydG2tqDwgj6QuZW7DY/zuZo5VojiZ1uNvXaK/0N8JE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ko8TpPig26DnNEo71JCMGnqi2Q0t3U/FP8336UnHKdWJeL+AMMPY2HuhmFhaeTd51fpGWiUJqUT/80FSTptH9tBrbEuJpUo/7TZyM8buk7zw0qsayuw1NTK7w7PInm1pSnhvgeJ4ncteqFsPcIQ2Mu7MpVsoKosu8LLw1gYyKXs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=EzlY+fFs; arc=none smtp.client-ip=170.10.129.124
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=nFg4jn+7ptLQ6mSs71xswJ1uGwcvrLGsXF79ralHqVAVKb6u/TtpG0TY1EA4z5FcDtDv5Jcz4Og9ENh1uW7XpMJiA16KEGFpkQUmNB9UFzxg6bRj4Xh7X6J2V8hMjSd+dxf6CMhB9xmhneRYs0KJBZMDeIJH8Gs15HMXiXFK9r8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dBP4Gzuk; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1766285538;
+	s=mimecast20190719; t=1766285564;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding;
 	bh=gck6PTahdn31ztY8BjIzxEwMrGwEobhk2pDC85pgr+M=;
-	b=EzlY+fFsRXI75M118P/D2x9IkqQF+RdxeS2cmFaplVjllFhmWvDkfeMpIEYTQjq1Ewpsbb
-	32LZDfeM3NeNZJY2wa/C351G9XK34Vr14pwbxyFu0yT0YzFfyaujtwftQnIrQLG2luc/tn
-	VWTNgtKyflg1BlYoVpmNp2kfrI2sTIQ=
-Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
+	b=dBP4GzukA6We+d8eJuiC8A37+b4mZbpn6dg/jAlHnZ1mOw2J8mNwxsy1uCwivA5O57hme+
+	Wh41cGXc51SKrMf34BAmLi5seboCoxNI/JfXvrqVvFAMaWbhq7iKJlaeFmk/gu9SkDpeUe
+	RASleTcHWRCHU166KSY+4n06u5B3jLU=
+Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
  (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-605-1LXmPRQqPJis4DcQ0aFGKw-1; Sat,
- 20 Dec 2025 21:52:15 -0500
-X-MC-Unique: 1LXmPRQqPJis4DcQ0aFGKw-1
-X-Mimecast-MFC-AGG-ID: 1LXmPRQqPJis4DcQ0aFGKw_1766285533
-Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-135-T_VNJ7IVO7K6lHxJxxN1RQ-1; Sat,
+ 20 Dec 2025 21:52:41 -0500
+X-MC-Unique: T_VNJ7IVO7K6lHxJxxN1RQ-1
+X-Mimecast-MFC-AGG-ID: T_VNJ7IVO7K6lHxJxxN1RQ_1766285559
+Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 800E9195605A;
-	Sun, 21 Dec 2025 02:52:12 +0000 (UTC)
+	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 478D41956050;
+	Sun, 21 Dec 2025 02:52:39 +0000 (UTC)
 Received: from pasta.fast.eng.rdu2.dc.redhat.com (unknown [10.44.32.8])
-	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 8B52D1800367;
-	Sun, 21 Dec 2025 02:52:07 +0000 (UTC)
+	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 8801F180049F;
+	Sun, 21 Dec 2025 02:52:34 +0000 (UTC)
 From: Andreas Gruenbacher <agruenba@redhat.com>
 To: Christoph Hellwig <hch@infradead.org>,
 	Jens Axboe <axboe@kernel.dk>,
@@ -65,9 +65,9 @@ Cc: Andreas Gruenbacher <agruenba@redhat.com>,
 	linux-raid@vger.kernel.org,
 	dm-devel@lists.linux.dev,
 	linux-kernel@vger.kernel.org
-Subject: [RFC v2 00/17] bio clenups
-Date: Sun, 21 Dec 2025 03:51:48 +0100
-Message-ID: <20251221025206.87021-1-agruenba@redhat.com>
+Subject: [RFC v2 00/17] bio cleanups
+Date: Sun, 21 Dec 2025 03:52:15 +0100
+Message-ID: <20251221025233.87087-1-agruenba@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -75,7 +75,7 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
 
 Hello,
 
