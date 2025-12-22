@@ -1,164 +1,209 @@
-Return-Path: <linux-btrfs+bounces-19957-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19958-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5793FCD7046
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Dec 2025 20:55:44 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12424CD704F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Dec 2025 20:57:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 3FC1E301F5D5
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Dec 2025 19:55:32 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 880D2301470B
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Dec 2025 19:57:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7125D33BBD2;
-	Mon, 22 Dec 2025 19:55:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A80DC33BBD6;
+	Mon, 22 Dec 2025 19:57:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dnU6kI1V"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="CLrrx64W"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1804E32D44B;
-	Mon, 22 Dec 2025 19:55:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 972241FE45D
+	for <linux-btrfs@vger.kernel.org>; Mon, 22 Dec 2025 19:57:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766433328; cv=none; b=jZY3vVsh1SLOFbb7Rtf9KOH3gwI/9bsKcebRFOvXk7pOdyrs3R0HUw8cTPp5EhAY4V03Gs5CuCHocgB6O6vfx8Eti7EI94Q6EE43j7CWn8GZLhWqw5XSzzM46aCbc2D9r9RBy8jxymEWRX2zyYyHIIv4N1orLQFTLG0nG1aP26I=
+	t=1766433447; cv=none; b=qoJ/8Y/X4BY0CHVdb+dUZhFGwVWCn2QUmveM+xfqSm7x8pystChtL6cCwr8tP+L2WUrFnr3tOTHtVzbTZrOmWXR9ZY8pfhkZW8Yx60Fdc206ptFPI/iffEW8MVL2t+N/qL/dqs5PBVNdvsGveDjMZv3wRHK/gX5xwXnU/kVo1Ng=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766433328; c=relaxed/simple;
-	bh=faxuRQ98w3w3AiTuKAdaMxKF7N4LhPW8CIv8V3TK6l0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SZ3EPEHRyb2ot4pVyfEVBrZQIlcdXpgU791UMSFnhGlt+/4FKQdQ/M4isthGGlY/oGE90gls7WgFs0oIIvV/bRPBKQeS8OK3Hm4e58tcOtmgLkRPsjq+9eklvDjR4mCvXJi/NkQ9cCvUi0B7V0zqvAEpKnea+XOpEUqUBzuPSbI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dnU6kI1V; arc=none smtp.client-ip=198.175.65.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1766433328; x=1797969328;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=faxuRQ98w3w3AiTuKAdaMxKF7N4LhPW8CIv8V3TK6l0=;
-  b=dnU6kI1VhDnbl+9zlPWw6O9J8XoeuWHX7FU5cDXU8mE3Dw31G9poNknC
-   uJDSltchR2JN5M6vQfecJ8zjVhAUCMhRKbSVBEbH+U/3m2rx+TtvmJjx9
-   JY2YATxLaN1p2oVsjq65rsTUR9TYgrhPA8We6h8G2upaz4IFjboC0eHku
-   dxtDdca7kMSlCroGbrr9GFGYmH4rapXomxoNUFJen47rGUQ7z0MwPeMw3
-   VswA0EypP4ayC9klPGtNpa00Z6LO9nygSKOl4ArVSRM1URrohf6zroE+s
-   1qVHQG9VXJTpCBT+UJuWTqxD03mYSXIRAmlZAtMBYMlqus6KY0Uk4P2cv
-   A==;
-X-CSE-ConnectionGUID: XgvzLm9lQMeCtQ1Nj9RE8A==
-X-CSE-MsgGUID: zwEe4emiR9+FjFqaxmSRmA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11650"; a="68274160"
-X-IronPort-AV: E=Sophos;i="6.21,169,1763452800"; 
-   d="scan'208";a="68274160"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2025 11:55:27 -0800
-X-CSE-ConnectionGUID: 1xlpX9p5Q2WyLoOdvs0kaw==
-X-CSE-MsgGUID: BmooQDGgRI+OgxdmXGgAKw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.21,169,1763452800"; 
-   d="scan'208";a="237011330"
-Received: from lkp-server02.sh.intel.com (HELO dd3453e2b682) ([10.239.97.151])
-  by orviesa001.jf.intel.com with ESMTP; 22 Dec 2025 11:55:21 -0800
-Received: from kbuild by dd3453e2b682 with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1vXlzy-0000000013h-24Qj;
-	Mon, 22 Dec 2025 19:55:18 +0000
-Date: Tue, 23 Dec 2025 03:55:07 +0800
-From: kernel test robot <lkp@intel.com>
-To: Vincent Mailhol <mailhol@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nicolas Schier <nsc@kernel.org>,
-	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
-	Chris Mason <chris.mason@fusionio.com>,
-	David Sterba <dsterba@suse.com>, Kees Cook <kees@kernel.org>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kbuild@vger.kernel.org,
-	linux-sparse@vger.kernel.org, linux-kernel@vger.kernel.org,
-	llvm@lists.linux.dev, dri-devel@lists.freedesktop.org,
-	linux-btrfs@vger.kernel.org, linux-hardening@vger.kernel.org,
-	Vincent Mailhol <mailhol@kernel.org>
-Subject: Re: [PATCH v3 3/3] overflow: Remove is_non_negative() and
- is_negative()
-Message-ID: <202512230342.Lgha2HGH-lkp@intel.com>
-References: <20251220-remove_wtype-limits-v3-3-24b170af700e@kernel.org>
+	s=arc-20240116; t=1766433447; c=relaxed/simple;
+	bh=ByfwnKH8AHCTlILdGzFxSLY2HXIomIgeJdDVGqmP7Gk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=T/uSRaz77IsVZDogB+zwj7b+lGrD1ypBqH1nM6c+NiOVft9nCCVTW7jioliin82wREJqT5DxLlKxADi9DnG42Vhp7v5pqAI/QPpay5NKlt2wtp/qpCw+EXqnTVN7bDSGJ9cJOSsg7Bb2kLlYt7SjR/Ew8d2Y5mxVm9+RD7WoFmA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=CLrrx64W; arc=none smtp.client-ip=212.227.17.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1766433439; x=1767038239; i=quwenruo.btrfs@gmx.com;
+	bh=UyYvzWxJ0HNfqRMIhSH9JCx0GRjuhwQC+yHMW+ZZJBQ=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=CLrrx64W95lM+NGOwUk6U1X7ZcsxQ+ji+4wdNRzzFT9r0V70uN9vbmbARY5t/AtW
+	 1dKBKjm+uYH0JVmyHt95laPcIgkkVzB9Mw6kU8ulBveWUfbAN0y0qwVAx2SeLZPcH
+	 CWhHUAfEBhnpWWTiLkYA6MrCGPeb34hEOIkCCEnxO4rL5CtDu+L/P/OuaR8n5FgCd
+	 YohcbEYTiHDwLcni4LXGXIjvIvOro4ab1Y4pBEQskS+zYGz+cCzLK92TXCZlnSxW7
+	 dgB3nIuJVcJCfGCC2yNggenGZMYTf9O5uMbKQeghaaq7jTLAbn93DIq5R0JIaFnDh
+	 zj9ZirU1t2zKr+2UGw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N79u8-1w1Olf0uTM-014jn9; Mon, 22
+ Dec 2025 20:57:19 +0100
+Message-ID: <51c72eeb-cd33-423e-8e75-7f79034b9596@gmx.com>
+Date: Tue, 23 Dec 2025 06:27:16 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251220-remove_wtype-limits-v3-3-24b170af700e@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: btrfs ASSERT() error when make C=1, but OK when make C=0
+To: Wang Yugui <wangyugui@e16-tech.com>, linux-btrfs@vger.kernel.org
+References: <20251222223701.F4A2.409509F4@e16-tech.com>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
+ sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
+ xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
+ naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
+ tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
+ 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
+ VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
+ CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
+ B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
+ Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
+ +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
+ HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
+In-Reply-To: <20251222223701.F4A2.409509F4@e16-tech.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:dL62ZAd7tBVYZifaHMvi4DTebfHwRPyh5wKFEDKfJWu11JoaYZH
+ KNWcvSgkVjcG37swMhVAlQz+5RN0BiCsdcI4JA4uskzJmu4xiYp95oooL/W1N9ZW0cR25Ta
+ yjPPFlbsLhxDvFUflp1LzBd5UrfxcJVhzQ173+cZKfNZvg9jqo9PvxhOSq6cLuz4tKey4b1
+ xNz/rVeTTWWFdjC8JLT9w==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:tWvNJmPITMI=;nHiI+ovQi0zsKXTmG5LIHrxqm0K
+ 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
+ eg/5tKFvrF9gUr+R+ch2WgAsZFDl+gDn9stRHG
 
-Hi Vincent,
 
-kernel test robot noticed the following build warnings:
 
-[auto build test WARNING on 3e7f562e20ee87a25e104ef4fce557d39d62fa85]
+=E5=9C=A8 2025/12/23 01:07, Wang Yugui =E5=86=99=E9=81=93:
+> Hi,
+>=20
+> I noticed a lot of make C=3D1 error of btrfs ASSERT(),
+> but make C=3D0 is OK.
+>=20
+> block-group.c: note: in included file:
+> zoned.h:417:9: error: Expected ) in function call
+> zoned.h:417:9: error: got __VA_OPT__
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Vincent-Mailhol/kbuild-remove-gcc-s-Wtype-limits/20251220-190509
-base:   3e7f562e20ee87a25e104ef4fce557d39d62fa85
-patch link:    https://lore.kernel.org/r/20251220-remove_wtype-limits-v3-3-24b170af700e%40kernel.org
-patch subject: [PATCH v3 3/3] overflow: Remove is_non_negative() and is_negative()
-config: i386-randconfig-141-20251222 (https://download.01.org/0day-ci/archive/20251223/202512230342.Lgha2HGH-lkp@intel.com/config)
-compiler: gcc-14 (Debian 14.2.0-19) 14.2.0
+You know this is from sparse right?
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202512230342.Lgha2HGH-lkp@intel.com/
+And sparse is known to cause false positive.
 
-New smatch warnings:
-block/blk-settings.c:702 blk_stack_atomic_writes_chunk_sectors() warn: unsigned '*_d' is never less than zero.
-block/blk-settings.c:702 blk_stack_atomic_writes_chunk_sectors() warn: unsigned '_a' is never less than zero.
-drivers/nvme/host/core.c:3353 nvme_mps_to_sectors() warn: unsigned '*_d' is never less than zero.
-drivers/nvme/host/core.c:3353 nvme_mps_to_sectors() warn: unsigned '_a' is never less than zero.
+>=20
+> static inline bool btrfs_zoned_bg_is_full(const struct btrfs_block_group=
+ *bg)
+> {
+> L417:    ASSERT(btrfs_is_zoned(bg->fs_info));
+>      return (bg->alloc_offset =3D=3D bg->zone_capacity);
+> }
+>=20
+> Any help to fix it?
 
-Old smatch warnings:
-drivers/nvme/host/core.c:5032 nvme_free_cels() warn: iterator 'i' not incremented
+Then why don't you dig it deeper?
+You are an employed developer, not some newbie.
 
-vim +702 block/blk-settings.c
+Do your work, not off load it to others.
 
-d7f36dc446e894 John Garry 2024-11-18  689  
-63d092d1c1b1f7 John Garry 2025-07-11  690  static void blk_stack_atomic_writes_chunk_sectors(struct queue_limits *t)
-d7f36dc446e894 John Garry 2024-11-18  691  {
-63d092d1c1b1f7 John Garry 2025-07-11  692  	unsigned int chunk_bytes;
-d7f36dc446e894 John Garry 2024-11-18  693  
-63d092d1c1b1f7 John Garry 2025-07-11  694  	if (!t->chunk_sectors)
-63d092d1c1b1f7 John Garry 2025-07-11  695  		return;
-63d092d1c1b1f7 John Garry 2025-07-11  696  
-63d092d1c1b1f7 John Garry 2025-07-11  697  	/*
-63d092d1c1b1f7 John Garry 2025-07-11  698  	 * If chunk sectors is so large that its value in bytes overflows
-63d092d1c1b1f7 John Garry 2025-07-11  699  	 * UINT_MAX, then just shift it down so it definitely will fit.
-63d092d1c1b1f7 John Garry 2025-07-11  700  	 * We don't support atomic writes of such a large size anyway.
-63d092d1c1b1f7 John Garry 2025-07-11  701  	 */
-63d092d1c1b1f7 John Garry 2025-07-11 @702  	if (check_shl_overflow(t->chunk_sectors, SECTOR_SHIFT, &chunk_bytes))
-63d092d1c1b1f7 John Garry 2025-07-11  703  		chunk_bytes = t->chunk_sectors;
-d7f36dc446e894 John Garry 2024-11-18  704  
-d7f36dc446e894 John Garry 2024-11-18  705  	/*
-d7f36dc446e894 John Garry 2024-11-18  706  	 * Find values for limits which work for chunk size.
-d7f36dc446e894 John Garry 2024-11-18  707  	 * b->atomic_write_hw_unit_{min, max} may not be aligned with chunk
-63d092d1c1b1f7 John Garry 2025-07-11  708  	 * size, as the chunk size is not restricted to a power-of-2.
-d7f36dc446e894 John Garry 2024-11-18  709  	 * So we need to find highest power-of-2 which works for the chunk
-d7f36dc446e894 John Garry 2024-11-18  710  	 * size.
-63d092d1c1b1f7 John Garry 2025-07-11  711  	 * As an example scenario, we could have t->unit_max = 16K and
-63d092d1c1b1f7 John Garry 2025-07-11  712  	 * t->chunk_sectors = 24KB. For this case, reduce t->unit_max to a
-63d092d1c1b1f7 John Garry 2025-07-11  713  	 * value aligned with both limits, i.e. 8K in this example.
-d7f36dc446e894 John Garry 2024-11-18  714  	 */
-63d092d1c1b1f7 John Garry 2025-07-11  715  	t->atomic_write_hw_unit_max = min(t->atomic_write_hw_unit_max,
-63d092d1c1b1f7 John Garry 2025-07-11  716  					max_pow_of_two_factor(chunk_bytes));
-d7f36dc446e894 John Garry 2024-11-18  717  
-63d092d1c1b1f7 John Garry 2025-07-11  718  	t->atomic_write_hw_unit_min = min(t->atomic_write_hw_unit_min,
-d7f36dc446e894 John Garry 2024-11-18  719  					  t->atomic_write_hw_unit_max);
-63d092d1c1b1f7 John Garry 2025-07-11  720  	t->atomic_write_hw_max = min(t->atomic_write_hw_max, chunk_bytes);
-63d092d1c1b1f7 John Garry 2025-07-11  721  }
-d7f36dc446e894 John Garry 2024-11-18  722  
+>=20
+> Best Regards
+> Wang Yugui (wangyugui@e16-tech.com)
+> 2025/12/22
+>=20
+>=20
+>=20
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
