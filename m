@@ -1,132 +1,161 @@
-Return-Path: <linux-btrfs+bounces-19949-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19950-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id CBD7DCD51D4
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Dec 2025 09:42:32 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id ABB59CD576C
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Dec 2025 11:08:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 2B361304B95A
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Dec 2025 08:39:00 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 811553058A34
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Dec 2025 10:04:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CEF5313E13;
-	Mon, 22 Dec 2025 08:19:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02B943126DA;
+	Mon, 22 Dec 2025 10:04:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="DnnyAfyy";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="DnnyAfyy"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DX3xwYra"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 098B2313294
-	for <linux-btrfs@vger.kernel.org>; Mon, 22 Dec 2025 08:19:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A592A2FE04E;
+	Mon, 22 Dec 2025 10:04:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766391588; cv=none; b=nlIg/OXKlS+TG2dcdc5Q25lgumhLgEDJyssDBARci4XCZbsX4Tf6Bc9Wg/YNqFsOmq9bBm32fOjMq4/weQzjPp/A5tKzLlpetfW8/+4vh/6Q0uERCZAPA2CRkkQyj86etFlSIfNvSdReWqpcSkif1Oq7oWeTHqQc7o+aPRI5Cl4=
+	t=1766397878; cv=none; b=Gs7LzYzqLSBrDQF4WVrEEV2rcHDk65ZHM2Kr2yBmasbvIUv1/7fCwJbAcSh6H4A/3lB6PRGc/djfV/k/Beq3H76bBWgItuiJehzA2XG/ZI8udyQKjtwrlFeWiJAxslK3Q+W7HPNQRslkm/wcnYN51FJ6AiowY7hOJUwbQ01tEtE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766391588; c=relaxed/simple;
-	bh=66Hhk6VW0OfgRAx3M8esIBV9vo2K59pTmsKy2y2MpvM=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=iNoGeU/hFOMzr82iF9beD8TTJlzjOQepG5LmzXZLrEHl4pvmNps+W95joL4pJZ10HmqiyOFjfGAMEpjalZqRw7Tpl3Dy3LCdcz6VzZj/3NFllx959qkw9j0LoJTKCSXcBw0P5vB9UopvI/9EismChS7SnbLyP4Wsi9rrYib8JZQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=DnnyAfyy; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=DnnyAfyy; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id E0CC7336BD
-	for <linux-btrfs@vger.kernel.org>; Mon, 22 Dec 2025 08:19:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1766391583; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=j8N+NpkZkJl3VILE6L/0cijzNDgECetwOnF8QQBPOcc=;
-	b=DnnyAfyyqiCycugEjsZQtJv8d+it1hXS+hIsB08EjA3ZYj5ZT4hifjZXAQrI8seaSaFEMi
-	JFuDdPgii275y+8tpWH/UclvEel0v9J2q8U2U4eiJT9RcxuO0EUBuApUkbvh7fe3bHMyOZ
-	Ij+DqRfZ0yypAGcyzh1y+2JTa8eIQZg=
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1766391583; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=j8N+NpkZkJl3VILE6L/0cijzNDgECetwOnF8QQBPOcc=;
-	b=DnnyAfyyqiCycugEjsZQtJv8d+it1hXS+hIsB08EjA3ZYj5ZT4hifjZXAQrI8seaSaFEMi
-	JFuDdPgii275y+8tpWH/UclvEel0v9J2q8U2U4eiJT9RcxuO0EUBuApUkbvh7fe3bHMyOZ
-	Ij+DqRfZ0yypAGcyzh1y+2JTa8eIQZg=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 143C43EA63
-	for <linux-btrfs@vger.kernel.org>; Mon, 22 Dec 2025 08:19:42 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id rtAqMR7/SGknPwAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Mon, 22 Dec 2025 08:19:42 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: check inlined file extent before accessing members after type
-Date: Mon, 22 Dec 2025 18:49:10 +1030
-Message-ID: <7796cd714c563e8990b47899600eb5da17754b91.1766391527.git.wqu@suse.com>
-X-Mailer: git-send-email 2.52.0
+	s=arc-20240116; t=1766397878; c=relaxed/simple;
+	bh=J1EZZVCwpTiIbAyrMOpmNy+FRRI8Ai9A8vQMUUkNmH0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QSWTiXFnd30+aaVlqtvoqWj1p3UCXDzQ3RM4OTgoDqoDHTjp4SwOTRmKoHFFWE4YP0haMFYRWjv03j9p4UsIODFOLokLUdusTntZM8JfOlb0OkofPGP6g2VJeBO4jzGkWNQ5gGBR5HycrH87xjBN4ic9tLCGxmhsE5+Y+RZH07M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DX3xwYra; arc=none smtp.client-ip=198.175.65.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1766397876; x=1797933876;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=J1EZZVCwpTiIbAyrMOpmNy+FRRI8Ai9A8vQMUUkNmH0=;
+  b=DX3xwYraDdOg7VESPHMr33rlqhhNbppdLOtjw1WzT0k1mYAcMNnAhkVk
+   rQStC4xW7BdQeIsHLb0DcXK8TwD/2kRhC/0MZhoHB7xenrd+KebeiO9Zo
+   SxkqvOUhipJLJJTTiQRXOaf5NghgOmwjcz82j4M0aoNKZWbqgxA7ai11E
+   7RcRFMQMSaAGFOQ1TApGjXnrYD3NrhFSNULv7tCxGEZoZFBxEWCUEofjo
+   Mmdnf4qbDMnDN7TX915Jo4igKHm4JD3rPreuamYEP0ZeJ9xGYBLU/aNAe
+   a/8GHxoJ9zWCkhmaca4af9Pijy4tjoMFjhXsrO0gJ46Gts9kHwbCFkmJv
+   g==;
+X-CSE-ConnectionGUID: PEWuh9piQhKmScX5SyFXqQ==
+X-CSE-MsgGUID: csPj7wriT8SLUGrwk/MfBg==
+X-IronPort-AV: E=McAfee;i="6800,10657,11649"; a="71883096"
+X-IronPort-AV: E=Sophos;i="6.21,167,1763452800"; 
+   d="scan'208";a="71883096"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2025 02:04:36 -0800
+X-CSE-ConnectionGUID: SENbKwQ2TGuu/Q2AuFUCmg==
+X-CSE-MsgGUID: nfxshazyT4av5RHtxHYyhw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.21,167,1763452800"; 
+   d="scan'208";a="222977989"
+Received: from lkp-server02.sh.intel.com (HELO dd3453e2b682) ([10.239.97.151])
+  by fmviesa002.fm.intel.com with ESMTP; 22 Dec 2025 02:04:31 -0800
+Received: from kbuild by dd3453e2b682 with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1vXcmC-000000000MH-2wzD;
+	Mon, 22 Dec 2025 10:04:28 +0000
+Date: Mon, 22 Dec 2025 18:03:51 +0800
+From: kernel test robot <lkp@intel.com>
+To: Vincent Mailhol <mailhol@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nicolas Schier <nsc@kernel.org>,
+	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
+	Chris Mason <chris.mason@fusionio.com>,
+	David Sterba <dsterba@suse.com>, Kees Cook <kees@kernel.org>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kbuild@vger.kernel.org,
+	linux-sparse@vger.kernel.org, linux-kernel@vger.kernel.org,
+	llvm@lists.linux.dev, dri-devel@lists.freedesktop.org,
+	linux-btrfs@vger.kernel.org, linux-hardening@vger.kernel.org,
+	Vincent Mailhol <mailhol@kernel.org>
+Subject: Re: [PATCH v3 3/3] overflow: Remove is_non_negative() and
+ is_negative()
+Message-ID: <202512221735.mRV4BZqB-lkp@intel.com>
+References: <20251220-remove_wtype-limits-v3-3-24b170af700e@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-2.67 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	MIME_GOOD(-0.10)[text/plain];
-	NEURAL_HAM_SHORT(-0.07)[-0.325];
-	RCPT_COUNT_ONE(0.00)[1];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:mid,suse.com:email];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	RCVD_TLS_ALL(0.00)[]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -2.67
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251220-remove_wtype-limits-v3-3-24b170af700e@kernel.org>
 
-During the rework of btrfs_file_extent_item, I hit a call site inside
-range_is_hole_in_parent() where I can not find an obvious check on
-btrfs_file_extent_item::type before accessing
-btrfs_file_extent_disk_bytenr().
+Hi Vincent,
 
-Do a proper type check before accessing btrfs_file_extent_disk_bytenr().
+kernel test robot noticed the following build warnings:
 
-Fixes: 82bfb2e7b645 ("Btrfs: incremental send, fix unnecessary hole writes for sparse files")
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/send.c | 2 ++
- 1 file changed, 2 insertions(+)
+[auto build test WARNING on 3e7f562e20ee87a25e104ef4fce557d39d62fa85]
 
-diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index 2522faa97478..d8127a7120c2 100644
---- a/fs/btrfs/send.c
-+++ b/fs/btrfs/send.c
-@@ -6383,6 +6383,8 @@ static int range_is_hole_in_parent(struct send_ctx *sctx,
- 		extent_end = btrfs_file_extent_end(path);
- 		if (extent_end <= start)
- 			goto next;
-+		if (btrfs_file_extent_type(leaf, fi) == BTRFS_FILE_EXTENT_INLINE)
-+			return 0;
- 		if (btrfs_file_extent_disk_bytenr(leaf, fi) == 0) {
- 			search_start = extent_end;
- 			goto next;
+url:    https://github.com/intel-lab-lkp/linux/commits/Vincent-Mailhol/kbuild-remove-gcc-s-Wtype-limits/20251220-190509
+base:   3e7f562e20ee87a25e104ef4fce557d39d62fa85
+patch link:    https://lore.kernel.org/r/20251220-remove_wtype-limits-v3-3-24b170af700e%40kernel.org
+patch subject: [PATCH v3 3/3] overflow: Remove is_non_negative() and is_negative()
+config: x86_64-randconfig-161-20251222 (https://download.01.org/0day-ci/archive/20251222/202512221735.mRV4BZqB-lkp@intel.com/config)
+compiler: gcc-14 (Debian 14.2.0-19) 14.2.0
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202512221735.mRV4BZqB-lkp@intel.com/
+
+smatch warnings:
+fs/libfs.c:1628 generic_check_addressable() warn: unsigned '*_d' is never less than zero.
+fs/libfs.c:1628 generic_check_addressable() warn: unsigned '_a' is never less than zero.
+mm/vmalloc.c:4708 remap_vmalloc_range_partial() warn: unsigned '*_d' is never less than zero.
+mm/vmalloc.c:4708 remap_vmalloc_range_partial() warn: unsigned '_a' is never less than zero.
+
+vim +1628 fs/libfs.c
+
+1b061d9247f71c Christoph Hellwig   2010-05-26  1613  
+30ca22c70e3ef0 Patrick J. LoPresti 2010-07-22  1614  /**
+30ca22c70e3ef0 Patrick J. LoPresti 2010-07-22  1615   * generic_check_addressable - Check addressability of file system
+30ca22c70e3ef0 Patrick J. LoPresti 2010-07-22  1616   * @blocksize_bits:	log of file system block size
+30ca22c70e3ef0 Patrick J. LoPresti 2010-07-22  1617   * @num_blocks:		number of blocks in file system
+30ca22c70e3ef0 Patrick J. LoPresti 2010-07-22  1618   *
+30ca22c70e3ef0 Patrick J. LoPresti 2010-07-22  1619   * Determine whether a file system with @num_blocks blocks (and a
+30ca22c70e3ef0 Patrick J. LoPresti 2010-07-22  1620   * block size of 2**@blocksize_bits) is addressable by the sector_t
+30ca22c70e3ef0 Patrick J. LoPresti 2010-07-22  1621   * and page cache of the system.  Return 0 if so and -EFBIG otherwise.
+30ca22c70e3ef0 Patrick J. LoPresti 2010-07-22  1622   */
+30ca22c70e3ef0 Patrick J. LoPresti 2010-07-22  1623  int generic_check_addressable(unsigned blocksize_bits, u64 num_blocks)
+30ca22c70e3ef0 Patrick J. LoPresti 2010-07-22  1624  {
+30ca22c70e3ef0 Patrick J. LoPresti 2010-07-22  1625  	u64 last_fs_block = num_blocks - 1;
+25050181b61aa0 Pankaj Raghav       2025-06-30  1626  	u64 last_fs_page, max_bytes;
+25050181b61aa0 Pankaj Raghav       2025-06-30  1627  
+25050181b61aa0 Pankaj Raghav       2025-06-30 @1628  	if (check_shl_overflow(num_blocks, blocksize_bits, &max_bytes))
+25050181b61aa0 Pankaj Raghav       2025-06-30  1629  		return -EFBIG;
+25050181b61aa0 Pankaj Raghav       2025-06-30  1630  
+25050181b61aa0 Pankaj Raghav       2025-06-30  1631  	last_fs_page = (max_bytes >> PAGE_SHIFT) - 1;
+30ca22c70e3ef0 Patrick J. LoPresti 2010-07-22  1632  
+30ca22c70e3ef0 Patrick J. LoPresti 2010-07-22  1633  	if (unlikely(num_blocks == 0))
+30ca22c70e3ef0 Patrick J. LoPresti 2010-07-22  1634  		return 0;
+30ca22c70e3ef0 Patrick J. LoPresti 2010-07-22  1635  
+25050181b61aa0 Pankaj Raghav       2025-06-30  1636  	if (blocksize_bits < 9)
+30ca22c70e3ef0 Patrick J. LoPresti 2010-07-22  1637  		return -EINVAL;
+30ca22c70e3ef0 Patrick J. LoPresti 2010-07-22  1638  
+a33f13efe05192 Joel Becker         2010-08-16  1639  	if ((last_fs_block > (sector_t)(~0ULL) >> (blocksize_bits - 9)) ||
+a33f13efe05192 Joel Becker         2010-08-16  1640  	    (last_fs_page > (pgoff_t)(~0ULL))) {
+30ca22c70e3ef0 Patrick J. LoPresti 2010-07-22  1641  		return -EFBIG;
+30ca22c70e3ef0 Patrick J. LoPresti 2010-07-22  1642  	}
+30ca22c70e3ef0 Patrick J. LoPresti 2010-07-22  1643  	return 0;
+30ca22c70e3ef0 Patrick J. LoPresti 2010-07-22  1644  }
+30ca22c70e3ef0 Patrick J. LoPresti 2010-07-22  1645  EXPORT_SYMBOL(generic_check_addressable);
+30ca22c70e3ef0 Patrick J. LoPresti 2010-07-22  1646  
+
 -- 
-2.52.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
