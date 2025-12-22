@@ -1,100 +1,118 @@
-Return-Path: <linux-btrfs+bounces-19954-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19955-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52DC8CD67D0
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Dec 2025 16:13:35 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50C15CD6E70
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Dec 2025 19:39:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C589B3043548
-	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Dec 2025 15:13:24 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 1B9C73028FCB
+	for <lists+linux-btrfs@lfdr.de>; Mon, 22 Dec 2025 18:39:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E4D9321448;
-	Mon, 22 Dec 2025 15:13:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BF0C33290B;
+	Mon, 22 Dec 2025 18:39:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oqOlyYFf"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from out28-84.mail.aliyun.com (out28-84.mail.aliyun.com [115.124.28.84])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 885BB2F5492
-	for <linux-btrfs@vger.kernel.org>; Mon, 22 Dec 2025 15:13:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.28.84
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 623072BCF5;
+	Mon, 22 Dec 2025 18:39:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766416401; cv=none; b=AkJ9SZkF87Id0nKDcvfP75SSnCfIi3OnqxwG74ktuoqoozsUMUYzknOowzMg2O4UDDFZl2DNDp+ey3v7zt51p1d3xNNqRUX+CoHjrRZkLBBiyLqdV+kwbPoIN8r7s/iA8hJHgA9F+WMTJ7S/RrUsjOOh085kA37PyeirFkTGYHI=
+	t=1766428760; cv=none; b=MZCQ8qp9vUoRDWvbpTYc+m1RLh8PE5Qlqeo5tVGg2eI3IUIXIBgjH6/XqpkQgy+nGHZbQ1EeCds13VbsYe32VkmYk5nltC0FYPLgXBpEd8XOxAG8ROjdY39M5e0OEmiNLhOp5H304hG/7VtME0wvoAv1g2ltU+8o40ZKIi5Bcq8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766416401; c=relaxed/simple;
-	bh=uqmF20jLI987bWGJ+gcvxELDmusXZKL01I2ooHIqfJk=;
-	h=Date:From:To:Subject:In-Reply-To:References:Message-Id:
-	 MIME-Version:Content-Type; b=eybdLS0lKjhn17dmXW+qDkeOI93Y5tvMhwZzOuuyDCJS3/z3B30vDpIuAbVHAs0hdgh9tXzLcnfd4NXZvpot5arJH7hxXNlBhjrrHYuAlRVUIHq6RYY3C80Ce5IKUeXC6ZzND8JVrQHzO2bg/0iKUO90N9XGu36fmJ0hauJOK5Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=e16-tech.com; spf=pass smtp.mailfrom=e16-tech.com; arc=none smtp.client-ip=115.124.28.84
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=e16-tech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=e16-tech.com
-Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.fqRt7kT_1766416068 cluster:ay29)
-          by smtp.aliyun-inc.com;
-          Mon, 22 Dec 2025 23:07:48 +0800
-Date: Mon, 22 Dec 2025 23:07:49 +0800
-From: Wang Yugui <wangyugui@e16-tech.com>
-To: linux-btrfs@vger.kernel.org
-Subject: Re: FOP_DONTCACHE when btrfs Direct IO fallback to buffered IO
-In-Reply-To: <20251221215913.E7B2.409509F4@e16-tech.com>
-References: <20251221215913.E7B2.409509F4@e16-tech.com>
-Message-Id: <20251222230749.FFE2.409509F4@e16-tech.com>
+	s=arc-20240116; t=1766428760; c=relaxed/simple;
+	bh=LkRq9kuAyuxgNdzcszCitFOsSMy7gibIDiS0A45NiQQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ZwZXuMhvao/qOw194g55g7yn5RECTxYnqtarvkB4tPZ/6CWgulLpgh1AzVtMWYj2vxAByO9btz7Zd7B/dWM0S5VELs2BGUMNKbNVKOF+jfJYpyeeJyy8s/BVFSE/NBPmy5nN8HzscIxr9T9myXhsGqTdYD7yaslG/TFg4mQDRxw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oqOlyYFf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A205C4CEF1;
+	Mon, 22 Dec 2025 18:39:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1766428759;
+	bh=LkRq9kuAyuxgNdzcszCitFOsSMy7gibIDiS0A45NiQQ=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=oqOlyYFft6Wzt4wVJf4CDio7jFWhzYs8F8zDe+9CBb8s3RCxhgI6PmW3kHvQ71bQV
+	 43WGiakXUGUL0wHaCv5l7RH49JKgfi7uqX22oJ43aelEyB8it6OFfs6ypfg6ayd9Dz
+	 u7Uwamylo0DaqrM3acuyq3V/QDPbuqf6d3ek0OcYd6abh625xFAPKitkNqcYsRfwVU
+	 AqNZkNHNAEKWrhxDjm3TzJ8RH/YhqH7uG3MNddMRbVAzIemILAJzzH1vrxeb6Psiji
+	 2ES1Au69Qb6s/AAf4gXwEH3GPKfmvqzoXUatQAPleETTbB+tQLTABK6HSXLQrs7e9f
+	 Z62wUQXT7lxSA==
+Message-ID: <efa713c6-36f5-4475-ad75-ce51cdc6819d@kernel.org>
+Date: Mon, 22 Dec 2025 19:39:11 +0100
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 3/3] overflow: Remove is_non_negative() and
+ is_negative()
+To: kernel test robot <lkp@intel.com>, Nathan Chancellor <nathan@kernel.org>,
+ Nicolas Schier <nsc@kernel.org>,
+ Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
+ Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
+ Chris Mason <chris.mason@fusionio.com>, David Sterba <dsterba@suse.com>,
+ Kees Cook <kees@kernel.org>, "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kbuild@vger.kernel.org,
+ linux-sparse@vger.kernel.org, linux-kernel@vger.kernel.org,
+ llvm@lists.linux.dev, dri-devel@lists.freedesktop.org,
+ linux-btrfs@vger.kernel.org, linux-hardening@vger.kernel.org
+References: <20251220-remove_wtype-limits-v3-3-24b170af700e@kernel.org>
+ <202512221735.mRV4BZqB-lkp@intel.com>
+Content-Language: en-US
+From: Vincent Mailhol <mailhol@kernel.org>
+Autocrypt: addr=mailhol@kernel.org; keydata=
+ xjMEZluomRYJKwYBBAHaRw8BAQdAf+/PnQvy9LCWNSJLbhc+AOUsR2cNVonvxhDk/KcW7FvN
+ JFZpbmNlbnQgTWFpbGhvbCA8bWFpbGhvbEBrZXJuZWwub3JnPsKZBBMWCgBBFiEE7Y9wBXTm
+ fyDldOjiq1/riG27mcIFAmdfB/kCGwMFCQp/CJcFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcC
+ F4AACgkQq1/riG27mcKBHgEAygbvORJOfMHGlq5lQhZkDnaUXbpZhxirxkAHwTypHr4A/joI
+ 2wLjgTCm5I2Z3zB8hqJu+OeFPXZFWGTuk0e2wT4JzjgEZx4y8xIKKwYBBAGXVQEFAQEHQJrb
+ YZzu0JG5w8gxE6EtQe6LmxKMqP6EyR33sA+BR9pLAwEIB8J+BBgWCgAmFiEE7Y9wBXTmfyDl
+ dOjiq1/riG27mcIFAmceMvMCGwwFCQPCZwAACgkQq1/riG27mcJU7QEA+LmpFhfQ1aij/L8V
+ zsZwr/S44HCzcz5+jkxnVVQ5LZ4BANOCpYEY+CYrld5XZvM8h2EntNnzxHHuhjfDOQ3MAkEK
+In-Reply-To: <202512221735.mRV4BZqB-lkp@intel.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Mailer: Becky! ver. 2.82.01 [en]
 
-Hi,
-
-> Hi,
+On 22/12/2025 at 11:03, kernel test robot wrote:
+> Hi Vincent,
 > 
-> Could we add FOP_DONTCACHE support when btrfs Direct IO fallback to buffered IO?
+> kernel test robot noticed the following build warnings:
 > 
-> I noticed similar logic in zfs-2.4.0 too.
+> [auto build test WARNING on 3e7f562e20ee87a25e104ef4fce557d39d62fa85]
 > 
-> https://github.com/openzfs/zfs/releases/tag/zfs-2.4.0
-> Uncached IO: Direct IO fallback to a light-weight uncached IO when unaligned
+> url:    https://github.com/intel-lab-lkp/linux/commits/Vincent-Mailhol/kbuild-remove-gcc-s-Wtype-limits/20251220-190509
+> base:   3e7f562e20ee87a25e104ef4fce557d39d62fa85
+> patch link:    https://lore.kernel.org/r/20251220-remove_wtype-limits-v3-3-24b170af700e%40kernel.org
+> patch subject: [PATCH v3 3/3] overflow: Remove is_non_negative() and is_negative()
+> config: x86_64-randconfig-161-20251222 (https://download.01.org/0day-ci/archive/20251222/202512221735.mRV4BZqB-lkp@intel.com/config)
+> compiler: gcc-14 (Debian 14.2.0-19) 14.2.0
 > 
-> Best Regards
-> Wang Yugui (wangyugui@e16-tech.com)
-> 2025/12/21
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202512221735.mRV4BZqB-lkp@intel.com/
+> 
+> smatch warnings:
+> fs/libfs.c:1628 generic_check_addressable() warn: unsigned '*_d' is never less than zero.
+> fs/libfs.c:1628 generic_check_addressable() warn: unsigned '_a' is never less than zero.
+> mm/vmalloc.c:4708 remap_vmalloc_range_partial() warn: unsigned '*_d' is never less than zero.
+> mm/vmalloc.c:4708 remap_vmalloc_range_partial() warn: unsigned '_a' is never less than zero.
 
-The following dirty patch seems work here.
+So smatch is not able to distinguish when the comparison comes from
+a macro expansion.
 
-Best Regards
-Wang Yugui (wangyugui@e16-tech.com)
-2025/12/22
-
-
-diff --git a/fs/btrfs/direct-io.c b/fs/btrfs/direct-io.c
-index 802d4dbe5b38..2642dceb6911 100644
---- a/fs/btrfs/direct-io.c
-+++ b/fs/btrfs/direct-io.c
-@@ -881,6 +881,7 @@ ssize_t btrfs_direct_write(struct kiocb *iocb, struct iov_iter *from)
- 	 */
- 	if (!(BTRFS_I(inode)->flags & BTRFS_INODE_NODATASUM)) {
- 		btrfs_inode_unlock(BTRFS_I(inode), ilock_flags);
-+		iocb->ki_flags |= IOCB_DONTCACHE;
- 		goto buffered;
- 	}
- 
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index fa82def46e39..64eae7417242 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -3843,7 +3843,7 @@ const struct file_operations btrfs_file_operations = {
- #endif
- 	.remap_file_range = btrfs_remap_file_range,
- 	.uring_cmd	= btrfs_uring_cmd,
--	.fop_flags	= FOP_BUFFER_RASYNC | FOP_BUFFER_WASYNC,
-+	.fop_flags	= FOP_BUFFER_RASYNC | FOP_BUFFER_WASYNC | FOP_DONTCACHE,
- };
- 
- int btrfs_fdatawrite_range(struct btrfs_inode *inode, loff_t start, loff_t end)
+Can this warning be ignored? Or should I remove this 3rd patch from
+the series (and go back to v1)?  My choice would be to ignore this
+warning.
 
 
-
+Yours sincerely,
+Vincent Mailhol
 
