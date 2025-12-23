@@ -1,131 +1,65 @@
-Return-Path: <linux-btrfs+bounces-19972-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19973-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE84BCD7965
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Dec 2025 01:50:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C4AACD798F
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Dec 2025 01:54:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id EBEDA309CA02
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Dec 2025 00:46:54 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 29C3A3004531
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Dec 2025 00:51:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23B792DBF78;
-	Tue, 23 Dec 2025 00:39:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="oXZJEA/h"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DE1131355E;
+	Tue, 23 Dec 2025 00:43:35 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF49A2BE02A;
-	Tue, 23 Dec 2025 00:39:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFF2031327D
+	for <linux-btrfs@vger.kernel.org>; Tue, 23 Dec 2025 00:43:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.67.36.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766450346; cv=none; b=qK8tkF6yNjVFSf0Bwv/y31+fzUvkEATk74BUy1gkp7S6YBGVEO0PRVxtIa9siYicF999UR6NpX55kqjFSlOEMjh4Et3L1oCd1yLC8s/CBtytYArUh+TdIIa9cCpwkYFsEk+LKlvL+i4MIA9YPIQETeYYA27aP4upUqeUdqT+vbQ=
+	t=1766450615; cv=none; b=hh9TN65wiOgrXjIseNu+wmWpmyBE6U7SQ7QbPEs8Tf/Y5KaIKh7Ont3bUrhmcYiJlkvsnOwJOTCBw2DNqqeE1C5G/wsiPZkQdwpCeBRvfQ1fLxBz2sw0ZLe5TawFPDbFo2aGfFEx26hGK9KPSNfnRLm/0Ee5iL6X8PS12tss7s8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766450346; c=relaxed/simple;
-	bh=IfaqT1FwkkPlvNK+9vGxPt7qaaBRmNYbdSrLiNl4lts=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Pa/lfHHeaNQsE4fOt7A5O5Ep6SkVC6NVRcRLKi+b15bjPCtLV0KH2+lxTsQDBsWIZ+3WA8WFYVNK9AlvFKF7FFqv5S/W1XtqYdl+SuOkBYGwRTAgEY3ac26x+8VXolsS9IlUl+uuc5w08WWGMnWZwgIgyHqfOgQmhBw2ClLAkaA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=oXZJEA/h; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender
-	:Reply-To:Content-Type:Content-ID:Content-Description;
-	bh=Lz/gfojNOQEzMThjbhxxwMo5vvQbozdveVwLBNNNNnk=; b=oXZJEA/hdSIzf0iL/xwwzU2XeN
-	y6JNAEkZaTdObxRLRp8qxhRgWk0aodtccieMOE9EVHp3l0zdFfDYvY5aVaRFmvTtwk/xnjdFnt0Dr
-	zjpnn7bJ7AvJ+zwtZHUEOdLt24kYLHGabI/dgIwidLsTlkuX5yTFemkdjVxfVQTtoAoxbUyQim7vK
-	TddAydZ471UHgfhGtmKLX2iBlJfdlF9+/hORm53QKBi5hYBYCdxZxzLw3FBpFlS/ur7NcR65Aj1xU
-	EtzqFzaU91OeX+9ULM2Pn9lOE9IpAtNZZL/M4my9/GauNm+lzY79VeTweMsG++ZTZ8DmgCVwzKuYA
-	KnTHZB7w==;
-Received: from s58.ghokkaidofl2.vectant.ne.jp ([202.215.7.58] helo=localhost)
-	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vXqQY-0000000EJD0-2O8m;
-	Tue, 23 Dec 2025 00:39:02 +0000
-From: Christoph Hellwig <hch@lst.de>
-To: Christian Brauner <brauner@kernel.org>
-Cc: Al Viro <viro@zeniv.linux.org.uk>,
-	David Sterba <dsterba@suse.com>,
-	Jan Kara <jack@suse.cz>,
-	Mike Marshall <hubcap@omnibond.com>,
-	Martin Brandenburg <martin@omnibond.com>,
-	Carlos Maiolino <cem@kernel.org>,
-	Stefan Roesch <shr@fb.com>,
-	Jeff Layton <jlayton@kernel.org>,
-	linux-kernel@vger.kernel.org,
-	linux-btrfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	gfs2@lists.linux.dev,
-	io-uring@vger.kernel.org,
-	devel@lists.orangefs.org,
-	linux-unionfs@vger.kernel.org,
-	linux-mtd@lists.infradead.org,
-	linux-xfs@vger.kernel.org,
-	linux-nfs@vger.kernel.org
-Subject: [PATCH 11/11] xfs: enable non-blocking timestamp updates
-Date: Tue, 23 Dec 2025 09:37:54 +0900
-Message-ID: <20251223003756.409543-12-hch@lst.de>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20251223003756.409543-1-hch@lst.de>
-References: <20251223003756.409543-1-hch@lst.de>
+	s=arc-20240116; t=1766450615; c=relaxed/simple;
+	bh=rmyDNXCRko/oESeqlZsVEKkG5xMGWxYxsMt7IKc1dSk=;
+	h=MIME-Version:Date:From:To:Subject:Message-ID:Content-Type; b=Vn+oqVPNL2Qk12Pt+gkbI+2ijydZoC17vrwCznnHmg2cleyJj9NjtOzwllO39sd1TK7Lozj3DBMvcH77Oq89aEox72kOqVKXME+4+M0wfprJfa0KimEh0iJr96IqeYpvRrK0/zE23NesbzHTE81aEZvlpYsPpsfYd8nGUYn3+Nk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net; spf=pass smtp.mailfrom=posteo.net; arc=none smtp.client-ip=185.67.36.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=posteo.net
+Received: from submission (posteo.de [185.67.36.169]) 
+	by mout02.posteo.de (Postfix) with ESMTPS id 4975E240101
+	for <linux-btrfs@vger.kernel.org>; Tue, 23 Dec 2025 01:43:25 +0100 (CET)
+Received: from customer (localhost [127.0.0.1])
+	by submission (posteo.de) with ESMTPSA id 4dZx7w67scz6tm8;
+	Tue, 23 Dec 2025 01:43:24 +0100 (CET)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Date: Tue, 23 Dec 2025 00:43:25 +0000
+From: BP25 <bp25@posteo.net>
+To: Linux btrfs <linux-btrfs@vger.kernel.org>
+Subject: Snapshots of individual files
+Reply-To: BP25 <bp25@riseup.net>
+Mail-Reply-To: BP25 <bp25@riseup.net>
+Message-ID: <79ae6c26545c107010719ee389947c1c@posteo.net>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
 
-The lazytime path using the generic helpers can never block in XFS
-because there is no ->dirty_inode method that could block.  Allow
-non-blocking timestamp updates for this case by replacing
-generic_update_time with the open coded version without the S_NOWAIT
-check.
-
-Fixes: 66fa3cedf16a ("fs: Add async write file modification handling.")
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Reviewed-by: Jeff Layton <jlayton@kernel.org>
----
- fs/xfs/xfs_iops.c | 19 +++++++++++++------
- 1 file changed, 13 insertions(+), 6 deletions(-)
-
-diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
-index e12c6e6d313e..1fba10281e54 100644
---- a/fs/xfs/xfs_iops.c
-+++ b/fs/xfs/xfs_iops.c
-@@ -1195,16 +1195,23 @@ xfs_vn_update_time(
- 
- 	trace_xfs_update_time(ip);
- 
--	if (flags & S_NOWAIT)
--		return -EAGAIN;
--
- 	if (inode->i_sb->s_flags & SB_LAZYTIME) {
--		if (!((flags & S_VERSION) &&
--		      inode_maybe_inc_iversion(inode, false)))
--			return generic_update_time(inode, flags);
-+		int dirty_flags;
-+
-+		error = inode_update_timestamps(inode,
-+				flags | S_CAN_NOWAIT_LAZYTIME, &dirty_flags);
-+		if (error)
-+			return error;
-+		if (dirty_flags == I_DIRTY_TIME) {
-+			__mark_inode_dirty(inode, I_DIRTY_TIME);
-+			return 0;
-+		}
- 
- 		/* Capture the iversion update that just occurred */
- 		log_flags |= XFS_ILOG_CORE;
-+	} else {
-+		if (flags & S_NOWAIT)
-+			return -EAGAIN;
- 	}
- 
- 	error = xfs_trans_alloc(mp, &M_RES(mp)->tr_fsyncts, 0, 0, 0, &tp);
--- 
-2.47.3
-
+Hello,
+Can any of you guys help me understand why it hasn't been made possible 
+to snapshot individual files? Because technically it's trivial to 
+implement therefore I suspect there must be some abstract reason... The 
+only thing I can think of is the case where some file which was 
+snapshotted is then deleted hence there is no way to 'select such file' 
+and ask btrfs for the snapshotted versions... but even in this case I 
+see no problem: either the convention is that when you delete a file 
+then all snapshots of such individual file are also deleted, or better 
+there is a command that shows all files who have been deleted but have 
+have been snapshotted in the past.
+Any ideas?
+Please CC or BCC me cause I'm not subscribed.
 
