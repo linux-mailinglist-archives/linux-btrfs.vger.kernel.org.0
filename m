@@ -1,178 +1,306 @@
-Return-Path: <linux-btrfs+bounces-19986-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19987-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C32BCD86B9
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Dec 2025 09:03:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 75553CD8732
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Dec 2025 09:31:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 62A1530206BE
-	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Dec 2025 08:02:53 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C27AF30213E7
+	for <lists+linux-btrfs@lfdr.de>; Tue, 23 Dec 2025 08:31:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E94A72F9D83;
-	Tue, 23 Dec 2025 08:02:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3815C31BC8D;
+	Tue, 23 Dec 2025 08:31:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="aOxPLi3c"
+	dkim=pass (2048-bit key) header.d=helgefjell.de header.i=@helgefjell.de header.b="dRQxMRuB"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pl1-f226.google.com (mail-pl1-f226.google.com [209.85.214.226])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.helgefjell.de (mail.helgefjell.de [142.132.201.35])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB26C2744F
-	for <linux-btrfs@vger.kernel.org>; Tue, 23 Dec 2025 08:02:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.226
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6EB3169AD2
+	for <linux-btrfs@vger.kernel.org>; Tue, 23 Dec 2025 08:31:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=142.132.201.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766476971; cv=none; b=NhQjOoQjtV6XChUb6QLOsNAG8ydemfZDqcOit51z7MNHZE7mWS+5hg2AHyjz+Ed/e/hiHjGQdvf6xF5odHuEQVrStj4HqCo4V/UxC73Cb70OzS7T5Ng3CY9G164p0bkbaMcvPJiEHCe4WiND5YZTghR+DPblleeVzq9CBIk2Cjs=
+	t=1766478700; cv=none; b=knfiEHuHo96zCbQBuK3x0AxtpunnkJhWbCanD05NrNcxlL6OactNv14WQMJZi6/ZNdrJYXpvRB6lVSBmM3JrUJ7LbfYkucHFMmDbgL8UNRj0BVH0Awhw13t2qVLm6MzCVj6prP0SgYMdeSNU6d96u0OWJM/Cw+DtUSlqp+qAEvk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766476971; c=relaxed/simple;
-	bh=9sxiLrElTI5Ztk43MEmWpEu6IKgM9WAgv2dhiRlK6Kg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=CXPC+Dfs6/LGv+r2xnSZDihtyacf8FjPkPETULSRCFHDi7PCaA8o3wlrXtOgIwBNlFbksJZNPu6/ojptwvHrJ0A2DeY1RwPv0YG6hvsNaMElZ2AAzVCZwcEMS6bwDvAXkN0GKybM01+T7CvdLLH9VhhzlqIa9V+/YcCfZVo0mHA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=aOxPLi3c; arc=none smtp.client-ip=209.85.214.226
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-pl1-f226.google.com with SMTP id d9443c01a7336-2a110548f10so15376665ad.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 23 Dec 2025 00:02:49 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766476969; x=1767081769;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:dkim-signature:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OTUH1SPKBV/BQ5rzdoe3NdUj8Uqe/XoIX8txSdtTxSM=;
-        b=FUKgmu6QvOdokCTY0u0RytdjV9CbkYuf9bK/eUKOWg6hIk/Pa951JpDmnn4udlygJa
-         78YVLcsGOwDfLuCxxhgz02/tn3PtJ7RDNoWxqzhRnmysaAl157oYzoDqZbDdNZ4lB5T8
-         rw3UcoQDodwknHFy/QtcgkBcVOq6s+Uuh2meT+gb2OGWzWNdpb4xW45ezAvSUnvBsOl+
-         6lOWUjdAsnULZHXYX6qh17JaRkaOzYmTe0eGXu6boE09sZOMMOSplfCL9XxM97jSB9q4
-         Wd8g9OWHIUzr9pG15s5EBdlo65knOLkCL2YROHFLTl/VcuRLyTvedsQayi398/vay/Ls
-         CJDA==
-X-Forwarded-Encrypted: i=1; AJvYcCXQOlWUJc1q3Q2QD8dn3tcUtZ3KTl350zo+kuCD28NSBlHLGA4L8kqIcot3DDxl2ZrQqTeuAmI5YwISxg==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx6Lzd6RKTr7hNEQx99S6ftU43R3Do0fjVoOr/BxkdAbajONVRf
-	cAkiS+Yc+MsL+TAVSK+OviNuB8DdFOR+mAG3zAs7t7gYft/OA15+5y91Wzs3pfQVA2NNkP9U2X8
-	02QTmn3fSsWkrT8FQDR2L6vmtS2WKJtOpDY0DLThMu6uFzDkP69LTK5DyurZy3S99AOcJkYJ5Yf
-	Va4K7jCRtTH2eMO0actYySzqBfZfDyZL4kWi5zw1w1GB15Cgd4zAeiTLXo/qnHeNiz7NIEhxYdj
-	n7ZoTC5zDFNjqBCAqnbTVUuXyELCcDDoLJCpw==
-X-Gm-Gg: AY/fxX5013VV8bYLopfFqeA0FQuTeMz5DtBYxB0EKkWYiThXyZ6EfRK3wVJfTDZNkYs
-	9ami7bK+bNcCA3RpHUi9YZJwbUPbzC0bTNSJnM0onZNNd57+zZjH52Pqwn+zSCOOA+/W9YOML93
-	xoEY55lFWAJeJ0xPLulxYVJ+xHQm/Uo366uEykeniZUoaHB/g+QvvyKLdfGx8+/bKbxpvmGc60h
-	IL1QTvXoRluoHwf5sdsPc2FZ6Y78iW+6Cqphk3HyOnETXnuIO9VX8uJBQ4RatLogFSdIkDCYu9j
-	Iq2eWtRhhQf/1+O7MisEu988mpw6DD1IlJMr6jJZrfBkYUFjsL6gj3XrDAAYUIhVgQWUue3ad2D
-	BDSJDqdNug5PlEcjqul/If5pCLrPMS7Cd1gerradUzQT6VTlziI4YDmNFd9noN3GmI2xb2nq072
-	xu7Mgm4jw7Jtu0JTXN+TITOzDGsZwf3c8fYAxRHkomyjy8DTDsd8JqcLz0/9ZkkQ==
-X-Google-Smtp-Source: AGHT+IGDUHEg8RlrT/8CpMkXJOECeNqUWlvJ5ELJPTJRKAZYPEdRWBl5MGoZfWl35nyE2Ey04OiUCOGOZYJW
-X-Received: by 2002:a17:90b:58e3:b0:332:3ffe:4be5 with SMTP id 98e67ed59e1d1-34e921e63dcmr7940632a91.7.1766476968937;
-        Tue, 23 Dec 2025 00:02:48 -0800 (PST)
-Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-19.dlp.protect.broadcom.com. [144.49.247.19])
-        by smtp-relay.gmail.com with ESMTPS id 98e67ed59e1d1-34e9222a786sm1587344a91.6.2025.12.23.00.02.48
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 23 Dec 2025 00:02:48 -0800 (PST)
-X-Relaying-Domain: broadcom.com
-X-CFilter-Loop: Reflected
-Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-88882c9b4d0so16142696d6.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 23 Dec 2025 00:02:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1766476968; x=1767081768; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=OTUH1SPKBV/BQ5rzdoe3NdUj8Uqe/XoIX8txSdtTxSM=;
-        b=aOxPLi3cmG7xNLQbzY81NKyu+rRR6l+tjiEJ0KXp+yP1dDq35nn/DX+SRydMnLGrTz
-         p4osyAUEWGiIUbrUPkqeurmuYAN6OQ/vAiGdPb4VEYiFRjqe9fjU85rfKxaWLdcYRRQl
-         b9i3K2fz6rZIA83SXRXi2Y/oCuY334/i057wc=
-X-Forwarded-Encrypted: i=1; AJvYcCUou+fUvuyRvEHCLxIERRO0dwEcKQelWx3lRkCNQqm44rKtuY38QiRqV2+qHIkHh7X5TbkHepfq17jJOQ==@vger.kernel.org
-X-Received: by 2002:a05:622a:11d4:b0:4f3:616c:dbed with SMTP id d75a77b69052e-4f4abbc85d9mr156899391cf.0.1766476967706;
-        Tue, 23 Dec 2025 00:02:47 -0800 (PST)
-X-Received: by 2002:a05:622a:11d4:b0:4f3:616c:dbed with SMTP id d75a77b69052e-4f4abbc85d9mr156899141cf.0.1766476967188;
-        Tue, 23 Dec 2025 00:02:47 -0800 (PST)
-Received: from keerthanak-ph5-dev.. ([192.19.161.250])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4f4c46e4aabsm53636071cf.16.2025.12.23.00.02.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 23 Dec 2025 00:02:46 -0800 (PST)
-From: Keerthana K <keerthana.kalyanasundaram@broadcom.com>
-To: stable@vger.kernel.org,
-	gregkh@linuxfoundation.org
-Cc: clm@fb.com,
-	josef@toxicpanda.com,
-	dsterba@suse.com,
-	linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	ajay.kaher@broadcom.com,
-	alexey.makhalov@broadcom.com,
-	vamsi-krishna.brahmajosyula@broadcom.com,
-	yin.ding@broadcom.com,
-	tapas.kundu@broadcom.com,
-	Boris Burkov <boris@bur.io>,
-	Bin Lan <bin.lan.cn@windriver.com>,
-	He Zhe <zhe.he@windriver.com>,
-	Keerthana K <keerthana.kalyanasundaram@broadcom.com>
-Subject: [PATCH v5.10.y] btrfs: do not clean up repair bio if submit fails
-Date: Tue, 23 Dec 2025 08:00:41 +0000
-Message-ID: <20251223080041.1428811-1-keerthana.kalyanasundaram@broadcom.com>
-X-Mailer: git-send-email 2.43.7
+	s=arc-20240116; t=1766478700; c=relaxed/simple;
+	bh=m/8t3yAtrTm/mE85Cb1Py/HSOAeosXHyhnpQb0xP8Ew=;
+	h=Date:From:To:Subject:Message-ID:Mime-Version:Content-Type:
+	 Content-Disposition; b=InjP6EeDXszfDcKd4sDFJzQtp35PirWEShxaEHgzL9Zs8aMpSoM793wEO0sOThrDjf6vL3bpe0PHxZf+XE4KPx0d3Ky6jVyNtCAUZvY5ErGEA/b8Ma1x6WH3il3HL3wgT3R1g+XVvYU4a0kRX43ucGeYlIh9jK2IG+TSY9qIpDc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=helgefjell.de; spf=pass smtp.mailfrom=helgefjell.de; dkim=pass (2048-bit key) header.d=helgefjell.de header.i=@helgefjell.de header.b=dRQxMRuB; arc=none smtp.client-ip=142.132.201.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=helgefjell.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=helgefjell.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=helgefjell.de;
+	s=selector.helgefjell; t=1766478387;
+	bh=9DPJXsXnfMK/bUW25HPgXWZj8rA+LFvTHtbzLwDzBns=;
+	h=Date:From:To:Subject;
+	b=dRQxMRuBnCNO8yo7vxKNNAwh90LZjmFFZzCsgm9vL4I1ORQFtwDRpNilfy8VZbBGk
+	 XAv9bZ7djqQN6n8NN4FKelu2NCUDsiNOAKuvG+PGKqXdAQTZsg8KnLtyPQJKayvLoO
+	 9vOU6PZa1DstcoQuYqb9sUXUjWhDheTX7nYQPehGyVFN/7BgxbnnB6J+diBJUG4aKP
+	 4wMjMRThpk4RV9SBZwKqtO3BnTR73aPH6GAvRnVv+Up/0JCdBPV39UHtok7pOcuFYQ
+	 pg2VRAo9ut4oHQ2haeVj+qC3N6cvwqh1K8YoBKoivcYbZJ4AxeocMEhgv7O07Mj7nl
+	 ba9JEIN/pSYsQ==
+Original-Subject: Issues in man pages of btrfs-progs
+Author: Helge Kreutzmann <debian@helgefjell.de>
+Received: from localhost (localhost [127.0.0.1])
+  (uid 1002)
+  by mail.helgefjell.de with local
+  id 00000000000200D9.00000000694A5233.00103325; Tue, 23 Dec 2025 08:26:27 +0000
+Date: Tue, 23 Dec 2025 08:26:27 +0000
+From: Helge Kreutzmann <debian@helgefjell.de>
+To: linux-btrfs@vger.kernel.org
+Subject: Issues in man pages of btrfs-progs
+Message-ID: <aUpSM2MZ7JahHX-p@meinfjell.helgefjelltest.de>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-DetectorID-Processed: b00c1d49-9d2e-4205-b15f-d015386d3d5e
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256; protocol="application/pgp-signature"; boundary="=_meinfjell-1061669-1766478387-0001-2"
+Content-Disposition: inline
+X-Public-Key-URL: http://www.helgefjell.de/data/debian_neu.asc
+X-homepage: http://www.helgefjell.de/debian
 
-From: Josef Bacik <josef@toxicpanda.com>
+This is a MIME-formatted message.  If you see this text it means that your
+E-mail software does not support MIME-formatted messages.
 
-[ Upstream commit 8cbc3001a3264d998d6b6db3e23f935c158abd4d ]
+--=_meinfjell-1061669-1766478387-0001-2
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The submit helper will always run bio_endio() on the bio if it fails to
-submit, so cleaning up the bio just leads to a variety of use-after-free
-and NULL pointer dereference bugs because we race with the endio
-function that is cleaning up the bio.  Instead just return BLK_STS_OK as
-the repair function has to continue to process the rest of the pages,
-and the endio for the repair bio will do the appropriate cleanup for the
-page that it was given.
+Dear Btrfs maintainer,
+the manpage-l10n project[1] maintains a large number of translations of
+man pages both from a large variety of sources (including Btrfs) as
+well for a large variety of target languages.
 
-Reviewed-by: Boris Burkov <boris@bur.io>
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-[Minor context change fixed.]
-Signed-off-by: Bin Lan <bin.lan.cn@windriver.com>
-Signed-off-by: He Zhe <zhe.he@windriver.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-[ Keerthana: Backported the patch to v5.10.y ]
-Signed-off-by: Keerthana K <keerthana.kalyanasundaram@broadcom.com>
----
- fs/btrfs/extent_io.c | 15 +++++++--------
- 1 file changed, 7 insertions(+), 8 deletions(-)
+During their work translators notice different possible issues in the
+original (english) man pages. Sometimes this is a straightforward
+typo, sometimes a hard to read sentence, sometimes this is a
+convention not held up and sometimes we simply do not understand the
+original.
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 489d370ddd60..3d0b854e0c19 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -2655,7 +2655,6 @@ blk_status_t btrfs_submit_read_repair(struct inode *inode,
- 	bool need_validation;
- 	struct bio *repair_bio;
- 	struct btrfs_io_bio *repair_io_bio;
--	blk_status_t status;
- 
- 	btrfs_debug(fs_info,
- 		   "repair read error: read error at %llu", start);
-@@ -2699,13 +2698,13 @@ blk_status_t btrfs_submit_read_repair(struct inode *inode,
- "repair read error: submitting new read to mirror %d, in_validation=%d",
- 		    failrec->this_mirror, failrec->in_validation);
- 
--	status = submit_bio_hook(inode, repair_bio, failrec->this_mirror,
--				 failrec->bio_flags);
--	if (status) {
--		free_io_failure(failure_tree, tree, failrec);
--		bio_put(repair_bio);
--	}
--	return status;
-+	/*
-+	 * At this point we have a bio, so any errors from submit_bio_hook()
-+	 * will be handled by the endio on the repair_bio, so we can't return an
-+	 * error here.
-+	 */
-+	submit_bio_hook(inode, repair_bio, failrec->this_mirror, failrec->bio_flags);
-+	return BLK_STS_OK;
- }
- 
- /* lots and lots of room for performance fixes in the end_bio funcs */
--- 
-2.43.7
+We use several distributions as sources and update regularly (at
+least every 2 month). This means we are fairly recent (some
+distributions like archlinux also update frequently) but might miss
+your latest upstream version once in a while, so the error might be
+already fixed. We apologize and ask you to close the issue immediately
+if this should be the case, but given the huge volume of projects and
+the very limited number of volunteers we are not able to double check
+each and every issue.
 
+Secondly we translators see the manpages in the neutral po format,
+i.e. converted and harmonized, but not the original source (be it man,
+groff, xml or other). So we cannot provide a true patch (where
+possible), but only an approximation which you need to convert into
+your source format.
+
+Finally the issues I'm reporting have accumulated over time and are
+not always discovered by me, so sometimes my description of the
+problem my be a bit limited - do not hesitate to ask so we can clarify
+them.
+
+I'm now reporting the issues for your project. If future reports
+should use another channel, please let me know.
+
+[1] https://manpages-l10n-team.pages.debian.net/manpages-l10n/
+
+Man page: btrfs.8
+Issue 1:  btrfs-convert(8) =E2=86=92 B<btrfs-convert>(8)
+Issue 2:  btrfstune(8) =E2=86=92 B<btrfstune>(8)
+
+"There are also standalone tools for some tasks like btrfs-convert(8) \\"
+"%E<lt>E<gt> or btrfstune(8) \\%E<lt>E<gt> that were separate historically "
+"and/or haven\\(aqt been merged to the main utility. See section STANDALONE=
+ "
+"TOOLS for more details."
+--
+Man page: btrfs.8
+Issue 1:  btrfs(5) =E2=86=92 B<btrfs>(5)
+Issue 2:  What does the <> at the end of the string mean?
+
+"For other topics (mount options, etc) please refer to the separate manual "
+"page btrfs(5) \\%E<lt>E<gt>\\&."
+--
+Man page: btrfs.8
+Issue 1:  numfmt(1) =E2=86=92 B<numfmt>(1)
+Issue 2:  locale(7) =E2=86=92 B<locale>(7)
+
+"I<Sizes>, both upon input and output, can be expressed in either SI or IEC=
+-I "
+"units (see numfmt(1) \\%E<lt>https://\\:man7\\:.org/\\:linux/\\:man-pages/"
+"\\:man1/\\:numfmt\\:.1\\:.htmlE<gt>)  with the suffix I<B> appended.  All "
+"numbers will be formatted according to the rules of the I<C> locale "
+"(ignoring the shell locale, see locale(7) \\%E<lt>https://\\:man7\\:.org/"
+"\\:linux/\\:man-pages/\\:man7/\\:locale\\:.7\\:.htmlE<gt>)."
+--
+Man page: btrfs.8
+Issue 1:  btrfs-balance(8) =E2=86=92 B<btrfs-balance>(8)
+Issue 2:  What ist the <> for?
+
+"Balance btrfs filesystem chunks across single or several devices.  See btr=
+fs-"
+"balance(8) \\%E<lt>E<gt> for details."
+--
+Man page: btrfs.8
+Issue 1:  btrfs-check(8) =E2=86=92 B<btrfs-check>(8)=20
+Issue 2:  What ist the <> for? =20
+
+"Do off-line check on a btrfs filesystem.  See btrfs-check(8) \\%E<lt>E<gt>=
+ "
+"for details."
+--
+Man page: btrfs.8
+Issue 1:  btrfs-device(8) =E2=86=92 B<btrfs-device>(8)
+Issue 2:  What ist the <> for?
+
+"Manage devices managed by btrfs, including add/delete/scan and so on.  See=
+ "
+"btrfs-device(8) \\%E<lt>E<gt> for details."
+--
+Man page: btrfs.8
+Issue 1:  btrfs-filesystem(8) =E2=86=92 B<btrfs-filesystem>(8)
+Issue 2:  What ist the <> for?
+
+"Manage a btrfs filesystem, including label setting/sync and so on.  See "
+"btrfs-filesystem(8) \\%E<lt>E<gt> for details."
+--
+Man page: btrfs.8
+Issue 1:  btrfs-inspect-internal(8) =E2=86=92 B<btrfs-inspect-internal>(8)
+Issue 2:  What ist the <> for?
+
+"Debug tools for developers/hackers.  See btrfs-inspect-internal(8) \\"
+"%E<lt>E<gt> for details."
+--
+Man page: btrfs.8
+Issue 1:  btrfs-property(8) =E2=86=92 B<btrfs-property>(8)
+issue 2:  What ist the <> for?
+
+"Get/set a property from/to a btrfs object.  See btrfs-property(8) \\"
+"%E<lt>E<gt> for details."
+--
+Man page: btrfs.8
+Issue 1:  btrfs-qgroup(8) =E2=86=92 B<btrfs-qgroup>(8)
+Issue 2:  What ist the <> for?
+
+"Manage quota group(qgroup) for btrfs filesystem.  See btrfs-qgroup(8) \\"
+"%E<lt>E<gt> for details."
+--
+Man page: btrfs.8
+Issue 1:  btrfs-quota(8) =E2=86=92 B<btrfs-quota>(8)
+Issue 2:  btrfs-qgroup(8) =E2=86=92 B<btrfs-qgroup>(8)
+Issue 3:  What ist the <> for?
+
+"Manage quota on btrfs filesystem like enabling/rescan and etc.  See btrfs-"
+"quota(8) \\%E<lt>E<gt> and btrfs-qgroup(8) \\%E<lt>E<gt> for details."
+--
+Man page: btrfs.8
+Issue 1:  btrfs-receive(8) =E2=86=92 B<btrfs-receive>(8)
+Issue 2:  What ist the <> for?
+
+"Receive subvolume data from stdin/file for restore and etc.  See btrfs-"
+"receive(8) \\%E<lt>E<gt> for details."
+--
+Man page: btrfs.8
+Issue 1:  btrfs-replace(8) =E2=86=92 B<btrfs-replace>(8)
+Issue 2:  What ist the <> for?
+
+"Replace btrfs devices.  See btrfs-replace(8) \\%E<lt>E<gt> for details."
+--
+Man page: btrfs.8
+Issue 1:  btrfs-rescue(8) =E2=86=92 B<btrfs-rescue>(8)
+Issue 2:  What ist the <> for?
+
+"Try to rescue damaged btrfs filesystem.  See btrfs-rescue(8) \\%E<lt>E<gt>=
+ "
+"for details."
+--
+Man page: btrfs.8
+Issue 1:  btrfs-restore(8) =E2=86=92 B<btrfs-restore>(8)
+Issue 2:  What ist the <> for?
+
+"Try to restore files from a damaged btrfs filesystem.  See btrfs-restore(8=
+) "
+"\\%E<lt>E<gt> for details."
+--
+Man page: btrfs.8
+Issue 1:  btrfs-scrub(8) =E2=86=92 B<btrfs-scrub>(8)
+Issue 2:  What ist the <> for?
+
+"Scrub a btrfs filesystem.  See btrfs-scrub(8) \\%E<lt>E<gt> for details."
+--
+Man page: btrfs.8
+Issue 1:  btrfs-send(8) =E2=86=92 B<btrfs-send>(8)
+Issue 2:  What ist the <> for?
+
+"Send subvolume data to stdout/file for backup and etc.  See btrfs-send(8) =
+\\"
+"%E<lt>E<gt> for details."
+--
+Man page: btrfs.8
+Issue 1:  btrfs-subvolume(8) =E2=86=92 B<btrfs-subvolume>(8)
+Issue 2:  What ist the <> for?
+
+"Create/delete/list/manage btrfs subvolume.  See btrfs-subvolume(8) \\"
+"%E<lt>E<gt> for details."
+--
+Man page: btrfs.8
+Issue:    The proper way to write the link: E<.UR https://btrfs.readthedocs=
+=2Eio> Text <.UE>
+
+"B<btrfs> is part of btrfs-progs.  Please refer to the documentation at \\"
+"%E<lt>https://\\:btrfs\\:.readthedocs\\:.ioE<gt>\\&."
+--
+Man page: btrfs.8
+Issue 1:  The programm name itself must be in bold, e.g. B<btrfs>(5)
+Issue 2:  What are the <> for?
+
+"btrfs(5) \\%E<lt>E<gt>, btrfs-balance(8) \\%E<lt>E<gt>, btrfs-check(8) \\"
+"%E<lt>E<gt>, btrfs-convert(8) \\%E<lt>E<gt>, btrfs-device(8) \\%E<lt>E<gt>=
+, "
+"btrfs-filesystem(8) \\%E<lt>E<gt>, btrfs-inspect-internal(8) \\%E<lt>E<gt>=
+, "
+"btrfs-property(8) \\%E<lt>E<gt>, btrfs-qgroup(8) \\%E<lt>E<gt>, btrfs-"
+"quota(8) \\%E<lt>E<gt>, btrfs-receive(8) \\%E<lt>E<gt>, btrfs-replace(8) \=
+\"
+"%E<lt>E<gt>, btrfs-rescue(8) \\%E<lt>E<gt>, btrfs-restore(8) \\%E<lt>E<gt>=
+, "
+"btrfs-scrub(8) \\%E<lt>E<gt>, btrfs-send(8) \\%E<lt>E<gt>, btrfs-"
+"subvolume(8) \\%E<lt>E<gt>, btrfstune(8) \\%E<lt>E<gt>, mkfs.btrfs(8) \\"
+"%E<lt>E<gt>"
+--
+Man page: btrfs.8
+Issue:    I<\\%btrfs(5)> =E2=86=92 B<btrfs>(5)
+
+"For other topics (mount options, etc) please refer to the separate manual "
+"page I<\\%btrfs(5)>\\&."
+
+--=20
+      Dr. Helge Kreutzmann                     debian@helgefjell.de
+           Dipl.-Phys.                   http://www.helgefjell.de/debian.php
+        64bit GNU powered                     gpg signed mail preferred
+           Help keep free software "libre": http://www.ffii.de/
+
+--=_meinfjell-1061669-1766478387-0001-2
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEbZZfteMW0gNUynuwQbqlJmgq5nAFAmlKUjAACgkQQbqlJmgq
+5nB1/g/+J01HvztqbvvdJJPhCVXW5dZ9bmHFaBuapZkWFC0Zk7NB7jq/k8oPbQkW
+1ZTDAAMd+0gCwHKHviLzgz1tYSj/r3l6yLtF7bgmsAsfzzxeDfP537n74lOIKsdu
+aBr42jGL6JZ74ThG46qGYysCa6PvaVzN6hr29osCbEgbihsnfvW59QI1uzJaCZJK
+NXyJNRWvfBkSpYJTlJGcjBUuAGA846qSJV4RAR1uApo/oFIV4p9JdJqrNi3SHUcv
+i4e85H0mAhyLAQ7VH8ECLMMpucPKTKUv/b+WcgSZ5N2M9DKwx3EVpzlwNlef2Rb0
+I/zrIbSI2DkuIs/KebhkThVaW+uI5EY7pd/7omCGY7GnKEOBv5IMC/J7RACfPSWu
+b0SDTKTUWITMhL5a4ARUg9YP8aW61yimuHC/dQtJ4sbGLtM3dn8SFGrKH4ZhSAg8
+gIfNuSCd6x9PFwjUGk5scx8L5nGDlWLZHItym7cSwfWGajuVe1n5ObWIqwNI4ZcI
+PBWiYeu1BafMdWqpBYAqLkX30SbKgChyRdyps16nNXdaonurQ8DJKpaDuMJAG4Py
+Cj/ztFVGfZQjI1jbTh5fa1S1tRjiIXtkzJj5Pvl21w2lIcFHocF/IMbQIdRJhnqA
+eClZmJu6ol08KzoJKm6aoyA+cbwiD1KSGjv21FqMPV0+/JjlWS0=
+=vs9z
+-----END PGP SIGNATURE-----
+
+--=_meinfjell-1061669-1766478387-0001-2--
 
