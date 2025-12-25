@@ -1,141 +1,116 @@
-Return-Path: <linux-btrfs+bounces-19998-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19999-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99363CDD594
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Dec 2025 07:04:55 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44504CDDAA9
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Dec 2025 11:30:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id A34223019FF9
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Dec 2025 06:04:54 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 53DA13013ED5
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Dec 2025 10:27:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81B8C296BDC;
-	Thu, 25 Dec 2025 06:04:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A02F31A554;
+	Thu, 25 Dec 2025 10:27:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dlRbJmyH"
+	dkim=pass (1024-bit key) header.d=seu.edu.cn header.i=@seu.edu.cn header.b="BC89Zrp9"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+Received: from mail-m49198.qiye.163.com (mail-m49198.qiye.163.com [45.254.49.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7CAF24E4C4;
-	Thu, 25 Dec 2025 06:04:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1536C2F49F0;
+	Thu, 25 Dec 2025 10:27:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.254.49.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766642692; cv=none; b=LEIvtHW6ctrj3n9O+DGHAViH+MIX8JD/f0gcF3SlwHSDwvM7MjhfA5yFXfJ7+i3Qdyv+MCdkRUo43QsEebz9PZSbxKQhEYvLBIGUlhPeC565HWTzVd8pBBZMSNogIOnGKHMBn4Me+nB/Aae8/j+gUQY8Qxrhc8BNRBz0GI3SMlo=
+	t=1766658457; cv=none; b=VdKEY1oCl/S3PT6GzPifZi6EuAt9UwVBXgqBo8N0u6RgKNoka8K/9TVvq7h/CSY+QRLXeMG8AbaZ3HkAlnNpA98Czt7Ck5Xx84ZajuDV6aUGKer81PaH1aXKt3BxFSBF3ayVpsiJdO8dXaHsI5IOBgrYff8lfAhX3vQI9EggOiQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766642692; c=relaxed/simple;
-	bh=VcKC9/CBFU8uwKDrnoVC8HUQENdMl7CZvAYW/cKoi9o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qq6zFN6azqVGD1/LILnP4GDX8hJ14LDHGYuF3klbrVRJ/Ho/G29nb6y8Kp7n8mjywKgMFqDMnzPlWjeQwn7Etyab/RXhSWIWRRIo1peczTNuTzO/uyCrCAowalPF/Io7Of2OoZFjaDEzAuha4vv20QuQ9bsrtENM5uv/MUNQeR4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dlRbJmyH; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1766642691; x=1798178691;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=VcKC9/CBFU8uwKDrnoVC8HUQENdMl7CZvAYW/cKoi9o=;
-  b=dlRbJmyH2W8ncRgJ80QS9ehukvPhZVNlYNCujHJiRp2/LLEXrvFUqQvi
-   lY7yp+g7J0Z8njnixwdIwNxTfw6NdNa/Qvp2mTXsziIh/Yxck2Bcrk2zk
-   OBbzleGr7OF1C+6X0DqfDAAiEI7f2YZrq6WdgCNh10eAitXYBvlJjDePK
-   24UQwpBwLyruIXRCJ3Jek82w0ayHxvX8csk0v20o7eLMc5L4+vITzTO+n
-   71kl2qf25LI0olUdTSnOlv7YMT2Gdg44aYlMWQ7fGvn1QIgGqFzluxiz8
-   C61f6+qIQJcM3pwgxB8tLiU94jiBFr14jjAX2sdBelgwb6WhqPyYVvLqD
-   Q==;
-X-CSE-ConnectionGUID: /dPN4JKsSXqVzMQUmv1LNw==
-X-CSE-MsgGUID: A805pBMgTYiq51W0D3AiiA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11652"; a="68613581"
-X-IronPort-AV: E=Sophos;i="6.21,175,1763452800"; 
-   d="scan'208";a="68613581"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Dec 2025 22:04:50 -0800
-X-CSE-ConnectionGUID: YjemtR3sRSKp5bj/xnm3fA==
-X-CSE-MsgGUID: wALkkXzzQruU2rIXRw2m+A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.21,175,1763452800"; 
-   d="scan'208";a="199305559"
-Received: from lkp-server02.sh.intel.com (HELO dd3453e2b682) ([10.239.97.151])
-  by orviesa006.jf.intel.com with ESMTP; 24 Dec 2025 22:04:45 -0800
-Received: from kbuild by dd3453e2b682 with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1vYeSo-000000003nv-31Ir;
-	Thu, 25 Dec 2025 06:04:42 +0000
-Date: Thu, 25 Dec 2025 14:04:28 +0800
-From: kernel test robot <lkp@intel.com>
-To: Vincent Mailhol <mailhol@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nicolas Schier <nsc@kernel.org>,
-	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
-	Chris Mason <chris.mason@fusionio.com>,
-	David Sterba <dsterba@suse.com>, Kees Cook <kees@kernel.org>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kbuild@vger.kernel.org,
-	linux-sparse@vger.kernel.org, linux-kernel@vger.kernel.org,
-	llvm@lists.linux.dev, dri-devel@lists.freedesktop.org,
-	linux-btrfs@vger.kernel.org, linux-hardening@vger.kernel.org,
-	Vincent Mailhol <mailhol@kernel.org>
-Subject: Re: [PATCH v3 3/3] overflow: Remove is_non_negative() and
- is_negative()
-Message-ID: <202512251340.UApIFw9R-lkp@intel.com>
-References: <20251220-remove_wtype-limits-v3-3-24b170af700e@kernel.org>
+	s=arc-20240116; t=1766658457; c=relaxed/simple;
+	bh=kcxm1mHC2AHWepF9LVrufs5Vd2CCt+oDM36bSQRdspU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Rk0OTZlYok406VvmlnVAT/nqgYDzf37UHOoDWIk13ic+3TzctCR/JILFZejp5WZNAE8i3l64mtQZwkNGVdO+iejJl4ML2YzekCNC9p7Jah7dPBa/CIw+j6EGSxYuuGjQ3xEMR1KpSc2RoggIFkPIUen8BB8jWbMv/fZhe1zA5W8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=seu.edu.cn; spf=pass smtp.mailfrom=seu.edu.cn; dkim=pass (1024-bit key) header.d=seu.edu.cn header.i=@seu.edu.cn header.b=BC89Zrp9; arc=none smtp.client-ip=45.254.49.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=seu.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=seu.edu.cn
+Received: from LAPTOP-N070L597.localdomain (unknown [58.241.16.34])
+	by smtp.qiye.163.com (Hmail) with ESMTP id 2e8b969cf;
+	Thu, 25 Dec 2025 18:27:29 +0800 (GMT+08:00)
+From: Zilin Guan <zilin@seu.edu.cn>
+To: clm@fb.com
+Cc: dsterba@suse.com,
+	sunk67188@gmail.com,
+	dan.carpenter@linaro.org,
+	linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	jianhao.xu@seu.edu.cn,
+	Zilin Guan <zilin@seu.edu.cn>
+Subject: [PATCH] btrfs: tests: Fix memory leak in btrfs_test_qgroups()
+Date: Thu, 25 Dec 2025 10:27:27 +0000
+Message-Id: <20251225102727.967360-1-zilin@seu.edu.cn>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251220-remove_wtype-limits-v3-3-24b170af700e@kernel.org>
+Content-Transfer-Encoding: 8bit
+X-HM-Tid: 0a9b550ca04403a1kunm3d3657943c873
+X-HM-MType: 10
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
+	tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVkaQ05OVk1CSEpNSB1JSUseTVYeHw5VEwETFhoSFy
+	QUDg9ZV1kYEgtZQVlOQ1VJT0pVSk1VSE9ZV1kWGg8SFR0UWUFZS1VLVUtVS1kG
+DKIM-Signature: a=rsa-sha256;
+	b=BC89Zrp9QQRDw2fh648sIke0ofJxDAJK/j/N618/kAJyWPSi5x/0q1dsPosTmIGa8+miHrUofVzaX2/eyErOhZIAdwm0VMtC4nDhekEYcVna9mGv1E3ddRMDYPYVY4MBthm/H20LF0SHsZR80wB41xa54d9ciKo8tiFwjW1/46c=; c=relaxed/relaxed; s=default; d=seu.edu.cn; v=1;
+	bh=xMumdwLGnzfooVex7fPc5gc9CljbwqfTQRSpLl35PKU=;
+	h=date:mime-version:subject:message-id:from;
 
-Hi Vincent,
+btrfs_alloc_dummy_root() allocates a root with a reference count of 1.
+Then btrfs_insert_fs_root() is used to insert the root into the fs_info.
+On success, it increments the reference count. On failure, it does not.
 
-kernel test robot noticed the following build warnings:
+Currently, if btrfs_insert_fs_root() fails, the error handling path
+jumps to the out label immediately without decrementing the reference
+count of tmp_root, leading to a memory leak.
 
-[auto build test WARNING on 3e7f562e20ee87a25e104ef4fce557d39d62fa85]
+Fix this by calling btrfs_put_root() unconditionally after
+btrfs_insert_fs_root(). This correctly handles both cases: on success,
+it drops the local reference, leaving the root with the reference held
+by fs_info; on failure, it drops the sole reference, freeing the root.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Vincent-Mailhol/kbuild-remove-gcc-s-Wtype-limits/20251220-190509
-base:   3e7f562e20ee87a25e104ef4fce557d39d62fa85
-patch link:    https://lore.kernel.org/r/20251220-remove_wtype-limits-v3-3-24b170af700e%40kernel.org
-patch subject: [PATCH v3 3/3] overflow: Remove is_non_negative() and is_negative()
-config: i386-randconfig-141-20251225 (https://download.01.org/0day-ci/archive/20251225/202512251340.UApIFw9R-lkp@intel.com/config)
-compiler: gcc-13 (Debian 13.3.0-16) 13.3.0
+Fixes: 4785e24fa5d23 ("btrfs: don't take an extra root ref at allocation time")
+Signed-off-by: Zilin Guan <zilin@seu.edu.cn>
+---
+ fs/btrfs/tests/qgroup-tests.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202512251340.UApIFw9R-lkp@intel.com/
-
-smatch warnings:
-drivers/md/dm-stripe.c:463 stripe_io_hints() warn: unsigned '*_d' is never less than zero.
-drivers/md/dm-stripe.c:463 stripe_io_hints() warn: unsigned '_a' is never less than zero.
-
-vim +463 drivers/md/dm-stripe.c
-
-af4874e03ed82f Mike Snitzer    2009-06-22  454  
-40bea431274c24 Mike Snitzer    2009-09-04  455  static void stripe_io_hints(struct dm_target *ti,
-40bea431274c24 Mike Snitzer    2009-09-04  456  			    struct queue_limits *limits)
-40bea431274c24 Mike Snitzer    2009-09-04  457  {
-40bea431274c24 Mike Snitzer    2009-09-04  458  	struct stripe_c *sc = ti->private;
-1071d560afb4c2 Mikulas Patocka 2025-08-11  459  	unsigned int io_min, io_opt;
-40bea431274c24 Mike Snitzer    2009-09-04  460  
-5fb9d4341b782a John Garry      2025-07-11  461  	limits->chunk_sectors = sc->chunk_size;
-1071d560afb4c2 Mikulas Patocka 2025-08-11  462  
-1071d560afb4c2 Mikulas Patocka 2025-08-11 @463  	if (!check_shl_overflow(sc->chunk_size, SECTOR_SHIFT, &io_min) &&
-1071d560afb4c2 Mikulas Patocka 2025-08-11  464  	    !check_mul_overflow(io_min, sc->stripes, &io_opt)) {
-1071d560afb4c2 Mikulas Patocka 2025-08-11  465  		limits->io_min = io_min;
-1071d560afb4c2 Mikulas Patocka 2025-08-11  466  		limits->io_opt = io_opt;
-1071d560afb4c2 Mikulas Patocka 2025-08-11  467  	}
-40bea431274c24 Mike Snitzer    2009-09-04  468  }
-40bea431274c24 Mike Snitzer    2009-09-04  469  
-
+diff --git a/fs/btrfs/tests/qgroup-tests.c b/fs/btrfs/tests/qgroup-tests.c
+index e9124605974b..0d51e0abaeac 100644
+--- a/fs/btrfs/tests/qgroup-tests.c
++++ b/fs/btrfs/tests/qgroup-tests.c
+@@ -517,11 +517,11 @@ int btrfs_test_qgroups(u32 sectorsize, u32 nodesize)
+ 	tmp_root->root_key.objectid = BTRFS_FS_TREE_OBJECTID;
+ 	root->fs_info->fs_root = tmp_root;
+ 	ret = btrfs_insert_fs_root(root->fs_info, tmp_root);
++	btrfs_put_root(tmp_root);
+ 	if (ret) {
+ 		test_err("couldn't insert fs root %d", ret);
+ 		goto out;
+ 	}
+-	btrfs_put_root(tmp_root);
+ 
+ 	tmp_root = btrfs_alloc_dummy_root(fs_info);
+ 	if (IS_ERR(tmp_root)) {
+@@ -532,11 +532,11 @@ int btrfs_test_qgroups(u32 sectorsize, u32 nodesize)
+ 
+ 	tmp_root->root_key.objectid = BTRFS_FIRST_FREE_OBJECTID;
+ 	ret = btrfs_insert_fs_root(root->fs_info, tmp_root);
++	btrfs_put_root(tmp_root);
+ 	if (ret) {
+ 		test_err("couldn't insert fs root %d", ret);
+ 		goto out;
+ 	}
+-	btrfs_put_root(tmp_root);
+ 
+ 	test_msg("running qgroup tests");
+ 	ret = test_no_shared_qgroup(root, sectorsize, nodesize);
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.34.1
+
 
