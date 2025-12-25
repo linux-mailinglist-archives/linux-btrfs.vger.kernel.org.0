@@ -1,91 +1,141 @@
-Return-Path: <linux-btrfs+bounces-19997-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-19998-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 974A5CDD2DB
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Dec 2025 02:39:07 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99363CDD594
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Dec 2025 07:04:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id F260E301D0F7
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Dec 2025 01:38:59 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id A34223019FF9
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Dec 2025 06:04:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3CD921FF47;
-	Thu, 25 Dec 2025 01:38:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81B8C296BDC;
+	Thu, 25 Dec 2025 06:04:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dlRbJmyH"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from out198-188.us.a.mail.aliyun.com (out198-188.us.a.mail.aliyun.com [47.90.198.188])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2128C944F
-	for <linux-btrfs@vger.kernel.org>; Thu, 25 Dec 2025 01:38:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=47.90.198.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7CAF24E4C4;
+	Thu, 25 Dec 2025 06:04:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766626738; cv=none; b=UGeqKRYmepA1Bt0vDzBibvzf1IY9dDCQ+gT48I0PFP7XV1+vUkcVeHTQLtyEhF+T1o3ZQrHC3N+VxDtuOFHsBdg5r78HfKoBp3nCv6DXtwJM3h9uBnRuWMLdneK2N3g6ywRW2ps38d4HYxpIfysc8Ag7qK8kZ9BtdunCOLe/dS8=
+	t=1766642692; cv=none; b=LEIvtHW6ctrj3n9O+DGHAViH+MIX8JD/f0gcF3SlwHSDwvM7MjhfA5yFXfJ7+i3Qdyv+MCdkRUo43QsEebz9PZSbxKQhEYvLBIGUlhPeC565HWTzVd8pBBZMSNogIOnGKHMBn4Me+nB/Aae8/j+gUQY8Qxrhc8BNRBz0GI3SMlo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766626738; c=relaxed/simple;
-	bh=3xP8XAkcxUmRAYQ15d8GgC8OKsJka9WxGo0w7uL87Hg=;
-	h=Date:From:To:Subject:In-Reply-To:References:Message-Id:
-	 MIME-Version:Content-Type; b=DVPUM6p6L6J6W2zwdJ6F5VXqtUCHSFLu0hSFsIoauYviioJPX4QqHNQF6nvd1D8VpjPMoLT92OXSrqcQCtCDhzRzChgG55d8WensM5QGN7yIgeohijr4HJfMJSDD/6FeqBAqG6xGJAsFuSivlBBW+Qfa9FwUrCM+63gGL03JyZ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=e16-tech.com; spf=pass smtp.mailfrom=e16-tech.com; arc=none smtp.client-ip=47.90.198.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=e16-tech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=e16-tech.com
-Received: from 192.168.2.112(mailfrom:wangyugui@e16-tech.com fp:SMTPD_---.fsPAvkR_1766626404 cluster:ay29)
-          by smtp.aliyun-inc.com;
-          Thu, 25 Dec 2025 09:33:24 +0800
-Date: Thu, 25 Dec 2025 09:33:25 +0800
-From: Wang Yugui <wangyugui@e16-tech.com>
-To: linux-btrfs@vger.kernel.org
-Subject: Re: btrfs ASSERT() error when make C=1, but OK when make C=0
-In-Reply-To: <20251222223701.F4A2.409509F4@e16-tech.com>
-References: <20251222223701.F4A2.409509F4@e16-tech.com>
-Message-Id: <20251225093324.B3F1.409509F4@e16-tech.com>
+	s=arc-20240116; t=1766642692; c=relaxed/simple;
+	bh=VcKC9/CBFU8uwKDrnoVC8HUQENdMl7CZvAYW/cKoi9o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qq6zFN6azqVGD1/LILnP4GDX8hJ14LDHGYuF3klbrVRJ/Ho/G29nb6y8Kp7n8mjywKgMFqDMnzPlWjeQwn7Etyab/RXhSWIWRRIo1peczTNuTzO/uyCrCAowalPF/Io7Of2OoZFjaDEzAuha4vv20QuQ9bsrtENM5uv/MUNQeR4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dlRbJmyH; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1766642691; x=1798178691;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=VcKC9/CBFU8uwKDrnoVC8HUQENdMl7CZvAYW/cKoi9o=;
+  b=dlRbJmyH2W8ncRgJ80QS9ehukvPhZVNlYNCujHJiRp2/LLEXrvFUqQvi
+   lY7yp+g7J0Z8njnixwdIwNxTfw6NdNa/Qvp2mTXsziIh/Yxck2Bcrk2zk
+   OBbzleGr7OF1C+6X0DqfDAAiEI7f2YZrq6WdgCNh10eAitXYBvlJjDePK
+   24UQwpBwLyruIXRCJ3Jek82w0ayHxvX8csk0v20o7eLMc5L4+vITzTO+n
+   71kl2qf25LI0olUdTSnOlv7YMT2Gdg44aYlMWQ7fGvn1QIgGqFzluxiz8
+   C61f6+qIQJcM3pwgxB8tLiU94jiBFr14jjAX2sdBelgwb6WhqPyYVvLqD
+   Q==;
+X-CSE-ConnectionGUID: /dPN4JKsSXqVzMQUmv1LNw==
+X-CSE-MsgGUID: A805pBMgTYiq51W0D3AiiA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11652"; a="68613581"
+X-IronPort-AV: E=Sophos;i="6.21,175,1763452800"; 
+   d="scan'208";a="68613581"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Dec 2025 22:04:50 -0800
+X-CSE-ConnectionGUID: YjemtR3sRSKp5bj/xnm3fA==
+X-CSE-MsgGUID: wALkkXzzQruU2rIXRw2m+A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.21,175,1763452800"; 
+   d="scan'208";a="199305559"
+Received: from lkp-server02.sh.intel.com (HELO dd3453e2b682) ([10.239.97.151])
+  by orviesa006.jf.intel.com with ESMTP; 24 Dec 2025 22:04:45 -0800
+Received: from kbuild by dd3453e2b682 with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1vYeSo-000000003nv-31Ir;
+	Thu, 25 Dec 2025 06:04:42 +0000
+Date: Thu, 25 Dec 2025 14:04:28 +0800
+From: kernel test robot <lkp@intel.com>
+To: Vincent Mailhol <mailhol@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nicolas Schier <nsc@kernel.org>,
+	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
+	Chris Mason <chris.mason@fusionio.com>,
+	David Sterba <dsterba@suse.com>, Kees Cook <kees@kernel.org>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kbuild@vger.kernel.org,
+	linux-sparse@vger.kernel.org, linux-kernel@vger.kernel.org,
+	llvm@lists.linux.dev, dri-devel@lists.freedesktop.org,
+	linux-btrfs@vger.kernel.org, linux-hardening@vger.kernel.org,
+	Vincent Mailhol <mailhol@kernel.org>
+Subject: Re: [PATCH v3 3/3] overflow: Remove is_non_negative() and
+ is_negative()
+Message-ID: <202512251340.UApIFw9R-lkp@intel.com>
+References: <20251220-remove_wtype-limits-v3-3-24b170af700e@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Mailer: Becky! ver. 2.82.01 [en]
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251220-remove_wtype-limits-v3-3-24b170af700e@kernel.org>
 
-Hi
+Hi Vincent,
 
-> Hi,
-> 
-> I noticed a lot of make C=1 error of btrfs ASSERT(),
-> but make C=0 is OK.
-> 
-> block-group.c: note: in included file:
-> zoned.h:417:9: error: Expected ) in function call
-> zoned.h:417:9: error: got __VA_OPT__
-> 
-> static inline bool btrfs_zoned_bg_is_full(const struct btrfs_block_group *bg)
-> {
-> L417:    ASSERT(btrfs_is_zoned(bg->fs_info));
->     return (bg->alloc_offset == bg->zone_capacity);
-> }
-> 
-> Any help to fix it?
+kernel test robot noticed the following build warnings:
 
-We can walk around this problem with the flowing patch.
-It seems that sparse(make C=1) does yet not support __VA_OPT__.
+[auto build test WARNING on 3e7f562e20ee87a25e104ef4fce557d39d62fa85]
 
-diff --git a/fs/btrfs/messages.h b/fs/btrfs/messages.h
-index dea30823d61a..8755a5bc7ece 100644
---- a/fs/btrfs/messages.h
-+++ b/fs/btrfs/messages.h
-@@ -111,7 +111,7 @@ static inline void verify_assert_printk_format(const char *fmt, ...) {
-  * As ##__VA_ARGS__ cannot be at the beginning of the macro the __VA_OPT__ is needed
-  * and supported since GCC 8 and Clang 12.
-  */
--#define __REST_ARGS(_, ... ) __VA_OPT__(,) __VA_ARGS__
-+#define __REST_ARGS(_, ... ) , ##__VA_ARGS__
- 
- #if defined(CONFIG_CC_IS_CLANG) || GCC_VERSION >= 80000
- /*
+url:    https://github.com/intel-lab-lkp/linux/commits/Vincent-Mailhol/kbuild-remove-gcc-s-Wtype-limits/20251220-190509
+base:   3e7f562e20ee87a25e104ef4fce557d39d62fa85
+patch link:    https://lore.kernel.org/r/20251220-remove_wtype-limits-v3-3-24b170af700e%40kernel.org
+patch subject: [PATCH v3 3/3] overflow: Remove is_non_negative() and is_negative()
+config: i386-randconfig-141-20251225 (https://download.01.org/0day-ci/archive/20251225/202512251340.UApIFw9R-lkp@intel.com/config)
+compiler: gcc-13 (Debian 13.3.0-16) 13.3.0
 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202512251340.UApIFw9R-lkp@intel.com/
 
-Best Regards
-Wang Yugui (wangyugui@e16-tech.com)
-2025/12/25
+smatch warnings:
+drivers/md/dm-stripe.c:463 stripe_io_hints() warn: unsigned '*_d' is never less than zero.
+drivers/md/dm-stripe.c:463 stripe_io_hints() warn: unsigned '_a' is never less than zero.
 
+vim +463 drivers/md/dm-stripe.c
+
+af4874e03ed82f Mike Snitzer    2009-06-22  454  
+40bea431274c24 Mike Snitzer    2009-09-04  455  static void stripe_io_hints(struct dm_target *ti,
+40bea431274c24 Mike Snitzer    2009-09-04  456  			    struct queue_limits *limits)
+40bea431274c24 Mike Snitzer    2009-09-04  457  {
+40bea431274c24 Mike Snitzer    2009-09-04  458  	struct stripe_c *sc = ti->private;
+1071d560afb4c2 Mikulas Patocka 2025-08-11  459  	unsigned int io_min, io_opt;
+40bea431274c24 Mike Snitzer    2009-09-04  460  
+5fb9d4341b782a John Garry      2025-07-11  461  	limits->chunk_sectors = sc->chunk_size;
+1071d560afb4c2 Mikulas Patocka 2025-08-11  462  
+1071d560afb4c2 Mikulas Patocka 2025-08-11 @463  	if (!check_shl_overflow(sc->chunk_size, SECTOR_SHIFT, &io_min) &&
+1071d560afb4c2 Mikulas Patocka 2025-08-11  464  	    !check_mul_overflow(io_min, sc->stripes, &io_opt)) {
+1071d560afb4c2 Mikulas Patocka 2025-08-11  465  		limits->io_min = io_min;
+1071d560afb4c2 Mikulas Patocka 2025-08-11  466  		limits->io_opt = io_opt;
+1071d560afb4c2 Mikulas Patocka 2025-08-11  467  	}
+40bea431274c24 Mike Snitzer    2009-09-04  468  }
+40bea431274c24 Mike Snitzer    2009-09-04  469  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
