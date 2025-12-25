@@ -1,77 +1,77 @@
-Return-Path: <linux-btrfs+bounces-20005-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20007-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4336CDE202
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Dec 2025 23:16:31 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 81208CDE209
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Dec 2025 23:17:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 8EBF83001605
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Dec 2025 22:16:28 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A1560300956D
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Dec 2025 22:16:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7CCD23D7EC;
-	Thu, 25 Dec 2025 22:16:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 156FE19992C;
+	Thu, 25 Dec 2025 22:16:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="FYCoxoAw";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="FYCoxoAw"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="BPz38EPR";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Uc+q1+sh"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 085EB13D891
-	for <linux-btrfs@vger.kernel.org>; Thu, 25 Dec 2025 22:16:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89EAE13D891
+	for <linux-btrfs@vger.kernel.org>; Thu, 25 Dec 2025 22:16:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766700985; cv=none; b=hdJX9i8B5hQEFPBaazEFz3JI4PnTJeJgbcMjq4orQSeLjD7jEzw9yyMe/ojzyZqks4m9mMx6h5IoGGo231AXvohVyKv18VOIZKHOCtuO0Bf4HK1LCjjXBef38Ern8E+hOATespybqFsogEBPGhKwhM53huIJFV3wFwHguZNIyDk=
+	t=1766700992; cv=none; b=Gh5U6MOLwWFxRfd1jm848AVDldTRu+h/OxaxqZP8hcYUFr+zFhPGRXMXS55M+MXl22Om0ko+SEpYEknhJqAxEvtpf71R8Tf4/ANaj7EEKalk38uavHHbPkhBY9fQxR9i4w0sUqxiBUJy4PnHbDlgNU3Z4OzsQBYvqva4I6GwMpM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766700985; c=relaxed/simple;
-	bh=zfrgzV0N1ipGvh0hsV5HhAOlArCHJ/nAtd905ZzxVOM=;
+	s=arc-20240116; t=1766700992; c=relaxed/simple;
+	bh=ov3mluCXKqtosyJEVlRl2VYn+0vFGNLSGfibG5pyo14=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ooS2cS6VOOn/4ZpbAR0xBWXRqrc+eeS4aP/mc8nu4/7E0gh4lSIpgRRjV07irzWlvQQujBzu6xajieg4gfL12Q4y+YnDmgf1tVrCgd1z589j8w0TsLHbEJpWuX/NqGbBZgGeQmFawBQ48bG16ZZ1f0WEcHoQMN5hAi9nsLlUyw0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=FYCoxoAw; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=FYCoxoAw; arc=none smtp.client-ip=195.135.223.130
+	 MIME-Version; b=h7azZnEaOUxWHVyDqHq3j+4mjDt441x7sxN0SOkuvopjOhJ5+Iq7ibs7s1RT7FFFjDEZEUuABKTyU5OlS9n4RARQ4NPxxUmbs8C6zeHvagbwcfhs56+f56V+KJhkwCmPbcpXGvA7874+d1OukKpzVRiP9lZd0o7+B/s5BX9Ctxg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=BPz38EPR; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Uc+q1+sh; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 522A533704;
-	Thu, 25 Dec 2025 22:16:21 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id CB9EA5BD57;
+	Thu, 25 Dec 2025 22:16:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1766700981; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1766700984; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=bhavMdDuSC3y9SA//1Ku+Eu6ZGeu79XjDx9sD7pJhVU=;
-	b=FYCoxoAwlWIIt9rppTasaUuzPsvGPoqSvYNPxZZANkFfs5/1UAI1/KRQOsa2zl1bD33KCn
-	qOoBdM4KTti/IovxHwBoCeNx6WTXN2U2tX4NsJZYuuNct4peBwa6C0FtHHq9eWhAZquyvs
-	Sg2y7jOZBfoM3/tk9dr9Lf9PpV5VRNk=
-Authentication-Results: smtp-out1.suse.de;
-	none
+	bh=pwaUsWrdJnjcJgzael7gqw68Jjzmrh5kDAHj5hjB6D4=;
+	b=BPz38EPRp9e9jjMxHY0vGH+wrANfF8ICx5yVmjSVNq6Y3xghmrmyPxJCbreI5qHwZfWvf8
+	DIA5wI/knlALrFLRcRG9vkYVOyOmFuUoL0geNqVIW5831npLH43zhSVxD0R6C4mOdvQR85
+	nvG0+BJl1k6XkluVJQjLlMMYf0ZbJgA=
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=Uc+q1+sh
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1766700981; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1766700982; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=bhavMdDuSC3y9SA//1Ku+Eu6ZGeu79XjDx9sD7pJhVU=;
-	b=FYCoxoAwlWIIt9rppTasaUuzPsvGPoqSvYNPxZZANkFfs5/1UAI1/KRQOsa2zl1bD33KCn
-	qOoBdM4KTti/IovxHwBoCeNx6WTXN2U2tX4NsJZYuuNct4peBwa6C0FtHHq9eWhAZquyvs
-	Sg2y7jOZBfoM3/tk9dr9Lf9PpV5VRNk=
+	bh=pwaUsWrdJnjcJgzael7gqw68Jjzmrh5kDAHj5hjB6D4=;
+	b=Uc+q1+shXmcNlgAqZe0CNDHgVXvy3uXzSm9KO+CCnIs/t3d+qhrE0m8EdNjC6NSx8nFitd
+	DQ+5Qtro2gSRr5A3UJ0XIpHlOuINsMMZh2hrCNF3U8hHy+MiIPBc6L9qphHld6uipOnMq0
+	16N8xSJFqXKBDz4HjfxFaSH6VPuad9E=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 52F253EA65;
-	Thu, 25 Dec 2025 22:16:20 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C62313EA63;
+	Thu, 25 Dec 2025 22:16:21 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id oBexBbS3TWlCSgAAD6G6ig
-	(envelope-from <wqu@suse.com>); Thu, 25 Dec 2025 22:16:20 +0000
+	id KKvEIbW3TWlCSgAAD6G6ig
+	(envelope-from <wqu@suse.com>); Thu, 25 Dec 2025 22:16:21 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org,
 	fstests@vger.kernel.org
-Subject: [PATCH 1/2] fstests: btrfs/131: add explicit v1 space cache requirement
-Date: Fri, 26 Dec 2025 08:45:52 +1030
-Message-ID: <20251225221553.19254-2-wqu@suse.com>
+Subject: [PATCH 2/2] fstests: btrfs: add a new test case that is future-proof
+Date: Fri, 26 Dec 2025 08:45:53 +1030
+Message-ID: <20251225221553.19254-3-wqu@suse.com>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <20251225221553.19254-1-wqu@suse.com>
 References: <20251225221553.19254-1-wqu@suse.com>
@@ -82,126 +82,210 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Flag: NO
-X-Spam-Score: -2.80
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.80 / 50.00];
+X-Spamd-Result: default: False [-4.01 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
+	DWL_DNSWL_LOW(-1.00)[suse.com:dkim];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-0.980];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	URIBL_BLOCKED(0.00)[suse.com:email,suse.com:dkim,suse.com:mid,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+	MIME_TRACE(0.00)[0:+];
 	RCPT_COUNT_TWO(0.00)[2];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
 	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.com:mid];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.com:+];
 	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
 	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
 	TO_DN_NONE(0.00)[];
-	RCVD_TLS_ALL(0.00)[]
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:dkim,suse.com:mid,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spam-Level: 
+X-Rspamd-Queue-Id: CB9EA5BD57
+X-Spam-Flag: NO
+X-Spam-Score: -4.01
 
-The test case is utilizing v1 space cache, meanwhile v1 space cache
-is already marked deprecated for a while since kernel commit
-1e7bec1f7d65 ("btrfs: emit a warning about space cache v1 being
-deprecated").
+Btrfs' v1 space cache is marked deprecated since commit 1e7bec1f7d65
+("btrfs: emit a warning about space cache v1 being deprecated"), and
+soon the v1 space cache mount option will be fully dropped.
 
-Furthermore quite some features are not compatible with v1 cache,
-including the soon-to-be-default block-group-tree, and hardware
-dependent zoned features.
+Furthermore existing features like block-group-tree, zoned, and bs != ps
+support are all rejecting v1 space cache or forcing the switch to v2
+space cache.
 
-Currently we reject those features for btrfs/131, but what we really
-want is to only run the test case for supported features/kernels.
-The current way to reject will not handle future kernels that completely
-rejects v1 space cache.
+The existing btrfs/131 is not going to handle the future well, and that
+test case is mostly for LTS kernel testing now.
 
-Add a new helper, _require_btrfs_v1_cache() to do the check, which
-checks the following criteria:
-
-- "space_cache=v1" mount option is supported
-  And to handle default v2 cache behavior, also add "clear_cache".
-  If the kernel has completely dropped v1 cache support, such mount
-  should fail.
-
-- Check if FREE_SPACE_TREE feature exists after above mount
-  For bs != ps cases, v2 cache is enforced to replace v1 cache, thus
-  we need to double check to make sure above mount didn't result v2
-  cache.
-
-- Check if cache generation is correct
-  If v1 cache is working, the cache_generation should be some valid
-  value other than 0 nor (u64)-1.
-
-And replace the existing checks on zoned and block-group-tree with the
-new one.
+Add a new test case that is completely v1 cache free, so that it will
+support the future where v1 cache is completely dropped, meanwhile still
+keep the coverage for v2 cache and nospace_cache mount options.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- common/btrfs    | 25 +++++++++++++++++++++++++
- tests/btrfs/131 |  7 +------
- 2 files changed, 26 insertions(+), 6 deletions(-)
+ tests/btrfs/131     |   5 ++-
+ tests/btrfs/340     | 103 ++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/340.out |  15 +++++++
+ 3 files changed, 122 insertions(+), 1 deletion(-)
+ create mode 100755 tests/btrfs/340
+ create mode 100644 tests/btrfs/340.out
 
-diff --git a/common/btrfs b/common/btrfs
-index 6a1095ff..c2d616aa 100644
---- a/common/btrfs
-+++ b/common/btrfs
-@@ -630,6 +630,31 @@ _btrfs_no_v1_cache_opt()
- 	echo -n "-onospace_cache"
- }
- 
-+# v1 space cache is already deprecated and will be removed soon. Furthermore
-+# the soon-to-be-default block-group-tree has dependency on v2 space cache, and
-+# will reject v1 cache mount option.
-+# Make sure v1 space cache is still supported for test cases still utilizing
-+# v1 space cache.
-+_require_btrfs_v1_cache()
+diff --git a/tests/btrfs/131 b/tests/btrfs/131
+index 026d11e6..b54b8326 100755
+--- a/tests/btrfs/131
++++ b/tests/btrfs/131
+@@ -4,7 +4,10 @@
+ #
+ # FS QA Test 131
+ #
+-# Test free space tree mount options.
++# Test free space tree mount options, 3 options involved:
++# - No space cache
++# - Old (deprecated) v1 space cache
++# - New (default) v2 space cache
+ #
+ . ./common/preamble
+ _begin_fstest auto quick
+diff --git a/tests/btrfs/340 b/tests/btrfs/340
+new file mode 100755
+index 00000000..0d558422
+--- /dev/null
++++ b/tests/btrfs/340
+@@ -0,0 +1,103 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (c) 2025 SUSE S.A.  All Rights Reserved.
++#
++# FS QA Test 340
++#
++# Test free space tree mount options, for newer kernels with only 2 options involed:
++# - No space cache
++# - New (default) v2 space cache
++#
++. ./common/preamble
++_begin_fstest auto quick
++
++_require_scratch
++_require_btrfs_command inspect-internal dump-super
++_require_btrfs_fs_feature free_space_tree
++
++# The block-group-tree feature relies on v2 cache, thus it doesn't support
++# "nospace_cache" mount option.
++_require_btrfs_no_block_group_tree
++
++mkfs_nocache()
 +{
-+	_scratch_mkfs &> /dev/null
-+	_try_scratch_mount -o clear_cache,space_cache=v1 || _notrun "v1 space cache is not supported"
++	_scratch_mkfs >/dev/null 2>&1
++	_scratch_mount -o clear_cache,nospace_cache
 +	_scratch_unmount
++}
 +
-+	# Make sure no FREE_SPACE_TREE enabled.
-+	if $BTRFS_UTIL_PROG inspect-internal dump-super $SCRATCH_DEV |\
-+	   grep -q "FREE_SPACE_TREE"; then
-+		_notrun "v1 space cache is not supported"
-+	fi
++mkfs_v2()
++{
++	_scratch_mkfs >/dev/null 2>&1
++	_scratch_mount -o space_cache=v2
++	_scratch_unmount
++}
 +
-+	# Make sure the cache generation is not 0 nor -1.
-+	local cache_gen=$($BTRFS_UTIL_PROG inspect-internal dump-super $SCRATCH_DEV |\
-+			  grep "cache_generation" | $AWK_PROG '{ print $2 }' )
-+	if [ "$cache_gen" -eq 0 -o $(( $test_num + 1 )) -eq 0 ]; then
-+		_notrun "v1 space cache is not supported"
++check_fst_compat()
++{
++	compat_ro="$($BTRFS_UTIL_PROG inspect-internal dump-super "$SCRATCH_DEV" | \
++		     sed -rn 's/^compat_ro_flags\s+(.*)$/\1/p')"
++	if ((compat_ro & 0x1)); then
++		echo "free space tree is enabled"
++	else
++		echo "free space tree is disabled"
 +	fi
 +}
 +
- # Require certain sectorsize support
- _require_btrfs_support_sectorsize()
- {
-diff --git a/tests/btrfs/131 b/tests/btrfs/131
-index b4756a5f..026d11e6 100755
---- a/tests/btrfs/131
-+++ b/tests/btrfs/131
-@@ -14,14 +14,9 @@ _begin_fstest auto quick
- _require_scratch
- _require_btrfs_command inspect-internal dump-super
- _require_btrfs_fs_feature free_space_tree
--# Zoned btrfs does not support space_cache(v1)
--_require_non_zoned_device "${SCRATCH_DEV}"
--# Block group tree does not support space_cache(v1)
--_require_btrfs_no_block_group_tree
-+_require_btrfs_v1_cache
- 
- _scratch_mkfs >/dev/null 2>&1
--[ "$(_get_page_size)" -gt "$(_scratch_btrfs_sectorsize)" ] && \
--	_notrun "cannot run with subpage sectorsize"
- 
- mkfs_v1()
- {
++# Mount options might interfere.
++export MOUNT_OPTIONS=""
++
++# When the free space tree is not enabled:
++# -o space_cache=v2: enable the free space tree
++# -o clear_cache,space_cache=v2: clear the old space cache and enable the free space tree
++# We don't check the no options case or plain space_cache as that will change
++# in the future to turn on space_cache=v2.
++
++mkfs_nocache
++echo "Using no space cache"
++_scratch_mount -o nospace_cache
++check_fst_compat
++_scratch_unmount
++
++mkfs_nocache
++echo "Enabling free space tree"
++_scratch_mount -o space_cache=v2
++check_fst_compat
++_scratch_unmount
++
++# When the free space tree is enabled:
++# -o nospace_cache: error
++# no options, -o space_cache=v2: keep using the free space tree
++# -o clear_cache, -o clear_cache,space_cache=v2: clear and recreate the free space tree
++# -o clear_cache,nospace_cache: clear the free space tree
++
++mkfs_v2
++echo "Trying to mount without free space tree"
++_try_scratch_mount -o nospace_cache >/dev/null 2>&1 || echo "mount failed"
++
++mkfs_v2
++echo "Mounting existing free space tree"
++_scratch_mount
++check_fst_compat
++_scratch_unmount
++_scratch_mount -o space_cache=v2
++check_fst_compat
++_scratch_unmount
++
++mkfs_v2
++echo "Recreating free space tree"
++_scratch_mount -o clear_cache,space_cache=v2
++check_fst_compat
++_scratch_unmount
++mkfs_v2
++_scratch_mount -o clear_cache
++check_fst_compat
++_scratch_unmount
++
++mkfs_v2
++echo "Disabling free space tree"
++_scratch_mount -o clear_cache,nospace_cache
++check_fst_compat
++_scratch_unmount
++
++_exit 0
+diff --git a/tests/btrfs/340.out b/tests/btrfs/340.out
+new file mode 100644
+index 00000000..d8b99b3b
+--- /dev/null
++++ b/tests/btrfs/340.out
+@@ -0,0 +1,15 @@
++QA output created by 340
++Using no space cache
++free space tree is disabled
++Enabling free space tree
++free space tree is enabled
++Trying to mount without free space tree
++mount failed
++Mounting existing free space tree
++free space tree is enabled
++free space tree is enabled
++Recreating free space tree
++free space tree is enabled
++free space tree is enabled
++Disabling free space tree
++free space tree is disabled
 -- 
 2.51.2
 
