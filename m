@@ -1,54 +1,53 @@
-Return-Path: <linux-btrfs+bounces-20003-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20004-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8CDFCDE185
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Dec 2025 21:50:08 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43334CDE18B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Dec 2025 21:55:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 08B73300BBAC
-	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Dec 2025 20:49:58 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id CDA50300B285
+	for <lists+linux-btrfs@lfdr.de>; Thu, 25 Dec 2025 20:55:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AFDA291C1F;
-	Thu, 25 Dec 2025 20:49:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD739296BA5;
+	Thu, 25 Dec 2025 20:55:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="jH4HaYJ8"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="lAqg8edW"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24272289E17;
-	Thu, 25 Dec 2025 20:49:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E33628C864;
+	Thu, 25 Dec 2025 20:54:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766695795; cv=none; b=h1EwT2ARKBw9XUFFyi2Cfn5uUGxeRA5ok88jya9p329nZiLSkRl2mGxnZi5qOINIZLnzG8iqxu7a8lhhOCNskUxtZYr2CPHpya6azmNa3Bw2UCT2OYWsLrw///spFFvGh9N4f/FCaxC5EgHDTfzxDahyGt6V94VJyPSZ1BJxdTM=
+	t=1766696101; cv=none; b=J5FH4ylxbpoU504bMIO0VgcKQ/KbS2NKmXyECEtLaLFmzUzdSITTN+dfHOLCqFFHPQ5ZLq2qtDODl80BQHNWzefnKF3vdf/v/so+oDcOzj+MQu+BQuMTsi49+TziqOtB8go2rmJt4uqauMTu1wFt/E5LbgcCC5CUz3KEUUsOwM8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766695795; c=relaxed/simple;
-	bh=Fbmst4588JxxaUcSK7GdQ6n5iyZHDK1y+dnxetVfHdM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rr6l3sUhh8K0LsKV8ad6gRHZcYWs+Y9RaGmzTGp7J3o3ptaRO2eV7vMNcMTH0ZnNQy8BJ2A8E1ScjeKK7X35nx84dsWb/qonMFt6sDY8XsabSqGZzpA2Yyoba2zbhB8VBDMGNL7Ixy4LuaWL7ARI5ufBoGW6sGM9jmiypG7pHak=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=jH4HaYJ8; arc=none smtp.client-ip=212.227.17.20
+	s=arc-20240116; t=1766696101; c=relaxed/simple;
+	bh=rQ23CsnHI80rOvZLgrSwrUGUmeTAWbbNH6Yy0VU4Yjg=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=GEOLIj1B6unXhpZZBnzCf+ubRWz0IqSp9GC5Y+Tdei26eTcbqdEP6X3iqYUsA1eUT2qHfQ9W7vSrgn1ErZgzODzAB5zFNY0tl129bwSt2s0j6dgexE5TAnR9Qrgdmg+JB3ujXuUGWnSyG1PDlxFsV6ogBYoZzF1A81/zMi8u2IY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=lAqg8edW; arc=none smtp.client-ip=212.227.17.20
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1766695791; x=1767300591; i=quwenruo.btrfs@gmx.com;
-	bh=H8DNmthdVWgSa/ohcDsNCZbYtFfuPq05LCbN+07RNAo=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=jH4HaYJ85jR+haIe8s6jQ1ndWy9fDr+PBhK8+VXLz0dJRCXBTf5jV7qpN6hs3AgO
-	 eSdicQDju1vShOdTroEd9wRTwgfBGsLiYX3+rF9+DvIhKNVCMZ5DMCLLFj6MbugJP
-	 GfctiZUFeb6D/Sw5LE/m7l5T78VIswn4LoqOwNEWIbxjho06i7ZMGR8tmemW8McfP
-	 P0G8BLB78uKjyVK+BHzwjmOYDiDxLsH9vfI1PQqKTk/XPsiEb4pYQL+2Y8H8FcGq4
-	 vn9KoZv6geZ+BgYUJXPQd4rV3KFFaqO0DQ89DkhsQNq62dqf9P7bOcUzh4U/8cM1T
-	 yQLD/Zm2EG6S21K78g==
+	s=s31663417; t=1766696089; x=1767300889; i=quwenruo.btrfs@gmx.com;
+	bh=rQ23CsnHI80rOvZLgrSwrUGUmeTAWbbNH6Yy0VU4Yjg=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:From:To:
+	 Cc:References:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 cc:content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=lAqg8edWXbchx+d1j7UXgqC+NsW2VpUH7G7YiXXOW7EBjlBo6dMleGmL3vDTehVS
+	 2IdzqPUjl1LkcRBFBIDH8MpSMYuy71rf/ia+wle5gpPV5qSkzfL92t2wcUrZOnwe8
+	 uYcjJ1N/wFmnrGbSsTRbm+ne3u6DjzuoA5txUtayPuErYtCdotHdZxVPDBKV9PuL9
+	 z5CuPRCuanpLDvEU5UIBQlw50hbhLyEBgo0G64kPBr/HcAMW4GdhUDDPo06oA7Ba8
+	 F/3Azd8/u/Ag12vWSYF9zikGMdWYbgDQn21iHg5U9yWNei+kST6fP0d5TtI/5PU2E
+	 E4VPbyghCPGlemBdEg==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MHoNC-1vlVai2Nj4-00FX7f; Thu, 25
- Dec 2025 21:49:51 +0100
-Message-ID: <5ba227a9-034c-4e3e-964c-d13f8f3ec2b8@gmx.com>
-Date: Fri, 26 Dec 2025 07:19:44 +1030
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M72sJ-1vaH820WND-004lG7; Thu, 25
+ Dec 2025 21:54:49 +0100
+Message-ID: <d0fac5ff-9159-4d13-8813-5de8e9bb6484@gmx.com>
+Date: Fri, 26 Dec 2025 07:24:45 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -57,13 +56,14 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH] btrfs: tests: Fix memory leak in btrfs_test_qgroups()
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 To: Zilin Guan <zilin@seu.edu.cn>, clm@fb.com
 Cc: dsterba@suse.com, sunk67188@gmail.com, dan.carpenter@linaro.org,
  linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
  jianhao.xu@seu.edu.cn
 References: <20251225102727.967360-1-zilin@seu.edu.cn>
+ <5ba227a9-034c-4e3e-964c-d13f8f3ec2b8@gmx.com>
 Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
  8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
@@ -88,157 +88,178 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
  +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
  HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <20251225102727.967360-1-zilin@seu.edu.cn>
+In-Reply-To: <5ba227a9-034c-4e3e-964c-d13f8f3ec2b8@gmx.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:KaR8++pf/13E322lfOO49sL61evPsVNYHTE6zDAp69GN8qNw1s9
- +pCm6oOVs+ILaPPoGRH+RlHEhP0D2J18SWfEugIhmWEOlDd7g89+RawmPmv4TPXT131/XVI
- CQr0VADEJXKK4TfCUbi9GUed7On2aj74I7WEdR30EBv5GT43OW4x730r6+AmK55EgaRSUp/
- RtzUpZY6F0YAUVHC6Mvcg==
+X-Provags-ID: V03:K1:SX7/wPL22+jDkC5A2CMg/JjIRQo3PqujvXgHu+NYmOlqfWZaXqK
+ lpzQVoMZFGOzV0/j3W+Z/Tl2cxaiBJp57PX7PkVbOeM0ahQw5/zf8XNfIDFYbkWT9wplGN+
+ nLoyHuOf/clLfPOfudDWJZXEwEY51h/Rz3/bre8oMKoLn+oAowAfSp94Den2Hi3YUTz748d
+ qcf6kGogb85pIlhHruGXQ==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:afeCE50+VYw=;jq0fIGjSl7mrGu68YvJqk4zc8fu
- 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
+UI-OutboundReport: notjunk:1;M01:P0:bHOqpGGq1AA=;KD0Buaa8RztjznAkJhKO3UwqMrK
+ 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
 
 
 
-=E5=9C=A8 2025/12/25 20:57, Zilin Guan =E5=86=99=E9=81=93:
-> btrfs_alloc_dummy_root() allocates a root with a reference count of 1.
-> Then btrfs_insert_fs_root() is used to insert the root into the fs_info.
-> On success, it increments the reference count. On failure, it does not.
+=E5=9C=A8 2025/12/26 07:19, Qu Wenruo =E5=86=99=E9=81=93:
 >=20
-> Currently, if btrfs_insert_fs_root() fails, the error handling path
-> jumps to the out label immediately without decrementing the reference
-> count of tmp_root, leading to a memory leak.
 >=20
-> Fix this by calling btrfs_put_root() unconditionally after
-> btrfs_insert_fs_root(). This correctly handles both cases: on success,
-> it drops the local reference, leaving the root with the reference held
-> by fs_info; on failure, it drops the sole reference, freeing the root.
+> =E5=9C=A8 2025/12/25 20:57, Zilin Guan =E5=86=99=E9=81=93:
+>> btrfs_alloc_dummy_root() allocates a root with a reference count of 1.
+>> Then btrfs_insert_fs_root() is used to insert the root into the fs_info=
+.
+>> On success, it increments the reference count. On failure, it does not.
+>>
+>> Currently, if btrfs_insert_fs_root() fails, the error handling path
+>> jumps to the out label immediately without decrementing the reference
+>> count of tmp_root, leading to a memory leak.
+>>
+>> Fix this by calling btrfs_put_root() unconditionally after
+>> btrfs_insert_fs_root(). This correctly handles both cases: on success,
+>> it drops the local reference, leaving the root with the reference held
+>> by fs_info; on failure, it drops the sole reference, freeing the root.
+>>
+>> Fixes: 4785e24fa5d23 ("btrfs: don't take an extra root ref at=20
+>> allocation time")
+>> Signed-off-by: Zilin Guan <zilin@seu.edu.cn>
+>> ---
+>> =C2=A0 fs/btrfs/tests/qgroup-tests.c | 4 ++--
+>> =C2=A0 1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/fs/btrfs/tests/qgroup-tests.c b/fs/btrfs/tests/qgroup-=20
+>> tests.c
+>> index e9124605974b..0d51e0abaeac 100644
+>> --- a/fs/btrfs/tests/qgroup-tests.c
+>> +++ b/fs/btrfs/tests/qgroup-tests.c
+>> @@ -517,11 +517,11 @@ int btrfs_test_qgroups(u32 sectorsize, u32=20
+>> nodesize)
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 tmp_root->root_key.objectid =3D BTRFS_FS=
+_TREE_OBJECTID;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 root->fs_info->fs_root =3D tmp_root;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D btrfs_insert_fs_root(root->fs_in=
+fo, tmp_root);
+>> +=C2=A0=C2=A0=C2=A0 btrfs_put_root(tmp_root);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret) {
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 test_err("couldn=
+'t insert fs root %d", ret);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto out;
 >=20
-> Fixes: 4785e24fa5d23 ("btrfs: don't take an extra root ref at allocation=
- time")
-> Signed-off-by: Zilin Guan <zilin@seu.edu.cn>
-> ---
->   fs/btrfs/tests/qgroup-tests.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
+> This will lead to double free.
 >=20
-> diff --git a/fs/btrfs/tests/qgroup-tests.c b/fs/btrfs/tests/qgroup-tests=
-.c
-> index e9124605974b..0d51e0abaeac 100644
-> --- a/fs/btrfs/tests/qgroup-tests.c
-> +++ b/fs/btrfs/tests/qgroup-tests.c
-> @@ -517,11 +517,11 @@ int btrfs_test_qgroups(u32 sectorsize, u32 nodesiz=
-e)
->   	tmp_root->root_key.objectid =3D BTRFS_FS_TREE_OBJECTID;
->   	root->fs_info->fs_root =3D tmp_root;
->   	ret =3D btrfs_insert_fs_root(root->fs_info, tmp_root);
-> +	btrfs_put_root(tmp_root);
->   	if (ret) {
->   		test_err("couldn't insert fs root %d", ret);
->   		goto out;
+> If btrfs_insert_fs_root() failed, btrfs_put_root() will do the cleaning=
+=20
+> and free the root.
+>=20
+> Then btrfs_free_dummy_root() will call btrfs_put_root() again on the=20
+> root, cause use-after-free.
+>=20
+> So your analyze is completely wrong.
 
-This will lead to double free.
+And considering you're sending quite some patches and most of them are=20
+rejected, next time if you believe you find some=20
+memory-leak/use-after-free, please hit them in the real world with=20
+kmemleak/kasan enabled with the call trace.
 
-If btrfs_insert_fs_root() failed, btrfs_put_root() will do the cleaning=20
-and free the root.
+I believe kmemleak/kasan more than you, and that will save us a lot of tim=
+e.
 
-Then btrfs_free_dummy_root() will call btrfs_put_root() again on the=20
-root, cause use-after-free.
-
-So your analyze is completely wrong.
-
-Thanks,
-Qu
-
->   	}
-> -	btrfs_put_root(tmp_root);
->  =20
->   	tmp_root =3D btrfs_alloc_dummy_root(fs_info);
->   	if (IS_ERR(tmp_root)) {
-> @@ -532,11 +532,11 @@ int btrfs_test_qgroups(u32 sectorsize, u32 nodesiz=
-e)
->  =20
->   	tmp_root->root_key.objectid =3D BTRFS_FIRST_FREE_OBJECTID;
->   	ret =3D btrfs_insert_fs_root(root->fs_info, tmp_root);
-> +	btrfs_put_root(tmp_root);
->   	if (ret) {
->   		test_err("couldn't insert fs root %d", ret);
->   		goto out;
->   	}
-> -	btrfs_put_root(tmp_root);
->  =20
->   	test_msg("running qgroup tests");
->   	ret =3D test_no_shared_qgroup(root, sectorsize, nodesize);
+>=20
+> Thanks,
+> Qu
+>=20
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>> -=C2=A0=C2=A0=C2=A0 btrfs_put_root(tmp_root);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 tmp_root =3D btrfs_alloc_dummy_root(fs_i=
+nfo);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (IS_ERR(tmp_root)) {
+>> @@ -532,11 +532,11 @@ int btrfs_test_qgroups(u32 sectorsize, u32=20
+>> nodesize)
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 tmp_root->root_key.objectid =3D BTRFS_FI=
+RST_FREE_OBJECTID;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D btrfs_insert_fs_root(root->fs_in=
+fo, tmp_root);
+>> +=C2=A0=C2=A0=C2=A0 btrfs_put_root(tmp_root);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret) {
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 test_err("couldn=
+'t insert fs root %d", ret);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto out;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>> -=C2=A0=C2=A0=C2=A0 btrfs_put_root(tmp_root);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 test_msg("running qgroup tests");
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D test_no_shared_qgroup(root, sect=
+orsize, nodesize);
+>=20
+>=20
 
 
