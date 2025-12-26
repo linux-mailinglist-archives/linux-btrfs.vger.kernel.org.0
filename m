@@ -1,77 +1,77 @@
-Return-Path: <linux-btrfs+bounces-20016-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20017-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55289CDE579
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Dec 2025 06:14:32 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5A5DCDE56B
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Dec 2025 06:13:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 403D0301B81D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Dec 2025 05:13:40 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id B95FD3007187
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Dec 2025 05:13:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CA9E246798;
-	Fri, 26 Dec 2025 05:13:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E8762417F2;
+	Fri, 26 Dec 2025 05:13:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="fNHhoz8m";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="fNHhoz8m"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ZAz8roG4";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ZAz8roG4"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5364023FC41
-	for <linux-btrfs@vger.kernel.org>; Fri, 26 Dec 2025 05:13:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79EDA23D7E6
+	for <linux-btrfs@vger.kernel.org>; Fri, 26 Dec 2025 05:13:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766726017; cv=none; b=cwSJO3J4w8AiDilbgRj852ujwBqtAlK6LSVuM2zor8yvC/7sfj4C2HPTCP/c+rra+HGF+M8zfxoSRT8BrowflVHyGHBNc3vSI9IlTtSaE6PMJ4uk+n4RLF/NarwdEEbsQASyUuckeBqK86fVJI9GJB1iE8Oj+M94NVzwRJR0YqA=
+	t=1766726025; cv=none; b=D6el4EjMCoN+8luH2SUc/L1PgwVf2elsnY981O442KD2mOGIFoxu2yVo657sIAyOB1hlD8t6GrpsqI+F6Dwuk8BXhmJSueLARWkcasFcqykPLArckMyLb1NrYQQ8zaqimWaOo9RpOTD4W8iMUHOkkRsfgTb8deDmwjo+u/ugkZc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766726017; c=relaxed/simple;
-	bh=NReZBxbnHATG4JlErxrgDfkroJUY2Q4B3et1UrH6E18=;
+	s=arc-20240116; t=1766726025; c=relaxed/simple;
+	bh=gXhPi/9iwALiF5mB562p6yHR2n1wuTI4EV2qtYMfTP0=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gMzCJeIBilKG7J64dvjGR2ZY4/kDcWra7nB9QSv851qCs93HUCc0e2yoFKubTa/wZUlK720JDkPMgwKvXqrzAESHnyrxLMyZEdwInlb6rI7ts0Z+nbV251SmZgJIjFAueoWxWl6M+I6+wTB8B3yPkZEHw89OqyWdwnpZDNPBYsw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=fNHhoz8m; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=fNHhoz8m; arc=none smtp.client-ip=195.135.223.130
+	 MIME-Version; b=IKEuRskSEEgdGhq8dcskC2KpsF4HXQ2iKlnRvM3yePtQvIMLfp2zNYylfkZDVRo9N7DvcDel6/olCcuLNwrZtuWIPXgS//IriZbXb6L30X4j5ISbA9nctqjf0UjiM3Od7WyfA+bwHyyo8ULtOpVafrPiDOlnlLjPF3/rBn4FwLc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ZAz8roG4; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ZAz8roG4; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 6268133711
-	for <linux-btrfs@vger.kernel.org>; Fri, 26 Dec 2025 05:13:21 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id A2333336FB
+	for <linux-btrfs@vger.kernel.org>; Fri, 26 Dec 2025 05:13:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1766726001; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1766726002; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=PBJQMA07V2LAXYyJOphGeObmipzhZkPfN7cOR8iSRPY=;
-	b=fNHhoz8m83PTP6pwK6WgGK4uoe5h8Sk6gqP+MzCNvfrOXnJWQLXEtgUXfEHG9mf7DW05KA
-	beXWea6MNWLyQDm+/+0ltzqTDpi1LPKnkrOd1e10V0pR50t5tA9e6U3F57D4MIeZ73kkdy
-	2V/R5wJcGUqPNPlFkxyl6udg2Ea3SzU=
+	bh=byUG7jy6ORjFJ/dHOG9HLcGUwwxTf2BJkeUdNo2hAJg=;
+	b=ZAz8roG4gP1Lyt7pZINeUz5feyhPaTHCgnMBkSlDruieOTrZOlGo+1P71Ugca9HeDJ9bcw
+	vwMCb3qVnKHKRhxBSci3j15GhpnnRZCzxje8uO74zT1tvDBxyRCxB3cih48yh4gfXjYDNv
+	ZhDH/06fl+QWZXWv/JvE/4Fcskt3rxw=
 Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1766726001; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1766726002; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=PBJQMA07V2LAXYyJOphGeObmipzhZkPfN7cOR8iSRPY=;
-	b=fNHhoz8m83PTP6pwK6WgGK4uoe5h8Sk6gqP+MzCNvfrOXnJWQLXEtgUXfEHG9mf7DW05KA
-	beXWea6MNWLyQDm+/+0ltzqTDpi1LPKnkrOd1e10V0pR50t5tA9e6U3F57D4MIeZ73kkdy
-	2V/R5wJcGUqPNPlFkxyl6udg2Ea3SzU=
+	bh=byUG7jy6ORjFJ/dHOG9HLcGUwwxTf2BJkeUdNo2hAJg=;
+	b=ZAz8roG4gP1Lyt7pZINeUz5feyhPaTHCgnMBkSlDruieOTrZOlGo+1P71Ugca9HeDJ9bcw
+	vwMCb3qVnKHKRhxBSci3j15GhpnnRZCzxje8uO74zT1tvDBxyRCxB3cih48yh4gfXjYDNv
+	ZhDH/06fl+QWZXWv/JvE/4Fcskt3rxw=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 65B053EA63
-	for <linux-btrfs@vger.kernel.org>; Fri, 26 Dec 2025 05:13:20 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D4FC43EA63
+	for <linux-btrfs@vger.kernel.org>; Fri, 26 Dec 2025 05:13:21 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id MGJZCnAZTmn1DQAAD6G6ig
+	id eJmRJXEZTmn1DQAAD6G6ig
 	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Fri, 26 Dec 2025 05:13:20 +0000
+	for <linux-btrfs@vger.kernel.org>; Fri, 26 Dec 2025 05:13:21 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 4/7] btrfs: use btrfs_file_header structure for inode.c
-Date: Fri, 26 Dec 2025 15:42:50 +1030
-Message-ID: <c649da7c4bc6c65679821c9167d58de48d9ea675.1766725912.git.wqu@suse.com>
+Subject: [PATCH 5/7] btrfs: use btrfs_file_header structure for simple usages
+Date: Fri, 26 Dec 2025 15:42:51 +1030
+Message-ID: <a2ae57d308cdfd4643962f650aee568dd25d7927.1766725912.git.wqu@suse.com>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <cover.1766725912.git.wqu@suse.com>
 References: <cover.1766725912.git.wqu@suse.com>
@@ -82,608 +82,633 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Spam-Flag: NO
+X-Spam-Score: -2.68
+X-Spam-Level: 
 X-Spamd-Result: default: False [-2.68 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
 	MID_CONTAINS_FROM(1.00)[];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	R_MISSING_CHARSET(0.50)[];
 	MIME_GOOD(-0.10)[text/plain];
-	NEURAL_HAM_SHORT(-0.08)[-0.405];
+	NEURAL_HAM_SHORT(-0.08)[-0.421];
 	FUZZY_RATELIMITED(0.00)[rspamd.com];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	RCPT_COUNT_ONE(0.00)[1];
 	ARC_NA(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:mid,suse.com:email];
+	URIBL_BLOCKED(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.com:mid];
 	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email,imap1.dmz-prg2.suse.org:helo];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid,imap1.dmz-prg2.suse.org:helo];
 	RCVD_COUNT_TWO(0.00)[2];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
 	TO_DN_NONE(0.00)[];
 	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
 	RCVD_TLS_ALL(0.00)[]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -2.68
 
-This also involves btrfs_file_extent_inline*() helpers inside
-file-item.h, thus the changes are covering other files.
+Those usage are pretty straightforward, they are checking the type
+first, then grabbing values according to the types.
+
+There are only minor changes to btrfs_file_header pointer lifespan, now
+they are only defined at the minimal scope when possible.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/file-item.h  |   8 +--
- fs/btrfs/inode-item.c |   2 +-
- fs/btrfs/inode.c      | 138 +++++++++++++++++++++---------------------
- fs/btrfs/print-tree.c |  28 ++++-----
- fs/btrfs/reflink.c    |   4 +-
- fs/btrfs/send.c       |  28 ++++-----
- 6 files changed, 103 insertions(+), 105 deletions(-)
+ fs/btrfs/backref.c     | 36 +++++++++++++++++++-----------------
+ fs/btrfs/ctree.c       | 31 +++++++++++++++++--------------
+ fs/btrfs/extent-tree.c | 26 +++++++++++++-------------
+ fs/btrfs/fiemap.c      | 30 +++++++++++++++---------------
+ fs/btrfs/file-item.c   |  8 ++++----
+ fs/btrfs/qgroup.c      | 11 ++++++-----
+ fs/btrfs/reflink.c     | 30 +++++++++++++++---------------
+ fs/btrfs/relocation.c  | 42 +++++++++++++++++++++---------------------
+ 8 files changed, 110 insertions(+), 104 deletions(-)
 
-diff --git a/fs/btrfs/file-item.h b/fs/btrfs/file-item.h
-index 548d02595a6c..da7e756a13f6 100644
---- a/fs/btrfs/file-item.h
-+++ b/fs/btrfs/file-item.h
-@@ -30,20 +30,20 @@ static inline u32 BTRFS_MAX_INLINE_DATA_SIZE(const struct btrfs_fs_info *info)
-  * extent headers.  If a file is compressed on disk, this is the compressed
-  * size.
-  */
--static inline u32 btrfs_file_extent_inline_item_len(
-+static inline u32 btrfs_file_header_inline_item_len(
- 						const struct extent_buffer *eb,
- 						int nr)
+diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
+index 78da47a3d00e..068e0c8b8663 100644
+--- a/fs/btrfs/backref.c
++++ b/fs/btrfs/backref.c
+@@ -35,10 +35,10 @@ struct extent_inode_elem {
+ static int check_extent_in_eb(struct btrfs_backref_walk_ctx *ctx,
+ 			      const struct btrfs_key *key,
+ 			      const struct extent_buffer *eb,
+-			      const struct btrfs_file_extent_item *fi,
++			      const struct btrfs_file_header *fh,
+ 			      struct extent_inode_elem **eie)
  {
- 	return btrfs_item_size(eb, nr) - sizeof(struct btrfs_file_header);
- }
+-	const u64 data_len = btrfs_file_extent_num_bytes(eb, fi);
++	const u64 data_len = btrfs_file_header_num_bytes(eb, fh);
+ 	u64 offset = key->offset;
+ 	struct extent_inode_elem *e;
+ 	const u64 *root_ids;
+@@ -46,12 +46,12 @@ static int check_extent_in_eb(struct btrfs_backref_walk_ctx *ctx,
+ 	bool cached;
  
--static inline unsigned long btrfs_file_extent_inline_start(
--				const struct btrfs_file_extent_item *e)
-+static inline unsigned long btrfs_file_header_inline_start(
-+				const struct btrfs_file_header *e)
+ 	if (!ctx->ignore_extent_item_pos &&
+-	    !btrfs_file_extent_compression(eb, fi) &&
+-	    !btrfs_file_extent_encryption(eb, fi) &&
+-	    !btrfs_file_extent_other_encoding(eb, fi)) {
++	    !btrfs_file_header_compression(eb, fh) &&
++	    !btrfs_file_header_encryption(eb, fh) &&
++	    !btrfs_file_header_other_encoding(eb, fh)) {
+ 		u64 data_offset;
+ 
+-		data_offset = btrfs_file_extent_offset(eb, fi);
++		data_offset = btrfs_file_header_offset(eb, fh);
+ 
+ 		if (ctx->extent_item_pos < data_offset ||
+ 		    ctx->extent_item_pos >= data_offset + data_len)
+@@ -107,7 +107,6 @@ static int find_extent_in_eb(struct btrfs_backref_walk_ctx *ctx,
  {
- 	return (unsigned long)e + sizeof(struct btrfs_file_header);
- }
- 
--static inline u32 btrfs_file_extent_calc_inline_size(u32 datasize)
-+static inline u32 btrfs_file_header_calc_inline_size(u32 datasize)
- {
- 	return sizeof(struct btrfs_file_header) + datasize;
- }
-diff --git a/fs/btrfs/inode-item.c b/fs/btrfs/inode-item.c
-index 19a00104dc6f..45c3fbf6d299 100644
---- a/fs/btrfs/inode-item.c
-+++ b/fs/btrfs/inode-item.c
-@@ -594,7 +594,7 @@ int btrfs_truncate_inode_items(struct btrfs_trans_handle *trans,
- 				u32 size = (u32)(new_size - found_key.offset);
- 
- 				btrfs_set_file_header_ram_bytes(leaf, fh, size);
--				size = btrfs_file_extent_calc_inline_size(size);
-+				size = btrfs_file_header_calc_inline_size(size);
- 				btrfs_truncate_item(trans, path, size, 1);
- 			} else if (!del_item) {
- 				/*
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 127f9e7ef453..aa9ce054ab1f 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -469,7 +469,7 @@ static int insert_inline_extent(struct btrfs_trans_handle *trans,
- 	const u32 sectorsize = trans->fs_info->sectorsize;
- 	char *kaddr;
- 	unsigned long ptr;
--	struct btrfs_file_extent_item *ei;
-+	struct btrfs_file_header *fh;
- 	int ret;
- 	size_t cur_size = size;
- 	u64 i_size;
-@@ -503,35 +503,34 @@ static int insert_inline_extent(struct btrfs_trans_handle *trans,
- 		key.type = BTRFS_EXTENT_DATA_KEY;
- 		key.offset = 0;
- 
--		datasize = btrfs_file_extent_calc_inline_size(cur_size);
-+		datasize = btrfs_file_header_calc_inline_size(cur_size);
- 		ret = btrfs_insert_empty_item(trans, root, path, &key,
- 					      datasize);
- 		if (ret)
- 			goto fail;
- 	}
- 	leaf = path->nodes[0];
--	ei = btrfs_item_ptr(leaf, path->slots[0],
--			    struct btrfs_file_extent_item);
--	btrfs_set_file_extent_generation(leaf, ei, trans->transid);
--	btrfs_set_file_extent_type(leaf, ei, BTRFS_FILE_EXTENT_INLINE);
--	btrfs_set_file_extent_encryption(leaf, ei, 0);
--	btrfs_set_file_extent_other_encoding(leaf, ei, 0);
--	btrfs_set_file_extent_ram_bytes(leaf, ei, size);
--	ptr = btrfs_file_extent_inline_start(ei);
-+	fh = btrfs_item_ptr(leaf, path->slots[0], struct btrfs_file_header);
-+	btrfs_set_file_header_generation(leaf, fh, trans->transid);
-+	btrfs_set_file_header_type(leaf, fh, BTRFS_FILE_EXTENT_INLINE);
-+	btrfs_set_file_header_encryption(leaf, fh, 0);
-+	btrfs_set_file_header_other_encoding(leaf, fh, 0);
-+	btrfs_set_file_header_ram_bytes(leaf, fh, size);
-+	ptr = btrfs_file_header_inline_start(fh);
- 
- 	if (compress_type != BTRFS_COMPRESS_NONE) {
- 		kaddr = kmap_local_folio(compressed_folio, 0);
- 		write_extent_buffer(leaf, kaddr, ptr, compressed_size);
- 		kunmap_local(kaddr);
- 
--		btrfs_set_file_extent_compression(leaf, ei,
-+		btrfs_set_file_header_compression(leaf, fh,
- 						  compress_type);
- 	} else {
- 		struct folio *folio;
- 
- 		folio = filemap_get_folio(inode->vfs_inode.i_mapping, 0);
- 		ASSERT(!IS_ERR(folio));
--		btrfs_set_file_extent_compression(leaf, ei, 0);
-+		btrfs_set_file_header_compression(leaf, fh, 0);
- 		kaddr = kmap_local_folio(folio, 0);
- 		write_extent_buffer(leaf, kaddr, ptr, size);
- 		kunmap_local(kaddr);
-@@ -657,7 +656,7 @@ static noinline int __cow_file_range_inline(struct btrfs_inode *inode,
- 	drop_args.end = fs_info->sectorsize;
- 	drop_args.drop_cache = true;
- 	drop_args.replace_extent = true;
--	drop_args.extent_item_size = btrfs_file_extent_calc_inline_size(data_len);
-+	drop_args.extent_item_size = btrfs_file_header_calc_inline_size(data_len);
- 	ret = btrfs_drop_extents(trans, root, inode, &drop_args);
- 	if (unlikely(ret)) {
- 		btrfs_abort_transaction(trans, ret);
-@@ -1904,7 +1903,7 @@ static int can_nocow_file_extent(struct btrfs_path *path,
- 	const bool is_freespace_inode = btrfs_is_free_space_inode(inode);
- 	struct extent_buffer *leaf = path->nodes[0];
- 	struct btrfs_root *root = inode->root;
+ 	u64 disk_byte;
+ 	struct btrfs_key key;
 -	struct btrfs_file_extent_item *fi;
-+	struct btrfs_file_header *fh;
- 	struct btrfs_root *csum_root;
- 	u64 io_start;
- 	u64 extent_end;
-@@ -1913,8 +1912,8 @@ static int can_nocow_file_extent(struct btrfs_path *path,
- 	int ret = 0;
- 	bool nowait = path->nowait;
- 
--	fi = btrfs_item_ptr(leaf, path->slots[0], struct btrfs_file_extent_item);
--	extent_type = btrfs_file_extent_type(leaf, fi);
-+	fh = btrfs_item_ptr(leaf, path->slots[0], struct btrfs_file_header);
-+	extent_type = btrfs_file_header_type(leaf, fh);
- 
- 	if (extent_type == BTRFS_FILE_EXTENT_INLINE)
- 		goto out;
-@@ -1928,27 +1927,27 @@ static int can_nocow_file_extent(struct btrfs_path *path,
- 	 * for its subvolume was created, then this implies the extent is shared,
- 	 * hence we must COW.
+ 	int slot;
+ 	int nritems;
+ 	int extent_type;
+@@ -120,19 +119,21 @@ static int find_extent_in_eb(struct btrfs_backref_walk_ctx *ctx,
  	 */
--	if (btrfs_file_extent_generation(leaf, fi) <=
-+	if (btrfs_file_header_generation(leaf, fh) <=
- 	    btrfs_root_last_snapshot(&root->root_item))
- 		goto out;
- 
- 	/* An explicit hole, must COW. */
--	if (btrfs_file_extent_disk_bytenr(leaf, fi) == 0)
-+	if (btrfs_file_header_disk_bytenr(leaf, fh) == 0)
- 		goto out;
- 
- 	/* Compressed/encrypted/encoded extents must be COWed. */
--	if (btrfs_file_extent_compression(leaf, fi) ||
--	    btrfs_file_extent_encryption(leaf, fi) ||
--	    btrfs_file_extent_other_encoding(leaf, fi))
-+	if (btrfs_file_header_compression(leaf, fh) ||
-+	    btrfs_file_header_encryption(leaf, fh) ||
-+	    btrfs_file_header_other_encoding(leaf, fh))
- 		goto out;
- 
- 	extent_end = btrfs_file_extent_end(path);
- 
--	args->file_extent.disk_bytenr = btrfs_file_extent_disk_bytenr(leaf, fi);
--	args->file_extent.disk_num_bytes = btrfs_file_extent_disk_num_bytes(leaf, fi);
--	args->file_extent.ram_bytes = btrfs_file_extent_ram_bytes(leaf, fi);
--	args->file_extent.offset = btrfs_file_extent_offset(leaf, fi);
--	args->file_extent.compression = btrfs_file_extent_compression(leaf, fi);
-+	args->file_extent.disk_bytenr = btrfs_file_header_disk_bytenr(leaf, fh);
-+	args->file_extent.disk_num_bytes = btrfs_file_header_disk_num_bytes(leaf, fh);
-+	args->file_extent.ram_bytes = btrfs_file_header_ram_bytes(leaf, fh);
-+	args->file_extent.offset = btrfs_file_header_offset(leaf, fh);
-+	args->file_extent.compression = btrfs_file_header_compression(leaf, fh);
- 
- 	/*
- 	 * The following checks can be expensive, as they need to take other
-@@ -2129,7 +2128,7 @@ static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
- 	while (cur_offset <= end) {
- 		struct btrfs_block_group *nocow_bg = NULL;
- 		struct btrfs_key found_key;
--		struct btrfs_file_extent_item *fi;
+ 	nritems = btrfs_header_nritems(eb);
+ 	for (slot = 0; slot < nritems; ++slot) {
 +		struct btrfs_file_header *fh;
- 		struct extent_buffer *leaf;
- 		struct extent_state *cached_state = NULL;
- 		u64 extent_end;
-@@ -2201,9 +2200,8 @@ static noinline int run_delalloc_nocow(struct btrfs_inode *inode,
- 		 * Found extent which begins before our range and potentially
- 		 * intersect it
- 		 */
++
+ 		btrfs_item_key_to_cpu(eb, &key, slot);
+ 		if (key.type != BTRFS_EXTENT_DATA_KEY)
+ 			continue;
+-		fi = btrfs_item_ptr(eb, slot, struct btrfs_file_extent_item);
+-		extent_type = btrfs_file_extent_type(eb, fi);
++		fh = btrfs_item_ptr(eb, slot, struct btrfs_file_header);
++		extent_type = btrfs_file_header_type(eb, fh);
+ 		if (extent_type == BTRFS_FILE_EXTENT_INLINE)
+ 			continue;
+ 		/* don't skip BTRFS_FILE_EXTENT_PREALLOC, we can handle that */
+-		disk_byte = btrfs_file_extent_disk_bytenr(eb, fi);
++		disk_byte = btrfs_file_header_disk_bytenr(eb, fh);
+ 		if (disk_byte != ctx->bytenr)
+ 			continue;
+ 
+-		ret = check_extent_in_eb(ctx, &key, eb, fi, eie);
++		ret = check_extent_in_eb(ctx, &key, eb, fh, eie);
+ 		if (ret == BTRFS_ITERATE_EXTENT_INODES_STOP || ret < 0)
+ 			return ret;
+ 	}
+@@ -475,7 +476,6 @@ static int add_all_parents(struct btrfs_backref_walk_ctx *ctx,
+ 	struct extent_buffer *eb;
+ 	struct btrfs_key key;
+ 	struct btrfs_key *key_for_search = &ref->key_for_search;
+-	struct btrfs_file_extent_item *fi;
+ 	struct extent_inode_elem *eie = NULL, *old = NULL;
+ 	u64 disk_byte;
+ 	u64 wanted_disk_byte = ref->wanted_disk_byte;
+@@ -512,6 +512,8 @@ static int add_all_parents(struct btrfs_backref_walk_ctx *ctx,
+ 	}
+ 
+ 	while (!ret && count < ref->count) {
++		struct btrfs_file_header *fh;
++
+ 		eb = path->nodes[0];
+ 		slot = path->slots[0];
+ 
+@@ -535,12 +537,12 @@ static int add_all_parents(struct btrfs_backref_walk_ctx *ctx,
+ 				ret = btrfs_next_old_leaf(root, path, ctx->time_seq);
+ 			continue;
+ 		}
+-		fi = btrfs_item_ptr(eb, slot, struct btrfs_file_extent_item);
+-		type = btrfs_file_extent_type(eb, fi);
++		fh = btrfs_item_ptr(eb, slot, struct btrfs_file_header);
++		type = btrfs_file_header_type(eb, fh);
+ 		if (type == BTRFS_FILE_EXTENT_INLINE)
+ 			goto next;
+-		disk_byte = btrfs_file_extent_disk_bytenr(eb, fi);
+-		data_offset = btrfs_file_extent_offset(eb, fi);
++		disk_byte = btrfs_file_header_disk_bytenr(eb, fh);
++		data_offset = btrfs_file_header_offset(eb, fh);
+ 
+ 		if (disk_byte == wanted_disk_byte) {
+ 			eie = NULL;
+@@ -550,7 +552,7 @@ static int add_all_parents(struct btrfs_backref_walk_ctx *ctx,
+ 			else
+ 				goto next;
+ 			if (!ctx->skip_inode_ref_list) {
+-				ret = check_extent_in_eb(ctx, &key, eb, fi, &eie);
++				ret = check_extent_in_eb(ctx, &key, eb, fh, &eie);
+ 				if (ret == BTRFS_ITERATE_EXTENT_INODES_STOP ||
+ 				    ret < 0)
+ 					break;
+diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+index e859c4355f92..bd65f12b3766 100644
+--- a/fs/btrfs/ctree.c
++++ b/fs/btrfs/ctree.c
+@@ -3847,7 +3847,6 @@ static noinline int setup_leaf_for_split(struct btrfs_trans_handle *trans,
+ {
+ 	struct btrfs_key key;
+ 	struct extent_buffer *leaf;
+-	struct btrfs_file_extent_item *fi;
+ 	u64 extent_len = 0;
+ 	u32 item_size;
+ 	int ret;
+@@ -3864,9 +3863,11 @@ static noinline int setup_leaf_for_split(struct btrfs_trans_handle *trans,
+ 
+ 	item_size = btrfs_item_size(leaf, path->slots[0]);
+ 	if (key.type == BTRFS_EXTENT_DATA_KEY) {
 -		fi = btrfs_item_ptr(leaf, path->slots[0],
 -				    struct btrfs_file_extent_item);
--		extent_type = btrfs_file_extent_type(leaf, fi);
-+		fh = btrfs_item_ptr(leaf, path->slots[0], struct btrfs_file_header);
-+		extent_type = btrfs_file_header_type(leaf, fh);
- 		/* If this is triggered then we have a memory corruption. */
- 		ASSERT(extent_type < BTRFS_NR_FILE_EXTENT_TYPES);
- 		if (WARN_ON(extent_type >= BTRFS_NR_FILE_EXTENT_TYPES)) {
-@@ -7052,7 +7050,7 @@ static struct dentry *btrfs_mkdir(struct mnt_idmap *idmap, struct inode *dir,
- 
- static noinline int uncompress_inline(struct btrfs_path *path,
- 				      struct folio *folio,
--				      struct btrfs_file_extent_item *item)
-+				      struct btrfs_file_header *header)
- {
- 	int ret;
- 	struct extent_buffer *leaf = path->nodes[0];
-@@ -7063,13 +7061,13 @@ static noinline int uncompress_inline(struct btrfs_path *path,
- 	unsigned long ptr;
- 	int compress_type;
- 
--	compress_type = btrfs_file_extent_compression(leaf, item);
--	max_size = btrfs_file_extent_ram_bytes(leaf, item);
--	inline_size = btrfs_file_extent_inline_item_len(leaf, path->slots[0]);
-+	compress_type = btrfs_file_header_compression(leaf, header);
-+	max_size = btrfs_file_header_ram_bytes(leaf, header);
-+	inline_size = btrfs_file_header_inline_item_len(leaf, path->slots[0]);
- 	tmp = kmalloc(inline_size, GFP_NOFS);
- 	if (!tmp)
- 		return -ENOMEM;
--	ptr = btrfs_file_extent_inline_start(item);
-+	ptr = btrfs_file_header_inline_start(header);
- 
- 	read_extent_buffer(leaf, tmp, ptr, inline_size);
- 
-@@ -7094,7 +7092,7 @@ static noinline int uncompress_inline(struct btrfs_path *path,
- static int read_inline_extent(struct btrfs_path *path, struct folio *folio)
- {
- 	const u32 blocksize = path->nodes[0]->fs_info->sectorsize;
--	struct btrfs_file_extent_item *fi;
-+	struct btrfs_file_header *fh;
- 	void *kaddr;
- 	size_t copy_size;
- 
-@@ -7103,16 +7101,16 @@ static int read_inline_extent(struct btrfs_path *path, struct folio *folio)
- 
- 	ASSERT(folio_pos(folio) == 0);
- 
--	fi = btrfs_item_ptr(path->nodes[0], path->slots[0],
--			    struct btrfs_file_extent_item);
--	if (btrfs_file_extent_compression(path->nodes[0], fi) != BTRFS_COMPRESS_NONE)
--		return uncompress_inline(path, folio, fi);
-+	fh = btrfs_item_ptr(path->nodes[0], path->slots[0],
-+			    struct btrfs_file_header);
-+	if (btrfs_file_header_compression(path->nodes[0], fh) != BTRFS_COMPRESS_NONE)
-+		return uncompress_inline(path, folio, fh);
- 
- 	copy_size = min_t(u64, blocksize,
--			  btrfs_file_extent_ram_bytes(path->nodes[0], fi));
-+			  btrfs_file_header_ram_bytes(path->nodes[0], fh));
- 	kaddr = kmap_local_folio(folio, 0);
- 	read_extent_buffer(path->nodes[0], kaddr,
--			   btrfs_file_extent_inline_start(fi), copy_size);
-+			   btrfs_file_header_inline_start(fh), copy_size);
- 	kunmap_local(kaddr);
- 	if (copy_size < blocksize)
- 		folio_zero_range(folio, copy_size, blocksize - copy_size);
-@@ -7366,7 +7364,7 @@ noinline int can_nocow_extent(struct btrfs_inode *inode, u64 offset, u64 *len,
- 	int ret;
- 	struct extent_buffer *leaf;
- 	struct extent_io_tree *io_tree = &inode->io_tree;
--	struct btrfs_file_extent_item *fi;
-+	struct btrfs_file_header *fh;
- 	struct btrfs_key key;
- 	int found_type;
- 
-@@ -7404,8 +7402,8 @@ noinline int can_nocow_extent(struct btrfs_inode *inode, u64 offset, u64 *len,
- 	if (btrfs_file_extent_end(path) <= offset)
- 		return 0;
- 
--	fi = btrfs_item_ptr(leaf, path->slots[0], struct btrfs_file_extent_item);
--	found_type = btrfs_file_extent_type(leaf, fi);
-+	fh = btrfs_item_ptr(leaf, path->slots[0], struct btrfs_file_header);
-+	found_type = btrfs_file_header_type(leaf, fh);
- 
- 	nocow_args.start = offset;
- 	nocow_args.end = offset + *len - 1;
-@@ -8970,7 +8968,7 @@ static int btrfs_symlink(struct mnt_idmap *idmap, struct inode *dir,
- 	int name_len;
- 	int datasize;
- 	unsigned long ptr;
--	struct btrfs_file_extent_item *ei;
-+	struct btrfs_file_header *fh;
- 	struct extent_buffer *leaf;
- 
- 	name_len = strlen(symname);
-@@ -9020,7 +9018,7 @@ static int btrfs_symlink(struct mnt_idmap *idmap, struct inode *dir,
- 	key.objectid = btrfs_ino(BTRFS_I(inode));
- 	key.type = BTRFS_EXTENT_DATA_KEY;
- 	key.offset = 0;
--	datasize = btrfs_file_extent_calc_inline_size(name_len);
-+	datasize = btrfs_file_header_calc_inline_size(name_len);
- 	ret = btrfs_insert_empty_item(trans, root, path, &key, datasize);
- 	if (unlikely(ret)) {
- 		btrfs_abort_transaction(trans, ret);
-@@ -9030,17 +9028,17 @@ static int btrfs_symlink(struct mnt_idmap *idmap, struct inode *dir,
- 		goto out;
+-		extent_len = btrfs_file_extent_num_bytes(leaf, fi);
++		struct btrfs_file_header *fh;
++
++		fh = btrfs_item_ptr(leaf, path->slots[0],
++				    struct btrfs_file_header);
++		extent_len = btrfs_file_header_num_bytes(leaf, fh);
  	}
- 	leaf = path->nodes[0];
--	ei = btrfs_item_ptr(leaf, path->slots[0],
--			    struct btrfs_file_extent_item);
--	btrfs_set_file_extent_generation(leaf, ei, trans->transid);
--	btrfs_set_file_extent_type(leaf, ei,
-+	fh = btrfs_item_ptr(leaf, path->slots[0],
-+			    struct btrfs_file_header);
-+	btrfs_set_file_header_generation(leaf, fh, trans->transid);
-+	btrfs_set_file_header_type(leaf, fh,
- 				   BTRFS_FILE_EXTENT_INLINE);
--	btrfs_set_file_extent_encryption(leaf, ei, 0);
--	btrfs_set_file_extent_compression(leaf, ei, 0);
--	btrfs_set_file_extent_other_encoding(leaf, ei, 0);
--	btrfs_set_file_extent_ram_bytes(leaf, ei, name_len);
-+	btrfs_set_file_header_encryption(leaf, fh, 0);
-+	btrfs_set_file_header_compression(leaf, fh, 0);
-+	btrfs_set_file_header_other_encoding(leaf, fh, 0);
-+	btrfs_set_file_header_ram_bytes(leaf, fh, name_len);
+ 	btrfs_release_path(path);
  
--	ptr = btrfs_file_extent_inline_start(ei);
-+	ptr = btrfs_file_header_inline_start(fh);
- 	write_extent_buffer(leaf, symname, ptr, name_len);
- 	btrfs_free_path(path);
+@@ -3890,9 +3891,11 @@ static noinline int setup_leaf_for_split(struct btrfs_trans_handle *trans,
+ 		goto err;
  
-@@ -9392,7 +9390,7 @@ static ssize_t btrfs_encoded_read_inline(
- 	struct extent_io_tree *io_tree = &inode->io_tree;
- 	BTRFS_PATH_AUTO_FREE(path);
- 	struct extent_buffer *leaf;
+ 	if (key.type == BTRFS_EXTENT_DATA_KEY) {
+-		fi = btrfs_item_ptr(leaf, path->slots[0],
+-				    struct btrfs_file_extent_item);
+-		if (extent_len != btrfs_file_extent_num_bytes(leaf, fi))
++		struct btrfs_file_header *fh;
++
++		fh = btrfs_item_ptr(leaf, path->slots[0],
++				    struct btrfs_file_header);
++		if (extent_len != btrfs_file_header_num_bytes(leaf, fh))
+ 			goto err;
+ 	}
+ 
+@@ -4063,18 +4066,18 @@ void btrfs_truncate_item(struct btrfs_trans_handle *trans,
+ 
+ 		if (btrfs_disk_key_type(&disk_key) == BTRFS_EXTENT_DATA_KEY) {
+ 			unsigned long ptr;
+-			struct btrfs_file_extent_item *fi;
++			struct btrfs_file_header *fh;
+ 
+-			fi = btrfs_item_ptr(leaf, slot,
+-					    struct btrfs_file_extent_item);
+-			fi = (struct btrfs_file_extent_item *)(
+-			     (unsigned long)fi - size_diff);
++			fh = btrfs_item_ptr(leaf, slot,
++					    struct btrfs_file_header);
++			fh = (struct btrfs_file_header *)(
++			     (unsigned long)fh - size_diff);
+ 
+-			if (btrfs_file_extent_type(leaf, fi) ==
++			if (btrfs_file_header_type(leaf, fh) ==
+ 			    BTRFS_FILE_EXTENT_INLINE) {
+ 				ptr = btrfs_item_ptr_offset(leaf, slot);
+ 				memmove_extent_buffer(leaf, ptr,
+-				      (unsigned long)fi,
++				      (unsigned long)fh,
+ 				      sizeof(struct btrfs_file_header));
+ 			}
+ 		}
+diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+index 1dcd69fe97ed..fbb98f5e48a6 100644
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -2465,7 +2465,7 @@ static int __btrfs_mod_ref(struct btrfs_trans_handle *trans,
+ 	u64 ref_root;
+ 	u32 nritems;
+ 	struct btrfs_key key;
+-	struct btrfs_file_extent_item *fi;
++	struct btrfs_file_header *fh;
+ 	bool for_reloc = btrfs_header_flag(buf, BTRFS_HEADER_FLAG_RELOC);
+ 	int i;
+ 	int action;
+@@ -2502,19 +2502,19 @@ static int __btrfs_mod_ref(struct btrfs_trans_handle *trans,
+ 			btrfs_item_key_to_cpu(buf, &key, i);
+ 			if (key.type != BTRFS_EXTENT_DATA_KEY)
+ 				continue;
+-			fi = btrfs_item_ptr(buf, i,
+-					    struct btrfs_file_extent_item);
+-			if (btrfs_file_extent_type(buf, fi) ==
++			fh = btrfs_item_ptr(buf, i,
++					    struct btrfs_file_header);
++			if (btrfs_file_header_type(buf, fh) ==
+ 			    BTRFS_FILE_EXTENT_INLINE)
+ 				continue;
+-			ref.bytenr = btrfs_file_extent_disk_bytenr(buf, fi);
++			ref.bytenr = btrfs_file_header_disk_bytenr(buf, fh);
+ 			if (ref.bytenr == 0)
+ 				continue;
+ 
+-			ref.num_bytes = btrfs_file_extent_disk_num_bytes(buf, fi);
++			ref.num_bytes = btrfs_file_header_disk_num_bytes(buf, fh);
+ 			ref.owning_root = ref_root;
+ 
+-			key.offset -= btrfs_file_extent_offset(buf, fi);
++			key.offset -= btrfs_file_header_offset(buf, fh);
+ 			btrfs_init_data_ref(&ref, key.objectid, key.offset,
+ 					    btrfs_root_id(root), for_reloc);
+ 			if (inc)
+@@ -2673,7 +2673,7 @@ static int __exclude_logged_extent(struct btrfs_fs_info *fs_info,
+ int btrfs_exclude_logged_extents(struct extent_buffer *eb)
+ {
+ 	struct btrfs_fs_info *fs_info = eb->fs_info;
 -	struct btrfs_file_extent_item *item;
 +	struct btrfs_file_header *header;
- 	u64 ram_bytes;
- 	unsigned long ptr;
- 	void *tmp;
-@@ -9415,22 +9413,22 @@ static ssize_t btrfs_encoded_read_inline(
- 		return ret;
+ 	struct btrfs_key key;
+ 	int found_type;
+ 	int i;
+@@ -2686,14 +2686,14 @@ int btrfs_exclude_logged_extents(struct extent_buffer *eb)
+ 		btrfs_item_key_to_cpu(eb, &key, i);
+ 		if (key.type != BTRFS_EXTENT_DATA_KEY)
+ 			continue;
+-		item = btrfs_item_ptr(eb, i, struct btrfs_file_extent_item);
+-		found_type = btrfs_file_extent_type(eb, item);
++		header = btrfs_item_ptr(eb, i, struct btrfs_file_header);
++		found_type = btrfs_file_header_type(eb, header);
+ 		if (found_type == BTRFS_FILE_EXTENT_INLINE)
+ 			continue;
+-		if (btrfs_file_extent_disk_bytenr(eb, item) == 0)
++		if (btrfs_file_header_disk_bytenr(eb, header) == 0)
+ 			continue;
+-		key.objectid = btrfs_file_extent_disk_bytenr(eb, item);
+-		key.offset = btrfs_file_extent_disk_num_bytes(eb, item);
++		key.objectid = btrfs_file_header_disk_bytenr(eb, header);
++		key.offset = btrfs_file_header_disk_num_bytes(eb, header);
+ 		ret = __exclude_logged_extent(fs_info, key.objectid, key.offset);
+ 		if (ret)
+ 			break;
+diff --git a/fs/btrfs/fiemap.c b/fs/btrfs/fiemap.c
+index f2eaaef8422b..973ee6a89940 100644
+--- a/fs/btrfs/fiemap.c
++++ b/fs/btrfs/fiemap.c
+@@ -558,7 +558,7 @@ static int fiemap_find_last_extent_offset(struct btrfs_inode *inode,
+ 	const u64 ino = btrfs_ino(inode);
+ 	struct btrfs_root *root = inode->root;
+ 	struct extent_buffer *leaf;
+-	struct btrfs_file_extent_item *ei;
++	struct btrfs_file_header *fh;
+ 	struct btrfs_key key;
+ 	u64 disk_bytenr;
+ 	int ret;
+@@ -594,8 +594,8 @@ static int fiemap_find_last_extent_offset(struct btrfs_inode *inode,
+ 	 * so first check if we have an inline extent item before checking if we
+ 	 * have an implicit hole (disk_bytenr == 0).
+ 	 */
+-	ei = btrfs_item_ptr(leaf, path->slots[0], struct btrfs_file_extent_item);
+-	if (btrfs_file_extent_type(leaf, ei) == BTRFS_FILE_EXTENT_INLINE) {
++	fh = btrfs_item_ptr(leaf, path->slots[0], struct btrfs_file_header);
++	if (btrfs_file_header_type(leaf, fh) == BTRFS_FILE_EXTENT_INLINE) {
+ 		*last_extent_end_ret = btrfs_file_extent_end(path);
+ 		return 0;
  	}
- 	leaf = path->nodes[0];
--	item = btrfs_item_ptr(leaf, path->slots[0], struct btrfs_file_extent_item);
-+	header = btrfs_item_ptr(leaf, path->slots[0], struct btrfs_file_header);
+@@ -607,7 +607,7 @@ static int fiemap_find_last_extent_offset(struct btrfs_inode *inode,
+ 	 * another hole file extent item as the last item in the previous leaf.
+ 	 * This is because we merge file extent items that represent holes.
+ 	 */
+-	disk_bytenr = btrfs_file_extent_disk_bytenr(leaf, ei);
++	disk_bytenr = btrfs_file_header_disk_bytenr(leaf, fh);
+ 	while (disk_bytenr == 0) {
+ 		ret = btrfs_previous_item(root, path, ino, BTRFS_EXTENT_DATA_KEY);
+ 		if (ret < 0) {
+@@ -618,9 +618,9 @@ static int fiemap_find_last_extent_offset(struct btrfs_inode *inode,
+ 			return 0;
+ 		}
+ 		leaf = path->nodes[0];
+-		ei = btrfs_item_ptr(leaf, path->slots[0],
+-				    struct btrfs_file_extent_item);
+-		disk_bytenr = btrfs_file_extent_disk_bytenr(leaf, ei);
++		fh = btrfs_item_ptr(leaf, path->slots[0],
++				    struct btrfs_file_header);
++		disk_bytenr = btrfs_file_header_disk_bytenr(leaf, fh);
+ 	}
  
--	ram_bytes = btrfs_file_extent_ram_bytes(leaf, item);
--	ptr = btrfs_file_extent_inline_start(item);
-+	ram_bytes = btrfs_file_header_ram_bytes(leaf, header);
-+	ptr = btrfs_file_header_inline_start(header);
+ 	*last_extent_end_ret = btrfs_file_extent_end(path);
+@@ -683,7 +683,7 @@ static int extent_fiemap(struct btrfs_inode *inode,
  
- 	encoded->len = min_t(u64, extent_start + ram_bytes,
- 			     inode->vfs_inode.i_size) - iocb->ki_pos;
- 	ret = btrfs_encoded_io_compression_from_extent(fs_info,
--				 btrfs_file_extent_compression(leaf, item));
-+				 btrfs_file_header_compression(leaf, header));
- 	if (ret < 0)
- 		return ret;
- 	encoded->compression = ret;
- 	if (encoded->compression) {
- 		size_t inline_size;
- 
--		inline_size = btrfs_file_extent_inline_item_len(leaf,
-+		inline_size = btrfs_file_header_inline_item_len(leaf,
- 								path->slots[0]);
- 		if (inline_size > count)
- 			return -ENOBUFS;
-@@ -10303,7 +10301,7 @@ static int btrfs_swap_activate(struct swap_info_struct *sis, struct file *file,
- 	while (prev_extent_end < isize) {
- 		struct btrfs_key key;
- 		struct extent_buffer *leaf;
+ 	while (prev_extent_end < range_end) {
+ 		struct extent_buffer *leaf = path->nodes[0];
 -		struct btrfs_file_extent_item *ei;
 +		struct btrfs_file_header *fh;
- 		struct btrfs_block_group *bg;
- 		u64 logical_block_start;
- 		u64 physical_block_start;
-@@ -10330,9 +10328,9 @@ static int btrfs_swap_activate(struct swap_info_struct *sis, struct file *file,
+ 		struct btrfs_key key;
+ 		u64 extent_end;
+ 		u64 extent_len;
+@@ -733,16 +733,16 @@ static int extent_fiemap(struct btrfs_inode *inode,
  		}
  
- 		leaf = path->nodes[0];
--		ei = btrfs_item_ptr(leaf, path->slots[0], struct btrfs_file_extent_item);
-+		fh = btrfs_item_ptr(leaf, path->slots[0], struct btrfs_file_header);
- 
--		if (btrfs_file_extent_type(leaf, ei) == BTRFS_FILE_EXTENT_INLINE) {
-+		if (btrfs_file_header_type(leaf, fh) == BTRFS_FILE_EXTENT_INLINE) {
- 			/*
- 			 * It's unlikely we'll ever actually find ourselves
- 			 * here, as a file small enough to fit inline won't be
-@@ -10345,27 +10343,27 @@ static int btrfs_swap_activate(struct swap_info_struct *sis, struct file *file,
- 			goto out;
- 		}
- 
--		if (btrfs_file_extent_compression(leaf, ei) != BTRFS_COMPRESS_NONE) {
-+		if (btrfs_file_header_compression(leaf, fh) != BTRFS_COMPRESS_NONE) {
- 			btrfs_warn(fs_info, "swapfile must not be compressed");
- 			ret = -EINVAL;
- 			goto out;
- 		}
- 
--		disk_bytenr = btrfs_file_extent_disk_bytenr(leaf, ei);
-+		disk_bytenr = btrfs_file_header_disk_bytenr(leaf, fh);
- 		if (disk_bytenr == 0) {
- 			btrfs_warn(fs_info, "swapfile must not have holes");
- 			ret = -EINVAL;
- 			goto out;
- 		}
- 
--		logical_block_start = disk_bytenr + btrfs_file_extent_offset(leaf, ei);
+ 		extent_len = extent_end - key.offset;
+-		ei = btrfs_item_ptr(leaf, path->slots[0],
+-				    struct btrfs_file_extent_item);
+-		compression = btrfs_file_extent_compression(leaf, ei);
+-		extent_type = btrfs_file_extent_type(leaf, ei);
 -		extent_gen = btrfs_file_extent_generation(leaf, ei);
-+		logical_block_start = disk_bytenr + btrfs_file_header_offset(leaf, fh);
++		fh = btrfs_item_ptr(leaf, path->slots[0],
++				    struct btrfs_file_header);
++		compression = btrfs_file_header_compression(leaf, fh);
++		extent_type = btrfs_file_header_type(leaf, fh);
 +		extent_gen = btrfs_file_header_generation(leaf, fh);
- 		prev_extent_end = btrfs_file_extent_end(path);
  
- 		if (prev_extent_end > isize)
- 			len = isize - key.offset;
- 		else
--			len = btrfs_file_extent_num_bytes(leaf, ei);
-+			len = btrfs_file_header_num_bytes(leaf, fh);
+ 		if (extent_type != BTRFS_FILE_EXTENT_INLINE) {
+-			disk_bytenr = btrfs_file_extent_disk_bytenr(leaf, ei);
++			disk_bytenr = btrfs_file_header_disk_bytenr(leaf, fh);
+ 			if (compression == BTRFS_COMPRESS_NONE)
+-				extent_offset = btrfs_file_extent_offset(leaf, ei);
++				extent_offset = btrfs_file_header_offset(leaf, fh);
+ 		}
  
- 		backref_ctx->curr_leaf_bytenr = leaf->start;
- 
-diff --git a/fs/btrfs/print-tree.c b/fs/btrfs/print-tree.c
-index f189bf09ce6a..6b683580d09a 100644
---- a/fs/btrfs/print-tree.c
-+++ b/fs/btrfs/print-tree.c
-@@ -345,30 +345,30 @@ static void print_extent_csum(const struct extent_buffer *eb, int i)
- 
- static void print_file_extent_item(const struct extent_buffer *eb, int i)
+ 		if (compression != BTRFS_COMPRESS_NONE)
+diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
+index 843fbf245ae8..7c5eb59b1e2e 100644
+--- a/fs/btrfs/file-item.c
++++ b/fs/btrfs/file-item.c
+@@ -1383,18 +1383,18 @@ u64 btrfs_file_extent_end(const struct btrfs_path *path)
  {
+ 	const struct extent_buffer *leaf = path->nodes[0];
+ 	const int slot = path->slots[0];
 -	struct btrfs_file_extent_item *fi;
 +	struct btrfs_file_header *fh;
+ 	struct btrfs_key key;
+ 	u64 end;
  
--	fi = btrfs_item_ptr(eb, i, struct btrfs_file_extent_item);
-+	fh = btrfs_item_ptr(eb, i, struct btrfs_file_header);
- 	pr_info("\t\tgeneration %llu type %hhu\n",
--		btrfs_file_extent_generation(eb, fi),
--		btrfs_file_extent_type(eb, fi));
-+		btrfs_file_header_generation(eb, fh),
-+		btrfs_file_header_type(eb, fh));
+ 	btrfs_item_key_to_cpu(leaf, &key, slot);
+ 	ASSERT(key.type == BTRFS_EXTENT_DATA_KEY);
+-	fi = btrfs_item_ptr(leaf, slot, struct btrfs_file_extent_item);
++	fh = btrfs_item_ptr(leaf, slot, struct btrfs_file_header);
  
--	if (btrfs_file_extent_type(eb, fi) == BTRFS_FILE_EXTENT_INLINE) {
-+	if (btrfs_file_header_type(eb, fh) == BTRFS_FILE_EXTENT_INLINE) {
- 		pr_info("\t\tinline extent data size %u ram_bytes %llu compression %hhu\n",
--			btrfs_file_extent_inline_item_len(eb, i),
--			btrfs_file_extent_ram_bytes(eb, fi),
--			btrfs_file_extent_compression(eb, fi));
-+			btrfs_file_header_inline_item_len(eb, i),
-+			btrfs_file_header_ram_bytes(eb, fh),
-+			btrfs_file_header_compression(eb, fh));
- 		return;
- 	}
+-	if (btrfs_file_extent_type(leaf, fi) == BTRFS_FILE_EXTENT_INLINE)
++	if (btrfs_file_header_type(leaf, fh) == BTRFS_FILE_EXTENT_INLINE)
+ 		end = leaf->fs_info->sectorsize;
+ 	else
+-		end = key.offset + btrfs_file_extent_num_bytes(leaf, fi);
++		end = key.offset + btrfs_file_header_num_bytes(leaf, fh);
  
- 	pr_info("\t\textent data disk bytenr %llu nr %llu\n",
--		btrfs_file_extent_disk_bytenr(eb, fi),
--		btrfs_file_extent_disk_num_bytes(eb, fi));
-+		btrfs_file_header_disk_bytenr(eb, fh),
-+		btrfs_file_header_disk_num_bytes(eb, fh));
- 	pr_info("\t\textent data offset %llu nr %llu ram %llu\n",
--		btrfs_file_extent_offset(eb, fi),
--		btrfs_file_extent_num_bytes(eb, fi),
--		btrfs_file_extent_ram_bytes(eb, fi));
-+		btrfs_file_header_offset(eb, fh),
-+		btrfs_file_header_num_bytes(eb, fh),
-+		btrfs_file_header_ram_bytes(eb, fh));
- 	pr_info("\t\textent compression %hhu\n",
--		btrfs_file_extent_compression(eb, fi));
-+		btrfs_file_header_compression(eb, fh));
+ 	return end;
  }
+diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+index 14d393a5853d..57bbe2f67916 100644
+--- a/fs/btrfs/qgroup.c
++++ b/fs/btrfs/qgroup.c
+@@ -2180,7 +2180,6 @@ int btrfs_qgroup_trace_leaf_items(struct btrfs_trans_handle *trans,
+ 	int nr = btrfs_header_nritems(eb);
+ 	int i, extent_type, ret;
+ 	struct btrfs_key key;
+-	struct btrfs_file_extent_item *fi;
+ 	u64 bytenr, num_bytes;
  
- static void key_type_string(const struct btrfs_key *key, char *buf, int buf_size)
+ 	/* We can be called directly from walk_up_proc() */
+@@ -2188,23 +2187,25 @@ int btrfs_qgroup_trace_leaf_items(struct btrfs_trans_handle *trans,
+ 		return 0;
+ 
+ 	for (i = 0; i < nr; i++) {
++		struct btrfs_file_header *fh;
++
+ 		btrfs_item_key_to_cpu(eb, &key, i);
+ 
+ 		if (key.type != BTRFS_EXTENT_DATA_KEY)
+ 			continue;
+ 
+-		fi = btrfs_item_ptr(eb, i, struct btrfs_file_extent_item);
++		fh = btrfs_item_ptr(eb, i, struct btrfs_file_header);
+ 		/* filter out non qgroup-accountable extents  */
+-		extent_type = btrfs_file_extent_type(eb, fi);
++		extent_type = btrfs_file_header_type(eb, fh);
+ 
+ 		if (extent_type == BTRFS_FILE_EXTENT_INLINE)
+ 			continue;
+ 
+-		bytenr = btrfs_file_extent_disk_bytenr(eb, fi);
++		bytenr = btrfs_file_header_disk_bytenr(eb, fh);
+ 		if (!bytenr)
+ 			continue;
+ 
+-		num_bytes = btrfs_file_extent_disk_num_bytes(eb, fi);
++		num_bytes = btrfs_file_header_disk_num_bytes(eb, fh);
+ 
+ 		ret = btrfs_qgroup_trace_extent(trans, bytenr, num_bytes);
+ 		if (ret)
 diff --git a/fs/btrfs/reflink.c b/fs/btrfs/reflink.c
-index b5fe95baf92e..9f74d4ac920b 100644
+index 9f74d4ac920b..c755671b25c7 100644
 --- a/fs/btrfs/reflink.c
 +++ b/fs/btrfs/reflink.c
-@@ -62,8 +62,8 @@ static int copy_inline_to_page(struct btrfs_inode *inode,
- 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
- 	const u32 block_size = fs_info->sectorsize;
- 	const u64 range_end = file_offset + block_size - 1;
--	const size_t inline_size = size - btrfs_file_extent_calc_inline_size(0);
--	char *data_start = inline_data + btrfs_file_extent_calc_inline_size(0);
-+	const size_t inline_size = size - btrfs_file_header_calc_inline_size(0);
-+	char *data_start = inline_data + btrfs_file_header_calc_inline_size(0);
- 	struct extent_changeset *data_reserved = NULL;
- 	struct folio *folio = NULL;
- 	struct address_space *mapping = inode->vfs_inode.i_mapping;
-diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index d8127a7120c2..95b8722cb76e 100644
---- a/fs/btrfs/send.c
-+++ b/fs/btrfs/send.c
-@@ -1708,7 +1708,7 @@ static int read_symlink(struct btrfs_root *root,
- 	int ret;
- 	BTRFS_PATH_AUTO_FREE(path);
- 	struct btrfs_key key;
--	struct btrfs_file_extent_item *ei;
-+	struct btrfs_file_header *fh;
- 	u8 type;
- 	u8 compression;
- 	unsigned long off;
-@@ -1739,9 +1739,9 @@ static int read_symlink(struct btrfs_root *root,
- 		return -EIO;
- 	}
+@@ -213,16 +213,16 @@ static int clone_copy_inline_extent(struct btrfs_inode *inode,
+ 			goto copy_to_page;
+ 		}
+ 	} else if (i_size_read(&inode->vfs_inode) <= datal) {
+-		struct btrfs_file_extent_item *ei;
++		struct btrfs_file_header *fh;
  
--	ei = btrfs_item_ptr(path->nodes[0], path->slots[0],
--			struct btrfs_file_extent_item);
--	type = btrfs_file_extent_type(path->nodes[0], ei);
-+	fh = btrfs_item_ptr(path->nodes[0], path->slots[0],
-+			struct btrfs_file_header);
-+	type = btrfs_file_header_type(path->nodes[0], fh);
- 	if (unlikely(type != BTRFS_FILE_EXTENT_INLINE)) {
- 		ret = -EUCLEAN;
- 		btrfs_crit(root->fs_info,
-@@ -1749,7 +1749,7 @@ static int read_symlink(struct btrfs_root *root,
- 			   ino, btrfs_root_id(root), type);
- 		return ret;
- 	}
--	compression = btrfs_file_extent_compression(path->nodes[0], ei);
-+	compression = btrfs_file_header_compression(path->nodes[0], fh);
- 	if (unlikely(compression != BTRFS_COMPRESS_NONE)) {
- 		ret = -EUCLEAN;
- 		btrfs_crit(root->fs_info,
-@@ -1758,8 +1758,8 @@ static int read_symlink(struct btrfs_root *root,
- 		return ret;
- 	}
- 
--	off = btrfs_file_extent_inline_start(ei);
--	len = btrfs_file_extent_ram_bytes(path->nodes[0], ei);
-+	off = btrfs_file_header_inline_start(fh);
-+	len = btrfs_file_header_ram_bytes(path->nodes[0], fh);
- 
- 	return fs_path_add_from_extent_buffer(dest, path->nodes[0], off, len);
- }
-@@ -5481,7 +5481,7 @@ static int send_encoded_inline_extent(struct send_ctx *sctx,
- 	struct fs_path *fspath;
- 	struct extent_buffer *leaf = path->nodes[0];
- 	struct btrfs_key key;
--	struct btrfs_file_extent_item *ei;
-+	struct btrfs_file_header *fh;
- 	u64 ram_bytes;
- 	size_t inline_size;
- 	int ret;
-@@ -5495,9 +5495,9 @@ static int send_encoded_inline_extent(struct send_ctx *sctx,
- 		return ret;
- 
- 	btrfs_item_key_to_cpu(leaf, &key, path->slots[0]);
--	ei = btrfs_item_ptr(leaf, path->slots[0], struct btrfs_file_extent_item);
--	ram_bytes = btrfs_file_extent_ram_bytes(leaf, ei);
--	inline_size = btrfs_file_extent_inline_item_len(leaf, path->slots[0]);
-+	fh = btrfs_item_ptr(leaf, path->slots[0], struct btrfs_file_header);
-+	ram_bytes = btrfs_file_header_ram_bytes(leaf, fh);
-+	inline_size = btrfs_file_header_inline_item_len(leaf, path->slots[0]);
- 
- 	TLV_PUT_PATH(sctx, BTRFS_SEND_A_PATH, fspath);
- 	TLV_PUT_U64(sctx, BTRFS_SEND_A_FILE_OFFSET, offset);
-@@ -5506,7 +5506,7 @@ static int send_encoded_inline_extent(struct send_ctx *sctx,
- 	TLV_PUT_U64(sctx, BTRFS_SEND_A_UNENCODED_LEN, ram_bytes);
- 	TLV_PUT_U64(sctx, BTRFS_SEND_A_UNENCODED_OFFSET, offset - key.offset);
- 	ret = btrfs_encoded_io_compression_from_extent(fs_info,
--				btrfs_file_extent_compression(leaf, ei));
-+				btrfs_file_header_compression(leaf, fh));
- 	if (ret < 0)
- 		return ret;
- 	TLV_PUT_U32(sctx, BTRFS_SEND_A_COMPRESSION, ret);
-@@ -5515,7 +5515,7 @@ static int send_encoded_inline_extent(struct send_ctx *sctx,
- 	if (ret < 0)
- 		return ret;
- 	read_extent_buffer(leaf, sctx->send_buf + sctx->send_size,
--			   btrfs_file_extent_inline_start(ei), inline_size);
-+			   btrfs_file_header_inline_start(fh), inline_size);
- 	sctx->send_size += inline_size;
- 
- 	ret = send_cmd(sctx);
-@@ -5652,7 +5652,7 @@ static int send_extent_data(struct send_ctx *sctx, struct btrfs_path *path,
- 		 * the extent that we couldn't clone in clone_range().
+-		ei = btrfs_item_ptr(path->nodes[0], path->slots[0],
+-				    struct btrfs_file_extent_item);
++		fh = btrfs_item_ptr(path->nodes[0], path->slots[0],
++				    struct btrfs_file_header);
+ 		/*
+ 		 * If it's an inline extent replace it with the source inline
+ 		 * extent, otherwise copy the source inline extent data into
+ 		 * the respective page at the destination inode.
  		 */
- 		if (is_inline &&
--		    btrfs_file_extent_inline_item_len(leaf,
-+		    btrfs_file_header_inline_item_len(leaf,
- 						      path->slots[0]) <= len) {
- 			return send_encoded_inline_extent(sctx, path, offset,
- 							  len);
+-		if (btrfs_file_extent_type(path->nodes[0], ei) ==
++		if (btrfs_file_header_type(path->nodes[0], fh) ==
+ 		    BTRFS_FILE_EXTENT_INLINE)
+ 			goto copy_inline_extent;
+ 
+@@ -369,7 +369,7 @@ static int btrfs_clone(struct inode *src, struct inode *inode,
+ 	key.offset = off;
+ 
+ 	while (1) {
+-		struct btrfs_file_extent_item *extent;
++		struct btrfs_file_header *header;
+ 		u64 extent_gen;
+ 		int type;
+ 		u32 size;
+@@ -416,20 +416,20 @@ static int btrfs_clone(struct inode *src, struct inode *inode,
+ 
+ 		ASSERT(key.type == BTRFS_EXTENT_DATA_KEY);
+ 
+-		extent = btrfs_item_ptr(leaf, slot,
+-					struct btrfs_file_extent_item);
+-		extent_gen = btrfs_file_extent_generation(leaf, extent);
+-		comp = btrfs_file_extent_compression(leaf, extent);
+-		type = btrfs_file_extent_type(leaf, extent);
++		header = btrfs_item_ptr(leaf, slot,
++					struct btrfs_file_header);
++		extent_gen = btrfs_file_header_generation(leaf, header);
++		comp = btrfs_file_header_compression(leaf, header);
++		type = btrfs_file_header_type(leaf, header);
+ 		if (type == BTRFS_FILE_EXTENT_REG ||
+ 		    type == BTRFS_FILE_EXTENT_PREALLOC) {
+-			disko = btrfs_file_extent_disk_bytenr(leaf, extent);
+-			diskl = btrfs_file_extent_disk_num_bytes(leaf, extent);
+-			datao = btrfs_file_extent_offset(leaf, extent);
+-			datal = btrfs_file_extent_num_bytes(leaf, extent);
++			disko = btrfs_file_header_disk_bytenr(leaf, header);
++			diskl = btrfs_file_header_disk_num_bytes(leaf, header);
++			datao = btrfs_file_header_offset(leaf, header);
++			datal = btrfs_file_header_num_bytes(leaf, header);
+ 		} else if (type == BTRFS_FILE_EXTENT_INLINE) {
+ 			/* Take upper bound, may be compressed */
+-			datal = btrfs_file_extent_ram_bytes(leaf, extent);
++			datal = btrfs_file_header_ram_bytes(leaf, header);
+ 		}
+ 
+ 		/*
+diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+index 310b7d817a27..46c6d74e2e2a 100644
+--- a/fs/btrfs/relocation.c
++++ b/fs/btrfs/relocation.c
+@@ -814,7 +814,7 @@ static int get_new_location(struct inode *reloc_inode, u64 *new_bytenr,
+ {
+ 	struct btrfs_root *root = BTRFS_I(reloc_inode)->root;
+ 	BTRFS_PATH_AUTO_FREE(path);
+-	struct btrfs_file_extent_item *fi;
++	struct btrfs_file_header *fh;
+ 	struct extent_buffer *leaf;
+ 	int ret;
+ 
+@@ -831,18 +831,18 @@ static int get_new_location(struct inode *reloc_inode, u64 *new_bytenr,
+ 		return -ENOENT;
+ 
+ 	leaf = path->nodes[0];
+-	fi = btrfs_item_ptr(leaf, path->slots[0],
+-			    struct btrfs_file_extent_item);
++	fh = btrfs_item_ptr(leaf, path->slots[0],
++			    struct btrfs_file_header);
+ 
+-	BUG_ON(btrfs_file_extent_offset(leaf, fi) ||
+-	       btrfs_file_extent_compression(leaf, fi) ||
+-	       btrfs_file_extent_encryption(leaf, fi) ||
+-	       btrfs_file_extent_other_encoding(leaf, fi));
++	BUG_ON(btrfs_file_header_offset(leaf, fh) ||
++	       btrfs_file_header_compression(leaf, fh) ||
++	       btrfs_file_header_encryption(leaf, fh) ||
++	       btrfs_file_header_other_encoding(leaf, fh));
+ 
+-	if (num_bytes != btrfs_file_extent_disk_num_bytes(leaf, fi))
++	if (num_bytes != btrfs_file_header_disk_num_bytes(leaf, fh))
+ 		return -EINVAL;
+ 
+-	*new_bytenr = btrfs_file_extent_disk_bytenr(leaf, fi);
++	*new_bytenr = btrfs_file_header_disk_bytenr(leaf, fh);
+ 	return 0;
+ }
+ 
+@@ -858,7 +858,6 @@ int replace_file_extents(struct btrfs_trans_handle *trans,
+ {
+ 	struct btrfs_fs_info *fs_info = root->fs_info;
+ 	struct btrfs_key key;
+-	struct btrfs_file_extent_item *fi;
+ 	struct btrfs_inode *inode = NULL;
+ 	u64 parent;
+ 	u64 bytenr;
+@@ -881,18 +880,19 @@ int replace_file_extents(struct btrfs_trans_handle *trans,
+ 
+ 	nritems = btrfs_header_nritems(leaf);
+ 	for (i = 0; i < nritems; i++) {
++		struct btrfs_file_header *fh;
+ 		struct btrfs_ref ref = { 0 };
+ 
+ 		cond_resched();
+ 		btrfs_item_key_to_cpu(leaf, &key, i);
+ 		if (key.type != BTRFS_EXTENT_DATA_KEY)
+ 			continue;
+-		fi = btrfs_item_ptr(leaf, i, struct btrfs_file_extent_item);
+-		if (btrfs_file_extent_type(leaf, fi) ==
++		fh = btrfs_item_ptr(leaf, i, struct btrfs_file_header);
++		if (btrfs_file_header_type(leaf, fh) ==
+ 		    BTRFS_FILE_EXTENT_INLINE)
+ 			continue;
+-		bytenr = btrfs_file_extent_disk_bytenr(leaf, fi);
+-		num_bytes = btrfs_file_extent_disk_num_bytes(leaf, fi);
++		bytenr = btrfs_file_header_disk_bytenr(leaf, fh);
++		num_bytes = btrfs_file_header_disk_num_bytes(leaf, fh);
+ 		if (bytenr == 0)
+ 			continue;
+ 		if (!in_range(bytenr, rc->block_group->start,
+@@ -915,7 +915,7 @@ int replace_file_extents(struct btrfs_trans_handle *trans,
+ 				struct extent_state *cached_state = NULL;
+ 
+ 				end = key.offset +
+-				      btrfs_file_extent_num_bytes(leaf, fi);
++				      btrfs_file_header_num_bytes(leaf, fh);
+ 				WARN_ON(!IS_ALIGNED(key.offset,
+ 						    fs_info->sectorsize));
+ 				WARN_ON(!IS_ALIGNED(end, fs_info->sectorsize));
+@@ -947,9 +947,9 @@ int replace_file_extents(struct btrfs_trans_handle *trans,
+ 			break;
+ 		}
+ 
+-		btrfs_set_file_extent_disk_bytenr(leaf, fi, new_bytenr);
++		btrfs_set_file_header_disk_bytenr(leaf, fh, new_bytenr);
+ 
+-		key.offset -= btrfs_file_extent_offset(leaf, fi);
++		key.offset -= btrfs_file_header_offset(leaf, fh);
+ 		ref.action = BTRFS_ADD_DELAYED_REF;
+ 		ref.bytenr = new_bytenr;
+ 		ref.num_bytes = num_bytes;
+@@ -3250,7 +3250,6 @@ static int delete_v1_space_cache(struct extent_buffer *leaf,
+ 				 u64 data_bytenr)
+ {
+ 	u64 space_cache_ino;
+-	struct btrfs_file_extent_item *ei;
+ 	struct btrfs_key key;
+ 	bool found = false;
+ 	int i;
+@@ -3259,17 +3258,18 @@ static int delete_v1_space_cache(struct extent_buffer *leaf,
+ 		return 0;
+ 
+ 	for (i = 0; i < btrfs_header_nritems(leaf); i++) {
++		struct btrfs_file_header *fh;
+ 		u8 type;
+ 
+ 		btrfs_item_key_to_cpu(leaf, &key, i);
+ 		if (key.type != BTRFS_EXTENT_DATA_KEY)
+ 			continue;
+-		ei = btrfs_item_ptr(leaf, i, struct btrfs_file_extent_item);
+-		type = btrfs_file_extent_type(leaf, ei);
++		fh = btrfs_item_ptr(leaf, i, struct btrfs_file_header);
++		type = btrfs_file_header_type(leaf, fh);
+ 
+ 		if ((type == BTRFS_FILE_EXTENT_REG ||
+ 		     type == BTRFS_FILE_EXTENT_PREALLOC) &&
+-		    btrfs_file_extent_disk_bytenr(leaf, ei) == data_bytenr) {
++		    btrfs_file_header_disk_bytenr(leaf, fh) == data_bytenr) {
+ 			found = true;
+ 			space_cache_ino = key.objectid;
+ 			break;
 -- 
 2.52.0
 
