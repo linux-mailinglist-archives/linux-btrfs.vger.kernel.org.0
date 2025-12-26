@@ -1,51 +1,79 @@
-Return-Path: <linux-btrfs+bounces-20008-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20009-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 745BACDE3A4
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Dec 2025 03:18:37 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2DCC9CDE450
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Dec 2025 04:07:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 7CF68300A1C5
-	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Dec 2025 02:18:31 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 998DE3000E8F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 26 Dec 2025 03:07:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00B4C238C0B;
-	Fri, 26 Dec 2025 02:18:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D93CA313534;
+	Fri, 26 Dec 2025 03:07:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=bupt.moe header.i=@bupt.moe header.b="QbvGpArn"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RAuRqGH5"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtpbg151.qq.com (smtpbg151.qq.com [18.169.211.239])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f194.google.com (mail-pf1-f194.google.com [209.85.210.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 373072040B6
-	for <linux-btrfs@vger.kernel.org>; Fri, 26 Dec 2025 02:18:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.169.211.239
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72CEE3A1E7A
+	for <linux-btrfs@vger.kernel.org>; Fri, 26 Dec 2025 03:07:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766715509; cv=none; b=n0oncCFJ2eNVsFggonwO9FcVUxv7C/0FTV6eGqgoCwoyMPjxW1bGV8MZY9qXjee5xR1TeRXbe96v1gSKVlLEmKG1IYIKMk9vhlwS+cYPFOkM8QTXbnfXIXh1tv3YsD0Tl/zcPDZ9VGkz1W5WAxW+/QoycblZ3sBuwkBeMiADUXA=
+	t=1766718456; cv=none; b=fQM5wYbuowrB0bFHuv07F+5KW6YTnCFfeg95fHAq5217KSnepYAKoVBHoPdPWcoviOdDZOmLGUDpcDvIBiLhUs5YxszBcnuLEyBe5eDoNRwPO6QD+NSbUeFukQTZ7kRYgcEBDoFoTy4SuYDEUQ01742S0JeG0G0U3aj0rvFJrbk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766715509; c=relaxed/simple;
-	bh=ioDX3ES2UU3LS7Pjq9JGwvjyqM9iBseoZbHEUWR0A0k=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uuwQmGtAMlInJZRK1tLjbfXc5k1ExBDI/viN/hpGTYBmOwRiXOLzkPEJ/EyR2sIsuO9x/cOHExW0VYeA87laWbqnM4LoNgv7qLDIkpNRyY60vYXwPRNjaeY+5D5JzuCD/4w/yabsXuFizTbv/CXG+0X4sWsrCJNa/QO+OmknEko=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bupt.moe; spf=pass smtp.mailfrom=bupt.moe; dkim=pass (1024-bit key) header.d=bupt.moe header.i=@bupt.moe header.b=QbvGpArn; arc=none smtp.client-ip=18.169.211.239
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bupt.moe
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bupt.moe
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bupt.moe;
-	s=qqmb2301; t=1766715500;
-	bh=mB22XSifviiWhZIXOO9wpEP3HWeZ+z9Fw4yLEpV/46I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From;
-	b=QbvGpArnPpL+PlEQG9vAhRTFvWBr05oWMCDksOPls8cNBhlOsQZEV4JmtBTc92GWf
-	 QE4F0XdITPY5pkFHm/P4+EGsnzQurAymxeVIc9wrwsPwB6gmkX8uwfLOltk3d+FykX
-	 jwwqxZpqxXBcKxQ3o/wYfu8z9zAb/tSovDeYpE3w=
-X-QQ-mid: zesmtpsz8t1766715495t221a21ca
-X-QQ-Originating-IP: /mMGxtDY6JdmHkN6MCvsyOoTWNDST0pzUn+RO6EodFY=
-Received: from [198.18.0.1] ( [123.134.105.92])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Fri, 26 Dec 2025 10:18:13 +0800 (CST)
-X-QQ-SSF: 0000000000000000000000000000000
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 17625004940546056218
-Message-ID: <36718DD03AD165EF+c4b42ca9-02f2-41e9-9c43-1ff360a6e73e@bupt.moe>
-Date: Fri, 26 Dec 2025 10:18:19 +0800
+	s=arc-20240116; t=1766718456; c=relaxed/simple;
+	bh=rTkaWe1VFQripI4YZw5Fk3FIQLuNlL6grC/qAmzhpyM=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=PXAsLTZhgpS2NPVtDrR13Tb+d2/rrwy7SPnpewmI2WXv0rHQD7J2vkmsnsv3KMrRuWE+sAndgfyzrzuQ/sMzGekVTKxo/aPyCyAWp4bi+0dlqLdtKzBFkLs96uKvUeQXZDgGkRPemeR4UagR9vSjmpeVCKjZizFXEqrWlDfhfE4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RAuRqGH5; arc=none smtp.client-ip=209.85.210.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f194.google.com with SMTP id d2e1a72fcca58-7ba92341f07so276246b3a.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 25 Dec 2025 19:07:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1766718453; x=1767323253; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language:subject
+         :references:cc:to:user-agent:mime-version:date:message-id:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JwEt+pqrKr3qRMOKPZSIX7gd8Fmb8MXuSdXQbe815aA=;
+        b=RAuRqGH5TP0q1Au+2pU8SbCu5U4Ozoru++ltoX4rMBHh1aHQKKL4bCtJdPxdMG8E/N
+         WMnkVIemnuJzhdXBLRx4+UCDz2i8hhQQGlX17cbNxuQCbwg0yUmapB6Be/l/u8viKM7k
+         XxRLm8YuPD12oiFwZtFqw0ZIqv6FCKlmlHqRh/7/y5rpspSpI7bsChjZTeDrgsZfEdtI
+         djuD5HG049igv42LwL2iybYN+v83U1wkzDX6Db3lyV9k566SwdNo/XB+JZKDLprQTh4v
+         EuMWIpA+q1SyJmvIYndWaoOIDbZesOKEeyOWPyag67QDsXwgx49xW4hBcOO1VCpXS3/3
+         PLFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1766718453; x=1767323253;
+        h=content-transfer-encoding:in-reply-to:from:content-language:subject
+         :references:cc:to:user-agent:mime-version:date:message-id:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=JwEt+pqrKr3qRMOKPZSIX7gd8Fmb8MXuSdXQbe815aA=;
+        b=DYP/owKTvEUDpRK+g1gOYYaBYneaWAfosHuJ2K7s5foLqwm+EX5FESKradvx6gMlv0
+         1xn28PVOO1qbSL3Ya17iABZSgo9twWiSm73/NgN0ilM+xZye58fBXiO8ElztMNGOjeUq
+         KWBptgHzwsDJo4gWFfRrGxK8Qy1gr1jTsvgqwSO1cBv97X7Vy4VRgWxw6JFRWs+pKlhF
+         ndcwX7jrQT06vf3Br/dWhVqosanf2yK8PKsWynvCmEOQCXYDKqXelB1n/565VKmzHNPq
+         NeajljjgQf/aEP+xtoHOTIhFYXGioYW8xjaBo0fn0zU5lca+/I2XmufajeivdShKYKSM
+         fylQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWCvYeIKW5nI8icd2pmfLVLSKtMvjVyM+idKYs9iHlnIXLWNkmdbYdRXNt3WhCR2Jfu/G1voPFEzK4btw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzEKIrPK2/dDOzqZ1T2VsuJiMCiad7ZkBSSt/fCDiuO9B5k1mh/
+	2sjUCR2htYGEct3Xq2z1OBF8NagWspaLT2k7vdwuRUfFStWRb/6L12y7
+X-Gm-Gg: AY/fxX5hvcVAXeIH03L90DD6HrubqMjBJO1V0H0ppCJD6x/QyINzy3TjHFeU2kcS51t
+	X8yWndruckItZKPJetXvxxW7n3XfEx9sFLdw1mFnJsBDabK/MRKxn9gI3zdPX3OubD3OnyYCkQl
+	yVxws4yyGCT6nW5z2RQ5vNY6rnEYwdRLJhlqRBZR346yfECA28XY1fm+Z5JQhutivj1OHhL0nz0
+	0Y9fH0p3qSPuoC5aLMqnL959JRxTBrzr4He7ws6UV91g6FOJgEgB4TB3kodRTtShCROnMS/Qeo9
+	g1ylnMVU9H/VafdXx9tDntaB0VeY7r9ubq7TSeGfuh6EOePsZJOxFariTXRrE3TGT5r5DEuU6mI
+	cU1DypCDThWqzL+jmqLgyDO5FY6AFk8G9jOUI0iUTJIevVbUE17C4wSKk5tO3FsPpdxH9k/bNI3
+	qxIumEMc0wTuhqZgvUle22lEqH
+X-Google-Smtp-Source: AGHT+IHZl9Skp7mtHYnwOXK/hm5t1amevQ82yibT90leT5edjH8lXHPecA9ldMPoQi0xfqE3nMwXZA==
+X-Received: by 2002:a05:6a00:3cc7:b0:7a2:861d:bfb with SMTP id d2e1a72fcca58-7ff6725d1bcmr15788122b3a.7.1766718453384;
+        Thu, 25 Dec 2025 19:07:33 -0800 (PST)
+Received: from [192.168.1.13] ([195.88.211.122])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7ff7e0a2e3esm20179360b3a.37.2025.12.25.19.07.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 25 Dec 2025 19:07:32 -0800 (PST)
+Message-ID: <18e6a584-b6fb-47f9-b526-4e97798052a2@gmail.com>
+Date: Fri, 26 Dec 2025 11:07:28 +0800
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -53,131 +81,57 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [BUG] 6.18-rc7 cannot mount RAID1 zoned btrfs.
-To: linux-btrfs <linux-btrfs@vger.kernel.org>,
- Naohiro Aota <Naohiro.Aota@wdc.com>
-Cc: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-References: <0BED8C36F63EBD8F+f61c437e-3e5f-4a1c-9c18-17fd31abfcd4@bupt.moe>
- <e865d52c-8f07-431a-8fff-907bd6cfb0e8@wdc.com>
- <F24595B65EF81413+dddb8a6c-9da6-4480-b168-fcfa20d3c296@bupt.moe>
- <8bd72651-bad5-4e27-8972-1aa00ceead0a@wdc.com>
- <3BB597E0959AF3E9+275dc513-febd-4497-a73a-61707d2d9e90@bupt.moe>
- <99066be8-992b-4476-9a22-8c1ff6f5cff2@wdc.com>
-From: HAN Yuwei <hrx@bupt.moe>
-In-Reply-To: <99066be8-992b-4476-9a22-8c1ff6f5cff2@wdc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: boris@bur.io
+Cc: kernel-team@fb.com, linux-btrfs@vger.kernel.org
+References: <52b863849f0dd63b3d25a29c8a830a09c748d86b.1752605888.git.boris@bur.io>
+Subject: Re: [PATCH] btrfs: make periodic dynamic reclaim the default for data
+Content-Language: en-US
+From: Sun Yangkai <sunk67188@gmail.com>
+In-Reply-To: <52b863849f0dd63b3d25a29c8a830a09c748d86b.1752605888.git.boris@bur.io>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: zesmtpsz:bupt.moe:qybglogicsvrgz:qybglogicsvrgz3a-0
-X-QQ-XMAILINFO: NLIB+vaC3XIAr6tR7oTQruaXSRqNf7e7X0MLpdTuCEdCly51UNrmUkKZ
-	paIRW6IJ8pZJM+d1Ycb7kGoFNTaA/+HXHHscHZpYJN6eH6ll4ekaj9OgFLEG16cSE1QmaG2
-	0R4Yo+BzRJ6cw2WY1LUcYv3h4bQ5jonpg8yQV+EUTn0C5bpPggwocBQzSDfESvyFii8DQwh
-	J9OjnFM+gS8dlkxS7TjcrxFIPncTbGfvGhX7Jy47FkYQi2fNIyJKuEmIyxbrdbGkJ74eztH
-	88F5BAZtNGQa2kzJIVEHcmHXo1BmQUWk50AvE+fwt00vbMGWkDCARfTZNLrzCn6sfTNxnaY
-	Ipj5Hl+XIbbye/C4mZaaq8TMoibGVchIZt8CZIkemsCDU2IwUSny0P5y5qqqKeqSxAahmgq
-	8ny4BLtOpphxu02sgPFXAA32jRse9AGfE8eu2WXZrPNJY5VdevWwk+xjvJgafTnIUUXmfip
-	mtCEh+fSU5KjvQ4EeFLMJ54yEdWpFhLXVxRYHydkuGn+Ylmtifqf0shtfKvmtsIgX+acLeI
-	vzKbIEz58pP/foqouy5TMlzh7tnBxHm99Krmp9KuQeVGmNn2VTqQkL5zjD0OmTV1iIixjF5
-	71b8yyPnG7OWArOObUehYAuyzeVa7lfJopWBDetwhNVLlq/5ZpcX5sAOgsxMYrsiFhsYSmP
-	Z866MC5TiadtnhAJGKxNIXC6iPr9LhyPwqyzqF2vC9zJku3TA34c2+twazP1RiofASe1fCM
-	xy4IZG8WFprT0riW+WJ5nijLkmBzX4AWnQnOivdeyBeazZqogfE+eqwNjnadyxtEZMAsyEN
-	Q+RUCyJJHaqOQQL3HlVG++0jCQEWSHOvQ41TddUcYRMCxGcCxwcJr2rImAfRrNx+cBYnvig
-	IoViZJKo4N5vfWI48pq8qM065qBVKcoevxsBK+V3yb2GqrdQzmsJ6UZiWHDgqQV3Yxaixci
-	LNX2Oeiky1Lx/JKOF4LhaimgBdW5wWiOpIcI=
-X-QQ-XMRINFO: Mp0Kj//9VHAxHBpkON4h1QbhVf4GKSqarA==
-X-QQ-RECHKSPAM: 0
 
-在 2025/12/10 10:35, Johannes Thumshirn 写道:
-> On 12/9/25 2:35 PM, HAN Yuwei wrote:
->> 在 2025/12/1 14:30, Johannes Thumshirn 写道:
->>> On 11/28/25 4:38 PM, HAN Yuwei wrote:
->>>> 在 2025/11/28 23:03, Johannes Thumshirn 写道:
->>>>> On 11/28/25 12:36 PM, HAN Yuwei wrote:
->>>>>> /dev/sdd, 52156 zones of 268435456 bytes
->>>>>> [   19.757242] BTRFS info (device sda): host-managed zoned block device
->>>>>> /dev/sdb, 52156 zones of 268435456 bytes
->>>>>> [   19.868623] BTRFS info (device sda): zoned mode enabled with zone
->>>>>> size 268435456
->>>>>> [   20.940894] BTRFS info (device sdd): zoned mode enabled with zone
->>>>>> size 268435456
->>>>>> [   21.101010] r8169 0000:07:00.0 ethob: Link is Up - 1Gbps/Full - flow
->>>>>> control off
->>>>>> [   21.128595] BTRFS info (device sdc): zoned mode enabled with zone
->>>>>> size 268435456
->>>>>> [   21.436972] BTRFS error (device sda): zoned: write pointer offset
->>>>>> mismatch of zones in raid1 profile
->>>>>> [   21.438396] BTRFS error (device sda): zoned: failed to load zone info
->>>>>> of bg 1496796102656
->>>>>> [   21.440404] BTRFS error (device sda): failed to read block groups: -5
->>>>>> [   21.460591] BTRFS error (device sda): open_ctree failed: -5
->>>>> Hi this means, the write pointers of both zones forming the block-group
->>>>> 1496796102656 are out of sync.
->>>>>
->>>>> For RAID1 I can't really see why there should be a difference tough,
->>>>> recently only RAID0 and RAID10 code got touched.
->>>>>
->>>>> Debugging this might get a bit tricky, but anyways. You can grab the
->>>>> physical locations of the block-group form the chunk tree via:
->>>>>
->>>>> btrfs inspect-internal dump-tree -t chunk /dev/sda |\
->>>>>
->>>>>            grep -A 7 -E "CHUNK_ITEM 1496796102656" |\
->>>>>
->>>>>            grep "\bstripe\b"
->>>>>
->>>>>
->>>>> Then assuming dev 0 is sda and dev 1 is sdb
->>>>>
->>>>> blkzone report -c 1 -o "offset_from_devid 0 / 512" /dev/sda
->>>>>
->>>>> blkzone report -c 1 -o "offset_from_devid 1 / 512" /dev/sdb
->>>>>
->>>>>
->>>>> E.g. (on my system):
->>>>>
->>>>> root@virtme-ng:/# btrfs inspect-internal dump-tree -t chunk /dev/vda |\
->>>>>
->>>>>                                            grep -A7 -E "CHUNK_ITEM
->>>>> 2147483648" | \
->>>>>
->>>>>                                           grep "\bstripe\b"
->>>>>                   stripe 0 devid 1 offset 2147483648
->>>>>                   stripe 1 devid 2 offset 1073741824
->>>>>
->>>>> root@virtme-ng:/# blkzone report -c 1 -o $((2147483648 / 512)) /dev/vda
->>>>>         start: 0x000400000, len 0x080000, cap 0x080000, wptr 0x000000 reset:0
->>>>> non-seq:0, zcond: 1(em) [type: 2(SEQ_WRITE_REQUIRED)]
->>>>>
->>>>> root@virtme-ng:/# blkzone report -c 1 -o $((1073741824 / 512)) /dev/vdb
->>>>>         start: 0x000200000, len 0x080000, cap 0x080000, wptr 0x000000 reset:0
->>>>> non-seq:0, zcond: 1(em) [type: 2(SEQ_WRITE_REQUIRED)]
->>>>>
->>>>> Note this is an empty FS, so the write pointers are at 0.
->>>>>
->>>> # btrfs inspect-internal dump-tree -t chunk /dev/sda|\
->>>> grep -A 7 -E "CHUNK_ITEM 1496796102656"|\
->>>> grep stripe
->>>>
->>>> length 268435456 owner 2 stripe_len 65536 type METADATA|RAID1
->>>> num_stripes 2 sub_stripes 1
->>>>          stripe 0 devid 2 offset 374467461120
->>>>          stripe 1 devid 1 offset 1342177280
->>>> # blkzone report -c 1 -o "731381760" /dev/sda
->>>>        start: 0x02b980000, len 0x080000, cap 0x080000, wptr 0x07ff80 reset:0
->>>> non-seq:0, zcond: 4(cl) [type: 2(SEQ_WRITE_REQUIRED)]
->>>> # blkzone report -c 1 -o "2621440" /dev/sdb
->>>>        start: 0x000280000, len 0x080000, cap 0x080000, wptr 0x000000 reset:0
->>>> non-seq:0, zcond: 0(nw) [type: 1(CONVENTIONAL)]
->>>>
->>> Commit c0d90a79e8e6 ("btrfs: zoned: fix alloc_offset calculation for
->>> partly conventional block groups") should fix the problem described
->>> there. Not sure (yet) why it doesn't.
->>>
->>>
->> Any update on this? Should I keep states of disks or I can mkfs a new
->> volume?
-> Naohiro has a fix candidate for it. Naohiro any updates on it?
-Raising this. Hopefully it will have a fix or just make a new volume.
+Hi Boris,
 
+Thank you for bring such a feature for btrfs. I love it a lot and try to enable
+it on my machine.
 
+But I've get into some unexpected behavior when periodic dynamic reclaim is
+enabled and the filesystem is nearly full.
+
+[12月26 10:41] [T20373] BTRFS info (device sda): relocating block group
+5214541578240 flags data
+[  +0.012446] [T20373] BTRFS error (device sda): error relocating chunk
+5214541578240
+[  +0.000033] [T20373] BTRFS info (device sda): relocating block group
+4540021997568 flags data
+[  +0.008927] [T20373] BTRFS error (device sda): error relocating chunk
+4540021997568
+[  +0.000025] [T20373] BTRFS info (device sda): relocating block group
+5606746750976 flags data
+[12月26 10:42] [T20373] BTRFS error (device sda): error relocating chunk
+5606746750976
+[12月26 10:47] [T12072] BTRFS info (device sda): relocating block group
+5606746750976 flags data
+[  +3.960400] [T12072] BTRFS error (device sda): error relocating chunk
+5606746750976
+[12月26 10:52] [ T7643] BTRFS info (device sda): relocating block group
+5606746750976 flags data
+[  +3.960314] [ T7643] BTRFS error (device sda): error relocating chunk
+5606746750976
+[12月26 10:57] [T20373] BTRFS info (device sda): relocating block group
+5606746750976 flags data
+[  +3.954485] [T20373] BTRFS error (device sda): error relocating chunk
+5606746750976
+[12月26 11:02] [ T7701] BTRFS info (device sda): relocating block group
+5606746750976 flags data
+[  +4.561796] [ T7701] BTRFS error (device sda): error relocating chunk
+5606746750976
+
+I guess the condition of when the periodic reclaim should happen is unpolished.
+
+I'm still digging further into it.
+
+Thanks,
+Sun YangKai
 
