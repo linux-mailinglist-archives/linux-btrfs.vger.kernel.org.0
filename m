@@ -1,79 +1,79 @@
-Return-Path: <linux-btrfs+bounces-20024-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20025-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85045CDF460
-	for <lists+linux-btrfs@lfdr.de>; Sat, 27 Dec 2025 05:56:54 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B550CDF51D
+	for <lists+linux-btrfs@lfdr.de>; Sat, 27 Dec 2025 08:47:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E6CE3300B2A1
-	for <lists+linux-btrfs@lfdr.de>; Sat, 27 Dec 2025 04:56:45 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 5CBB93000DC9
+	for <lists+linux-btrfs@lfdr.de>; Sat, 27 Dec 2025 07:47:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C45524886F;
-	Sat, 27 Dec 2025 04:56:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66E3723815D;
+	Sat, 27 Dec 2025 07:47:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MpVwq8dG"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FoUWgXby"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DDBD244667
-	for <linux-btrfs@vger.kernel.org>; Sat, 27 Dec 2025 04:56:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5721E14A4F0
+	for <linux-btrfs@vger.kernel.org>; Sat, 27 Dec 2025 07:47:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766811403; cv=none; b=NT3v3MZeVDP80eR2OFGkhl5/xCy5/flRQ4yKQRmORhL9AVVarNfd9rEPGgMvd+AbqEWGbcAB/SPnRf/e8gvbGtO/FR8zOkZotK/oy4gf+D8N9JpmS+VjoKCUTlEloe9OJ5PZnuDEVXGO/bpe0bZDh3rZlAwv6p278RUXD5mVSZc=
+	t=1766821653; cv=none; b=CL6cepcf6V+70d0aMwckQfTYDiLgku76wOb7q2OlPMS2CY96P16N/hRXoYOFDa+dUO5x56WnnNyswJ5nHemt+npTRM30zVcveRUwYe28uI2ML4FTVIyadH0DtXbfZr7Chp3ujJPe2sRvYMEaOn1Bo26IukXlw3SrAfxE/Ix85w0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766811403; c=relaxed/simple;
-	bh=reYHCeQSigYFo6IpMk3iMK5dduMAIQvdwxDDeERg628=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=C+rD5/E3ISkOOsrlq7xYRLp3HPdhQKWcM32KikiFX9rvj5YHo/I7MdF/5HjbfosrkjdJTeqsNtsqX3nXxz58oNbS6xrWzDgMoWpIg1tFdxor9qraoWDXpHx5hqjGgb8ItB3pSknNjlL7WzFiqt3fWPm5lgMa7oRvmDWUo3McvA4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MpVwq8dG; arc=none smtp.client-ip=209.85.208.43
+	s=arc-20240116; t=1766821653; c=relaxed/simple;
+	bh=87aYFbv9wQyNG2znU+75u2USt3EW6siv5j5eYO3LLSo=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=t759JGQdRPJBxgOhJLG+qGcMX9flaToetaEO6NI8t7eiYdSwJDj+XANw1XRmRePTZAYbgvd1CL4hNEhDm/i4u9U+rkP/CVWa2q/Ns7pDYs40Z/T1wZTNPFZfKpvZQX/LqMcprZ/8qxS1rUiYE7K4R2DvfnEMG2K0Oi55fVP9kNY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FoUWgXby; arc=none smtp.client-ip=209.85.208.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-64b7b737eddso9368049a12.1
-        for <linux-btrfs@vger.kernel.org>; Fri, 26 Dec 2025 20:56:40 -0800 (PST)
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-64b8123c333so11293308a12.3
+        for <linux-btrfs@vger.kernel.org>; Fri, 26 Dec 2025 23:47:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1766811399; x=1767416199; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1766821650; x=1767426450; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=mSXukET5q+0yQeF9qsYb2SxOtpAbjpNblLIn4SRdbF4=;
-        b=MpVwq8dGeQ/dy0xuxe484Ip/n0gwcGR9T/KU4VC83VqZvpKGsTnwZ17pjbnKnuuiZR
-         cd+GhycmftNzfXnX4U7jKjxJJpo8RowrOGH3iEqWWXhyv7hEE1nF7+2PyUI83X/kF0iV
-         JH3MedmCG+79+2XJS/pRHRKEUtKYBtC/JFrf3vnOY61txBQhrgerv7QcrtBRRvu7E1B7
-         MlRwYN22KS4X4xNP0ufPUYiYyqJQEX6+4U2oFib4OAPvsIeYcZ3QNhjdIbZBsE1pmjQj
-         tINMDGiw0ycLK1ayB3DfcBh8YOS+f7sMc68vB/qX2QR2QvxsGhFo09iC1pFrxC14hdr0
-         otaw==
+        bh=0IDoRhbG/BTS6YLQHJSEuitJCGYe2RO7TOLdZcFwBvE=;
+        b=FoUWgXbysw6Oondi+HgDYAtqmqFrtoOSdVc7sXiqENQBoPrAMh+YDaIA9jdDGZdF06
+         ZZaSR8jXXK4/xa7ZaRtSP+X/O53Y+w/GTEd6AOx2rNAQ+9qROyMRnKxoBoPn2Nm02KHw
+         bScOJNsvxCUwrupsJVfsVrzB6qL2B1/RyiG5xeMrcWsFvaPGa51mQV3lkS+619V+j0FY
+         J7LtAMpDzNVYIP3oM9Il+Zxkkxhw9H1uCgpQmeMis04xE9Kt4tFBbImoZmIsGTc7Qtl5
+         fOkiLUYG5NNV0EALIZ2piCkhI6aIjc4hJg1dZ7F90JdIItagFrDSKNiqKwEVFw2e28QO
+         6Khw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766811399; x=1767416199;
+        d=1e100.net; s=20230601; t=1766821650; x=1767426450;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=mSXukET5q+0yQeF9qsYb2SxOtpAbjpNblLIn4SRdbF4=;
-        b=tjPteFZqV3mGbAT4zcvL6YEudWlP+g9QZM54L4MhIAcDl3ltfDLQUhMbsgt/D+lww/
-         7yi/sPc9F4DGGget4BqGIUaK5o+MbRIdW1+7M07hiDj5Nqs4K93+qt/xKsuwrr3zbTRE
-         YCPbJe7MKFBEquOEjFaQjBEZifKNmwzQgy3SM7rW7QoH5/u8k3auRi/Uz6oU+aC/kgQP
-         Fzjz0VNkTqH+HdIjpHQ2Kw0XpeOE8ZDyv+0hDk2VPlnVxoP7kBt4+QMVHVh/QVwSaLVh
-         a+zHPXhzyljvpQh++X4LxdLNCjRUOP4AjwR7YjizTzqvQWicbRryD8iwMQ4eck9BGySb
-         xoeA==
-X-Gm-Message-State: AOJu0YxNj+XTYIArFArhM3DiL5Aa7TItY5LFkyZEMswSwsAd8yvJdofc
-	bcIRPKe7IviX0FCKNBuxzs/UeiqAnW/45X72iMm3aaPPn+NlKTWAlPpnRTq3oSeMBmPve5tQn3M
-	EzaoMbVI5dSEAyv65CdDP2jDhUVsG1i0=
-X-Gm-Gg: AY/fxX6YVdHTWTJxtxPxm9uosEtNhq1HSFb2hFkBuRmsHm/gr1T7+GghsM4y2IupCsi
-	2hg4Sy0/5ogYBJb4ZNQDcnkcUvjtKxDnBQnFc0S+qd0iYnmhBj6biHKDz6qT7RwFtVJSHwpO1bB
-	FqZa1XbxdSmox242X47U46lwHXhv8I+nbQQ8bkRgkHi7XcAGOtqLDWs7O3H3zdgjmGj8MnmzLJr
-	ahX5szeJU7ANASoQnIiiiWPgKSOTnHqGVKJuryaIBagJHIRD4+VrFdU0Ex+nL6rfuNGwBlu
-X-Google-Smtp-Source: AGHT+IEYTpqH58UeRBdqapbnqVKp8l2b+7DAOSSJJ0R0thO4EH7GGY80risX+N4fepfWxQDiD0AgwloiCYZHtj7Tgi4=
-X-Received: by 2002:a17:907:784d:b0:b80:4478:d43f with SMTP id
- a640c23a62f3a-b804478d4f8mr1757532366b.2.1766811399089; Fri, 26 Dec 2025
- 20:56:39 -0800 (PST)
+        bh=0IDoRhbG/BTS6YLQHJSEuitJCGYe2RO7TOLdZcFwBvE=;
+        b=kVndfL0gPesv7/EVLc4PCMuLlpDJuwsF0t1VTtknUktWGKULXYXlJY3tXlfaOMrhmo
+         vxIWgJs4WZSZ1fql8X+RYaitMrsbPJA6U64Jbin+6bXMBmGi2ZqxzqWXtffAbfhmVLd5
+         6J7mJhFz5dlr8exrx9LiCsrnedvIHm1px23HQgKUui49iWal4RGl9iH/KA8B9cJsCHzN
+         UIcDjdKj5bbkorryQuNMC1HYJLDM1didoG6RqFxtSF9PJ4/SrhhN2cscOzCB3oYOGacw
+         uTSJLPbPbCm1RDWq+7lQlpajLlXnNPBKScQbBbE/txq1OOTWdgTqAp7N7YQqFZZuVM2L
+         CrjA==
+X-Gm-Message-State: AOJu0YzZ6KBbfKHI9kYRZi/jzHd6soZZlPMaMsH7HpieX5++5X245BHt
+	4FryPrXbKXT+fbYqWWmTGJ7RIHuVit7JWHYpYYIhJS2YWpMyztkhDoyYnqEtGySOaLGB+ymm7xj
+	MbOGgWJclrdlIAc3eAtoz/8C13C67C90=
+X-Gm-Gg: AY/fxX4flSCby8VOBc+YDUYBwRgsP09K/WjzRcgDfgMGnmUUZShMsqQiWzdxEpcePgL
+	xswv9kKOM0MluzEVSxlTrkfB46Kx//X+Y7F1CZ7xsUAonuLa/0I2dmMRjlc4lpD/peNTAcQqTmj
+	oDXX/9HYtyXtkGNzCBK7XUD1l8zGjMeWtTJAwfwqJeR2UZGKVRC4IW/3LO3C1OzOvAdbwi/9FXH
+	j5Vz739cxpbbadyBASnKLan+ltNwnhV5hF5L7rqCxiLeB2dkz5iqt7UNBDG2swGCNZ4pCcO
+X-Google-Smtp-Source: AGHT+IFDL6fVDs2YzAEE6xM4j0Ham5rcrWQ7Zu69j8xRPhcvsv9tbdnK6aVvx33viB01kOUM+AxJ+CqrNiH8feMs3Eg=
+X-Received: by 2002:a05:6402:50cf:b0:64b:9fa4:b586 with SMTP id
+ 4fb4d7f45d1cf-64b9fa4b629mr22281190a12.25.1766821649306; Fri, 26 Dec 2025
+ 23:47:29 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Alen Frank <gality369@gmail.com>
-Date: Sat, 27 Dec 2025 12:56:28 +0800
-X-Gm-Features: AQt7F2o33l7imIZ5xFY-RSq-1YLGJ0f5dLM3Y6enOk4iLF2nv9RVeYRqHgzMpUU
-Message-ID: <CAOmEq9XdTN64=oE7na3J+vCG+fV2bFHSpprHswcE_wEfk_edNg@mail.gmail.com>
+From: ZhengYuan Huang <gality369@gmail.com>
+Date: Sat, 27 Dec 2025 15:47:18 +0800
+X-Gm-Features: AQt7F2ohkVCQBtGONUKUCQiiOdUZmRqKijD1vymITTcpIKFDo0pwu9VHXT69Q-Y
+Message-ID: <CAOmEq9WKw2_Xq4hEMZte=ZdMiXphWJW7759untUxc19Q8iOj5A@mail.gmail.com>
 Subject: [BUG] lockdep: possible circular locking dependency between
  mm->mmap_lock and kernfs_rwsem via btrfs qgroup path
 To: clm@fb.com, dsterba@suse.com
@@ -90,11 +90,12 @@ dependency involving mm->mmap_lock, root->kernfs_rwsem, and btrfs qgroup-re=
 lated
 locks.
 
-This issue was found using a custom fuzzing tool. The kernel is marked
-as -dirty only
-because I locally added some debug code to print additional call
-stacks; no locking logic
-or control flow related to this issue was modified.
+This issue was found using a custom fuzzing tool that stresses filesystem, =
+mm,
+and sysfs interactions. The kernel is marked as -dirty only because I local=
+ly
+added some debug code to print additional call stacks; no locking logic or
+control flow related to this issue was modified.
 
 This warning can be understood as a triggering lock ordering observed in th=
 e
@@ -115,12 +116,11 @@ mm->mmap_lock -> sb_pagefaults-> btrfs_trans_num_writers
 -> btrfs_trans_num_extwriters -> fs_info->reloc_mutex
 -> btrfs-quota-00 -> root->kernfs_rwsem.
 
-This is a dependency chain in the
-lockdep graph; individual edges may originate from different runtime contex=
-ts.
-Below I analyze this chain in detail (for convenience, =E2=80=9C#N=E2=80=9D=
- labels refer to the
-same lock numbering as in the full lockdep report):
+This is a dependency chain in the lockdep graph; individual edges
+may originate from different runtime contexts. Below I analyze this chain
+in detail (for convenience, =E2=80=9C#N=E2=80=9D labels refer to the same l=
+ock numbering
+as in the full lockdep report):
 
 Lock ordering between mm->mmap_lock and sb_pagefaults (#0 -> #2):
 Both paths enter do_user_addr_fault(). mm->mmap_lock is first acquired via
@@ -595,7 +595,10 @@ ion
 3f: 4c                    rex.WR
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
 =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-Thank you for your attention to this matter.
+Apologies for the duplicate and incorrect emails, which were caused by
+my unfamiliarity with the mailing list workflow. Please ignore the previous
+messages and consider this email as the correct version. Thank you for
+your attention.
 
 Best regards,
 ZhengYuan Huang
