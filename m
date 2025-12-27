@@ -1,173 +1,219 @@
-Return-Path: <linux-btrfs+bounces-20026-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20027-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7ECACCDF557
-	for <lists+linux-btrfs@lfdr.de>; Sat, 27 Dec 2025 09:50:46 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id CE142CE0145
+	for <lists+linux-btrfs@lfdr.de>; Sat, 27 Dec 2025 20:03:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 86D8A30102AB
-	for <lists+linux-btrfs@lfdr.de>; Sat, 27 Dec 2025 08:50:30 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 268EF301B2E4
+	for <lists+linux-btrfs@lfdr.de>; Sat, 27 Dec 2025 19:03:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2F94260569;
-	Sat, 27 Dec 2025 08:50:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="J7XzFEBN"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 620E9218AA0;
+	Sat, 27 Dec 2025 19:03:20 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oo1-f78.google.com (mail-oo1-f78.google.com [209.85.161.78])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 156411A76DE;
-	Sat, 27 Dec 2025 08:50:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C919156CA
+	for <linux-btrfs@vger.kernel.org>; Sat, 27 Dec 2025 19:03:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.78
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766825428; cv=none; b=AIr2+Z+ptbnVucQbkGEAmYKCd2CosxngleXcj1br+esSzGOGVHN81Eg7j+DLG/oXV3Bi3xH0TMkwLV6ZhbeJUHMG5oQ1FAHJfOLGA69VZEKJE5AXmh3vZRKei+4bkvqtzUmCm9JVRblp5R/RTPaHM9w3c8HGRIw7gtJW50OXg68=
+	t=1766862200; cv=none; b=PtBHW5jvX3oxIU/DFMLSq6JxjUV76AlOKx8JP0zwqFzH2+/c8zG3CYaOCK8KGKvltkL/CW29SIrBiKrtzQawYtxVYw9o1bg/cjkGZRtDopA/jxCUU+gGtQyliBCbGSnulwBkdlu22MFeeriVvYBbCcgeMygbmkemKeZr/SbTwqs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766825428; c=relaxed/simple;
-	bh=RTojEMiAD/uiUEkVv8WCKlz5qD03a5+9MsYox/dtBt0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=W4lE+B0mytYq8j/+TIuxfUN7h6wm6Atg6QG9/i11d41tFn0itTxf0YKLKgju3c8XgaUCt67tlBVwlPJ3F3YmnT5uh239YD8TYcLt2Zxp4D/DLJTmz46h2UTbeoqkRKLBwkbHjwbjEmT5qfk36MXJzMLms8JOgLISUNx7hlf38U0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=J7XzFEBN; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1766825425; x=1798361425;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=RTojEMiAD/uiUEkVv8WCKlz5qD03a5+9MsYox/dtBt0=;
-  b=J7XzFEBN4EFbFyu+gkedVrIxTnIvhzmlMicx/TMWkSRZy563N2RZIrdC
-   WfTY6ZiCv7XYwlEAS9y4377hLtdu4g8dFfuEHlYjyulYEL30wNaOPk3Tf
-   Zq90gdkf7KesmkBL/rD94oA3kK7+obReSD0j88RnKZQW3bll8XoOOcA8D
-   QY/iBeptoKLaWzn2lzz96Vn6TjgvH1Z2+lqt+8c+KePdJCYh321BOHQhJ
-   noBMgVRhYecmS4E94haG+YHHM8TPqv/S4soWAbw7ovW87P+KfeIexWsgw
-   M44CqGouQupe3UU6a2WFAAxhjXnKtTapjm6yfn5qoibFQnekcNfWIbIJu
-   g==;
-X-CSE-ConnectionGUID: ud7rBzVkTzy1HLH1izU0hw==
-X-CSE-MsgGUID: uz49ghO4RbC6JFiaEa/liw==
-X-IronPort-AV: E=McAfee;i="6800,10657,11653"; a="85957970"
-X-IronPort-AV: E=Sophos;i="6.21,180,1763452800"; 
-   d="scan'208";a="85957970"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Dec 2025 00:50:24 -0800
-X-CSE-ConnectionGUID: kEUaqMdDROuKkw6VwT9uhg==
-X-CSE-MsgGUID: tYrD3lycQiO3GJGRIEib5Q==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.21,180,1763452800"; 
-   d="scan'208";a="237927639"
-Received: from lkp-server02.sh.intel.com (HELO dd3453e2b682) ([10.239.97.151])
-  by orviesa001.jf.intel.com with ESMTP; 27 Dec 2025 00:50:19 -0800
-Received: from kbuild by dd3453e2b682 with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1vZQ04-000000005hJ-2JLG;
-	Sat, 27 Dec 2025 08:50:13 +0000
-Date: Sat, 27 Dec 2025 16:49:41 +0800
-From: kernel test robot <lkp@intel.com>
-To: Vincent Mailhol <mailhol@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>,
-	Nicolas Schier <nsc@kernel.org>,
-	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
-	Bill Wendling <morbo@google.com>,
-	Justin Stitt <justinstitt@google.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
-	Chris Mason <chris.mason@fusionio.com>,
-	David Sterba <dsterba@suse.com>, Kees Cook <kees@kernel.org>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: oe-kbuild-all@lists.linux.dev, linux-kbuild@vger.kernel.org,
-	linux-sparse@vger.kernel.org, linux-kernel@vger.kernel.org,
-	llvm@lists.linux.dev, dri-devel@lists.freedesktop.org,
-	linux-btrfs@vger.kernel.org, linux-hardening@vger.kernel.org,
-	Vincent Mailhol <mailhol@kernel.org>
-Subject: Re: [PATCH v3 3/3] overflow: Remove is_non_negative() and
- is_negative()
-Message-ID: <202512271618.33YepxDC-lkp@intel.com>
-References: <20251220-remove_wtype-limits-v3-3-24b170af700e@kernel.org>
+	s=arc-20240116; t=1766862200; c=relaxed/simple;
+	bh=S5ofOxQGA3txAcN4240VAJPbRgADNteZobLNv6bjERk=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=WhW1pxbAQfwpC9xyxEvzM8vN7q6DeSj0dqusluyMDTV4SELjdWMQ3JlTu1OctWmaHQ/vTgXb9V+R5vvU8n96iIqIEfZsVpzQGS5NQm4qC3KqIlpO3R3xjrICmK7b9qsCLXDmhuQSq9JbACAG8ou+KfXVpdNs3/mbzrY+DeeXbso=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.161.78
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-oo1-f78.google.com with SMTP id 006d021491bc7-6574d564a9eso14456667eaf.2
+        for <linux-btrfs@vger.kernel.org>; Sat, 27 Dec 2025 11:03:17 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1766862197; x=1767466997;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=vP9kyigWsNRBs7Ukm1ULwW89i666suHzh82NKq/WSVo=;
+        b=ilKWTmH1XHHI/Q++Z5M3ogmryJiOzBG5c+CAeBXYXn4kwhAoaMqzP3CgKV5VMvM+yu
+         t8z7ICUslGpcUrqEfA+kxPY9rhTQkKs1/oLxoFsgWPtp3l7qxDi62IC98MCpkxroaEHO
+         ZOAwtyWWM9SrQQWqkvFSNRgulA0NH+FJM6JI1Ps7ADD+Cl15jezy6nVOp7dD2t7Mo/rW
+         dZSGMTkAPjzYexiZQnu5KmLgzh8hGb4FkCwK+VUr2KWzT5nRGw9QQjodkQ11M8fkHZU9
+         vetvg+jJjCFUn0pdjw1mWlzQN6+XsNz0omR3m8IzZIE/TViLe7aXcSNMs0K1oA7nx6VF
+         gC1A==
+X-Forwarded-Encrypted: i=1; AJvYcCXLoUx1OfFQP/poutA1//B9B9C+78AN2E1KkUYus8eQR7ldU7PLbgTPaG+ydy5NuPXFfL7RU+vz2JOE/w==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxVtez8u3sS2biE/sgXGRMLafbO8oYuJYM3USzjbe4xZy3DMeLp
+	ZaslyLwdPm9Hgm8JAzM5w7I7RjRTKrEVM02ofQ7MEMbcDv6UgGi/3z6HMgeI/cYp70mTvl1jKnp
+	IgDvv7Q+s7sP6j5Y/Unuy42EojtvgA0XAmJBoiwVhtGRBWjIf67VwynmQxx4=
+X-Google-Smtp-Source: AGHT+IEk6DjgqueSGHbHMAju7kwic2TmHfgs66H2TTnA2Tvwz8pJAvUPTS5WU2+RXKrObLY/Fh8/dALPemj/OcYpb99QLSQIpMHZ
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251220-remove_wtype-limits-v3-3-24b170af700e@kernel.org>
+X-Received: by 2002:a05:6820:4289:b0:65d:163:3ea with SMTP id
+ 006d021491bc7-65d0e94d67emr8765307eaf.5.1766862197143; Sat, 27 Dec 2025
+ 11:03:17 -0800 (PST)
+Date: Sat, 27 Dec 2025 11:03:17 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <69502d75.050a0220.35954c.0098.GAE@google.com>
+Subject: [syzbot] [btrfs?] kernel BUG in submit_compressed_extents
+From: syzbot <syzbot+6bcfce568a4af2a909bc@syzkaller.appspotmail.com>
+To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Vincent,
+Hello,
 
-kernel test robot noticed the following build warnings:
+syzbot found the following issue on:
 
-[auto build test WARNING on 3e7f562e20ee87a25e104ef4fce557d39d62fa85]
+HEAD commit:    b927546677c8 Merge tag 'dma-mapping-6.19-2025-12-22' of gi..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1600df1a580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=513255d80ab78f2b
+dashboard link: https://syzkaller.appspot.com/bug?extid=6bcfce568a4af2a909bc
+compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Vincent-Mailhol/kbuild-remove-gcc-s-Wtype-limits/20251220-190509
-base:   3e7f562e20ee87a25e104ef4fce557d39d62fa85
-patch link:    https://lore.kernel.org/r/20251220-remove_wtype-limits-v3-3-24b170af700e%40kernel.org
-patch subject: [PATCH v3 3/3] overflow: Remove is_non_negative() and is_negative()
-config: sparc-randconfig-r072-20251227 (https://download.01.org/0day-ci/archive/20251227/202512271618.33YepxDC-lkp@intel.com/config)
-compiler: sparc64-linux-gcc (GCC) 15.1.0
+Unfortunately, I don't have any reproducer for this issue yet.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202512271618.33YepxDC-lkp@intel.com/
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/d900f083ada3/non_bootable_disk-b9275466.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/16f89c42bab9/vmlinux-b9275466.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/54c5ab9b0ef0/bzImage-b9275466.xz
 
-smatch warnings:
-drivers/block/nbd.c:1612 __nbd_ioctl() warn: unsigned '_a' is never less than zero.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+6bcfce568a4af2a909bc@syzkaller.appspotmail.com
 
-vim +/_a +1612 drivers/block/nbd.c
+page: refcount:0 mapcount:0 mapping:0000000000000000 index:0x1 pfn:0x6a1
+head: order:1 mapcount:0 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+flags: 0x7ff00000000040(head|node=0|zone=0|lastcpupid=0x7ff)
+page_type: f5(slab)
+raw: 007ff00000000001 ffffea000001a801 00000000ffffffff 00000000ffffffff
+raw: ffffffffffffffff 0000000000000000 00000000ffffffff 0000000000000002
+head: 007ff00000000040 ffff888040d47dc0 dead000000000122 0000000000000000
+head: 0000000000000000 00000000800a000a 00000000f5000000 0000000000000000
+head: 007ff00000000001 ffffea000001a801 00000000ffffffff 00000000ffffffff
+head: ffffffffffffffff 0000000000000000 00000000ffffffff 0000000000000002
+page dumped because: VM_BUG_ON_PAGE(page->compound_head & 1)
+page_owner tracks the page as allocated
+page last allocated via order 1, migratetype Unmovable, gfp_mask 0xd2800(GFP_NOWAIT|__GFP_NORETRY|__GFP_COMP|__GFP_NOMEMALLOC), pid 2676, tgid 2676 (kworker/u4:12), ts 86875534140, free_ts 86855865505
+ set_page_owner include/linux/page_owner.h:32 [inline]
+ post_alloc_hook+0x234/0x290 mm/page_alloc.c:1846
+ prep_new_page mm/page_alloc.c:1854 [inline]
+ get_page_from_freelist+0x24e0/0x2580 mm/page_alloc.c:3915
+ __alloc_frozen_pages_noprof+0x181/0x370 mm/page_alloc.c:5210
+ alloc_pages_mpol+0x232/0x4a0 mm/mempolicy.c:2486
+ alloc_slab_page mm/slub.c:3075 [inline]
+ allocate_slab+0x86/0x3b0 mm/slub.c:3248
+ new_slab mm/slub.c:3302 [inline]
+ ___slab_alloc+0xe53/0x1820 mm/slub.c:4656
+ __slab_alloc+0x65/0x100 mm/slub.c:4779
+ __slab_alloc_node mm/slub.c:4855 [inline]
+ slab_alloc_node mm/slub.c:5251 [inline]
+ kmem_cache_alloc_noprof+0x40f/0x710 mm/slub.c:5270
+ mempool_alloc_noprof+0x1c9/0x2f0 mm/mempool.c:567
+ bio_alloc_bioset+0x337/0x14e0 block/bio.c:561
+ alloc_compressed_bio fs/btrfs/compression.c:68 [inline]
+ btrfs_submit_compressed_write+0x16f/0x430 fs/btrfs/compression.c:382
+ submit_one_async_extent fs/btrfs/inode.c:1188 [inline]
+ submit_compressed_extents+0xe7a/0x1670 fs/btrfs/inode.c:1599
+ run_ordered_work fs/btrfs/async-thread.c:243 [inline]
+ btrfs_work_helper+0x564/0xbf0 fs/btrfs/async-thread.c:322
+ process_one_work kernel/workqueue.c:3257 [inline]
+ process_scheduled_works+0xad1/0x1770 kernel/workqueue.c:3340
+ worker_thread+0x8a0/0xda0 kernel/workqueue.c:3421
+ kthread+0x711/0x8a0 kernel/kthread.c:463
+page last free pid 78 tgid 78 stack trace:
+ reset_page_owner include/linux/page_owner.h:25 [inline]
+ free_pages_prepare mm/page_alloc.c:1395 [inline]
+ free_unref_folios+0xdb3/0x14f0 mm/page_alloc.c:3000
+ shrink_folio_list+0x4800/0x5010 mm/vmscan.c:1603
+ evict_folios+0x473e/0x57f0 mm/vmscan.c:4711
+ try_to_shrink_lruvec+0x8a3/0xb50 mm/vmscan.c:4874
+ shrink_one+0x25c/0x720 mm/vmscan.c:4919
+ shrink_many mm/vmscan.c:4982 [inline]
+ lru_gen_shrink_node mm/vmscan.c:5060 [inline]
+ shrink_node+0x2f7d/0x35b0 mm/vmscan.c:6047
+ kswapd_shrink_node mm/vmscan.c:6901 [inline]
+ balance_pgdat mm/vmscan.c:7084 [inline]
+ kswapd+0x145a/0x2820 mm/vmscan.c:7354
+ kthread+0x711/0x8a0 kernel/kthread.c:463
+ ret_from_fork+0x510/0xa50 arch/x86/kernel/process.c:158
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:246
+------------[ cut here ]------------
+kernel BUG at ./include/linux/page-flags.h:351!
+Oops: invalid opcode: 0000 [#1] SMP KASAN NOPTI
+CPU: 0 UID: 0 PID: 2676 Comm: kworker/u4:12 Not tainted syzkaller #0 PREEMPT(full) 
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
+Workqueue: btrfs-delalloc btrfs_work_helper
+RIP: 0010:const_folio_flags include/linux/page-flags.h:351 [inline]
+RIP: 0010:folio_test_head include/linux/page-flags.h:844 [inline]
+RIP: 0010:folio_test_large include/linux/page-flags.h:865 [inline]
+RIP: 0010:folio_order include/linux/mm.h:1246 [inline]
+RIP: 0010:folio_size include/linux/mm.h:2354 [inline]
+RIP: 0010:submit_one_async_extent fs/btrfs/inode.c:1128 [inline]
+RIP: 0010:submit_compressed_extents+0x161a/0x1670 fs/btrfs/inode.c:1599
+Code: 8c 9d 53 fe 4d 8b 1e 4c 89 ff 2e 2e 2e 41 ff d3 e9 d6 fd ff ff e8 96 f2 eb fd 4c 89 ef 48 c7 c6 00 a6 af 8b e8 07 f4 52 fd 90 <0f> 0b e8 7f f2 eb fd 48 c7 c7 40 93 af 8b 48 c7 c6 e0 a8 af 8b 31
+RSP: 0018:ffffc9000ff4f7e0 EFLAGS: 00010246
+RAX: b7630c6330986b00 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: 0000000000000006 RSI: ffffffff8d798217 RDI: 00000000ffffffff
+RBP: ffffc9000ff4f9d0 R08: ffffffff8f824277 R09: 1ffffffff1f0484e
+R10: dffffc0000000000 R11: fffffbfff1f0484f R12: ffffffffffffffff
+R13: ffffea000001a840 R14: 0000000000005000 R15: ffff888036c31410
+FS:  0000000000000000(0000) GS:ffff88808d416000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fc38501a000 CR3: 00000000110e3000 CR4: 0000000000352ef0
+Call Trace:
+ <TASK>
+ run_ordered_work fs/btrfs/async-thread.c:243 [inline]
+ btrfs_work_helper+0x564/0xbf0 fs/btrfs/async-thread.c:322
+ process_one_work kernel/workqueue.c:3257 [inline]
+ process_scheduled_works+0xad1/0x1770 kernel/workqueue.c:3340
+ worker_thread+0x8a0/0xda0 kernel/workqueue.c:3421
+ kthread+0x711/0x8a0 kernel/kthread.c:463
+ ret_from_fork+0x510/0xa50 arch/x86/kernel/process.c:158
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:246
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:const_folio_flags include/linux/page-flags.h:351 [inline]
+RIP: 0010:folio_test_head include/linux/page-flags.h:844 [inline]
+RIP: 0010:folio_test_large include/linux/page-flags.h:865 [inline]
+RIP: 0010:folio_order include/linux/mm.h:1246 [inline]
+RIP: 0010:folio_size include/linux/mm.h:2354 [inline]
+RIP: 0010:submit_one_async_extent fs/btrfs/inode.c:1128 [inline]
+RIP: 0010:submit_compressed_extents+0x161a/0x1670 fs/btrfs/inode.c:1599
+Code: 8c 9d 53 fe 4d 8b 1e 4c 89 ff 2e 2e 2e 41 ff d3 e9 d6 fd ff ff e8 96 f2 eb fd 4c 89 ef 48 c7 c6 00 a6 af 8b e8 07 f4 52 fd 90 <0f> 0b e8 7f f2 eb fd 48 c7 c7 40 93 af 8b 48 c7 c6 e0 a8 af 8b 31
+RSP: 0018:ffffc9000ff4f7e0 EFLAGS: 00010246
+RAX: b7630c6330986b00 RBX: 0000000000000001 RCX: 0000000000000000
+RDX: 0000000000000006 RSI: ffffffff8d798217 RDI: 00000000ffffffff
+RBP: ffffc9000ff4f9d0 R08: ffffffff8f824277 R09: 1ffffffff1f0484e
+R10: dffffc0000000000 R11: fffffbfff1f0484f R12: ffffffffffffffff
+R13: ffffea000001a840 R14: 0000000000005000 R15: ffff888036c31410
+FS:  0000000000000000(0000) GS:ffff88808d416000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fc38501a000 CR3: 00000000373f0000 CR4: 0000000000352ef0
 
-55313e92bd17a87 Mike Christie     2019-08-13  1591  
-9442b739207aab6 Josef Bacik       2017-02-07  1592  /* Must be called with config_lock held */
-9442b739207aab6 Josef Bacik       2017-02-07  1593  static int __nbd_ioctl(struct block_device *bdev, struct nbd_device *nbd,
-9442b739207aab6 Josef Bacik       2017-02-07  1594  		       unsigned int cmd, unsigned long arg)
-9442b739207aab6 Josef Bacik       2017-02-07  1595  {
-5ea8d10802ec4c1 Josef Bacik       2017-04-06  1596  	struct nbd_config *config = nbd->config;
-fad7cd3310db309 Baokun Li         2021-08-04  1597  	loff_t bytesize;
-5ea8d10802ec4c1 Josef Bacik       2017-04-06  1598  
-9442b739207aab6 Josef Bacik       2017-02-07  1599  	switch (cmd) {
-9442b739207aab6 Josef Bacik       2017-02-07  1600  	case NBD_DISCONNECT:
-29eaadc0364943b Josef Bacik       2017-04-06  1601  		return nbd_disconnect(nbd);
-9442b739207aab6 Josef Bacik       2017-02-07  1602  	case NBD_CLEAR_SOCK:
-0c1c9a27ce909e3 Christoph Hellwig 2023-08-11  1603  		nbd_clear_sock_ioctl(nbd);
-29eaadc0364943b Josef Bacik       2017-04-06  1604  		return 0;
-9442b739207aab6 Josef Bacik       2017-02-07  1605  	case NBD_SET_SOCK:
-e46c7287b1c2768 Josef Bacik       2017-04-06  1606  		return nbd_add_socket(nbd, arg, false);
-9442b739207aab6 Josef Bacik       2017-02-07  1607  	case NBD_SET_BLKSIZE:
-dcbddf541f18e36 Christoph Hellwig 2020-11-16  1608  		return nbd_set_size(nbd, config->bytesize, arg);
-9442b739207aab6 Josef Bacik       2017-02-07  1609  	case NBD_SET_SIZE:
-41e76c6a3c83c85 Nick Desaulniers  2021-09-20  1610  		return nbd_set_size(nbd, arg, nbd_blksize(config));
-9442b739207aab6 Josef Bacik       2017-02-07  1611  	case NBD_SET_SIZE_BLOCKS:
-41e76c6a3c83c85 Nick Desaulniers  2021-09-20 @1612  		if (check_shl_overflow(arg, config->blksize_bits, &bytesize))
-fad7cd3310db309 Baokun Li         2021-08-04  1613  			return -EINVAL;
-41e76c6a3c83c85 Nick Desaulniers  2021-09-20  1614  		return nbd_set_size(nbd, bytesize, nbd_blksize(config));
-9442b739207aab6 Josef Bacik       2017-02-07  1615  	case NBD_SET_TIMEOUT:
-55313e92bd17a87 Mike Christie     2019-08-13  1616  		nbd_set_cmd_timeout(nbd, arg);
-9442b739207aab6 Josef Bacik       2017-02-07  1617  		return 0;
-9442b739207aab6 Josef Bacik       2017-02-07  1618  
-9442b739207aab6 Josef Bacik       2017-02-07  1619  	case NBD_SET_FLAGS:
-5ea8d10802ec4c1 Josef Bacik       2017-04-06  1620  		config->flags = arg;
-9442b739207aab6 Josef Bacik       2017-02-07  1621  		return 0;
-9442b739207aab6 Josef Bacik       2017-02-07  1622  	case NBD_DO_IT:
-2a852a693f8839b Christoph Hellwig 2022-03-30  1623  		return nbd_start_device_ioctl(nbd);
-^1da177e4c3f415 Linus Torvalds    2005-04-16  1624  	case NBD_CLEAR_QUE:
-4b2f0260c74324a Herbert Xu        2006-01-06  1625  		/*
-4b2f0260c74324a Herbert Xu        2006-01-06  1626  		 * This is for compatibility only.  The queue is always cleared
-4b2f0260c74324a Herbert Xu        2006-01-06  1627  		 * by NBD_DO_IT or NBD_CLEAR_SOCK.
-4b2f0260c74324a Herbert Xu        2006-01-06  1628  		 */
-^1da177e4c3f415 Linus Torvalds    2005-04-16  1629  		return 0;
-^1da177e4c3f415 Linus Torvalds    2005-04-16  1630  	case NBD_PRINT_DEBUG:
-fd8383fd88a2fd8 Josef Bacik       2016-09-08  1631  		/*
-fd8383fd88a2fd8 Josef Bacik       2016-09-08  1632  		 * For compatibility only, we no longer keep a list of
-fd8383fd88a2fd8 Josef Bacik       2016-09-08  1633  		 * outstanding requests.
-fd8383fd88a2fd8 Josef Bacik       2016-09-08  1634  		 */
-^1da177e4c3f415 Linus Torvalds    2005-04-16  1635  		return 0;
-^1da177e4c3f415 Linus Torvalds    2005-04-16  1636  	}
-1a2ad21128bb4eb Pavel Machek      2009-04-02  1637  	return -ENOTTY;
-1a2ad21128bb4eb Pavel Machek      2009-04-02  1638  }
-1a2ad21128bb4eb Pavel Machek      2009-04-02  1639  
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
