@@ -1,72 +1,72 @@
-Return-Path: <linux-btrfs+bounces-20029-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20031-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12D9CCE029F
-	for <lists+linux-btrfs@lfdr.de>; Sat, 27 Dec 2025 23:32:51 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 944E9CE59CA
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Dec 2025 01:24:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 00D163014D9A
-	for <lists+linux-btrfs@lfdr.de>; Sat, 27 Dec 2025 22:32:44 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id B684E3006A77
+	for <lists+linux-btrfs@lfdr.de>; Mon, 29 Dec 2025 00:24:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3B852367A2;
-	Sat, 27 Dec 2025 22:32:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93A2D1339A4;
+	Mon, 29 Dec 2025 00:24:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="JTgZt04P";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="fS7Lbu6g"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="O88LwbwU";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="NGcrFIgF"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADEDC17A2E8
-	for <linux-btrfs@vger.kernel.org>; Sat, 27 Dec 2025 22:32:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 250B03A1E85
+	for <linux-btrfs@vger.kernel.org>; Mon, 29 Dec 2025 00:24:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766874762; cv=none; b=MvUANSc9SKkw7vd3LMQzL4N+JUcTiQI1tHOnPp6nfpiRIWw6Ph5lHegH8V8+AyBpA6H676kvprUYT0lxwpRo7wpbPMu7qpN21TGUv2RrJCbca38UkfRGFZnUIFudY4dTi77f/t2/u6OaOCqZeh2bgd/nVhqV14FKEU1dzHAdhaw=
+	t=1766967847; cv=none; b=m95hetiCXscCvC1Trtn2AYF+g97hVk+LL6XrBA+m2Xq3Ma8MxSpGhUkcJMjiMUmvWzzCUE+1tuXL1x8wKPD5BVMO9HEczL91di/fPWmWqnTZwsSM6OhYClJLJjh4BgKmxn13ZM8sCZIKayHdC/P/olQ3ghpEqCr/cOxXNBEaxdQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766874762; c=relaxed/simple;
-	bh=M+fO9BXRTTxTvOSciclMSBrqwEYNVeogCkhXnMGNl24=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=RNW2qumytDwwo1Sf4QfTMbITZHPVtYZHNq/MSRKt8VlvtlhEygCEZD3HUadxfe8SQc+5PxedwnopeXSABs0ivlHYszxH4wIbp8M+Rz7x4RQXQnHmf5UMmZraE30jIK61F+4tn6w3frlX5N6monIJa77/PLaDO0bbeU4iZIGuAt4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=JTgZt04P; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=fS7Lbu6g; arc=none smtp.client-ip=195.135.223.130
+	s=arc-20240116; t=1766967847; c=relaxed/simple;
+	bh=JVTJVqdJrKpX+xvAmUQn7/xtPvqg063BFvAlqDg4y8Q=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Wnz4yD0twrrYtTod7x2RPHPVuIked+0PVujr9LZPc+CgVJHCTuNexbmaI87oA3AZ5jQ3E3XP2srlxmcz/dmWsolpJdwpbZo5NNNtd+1mnAIFvqQ0UN1g2nTxvTayUD8y4MCJxlTkgAIVOjq2w2TAwDl117bFrp3wtHVdFFNrruY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=O88LwbwU; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=NGcrFIgF; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 8749C336A1;
-	Sat, 27 Dec 2025 22:32:30 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id D2DC333974;
+	Mon, 29 Dec 2025 00:23:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1766874751; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1766967836; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=dK/ncG42P4Ij95eEGy11hwCuFy63OtR74HJ2I+q1ziM=;
-	b=JTgZt04P9cz05X5iZUUDUddLxGFAqDsWYEhCPoBBZfvtiEsbqraLUjtIU3PSskmYmOAj4I
-	xQ/sO8G09QFuEV9dfATSSBsbJtMn0rpqzWiq0igZzyYnmv6Cqt09xxT51hqxreXw2FDZL1
-	+iJ6Q+2E59uuNeTfOEaE57PNAQ2Dd3g=
+	bh=L8FA7m8FHkkc1k7vJK3OM7irB8nMuSdkDGMbwmhTe4Y=;
+	b=O88LwbwU9LT1Dn7ntEo00RQ1SyV4qGLNyhQAMEYXB56ziAa2ECrFm3SmXIORBkUEHRbfJm
+	u6PGqdl0iMvfJi7A/2zRgD1OqKafhUYu+EZnkYytkW0e74Zfhi0Ery9gvLRxzt8FDzkFpF
+	Gij83As6aRjkzwOvpc6Zl5ZZV9z5p2c=
 Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1766874750; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1766967834; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=dK/ncG42P4Ij95eEGy11hwCuFy63OtR74HJ2I+q1ziM=;
-	b=fS7Lbu6gj/hj8s/HJXqMsuvqqeg6mEySE0ITq0/fBcXNiZk2pxNTSMsWV9ALFZlM2t0eHb
-	vAriyx8g8AhRCfLWkKr7YEEo6qmR3hF2kT3s2HCXFyg7/PzrlNASyekn5mQMWm9WusA67e
-	NRPcKHAxELxHl9U4J+DLh6SAAHFfPCo=
+	bh=L8FA7m8FHkkc1k7vJK3OM7irB8nMuSdkDGMbwmhTe4Y=;
+	b=NGcrFIgF0w9ck3Tt2ajg6YJkcSdGDuKjBsh+spCqHtayHBxZ3StGrp6uTysO0s3LJ6dVgN
+	dVacyj7JMs7bzEtSbm/Qr1UZZeAfpeSHyiCE+8pnyjwZigryAVVu0LV6ZiA8U24wu72vDN
+	QFvu9Pgz99HoBHPGSEtIDlK4HlYYozc=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 832DC3EA63;
-	Sat, 27 Dec 2025 22:32:29 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BD54B3EA63;
+	Mon, 29 Dec 2025 00:23:53 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id ygsYEX1eUGkPNQAAD6G6ig
-	(envelope-from <wqu@suse.com>); Sat, 27 Dec 2025 22:32:29 +0000
+	id Oe+yHhnKUWmKGwAAD6G6ig
+	(envelope-from <wqu@suse.com>); Mon, 29 Dec 2025 00:23:53 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Cc: ZhengYuan Huang <gality369@gmail.com>
-Subject: [PATCH] btrfs: do not sync fs when the fs is not yet fully mounted
-Date: Sun, 28 Dec 2025 09:02:07 +1030
-Message-ID: <7cdad50af2ac47b00bc1d81dfc97ad8776528d86.1766874707.git.wqu@suse.com>
+Cc: mikkel+btrfs@mikkel.cc
+Subject: [PATCH] btrfs: dump the leaf if we failed to locate an inode ref
+Date: Mon, 29 Dec 2025 10:53:35 +1030
+Message-ID: <c0c129ddce57c27eb0ce22af51767047c80a0f3b.1766967799.git.wqu@suse.com>
 X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -83,142 +83,138 @@ X-Spamd-Result: default: False [-2.80 / 50.00];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	NEURAL_HAM_SHORT(-0.20)[-0.996];
 	MIME_GOOD(-0.10)[text/plain];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TAGGED_RCPT(0.00)[btrfs];
+	RCPT_COUNT_TWO(0.00)[2];
+	ARC_NA(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[gmail.com];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid,imap1.dmz-prg2.suse.org:helo];
-	RCVD_TLS_ALL(0.00)[];
-	RCPT_COUNT_TWO(0.00)[2];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_HAS_DN(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_DN_SOME(0.00)[];
 	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,mikkel.cc:email,suse.com:email,suse.com:mid];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	RCVD_TLS_ALL(0.00)[]
 
-[LOCKDEP WARNING]
-There is a lockdep warning between qgroup related tree lock and
-kernfs_rwsem.
+There are already two reports (one public and one private) of bitflips
+that corrupted the fs and caused transaction abort.
 
-However the involved call chains show that the fs is being mounted
-meanwhile the fs is also triggering sync_fs() from unmounting process:
+The public report has a very strong indication of the bitflip in the
+INODE_REF key type. Thankfully btrfs-check is able to detect it.
 
-WARNING: possible circular locking dependency detected
-6.18.0-dirty #1 Tainted: G           OE
-------------------------------------------------------
-syz.0.279/4686 is trying to acquire lock:
-ffff888014b4d7e0 (&mm->mmap_lock){++++}-{4:4}, at:
-mmap_read_lock_killable include/linux/mmap_lock.h:377 [inline]
-ffff888014b4d7e0 (&mm->mmap_lock){++++}-{4:4}, at:
-get_mmap_lock_carefully mm/mmap_lock.c:378 [inline]
-ffff888014b4d7e0 (&mm->mmap_lock){++++}-{4:4}, at:
-lock_mm_and_find_vma+0x146/0x630 mm/mmap_lock.c:429
+But the private report didn't preserve the environment and re-formatted
+instead, making it much harder to know exactly what bitflip is, but the
+call trace is the same as the public report, thus I have a strong
+feeling it's a similar situation.
 
-but task is already holding lock:
-ffff88800aa8c188 (&root->kernfs_rwsem){++++}-{4:4}, at:
-kernfs_fop_readdir+0x146/0x860 fs/kernfs/dir.c:1893
+The problem here is, the only error message we got is just "failed to
+delete reference to", no tree dump to confirm the root cause.
 
-which lock already depends on the new lock.
+This is partly due to the fact that btrfs_del_inode_ref() doesn't
+provide a path for us to dump the leaf.
 
-the existing dependency chain (in reverse order) is:
+To improve the situation, do an inode extref search (which should not
+hit) and dump the leaf.
+This will not cover all corner cases, e.g. an inode with a lot of
+hard links, and our target ref is inside the regular inode ref item.
+But for most inodes with few hard links, this should be good enough.
 
--> #7 (&root->kernfs_rwsem){++++}-{4:4}:
-      down_write+0x91/0x210 kernel/locking/rwsem.c:1590
-      kernfs_add_one+0x39/0x700 fs/kernfs/dir.c:791
-      kernfs_create_dir_ns+0x103/0x1a0 fs/kernfs/dir.c:1093
-      sysfs_create_dir_ns+0x143/0x2b0 fs/sysfs/dir.c:59
-      create_dir lib/kobject.c:73 [inline]
-      kobject_add_internal+0x24d/0xad0 lib/kobject.c:240
-      kobject_add_varg lib/kobject.c:374 [inline]
-      kobject_init_and_add+0x114/0x1a0 lib/kobject.c:457
-      btrfs_sysfs_add_one_qgroup+0xe2/0x170 fs/btrfs/sysfs.c:2599
-      btrfs_read_qgroup_config+0x86f/0x1310 fs/btrfs/qgroup.c:488
-      open_ctree+0x3bda/0x6d60 fs/btrfs/disk-io.c:3592
-      btrfs_fill_super fs/btrfs/super.c:987 [inline]
-      btrfs_get_tree_super fs/btrfs/super.c:1951 [inline]
-      btrfs_get_tree_subvol fs/btrfs/super.c:2094 [inline]
-      btrfs_get_tree+0x114c/0x22e0 fs/btrfs/super.c:2128
-      vfs_get_tree+0x9a/0x370 fs/super.c:1758
-      fc_mount fs/namespace.c:1199 [inline] <<<<
-      do_new_mount_fc fs/namespace.c:3642 [inline]
-      do_new_mount fs/namespace.c:3718 [inline]
-      path_mount+0x5aa/0x1e90 fs/namespace.c:4028
-      do_mount fs/namespace.c:4041 [inline]
-      __do_sys_mount fs/namespace.c:4229 [inline]
-      __se_sys_mount fs/namespace.c:4206 [inline]
-      __x64_sys_mount+0x282/0x320 fs/namespace.c:4206
-      x64_sys_call+0x1a7d/0x26a0
-arch/x86/include/generated/asm/syscalls_64.h:166
-      do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
-      do_syscall_64+0x91/0xa90 arch/x86/entry/syscall_64.c:94
-      entry_SYSCALL_64_after_hwframe+0x76/0x7e
+I created an image with exactly the same bitflip in inode ref key, and
+try to delete the inode, with this patch the dump leaf is enough to pin
+down the root cause:
 
--> #6 (btrfs-quota-00){++++}-{4:4}:
-      down_read_nested+0xa0/0x4d0 kernel/locking/rwsem.c:1662
-      btrfs_tree_read_lock_nested+0x32/0x1d0 fs/btrfs/locking.c:145
-      btrfs_tree_read_lock fs/btrfs/locking.h:188 [inline]
-      btrfs_read_lock_root_node+0x73/0xb0 fs/btrfs/locking.c:266
-      btrfs_search_slot_get_root fs/btrfs/ctree.c:1742 [inline]
-      btrfs_search_slot+0x3e0/0x3580 fs/btrfs/ctree.c:2066
-      update_qgroup_info_item fs/btrfs/qgroup.c:882 [inline]
-      btrfs_run_qgroups+0x4f3/0x870 fs/btrfs/qgroup.c:3112
-      commit_cowonly_roots+0x1f3/0x8f0 fs/btrfs/transaction.c:1354
-      btrfs_commit_transaction+0x1c64/0x3f70 fs/btrfs/transaction.c:2459
-      btrfs_sync_fs+0xf2/0x660 fs/btrfs/super.c:1057
-      sync_filesystem fs/sync.c:66 [inline]
-      sync_filesystem+0x1ba/0x260 fs/sync.c:30
-      generic_shutdown_super+0x88/0x520 fs/super.c:621 <<<<
-      kill_anon_super+0x41/0x80 fs/super.c:1288
-      btrfs_kill_super+0x41/0x60 fs/btrfs/super.c:2134
-      deactivate_locked_super+0xb5/0x1a0 fs/super.c:473
-      deactivate_super fs/super.c:506 [inline]
-      deactivate_super+0xad/0xd0 fs/super.c:502
-      cleanup_mnt+0x214/0x460 fs/namespace.c:1318
-      __cleanup_mnt+0x1b/0x30 fs/namespace.c:1325
-      task_work_run+0x16a/0x270 kernel/task_work.c:227
-      resume_user_mode_work include/linux/resume_user_mode.h:50 [inline]
-      exit_to_user_mode_loop+0x147/0x190 kernel/entry/common.c:43
-      exit_to_user_mode_prepare include/linux/irq-entry-common.h:225 [inline]
-      syscall_exit_to_user_mode_work include/linux/entry-common.h:175 [inline]
-      syscall_exit_to_user_mode include/linux/entry-common.h:210 [inline]
-      do_syscall_64+0x3a0/0xa90 arch/x86/entry/syscall_64.c:100
-      entry_SYSCALL_64_after_hwframe+0x76/0x7e
+ BTRFS critical (device dm-3): failed to delete reference to inline_13, root 5 inode 270 parent 256
+ BTRFS info (device dm-3): leaf 30572544 gen 11 total ptrs 16 free space 2574 owner 5
+ BTRFS info (device dm-3): refs 2 lock_owner 0 current 2634
+ 	item 0 key (267 EXTENT_DATA 0) itemoff 14214 itemsize 2069
+ 		generation 9 type 0
+ 		inline extent data size 2048 ram_bytes 2048 compression 0
+	[...]
+ 	item 7 key (270 INODE_ITEM 0) itemoff 9558 itemsize 160
+ 		inode generation 9 transid 9 size 2048 nbytes 2048
+ 		block group 0 mode 100600 links 1 uid 0 gid 0
+ 		rdev 0 sequence 1 flags 0x0
+ 	item 8 key (270 UNKNOWN.8 256) itemoff 9539 itemsize 19 <<<
+ 	item 9 key (270 EXTENT_DATA 0) itemoff 7470 itemsize 2069
+ 		generation 9 type 0
+ 		inline extent data size 2048 ram_bytes 2048 compression 0
+	[...]
+ ------------[ cut here ]------------
+ BTRFS: Transaction aborted (error -2)
+ WARNING: inode.c:4445 at __btrfs_unlink_inode+0x42c/0x460 [btrfs], CPU#4: rm/2634
+ [...]
+ ---[ end trace 0000000000000000 ]---
+ BTRFS: error (device dm-3 state A) in __btrfs_unlink_inode:4445: errno=-2 No such entry
+ BTRFS info (device dm-3 state EA): forced readonly
 
-[CAUSE]
-At btrfs_sync_fs() we always assume the fs is already fully mounted, but
-if it's not the case we have more problems to bother other than just
-lockdep warnings.
-
-[FIX]
-Check if the target fs is fully mounted, if not skip btrfs_sync_fs()
-completely.
-
-Reported-by: ZhengYuan Huang <gality369@gmail.com>
-Link: https://lore.kernel.org/linux-btrfs/CAOmEq9XdTN64=oE7na3J+vCG+fV2bFHSpprHswcE_wEfk_edNg@mail.gmail.com/
+Reported-by: mikkel+btrfs@mikkel.cc
+Link: https://lore.kernel.org/linux-btrfs/5d5e344e-96be-4436-9a58-d60ba14fdb4f@gmx.com/T/#me22cef92653e660e88a4c005b10f5201a8fd83ac
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/super.c | 3 +++
- 1 file changed, 3 insertions(+)
+ fs/btrfs/inode.c | 32 ++++++++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
 
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index c141b7e1ee81..af98f622023f 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -1013,6 +1013,9 @@ int btrfs_sync_fs(struct super_block *sb, int wait)
- 	struct btrfs_fs_info *fs_info = btrfs_sb(sb);
- 	struct btrfs_root *root = fs_info->tree_root;
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index aa9ce054ab1f..370dfb13d6f3 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -72,6 +72,7 @@
+ #include "raid-stripe-tree.h"
+ #include "fiemap.h"
+ #include "delayed-inode.h"
++#include "print-tree.h"
  
-+	if (unlikely(!test_bit(BTRFS_FS_OPEN, &fs_info->flags)))
-+		return 0;
+ #define COW_FILE_RANGE_KEEP_LOCKED	(1UL << 0)
+ #define COW_FILE_RANGE_NO_INLINE	(1UL << 1)
+@@ -4349,6 +4350,36 @@ static void update_time_after_link_or_unlink(struct btrfs_inode *dir)
+ 	inode_set_mtime_to_ts(&dir->vfs_inode, now);
+ }
+ 
++static __cold void dump_tree_for_inode_ref(struct btrfs_root *root,
++					   const struct fscrypt_str *name,
++					   u64 ino, u64 dir_ino)
++{
++	BTRFS_PATH_AUTO_RELEASE(path);
++	struct btrfs_key key;
++	int ret;
 +
- 	trace_btrfs_sync_fs(fs_info, wait);
- 
- 	if (!wait) {
++	/*
++	 * We're here because we failed to find the inode ref, meaning neither
++	 * a matching INODE_REF nor INODE_EXTREF is found.
++	 * So we can directly go searching INODE_EXTREF.
++	 */
++	key.objectid = ino;
++	key.type = BTRFS_INODE_EXTREF_KEY;
++	key.offset = btrfs_extref_hash(dir_ino, name->name, name->len);
++	ret = btrfs_search_slot(NULL, root, &key, &path, 0, 0);
++	if (ret < 0)
++		return;
++
++	/*
++	 * We're at the slot where INODE_EXTREF should be inserted.
++	 * For an inode with tons of hard links it may not cover what we want
++	 * (e.g. a regular INODE_REF item).
++	 * But it should be good enough for most inodes which have very few
++	 * hard links.
++	 */
++	btrfs_print_leaf(path.nodes[0]);
++}
++
+ /*
+  * unlink helper that gets used here in inode.c and in the tree logging
+  * recovery code.  It remove a link in a directory with a given name, and
+@@ -4410,6 +4441,7 @@ static int __btrfs_unlink_inode(struct btrfs_trans_handle *trans,
+ 		btrfs_crit(fs_info,
+ 	   "failed to delete reference to %.*s, root %llu inode %llu parent %llu",
+ 			   name->len, name->name, btrfs_root_id(root), ino, dir_ino);
++		dump_tree_for_inode_ref(root, name, ino, dir_ino);
+ 		btrfs_abort_transaction(trans, ret);
+ 		return ret;
+ 	}
 -- 
 2.52.0
 
