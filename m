@@ -1,82 +1,82 @@
-Return-Path: <linux-btrfs+bounces-20053-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20054-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0D7ECEBD9E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 31 Dec 2025 12:18:02 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id D4B62CEBD89
+	for <lists+linux-btrfs@lfdr.de>; Wed, 31 Dec 2025 12:17:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 4FE04305EE60
-	for <lists+linux-btrfs@lfdr.de>; Wed, 31 Dec 2025 11:16:58 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 9AB643011920
+	for <lists+linux-btrfs@lfdr.de>; Wed, 31 Dec 2025 11:17:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A9733191BC;
-	Wed, 31 Dec 2025 11:16:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37B7D25B662;
+	Wed, 31 Dec 2025 11:16:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HDaxzuQU"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jDmHrAdm"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mail-pl1-f195.google.com (mail-pl1-f195.google.com [209.85.214.195])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45FD025B662
-	for <linux-btrfs@vger.kernel.org>; Wed, 31 Dec 2025 11:16:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 159F4279346
+	for <linux-btrfs@vger.kernel.org>; Wed, 31 Dec 2025 11:16:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767179812; cv=none; b=RiyH6vosDO2lDxoRn5cbCFP0qomRCYfSTK6tMo7AEkneWHJNHBkNTzIMoYO/Bj/SL9JWx5MPS/R9aMCal4lRHW0a4AtWknNpK1NqTGTEmV0WJ16s2GSJd+z5KGSTnQly6mMuyGsgQqS2if/A7xRmyFdP0FJ8/iimr2TY12Pd/SI=
+	t=1767179813; cv=none; b=oMFRBQiDpsjw8CwRIX3iaSzszSYkmkMYNch3+G5/4xZS7OzqVYQDvw7ExFN9I5M9rr6TK5Ww1xHEIxpFmc8YAuTKgrDInoZ1ucAECJIyjAiNowX6YE0589jlMWZvkpYhXt3MXs7jBrj2+OKm9cjQH5yl36WilpW6ELn0JRM14eE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767179812; c=relaxed/simple;
-	bh=QMzgEbX1GIW5jlaKwSYOxTHmSjeNsEyZ2SYhzqV1Efc=;
+	s=arc-20240116; t=1767179813; c=relaxed/simple;
+	bh=LlNREtuP9ynkf26YaALmuptkl1hQ1v0J/g1lXQAQ7mA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=RcspdPxqoq2zkYIJgHj4WK3whff4Xa3e6UZBvsbFbmB+rGBGznk2ro1mWEQpUf2yxB3CUl0xm+m7UsuAcaBoBQ3tket6WXpKawMZ0ku8f4wlMpol7XSluwu+c+4ad45U8QZ/fwmzyNGHCrTdSa3ZsUIRVT6NnaZ5zwGxtH6UIrI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HDaxzuQU; arc=none smtp.client-ip=209.85.214.195
+	 MIME-Version; b=ApXbj5yaLUFCQAxt/YMqn2RIxKLA7mMIlMmxL/e8bmco/l69C6WYgBaNMXYpsXyCabt7AnyrpmIdb94onfC4TCas4IqTXbMHjG47yFn8BvFRrDXOlZakAvMO93Nwj4DXhs4Lc+/GurMlulloWlhbQrT7hpXjdMmCvbzA4gp7eZk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jDmHrAdm; arc=none smtp.client-ip=209.85.214.195
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f195.google.com with SMTP id d9443c01a7336-2a110548f10so37366335ad.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 31 Dec 2025 03:16:50 -0800 (PST)
+Received: by mail-pl1-f195.google.com with SMTP id d9443c01a7336-29f08b909aeso23833825ad.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 31 Dec 2025 03:16:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767179809; x=1767784609; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1767179811; x=1767784611; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=HP43QVv4guU3d0Acm7Ki5Yj04cPnUrXcJ0D2tfbjGsc=;
-        b=HDaxzuQUmMpBkXA5qjgpasToqLLYIlnsHIbN6vO26ebQ8OG3orwkLs6UZvdCO6PEGF
-         gsgvLoH3WItRou9PiUhh3KTjBZrG2KdUHL8XuSy8luqoUWDs7KEWWCCGIDQZBBoYMx/T
-         tTLEt3rvgW9D5+e2Hq9jrRSAcgEIf5UqGpLYvxq8V08nfBLX/pO+JWOfzHDe2t1MKp8/
-         Tg9+WFLx1AOZys11Ds4CqLUITmrjUpyN3LvbQCSG9HKiirFo51yR+w3yowwNW3CcPG6Z
-         hiHLduzNukjHF3CdGfWfcrAafDjhU47vxyEMgW2+Q7IFTlu+Lsz6ecc2HNWsDkYDGIWY
-         KT1A==
+        bh=O7qw/HNE6J5Ta1CU3in+uOPOpM4GZ1JNqs5/ohGizr8=;
+        b=jDmHrAdmuGulBWz7xUtpi1iGULCCbVarWeKJ80LxCZCRKmPbfwRXTAjIVW0H7UjMhL
+         cSnlMsD/7mZum2dSu6RSswXBkrPsIIOpV1Hz1QW7GIqSdhRnWDQiikpt+oPNQEBltOS3
+         fYxt5cU99bXo04Qt9qIp4VZbZpOgCH2aF+ncxC8sKOl0ztP35lf/7ea39xwPIoUca+El
+         hM0OZGdmBcyR8/Yik/op484g+n+FXAR6XNH+5Vf6hwqn0UWCpdL/5PGIY48bVztpKOBy
+         6a5yJzHX/0GeYpLaqBa6xH5QFvLgp6vMkSZZzFOPN5Syw+PpJxBz/Oo7VcALF2o4ESIy
+         A6SA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767179809; x=1767784609;
+        d=1e100.net; s=20230601; t=1767179811; x=1767784611;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=HP43QVv4guU3d0Acm7Ki5Yj04cPnUrXcJ0D2tfbjGsc=;
-        b=S2O925QGAcqNvpjDticm/b99V+3bGxck4jjj5xYl1Ev/Ef0ft5sO7pywsQMsQlNhF1
-         SkEI28BSygPcZu2SlpNefJFHPqPVy2F3ASkDJDKJcHZqNXFomTCPzL9AkNfVivMjKsGR
-         dPT7grTEkiH0iU+CjMZeXVbI7xo5w+JreSTS58sRMYhdgpl2WPWtmJKQnwiYKcJ/PfVY
-         +46scrVaUsw07IAshnkxAR5iem+azQnT72Cklh6IFWz92iJw6WYGIY43RoT95qdYJ1Ge
-         moyxbu7+P8ip2LBu3ZJgDsrUf33zrdL45gf7eTecET+BtRsBMhGsCcigL4L5W6wbiq9p
-         gdsA==
-X-Gm-Message-State: AOJu0Yye6gfnTv3mLpMNqHguSk8SyyJJ2na3LCpnVkG0CXn+yirOM0i7
-	rYhQdJTyhwfIFIkY+ypZF0h6COirhNdz2YAL2YZKZV52gbSAu/9kIp2RxmcAjd3yC1jE31yj
-X-Gm-Gg: AY/fxX40qcVBfEpLJjx9snNPTQRY0QQgRQOYdVM69MBNe7/DDih/gOgYHnOY5EoC3jJ
-	15tPd7dY1BdGOqd/WMPwK8q3+mdDmWQIM7LasiemW6a8EOgps+dKyNyjEMF2Yqjn7L4CbqhzzMT
-	7GGdfi3anZ8+hDCyYD72TitN0uzCv5oTzKGG5k7SVxC2ExjKjwzC4vqXzaH3jcfMObyqMKqmJ24
-	0idX+AoCK9ltaF9Y746zbNTMxg5lBjObG2z+AM1h8RuArf1p1RF0ys9RdIMBXwQ7+d5hEp71rd/
-	PjkEC+3E2M0OD7KFVw7vwmlmQlhjLH+ToheKRB7s3LT6JTccSI5lsqThG9HRklc4FbPxrOJ5kPl
-	MK0Ul7sUWlmHSzgtfWr/ZxpqGxoCO9RviuQfovBgK1w1ttygLBxeYYLIvC3ETseh8GqutvCindV
-	Xpbptu3sBPADBYtAHxLaE2RqOM3mnbOAuHgQ==
-X-Google-Smtp-Source: AGHT+IHi2Ut61toAu3s1RShIn5I+sVobAuSlUrvtFtFS59vZhjZeT5SbVMvzEK71GJwBCl+CIftePw==
-X-Received: by 2002:a17:902:da8c:b0:298:2237:7b9b with SMTP id d9443c01a7336-2a2f283f828mr256832865ad.7.1767179809452;
-        Wed, 31 Dec 2025 03:16:49 -0800 (PST)
+        bh=O7qw/HNE6J5Ta1CU3in+uOPOpM4GZ1JNqs5/ohGizr8=;
+        b=OvmtNv7WegVklciL1qvhvkjBZHrP+BFFKT4kwCA+GDTk1xCGAxHxha1tBII1leWHbw
+         VAmICxBbBfBeCwvHprFu+fiW9GNX5P+60AZgECk6OiES64cGC+Kxs8iKWNgqUEJJat14
+         KM+zhU4C0jEg3qUuqBW2dv53sUSRHxtQljKdC9n1utTjlOQqlao7wNJbFQpM/g4Q4Eni
+         Xr7o38Xxsyl/JMBQw/FGzICKBUYw0h0rVnfyVw82H7w841B289i3ZgXJP9lWyFLXAINd
+         dsi+qMLoY+bRlWbVzBqrTdVAAFhZWTH0GHAotQcnOBgi7z8/sqBDkY49T7YxP+eMe56f
+         lwJw==
+X-Gm-Message-State: AOJu0YxeGHnNNB1EV5a0aMVRjsy4Cn89+ZvBhNjRCprM4OLx8oD5QOo2
+	I+2qQWNlu4UdToctQ5GmHlEd4NyaAtgYfOAHQomux7vsmolFKXD5uaWBy1nfGCARoaDd0AQm
+X-Gm-Gg: AY/fxX6oOMsEhOoZz+u0ttWsjtD8gsYmqw7GaN5cB/4dC5FsbgtWpiFiZ4e1yuSgYeX
+	OdSkgptCpyHLi4ldm8bESP+s6AIchkEOE3FLU+mtefB7qpVeDwyKSwC0PufnyFBHc28A6EPuB6H
+	uVeajl/ceSGv40Ci04ket687D+fHtFQgUEF6Clk4m4QBDGRaC44Tj5oi9oG5OdQmzsf4Y4OVzLN
+	Xffr3lXRnxuqar+32A7Nn9yNwNgQealt088ky7QGp8GXEolaWvsWMuqeBznhDg2PesNTV4xoCqO
+	2Y8mXeLWp3pMcrUmPt9HUhQWDe78H+cwXKnyV4vSwUtQqYVa++fW2CKiYbPEa7c9ZeGypMdY7Op
+	94nTpirvRZ6Q1bLjtPr09cSSfMCZ6rQtUDkHH6cD293GL+fjQfeZeqJpx8aTFuiRYbWNiTXX1s2
+	woMTuxVzMuqXos350+HV3SjEw=
+X-Google-Smtp-Source: AGHT+IHxrEYGg816JdZBEeZ7lGlpypFU4CWvXhUZrqz3hQT4D+9aIf12JZcEN4nxuEdZXZ81H9829A==
+X-Received: by 2002:a17:902:ef01:b0:2a0:992c:1ddd with SMTP id d9443c01a7336-2a2f2d56b69mr277144665ad.8.1767179811582;
+        Wed, 31 Dec 2025 03:16:51 -0800 (PST)
 Received: from SaltyKitkat ([175.145.176.205])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2a2f3c74490sm321394385ad.5.2025.12.31.03.16.47
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2a2f3c74490sm321394385ad.5.2025.12.31.03.16.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Dec 2025 03:16:49 -0800 (PST)
+        Wed, 31 Dec 2025 03:16:51 -0800 (PST)
 From: Sun YangKai <sunk67188@gmail.com>
 To: linux-btrfs@vger.kernel.org
 Cc: Sun YangKai <sunk67188@gmail.com>
-Subject: [PATCH 5/7] btrfs: use u8 for reclaim threshold type
-Date: Wed, 31 Dec 2025 18:39:38 +0800
-Message-ID: <20251231111623.30136-6-sunk67188@gmail.com>
+Subject: [PATCH 6/7] btrfs: clarify reclaim sweep control flow
+Date: Wed, 31 Dec 2025 18:39:39 +0800
+Message-ID: <20251231111623.30136-7-sunk67188@gmail.com>
 X-Mailer: git-send-email 2.51.2
 In-Reply-To: <20251231111623.30136-1-sunk67188@gmail.com>
 References: <20251231111623.30136-1-sunk67188@gmail.com>
@@ -88,99 +88,52 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The bg_reclaim_threshold field stores a percentage value (0-100), making
-u8 a more appropriate type than int. Update the field and related
-function return types:
+Replace the try_again flag with will_reclaim and adjust the
+to better reflect the intent of the logic. This makes the reclaim
+decision easier to follow without changing behavior.
 
-- struct btrfs_space_info::bg_reclaim_threshold
-- calc_dynamic_reclaim_threshold()
-- btrfs_calc_reclaim_threshold()
+Also prepare for the next patch.
 
-The sysfs store function already validates the range is 0-100, ensuring
-the cast to u8 is safe.
+No functional change.
 
 Signed-off-by: Sun YangKai <sunk67188@gmail.com>
 ---
- fs/btrfs/space-info.c |  6 +++---
- fs/btrfs/space-info.h | 12 ++++++------
- fs/btrfs/sysfs.c      |  3 ++-
- 3 files changed, 11 insertions(+), 10 deletions(-)
+ fs/btrfs/space-info.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index 41f1507f460f..cf2c4b7105cf 100644
+index cf2c4b7105cf..b6ec09aea64f 100644
 --- a/fs/btrfs/space-info.c
 +++ b/fs/btrfs/space-info.c
-@@ -2037,7 +2037,7 @@ static u64 calc_unalloc_target(struct btrfs_fs_info *fs_info)
-  * Typically with 10 block groups as the target, the discrete values this comes
-  * out to are 0, 10, 20, ... , 80, 90, and 99.
-  */
--static int calc_dynamic_reclaim_threshold(const struct btrfs_space_info *space_info)
-+static u8 calc_dynamic_reclaim_threshold(const struct btrfs_space_info *space_info)
+@@ -2083,7 +2083,7 @@ static void do_reclaim_sweep(struct btrfs_space_info *space_info, int raid)
  {
- 	struct btrfs_fs_info *fs_info = space_info->fs_info;
- 	u64 unalloc = atomic64_read(&fs_info->free_chunk_space);
-@@ -2052,11 +2052,11 @@ static int calc_dynamic_reclaim_threshold(const struct btrfs_space_info *space_i
- 	if (unused < data_chunk_size)
- 		return 0;
+ 	struct btrfs_block_group *bg;
+ 	int thresh_pct;
+-	bool try_again = true;
++	bool will_reclaim = false;
+ 	bool urgent;
  
--	/* Cast to int is OK because want <= target. */
-+	/* Cast to u8 is OK because want <= target. */
- 	return calc_pct_ratio(want, target);
- }
- 
--int btrfs_calc_reclaim_threshold(const struct btrfs_space_info *space_info)
-+u8 btrfs_calc_reclaim_threshold(const struct btrfs_space_info *space_info)
- {
- 	lockdep_assert_held(&space_info->lock);
- 
-diff --git a/fs/btrfs/space-info.h b/fs/btrfs/space-info.h
-index 0703f24b23f7..a4fa04d10722 100644
---- a/fs/btrfs/space-info.h
-+++ b/fs/btrfs/space-info.h
-@@ -132,15 +132,15 @@ struct btrfs_space_info {
- 	/* Chunk size in bytes */
- 	u64 chunk_size;
- 
-+	int clamp;		/* Used to scale our threshold for preemptive
-+				   flushing. The value is >> clamp, so turns
-+				   out to be a 2^clamp divisor. */
-+
- 	/*
- 	 * Once a block group drops below this threshold (percents) we'll
- 	 * schedule it for reclaim.
+ 	spin_lock(&space_info->lock);
+@@ -2101,7 +2101,7 @@ static void do_reclaim_sweep(struct btrfs_space_info *space_info, int raid)
+ 		spin_lock(&bg->lock);
+ 		thresh = mult_perc(bg->length, thresh_pct);
+ 		if (bg->used < thresh && bg->reclaim_mark) {
+-			try_again = false;
++			will_reclaim = true;
+ 			reclaim = true;
+ 		}
+ 		bg->reclaim_mark = true;
+@@ -2118,8 +2118,8 @@ static void do_reclaim_sweep(struct btrfs_space_info *space_info, int raid)
+ 	 * If we have any staler groups, we don't touch the fresher ones, but if we
+ 	 * really need a block group, do take a fresh one.
  	 */
--	int bg_reclaim_threshold;
--
--	int clamp;		/* Used to scale our threshold for preemptive
--				   flushing. The value is >> clamp, so turns
--				   out to be a 2^clamp divisor. */
-+	u8 bg_reclaim_threshold;
+-	if (try_again && urgent) {
+-		try_again = false;
++	if (!will_reclaim && urgent) {
++		urgent = false;
+ 		goto again;
+ 	}
  
- 	bool full;		/* indicates that we cannot allocate any more
- 				   chunks for this space */
-@@ -303,7 +303,7 @@ u64 btrfs_account_ro_block_groups_free_space(struct btrfs_space_info *sinfo);
- 
- void btrfs_space_info_update_reclaimable(struct btrfs_space_info *space_info, s64 bytes);
- void btrfs_set_periodic_reclaim_ready(struct btrfs_space_info *space_info, bool ready);
--int btrfs_calc_reclaim_threshold(const struct btrfs_space_info *space_info);
-+u8 btrfs_calc_reclaim_threshold(const struct btrfs_space_info *space_info);
- void btrfs_reclaim_sweep(const struct btrfs_fs_info *fs_info);
- void btrfs_return_free_space(struct btrfs_space_info *space_info, u64 len);
- 
-diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
-index f0974f4c0ae4..468c6a9acd3b 100644
---- a/fs/btrfs/sysfs.c
-+++ b/fs/btrfs/sysfs.c
-@@ -937,7 +937,8 @@ static ssize_t btrfs_sinfo_bg_reclaim_threshold_store(struct kobject *kobj,
- 	if (thresh < 0 || thresh > 100)
- 		return -EINVAL;
- 
--	WRITE_ONCE(space_info->bg_reclaim_threshold, thresh);
-+	/* Safe to case to u8 after checking thresh's range is between 0 and 100 */
-+	WRITE_ONCE(space_info->bg_reclaim_threshold, (u8)thresh);
- 
- 	return len;
- }
 -- 
 2.51.2
 
