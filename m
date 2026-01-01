@@ -1,54 +1,54 @@
-Return-Path: <linux-btrfs+bounces-20056-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20057-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03B4ACECB18
-	for <lists+linux-btrfs@lfdr.de>; Thu, 01 Jan 2026 01:13:45 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34573CECB22
+	for <lists+linux-btrfs@lfdr.de>; Thu, 01 Jan 2026 01:20:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 9C0EE300722A
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Jan 2026 00:13:43 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 212563001030
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Jan 2026 00:20:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82C8B165F16;
-	Thu,  1 Jan 2026 00:13:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B68FC1E3DDE;
+	Thu,  1 Jan 2026 00:20:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="LjA/Oi5o"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="OUCgfirr"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 036157260F
-	for <linux-btrfs@vger.kernel.org>; Thu,  1 Jan 2026 00:13:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49BB81C860B
+	for <linux-btrfs@vger.kernel.org>; Thu,  1 Jan 2026 00:20:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767226420; cv=none; b=RaoV0sRje+bL7pEYyvOnydDosXDxQDzyoepIATNvAINMTXDldOgtF3OwfuM1Kw6maseagFnpsqzk5hw/0jbc3dLwMbCOzVD1/KOFKzSXl4xM6ToFdLPQDaVsvA15XFYf47SB23VpTpJUdLa+flrAZTlWW76FKQv1w2jqqup2HwM=
+	t=1767226812; cv=none; b=eBYinzN4nKpTcu/nTKcMN0XS7dpHoPHY7WUQY5fVVdJtZlcTdaFzt65Bd+XIYR+zy2q1p/8/mwdoOftOh2gcpRUwaTiZ79RFEcqZwrNf2xt+mQKm8ZkSu29moT/K8zl2zVQzNEpF/UveSNfPyA8pajcPgIgwLZYMhK01KxYr4eo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767226420; c=relaxed/simple;
-	bh=sKQ1L2MPzh4JrTan6VkbNUOfYOk8rIGOV5+nfMJPLP4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=H2ACdcZEydGwvLMVUotqu++HpSMdybQob9STAbyvg4gQxxp7NUIMiP/G1hSZ6RyRrndKzFHQmdxByAnwkyJPUxWVh2bXrulmYenHLwlf6jQ26yYXV/6y5wj+sdZ89rtHzlk/2hseHPKUlJLeySRb1SLheeXJbhi/1JhsR3YA5e8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=LjA/Oi5o; arc=none smtp.client-ip=212.227.15.18
+	s=arc-20240116; t=1767226812; c=relaxed/simple;
+	bh=1PBrBNrhJ0GoXvjc3XDo0l1SQFcGrMiqlEXHEm2I5ZM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=VXNc1GktOA8QqriouRXQGBGIHOAOhNbMEIZkLOa+OGSTL7/rGyrvMAF5jSgCigVllLFeo54PlUEwLlR+5DslIL0iQnr4sRP7NEa301EGGBQdSU+TsaAbSMWUL3tNWHry7Q+D1IJnSvEBQq+UzlPr354bnSuJSdwh0yO/vFZ7ibY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=OUCgfirr; arc=none smtp.client-ip=212.227.15.15
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1767226413; x=1767831213; i=quwenruo.btrfs@gmx.com;
-	bh=MsIa+0q60D9wXV5Oi3kAgZwxd3orejOPPHGRSvDpUJI=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	s=s31663417; t=1767226806; x=1767831606; i=quwenruo.btrfs@gmx.com;
+	bh=ZNrm2YM2p6wFWuwjZ2CQUQwCR2a4uZlbDw6wnbKlyqI=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=LjA/Oi5oTr3XACc380oB7qdMI1z0QY+/O3AuaymZ7lh463vY3UMP0HBzqoCAn4T/
-	 butJEW5pC4EwXSYJbetUMafy1Zk96u+DK9Yn5hcpi7EAwe9opn7rjaKiXaTzaFR7j
-	 qXCr3Bzz2JFFmfXGg4PVdhZB5sKh5U5ac208hWkEIISC9KNuMvJemN+5pu08vGOOz
-	 CU3fSpkshidf3FB62eX12FSQU99IOVk8iJsWgJE1IqRYUvM10OtgC/mwhM9ZB5mB9
-	 WihY0ahMWUYDQ6FoKZcIdbOd/ocVxWvPQEp7Z6HqqBa9tDk8jMO+r1oSZ13pbTAHD
-	 FUjjdNe98oWmiXV5Pw==
+	b=OUCgfirrcuI6RPuXE5NnOah0AGRFMVpMc51vi9nDFEnnk8QznUOPrPdFCopIgi8p
+	 eBEZsjXcUykYdq21Jqh++QX/7ZwClxGRlWu89vXNq1hp+2He3kk5IfW9Wcm28EdjD
+	 4YOw2Cgj3NosfowwNHQV50KLMO/ftoMN/IOpKznyl2L69nmQQ/SNIK6tNGTYPlu2e
+	 6I7vFRGvDWUSGhNJOQRDy86cqzptdS9mFBHeFa+gN0AZJRH+8J3Mbmv/wHlcoZbqV
+	 S3XXmrQGi7TClP2s0Re5b5xuh4Nj8qiAp4wMBWBuTzp6bNBeebDJ1rBaeB1suWnZ3
+	 N0TWyPX7oz1vcje0TQ==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1N3se2-1w1Of63UZ6-0161Qr; Thu, 01
- Jan 2026 01:13:33 +0100
-Message-ID: <380cafc2-1460-474e-b793-ea7813103dda@gmx.com>
-Date: Thu, 1 Jan 2026 10:43:30 +1030
+Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1N63Vi-1vzAhq0z8K-00zuZl; Thu, 01
+ Jan 2026 01:20:06 +0100
+Message-ID: <d15168bf-f8c4-42c6-9a10-73ef44119318@gmx.com>
+Date: Thu, 1 Jan 2026 10:50:04 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -56,11 +56,10 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/7] btrfs: fix periodic reclaim condition with some
- cleanup
+Subject: Re: [PATCH 7/7] btrfs: fix periodic reclaim condition
 To: Sun YangKai <sunk67188@gmail.com>, linux-btrfs@vger.kernel.org
-Cc: Boris Burkov <boris@bur.io>
 References: <20251231111623.30136-1-sunk67188@gmail.com>
+ <20251231111623.30136-8-sunk67188@gmail.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -87,127 +86,314 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
  +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
  HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <20251231111623.30136-1-sunk67188@gmail.com>
+In-Reply-To: <20251231111623.30136-8-sunk67188@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:ZyeXq84COGUnhgj1lQWxEYOjjM3J4pfQ38KXveL6fJPNOEehgFh
- h4D/+uSx5EsApE9bJwlA1ERqVfZsxIXo/FDK+7L15+mTdK8TqqmNNzsURfgY7+C0Dw+VLH7
- 6ItpeIDsSMe+/7ohNACT2MlS++lIR94UCWqdzGOqmEHvSZMnrA7FyAdS5TlOyNO6iovvt73
- KZBY0MiRbK5kk8EMxj7Rg==
+X-Provags-ID: V03:K1:pJwG+vBgB++9byO3vV+lgXVaMe7LNwsjln38hKuKf5NL0lTBKwA
+ h/YMyoTYGaFfeIPNIQQoTYjvvBNtXUD/cac4cIkciSXf+H0YThvJXvvImQiPUzouMmCHv4g
+ Ow6vA6DTulotzMetAboB1iTAC8iagWjfY6BiNoouIn6IJfi/9ZW7+M4HFlu6pBZeIMTEj1p
+ CA2NBK8cMvdjDQg5EeyeQ==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:lai7qC/f9I0=;J85Ar12U8Y7P3Mjkr1uITO3H3sY
- IOrRGhoPZqOT4WHMR9oLKD1mYffxHTbVh2IPT7ExrukdGCQoMub8OBBjEUTHBDirALsL0Kll4
- AeObcrPXwHlYSIaYLwHVJ9q66g7QyxVdkWRgxjmYiZgfO9tAjwz/BU6XbWhqHHD38afi7gziW
- 3ACdvsfBrc7lGNbeL8HVjoX8gsiBas6YvVzkQnwZMEpbKT/oXt2DVmT9+SYqdCSa/ssuV5GeX
- Dpwu9Fsu6pTyX50trMDHUSpysHFAL/nDOJJeUA+hpqjdjgGM0KgexZUbPXvO4w2L6gdcdHauy
- 8Ki6IWXOgzKyo8W/VI5BkL7dxl4yAWUrMjBDkL+5evEAW5n3WukWnDRnNocTRQ+uBuGso7rvJ
- jEJ2l4e/ygsrgjdWQuVeN4lwfapahUqcmt8N27t+NXkq90czBrwfI2VPf7VHCDFAybNd/+9HE
- mxz3XfFVy5DEHEhlR2/iedGx6QINJm2COwZkJ77Gp+42ux/c1kQMLEynDe7GlJi1CT41VwEVI
- pTViDQFf+5xpxsxeGPEwWDIDE2AWO9ENwzpYhE5nLZLkW3z7yd/ylI0GqKPDdBP5/kaspCemh
- 66PjLHdaI2PxhQFOccEZQ6OtIRQksOB9TJdasdwkpSWkjojHgdOmNXaBkONBzzuM0Dpc+rOQw
- lY7NqynRz6V+CLfcVKjLbos8RdrOi8LK2gVViPN6wMJ4qc7zb2UR1YXkwLfTyFMPhp9I2QyLd
- XF/ZF4wKOOJqeP0T2v6bz8AxelxQTradZsT2prJTvWKp9RsQMzshIsRSLLjaVXaaGR7yO6VaP
- EmVtYSzJWTnGHYi9s6Rj175k+U72UTZ2rSvrqOMtFB3+gi+RS2QLHSisr6A1a8yD94zeOI7oj
- 0pWMASYgUYo3tvl1jT4kGgCqVthqzTKCs6MhceZwx+xIyanMF4ZUFVDzAXbapGxzEWa8MoxdH
- LKQfEcnZv11BdTa89gujfPwxNZ/EmVeokvEqUb59AsDpYr8EIGhxkW4C8Fv9yhAzBt6L0DXk9
- IjB2ijbmuEY3AuiyIKP1WmYYKzrwGke8EFVhNaKWOixpIFpIeFWx/C9V64vuBsMsPudXsHUQx
- EC5+C7pE2jarTSC7b4ROAOsttMhV/tHj7NjmTCv7cqNhvYUiBzhBysLsKcyN73kMCkjRv75bu
- f6sOYlEsiuLTNDPoSf+yoMhn0/9qhHpRrpe9+VGR237xwrVAkkSeVLRfr6o+EflK4rOKfxKXw
- T3Z9eoTX0b7EhfRtQlK7Qa+KfW9ScyO4Sedh4aVj4+XlWKffBOSmFZR2rE9XFFJtCimvdEm1V
- W8OhqlTaXEqJXHpOwtZYl7dE0u4Vozgjndig0BlxjaNkpUg5LyIoVe6yGwbnMI4xHZvCTjOKB
- KRZWZiQW/R9bwWq+Gr8lzjMYN7YeS2JjL/exXZsX5glue+RExjmkkd49ljqZIaDN1lgGc0XfK
- EwlgTkfN3zmYacyRNT5G28LSBa4v0WEBICxQnnMsV2tcEFxptOl6Tnuvtp7xAs/gmPf6+ppkm
- vnjahmcs0HvwoYecEfxBCCiEja3dsqPWoqvQP3fmGv8dUnAVB1QYHInpuqx5sNIEHA74uk1Wz
- md5/6cdmJwkKDstcLVLZEjE5zy6PSEYlqhgua5oH+c9DgW1kYXZgHu+XoKUQV9EwUkwf3G356
- sxXR5zzb+WmmQQeM5D3gmPOoa4xPm6373PsnyVQPz6rl9KLuSQRcy83cjTyTFwTkZoHuLWdpf
- XBkOG85nK6o7Tlxdx7/B3dPO0Bikepe62rUnI1wZgQ4doCCDOzOHdNc6OIpIW8C53Yqxlgp95
- NQWxT+EVLyXQLZw1MPfwrEyrJhVLFWBeZ9iQCYThpMQuene/mlg8+5fhaxBLtjJS+6ahsAp0f
- I/WnZ2d1w6B0AjpA39djaeh2z7qZ2Re2SEvaNyZXoqC6h4aJYYvLfFwv0+bM8iJjSgqgAmtU+
- mLZdXPKHhzI911vmwtrtax8WuEudfDV3jdUdKyYTHtVLhPR6cNzI4krcJf4Ps3/Na475cWamu
- 5Q48DE37Qa0+b3cxB6saRXgk0ABydHgak1ecOv04QS6jKa/eP+tc5Xsa76CgmS/oc9kYB6xZn
- fp8XOFpPYsWkdoQJzXLaZFJMrtcKR7lWCwaVJlpv34zS/K5jjtbysmVzL8/79DmH294PjajYu
- a5yAfdaGrz6EtY31H5/F9U/DTd7jdEuVH6t1wAR3P/JHxUDRsXVrRPC3MvrENuAi3DfTw/8rv
- wf6+TJZ9RZbHHG8u7De800COI0eaPQlsSF4QVb6h1NKHMXB2c9qWoNITv8brsiYFbXth0YUP6
- tgi8jJisaJ3BzcQkhosQXypWIV7NE81dAbdE+r4ql00TJe09JWCNQY2p0bYYC/tXNytvGKuPA
- 8DcfU7WvI0VN1RSOo3nmUJr6rYOcZEfJ1FnnpJRHct1AJqdyFBnFrDYeC/K6rCFx3iikm/6RV
- Vc+XnwPjEln5D6pt1pzqTvKuBmFjJYYidXtWB7I9WE1rMCYU229qRmUF+rWKDRY5NRISJkYDi
- LNPicEvxonUd1Xon6+xfEEjnECUZ85CDkMijTJ7gjlRcgdkO+b1Q8zJQhEXoCaAMS9W0g7Gek
- 9XpVRYAOSQlkTVPB92wpBwCX1dOocUhTEzM7KuFiqm/GXz4qp2zuKscMaw1TTNuFuN+Xv6z55
- +WNdGcCnvVh36UitiA/K/8LOcmEfaMvmbqD4HXLxj+8gy89WXnl0ZqCQqKb2YKnUOAflkodFp
- Sxphi1DcNPRZ64ZyqQtRBHpavOHi4C8SuRFVfb4NT9ZecgDi3RgC6J/TmLexUyde2SDVlslD7
- BhrGyt3Hze19/W7RcZsVBlTNNy5swceO1W+UI63beolg9e1/yUxprbEOs92+vZ/gUeJzf6e58
- A6Ab/ec35IydbwckN2+YsBOvTTUTT7tJJqBIIEOjaQabxhuR7uWNFKL1Whxeu3A16IApJZGnV
- 1UyLChNbENk1IW4XU9AU3imc81ixgsn3jS9xf2PethkpVARcgJE7iuvtgY8mGLXdWluxlZjUt
- bluPzVqs56rlHLT8qhWXUWHwpZfZgsqv0b1gEj+XZLqP3uouSEDhrIquyKxheo7wlWZz8VuMV
- +L7i/jVv1suk0Itsmg44NANqJN+8tdECdUht4G6J7hxezsr2FHFcb3dKuAOtWLeAXxSwqwrXM
- Lhn9Rh2izNk8n62VwQiMWW+FwKz6zfiASzM9eGhgvxdtcMF2W756zVjjO67LL9WhSlS5ZOUw2
- QGg5B92yLVZ5sXlLFM1nj8yDriw5v7xM5XwCp6R2n9DRNfYyh5Gw94HB087lMYh4RcaFtTm+9
- gpZ/Ex+2KYRx32dTXmirrztGe7VgIcAuGKCxhacMDiTnoSUZ4X5HCobeDpnA2aOZQBFegJyUE
- FuajFw2XeOC+aWhUNTzGCRnz1F91ngRG8v8uAywLDKnwlf1fOEFrC5OTwqj3S6M6C9128yUHq
- 0EKwN8X1hQZt0fvJWorfAVV890+Z+xvRyV6jxoUeHIDJFPO/HE3L4QFn/gwt0/qIdsyRx2sss
- yzvwez2GnEs/bY02LPoFdPWVapYDKyRv3YK8ZXgh9WsuQOmjPEk9Jj5kpp2n2Ep6vCs/weJFx
- DPYIoaqtQMH6RooQdUxbLeIWhqS/0ZcwI4RUTfTOwnupS0sjGcA+KP8GVCfsRPvHTjmaK/BdM
- vxCofTxEmyP+LYqr/wrWUjhc5e45SVUllD8MtE6/OkHJP9qKEliwULxkZkG4Nm2V4Y41ezAVf
- aRRqwGbXk2Qsk9liPQaRgoGhxoMoJ+1lK55iOkSgMHvscP4iSiBFiFZ6mFiu5wsyVEY4x840+
- jSs8tHgmQoCgge261EjbVlh8cM/VLfNs162eTegLTIdhyUOEtEVZKDrgg5tpW/Ki8E4QWjgnw
- GpJkiyaYWDBwPuKInxvdpdb7/OiNvY9w5xdCrJPMuzdAtQyYKvujXMMpggi+G0EI8C7i1alwY
- b9y5vB8kpZ8sKI7HjQfA/mRnPRXRu4EmhqkZtouH26z/5o1Np70yJbs76R5jjSEm6lADNbpWJ
- x5V2JuMC5XBIXmfZYDzzFGhUDRx0iRRbwPKqFxFvi9n0czyjez+2vu0D2WkneT2eZEShFhIgL
- d80/99bjwNj8K4D3Vy9z3QhAh5dBv2wLuDi6goesThYjqfd07/YBeg48O4ZEcrVAuKoE3FdPL
- CkN+DGZ9XYJoHu33lj/vggCOOJSrLP2cLtTQFNuNMr+KjJGGsXqyIHDQNPofa1SDrY8/s6HFJ
- 5h3Y9Ncslq59laNb1oLolDubWnag1wSwmjQgSttcGzN1SgIXr9ZYEYh1VV9GaSf2Ek6HFVgPl
- Vyk4EE53Z3jP0eJSWjKOXe6deYrNTdoP5ueeUsos8H2j8rD0CGq01XsmBzqkmBOPwAX0SpULL
- zpg/zbTYZxnTH6e5/yAp6doxS5pvuv9qBh0XUGS8p8/d/Lmk4BrG8b5PItU3kAI/QYm970GTj
- 6yPNHMdJHG8aAXB2uoHevqpZQMtyWsDcwezt2xMDcibpzcmR36e3b5gotwvo0e+4TTggvE0Fy
- 5WRMp2lBewOayaaQ/v3WV6dj8Kwx3AmzQdy9yOwHMqfwwiQLwJwPdbKr9XSmNjiotIVp9l5H9
- Aw4SsxNE1elGqZZ+7H6fyc2KM7iNh/l69150apILShY6aWEfXqCB1JH+fEgwjCDJvpJIrcK6U
- btWoO/2ubguz0V1oOUgoS814KEH9SQUT4pLV+jQ5UHQMRO8eVu9h1mQ4OEIBdAgOzcRfuweH3
- 3NST+o+E7ABbmZ3PgjQQ09uvsBsN2Q9Lu7cBL1uSSf8cydqy3F6HO3CMu/YDCWUL+oYjlz4H7
- 42KwnPHKhVNIbzpF8rHANEGbO9K0RL5oGJVP/ti9DOHbsjYSWk6oeSOaYswBI2Bh6gDFrifTD
- kw5NN1Fip26Q1pPMBFYLT3Q6D0FLO5Ke+ZDhWP316hYxEGOgAuAk64ezR6xFVpqQotirgjVTn
- qlEXrO9yKilYFzQsAn+4hc1v/4plunRa25oyuYChvPW3ZtD7K7tNB5bKiZlcIUyAD8fKc9TnM
- omAeP6VF7h5uycbVdZzO3No2htORVNiftuvQttVBewb7yTpcTw59CYqlXJck2fC4Sqm3rKWJO
- FzozEZ+/vdeNZJFELpNnrT22ko2d33yrwNGvUSB9+RoeVl3pSi6HAZ2J/Ih51wV9LRrHnXdWe
- 70XSwOxh2GdByL41DPIy+JOArbCuO
+UI-OutboundReport: notjunk:1;M01:P0:3omYfZzbvGY=;ZEm49W8rgpcaM/FsEhY8RokHVIG
+ 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
 
 
 
 =E5=9C=A8 2025/12/31 21:09, Sun YangKai =E5=86=99=E9=81=93:
-> This series eliminates wasteful periodic reclaim operations that were oc=
-curring
-> when already failed to reclaim any new space, and includes several prepa=
-ratory
-> cleanups.
+> Problems with current implementation:
+> 1. reclaimable_bytes is signed while chunk_sz is unsigned, causing
+>     negative reclaimable_bytes to trigger reclaim unexpectedly
+> 2. The "space must be freed between scans" assumption breaks the
+>     two-scan requirement: first scan marks block groups, second scan
+>     reclaims them. Without the second scan, no reclamation occurs.
 >=20
-> Patch 1-6 are non-functional changes.
+> Instead, track actual reclaim progress: pause reclaim when block groups
+> will be reclaimed, and resume only when progress is made. This ensures
+> reclaim continues until no further progress can be made, then resumes wh=
+en
+> space_info changes or new reclaimable groups appear.
 >=20
-> Patch 7 fixes the core issue, details are in the commit message.
+> Signed-off-by: Sun YangKai <sunk67188@gmail.com>
 
-Fix first then cleanup please, this will make backport much easier.
+If this is a bug fix indicated by the title, add a proper "Fixes:" tag=20
+please.
 
 Thanks,
 Qu
 
+> ---
+>   fs/btrfs/block-group.c | 15 +++++++--------
+>   fs/btrfs/space-info.c  | 42 +++++++++++++++++++-----------------------
+>   fs/btrfs/space-info.h  | 26 ++++++++++++++++++--------
+>   3 files changed, 44 insertions(+), 39 deletions(-)
 >=20
-> Thanks.
->=20
-> CC: Boris Burkov <boris@bur.io>
->=20
-> Sun YangKai (7):
->    btrfs: change block group reclaim_mark to bool
->    btrfs: reorder btrfs_block_group members to reduce struct size
->    btrfs: use proper types for btrfs_block_group fields
->    btrfs: consolidate reclaim readiness checks in btrfs_should_reclaim()
->    btrfs: use u8 for reclaim threshold type
->    btrfs: clarify reclaim sweep control flow
->    btrfs: fix periodic reclaim condition
->=20
->   fs/btrfs/block-group.c | 29 ++++++++++-----------
->   fs/btrfs/block-group.h | 22 ++++++++++------
->   fs/btrfs/space-info.c  | 58 ++++++++++++++++++++----------------------
->   fs/btrfs/space-info.h  | 38 +++++++++++++++++----------
->   fs/btrfs/sysfs.c       |  3 ++-
->   5 files changed, 81 insertions(+), 69 deletions(-)
->=20
+> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+> index 944857bd6af6..39e6f1bf3506 100644
+> --- a/fs/btrfs/block-group.c
+> +++ b/fs/btrfs/block-group.c
+> @@ -1871,6 +1871,7 @@ void btrfs_reclaim_bgs_work(struct work_struct *wo=
+rk)
+>   	while (!list_empty(&fs_info->reclaim_bgs)) {
+>   		u64 used;
+>   		u64 reserved;
+> +		u64 old_total;
+>   		int ret =3D 0;
+>  =20
+>   		bg =3D list_first_entry(&fs_info->reclaim_bgs,
+> @@ -1936,6 +1937,7 @@ void btrfs_reclaim_bgs_work(struct work_struct *wo=
+rk)
+>   		}
+>  =20
+>   		spin_unlock(&bg->lock);
+> +		old_total =3D space_info->total_bytes;
+>   		spin_unlock(&space_info->lock);
+>  =20
+>   		/*
+> @@ -1988,14 +1990,14 @@ void btrfs_reclaim_bgs_work(struct work_struct *=
+work)
+>   			reserved =3D 0;
+>   			spin_lock(&space_info->lock);
+>   			space_info->reclaim_errors++;
+> -			if (READ_ONCE(space_info->periodic_reclaim))
+> -				space_info->periodic_reclaim_ready =3D false;
+>   			spin_unlock(&space_info->lock);
+>   		}
+>   		spin_lock(&space_info->lock);
+>   		space_info->reclaim_count++;
+>   		space_info->reclaim_bytes +=3D used;
+>   		space_info->reclaim_bytes +=3D reserved;
+> +		if (space_info->total_bytes < old_total)
+> +			btrfs_resume_periodic_reclaim(space_info);
+>   		spin_unlock(&space_info->lock);
+>  =20
+>   next:
+> @@ -3730,8 +3732,6 @@ int btrfs_update_block_group(struct btrfs_trans_ha=
+ndle *trans,
+>   		space_info->bytes_reserved -=3D num_bytes;
+>   		space_info->bytes_used +=3D num_bytes;
+>   		space_info->disk_used +=3D num_bytes * factor;
+> -		if (READ_ONCE(space_info->periodic_reclaim))
+> -			btrfs_space_info_update_reclaimable(space_info, -num_bytes);
+>   		spin_unlock(&cache->lock);
+>   		spin_unlock(&space_info->lock);
+>   	} else {
+> @@ -3741,12 +3741,11 @@ int btrfs_update_block_group(struct btrfs_trans_=
+handle *trans,
+>   		btrfs_space_info_update_bytes_pinned(space_info, num_bytes);
+>   		space_info->bytes_used -=3D num_bytes;
+>   		space_info->disk_used -=3D num_bytes * factor;
+> -		if (READ_ONCE(space_info->periodic_reclaim))
+> -			btrfs_space_info_update_reclaimable(space_info, num_bytes);
+> -		else
+> -			reclaim =3D should_reclaim_block_group(cache, num_bytes);
+> +		reclaim =3D should_reclaim_block_group(cache, num_bytes);
+>  =20
+>   		spin_unlock(&cache->lock);
+> +		if (reclaim)
+> +			btrfs_resume_periodic_reclaim(space_info);
+>   		spin_unlock(&space_info->lock);
+>  =20
+>   		btrfs_set_extent_bit(&trans->transaction->pinned_extents, bytenr,
+> diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+> index b6ec09aea64f..dce21809e640 100644
+> --- a/fs/btrfs/space-info.c
+> +++ b/fs/btrfs/space-info.c
+> @@ -2124,43 +2124,39 @@ static void do_reclaim_sweep(struct btrfs_space_=
+info *space_info, int raid)
+>   	}
+>  =20
+>   	up_read(&space_info->groups_sem);
+> -}
+> -
+> -void btrfs_space_info_update_reclaimable(struct btrfs_space_info *space=
+_info, s64 bytes)
+> -{
+> -	u64 chunk_sz =3D calc_effective_data_chunk_size(space_info->fs_info);
+> -
+> -	lockdep_assert_held(&space_info->lock);
+> -	space_info->reclaimable_bytes +=3D bytes;
+>  =20
+> -	if (space_info->reclaimable_bytes >=3D chunk_sz)
+> -		btrfs_set_periodic_reclaim_ready(space_info, true);
+> -}
+> -
+> -void btrfs_set_periodic_reclaim_ready(struct btrfs_space_info *space_in=
+fo, bool ready)
+> -{
+> -	lockdep_assert_held(&space_info->lock);
+> -	if (!READ_ONCE(space_info->periodic_reclaim))
+> -		return;
+> -	if (ready !=3D space_info->periodic_reclaim_ready) {
+> -		space_info->periodic_reclaim_ready =3D ready;
+> -		if (!ready)
+> -			space_info->reclaimable_bytes =3D 0;
+> +	/*
+> +	 * Temporary pause periodic reclaim until reclaim make some progress.
+> +	 * This can prevent periodic reclaim keep happening but make no progre=
+ss.
+> +	 */
+> +	if (will_reclaim) {
+> +		spin_lock(&space_info->lock);
+> +		btrfs_pause_periodic_reclaim(space_info);
+> +		spin_unlock(&space_info->lock);
+>   	}
+>   }
+>  =20
+>   static bool btrfs_should_periodic_reclaim(struct btrfs_space_info *spa=
+ce_info)
+>   {
+>   	bool ret;
+> +	u64 chunk_sz;
+> +	u64 unused;
+>  =20
+>   	if (space_info->flags & BTRFS_BLOCK_GROUP_SYSTEM)
+>   		return false;
+>   	if (!READ_ONCE(space_info->periodic_reclaim))
+>   		return false;
+> +	if (!READ_ONCE(space_info->periodic_reclaim_paused))
+> +		return true;
+> +
+> +	chunk_sz =3D calc_effective_data_chunk_size(space_info->fs_info);
+>  =20
+>   	spin_lock(&space_info->lock);
+> -	ret =3D space_info->periodic_reclaim_ready;
+> -	btrfs_set_periodic_reclaim_ready(space_info, false);
+> +	unused =3D space_info->total_bytes - space_info->bytes_used;
+> +	ret =3D (unused >=3D space_info->last_reclaim_unused + chunk_sz ||
+> +	       btrfs_calc_reclaim_threshold(space_info) !=3D space_info->last_=
+reclaim_threshold);
+> +	if (ret)
+> +		btrfs_resume_periodic_reclaim(space_info);
+>   	spin_unlock(&space_info->lock);
+>  =20
+>   	return ret;
+> diff --git a/fs/btrfs/space-info.h b/fs/btrfs/space-info.h
+> index a4fa04d10722..2ebfe440837b 100644
+> --- a/fs/btrfs/space-info.h
+> +++ b/fs/btrfs/space-info.h
+> @@ -216,12 +216,9 @@ struct btrfs_space_info {
+>   	 * Periodic reclaim should be a no-op if a space_info hasn't
+>   	 * freed any space since the last time we tried.
+>   	 */
+> -	bool periodic_reclaim_ready;
+> -
+> -	/*
+> -	 * Net bytes freed or allocated since the last reclaim pass.
+> -	 */
+> -	s64 reclaimable_bytes;
+> +	bool periodic_reclaim_paused;
+> +	u8 last_reclaim_threshold;
+> +	u64 last_reclaim_unused;
+>   };
+>  =20
+>   static inline bool btrfs_mixed_space_info(const struct btrfs_space_inf=
+o *space_info)
+> @@ -301,9 +298,22 @@ void btrfs_dump_space_info_for_trans_abort(struct b=
+trfs_fs_info *fs_info);
+>   void btrfs_init_async_reclaim_work(struct btrfs_fs_info *fs_info);
+>   u64 btrfs_account_ro_block_groups_free_space(struct btrfs_space_info *=
+sinfo);
+>  =20
+> -void btrfs_space_info_update_reclaimable(struct btrfs_space_info *space=
+_info, s64 bytes);
+> -void btrfs_set_periodic_reclaim_ready(struct btrfs_space_info *space_in=
+fo, bool ready);
+>   u8 btrfs_calc_reclaim_threshold(const struct btrfs_space_info *space_i=
+nfo);
+> +static inline void btrfs_resume_periodic_reclaim(struct btrfs_space_inf=
+o *space_info)
+> +{
+> +	lockdep_assert_held(&space_info->lock);
+> +	if (space_info->periodic_reclaim_paused)
+> +		space_info->periodic_reclaim_paused =3D false;
+> +}
+> +static inline void btrfs_pause_periodic_reclaim(struct btrfs_space_info=
+ *space_info)
+> +{
+> +	lockdep_assert_held(&space_info->lock);
+> +	if (!space_info->periodic_reclaim_paused) {
+> +		space_info->periodic_reclaim_paused =3D true;
+> +		space_info->last_reclaim_threshold =3D btrfs_calc_reclaim_threshold(s=
+pace_info);
+> +		space_info->last_reclaim_unused =3D space_info->total_bytes - space_i=
+nfo->bytes_used;
+> +	}
+> +}
+>   void btrfs_reclaim_sweep(const struct btrfs_fs_info *fs_info);
+>   void btrfs_return_free_space(struct btrfs_space_info *space_info, u64 =
+len);
+>  =20
 
 
