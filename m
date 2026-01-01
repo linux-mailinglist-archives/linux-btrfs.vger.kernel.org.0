@@ -1,567 +1,325 @@
-Return-Path: <linux-btrfs+bounces-20064-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20065-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0CDE1CED076
-	for <lists+linux-btrfs@lfdr.de>; Thu, 01 Jan 2026 14:12:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 22CF6CED13E
+	for <lists+linux-btrfs@lfdr.de>; Thu, 01 Jan 2026 15:50:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E7C5C3007FC9
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Jan 2026 13:12:42 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 65E773007950
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Jan 2026 14:50:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D74E8222560;
-	Thu,  1 Jan 2026 13:12:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="S6V2zTBM";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="adanBPCw"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 876E028751D;
+	Thu,  1 Jan 2026 14:50:25 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oo1-f80.google.com (mail-oo1-f80.google.com [209.85.161.80])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4FBD42048
-	for <linux-btrfs@vger.kernel.org>; Thu,  1 Jan 2026 13:12:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F738285CAD
+	for <linux-btrfs@vger.kernel.org>; Thu,  1 Jan 2026 14:50:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.80
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767273161; cv=none; b=cJPEG/LnTd2yJ8eoaqxlviM5dLhNG4dGBySxdrnJ533g9ZR6m/DzxxzWrb8hvJxJn+z1kxQWNMvwcBLiaTpTstZ5WRdz9XIvmazXWktdjQ2BWTA/cN0S6RLoVEjk/yeq3LtEey9XhfXACy6Vff1i4vSDt8SjvbVdXn0+J/TYFhI=
+	t=1767279025; cv=none; b=HwZxN2dGHGDEfIkF9Z376z2d50K0jQ4Cp9qFyaQuck2LssqJydwAi7UL3Og4oZj00Rd4GKz1MOGUwTTibYloMkqIreV9Cq0jmlEv1op/UzmDVjupHcX3IqIgZVdvLI47nl8QMIclvO4th//4Wp/T7O1lAH/VVF2RbhtCfQc5YgA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767273161; c=relaxed/simple;
-	bh=dYpGYhT5XG2vS70WxU8IapDXQjuEO2UjyzR4FcHVjV8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YilBQe09FKA7TYMwFUnLUAPMhwiO3zI6JlbPigryO0nlhS13avbJ1yuxmts0zo4TspM1R1qu/6iZi7VDHTvqn2iMMxb79Ji2Px2cBjqQ6Rwmjls/Kgm2l/EYpuBfHoZi+jJIW6CX2fKHRBcfYFobnlAjcyy9tgckoMKL/4aCo8E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=S6V2zTBM; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=adanBPCw; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1767273157;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ecbIgY6aAC3TLr9Zw+358zZExSoPYaFNpQxu3avCU8Y=;
-	b=S6V2zTBMmfEp4f9LM/c4dHh1Jk35qf1rmHTq6VSUN0ExjatNI+n/fHgiEZgZpgUpCLJLJW
-	MDvMTiVJU/EdzwVOcGnPah6VEpdueQXUottqbVX8+2a26+i0vRvDUuePH4F8dN73jS+rC1
-	9dl/51kSys3YibsL/+T/diVv5v404L8=
-Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
- [209.85.214.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-190-lwe5t2Y0NeirRUtcRedCUw-1; Thu, 01 Jan 2026 08:12:36 -0500
-X-MC-Unique: lwe5t2Y0NeirRUtcRedCUw-1
-X-Mimecast-MFC-AGG-ID: lwe5t2Y0NeirRUtcRedCUw_1767273155
-Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-2a0d058fc56so183910025ad.3
-        for <linux-btrfs@vger.kernel.org>; Thu, 01 Jan 2026 05:12:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1767273155; x=1767877955; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ecbIgY6aAC3TLr9Zw+358zZExSoPYaFNpQxu3avCU8Y=;
-        b=adanBPCw19toPea+XFhx5z8tBBZoWeDUZeChai9PurA9CceUnwldB1Z6Rbrvv7GKpj
-         ITLqCoM9znk0nkg0PYO8FZUb9OqQCYxi9T+rlDnhapDOHH5XOVMhYBoSRQC33tfPMvX4
-         TWI7/zGFj6IZZqbvFTX8JtKgY4j2oCDZqWNiTnkW7DQ4AoSQcuRH/0/Ad5vPUMsIBHF8
-         UmRwXlenQqfrA9zQc8S/LBotKn0Fk+zxhbuenKsBf4QfVMsHhNWy9u1ZOnBU1GH4DloQ
-         TTL3stCN5muAbV7AJiO3eNIwuq/uGo+C1f9sXMu9Zej/777f9d0YJdnjKb6c+nPoV2F3
-         rRNw==
+	s=arc-20240116; t=1767279025; c=relaxed/simple;
+	bh=DcORDPTxT58bQ9QQclKVQSmQCs5K2Xc5M2WMymXlQ2s=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=HuFg47xgVQRKjDJUeEyhIGlNSiVWjy0n8iLJDQoxErssc7kiV95Woz66J+hrYajYt6/ugnGlCf6Yceh5PNU4DPone6vPe7CaDIEUpCNzwqTdMO/X0S3uyCEUTRJ7QFbJmOd7AenhkYUDm3RKsVCEo3YBaPOUcr0ktmbdKmkBxSg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.161.80
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-oo1-f80.google.com with SMTP id 006d021491bc7-6574475208eso9345796eaf.3
+        for <linux-btrfs@vger.kernel.org>; Thu, 01 Jan 2026 06:50:21 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767273155; x=1767877955;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ecbIgY6aAC3TLr9Zw+358zZExSoPYaFNpQxu3avCU8Y=;
-        b=dm5w8wAV2Lt+AulELYsF4xuFobFaDEfAQx0do5obdA3LOE74pvJFDqjnnYzcK01hAl
-         XTIYjHr20fPar0slvBucgy6c8ntlSY6+NwDXFS6dSnEkIQ1B9uQqaJU/x/9uGM0ikFZW
-         viKQb+wPFJadzg4qLmpYVKAhVn3SvZrF4uZn4r35RDpsMDZatv6WEr/sVDFDeD22yptv
-         foZWuZhk5jjbL55MVo3RvvXDW7RAy0M38AHT9Uq8MbFLVcpFboGAfDzDzEPqZVGlGqoJ
-         w6ALJAuYd4Kj2LfuS0J8guNvQe0wF0QFpElyUUZGZF8lIggE/Dj7vxpFFRTNxTRz4Lr1
-         PJfQ==
-X-Gm-Message-State: AOJu0YyqQcTt9Qf5uqMitN5VCPokwr/bUnY7F/Fxta5WVdtj8mphTuBt
-	8wEKgJDK1jtr9B/VMahrzFdsQOdwLBGVCt+rGaO7/U90RliU6/MErDDKfQf/N5a74VIWTC9jHB2
-	fCwNLqJIgffSXhUjUEKNWruTrzZwR6WamHllkdCpV5kiH/Onzkq9EcgONZQhnoWKK
-X-Gm-Gg: AY/fxX4USisOmfigB7A2220tm4QlA4Koank37r+xbblPzksBADrskHFfA/l0Zg9UOcx
-	to4RtQ4fLz/pmuRuRMCL9Li/KKRGmoJuzYa5e/e+HH65N0VDUgZ7eReHHgU35H/sV/4Wd7camne
-	+orh6OowlmzOhCXfe6CAYhPpBAW5qFUveLLcegJhs+hNsFPh3rLQgDXnNP55sEulhpMVXczv77z
-	iFsAXsLRYsQjSPrN/30b4sMDNdeVihnQUaH0NRnfmXTi7qXnQ74lEtXuJE7rtK6lZUl9cbTAtIc
-	ut4GREa0fthXlQNrXOUwte+4e1DWzrqs8TznP1+HQGJMmYDQvCQTrePDqQd48g4Oo+hLdZHyTpF
-	osuFcEg4Wzs9LEft5Vfsbsi1HXzC0451IPKefE31ytdekjHjOSQ==
-X-Received: by 2002:a17:902:fc43:b0:29d:9b39:c05f with SMTP id d9443c01a7336-2a2f22026camr380135505ad.10.1767273154659;
-        Thu, 01 Jan 2026 05:12:34 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGhous4gcysp/gF/t6jAcZP+vfibdDrKTTYTkCWMEEhfeWj5aVNt1RxPZ2vD4KRODcNzHNlUw==
-X-Received: by 2002:a17:902:fc43:b0:29d:9b39:c05f with SMTP id d9443c01a7336-2a2f22026camr380135275ad.10.1767273154030;
-        Thu, 01 Jan 2026 05:12:34 -0800 (PST)
-Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([209.132.188.88])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2a2f3d776b2sm353310505ad.98.2026.01.01.05.12.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Jan 2026 05:12:33 -0800 (PST)
-Date: Thu, 1 Jan 2026 21:12:29 +0800
-From: Zorro Lang <zlang@redhat.com>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org, fstests@vger.kernel.org
-Subject: Re: [PATCH v2] fstests: generic/746: update the parser to handle
- block group tree
-Message-ID: <20260101131229.u5aeogi3l43eavrc@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-References: <20251205071726.159577-1-wqu@suse.com>
- <20260101084230.tciqvaxa5pxhi3xq@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
- <6de0d565-e6f9-4084-a0f6-187a2b1dd8d3@suse.com>
+        d=1e100.net; s=20230601; t=1767279021; x=1767883821;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=K/es2Y6s9ewJJSpbolzpDP61kiu+BPCzQGt/A/heru0=;
+        b=hSesXnm8PpDD5ug6XYEi1U4/M1PsgaQDRs/5b4FRk59yMCBW4ACYrjgtQWntX4JKi+
+         6sjm6f3EUp4dxXVINxS5tjFwr9puWZPI+FQbUf7i2cKEYZANBF01U/LotMQo5tYkJfCi
+         o4goD6sKOiu3VZvkaF0Mb+uSSgha+N4KWbgYojskSIpGG/wKEdmK6ttvh4izT4OASZMp
+         xhthUKScrHxf5aQ/dgKB/rAVLAIIhv01LAvh9Mhhdw8T66cyH5ARYGfy0Qyx8yg3UodM
+         MPWmlNsx1d/6vzEioTYsBJPi6XxikjlSC1QZj9QaA4/SFK2HoKFdXhxscRMk4+QvijJV
+         6IXg==
+X-Forwarded-Encrypted: i=1; AJvYcCWa32bqBdbhvb5K/SBoaQprgjEeOI5u2oWdv70GnDuWp2T8D9fhAiMHuilIMYCKqiJ7GKqGLZjHezx6Zw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzYRXOkdawvhhZJR6uyKQ8QaMTCUyWW44ZrII5KTCJgU5VmRquy
+	+Ka6OnggPG5xPdWPT+mfM6gvaBTZN1JFPwMW4V6g4TBQiZyZ8cCclByvkBFjmpSdHis6dyvU1yy
+	kyfgyU+Q8jLB1yoJR6135OvQS/Jb/bfYew0SmMpcB6xpaBFpn1VYjW5/UhRU=
+X-Google-Smtp-Source: AGHT+IETNbu3eOKjPmscrnEgUrr/7LrgUZrMKs6SXWb+mggRrPzLkHu7OvPqj9+eAYHEYYZkgpydLHSOr1k9Y09wjPERD6HP9f3p
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <6de0d565-e6f9-4084-a0f6-187a2b1dd8d3@suse.com>
+X-Received: by 2002:a05:6820:c00c:b0:659:9a49:90ac with SMTP id
+ 006d021491bc7-65d0ea68fc7mr8674122eaf.43.1767279021218; Thu, 01 Jan 2026
+ 06:50:21 -0800 (PST)
+Date: Thu, 01 Jan 2026 06:50:21 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <695689ad.050a0220.a1b6.0340.GAE@google.com>
+Subject: [syzbot] [btrfs?] possible deadlock in btrfs_create_qgroup
+From: syzbot <syzbot+1a44c3c7940ab3688125@syzkaller.appspotmail.com>
+To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Jan 01, 2026 at 07:19:41PM +1030, Qu Wenruo wrote:
-> 
-> 
-> 在 2026/1/1 19:12, Zorro Lang 写道:
-> > On Fri, Dec 05, 2025 at 05:47:26PM +1030, Qu Wenruo wrote:
-> > > [FALSE ALERT]
-> > > The test case will fail on btrfs if the new block-group-tree feature is
-> > > enabled:
-> > > 
-> > > FSTYP         -- btrfs
-> > > PLATFORM      -- Linux/x86_64 btrfs-vm 6.18.0-rc6-custom+ #321 SMP PREEMPT_DYNAMIC Sun Nov 23 16:34:33 ACDT 2025
-> > > MKFS_OPTIONS  -- -O block-group-tree /dev/mapper/test-scratch1
-> > > MOUNT_OPTIONS -- /dev/mapper/test-scratch1 /mnt/scratch
-> > > 
-> > > generic/746 44s ... [failed, exit status 1]- output mismatch (see xfstests-dev/results//generic/746.out.bad)
-> > >      --- tests/generic/746.out	2024-06-27 13:55:51.286338519 +0930
-> > >      +++ xfstests-dev/results//generic/746.out.bad	2025-11-28 07:47:17.039827837 +1030
-> > >      @@ -2,4 +2,4 @@
-> > >       Generating garbage on loop...done.
-> > >       Running fstrim...done.
-> > >       Detecting interesting holes in image...done.
-> > >      -Comparing holes to the reported space from FS...done.
-> > >      +Comparing holes to the reported space from FS...Sectors 256-2111 are not marked as free!
-> > >      ...
-> > >      (Run 'diff -u xfstests-dev/tests/generic/746.out xfstests-dev/results//generic/746.out.bad'  to see the entire diff)
-> > > 
-> > > [CAUSE]
-> > > Sectors [256, 2048) are the from the reserved first 1M free space.
-> > > Sectors [2048, 2112) are the leading free space in the chunk tree.
-> > > Sectors [2112, 2144) is the first tree block in the chunk tree.
-> > > 
-> > > However the reported free sectors from get_free_sectors() looks like this:
-> > > 
-> > >    2144 10566
-> > >    10688 11711
-> > >    ...
-> > > 
-> > > Note that there should be a free sector range in [2048, 2112) but it's
-> > > not reported in get_free_sectors().
-> > > 
-> > > The get_free_sectors() call is fs dependent, and for btrfs it's using
-> > > parse-extent-tree.awk script to handle the extent tree dump.
-> > > 
-> > > The script uses BLOCK_GROUP_ITEM items to detect the beginning of a
-> > > block group so that it can calculate the hole between the beginning of a
-> > > block group and the first data/metadata item.
-> > > 
-> > > However block-group-tree feature moves BLOCK_GROUP_ITEM items to a
-> > > dedicated tree, making the existing script unable to parse the free
-> > > space at the beginning of a block group.
-> > > 
-> > > [FIX]
-> > > Introduce a new script, parse-free-space.py, that accepts two tree
-> > > dumps:
-> > > 
-> > > - block group tree dump
-> > >    If the fs has block-group-tree feature, it's the block group tree
-> > >    dump.
-> > >    Otherwise the regular extent tree dump is enough.
-> > > 
-> > > - extent tree dump
-> > >    The usual extent tree dump.
-> > > 
-> > > With a dedicated block group tree dump, the script can correctly handle
-> > > the beginning part of free space, no matter if block-group-tree feature
-> > > is enabled or not.
-> > > 
-> > > And with this parser, the old parse-extent-tree.awk can be retired.
-> > > 
-> > > Signed-off-by: Qu Wenruo <wqu@suse.com>
-> > > ---
-> > > Changelog:
-> > > v2:
-> > > - Add extra requirement for python3 if the fs is btrfs
-> > > - Utilize $PYTHON3_PROG other than calling the script directly
-> > > - Add the comment on we need single DATA/METADATA profiles
-> > > ---
-> > >   src/parse-extent-tree.awk | 144 --------------------------------------
-> > 
-> > As you've removed the parse-extent-tree.awk, it should be removed from
-> > src/Makefile too, or `make install` always fails as
-> > 
-> >    /bin/sh ../libtool --quiet --mode=install ../install-sh -o root -g root -m 755 dmerror fill2attr fill2fs fill2fs_check scaleread.sh btrfs_crc32c_forged_name.py popdir.pl popattr.py soak_duration.awk parse-dev-tree.awk parse-extent-tree.awk /var/lib/xfstests/src
-> >    cp: cannot stat 'parse-extent-tree.awk': No such file or directory
-> >    gmake[1]: *** [Makefile:137: install] Error 1
-> >    make: *** [Makefile:103: src-install] Error 2
-> 
-> My bad, thanks a lot for pointing this out.
-> 
-> Not aware xfstest can be installed until now.
-> 
-> > 
-> > So I'll do below change when I merge this patch, to avoid this installation
-> > regressoin:
-> > 
-> >    diff --git a/src/Makefile b/src/Makefile
-> >    index 711dbb91..ad2ffd85 100644
-> >    --- a/src/Makefile
-> >    +++ b/src/Makefile
-> >    @@ -40,7 +40,7 @@ LINUX_TARGETS = xfsctl bstat t_mtab getdevicesize preallo_rw_pattern_reader \
-> >     EXTRA_EXECS = dmerror fill2attr fill2fs fill2fs_check scaleread.sh \
-> >                  btrfs_crc32c_forged_name.py popdir.pl popattr.py \
-> >    -             soak_duration.awk parse-dev-tree.awk parse-extent-tree.awk
-> >    +             soak_duration.awk parse-dev-tree.awk
-> 
-> And you may also want to add parse-free-space.py to EXTRA_EXECS?
+Hello,
 
-Oh, sure, you're right, we should replace parse-extent-tree.awk with parse-free-space.py.
-I'll do that when I merge it.
+syzbot found the following issue on:
 
-Thanks,
-Zorro
+HEAD commit:    cc3aa43b44bd Add linux-next specific files for 20251219
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=15d58bda580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=da1bc82c6189c463
+dashboard link: https://syzkaller.appspot.com/bug?extid=1a44c3c7940ab3688125
+compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
 
-> 
-> Thanks,
-> Qu
-> 
-> > 
-> > Thanks,
-> > Zorro
-> > 
-> > >   src/parse-free-space.py   | 122 ++++++++++++++++++++++++++++++++
-> > >   tests/generic/746         |  24 +++++--
-> > >   3 files changed, 142 insertions(+), 148 deletions(-)
-> > >   delete mode 100755 src/parse-extent-tree.awk
-> > >   create mode 100755 src/parse-free-space.py
-> > > 
-> > > diff --git a/src/parse-extent-tree.awk b/src/parse-extent-tree.awk
-> > > deleted file mode 100755
-> > > index 1e69693c..00000000
-> > > --- a/src/parse-extent-tree.awk
-> > > +++ /dev/null
-> > > @@ -1,144 +0,0 @@
-> > > -# SPDX-License-Identifier: GPL-2.0
-> > > -# Copyright (c) 2019 Nikolay Borisov, SUSE LLC.  All Rights Reserved.
-> > > -#
-> > > -# Parses btrfs' extent tree for holes. Holes are the ranges between 2 adjacent
-> > > -# extent blocks. For example if we have the following 2 metadata items in the
-> > > -# extent tree:
-> > > -#	item 6 key (30425088 METADATA_ITEM 0) itemoff 16019 itemsize 33
-> > > -#	item 7 key (30490624 METADATA_ITEM 0) itemoff 15986 itemsize 33
-> > > -#
-> > > -# There is a whole of 64k between then - 30490624−30425088 = 65536
-> > > -# Same logic applies for adjacent EXTENT_ITEMS.
-> > > -#
-> > > -# The script requires the following parameters passed on command line:
-> > > -#     * sectorsize - how many bytes per sector, used to convert the output of
-> > > -#     the script to sectors.
-> > > -#     * nodesize - size of metadata extents, used for internal calculations
-> > > -
-> > > -# Given an extent line "item 2 key (13672448 EXTENT_ITEM 65536) itemoff 16153 itemsize 53"
-> > > -# or "item 6 key (30425088 METADATA_ITEM 0) itemoff 16019 itemsize 33" returns
-> > > -# either 65536 (for data extents) or the fixes nodesize value for metadata
-> > > -# extents.
-> > > -function get_extent_size(line, tmp) {
-> > > -	if (line ~ data_match || line ~ bg_match) {
-> > > -		split(line, tmp)
-> > > -		gsub(/\)/,"", tmp[6])
-> > > -		return tmp[6]
-> > > -	} else if (line ~ metadata_match) {
-> > > -		return nodesize
-> > > -	}
-> > > -}
-> > > -
-> > > -# given a 'item 2 key (13672448 EXTENT_ITEM 65536) itemoff 16153 itemsize 53'
-> > > -# and returns 13672448.
-> > > -function get_extent_offset(line, tmp) {
-> > > -	split(line, tmp)
-> > > -	gsub(/\(/,"",tmp[4])
-> > > -	return tmp[4]
-> > > -}
-> > > -
-> > > -# This function parses all the extents belonging to a particular block group
-> > > -# which are accumulated in lines[] and calculates the offsets of the holes
-> > > -# part of this block group.
-> > > -#
-> > > -# base_offset and bg_line are local variables
-> > > -function print_array(base_offset, bg_line)
-> > > -{
-> > > -	if (match(lines[0], bg_match)) {
-> > > -		# we don't have an extent at the beginning of of blockgroup, so we
-> > > -		# have a hole between blockgroup offset and first extent offset
-> > > -		bg_line = lines[0]
-> > > -		prev_size=0
-> > > -		prev_offset=get_extent_offset(bg_line)
-> > > -		delete lines[0]
-> > > -	} else {
-> > > -		# we have an extent at the beginning of block group, so initialize
-> > > -		# the prev_* vars correctly
-> > > -		bg_line = lines[1]
-> > > -		prev_size = get_extent_size(lines[0])
-> > > -		prev_offset = get_extent_offset(lines[0])
-> > > -		delete lines[1]
-> > > -		delete lines[0]
-> > > -	}
-> > > -
-> > > -	bg_offset=get_extent_offset(bg_line)
-> > > -	bgend=bg_offset + get_extent_size(bg_line)
-> > > -
-> > > -	for (i in lines) {
-> > > -			cur_size = get_extent_size(lines[i])
-> > > -			cur_offset = get_extent_offset(lines[i])
-> > > -			if (cur_offset  != prev_offset + prev_size)
-> > > -				print int((prev_size + prev_offset) / sectorsize), int((cur_offset-1) / sectorsize)
-> > > -			prev_size = cur_size
-> > > -			prev_offset = cur_offset
-> > > -	}
-> > > -
-> > > -	print int((prev_size + prev_offset) / sectorsize), int((bgend-1) / sectorsize)
-> > > -	total_printed++
-> > > -	delete lines
-> > > -}
-> > > -
-> > > -BEGIN {
-> > > -	loi_match="^.item [0-9]* key \\([0-9]* (BLOCK_GROUP_ITEM|METADATA_ITEM|EXTENT_ITEM) [0-9]*\\).*"
-> > > -	metadata_match="^.item [0-9]* key \\([0-9]* METADATA_ITEM [0-9]*\\).*"
-> > > -	data_match="^.item [0-9]* key \\([0-9]* EXTENT_ITEM [0-9]*\\).*"
-> > > -	bg_match="^.item [0-9]* key \\([0-9]* BLOCK_GROUP_ITEM [0-9]*\\).*"
-> > > -	node_match="^node.*$"
-> > > -	leaf_match="^leaf [0-9]* flags"
-> > > -	line_count=0
-> > > -	total_printed=0
-> > > -	skip_lines=0
-> > > -}
-> > > -
-> > > -{
-> > > -	# skip lines not belonging to a leaf
-> > > -	if (match($0, node_match)) {
-> > > -		skip_lines=1
-> > > -	} else if (match($0, leaf_match)) {
-> > > -		skip_lines=0
-> > > -	}
-> > > -
-> > > -	if (!match($0, loi_match) || skip_lines == 1) next;
-> > > -
-> > > -	# we have a line of interest, we need to parse it. First check if there is
-> > > -	# anything in the array
-> > > -	if (line_count==0) {
-> > > -		lines[line_count++]=$0;
-> > > -	} else {
-> > > -		prev_line=lines[line_count-1]
-> > > -		split(prev_line, prev_line_fields)
-> > > -		prev_objectid=prev_line_fields[4]
-> > > -		objectid=$4
-> > > -
-> > > -		if (objectid == prev_objectid && match($0, bg_match)) {
-> > > -			if (total_printed>0) {
-> > > -				# We are adding a BG after we have added its first extent
-> > > -				# previously, consider this a record ending event and just print
-> > > -				# the array
-> > > -
-> > > -				delete lines[line_count-1]
-> > > -				print_array()
-> > > -				# we now start a new array with current and previous lines
-> > > -				line_count=0
-> > > -				lines[line_count++]=prev_line
-> > > -				lines[line_count++]=$0
-> > > -			} else {
-> > > -				# first 2 added lines are EXTENT and BG that match, in this case
-> > > -				# just add them
-> > > -				lines[line_count++]=$0
-> > > -
-> > > -			}
-> > > -		} else if (match($0, bg_match)) {
-> > > -			# ordinary end of record
-> > > -			print_array()
-> > > -			line_count=0
-> > > -			lines[line_count++]=$0
-> > > -		} else {
-> > > -			lines[line_count++]=$0
-> > > -		}
-> > > -	}
-> > > -}
-> > > -
-> > > -END {
-> > > -	print_array()
-> > > -}
-> > > diff --git a/src/parse-free-space.py b/src/parse-free-space.py
-> > > new file mode 100755
-> > > index 00000000..3c761715
-> > > --- /dev/null
-> > > +++ b/src/parse-free-space.py
-> > > @@ -0,0 +1,122 @@
-> > > +#!/usr/bin/python3
-> > > +# SPDX-License-Identifier: GPL-2.0
-> > > +#
-> > > +# Parse block group and extent tree output to create a free sector list.
-> > > +#
-> > > +# Usage:
-> > > +#  ./parse-free-space -n <nodesize> -b <bg_dump> -e <extent_dump>
-> > > +#
-> > > +# nodesize:     The nodesize of the btrfs
-> > > +# bg_dump:      The tree dump file that contains block group items
-> > > +#               If block-group-tree feature is enabled, it's block group tree dump.
-> > > +#               Otherwise it's extent tree dump
-> > > +# extent_dump:  The tree dump file that contains extent items
-> > > +#               Just the extent tree dump, requires all tree block and data have
-> > > +#               corresponding extent/metadata item.
-> > > +#
-> > > +# The output is "%d %d", the first one is the sector number (in 512 byte) of the
-> > > +# free space, the second one is the last sector number of the free range.
-> > > +
-> > > +import getopt
-> > > +import sys
-> > > +import re
-> > > +
-> > > +bg_match = "^.item [0-9]* key \\([0-9]* BLOCK_GROUP_ITEM [0-9]*\\).*"
-> > > +metadata_match="^.item [0-9]* key \\([0-9]* METADATA_ITEM [0-9]*\\).*"
-> > > +data_match="^.item [0-9]* key \\([0-9]* EXTENT_ITEM [0-9]*\\).*"
-> > > +
-> > > +def parse_block_groups(file_path):
-> > > +    bg_list = []
-> > > +    with open(file_path, 'r') as bg_file:
-> > > +        for line in bg_file:
-> > > +            match = re.search(bg_match, line)
-> > > +            if match == None:
-> > > +                continue
-> > > +            start = match.group(0).split()[3][1:]
-> > > +            length = match.group(0).split()[5][:-1]
-> > > +            bg_list.append({'start': int(start), 'length': int(length)})
-> > > +    return sorted(bg_list, key=lambda d: d['start'])
-> > > +
-> > > +def parse_extents(file_path):
-> > > +    extent_list = []
-> > > +    with open(file_path, 'r') as bg_file:
-> > > +        for line in bg_file:
-> > > +            match = re.search(data_match, line)
-> > > +            if match:
-> > > +                start = match.group(0).split()[3][1:]
-> > > +                length = match.group(0).split()[5][:-1]
-> > > +                extent_list.append({'start': int(start), 'length': int(length)})
-> > > +                continue
-> > > +            match = re.search(metadata_match, line)
-> > > +            if match:
-> > > +                start = match.group(0).split()[3][1:]
-> > > +                length = nodesize
-> > > +                extent_list.append({'start': int(start), 'length': int(length)})
-> > > +                continue
-> > > +    return sorted(extent_list, key=lambda d: d['start'])
-> > > +
-> > > +def range_end(range):
-> > > +    return range['start'] + range['length']
-> > > +
-> > > +def calc_free_spaces(bg_list, extent_list):
-> > > +    free_list = []
-> > > +    bg_iter = iter(bg_list)
-> > > +    cur_bg = next(bg_iter)
-> > > +    prev_end = cur_bg['start']
-> > > +
-> > > +    for cur_extent in extent_list:
-> > > +        # Finished one bg, add the remaining free space.
-> > > +        while range_end(cur_bg) <= cur_extent['start']:
-> > > +            if range_end(cur_bg) > prev_end:
-> > > +                free_list.append({'start': prev_end,
-> > > +                                  'length': range_end(cur_bg) - prev_end})
-> > > +            cur_bg = next(bg_iter)
-> > > +            prev_end = cur_bg['start']
-> > > +
-> > > +        if prev_end < cur_extent['start']:
-> > > +            free_list.append({'start': prev_end,
-> > > +                              'length': cur_extent['start'] - prev_end})
-> > > +        prev_end = range_end(cur_extent)
-> > > +
-> > > +    # Handle the remaining part in the bg
-> > > +    if range_end(cur_bg) > prev_end:
-> > > +        free_list.append({'start': prev_end,
-> > > +                          'length': range_end(cur_bg) - prev_end})
-> > > +
-> > > +    # Handle the remaining empty bgs (if any)
-> > > +    for cur_bg in bg_iter:
-> > > +        free_list.append({'start': cur_bg['start'],
-> > > +                          'length': cur_bg['length']})
-> > > +
-> > > +
-> > > +    return free_list
-> > > +
-> > > +nodesize = 0
-> > > +sectorsize = 512
-> > > +bg_file_path = ''
-> > > +extent_file_path = ''
-> > > +
-> > > +opts, args = getopt.getopt(sys.argv[1:], 's:n:b:e:')
-> > > +for o, a in opts:
-> > > +    if o == '-n':
-> > > +        nodesize = int(a)
-> > > +    elif o == '-b':
-> > > +        bg_file_path = a
-> > > +    elif o == '-e':
-> > > +        extent_file_path = a
-> > > +    elif o == '-s':
-> > > +        sectorsize = int(a)
-> > > +
-> > > +if nodesize == 0 or sectorsize == 0:
-> > > +    print("require -n <nodesize> and -s <sectorsize>")
-> > > +    sys.exit(1)
-> > > +if not bg_file_path or not extent_file_path:
-> > > +    print("require -b <bg_file> and -e <extent_file>")
-> > > +    sys.exit(1)
-> > > +
-> > > +bg_list = parse_block_groups(bg_file_path)
-> > > +extent_list = parse_extents(extent_file_path)
-> > > +free_space_list = calc_free_spaces(bg_list, extent_list)
-> > > +for free_space in free_space_list:
-> > > +    print(free_space['start'] >> 9,
-> > > +          (range_end(free_space) >> 9) - 1)
-> > > diff --git a/tests/generic/746 b/tests/generic/746
-> > > index 6f02b1cc..4eb4252b 100755
-> > > --- a/tests/generic/746
-> > > +++ b/tests/generic/746
-> > > @@ -93,13 +93,23 @@ get_free_sectors()
-> > >   			| sed -n 's/nodesize\s*\(.*\)/\1/p')
-> > >   		# Get holes within block groups
-> > > -		$BTRFS_UTIL_PROG inspect-internal dump-tree -t extent $loop_dev \
-> > > -			| $AWK_PROG -v sectorsize=512 -v nodesize=$nodesize -f $here/src/parse-extent-tree.awk
-> > > +		$BTRFS_UTIL_PROG inspect-internal dump-tree -t extent $loop_dev >> $tmp/extent_dump
-> > > +		if $BTRFS_UTIL_PROG inspect-internal dump-super $loop_dev |\
-> > > +				grep -q "BLOCK_GROUP_TREE"; then
-> > > +			$BTRFS_UTIL_PROG inspect-internal dump-tree -t block-group $loop_dev \
-> > > +				>> $tmp/bg_dump
-> > > +		else
-> > > +			cp $tmp/extent_dump $tmp/bg_dump
-> > > +		fi
-> > > +		$PYTHON3_PROG $here/src/parse-free-space.py -n $nodesize -b $tmp/bg_dump \
-> > > +			-e $tmp/extent_dump >> $tmp/bg_free_space
-> > >   		# Get holes within unallocated space on disk
-> > >   		$BTRFS_UTIL_PROG inspect-internal dump-tree -t dev $loop_dev \
-> > > -			| $AWK_PROG -v sectorsize=512 -v devsize=$device_size -f $here/src/parse-dev-tree.awk
-> > > +			| $AWK_PROG -v sectorsize=512 -v devsize=$device_size \
-> > > +			  -f $here/src/parse-dev-tree.awk >> $tmp/unallocated
-> > > +		cat $tmp/bg_free_space $tmp/unallocated | sort
-> > >   	;;
-> > >   	esac
-> > >   }
-> > > @@ -157,7 +167,13 @@ merged_sectors="$tmp/merged_free_sectors"
-> > >   mkdir $loop_mnt
-> > >   [ "$FSTYP" = "xfs" ] && MKFS_OPTIONS="-f $MKFS_OPTIONS"
-> > > -[ "$FSTYP" = "btrfs" ] && MKFS_OPTIONS="$MKFS_OPTIONS -f -dsingle -msingle"
-> > > +if [ "$FSTYP" = "btrfs" ]; then
-> > > +	# Only SINGLE chunks have their logical address 1:1 mapped
-> > > +	# to physical addresses.
-> > > +	MKFS_OPTIONS="$MKFS_OPTIONS -f -dsingle -msingle"
-> > > +	_require_command $PYTHON3_PROG python3
-> > > +fi
-> > > +
-> > >   _mkfs_dev $loop_dev
-> > >   _mount $loop_dev $loop_mnt
-> > > -- 
-> > > 2.51.2
-> > > 
-> > > 
-> > 
-> 
+Unfortunately, I don't have any reproducer for this issue yet.
 
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/30bf539e6f28/disk-cc3aa43b.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/0e2f8b08e342/vmlinux-cc3aa43b.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/ec7ee6ece11f/bzImage-cc3aa43b.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+1a44c3c7940ab3688125@syzkaller.appspotmail.com
+
+BTRFS info (device loop0): max_inline set to 4096
+======================================================
+WARNING: possible circular locking dependency detected
+syzkaller #0 Tainted: G             L     
+------------------------------------------------------
+syz.0.2512/16697 is trying to acquire lock:
+ffff88802f119990 (&fs_info->qgroup_ioctl_lock){+.+.}-{4:4}, at: btrfs_create_qgroup+0x55/0x520 fs/btrfs/qgroup.c:1683
+
+but task is already holding lock:
+ffff88802f118d30 (&fs_info->reloc_mutex){+.+.}-{4:4}, at: btrfs_commit_transaction+0xf6b/0x3bd0 fs/btrfs/transaction.c:2424
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #5 (&fs_info->reloc_mutex){+.+.}-{4:4}:
+       __mutex_lock_common kernel/locking/mutex.c:614 [inline]
+       __mutex_lock+0x187/0x1350 kernel/locking/mutex.c:776
+       btrfs_record_root_in_trans+0x14f/0x180 fs/btrfs/transaction.c:505
+       start_transaction+0x3a7/0x15f0 fs/btrfs/transaction.c:782
+       btrfs_dirty_inode+0x9f/0x190 fs/btrfs/inode.c:6406
+       inode_update_time fs/inode.c:2167 [inline]
+       file_update_time_flags+0x387/0x4e0 fs/inode.c:2395
+       __generic_remap_file_range_prep+0xb11/0xbe0 fs/remap_range.c:362
+       generic_remap_file_range_prep+0x3e/0x60 fs/remap_range.c:371
+       btrfs_remap_file_range_prep fs/btrfs/reflink.c:850 [inline]
+       btrfs_remap_file_range+0x645/0x1320 fs/btrfs/reflink.c:886
+       vfs_clone_file_range+0x42c/0x7a0 fs/remap_range.c:403
+       ioctl_file_clone fs/ioctl.c:239 [inline]
+       ioctl_file_clone_range fs/ioctl.c:257 [inline]
+       do_vfs_ioctl+0xd2b/0x1430 fs/ioctl.c:544
+       __do_sys_ioctl fs/ioctl.c:595 [inline]
+       __se_sys_ioctl+0x82/0x170 fs/ioctl.c:583
+       do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+       do_syscall_64+0xfa/0xf80 arch/x86/entry/syscall_64.c:94
+       entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+-> #4 (btrfs_trans_num_extwriters){++++}-{0:0}:
+       join_transaction+0x1a4/0xd60 fs/btrfs/transaction.c:323
+       start_transaction+0x6ba/0x15f0 fs/btrfs/transaction.c:708
+       btrfs_rebuild_free_space_tree+0xad/0x6d0 fs/btrfs/free-space-tree.c:1330
+       btrfs_start_pre_rw_mount+0x1299/0x1c30 fs/btrfs/disk-io.c:3018
+       open_ctree+0x2b28/0x3d90 fs/btrfs/disk-io.c:3566
+       btrfs_fill_super fs/btrfs/super.c:981 [inline]
+       btrfs_get_tree_super fs/btrfs/super.c:1944 [inline]
+       btrfs_get_tree_subvol fs/btrfs/super.c:2087 [inline]
+       btrfs_get_tree+0x1061/0x1930 fs/btrfs/super.c:2121
+       vfs_get_tree+0x92/0x2a0 fs/super.c:1751
+       fc_mount fs/namespace.c:1199 [inline]
+       do_new_mount_fc fs/namespace.c:3636 [inline]
+       do_new_mount+0x302/0xa10 fs/namespace.c:3712
+       do_mount fs/namespace.c:4035 [inline]
+       __do_sys_mount fs/namespace.c:4224 [inline]
+       __se_sys_mount+0x313/0x410 fs/namespace.c:4201
+       do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+       do_syscall_64+0xfa/0xf80 arch/x86/entry/syscall_64.c:94
+       entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+-> #3 (btrfs_trans_num_writers){++++}-{0:0}:
+       __lock_release kernel/locking/lockdep.c:5574 [inline]
+       lock_release+0x1ab/0x3b0 kernel/locking/lockdep.c:5889
+       percpu_up_read include/linux/percpu-rwsem.h:112 [inline]
+       __sb_end_write include/linux/fs/super.h:14 [inline]
+       sb_end_intwrite+0x26/0x1c0 include/linux/fs/super.h:101
+       __btrfs_end_transaction+0x248/0x640 fs/btrfs/transaction.c:1084
+       btrfs_dirty_inode+0x14c/0x190 fs/btrfs/inode.c:6420
+       inode_update_time fs/inode.c:2167 [inline]
+       touch_atime+0x2f9/0x6d0 fs/inode.c:2240
+       file_accessed include/linux/fs.h:2255 [inline]
+       btrfs_file_mmap_prepare+0x176/0x1f0 fs/btrfs/file.c:2050
+       vfs_mmap_prepare include/linux/fs.h:2059 [inline]
+       call_mmap_prepare mm/vma.c:2596 [inline]
+       __mmap_region mm/vma.c:2692 [inline]
+       mmap_region+0xb2b/0x1d10 mm/vma.c:2786
+       do_mmap+0xc45/0x10d0 mm/mmap.c:558
+       vm_mmap_pgoff+0x2a6/0x4d0 mm/util.c:581
+       ksys_mmap_pgoff+0x51f/0x760 mm/mmap.c:604
+       do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+       do_syscall_64+0xfa/0xf80 arch/x86/entry/syscall_64.c:94
+       entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+-> #2 (&mm->mmap_lock){++++}-{4:4}:
+       down_read_killable+0x50/0x350 kernel/locking/rwsem.c:1560
+       mmap_read_lock_killable+0x1d/0x70 include/linux/mmap_lock.h:400
+       get_mmap_lock_carefully mm/mmap_lock.c:399 [inline]
+       lock_mm_and_find_vma+0x2a8/0x300 mm/mmap_lock.c:450
+       do_user_addr_fault+0x331/0x1380 arch/x86/mm/fault.c:1359
+       handle_page_fault arch/x86/mm/fault.c:1476 [inline]
+       exc_page_fault+0x82/0x100 arch/x86/mm/fault.c:1532
+       asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:618
+       filldir+0x2b6/0x6c0 fs/readdir.c:295
+       dir_emit include/linux/fs.h:3526 [inline]
+       kernfs_fop_readdir+0x537/0x870 fs/kernfs/dir.c:1913
+       iterate_dir+0x399/0x570 fs/readdir.c:108
+       __do_sys_getdents fs/readdir.c:326 [inline]
+       __se_sys_getdents+0xe4/0x250 fs/readdir.c:312
+       do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+       do_syscall_64+0xfa/0xf80 arch/x86/entry/syscall_64.c:94
+       entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+-> #1 (&root->kernfs_rwsem){++++}-{4:4}:
+       down_write+0x96/0x1f0 kernel/locking/rwsem.c:1590
+       kernfs_add_one+0x41/0x5c0 fs/kernfs/dir.c:794
+       kernfs_create_dir_ns+0xde/0x130 fs/kernfs/dir.c:1096
+       sysfs_create_dir_ns+0x123/0x280 fs/sysfs/dir.c:59
+       create_dir lib/kobject.c:73 [inline]
+       kobject_add_internal+0x6ab/0xcc0 lib/kobject.c:240
+       kobject_add_varg lib/kobject.c:374 [inline]
+       kobject_init_and_add+0x125/0x190 lib/kobject.c:457
+       btrfs_sysfs_add_qgroups+0x111/0x2b0 fs/btrfs/sysfs.c:2643
+       btrfs_quota_enable+0x25d/0x2920 fs/btrfs/qgroup.c:1034
+       btrfs_ioctl_quota_ctl+0x183/0x1c0 fs/btrfs/ioctl.c:3613
+       vfs_ioctl fs/ioctl.c:51 [inline]
+       __do_sys_ioctl fs/ioctl.c:597 [inline]
+       __se_sys_ioctl+0xfc/0x170 fs/ioctl.c:583
+       do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+       do_syscall_64+0xfa/0xf80 arch/x86/entry/syscall_64.c:94
+       entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+-> #0 (&fs_info->qgroup_ioctl_lock){+.+.}-{4:4}:
+       check_prev_add kernel/locking/lockdep.c:3165 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3284 [inline]
+       validate_chain kernel/locking/lockdep.c:3908 [inline]
+       __lock_acquire+0x15a6/0x2cf0 kernel/locking/lockdep.c:5237
+       lock_acquire+0x117/0x340 kernel/locking/lockdep.c:5868
+       __mutex_lock_common kernel/locking/mutex.c:614 [inline]
+       __mutex_lock+0x187/0x1350 kernel/locking/mutex.c:776
+       btrfs_create_qgroup+0x55/0x520 fs/btrfs/qgroup.c:1683
+       create_pending_snapshot+0x86c/0x3270 fs/btrfs/transaction.c:1749
+       create_pending_snapshots+0x17c/0x1c0 fs/btrfs/transaction.c:1941
+       btrfs_commit_transaction+0xf78/0x3bd0 fs/btrfs/transaction.c:2431
+       create_snapshot fs/btrfs/ioctl.c:779 [inline]
+       btrfs_mksubvol+0xc75/0x12d0 fs/btrfs/ioctl.c:926
+       btrfs_mksnapshot+0xab/0xf0 fs/btrfs/ioctl.c:968
+       __btrfs_ioctl_snap_create+0x520/0x740 fs/btrfs/ioctl.c:1232
+       btrfs_ioctl_snap_create_v2+0x1f8/0x3b0 fs/btrfs/ioctl.c:1312
+       btrfs_ioctl+0xa62/0xd00 fs/btrfs/ioctl.c:-1
+       vfs_ioctl fs/ioctl.c:51 [inline]
+       __do_sys_ioctl fs/ioctl.c:597 [inline]
+       __se_sys_ioctl+0xfc/0x170 fs/ioctl.c:583
+       do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+       do_syscall_64+0xfa/0xf80 arch/x86/entry/syscall_64.c:94
+       entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+other info that might help us debug this:
+
+Chain exists of:
+  &fs_info->qgroup_ioctl_lock --> btrfs_trans_num_extwriters --> &fs_info->reloc_mutex
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&fs_info->reloc_mutex);
+                               lock(btrfs_trans_num_extwriters);
+                               lock(&fs_info->reloc_mutex);
+  lock(&fs_info->qgroup_ioctl_lock);
+
+ *** DEADLOCK ***
+
+8 locks held by syz.0.2512/16697:
+ #0: ffff888054516420 (sb_writers#18){.+.+}-{0:0}, at: mnt_want_write_file+0x60/0x200 fs/namespace.c:543
+ #1: ffff8880442e9ed0 (&type->i_mutex_dir_key#11/1){+.+.}-{4:4}, at: __start_dirop fs/namei.c:2859 [inline]
+ #1: ffff8880442e9ed0 (&type->i_mutex_dir_key#11/1){+.+.}-{4:4}, at: start_creating_killable+0xc1/0x120 fs/namei.c:3387
+ #2: ffff88802f118c60 (&fs_info->subvol_sem){++++}-{4:4}, at: btrfs_mksubvol+0x4ce/0x12d0 fs/btrfs/ioctl.c:920
+ #3: ffff888054516610 (sb_internal#4){.+.+}-{0:0}, at: create_snapshot fs/btrfs/ioctl.c:764 [inline]
+ #3: ffff888054516610 (sb_internal#4){.+.+}-{0:0}, at: btrfs_mksubvol+0xaf2/0x12d0 fs/btrfs/ioctl.c:926
+ #4: ffff88802f11a5f0 (btrfs_trans_completed){++++}-{0:0}, at: btrfs_commit_transaction+0x178/0x3bd0 fs/btrfs/transaction.c:2207
+ #5: ffff88802f11a5c8 (btrfs_trans_super_committed){.+.+}-{0:0}, at: btrfs_commit_transaction+0x178/0x3bd0 fs/btrfs/transaction.c:2207
+ #6: ffff88802f11a5a0 (btrfs_trans_unblocked){.+.+}-{0:0}, at: btrfs_commit_transaction+0x178/0x3bd0 fs/btrfs/transaction.c:2207
+ #7: ffff88802f118d30 (&fs_info->reloc_mutex){+.+.}-{4:4}, at: btrfs_commit_transaction+0xf6b/0x3bd0 fs/btrfs/transaction.c:2424
+
+stack backtrace:
+CPU: 1 UID: 0 PID: 16697 Comm: syz.0.2512 Tainted: G             L      syzkaller #0 PREEMPT(full) 
+Tainted: [L]=SOFTLOCKUP
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/25/2025
+Call Trace:
+ <TASK>
+ dump_stack_lvl+0x189/0x250 lib/dump_stack.c:120
+ print_circular_bug+0x2e2/0x300 kernel/locking/lockdep.c:2043
+ check_noncircular+0x12e/0x150 kernel/locking/lockdep.c:2175
+ check_prev_add kernel/locking/lockdep.c:3165 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3284 [inline]
+ validate_chain kernel/locking/lockdep.c:3908 [inline]
+ __lock_acquire+0x15a6/0x2cf0 kernel/locking/lockdep.c:5237
+ lock_acquire+0x117/0x340 kernel/locking/lockdep.c:5868
+ __mutex_lock_common kernel/locking/mutex.c:614 [inline]
+ __mutex_lock+0x187/0x1350 kernel/locking/mutex.c:776
+ btrfs_create_qgroup+0x55/0x520 fs/btrfs/qgroup.c:1683
+ create_pending_snapshot+0x86c/0x3270 fs/btrfs/transaction.c:1749
+ create_pending_snapshots+0x17c/0x1c0 fs/btrfs/transaction.c:1941
+ btrfs_commit_transaction+0xf78/0x3bd0 fs/btrfs/transaction.c:2431
+ create_snapshot fs/btrfs/ioctl.c:779 [inline]
+ btrfs_mksubvol+0xc75/0x12d0 fs/btrfs/ioctl.c:926
+ btrfs_mksnapshot+0xab/0xf0 fs/btrfs/ioctl.c:968
+ __btrfs_ioctl_snap_create+0x520/0x740 fs/btrfs/ioctl.c:1232
+ btrfs_ioctl_snap_create_v2+0x1f8/0x3b0 fs/btrfs/ioctl.c:1312
+ btrfs_ioctl+0xa62/0xd00 fs/btrfs/ioctl.c:-1
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:597 [inline]
+ __se_sys_ioctl+0xfc/0x170 fs/ioctl.c:583
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xfa/0xf80 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f732378f749
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f73245df038 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007f73239e5fa0 RCX: 00007f732378f749
+RDX: 0000200000002480 RSI: 0000000050009417 RDI: 0000000000000004
+RBP: 00007f7323813f91 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007f73239e6038 R14: 00007f73239e5fa0 R15: 00007ffdae0e36b8
+ </TASK>
+BTRFS info (device loop0): last unmount of filesystem ed167579-eb65-4e76-9a50-61ac97e9b59d
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
