@@ -1,122 +1,150 @@
-Return-Path: <linux-btrfs+bounces-20069-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20070-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D1F9CED1D0
-	for <lists+linux-btrfs@lfdr.de>; Thu, 01 Jan 2026 16:23:44 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C51DCED532
+	for <lists+linux-btrfs@lfdr.de>; Thu, 01 Jan 2026 21:13:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id DAC4B3021E7E
-	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Jan 2026 15:22:15 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 904A73006446
+	for <lists+linux-btrfs@lfdr.de>; Thu,  1 Jan 2026 20:13:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0C1B2DE70B;
-	Thu,  1 Jan 2026 15:22:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBA4B2F4A1E;
+	Thu,  1 Jan 2026 20:13:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kGqcmwLV"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=fjasle.eu header.i=@fjasle.eu header.b="ntNIn8qf"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from smtp.domeneshop.no (smtp.domeneshop.no [194.63.252.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D17D42DCBF4;
-	Thu,  1 Jan 2026 15:22:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D9EF155C87;
+	Thu,  1 Jan 2026 20:12:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.63.252.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767280932; cv=none; b=tmNE2oRG6UHvUXai2iNLtdzGKw96YAkg2S8GA4RgLgxF9boVn7Qu4SGLHRAuCdQ3Y7beZ3h1/36dG6Zzf25pZN7L1Cn7iM7vd7VMfscRdju76xotgEabeuWSap+nv0FWEg7naP3B70oM9pj2f565Man8kwqjlvUfwYZi6lMlR2Q=
+	t=1767298377; cv=none; b=GOt4sRmbsTerEWTCpko9QCJjxgYWFbxZ4pZkpX+IA5gqrsFVT7l4dtLuo5xox+R5x+xJHpXAQJLaID4qy0n/B/MbKByDFrzx/vkJPvnOL6s+X1DwznGJoRkYgpeFx7LvG/Fbkv6k+kmm5FuQtUdmgZxMeM3416eEDVXDT4pGLac=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767280932; c=relaxed/simple;
-	bh=mIhQkcwbxHiDGbqkIpgQI8IR3rwmgawWbN+IVj32UUs=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=L8c4Csfm8JA+/gZjeQtWoCtcw8UeDJZusf79m9pRPCdk9DhY+4M18cuY1R6dgPnY3UxYmWj8iiDatRrPUDZOC34eYovU/77hWf4LFXGa8FW5CxlgYsJZLH7uC2Q9v+lH0uwB4Xy1XX1RVryEV2zEzjAjpCQR229kMts3Ux0QXPg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kGqcmwLV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DB30C19421;
-	Thu,  1 Jan 2026 15:22:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767280931;
-	bh=mIhQkcwbxHiDGbqkIpgQI8IR3rwmgawWbN+IVj32UUs=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=kGqcmwLV7Ca8pob+S+kw7LGUFHbGytU1VCH0dL6/wWPfp0iy/bf+Px9uL8SKguBXN
-	 3xA3qQMHp2XmmYnMEr16+BC38K5DNn/lSPBlhtLmGICsPIV+2ZClFydcg78x10VRci
-	 InQV9sb8stN0QoRv/lJ+sefAIVAbtia3CQSwW6t4yjZjftMMyuC9pjmqVAL9IW7Gzd
-	 tM1CPTVb6OIIR0ode4i6/ZgdHinRHmWnWDi1JO/PKI58t3/WIdTA7PftGELwGr20i3
-	 rVYdKeGoWjMgerYaoi444pDmhXGYXxSSOr0UW6QJqg4BYTjmOOkBQtMtrm1o0Hihtr
-	 3qpNd61NbZ7cw==
-From: Vincent Mailhol <mailhol@kernel.org>
-Date: Thu, 01 Jan 2026 16:21:40 +0100
-Subject: [PATCH v4 2/2] kbuild: cleanup local -Wno-type-limits exceptions
+	s=arc-20240116; t=1767298377; c=relaxed/simple;
+	bh=rY42i1BlFFAUFUS1FaOmIWfRKJkDvn94zmHyZkEyVEo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rQnYDpTRLWz8Yf9ATXAJ9Oa/GZkhtaRNO9kpXhzxZ/S9iTmYJB6e6fBxTQNBSgy8DSoTDauqJoV2kXxZiRFBXUB8wS2R6VFhka5oBT65nOLWtgLDFHZaToxTCScqQKkAyKKL3dJ/tUkhWPavJ2BvFwq3whEitnDUa8F95GqpuDE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fjasle.eu; spf=pass smtp.mailfrom=fjasle.eu; dkim=pass (2048-bit key) header.d=fjasle.eu header.i=@fjasle.eu header.b=ntNIn8qf; arc=none smtp.client-ip=194.63.252.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fjasle.eu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fjasle.eu
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=fjasle.eu;
+	s=ds202307; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:
+	MIME-Version:Content-Type:Content-Transfer-Encoding:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=NfmiQM37ly0jL0rmd/GvAkOHEOuwHHfshS7CwxNb0e4=; b=ntNIn8qfYcw2SPrD7yXav4rYqN
+	/xYUT6kpVbB5gXiOBwfL/XtrTJPf3kp1Vs5QyeSCV0jDQAxEzNX3LOTWOV5c/EjNp/WqdLD4ZtcEK
+	R1nQfMzJN9fd8yznJH3h4nKtcVxb4qeeBfXmR3tmSKCMzdRoiAF6hIexQpjlP6iPyogK7Yoqhgx6i
+	ziCqYyVkpeMoAFWMlg492axc7U2S99wbnB1tJBnXKMLlSQ+ejICAr55c+b0jz77nzBPBz9k3udoTY
+	IfZfMlqatnfYcnDym2NslBWRa1dRFTFHQUfjMCvdVbUH7bAED3Akln5um2AB+y8+qvr6BsMEPje7P
+	qmPjbTOQ==;
+Received: from smtp
+	by smtp.domeneshop.no with esmtpsa (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	id 1vbOWY-00DiJn-Rw;
+	Thu, 01 Jan 2026 20:39:54 +0100
+Date: Thu, 1 Jan 2026 20:39:46 +0100
+From: Nicolas Schier <nicolas@fjasle.eu>
+To: Vincent Mailhol <mailhol@kernel.org>
+Cc: Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nsc@kernel.org>,
+	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
+	Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
+	Kees Cook <kees@kernel.org>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-kbuild@vger.kernel.org, linux-sparse@vger.kernel.org,
+	linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+	dri-devel@lists.freedesktop.org, linux-btrfs@vger.kernel.org,
+	linux-hardening@vger.kernel.org, kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH v3 3/3] overflow: Remove is_non_negative() and
+ is_negative()
+Message-ID: <20260101-futuristic-petrel-of-ecstasy-23db5f@lindesnes>
+References: <20251220-remove_wtype-limits-v3-0-24b170af700e@kernel.org>
+ <20251220-remove_wtype-limits-v3-3-24b170af700e@kernel.org>
+ <acdd84b2-e893-419c-8a46-da55d695dda2@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20260101-remove_wtype-limits-v4-2-225b75c29086@kernel.org>
-References: <20260101-remove_wtype-limits-v4-0-225b75c29086@kernel.org>
-In-Reply-To: <20260101-remove_wtype-limits-v4-0-225b75c29086@kernel.org>
-To: Nathan Chancellor <nathan@kernel.org>, Nicolas Schier <nsc@kernel.org>, 
- Nick Desaulniers <nick.desaulniers+lkml@gmail.com>, 
- Bill Wendling <morbo@google.com>, Justin Stitt <justinstitt@google.com>, 
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
- David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>, 
- Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>, 
- Kees Cook <kees@kernel.org>, "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, 
- linux-kbuild@vger.kernel.org, linux-sparse@vger.kernel.org, 
- linux-kernel@vger.kernel.org, llvm@lists.linux.dev, 
- dri-devel@lists.freedesktop.org, linux-btrfs@vger.kernel.org, 
- linux-hardening@vger.kernel.org, Vincent Mailhol <mailhol@kernel.org>
-X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1458; i=mailhol@kernel.org;
- h=from:subject:message-id; bh=mIhQkcwbxHiDGbqkIpgQI8IR3rwmgawWbN+IVj32UUs=;
- b=owGbwMvMwCV2McXO4Xp97WbG02pJDJlhE3mrlDPMGDaIXHSKZGlJkn9skCQg7toTo82q/yzg7
- 4KDe/Q7JrIwiHExWIopsiwr5+RW6Cj0Djv01xJmDisTyBBpkQYGIGBh4MtNzCs10jHSM9U21DM0
- 1AEyGbg4BWCqnfUY/mecfnenflaxkYSDPVd8NMfZjSuW5708HvG/hOen+0K9H98Y/kcvy5iQ//p
- zdKGbczX72k6b2XfD69WqygV2xl7tq034zQQA
-X-Developer-Key: i=mailhol@kernel.org; a=openpgp;
- fpr=ED8F700574E67F20E574E8E2AB5FEB886DBB99C2
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="0BVVorEFNEq+bZUt"
+Content-Disposition: inline
+In-Reply-To: <acdd84b2-e893-419c-8a46-da55d695dda2@kernel.org>
+X-Operating-System: Debian GNU/Linux forky/sid
 
-Now that -Wtype-limits is globally deactivated, there is no need for
-local exceptions anymore.
 
-Acked-by: David Sterba <dsterba@suse.com>
-Reviewed-by: Nicolas Schier <nsc@kernel.org>
-Signed-off-by: Vincent Mailhol <mailhol@kernel.org>
----
-Changelog:
+--0BVVorEFNEq+bZUt
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-  v1 -> v2: small change in patch description
----
- drivers/gpu/drm/Makefile | 1 -
- fs/btrfs/Makefile        | 1 -
- 2 files changed, 2 deletions(-)
+On Thu, Jan 01, 2026 at 04:10:36PM +0100, Vincent Mailhol wrote:
+> On 20/12/2025 at 12:02, Vincent Mailhol wrote:
+> > The is_non_negative() and is_negative() function-like macros just
+> > exist as a workaround to silence the -Wtype-limits warning. Now that
+> > this warning is disabled, those two macros have lost their raison
+> > d'=EAtre. Remove them.
+> >=20
+> > This reverts commit dc7fe518b049 ("overflow: Fix -Wtype-limits
+> > compilation warnings").
+> >=20
+> > Suggested-by: Nicolas Schier <nsc@kernel.org>
+> > Link: https://lore.kernel.org/all/aUT_yWin_xslnOFh@derry.ads.avm.de
+> > Signed-off-by: Vincent Mailhol <mailhol@kernel.org>
+>=20
+> So at the end, this patch got five kernel test robot reports:
+>=20
+>   https://lore.kernel.org/all/202512221735.mRV4BZqB-lkp@intel.com/
+>   https://lore.kernel.org/all/202512230342.Lgha2HGH-lkp@intel.com/
+>   https://lore.kernel.org/all/202512251340.UApIFw9R-lkp@intel.com/
+>   https://lore.kernel.org/all/202512271618.33YepxDC-lkp@intel.com/
+>   https://lore.kernel.org/all/202512280906.wt7UNpya-lkp@intel.com/
+>=20
+> All these are the same smatch warning just triggered from a different
+> place. I think it is still too early to undo that workaround in
+> include/linux/overflow.h, otherwise developers would be getting that
+> smatch report too often.
+>=20
+> I will send a v4 in which I will drop this patch. This basically means
+> that the v4 is a revert to v1...
 
-diff --git a/drivers/gpu/drm/Makefile b/drivers/gpu/drm/Makefile
-index 0e1c668b46d2..b879a60ca79a 100644
---- a/drivers/gpu/drm/Makefile
-+++ b/drivers/gpu/drm/Makefile
-@@ -22,7 +22,6 @@ subdir-ccflags-y += $(call cc-option, -Wstringop-truncation)
- # The following turn off the warnings enabled by -Wextra
- ifeq ($(findstring 2, $(KBUILD_EXTRA_WARN)),)
- subdir-ccflags-y += -Wno-missing-field-initializers
--subdir-ccflags-y += -Wno-type-limits
- subdir-ccflags-y += -Wno-shift-negative-value
- endif
- ifeq ($(findstring 3, $(KBUILD_EXTRA_WARN)),)
-diff --git a/fs/btrfs/Makefile b/fs/btrfs/Makefile
-index 743d7677b175..40bc2f7e6f6b 100644
---- a/fs/btrfs/Makefile
-+++ b/fs/btrfs/Makefile
-@@ -17,7 +17,6 @@ subdir-ccflags-y += $(condflags)
- # The following turn off the warnings enabled by -Wextra
- subdir-ccflags-y += -Wno-missing-field-initializers
- subdir-ccflags-y += -Wno-sign-compare
--subdir-ccflags-y += -Wno-type-limits
- subdir-ccflags-y += -Wno-shift-negative-value
- 
- obj-$(CONFIG_BTRFS_FS) := btrfs.o
+thanks!  I think it's a bit sad to keep code only to make some checker=20
+tooling happy, but for now it seems to be the right thing to do.
 
--- 
-2.52.0
+Kind Regards,
+Nicolas
 
+--0BVVorEFNEq+bZUt
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEEh0E3p4c3JKeBvsLGB1IKcBYmEmkFAmlWzYIACgkQB1IKcBYm
+Emkv5A/+JGh8gXsgclOmUAW84XlSnEuwIhRXs3PO+BaFvveNaRIkkKUPw6dsHWDR
+VlbsSCp/6fyRrH5A2UQ8i7mAgkaFPrmi76d50HrYsMDFDPcCmmFkQP+6UTSvymZo
+KBiXwBoypXpUzcUaoWPmwhMfWH+0Ov4IMj6Suy808QAaESPPwJORFmd7zTl7ZE3i
+zUibhRVpU3qlgcV0ZcpJAkx4KJFHc0ADv9GTAmWTeBHGMsqWk4xZaFCwLB8bv+IB
+1l1X+7DjY9GzqupPzrfTZxeFZsrG/DVQAtKUutcbvZJPM8XWD9sHtb4oM9BEbQr8
+ShaZ3CbtXBGo5MCzQCw/Sb9DGCYm66apPE3NWbcEFKPqLG4slF7PdQ8o1DyyDbjK
+v8icj6elb23wmQGRd47aIVTcsFUeis+nJHAMnlQSMfVgDNB+trggaEHrzhcgP4Ff
+IhouTrsvdLsqzz01Oa+XQfR4GkjBxL6nWZLMbbOlXmHin4iSKqLKiCWrc6lkPJ7I
+d2F1JJoEH4XpbfdTV4YtsU+D3gpjywC7uGWSweHGTs8DihnQ/x5bwBUX3Bo98+pK
+T59NTfnjD02v+802qjCKvOoM90j5dX1FUCqhekc8Nm+TUlC5UHDjtts8SAmf1x9u
+OatEZU2f5zGPJBL91kVMQS7/psD1ZkDNucVtKBKX9gCveWFvVnQ=
+=7eoQ
+-----END PGP SIGNATURE-----
+
+--0BVVorEFNEq+bZUt--
 
