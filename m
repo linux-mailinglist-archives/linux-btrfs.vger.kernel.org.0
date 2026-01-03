@@ -1,82 +1,82 @@
-Return-Path: <linux-btrfs+bounces-20088-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20089-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C446CEFF4C
-	for <lists+linux-btrfs@lfdr.de>; Sat, 03 Jan 2026 14:06:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D242CEFF57
+	for <lists+linux-btrfs@lfdr.de>; Sat, 03 Jan 2026 14:07:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A99C130319AF
-	for <lists+linux-btrfs@lfdr.de>; Sat,  3 Jan 2026 13:06:41 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 316D5301B2CA
+	for <lists+linux-btrfs@lfdr.de>; Sat,  3 Jan 2026 13:06:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F8A82FDC40;
-	Sat,  3 Jan 2026 13:06:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABC342F6907;
+	Sat,  3 Jan 2026 13:06:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HXwGiLWb"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g8uwYsh8"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yx1-f68.google.com (mail-yx1-f68.google.com [74.125.224.68])
+Received: from mail-yw1-f196.google.com (mail-yw1-f196.google.com [209.85.128.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2300015A86D
-	for <linux-btrfs@vger.kernel.org>; Sat,  3 Jan 2026 13:06:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.68
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 825CA15A86D
+	for <linux-btrfs@vger.kernel.org>; Sat,  3 Jan 2026 13:06:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767445600; cv=none; b=K7woiIh6sXkfnTOT04hxxGEwz6rTacP0QvRZBm40evPNcvmJz5gKZVs4p/UQvAf//4nyRsmCwOg1NauLr1/7Y/EWQBuDx+CCZiEQi+yWLmKx8v2lhE7EDn5kg195eAtMDfCo4vJe0RkqR//pKjYKxlcVOy7wv28C7N0t9uk0Uls=
+	t=1767445604; cv=none; b=hA9bMnXQfVQP0zsdEDqiaZpUWA+nreDsw5uQYAtdzjKytV74HExqssHicbgYCXlX+nq9M0Yo6tnTymWFGUhWx5u/j9prRpj4yeWIXW/AXEYt56eCHAwFsoitpT1RTzUK/rAkRkubQ7mA6cDhdjItHTQNytsMJReoAKLZCRxVS+k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767445600; c=relaxed/simple;
-	bh=gZGGU6totVBpRa3wnChWnte8xddWj2ZjcTVVO4chvjc=;
+	s=arc-20240116; t=1767445604; c=relaxed/simple;
+	bh=Wc2Ayl8kYzVlsqITtOEb3SCtKLI36jri/f9TCVVDdX0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=XzYyxbX4M5nM6TQzq3t8gaPithCL5pBaDIcju/nELIMu+gQ8Cbe+qXDBlb3mEkdaJM8HAhGnRoLGgLquveuSPfcDfV/sz6+QOuKyHsinmvekuMbDvTyy/QNwMYu/NX5B6hMkkaqgRLpZIMWbQyo4isW6PV0Ew1rkA6lFLqhYNmM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HXwGiLWb; arc=none smtp.client-ip=74.125.224.68
+	 MIME-Version; b=pp11yD0vYsQdIenCNgPN5XsypkaYX7XjU35s6AyZsdonpRf6lQsSMoIoPq9M4s1b8ZS7rJMgKVtoszDWemjyXWUWXh/XLNAzpmLEyGwuoQpQBKB3F/ay1ZhRoAnYymb9JF1q0R/8jBXfmDDLJyQmc/+pkoIMtfHyVQ7u7ubSLuU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=g8uwYsh8; arc=none smtp.client-ip=209.85.128.196
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yx1-f68.google.com with SMTP id 956f58d0204a3-6469e4b0ff6so732979d50.2
-        for <linux-btrfs@vger.kernel.org>; Sat, 03 Jan 2026 05:06:38 -0800 (PST)
+Received: by mail-yw1-f196.google.com with SMTP id 00721157ae682-78faffe6ce0so4125797b3.2
+        for <linux-btrfs@vger.kernel.org>; Sat, 03 Jan 2026 05:06:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767445598; x=1768050398; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1767445601; x=1768050401; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ks8I25rnKslHH04fY1M+ZXq1nHXAjo8NHScaa3ywaOs=;
-        b=HXwGiLWbKAvIBvg4lKBvDlkvrcNO24MjiipcoC7DFc/BwYEYvw+29x0Kis35Z4t/Q3
-         /+OpZCB96TVmdqlIIG2du41RIlAFJa8P5OMY95DF5bEvsjFa+jcEomDcLkIBCqT08EfI
-         LFqua5n01VFjICGop/eGHWrVsH61Zp5b9SMTKpsnCS4Znhjh/mkE04mkaOra/oD5BdtF
-         gUpfSsT46PPR+9VDtuSqtkDX8u1/Zt6qWn3Pr4fLNKRgTh8f2s7qNWPdEvv3mBVy3R50
-         2ldM8A/LH/juMqFmNS4IVwJt8nX69P/rNdGdLcn/AK8nmjcRXqQ6r1wv1uiuj7A1MHk/
-         iYfA==
+        bh=ORMCU5j8d3VJ6QcX4yF8o3pbZb2v63Akw/l35QLMUEU=;
+        b=g8uwYsh86mh668C8QxOj9rmQnoDRnG8RS1rI41BjVX6A0LaIi1oecyt+8L0NMrn/9P
+         6I+vgwovGWh8xRooB3ELGuOjwvP7g/YRIKwAZ5chqI/sJ7RTe1n1vUWHV7avUlO+j3YE
+         nJaZWmQlyskU093wTADFRUD8/12l8Mfi11Coszeamy7svBwEpXBbQC7L0YRMEnscr7MZ
+         O7Sj7KWl94KgFwxciR7kUWkLxGspFbtQ4yaui2qcLmUNeiNcUfRpIA3wsmvug599QM7o
+         TiYsJrLfeJ0ZKvp2d6n3sjfHqFGKWHXRz1l+xr9nQJAu6iwd2tHxEx+mMadt1QkHEZMl
+         1lJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767445598; x=1768050398;
+        d=1e100.net; s=20230601; t=1767445601; x=1768050401;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=ks8I25rnKslHH04fY1M+ZXq1nHXAjo8NHScaa3ywaOs=;
-        b=CeK/7ONp9cpBeXagerTXlPa8ZcmkO2C6LPLmJJVB7Noftg8zxKsBQQWUepi84t27LN
-         6sRSJKj6Fq2qTB+Xis6+SMaQAVz6bPpdciU8OIyUTawjNbSBwsHPUnG8IeLT4mzjasG4
-         Y8ZNO0M0CXYFjvNvI6eWJYD2BoAxtXPLcp1t5iHLZZ5uOwCu8+raQjYQwEo2TbR+skHc
-         QFcz9c4w1kO8I3VDVvyiq5ne404PuZZHg3n/MhAkihvnwXR3oQ7eO0GKwFCTs0dADcqi
-         Dv5BkbYXOFDHiasXureCJjRGR+K3yiNBN7OZUdIAAXayEJ/G9RkdEJpNSVnAhW1lnIHM
-         rRaw==
-X-Gm-Message-State: AOJu0Yw9NYuHRAVYHSu1TRf4JBukBSVzUeEXVpS3zGcGI+vA1+0YWUd5
-	2Kp9WyGk9dk7EawqYBHQKtIlYmEGEbFzce6y75opoT1WSLzVu7oLybyTOuwJNJtD1Nz/vA==
-X-Gm-Gg: AY/fxX7gSjyY+Heknk/1uwPx6lI7fj4bSwNyN3e4PBhu3T5uTwswUoI1t5YBcwAbvua
-	5yfVkG9w5vERNmWH6VIc78BWQwsAneqtIi3+9gTlnReiHAz6n5w8oPVq5r4pm8m1hO8+8bX24GH
-	KcAy62ukqrarLicPMTSMxYnmQ0Tp9BPq2kMzxnKbVK+iK0A95zflFVMk0OLzJNGp/JCjglA2wVa
-	SJzvA0zucUWPYujxZhsuGz9VFerbLBunqC3nk1DN8YtVxwC0mLrys0dcidTaLrVz5w5OYw3JFqv
-	myFvaGyib1w4J4yCIF6dafVKay+y2XxLc6Jjwp1cRfT9U4hQMJCXKYM91fUItlUuKBPE81Xynez
-	c/g4n4hE5D1hp8s+DR2xXvHCk22nTe1bkh75PYWjZyGauVXI+oqZREeaUnufkEhVrwO8JV9CRYA
-	rxcAVYpSFlwEVKo4JC594=
-X-Google-Smtp-Source: AGHT+IFemYzFlE5Ti3n/XvmH9QkLhib+Iik9PumBMxytoJ3i3PQaY886Dbc3jSxpfhO+erHyRJuYmg==
-X-Received: by 2002:a05:690e:4009:b0:63f:b410:e8d with SMTP id 956f58d0204a3-6466a8f5d8fmr27867287d50.6.1767445598001;
-        Sat, 03 Jan 2026 05:06:38 -0800 (PST)
+        bh=ORMCU5j8d3VJ6QcX4yF8o3pbZb2v63Akw/l35QLMUEU=;
+        b=usw9poEdL3suo78YJyUjIwPIyZrUuVPPEwrkKLQO/DY1vzSzKRvv7XRYn6CKQnrx/f
+         i/eGvZjQD6cmuSMQt9tu9y1DFIOObrwSVmj+SXxR0MHlww5gS6f35hRfUwwkN7Y9Gw+f
+         TEBJ51t0SXPu2vWLg8d6S9DzLcG8ihfhlwP4SpBdkMu5IJ+t3B/+hwjPdufljOBpTFEC
+         pFBOkdJa62uyuQ43o0ci5n501h5E7uO5lawMsFw+9RIN7P/zDkiUkuJ22CTP3nhKThpN
+         PrJ9vKiOZOvOBt6tdj2wJhwwO92cCcpsGwt51t8zDLgQV1SmrofKPzhq7Foc2prP1hU6
+         nnoQ==
+X-Gm-Message-State: AOJu0YxWz7KDOAIC6PDlpc9BDRYdYKLXYG6LSAkN+hwl+VP4z3ZS5jUk
+	orVo8jAiN7VCH39A1Rx4AMSnkUBUg4Lec8rg1VqacHySHQKoeh9UlgKisEwsCsUnrv1kgQ==
+X-Gm-Gg: AY/fxX4xo9JLdES0n03NzmzahcZPqP7Cc9A6d/l7QXDGltH1+npUvnc9n9DTGfsc8HU
+	nUnCiDMYdUCLpd+ttHePEQHmShJBPHp/UBIdtpoZBdDi2AkKdpUhLPXXcSxKJ5hD9tylnl/dhoe
+	7SLFhrEPebox3naA85q0eTGGGWJorJlPRK5pH8ikat0neEDiISugHMu+fb3t55OTEwopLpbk/Xh
+	58afJoOuUPlUqE8/54w0dTl7mcl4Aw6CUp2JleSwdx++qRtWrt+RfWvJR7CBy5AiRDeWFOA+JV0
+	Br2DC123i4aeiujYMNR6ZniDtmo/1mZ6PYYiN5khfHQWExKKqn2PYzdPDtDfdorJ1QDTXUDxmb+
+	4nlAmjN3cQf8+SLs7vT+RHCELLOr1QCL3Quu7/yZUCewVUxIWh0A21rZo3DeHGWLBoooasivNDM
+	+XMnVBjzvlbfjd2cgoRsk=
+X-Google-Smtp-Source: AGHT+IFKh3iE7S2gdLbmmgebTur3Yrh+BhIkNQNmct3TpVsS5ubGhjx7Fmvlk29WVe3cvBq3NJs0gg==
+X-Received: by 2002:a05:690c:c507:b0:78c:2c4d:3df9 with SMTP id 00721157ae682-78fb3e6940dmr322230537b3.0.1767445601328;
+        Sat, 03 Jan 2026 05:06:41 -0800 (PST)
 Received: from SaltyKitkat ([193.123.86.108])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-78ffebd2690sm112554957b3.15.2026.01.03.05.06.35
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-78ffebd2690sm112554957b3.15.2026.01.03.05.06.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Jan 2026 05:06:37 -0800 (PST)
+        Sat, 03 Jan 2026 05:06:41 -0800 (PST)
 From: Sun YangKai <sunk67188@gmail.com>
 To: linux-btrfs@vger.kernel.org
 Cc: Sun YangKai <sunk67188@gmail.com>
-Subject: [PATCH v2 3/7] btrfs: clarify reclaim sweep control flow
-Date: Sat,  3 Jan 2026 20:19:50 +0800
-Message-ID: <20260103122504.10924-5-sunk67188@gmail.com>
+Subject: [PATCH v2 4/7] btrfs: change block group reclaim_mark to bool
+Date: Sat,  3 Jan 2026 20:19:51 +0800
+Message-ID: <20260103122504.10924-6-sunk67188@gmail.com>
 X-Mailer: git-send-email 2.51.2
 In-Reply-To: <20260103122504.10924-2-sunk67188@gmail.com>
 References: <20260103122504.10924-2-sunk67188@gmail.com>
@@ -88,59 +88,75 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Replace the try_again flag with will_reclaim and adjust the
-to better reflect the intent of the logic. This makes the reclaim
-decision easier to follow without changing behavior.
+The reclaim_mark field in struct btrfs_block_group was a u64 that was
+incremented when marking block groups for reclaim during sweeping, but
+the actual counter value was never used - only the zero/non-zero state
+mattered for determining if a block group needed reclaim.
 
-Also prepare for the next patch.
+Convert it to a bool to properly reflect its usage and reduce memory
+footprint by 8 bytes. Update assignments to use true/false instead of
+increment and zero.
 
-No functional change.
+Now sizeof(struct btrfs_block_group) is 632->624.
 
 Signed-off-by: Sun YangKai <sunk67188@gmail.com>
 ---
- fs/btrfs/space-info.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ fs/btrfs/block-group.c | 2 +-
+ fs/btrfs/block-group.h | 7 ++++++-
+ fs/btrfs/space-info.c  | 2 +-
+ 3 files changed, 8 insertions(+), 3 deletions(-)
 
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index 94a4068cd42a..f29553fa204a 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -3728,7 +3728,7 @@ int btrfs_update_block_group(struct btrfs_trans_handle *trans,
+ 		old_val += num_bytes;
+ 		cache->used = old_val;
+ 		cache->reserved -= num_bytes;
+-		cache->reclaim_mark = 0;
++		cache->reclaim_mark = false;
+ 		space_info->bytes_reserved -= num_bytes;
+ 		space_info->bytes_used += num_bytes;
+ 		space_info->disk_used += num_bytes * factor;
+diff --git a/fs/btrfs/block-group.h b/fs/btrfs/block-group.h
+index 5f933455118c..3b3c61b3af2c 100644
+--- a/fs/btrfs/block-group.h
++++ b/fs/btrfs/block-group.h
+@@ -251,6 +251,12 @@ struct btrfs_block_group {
+ 	/* Protected by @free_space_lock. */
+ 	bool using_free_space_bitmaps_cached;
+ 
++	/*
++	 * Mark this blockgroup is not used for allocation
++	 * between two reclaim sweeps.
++	 */
++	bool reclaim_mark;
++
+ 	/*
+ 	 * Number of extents in this block group used for swap files.
+ 	 * All accesses protected by the spinlock 'lock'.
+@@ -270,7 +276,6 @@ struct btrfs_block_group {
+ 	struct work_struct zone_finish_work;
+ 	struct extent_buffer *last_eb;
+ 	enum btrfs_block_group_size_class size_class;
+-	u64 reclaim_mark;
+ };
+ 
+ static inline u64 btrfs_block_group_end(const struct btrfs_block_group *block_group)
 diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index 29dffbd9aadd..3ccb365549ff 100644
+index 3ccb365549ff..dce21809e640 100644
 --- a/fs/btrfs/space-info.c
 +++ b/fs/btrfs/space-info.c
-@@ -2083,7 +2083,7 @@ static void do_reclaim_sweep(struct btrfs_space_info *space_info, int raid)
- {
- 	struct btrfs_block_group *bg;
- 	int thresh_pct;
--	bool try_again = true;
-+	bool will_reclaim = false;
- 	bool urgent;
- 
- 	spin_lock(&space_info->lock);
-@@ -2101,7 +2101,7 @@ static void do_reclaim_sweep(struct btrfs_space_info *space_info, int raid)
- 		spin_lock(&bg->lock);
- 		thresh = mult_perc(bg->length, thresh_pct);
- 		if (bg->used < thresh && bg->reclaim_mark) {
--			try_again = false;
-+			will_reclaim = true;
+@@ -2104,7 +2104,7 @@ static void do_reclaim_sweep(struct btrfs_space_info *space_info, int raid)
+ 			will_reclaim = true;
  			reclaim = true;
  		}
- 		bg->reclaim_mark++;
-@@ -2118,7 +2118,7 @@ static void do_reclaim_sweep(struct btrfs_space_info *space_info, int raid)
- 	 * If we have any staler groups, we don't touch the fresher ones, but if we
- 	 * really need a block group, do take a fresh one.
- 	 */
--	if (try_again && urgent) {
-+	if (!will_reclaim && urgent) {
- 		urgent = false;
- 		goto again;
- 	}
-@@ -2129,7 +2129,7 @@ static void do_reclaim_sweep(struct btrfs_space_info *space_info, int raid)
- 	 * Temporary pause periodic reclaim until reclaim make some progress.
- 	 * This can prevent periodic reclaim keep happening but make no progress.
- 	 */
--	if (!try_again) {
-+	if (will_reclaim) {
- 		spin_lock(&space_info->lock);
- 		btrfs_pause_periodic_reclaim(space_info);
- 		spin_unlock(&space_info->lock);
+-		bg->reclaim_mark++;
++		bg->reclaim_mark = true;
+ 		spin_unlock(&bg->lock);
+ 		if (reclaim)
+ 			btrfs_mark_bg_to_reclaim(bg);
 -- 
 2.51.2
 
