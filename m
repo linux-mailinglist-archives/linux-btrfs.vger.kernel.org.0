@@ -1,129 +1,138 @@
-Return-Path: <linux-btrfs+bounces-20081-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20082-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9D83CEFB27
-	for <lists+linux-btrfs@lfdr.de>; Sat, 03 Jan 2026 06:25:17 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FACACEFDD4
+	for <lists+linux-btrfs@lfdr.de>; Sat, 03 Jan 2026 11:03:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id AA952300A9D9
-	for <lists+linux-btrfs@lfdr.de>; Sat,  3 Jan 2026 05:25:16 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 8E0FE302AB8A
+	for <lists+linux-btrfs@lfdr.de>; Sat,  3 Jan 2026 10:02:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8C7B21CC44;
-	Sat,  3 Jan 2026 05:25:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92A602D062F;
+	Sat,  3 Jan 2026 10:02:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="Q27Diak7"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ev3teZ46"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-43167.protonmail.ch (mail-43167.protonmail.ch [185.70.43.167])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B167F145FE0
-	for <linux-btrfs@vger.kernel.org>; Sat,  3 Jan 2026 05:25:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.167
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4449714A8E
+	for <linux-btrfs@vger.kernel.org>; Sat,  3 Jan 2026 10:02:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767417914; cv=none; b=JO7ZrfapOA6gfd/upiPis4yr87Q78mMrx6VM2ubBdq6DbjWS4aaFcBxQJzwWW66h2JWowa9CETuSj9rp84rGIyweiiqHArbseBwS5TAEYhSIlI/r3r80qcCp/ITMYBjhNOexvZkaaEdY5fjKz1W1UIWie0XDj9cx2KEzCF1CJJI=
+	t=1767434576; cv=none; b=YJLS8YwTQU+f9pDSVnKAhtx1tbNt4f/RZJiDq23OCobAfSJyK/4a7XYvw74p1j7i+w2xck5lV83WpyXPVh4Xr7lz7I2FYVcDCj/CEwxG9xUnYF9x9M2/ANWgALdOwgnX7XRY/rlmL8Gu8q6u6qU0AJ3wQi/yZvaGjnOccntJki0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767417914; c=relaxed/simple;
-	bh=Ma8fD2GNsA/23ogBEXZpKXE6GBNa54yqpa5l+6wAW1A=;
-	h=Date:To:From:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=E9+gLi2RRRECEOn0mshoQAYOlBTBaPL8Nw3Rdo7v8/KJ4N/4Dk0bFGttCb6zFelZ3oiuzkDtF2mrpR8ZXkuzFgshB5j4ybhTIK3ZBjNqxo00qoOySNF8znd2zg3poBCuUiH1XsJKwAYKthdwaNFhInb1Utzr6e46cxKfcs8x0HU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com; spf=pass smtp.mailfrom=protonmail.com; dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b=Q27Diak7; arc=none smtp.client-ip=185.70.43.167
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=protonmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-	s=protonmail3; t=1767417904; x=1767677104;
-	bh=Ma8fD2GNsA/23ogBEXZpKXE6GBNa54yqpa5l+6wAW1A=;
-	h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
-	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
-	b=Q27Diak7Xv5Q8SWTk3Qm1MjsSyCaD3YDMVnww3qBUJLvvKcY9qWptxwZRjXTtMwBN
-	 wrW7znk834Rx6Tq3cpHp1AoBfEoFEFOCiMzMIYTNwUfIa1Vq4bDCpjeCMkQLpJpg7l
-	 9yXZN23CNhLx0qT6jxjiBGppUbK/r8yckwONWI/SZ7ZyWHmz22WMhF6MFFWJvm8AEN
-	 PS8voWmmfEhLBeWqTY20uky5Blf7nLnzuNtmLcXh8Pp81IppMAv1VyJzXMVHYOTQkU
-	 cS/ZZN7wdj9tfBTedsqOyxi1z0HTvIHzjT0zfmbGiIJO/ixs366lsMI238rO6+HzNC
-	 FT9469zvY99yQ==
-Date: Sat, 03 Jan 2026 05:25:00 +0000
-To: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-From: Turritopsis Dohrnii Teo En Ming <ceotdtem@protonmail.com>
-Cc: "ceo@teo-en-ming-corp.com" <ceo@teo-en-ming-corp.com>
-Subject: TeraCopy can be used to copy files even when the source harddisk has bad sectors (confirmed)
-Message-ID: <Lm0qJPBkTst3PlBvSRGz7Yox2TGWkpRA9fwyRYO0Y09bKBiB5A-jRdDdkJ9z4Gkf4fRhihDqTYcECvGIxIf3ftKtPArqtWxqmpFjeKT6dtw=@protonmail.com>
-Feedback-ID: 165137334:user:proton
-X-Pm-Message-ID: fe4a14361894bdfe9f056e8efedb499986d28af9
+	s=arc-20240116; t=1767434576; c=relaxed/simple;
+	bh=qPbRsMMm0OalGU9qVWShgfi/u94dI5ZvzdhcCM49xKU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LW9QlS0jL3ztDtY0eFMbCR8AxeEgLfkNBd9KYibQE7XuEH6mOHasoFEScCgbRRsgvP1CV5XWpFHmx9UZWka4zd5/uzsAM9SM/kzEx0f+ZgNkeExuP4hJmdUnMyek+10eJ/4SXzIDrbXnJBZJ1gYadTX6k3xEcnAtJx5FHvHpCNc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ev3teZ46; arc=none smtp.client-ip=209.85.221.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-42fed090e5fso5800056f8f.1
+        for <linux-btrfs@vger.kernel.org>; Sat, 03 Jan 2026 02:02:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1767434573; x=1768039373; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=pVMxWDM6IlrZiTwjie+uTeOt+ekq2BmDE9odN218w14=;
+        b=ev3teZ462bb7tVeSQt2aEMywcPu9S9Rc1lg6eSompCoIFR8h40GXHaP4CGJ+lnZRSc
+         NQVI0mTeAZikJ4k/VmePxkiKKrFrK7kCxO9b7GRqLsuAr9e2O2XYFkEf+6IHklu7MfK5
+         G9FsIRvb3X7jMTtWzAtgAj++Hc0Gho9ywgzadxFLV4u2dcB0iixv2qbsB9RKISHuB5cG
+         KU0p7P8dik1cTNXFzVpRfCex1nv68EMQXGpOJx2h01p0XVVAUH3KaoDltWwwxa6CGAbM
+         2HicTPdZaEiYcGtXTxQam9InaisXrzhd86SCGJMhaIKRiSpVmVdK7SOa2FiSJIMJcqYu
+         yWMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1767434574; x=1768039374;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pVMxWDM6IlrZiTwjie+uTeOt+ekq2BmDE9odN218w14=;
+        b=wrycCYpVO8oOKFMcQxYb1EbQKzfnmzt9APUZQT6gmcj5L+2XKhqFFJLN378P2+m3YR
+         2n0r4QHjQQ6fsGRuRg2InFnrO3DFacvRgi4NPFLtQ2/zzvnymi1G9Qajmgp+rQnqZnSx
+         PFP9NL5GlTHZ5Mvt7X+IQoex2810+pSQrAcrFhbsYghQPtaOUZ03RaExOxir//QRIrFF
+         EtMfL8RCFcTuowiV7npGeiLzbuo/74N/inE1S1HjdqncVCzxCUisD1zuWHOYSGkefzbX
+         vhGAD18tC36rtoQyd/ig6WjlNSegHZjAg7ZNYHTwuqD0lKbhtiTQYybfFRyqzEnowujC
+         lMqw==
+X-Forwarded-Encrypted: i=1; AJvYcCVquj5Rwhiha4dUkGhX/h8O6/ULvzzSKmDTU4nLNmrzVRSuTVjzshWwS91ivjUdmPm9u8LdZNzQ38xPcQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwBVEltIED5zMQmi6COE1RscgmJb+lYlv9zYysV+GrjVV6jcQg2
+	GWLjzUgDlUDtLq/k2bpqLvbGUAavde9H4AYxqjKr+X206V53JrmoVVsPLsubYMpaeso=
+X-Gm-Gg: AY/fxX6C61IiHSvuC4aTh116VdBWucMCGNx1yPksMUMtcwkT/WW6RXQAfrEhSwsxMba
+	gEDxTCYHvkUjeMH1l5nkxOi2ac78xh2Hntkcx1E9FRKJL+q/MeADWgT4KPZ4kNvnKWHGHohsU+r
+	XHALr209VJmOYPiHIIdq2Bq+k3XknhmotVQtE0LJ50t+8Tm/LveTq2yuiQmXqsuFP50E/2AWjrX
+	pEQ3pOM+q1yewJkh57N4FiQ6q1CrPxHKLYMqlwwy31xbEPEGjtz37mEFVQNsxsx49RK5tFwVudW
+	k8rovV7wQuByr9tUUVRwmojwgRQi3ydIftPIDP0/wZFGr4s4vIor2VYOWEl5KJ0bkHRhmaX9hV/
+	OpuYy3mtUKdYnTLLdaMPLhXw6yxKgs7+qAVhjucOzM7AV138W83TeUWLBCEaqjDQaAc6d7O26pq
+	K+L79LnRXZhBi4thP8pypeGyoBpQ==
+X-Google-Smtp-Source: AGHT+IFPkanq3RHUbcsbNCpasG6Z313jdsfGQVH9J5om8n/FtqWwK7E4sTbdu6zUmursa5ksRK1pIw==
+X-Received: by 2002:a05:6000:3113:b0:42f:bb4a:9989 with SMTP id ffacd0b85a97d-4324e4d0fc1mr49661835f8f.28.1767434573075;
+        Sat, 03 Jan 2026 02:02:53 -0800 (PST)
+Received: from localhost ([196.207.164.177])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4324eab2a94sm89174903f8f.43.2026.01.03.02.02.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 03 Jan 2026 02:02:52 -0800 (PST)
+Date: Sat, 3 Jan 2026 13:02:48 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: Vincent Mailhol <mailhol@kernel.org>,
+	Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+	Nicolas Schier <nicolas@fjasle.eu>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nicolas Schier <nsc@kernel.org>,
+	Nick Desaulniers <nick.desaulniers+lkml@gmail.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
+	Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
+	Kees Cook <kees@kernel.org>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-kbuild@vger.kernel.org, linux-sparse@vger.kernel.org,
+	linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+	dri-devel@lists.freedesktop.org, linux-btrfs@vger.kernel.org,
+	linux-hardening@vger.kernel.org, kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH] overflow: Update is_non_negative() and is_negative()
+ comment
+Message-ID: <903ba91b-f052-4b1c-827d-6292965026c5@moroto.mountain>
+References: <20251220-remove_wtype-limits-v3-0-24b170af700e@kernel.org>
+ <20251220-remove_wtype-limits-v3-3-24b170af700e@kernel.org>
+ <acdd84b2-e893-419c-8a46-da55d695dda2@kernel.org>
+ <20260101-futuristic-petrel-of-ecstasy-23db5f@lindesnes>
+ <CANiq72=jRT+6+2PBgshsK-TpxPiRK70H-+3D6sYaN-fdfC83qw@mail.gmail.com>
+ <b549e430-5623-4c60-acb1-4b5e095ae870@kernel.org>
+ <b6b35138-2c37-4b82-894e-59e897ec7d58@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b6b35138-2c37-4b82-894e-59e897ec7d58@kernel.org>
 
-Subject: TeraCopy can be used to copy files even when the source harddisk h=
-as bad sectors (confirmed)
+Thanks Randy, for sending this to me.  I'm on the sparse list, but
+I've been on vacation and haven't caught up with my email.  I can
+easily silence this in Smatch.
 
-Good day from Singapore,
+regards,
+dan carpenter
 
-Recently I have THREE (3) units of Western Digital WD My Passport 4 TB USB =
-portable harddisks (model: WD40NDZW-11BCVS1) which developed bad sectors. A=
-ccording to Reddit and other forums (reported by ChatGPT), many many many u=
-sers reported Western Digital 4 TB USB portable harddisks developed bad sec=
-tors after a short period of use or have high failure rates. According to C=
-hatGPT, Seagate harddisks have an even higher failure rate compared to West=
-ern Digital harddisks. According to ChatGPT, internal SATA harddisks and NA=
-S harddisks have a much higher reliability than USB portable harddisks.
-
-ChatGPT artificial intelligence (AI) told me TeraCopy can be used to copy f=
-iles even when the source harddisk has bad sectors, while Windows File Expl=
-orer will stall or hang forever when it encounters files with bad sectors. =
-TeraCopy can be configured to skip files with bad sectors or corruption ins=
-tead of hanging there forever like Windows File Explorer. Unfortunately, I =
-didn't come across this configuration option in TeraCopy. Maybe I need to b=
-uy the Pro licensed copy of TeraCopy.
-
-Last night on 2nd Jan 2026 Friday, I have downloaded and installed TeraCopy=
- 3.17 from Microsoft Store on my Windows 11 home desktop computer.
-
-At about/approximately 10.53 PM on 2nd Jan 2026 Friday, I started/initiated=
- TeraCopy copy operation. By this time, TeraCopy was at 2.0% copying.
-
-My objective is to copy 3.56 TB of data from one unit of Western Digital 4 =
-TB USB portable harddisk to another unit of Western Digital 4 TB USB portab=
-le harddisk, over USB 3.0 link. USB 3.0 has a theoretical file transfer spe=
-ed of 5 Gbps, as opposed to 1 Gbps for Gigabit Networking.
-
-After waiting for 14 hours 28 minutes, TeraCopy has finally managed to copy=
- 3.56 TB of data from one unit of Western Digital 4 TB USB portable harddis=
-k to another unit of Western Digital 4 TB USB portable harddisk, over USB 3=
-.0 link.
-
-At 1.11 PM on 3rd Jan 2026 Saturday, TeraCopy copy operation has finally co=
-mpleted.
-
-Yes, it took TeraCopy 14 hours 28 minutes to copy 3.56 TB of data over USB =
-3.0 link (5 Gbps). For Gigabit Networking of 1 Gbps, it would even be sever=
-al times slower. Unless you have 2.5 Gbps or 10 Gbps Gigabit Networking.
-
-If it was 7 TB of data, I don't know how many hours it will take. Basically=
- you just sit there and wait for super long hours and do nothing. Just star=
-ing into blank space.
-
-According to ChatGPT, if TeraCopy couldn't do it, Linux ddrescue will do th=
-e job. ddrescue is for Advanced sector-level recovery. FreeBSD also support=
-s ddrescue.
-
-Indeed, I have confirmed that TeraCopy can be used to copy files even when =
-the source harddisk has bad sectors, without stalling or hanging there fore=
-ver.
-
-Thank you.
-
-Regards,
-
-Mr. Turritopsis Dohrnii Teo En Ming
-Extremely Democratic People's Republic of Singapore
-3rd Jan 2026 Saturday 1.23 PM Singapore Time
-
-
-
-
-
-
+diff --git a/check_unsigned_lt_zero.c b/check_unsigned_lt_zero.c
+index bfeb3261f91d..ac3e650704ce 100644
+--- a/check_unsigned_lt_zero.c
++++ b/check_unsigned_lt_zero.c
+@@ -105,7 +105,8 @@ static bool is_allowed_zero(struct expression *expr)
+ 	    strcmp(macro, "STRTO_H") == 0 ||
+ 	    strcmp(macro, "SUB_EXTEND_USTAT") == 0 ||
+ 	    strcmp(macro, "TEST_CASTABLE_TO_TYPE_VAR") == 0 ||
+-	    strcmp(macro, "TEST_ONE_SHIFT") == 0)
++	    strcmp(macro, "TEST_ONE_SHIFT") == 0 ||
++	    strcmp(macro, "check_shl_overflow") == 0)
+ 		return true;
+ 	return false;
+ }
 
