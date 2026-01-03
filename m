@@ -1,82 +1,82 @@
-Return-Path: <linux-btrfs+bounces-20090-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20091-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85FD6CEFF5A
-	for <lists+linux-btrfs@lfdr.de>; Sat, 03 Jan 2026 14:07:19 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4FE97CEFF51
+	for <lists+linux-btrfs@lfdr.de>; Sat, 03 Jan 2026 14:06:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9C8203034A37
-	for <lists+linux-btrfs@lfdr.de>; Sat,  3 Jan 2026 13:06:48 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 848F2301F7FB
+	for <lists+linux-btrfs@lfdr.de>; Sat,  3 Jan 2026 13:06:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 661322F691C;
-	Sat,  3 Jan 2026 13:06:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F13815A86D;
+	Sat,  3 Jan 2026 13:06:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EEWcob6L"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SG8xo1Qh"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yx1-f65.google.com (mail-yx1-f65.google.com [74.125.224.65])
+Received: from mail-yw1-f193.google.com (mail-yw1-f193.google.com [209.85.128.193])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ED3D221FB4
-	for <linux-btrfs@vger.kernel.org>; Sat,  3 Jan 2026 13:06:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49BAB22154F
+	for <linux-btrfs@vger.kernel.org>; Sat,  3 Jan 2026 13:06:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767445607; cv=none; b=bj910rhPnmO8BEJYYkpDXm338s87m5MZLYK4NF07OE5coo+qVuPT2akFYhPfEdlkY8Hjyhl4D7yJqAXQQfVoh0YXSpfMD4tW2m0pclov591TIpSPZ9ciInCmnip1V28sSEVAhZgRvuRXC/Mkz2M/jXrp0olKyIOra2k5FRnhV5g=
+	t=1767445610; cv=none; b=KT/Xz02TCKIbbHQdC3l17OpvfkWBhdRbCy3QzbE0iIQq+yb6CEknv5qyu4dntLmkcsqAaO+XQwOu5sbBURn5eaxVgYj3lF1/kcQzpGeDszpuKoNxIx9X+cyhGLqEhq1Wf5cAfrWSeQuUbDYnU9uGPRI/2+DOc6YA5eMVZop5aR0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767445607; c=relaxed/simple;
-	bh=2OsgYlc725jcEzOkuv2wI/cvLZJyBmVNjAM4Qcnf/1A=;
+	s=arc-20240116; t=1767445610; c=relaxed/simple;
+	bh=imZa0HeUWwHEHqBcw5JglFpQZFjkYnL9sIr/8QOXWS8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=sOCEataHjM0sB470brh+TJ3TvPhh+7pOnLY7uKK4RrFL1GchvWgXs8KpY9dVpW7MUEbdJ8bUoTQfaTU6RZS/SfzvPdLBxylLG+WwZJO1XuUhnj0mIcvZMAdH+bsSWZNY9M6kWxDFEcv++wr2QHB+GGh44RA3lbPmorK96eVCnho=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EEWcob6L; arc=none smtp.client-ip=74.125.224.65
+	 MIME-Version; b=j47bLAXG8xT/xnJIhR70OYMq2s/jUIDDzMsmDPiGshSNDGRlhtbF/qP+FU+GqAOM+4Xkbpy4nkxpxMV96JEtg4m+BJ67VIssZAvowxC+q+eS/UNB7WuD+16+hnbTWn+8jtMY1cvMyHSR1cWcbW1wz5k26XVNqW++3lvyGyayI5w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SG8xo1Qh; arc=none smtp.client-ip=209.85.128.193
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yx1-f65.google.com with SMTP id 956f58d0204a3-644752b3105so1486643d50.3
-        for <linux-btrfs@vger.kernel.org>; Sat, 03 Jan 2026 05:06:45 -0800 (PST)
+Received: by mail-yw1-f193.google.com with SMTP id 00721157ae682-78d64196795so10915247b3.2
+        for <linux-btrfs@vger.kernel.org>; Sat, 03 Jan 2026 05:06:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767445605; x=1768050405; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1767445608; x=1768050408; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=yc5BVX4vlkKRPratXYSZiJ8QSBQmd5goiiLUujAwsZM=;
-        b=EEWcob6LQKk8Xg/DSwvMFAS3HZQ0dtOQbzHyWy/FTitG+JM/oFwtEgpecR5NKIDMSN
-         +pOy1+VmX9rbqAE0TdHLNx9nuHUt0wvMoz1WpCgwVgY9nPuNsIu8CC4QhVtI8GCJRZDr
-         k0uwEWbHtVn6WDpYy2e8JfB9v4YObrQYY9KSrVazcL46RHlWG6U0sNpon4wZz9opZRfp
-         3jNV3egby3t6aHsrT6BE/QLOdlxzt8kO+Y3Jt3EfZOaqTwjPcuG/cdc3CBy3vvspT/Aj
-         DN11RzZcP2fqHrvvY+zvI4jUEVsxtA4+dP3HGp6qArKIBjGJpLjAfsrrRmm6Bd1o0frB
-         XpyA==
+        bh=RWYdUp6yz/n4XcfrsPe/c37jj0G3r6+H8ur45DAUzqg=;
+        b=SG8xo1Qh8BKzPN6hILYPGwPD6HSS/GPo46Fy93uFY2oy7giD2Xn/3+gqMJ+wrqyJpq
+         XwyY/G45e9287wWVOgdlc8X0lOyvTKYworA57QIyoZbDG5GwN9pps6SMpuTf1qg/1qeT
+         8kVVysDrxYyqne8hp6prcCSmPZBURKRbS11diUDHEk0WDVhKkDJo9MuMYn7sfxg5D/pS
+         uoPe8MQw3lS/RfFRBN63O1SuD9a1MJIsneRPmRRtEOukQDxgWM/IV1zIoabij3cEKFSB
+         igkSC+ruQ9CHfGQ81DYBehabRihNDVnR0vipV2QCOcIQ1IBfk/5U88ew2XKpDQ1ymgCj
+         QRXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767445605; x=1768050405;
+        d=1e100.net; s=20230601; t=1767445608; x=1768050408;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=yc5BVX4vlkKRPratXYSZiJ8QSBQmd5goiiLUujAwsZM=;
-        b=SRfoREgrZMyHE68Wdz7quT1BuJsxknQBeH9kSmIEHXqALenNcMDoIAZc0lS1HyeCvZ
-         4aW091jlPJc2pI2ZHWWuwsDF1X/gD61RD4XNzqCzeiEMPxRuc/QI0E8E5Qf0tG3PSdEJ
-         jmyHeL8+XsY3Q7+p0HPa+ETAie8M4mSWQij7Zd2XBc6zuqc8BUzyTn/oi1Q/RiAxfvcK
-         0yH6H0B3DasP5dDKgw25Zg7xjH0srOCPpVRFAvJPPoD51p31ybIVDMAzA8zLa22L+zGu
-         UOA+lDMUo3/jwhbNYXxJ7NB0lAnsm9YErQOnV3fU/mNQt1SSWyf3LK1NdDCeg4CLudwY
-         gDrg==
-X-Gm-Message-State: AOJu0Yyrz1jhfXsLgwWXIsfF6oxLOjsaqxNw9SIx8Dum3c6BRUWRn2Z7
-	hgruhUpfA6BrLsKeO3ZGqGiS2i2b9CCRYP60JPRvjIR0+FkVjxk2tDuQt+7Id1hbT1sxDA==
-X-Gm-Gg: AY/fxX4WySgpN0RZPPY11Zl2ZLl7EQmqNEvWm55bImvc/zCbspT3+4ULrFHIgfRN1fZ
-	y42ohtFQ4l2YeGDgq5ip5+mEtBgF9OgHRqfWkodTFO56QkIpbNXkM/0sJ+1S3vVD6flngFWwqKz
-	dGEqbuZItGihSN7OBVtN+bjcxcyyOg9xpYW1TJebGLQId79jAyMU5eGIW1qG4uJJ+lUmm7lFufo
-	2FXvM57S8BYG0W/UK2N7rPC6Uw81yj8xpVgsNChSPEwoZtkDtg8TK6jVG1yn7h3t4QUFYWj0RMk
-	vd5F0pon5ypQfumP8fW67Syyh+t8Dob/M9vkK4DpuxDQhQYlnv13YyIkbfpxqWbUGdk3kLhZjGM
-	2cnoM0tsa0h7iTq9P+qCRtJpD7XZh5ycdwMApC3hHi/9aPz+8ftABI6LWE+yPiuwVuhpNmCJ7Es
-	QAkDNb8Re/FSAXERZM+sA=
-X-Google-Smtp-Source: AGHT+IFQtvmkSxLwMzKQgjRuDlBiDM5kWfDCEXXKbehyeId0CfOTeZAOa/rmGGg4btITXDgNEiNICA==
-X-Received: by 2002:a05:690e:144e:b0:644:3825:7582 with SMTP id 956f58d0204a3-6466a8f1343mr28592324d50.5.1767445604823;
-        Sat, 03 Jan 2026 05:06:44 -0800 (PST)
+        bh=RWYdUp6yz/n4XcfrsPe/c37jj0G3r6+H8ur45DAUzqg=;
+        b=MsqyAX/fPPKGKp+60YbTzvCUX8c1UJ4d8ClsiZyWCGOPWSCzXDySKYtrPpHP5dz2H0
+         f8CNX9/tenDT33itB9hVu4GqZOCsQM+ruqYr0H37/9sETxYY0lS0FHOS0RhqiZFeS46G
+         g+Y9ycetY0a+2bdeca68delBP3PNcz748fwBT2ZdNtlJ3z8Fnyh3fCZKgCq55JzP4tbu
+         gDsTSJu3avbCaTPXwQ6dViWYKQOGDJBvagUUaU916iTplqArwZ+OXv191wS5FtdGMCNf
+         SUCsZt0hNhotnOZj1pwdc2xnsHuX9VKSSFlu59kUU0/1nqx8qKFmxn3ass+7BKA9JtzB
+         CV6A==
+X-Gm-Message-State: AOJu0YyrnRXTyaLxrFLw2KCZo7zKv277s27kSN05/IP0r+ESOsHJBt+D
+	uirQLyBQb/UMrPiznHcUX+V5DhIJRV4lhXoBWsKEyDQnjd1XkwYrshO5ZCu49lj8bAvUQg==
+X-Gm-Gg: AY/fxX57SK5L8AbJx6MxT+SBn9GftRNReYN9GFsuK9mn2DVl2Kq/pqI7TdgwkvZb9/h
+	F7PSkmOaNlL79NjAWJvEKJGBIQMYEZ9QM4lxuLLF0ILxZBkVfK1K1eN/jwAa+IiFLCD8dQZIUwE
+	qgbq/iASCTLhF+K2uI5hTQPH3bAgfaDYAePB+pPLTJLMuBt5PrbdtCl8vatueRKH9kwycOwPNoB
+	TJznkHmZUCn6ezDgAXC0P9ipq0lEtXimSyeRWHEiGdHy0EngUIPD5eQK+f0HKObpg488PzJRWpV
+	66QpD1M80/QqZfSZp32CUjR5nXWUP2MEwqXPUit5UO8gkQLRJVj2IDgSBx84Qhc3B7bM4jr199K
+	kH+AWxtbI8p24rhHhD/Q7VeA/657wHGLnNAr4wIDNawmbg0VHJDbIXxZeUH70QGszSK+XLQl+nT
+	+OCCeh56i4xarpyI0M0Cs=
+X-Google-Smtp-Source: AGHT+IHW4puJR27B1o1s4eQ7hk8ogpQ6ayvriaCazOmihFAH2ee/ASNyXWjDYJqWadL4EpyGJaZIIA==
+X-Received: by 2002:a05:690c:12:b0:790:63c1:da73 with SMTP id 00721157ae682-79063c1db05mr47789177b3.2.1767445608135;
+        Sat, 03 Jan 2026 05:06:48 -0800 (PST)
 Received: from SaltyKitkat ([193.123.86.108])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-78ffebd2690sm112554957b3.15.2026.01.03.05.06.41
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-78ffebd2690sm112554957b3.15.2026.01.03.05.06.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 03 Jan 2026 05:06:44 -0800 (PST)
+        Sat, 03 Jan 2026 05:06:47 -0800 (PST)
 From: Sun YangKai <sunk67188@gmail.com>
 To: linux-btrfs@vger.kernel.org
 Cc: Sun YangKai <sunk67188@gmail.com>
-Subject: [PATCH v2 5/7] btrfs: reorder btrfs_block_group members to reduce struct size
-Date: Sat,  3 Jan 2026 20:19:52 +0800
-Message-ID: <20260103122504.10924-7-sunk67188@gmail.com>
+Subject: [PATCH v2 6/7] btrfs: use proper types for btrfs_block_group fields
+Date: Sat,  3 Jan 2026 20:19:53 +0800
+Message-ID: <20260103122504.10924-8-sunk67188@gmail.com>
 X-Mailer: git-send-email 2.51.2
 In-Reply-To: <20260103122504.10924-2-sunk67188@gmail.com>
 References: <20260103122504.10924-2-sunk67188@gmail.com>
@@ -88,142 +88,44 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Reorder struct btrfs_block_group fields to improve packing and reduce
-memory footprint from 624 to 600 bytes (24 bytes saved per instance).
+Convert disk_cache_state and cached fields in struct btrfs_block_group
+from int to their respective enum types (enum btrfs_disk_cache_state
+and enum btrfs_caching_type). Also change btrfs_block_group_done() to
+return bool instead of int since it returns a boolean comparison.
 
-Here's pahole output after this change:
-
-struct btrfs_block_group {
-	struct btrfs_fs_info *     fs_info;              /*     0     8 */
-	struct btrfs_inode *       inode;                /*     8     8 */
-	u64                        start;                /*    16     8 */
-	u64                        length;               /*    24     8 */
-	u64                        pinned;               /*    32     8 */
-	u64                        reserved;             /*    40     8 */
-	u64                        used;                 /*    48     8 */
-	u64                        delalloc_bytes;       /*    56     8 */
-	/* --- cacheline 1 boundary (64 bytes) --- */
-	u64                        bytes_super;          /*    64     8 */
-	u64                        flags;                /*    72     8 */
-	u64                        cache_generation;     /*    80     8 */
-	u64                        global_root_id;       /*    88     8 */
-	u64                        commit_used;          /*    96     8 */
-	u32                        bitmap_high_thresh;   /*   104     4 */
-	u32                        bitmap_low_thresh;    /*   108     4 */
-	struct rw_semaphore        data_rwsem;           /*   112    40 */
-	/* --- cacheline 2 boundary (128 bytes) was 24 bytes ago --- */
-	unsigned long              full_stripe_len;      /*   152     8 */
-	unsigned long              runtime_flags;        /*   160     8 */
-	spinlock_t                 lock;                 /*   168     4 */
-	unsigned int               ro;                   /*   172     4 */
-	enum btrfs_disk_cache_state disk_cache_state;    /*   176     4 */
-	enum btrfs_caching_type    cached;               /*   180     4 */
-	struct btrfs_caching_control * caching_ctl;      /*   184     8 */
-	/* --- cacheline 3 boundary (192 bytes) --- */
-	struct btrfs_space_info *  space_info;           /*   192     8 */
-	struct btrfs_free_space_ctl * free_space_ctl;    /*   200     8 */
-	struct rb_node             cache_node;           /*   208    24 */
-	struct list_head           list;                 /*   232    16 */
-	struct list_head           cluster_list;         /*   248    16 */
-	/* --- cacheline 4 boundary (256 bytes) was 8 bytes ago --- */
-	struct list_head           bg_list;              /*   264    16 */
-	struct list_head           ro_list;              /*   280    16 */
-	refcount_t                 refs;                 /*   296     4 */
-	atomic_t                   frozen;               /*   300     4 */
-	struct list_head           discard_list;         /*   304    16 */
-	/* --- cacheline 5 boundary (320 bytes) --- */
-	enum btrfs_discard_state   discard_state;        /*   320     4 */
-	int                        discard_index;        /*   324     4 */
-	u64                        discard_eligible_time; /*   328     8 */
-	u64                        discard_cursor;       /*   336     8 */
-	struct list_head           dirty_list;           /*   344    16 */
-	struct list_head           io_list;              /*   360    16 */
-	struct btrfs_io_ctl        io_ctl;               /*   376    72 */
-	/* --- cacheline 7 boundary (448 bytes) --- */
-	atomic_t                   reservations;         /*   448     4 */
-	atomic_t                   nocow_writers;        /*   452     4 */
-	struct mutex               free_space_lock;      /*   456    32 */
-	bool                       using_free_space_bitmaps; /*   488     1 */
-	bool                       using_free_space_bitmaps_cached; /*   489     1 */
-	bool                       reclaim_mark;         /*   490     1 */
-
-	/* XXX 1 byte hole, try to pack */
-
-	int                        swap_extents;         /*   492     4 */
-	u64                        alloc_offset;         /*   496     8 */
-	u64                        zone_unusable;        /*   504     8 */
-	/* --- cacheline 8 boundary (512 bytes) --- */
-	u64                        zone_capacity;        /*   512     8 */
-	u64                        meta_write_pointer;   /*   520     8 */
-	struct btrfs_chunk_map *   physical_map;         /*   528     8 */
-	struct list_head           active_bg_list;       /*   536    16 */
-	struct work_struct         zone_finish_work;     /*   552    32 */
-	/* --- cacheline 9 boundary (576 bytes) was 8 bytes ago --- */
-	struct extent_buffer *     last_eb;              /*   584     8 */
-	enum btrfs_block_group_size_class size_class;    /*   592     4 */
-
-	/* size: 600, cachelines: 10, members: 56 */
-	/* sum members: 595, holes: 1, sum holes: 1 */
-	/* padding: 4 */
-	/* last cacheline: 24 bytes */
-};
+No functional changes intended.
 
 Signed-off-by: Sun YangKai <sunk67188@gmail.com>
 ---
- fs/btrfs/block-group.h | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
+ fs/btrfs/block-group.h | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/fs/btrfs/block-group.h b/fs/btrfs/block-group.h
-index 3b3c61b3af2c..88c2e3a0a5a0 100644
+index 88c2e3a0a5a0..bbd9371e33fd 100644
 --- a/fs/btrfs/block-group.h
 +++ b/fs/btrfs/block-group.h
-@@ -118,7 +118,6 @@ struct btrfs_caching_control {
- struct btrfs_block_group {
- 	struct btrfs_fs_info *fs_info;
- 	struct btrfs_inode *inode;
--	spinlock_t lock;
- 	u64 start;
- 	u64 length;
- 	u64 pinned;
-@@ -159,6 +158,8 @@ struct btrfs_block_group {
- 	unsigned long full_stripe_len;
- 	unsigned long runtime_flags;
+@@ -162,10 +162,10 @@ struct btrfs_block_group {
  
-+	spinlock_t lock;
-+
  	unsigned int ro;
  
- 	int disk_cache_state;
-@@ -178,8 +179,6 @@ struct btrfs_block_group {
- 	/* For block groups in the same raid type */
- 	struct list_head list;
+-	int disk_cache_state;
++	enum btrfs_disk_cache_state disk_cache_state;
  
--	refcount_t refs;
--
- 	/*
- 	 * List of struct btrfs_free_clusters for this block group.
- 	 * Today it will only have one thing on it, but that may change
-@@ -199,6 +198,8 @@ struct btrfs_block_group {
- 	/* For read-only block groups */
- 	struct list_head ro_list;
+ 	/* Cache tracking stuff */
+-	int cached;
++	enum btrfs_caching_type cached;
+ 	struct btrfs_caching_control *caching_ctl;
  
-+	refcount_t refs;
-+
- 	/*
- 	 * When non-zero it means the block group's logical address and its
- 	 * device extents can not be reused for future block group allocations
-@@ -211,10 +212,10 @@ struct btrfs_block_group {
+ 	struct btrfs_space_info *space_info;
+@@ -383,7 +383,7 @@ static inline u64 btrfs_system_alloc_profile(struct btrfs_fs_info *fs_info)
+ 	return btrfs_get_alloc_profile(fs_info, BTRFS_BLOCK_GROUP_SYSTEM);
+ }
  
- 	/* For discard operations */
- 	struct list_head discard_list;
-+	enum btrfs_discard_state discard_state;
- 	int discard_index;
- 	u64 discard_eligible_time;
- 	u64 discard_cursor;
--	enum btrfs_discard_state discard_state;
- 
- 	/* For dirty block groups */
- 	struct list_head dirty_list;
+-static inline int btrfs_block_group_done(const struct btrfs_block_group *cache)
++static inline bool btrfs_block_group_done(const struct btrfs_block_group *cache)
+ {
+ 	smp_mb();
+ 	return cache->cached == BTRFS_CACHE_FINISHED ||
 -- 
 2.51.2
 
