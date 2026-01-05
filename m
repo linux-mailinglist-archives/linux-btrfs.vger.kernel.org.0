@@ -1,218 +1,333 @@
-Return-Path: <linux-btrfs+bounces-20106-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20107-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id B25B0CF4C25
-	for <lists+linux-btrfs@lfdr.de>; Mon, 05 Jan 2026 17:40:56 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 032BACF4C70
+	for <lists+linux-btrfs@lfdr.de>; Mon, 05 Jan 2026 17:44:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 0571831126D2
-	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Jan 2026 16:23:11 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 1DBAD3073788
+	for <lists+linux-btrfs@lfdr.de>; Mon,  5 Jan 2026 16:38:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8956309EF5;
-	Mon,  5 Jan 2026 16:23:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DA022EDD7E;
+	Mon,  5 Jan 2026 16:38:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sDdzvhFn"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HSoTu4WT"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BAF931DDA4
-	for <linux-btrfs@vger.kernel.org>; Mon,  5 Jan 2026 16:23:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A579E2F1FE7
+	for <linux-btrfs@vger.kernel.org>; Mon,  5 Jan 2026 16:38:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767630187; cv=none; b=InDx/rbjjLQ84T8+y9aHj6g8r7uIbHSpuqpziyzpkONlPMwZDkbkVi3OeE/126JoqAGOFXQvRQaw/fjssHZhbjsOQjtieQuMPV5538im7oxg8u1DX1x1yr/j+Uie9fh+hL+/ihWuhbiweRnIWuugwXSCoSOV+YrA1s03qPEykUQ=
+	t=1767631099; cv=none; b=sNHfvgpm5aNRcvaRYCBggn1r8B7o2ZAFilBUxF5lFhjmN32G+p1SynNYHIPVLd2OcPYX44LwYfuzR0wOvx1RGlETAGzYtLlSdnRKxHUHwpXFZd6vgx+A9K8ZdNFeBO3gwmizZ5rJRaYJD3DWbrZeGLkMtV9/J53FoABnBV00cdU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767630187; c=relaxed/simple;
-	bh=KCDYm5B7n4J3N1HDTck2bGaxk45jnuFVNtD8YIOA1r8=;
+	s=arc-20240116; t=1767631099; c=relaxed/simple;
+	bh=NY2hppIPCFADLZ4yrXkUTn31A5dfVwVMUMSbFY5iYlM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=C1xh6Vhnn0A29pLg4m1VtYPMOLksg/izKCF8bXJNHXVtoApC63RuC72YP5VIHUpxatsrRptd/LdjDcdqte19oivY7l4j8ZYGlIgrrvBm0gJqjrzYw+48jeAdbwEoBLx38WIrP4/MgybjqRETN3Rk2llPZ55/H1816bl/DEBTmKY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sDdzvhFn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88137C19424
-	for <linux-btrfs@vger.kernel.org>; Mon,  5 Jan 2026 16:23:06 +0000 (UTC)
+	 To:Cc:Content-Type; b=QJvwVQVpBhRLwnuR8lTZHfyXzssMxuTKbrttgMmiEvFZsIULSMhXd5F0FAtlrCg/nR2ppinUsSUfhL9uRiE/PndSiv+N5tNncC/W/NvEolVcsga01TKKz5sG5KuQpCOkf3HvpsrZ7ScMpm6Fn71YrpRllsckPTAHwlBKrNpVlaA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HSoTu4WT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7AE21C19421
+	for <linux-btrfs@vger.kernel.org>; Mon,  5 Jan 2026 16:38:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767630186;
-	bh=KCDYm5B7n4J3N1HDTck2bGaxk45jnuFVNtD8YIOA1r8=;
+	s=k20201202; t=1767631099;
+	bh=NY2hppIPCFADLZ4yrXkUTn31A5dfVwVMUMSbFY5iYlM=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=sDdzvhFnoCXd9PtOX7DZoAvv5FviDA4GzPxiA7CLR7de5lFuJsYYi9EaoZTl3WF6T
-	 /SSXqdQnScyaQDGT2w4KmHDFiPmU/ZXFO1ic5gObnrdbcyrBTjU0WeDeKMrCHiUkOB
-	 m3zEB2DSPxMesy43C2QvD+U5HNwF5EofaYykuwS5LNCBAj+TE8R6WcdroC7ZmLTQsW
-	 eHfA2XV/VY9YnBs3ZQjp3R5KM2qvwzc9iUMlxgGaYLJB9mBsNscyoABnbQUac97n+L
-	 45OokrOhy6esQy3PU6bXiHCicKBVMDky6mWukcL868E+F3xmR9Qb85sKtNtvRqPCTy
-	 di9w5KlXmT6HA==
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-b8010b8f078so26262866b.0
-        for <linux-btrfs@vger.kernel.org>; Mon, 05 Jan 2026 08:23:06 -0800 (PST)
-X-Gm-Message-State: AOJu0YyxkZ8hfMDyz5VWt9rBlUZtZxeZ96tCBNvZNS6YcJ0Wegph6hoc
-	WdnvHKfqELp9bOztlyR4yWFNZ9qHd5qSsIirtogXpnSimkNOI+6n+o5rZlB5XH6jKTK40hp5ljM
-	U5btd/poovzx8WtaK+3e2Mk3UvGHQoZw=
-X-Google-Smtp-Source: AGHT+IHsFKlLybpf17m13vzVs9Wc5wf8AEuk75neSRsMbGzLhfx14A72516Mg3Agvj57h2u8VOsgRPVJbLLDDmdzeyI=
-X-Received: by 2002:a17:906:d551:b0:b84:200d:15b5 with SMTP id
- a640c23a62f3a-b8426bb8790mr36525666b.31.1767630185087; Mon, 05 Jan 2026
- 08:23:05 -0800 (PST)
+	b=HSoTu4WTWr1zA6qg7IRruWyFDNSntAN0t+DSvGh7mi+5ZHJ3D7imtAmthFArMK2ZW
+	 YvaOTklfDlrjLK+fqIFZlZQEtMfCdPJ9wDnHgbqWr43nUYayqhzLjXBPh5MCdGAlnC
+	 6N/PIOKvyMaWK5nIpylNJugxWDVcFohbyiJbRH+kiL5wqptPlkxMjj+/j5NqmjgrSF
+	 aXCGSRFyYgZa2yaPvwrPFzE+699qNVHK/DkkFOnXe759D9mQFEd+5sMKIv91vLSs4c
+	 LuhagqQGBldEBZC4KNZ4wEpOe9zrmIHf+c5779aQblLXZKEZXl+8arM6TApcCxa8HJ
+	 lL/26lhjuAMcA==
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-b728a43e410so22505466b.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 05 Jan 2026 08:38:19 -0800 (PST)
+X-Gm-Message-State: AOJu0YxtMCv8mlJBMgCet07KDsbB1iTwl5SHgG+t9E0oMxrkFT3V3cNX
+	MaY0vlEx4G/WhS/B/xPllVRpdMatrnxH/rHpCCeTp8Ed3bLEWhG4uUrOvkgNaxjTZV/yLON9s4x
+	HFIGkXo304k1/FJNfrt/rCJcpuSG4Dzw=
+X-Google-Smtp-Source: AGHT+IGOk4F3Fy17GO1DADCuppDoZa9nvjowkJG9xz+bNWH1lisjUHaaZ+ZAarbm3C8odxp3lrFWBRAJqsCwMVuQ4ME=
+X-Received: by 2002:a17:906:f593:b0:b80:413:16d6 with SMTP id
+ a640c23a62f3a-b8426c09d0cmr31923166b.44.1767631098046; Mon, 05 Jan 2026
+ 08:38:18 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <3cb8fdeec6e3bf977682d1074bf3e7ba1719b98c.1765466812.git.fdmanana@suse.com>
-In-Reply-To: <3cb8fdeec6e3bf977682d1074bf3e7ba1719b98c.1765466812.git.fdmanana@suse.com>
+References: <f58857f1ac741bd1fb4fa2e7ec56ed87815bb1f5.1766198159.git.wqu@suse.com>
+In-Reply-To: <f58857f1ac741bd1fb4fa2e7ec56ed87815bb1f5.1766198159.git.wqu@suse.com>
 From: Filipe Manana <fdmanana@kernel.org>
-Date: Mon, 5 Jan 2026 16:22:28 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H7AY2iC+Z8LEv8+TawbuXJdwoXei_0d+NEccVYE5Wu3PA@mail.gmail.com>
-X-Gm-Features: AQt7F2rIvozY87jBv-flxCjNEjK8tkqdff9snu8adOa6xqW7lJJ8zJZRa79IO2M
-Message-ID: <CAL3q7H7AY2iC+Z8LEv8+TawbuXJdwoXei_0d+NEccVYE5Wu3PA@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: test power failure after fsync and rename
- exchanging directories
-To: fstests@vger.kernel.org
-Cc: linux-btrfs@vger.kernel.org, Filipe Manana <fdmanana@suse.com>, 
-	Zorro Lang <zlang@kernel.org>, Zorro Lang <zlang@redhat.com>
+Date: Mon, 5 Jan 2026 16:37:39 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H5U5=yPYMR0eMOCL_+M5=WwQcFhWOtgKQicOd2ehpwa0A@mail.gmail.com>
+X-Gm-Features: AQt7F2rQDLel8aQjtXWnATqYG2Jw4t_htIgpHm6ZSH_gxZfzlyo9W6U59jpvRp0
+Message-ID: <CAL3q7H5U5=yPYMR0eMOCL_+M5=WwQcFhWOtgKQicOd2ehpwa0A@mail.gmail.com>
+Subject: Re: [PATCH v3] btrfs: add mount time auto fix for orphan fst entries
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Dec 11, 2025 at 3:42=E2=80=AFPM <fdmanana@kernel.org> wrote:
+On Sat, Dec 20, 2025 at 2:38=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
 >
-> From: Filipe Manana <fdmanana@suse.com>
+> [BUG]
+> Before btrfs-progs v6.16.1 release, mkfs.btrfs can leave free space tree
+> entries for deleted chunks:
 >
-> Test renaming one directory over another one that has a subvolume inside
-> it and fsync a file in the other directory that was previously renamed.
-> We want to verify that after a power failure we are able to mount the
-> filesystem and it has the correct content (all renames visible).
+>  # mkfs.btrfs -f -O fst $dev
+>  # btrfs ins dump-tree -t chunk $dev
+>  btrfs-progs v6.16
+>  chunk tree
+>  leaf 22036480 items 4 free space 15781 generation 8 owner CHUNK_TREE
+>  leaf 22036480 flags 0x1(WRITTEN) backref revision 1
+>         item 0 key (DEV_ITEMS DEV_ITEM 1) itemoff 16185 itemsize 98
+>         item 1 key (FIRST_CHUNK_TREE CHUNK_ITEM 13631488) itemoff 16105 i=
+temsize 80
+>         ^^^ The first chunk is at 13631488
+>         item 2 key (FIRST_CHUNK_TREE CHUNK_ITEM 22020096) itemoff 15993 i=
+temsize 112
+>         item 3 key (FIRST_CHUNK_TREE CHUNK_ITEM 30408704) itemoff 15881 i=
+temsize 112
 >
-> This exercises a bug fixed by the following kernel patch:
+>  # btrfs ins dump-tree -t free-space-tree $dev
+>  btrfs-progs v6.16
+>  free space tree key (FREE_SPACE_TREE ROOT_ITEM 0)
+>  leaf 30556160 items 13 free space 15918 generation 8 owner FREE_SPACE_TR=
+EE
+>  leaf 30556160 flags 0x1(WRITTEN) backref revision 1
+>         item 0 key (1048576 FREE_SPACE_INFO 4194304) itemoff 16275 itemsi=
+ze 8
+>                 free space info extent count 1 flags 0
+>         item 1 key (1048576 FREE_SPACE_EXTENT 4194304) itemoff 16275 item=
+size 0
+>                 free space extent
+>         item 2 key (5242880 FREE_SPACE_INFO 8388608) itemoff 16267 itemsi=
+ze 8
+>                 free space info extent count 1 flags 0
+>         item 3 key (5242880 FREE_SPACE_EXTENT 8388608) itemoff 16267 item=
+size 0
+>                 free space extent
+>         ^^^ Above 4 items are all before the first chunk.
+>         item 4 key (13631488 FREE_SPACE_INFO 8388608) itemoff 16259 items=
+ize 8
+>                 free space info extent count 1 flags 0
+>         item 5 key (13631488 FREE_SPACE_EXTENT 8388608) itemoff 16259 ite=
+msize 0
+>                 free space extent
+>         ...
 >
->   "btrfs: always detect conflicting inodes when logging inode refs"
+> This can trigger btrfs check errors.
 >
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> [CAUSE]
+> It's a bug in free space tree implementation of btrfs-progs, which
+> doesn't delete involved fst entries for the to-be-deleted chunk/block
+> group.
+>
+> [ENHANCEMENT]
+> The mostly common fix is to clear the space cache and rebuild it, but
+> that requires a ro->rw remount which may not be possible for rootfs,
+> and also relies on users to use "clear_cache" mount option manually.
+>
+> Here introduce a kernel fix for it, which will delete any entries that
+> is before the first block group automatically at the first RW mount.
+>
+> For fses without such problem, the overhead is just a single tree
+> search and no modification to the free space tree, thus the overhead
+> should be minimal.
+>
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
 
-Ping.
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
-Zorro, this missed the last update.
-
+Looks good now, thanks.
 
 > ---
->  tests/btrfs/340     | 75 +++++++++++++++++++++++++++++++++++++++++++++
->  tests/btrfs/340.out | 15 +++++++++
->  2 files changed, 90 insertions(+)
->  create mode 100755 tests/btrfs/340
->  create mode 100644 tests/btrfs/340.out
+> Changelog:
+> v3:
+> - Rename the exported function to btrfs_delete_orphan_free_space_entries(=
+)
+>   And minor rewords.
+> - Use btrfs_err() if we failed to delete the orphan fst entries
+> - Various grammar and code style fixes
 >
-> diff --git a/tests/btrfs/340 b/tests/btrfs/340
-> new file mode 100755
-> index 00000000..d52893ae
-> --- /dev/null
-> +++ b/tests/btrfs/340
-> @@ -0,0 +1,75 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2025 SUSE S.A.  All Rights Reserved.
-> +#
-> +# FS QA Test 340
-> +#
-> +# Test renaming one directory over another one that has a subvolume insi=
-de it
-> +# and fsync a file in the other directory that was previously renamed. W=
-e want
-> +# to verify that after a power failure we are able to mount the filesyst=
-em and
-> +# it has the correct content (all renames visible).
-> +#
-> +. ./common/preamble
-> +_begin_fstest auto quick subvol rename log
+> v2:
+> - Do not output the "deleted orphan free space tree entries" for error
+> - Do not return >0 for delete_orphan_free_space_entries()
+>   If we deleted a full leaf and the next item matches the first bg, we
+>   will return 1. This should not happen in the real world though.
+> - Add a comment for the inner for() loop break
+>   For double loop, we need to take care of which loop we're breaking
+>   out.
+> ---
+>  fs/btrfs/disk-io.c         |  10 ++++
+>  fs/btrfs/free-space-tree.c | 104 +++++++++++++++++++++++++++++++++++++
+>  fs/btrfs/free-space-tree.h |   1 +
+>  3 files changed, 115 insertions(+)
+>
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index e5535bdc5b0c..1015185c80ae 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -3034,6 +3034,16 @@ int btrfs_start_pre_rw_mount(struct btrfs_fs_info =
+*fs_info)
+>                 }
+>         }
+>
+> +       /*
+> +        * Before btrfs-progs v6.16.1 mkfs.btrfs can leave free space ent=
+ries
+> +        * for deleted temporary chunks.
+> +        * Delete them if they exist.
+> +        */
+> +       ret =3D btrfs_delete_orphan_free_space_entries(fs_info);
+> +       if (ret < 0) {
+> +               btrfs_err(fs_info, "failed to delete orphan free space tr=
+ee entries: %d", ret);
+> +               goto out;
+> +       }
+>         /*
+>          * btrfs_find_orphan_roots() is responsible for finding all the d=
+ead
+>          * roots (with 0 refs), flag them with BTRFS_ROOT_DEAD_TREE and l=
+oad
+> diff --git a/fs/btrfs/free-space-tree.c b/fs/btrfs/free-space-tree.c
+> index a66ce9ef3aff..e949dc3e5cd0 100644
+> --- a/fs/btrfs/free-space-tree.c
+> +++ b/fs/btrfs/free-space-tree.c
+> @@ -1710,3 +1710,107 @@ int btrfs_load_free_space_tree(struct btrfs_cachi=
+ng_control *caching_ctl)
+>         else
+>                 return load_free_space_extents(caching_ctl, path, extent_=
+count);
+>  }
 > +
-> +_cleanup()
+> +static int delete_orphan_free_space_entries(struct btrfs_root *fst_root,
+> +                                           struct btrfs_path *path,
+> +                                           u64 first_bg_bytenr)
 > +{
-> +       _cleanup_flakey
-> +       cd /
-> +       rm -r -f $tmp.*
+> +       struct btrfs_trans_handle *trans;
+> +       int ret;
+> +
+> +       trans =3D btrfs_start_transaction(fst_root, 1);
+> +       if (IS_ERR(trans))
+> +               return PTR_ERR(trans);
+> +
+> +       while (true) {
+> +               struct btrfs_key key =3D { 0 };
+> +               int i;
+> +
+> +               ret =3D btrfs_search_slot(trans, fst_root, &key, path, -1=
+, 1);
+> +               if (ret < 0)
+> +                       break;
+> +               ASSERT(ret > 0);
+> +               ret =3D 0;
+> +               for (i =3D 0; i < btrfs_header_nritems(path->nodes[0]); i=
+++) {
+> +                       btrfs_item_key_to_cpu(path->nodes[0], &key, i);
+> +                       if (key.objectid >=3D first_bg_bytenr) {
+> +                               /*
+> +                                * Only break the for() loop and continue=
+ to
+> +                                * delete items.
+> +                                */
+> +                               break;
+> +                       }
+> +               }
+> +               /* No items to delete, finished. */
+> +               if (i =3D=3D 0)
+> +                       break;
+> +
+> +               ret =3D btrfs_del_items(trans, fst_root, path, 0, i);
+> +               if (ret < 0)
+> +                       break;
+> +               btrfs_release_path(path);
+> +       }
+> +       btrfs_release_path(path);
+> +       btrfs_end_transaction(trans);
+> +       if (ret =3D=3D 0)
+> +               btrfs_info(fst_root->fs_info, "deleted orphan free space =
+tree entries");
+> +       return ret;
 > +}
 > +
-> +. ./common/filter
-> +. ./common/dmflakey
-> +. ./common/renameat2
+> +/* Remove any free space entry before the first block group. */
+> +int btrfs_delete_orphan_free_space_entries(struct btrfs_fs_info *fs_info=
+)
+> +{
+> +       BTRFS_PATH_AUTO_RELEASE(path);
+> +       struct btrfs_key key =3D {
+> +               .objectid =3D BTRFS_FREE_SPACE_TREE_OBJECTID,
+> +               .type =3D BTRFS_ROOT_ITEM_KEY,
+> +               .offset =3D 0,
+> +       };
+> +       struct btrfs_root *root;
+> +       struct btrfs_block_group *bg;
+> +       u64 first_bg_bytenr;
+> +       int ret;
 > +
-> +_require_scratch
-> +_require_dm_target flakey
-> +_require_renameat2 exchange
+> +       /*
+> +        * Extent tree v2 has multiple global roots based on the block gr=
+oup.
+> +        * This means we can not easily grab the global free space tree a=
+nd locate
+> +        * orphan items.
+> +        * Furthermore this is still experimental, all users should use t=
+he latest
+> +        * btrfs-progs anyway.
+> +        */
+> +       if (btrfs_fs_incompat(fs_info, EXTENT_TREE_V2))
+> +               return 0;
+> +       if (!btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE))
+> +               return 0;
+> +       root =3D btrfs_global_root(fs_info, &key);
+> +       if (!root)
+> +               return 0;
 > +
-> +_fixed_by_kernel_commit xxxxxxxxxxxx \
-> +       "btrfs: always detect conflicting inodes when logging inode refs"
+> +       key.objectid =3D 0;
+> +       key.type =3D 0;
+> +       key.offset =3D 0;
 > +
-> +_scratch_mkfs >>$seqres.full 2>&1 || _fail "mkfs failed"
-> +_require_metadata_journaling $SCRATCH_DEV
-> +_init_flakey
-> +_mount_flakey
+> +       bg =3D btrfs_lookup_first_block_group(fs_info, 0);
+> +       if (unlikely(!bg)) {
+> +               btrfs_err(fs_info, "no block group found");
+> +               return -EUCLEAN;
+> +       }
+> +       first_bg_bytenr =3D bg->start;
+> +       btrfs_put_block_group(bg);
 > +
-> +# Create our test directories, one with a file inside, another with a su=
-bvolume
-> +# that is not empty (has one file).
-> +mkdir $SCRATCH_MNT/dir1
-> +echo -n > $SCRATCH_MNT/dir1/foo
+> +       ret =3D btrfs_search_slot(NULL, root, &key, &path, 0, 0);
+> +       if (ret < 0)
+> +               return ret;
+> +       /* There should not be an all-zero key in fst. */
+> +       ASSERT(ret > 0);
 > +
-> +mkdir $SCRATCH_MNT/dir2
-> +_btrfs subvolume create $SCRATCH_MNT/dir2/subvol
-> +echo -n > $SCRATCH_MNT/dir2/subvol/subvol_file
+> +       /* Empty free space tree. */
+> +       if (path.slots[0] >=3D btrfs_header_nritems(path.nodes[0]))
+> +               return 0;
 > +
-> +_scratch_sync
-> +
-> +# Rename file foo so that its inode's last_unlink_trans is updated to th=
-e
-> +# current transaction.
-> +mv $SCRATCH_MNT/dir1/foo $SCRATCH_MNT/dir1/bar
-> +
-> +# Rename exchange dir1 with dir2.
-> +$here/src/renameat2 -x $SCRATCH_MNT/dir1 $SCRATCH_MNT/dir2
-> +
-> +# Fsync file bar, we just renamed from foo.
-> +# Until the kernel fix mentioned above, it would result in logging dir2 =
-without
-> +# logging dir1, causing log replay to attempt to remove the inode for di=
-r1 since
-> +# the inode for dir2 has the same name in the same parent directory. Not=
- only
-> +# this was not correct, since we did not delete the directory, but it wo=
-uld also
-> +# result in a log replay failure (and therefore mount failure) because w=
-e would
-> +# be attempting to delete a directory with a non-empty subvolume inside =
-it.
-> +$XFS_IO_PROG -c "fsync" $SCRATCH_MNT/dir2/bar
-> +
-> +# Simulate a power failure and then mount again the filesystem to replay=
- the
-> +# journal/log. We should be able to replay the log tree and mount succes=
-sfully.
-> +_flakey_drop_and_remount
-> +
-> +echo -e "Filesystem contents after power failure:\n"
-> +ls -1R $SCRATCH_MNT | _filter_scratch
-> +
-> +_unmount_flakey
-> +
-> +# success, all done
-> +_exit 0
-> diff --git a/tests/btrfs/340.out b/tests/btrfs/340.out
-> new file mode 100644
-> index 00000000..7745c639
-> --- /dev/null
-> +++ b/tests/btrfs/340.out
-> @@ -0,0 +1,15 @@
-> +QA output created by 340
-> +Filesystem contents after power failure:
-> +
-> +SCRATCH_MNT:
-> +dir1
-> +dir2
-> +
-> +SCRATCH_MNT/dir1:
-> +subvol
-> +
-> +SCRATCH_MNT/dir1/subvol:
-> +subvol_file
-> +
-> +SCRATCH_MNT/dir2:
-> +bar
+> +       btrfs_item_key_to_cpu(path.nodes[0], &key, path.slots[0]);
+> +       if (key.objectid >=3D first_bg_bytenr)
+> +               return 0;
+> +       btrfs_release_path(&path);
+> +       return delete_orphan_free_space_entries(root, &path, first_bg_byt=
+enr);
+> +}
+> diff --git a/fs/btrfs/free-space-tree.h b/fs/btrfs/free-space-tree.h
+> index 3d9a5d4477fc..ca04fc7cf29e 100644
+> --- a/fs/btrfs/free-space-tree.h
+> +++ b/fs/btrfs/free-space-tree.h
+> @@ -35,6 +35,7 @@ int btrfs_add_to_free_space_tree(struct btrfs_trans_han=
+dle *trans,
+>                                  u64 start, u64 size);
+>  int btrfs_remove_from_free_space_tree(struct btrfs_trans_handle *trans,
+>                                       u64 start, u64 size);
+> +int btrfs_delete_orphan_free_space_entries(struct btrfs_fs_info *fs_info=
+);
+>
+>  #ifdef CONFIG_BTRFS_FS_RUN_SANITY_TESTS
+>  struct btrfs_free_space_info *
 > --
-> 2.47.2
+> 2.52.0
 >
 >
 
