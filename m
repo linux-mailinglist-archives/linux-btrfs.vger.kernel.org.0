@@ -1,157 +1,163 @@
-Return-Path: <linux-btrfs+bounces-20157-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20158-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94A03CF85A8
-	for <lists+linux-btrfs@lfdr.de>; Tue, 06 Jan 2026 13:40:24 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C8D8CF851E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 06 Jan 2026 13:30:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 5DC2730F4E8E
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Jan 2026 12:29:48 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id BA4813013C29
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Jan 2026 12:30:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 973D22522A7;
-	Tue,  6 Jan 2026 12:29:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E070F4C81;
+	Tue,  6 Jan 2026 12:30:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s93gNUtS"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="YFJ2v9tW";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="jC50l8v3"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAC003271E8
-	for <linux-btrfs@vger.kernel.org>; Tue,  6 Jan 2026 12:29:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E26BE1A3179
+	for <linux-btrfs@vger.kernel.org>; Tue,  6 Jan 2026 12:30:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767702585; cv=none; b=TQppJ2/oBxojoF2+cpzJOj15g/qhqObaRsEZzCoAEJmTYLvNorv9sulvUUV42l/Iu1EO9/oFpyZAUj5wI3YMmSowekD70rV5cEZmXRLGN0PT41PBykg58Mcbdsu6o928HqL5buRNkQiPyqTaNqiyKAp/kUfv3usHPxwKqXc7vIM=
+	t=1767702634; cv=none; b=cVcOZVnYDi8rI4gjtSfnTv04CM55luhzLZKwkfhklUGMtXxxs26I3Zi7Yu44cssbjoy0pNsB3PMmHUwJYW3m5GszGt0+mCW27v/iHZzKXsqZOShD/XmGRWbLokcZnaTnGk5kFy1xohSUd0c2RvhGgd3J15VId+IeoPnsSq/CmLU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767702585; c=relaxed/simple;
-	bh=QneoRfr7nxglWmwoQMKXaCINfCvBZJQuJhzclliRWtI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ityZXOnAzyJi5wwPhAXr+k3KUqWkm3pHQrnq271fxWkgPQ4sOusQi39EwbbGOiWGzIUUlNpoHlYqPZ+a6NnypEytU81ByR8qkajNndC2c8b6k53aWNGaCvXPOxwhLACHb5a2nrfAyO6STFcD50a9++I/qCGVeYKUux+qcg8jgU4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=s93gNUtS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77FA0C16AAE
-	for <linux-btrfs@vger.kernel.org>; Tue,  6 Jan 2026 12:29:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767702585;
-	bh=QneoRfr7nxglWmwoQMKXaCINfCvBZJQuJhzclliRWtI=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=s93gNUtS7lMcKF6klaGinEbfuBApQt7ZeGQyW6Ko0xvvzGrqx0drCF50ujDSkRgY0
-	 NnHCi/q1/fniSpiry74uinIBzjIG6dP7gxoiSkMGP/BqBtPvotvkIc2+x3ZVCU2zuE
-	 V7Cn07jNKEG53NR88hY+86zho6kGfeX9T8hlnYc8hPgJm2dvK+FJFbUhyiWos8xq2g
-	 vL9c74csvpozceTpKrb++xsJuFQFIFsgZpHDrd8GA6q1a6gzvSbVU1ZAhFsdYQ4YQT
-	 YtQoXGW+iHXboVIr6VfaKmdNCUS4E3GaEEYaM79+BBdv0dRp1sPHlJw/FP5hP/NBHf
-	 bNOcsd+83QW/w==
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-b79d6a70fc8so162854066b.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 06 Jan 2026 04:29:45 -0800 (PST)
-X-Gm-Message-State: AOJu0YzVT++HqJ7mq+snVPHZPQGWGqBM+OR84Uy74EyK28NO0RrYjg9s
-	sFQK5l3DU2abCj1Aj2QBNWjwvG7EWk3PVE/PUC5pkekZfpNQL2N7yHExaywsgVcaasZ2oPm0pmm
-	+0eKwBV0wlseEW1R4jxxKdVJaoPdbtQ8=
-X-Google-Smtp-Source: AGHT+IEX60izghPep8KKBIWswRfbQ95tywWewtwyOPo2fdaW7UaK6SCGQzWoQdoyhfzvHYLrKYV4OnPswn9ArZ/KfIU=
-X-Received: by 2002:a17:907:3daa:b0:b72:70ad:b8f0 with SMTP id
- a640c23a62f3a-b8426bee148mr281118666b.36.1767702584102; Tue, 06 Jan 2026
- 04:29:44 -0800 (PST)
+	s=arc-20240116; t=1767702634; c=relaxed/simple;
+	bh=ODMZwvGNXiZJZgPNfd8usIhnaYUXWMOYriNR2EZ34ZE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=f5hCR1gVi00/YOQKxFEyPHy07tgNYWcQlQXtjuzq2U8zdVrD62MCOI1i5auX9h0h7CXZIyrxSlLQI76Ewub7jyVNS6z9X2aUrHq1XZhefaFKTNP7ol6AjYmGONC4ZhtXiAMvnF52f7UgvZC11jusKxoS7ixiFHmmMFVAiaaLEY4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=YFJ2v9tW; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=jC50l8v3; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 974445BCC3;
+	Tue,  6 Jan 2026 12:30:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1767702630; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=y8i/0Iu5iGp4LUOK7bVFfNFP/FaWeVj7qiF1qHIllgc=;
+	b=YFJ2v9tW1dFShAbtow15pUzFCDCKgcAeMn6sOpg2oso3KLz9WUlwgSlpZmnda7gNMRPCtq
+	Tb+MKL9s6ptlR3qRFjJovwdl+hyPlzH2n3k8VP5/s8+BDWE1GY+FmSRDXCOKUmFwrXGS4R
+	zk+jtTz2oEacKdbQZSRXAfErYyN8xtI=
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1767702629; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=y8i/0Iu5iGp4LUOK7bVFfNFP/FaWeVj7qiF1qHIllgc=;
+	b=jC50l8v3M6pqNqxXZI/X/D1crxhn78klzQklUShYt4sw7d0jq9zWYLUlHMZGhLN4X4RF5S
+	jzqHNBr/cXNuPdKrt0TvwvfJovWGPeQY16NL78UkyYqPggTNMDwR53M5pYLiGyJ8nG/WQo
+	U2lMip339mCi21+OYF/Xii/nVvlCt7A=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 909163EA63;
+	Tue,  6 Jan 2026 12:30:29 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id Z0tAI2UAXWlYCgAAD6G6ig
+	(envelope-from <dsterba@suse.com>); Tue, 06 Jan 2026 12:30:29 +0000
+From: David Sterba <dsterba@suse.com>
+To: linux-btrfs@vger.kernel.org
+Cc: David Sterba <dsterba@suse.com>
+Subject: [PATCH] btrfs: split btrfs_fs_closing() and change return type to bool
+Date: Tue,  6 Jan 2026 13:30:28 +0100
+Message-ID: <20260106123028.3105367-1-dsterba@suse.com>
+X-Mailer: git-send-email 2.51.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <89c6eb7756051dbe2e63693b5051394b16a9080b.1767667652.git.wqu@suse.com>
-In-Reply-To: <89c6eb7756051dbe2e63693b5051394b16a9080b.1767667652.git.wqu@suse.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Tue, 6 Jan 2026 12:29:07 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H4Y1GJr0ZFgf5Dp0vHvap9j3VZU-_E_9n-tR8ZF_WKSsQ@mail.gmail.com>
-X-Gm-Features: AQt7F2ounH6a-4y-gIZeJ-9aR2b92L1sypxSNuEFIIFny2DqJ6PQNGapSsRR9Lk
-Message-ID: <CAL3q7H4Y1GJr0ZFgf5Dp0vHvap9j3VZU-_E_9n-tR8ZF_WKSsQ@mail.gmail.com>
-Subject: Re: [PATCH v2] btrfs: reject single block sized compression early
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-2.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-0.976];
+	MIME_GOOD(-0.10)[text/plain];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCPT_COUNT_TWO(0.00)[2];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	TO_DN_SOME(0.00)[];
+	RCVD_TLS_ALL(0.00)[]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: -2.80
 
-On Tue, Jan 6, 2026 at 2:51=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
->
-> Currently for an inode that needs compression, even if there is a delallo=
-c
-> range that is single fs block sized and can not be inlined, we will
-> still go through the compression path.
->
-> Then inside compress_file_range(), we have one extra check to reject
-> single block sized range, and fall back to regular uncompressed write.
->
-> This rejection is in fact a little too late, we have already allocated
-> memory to async_chunk, delayed the submission, just to fallback to the
-> same uncompressed write.
->
-> Change the behavior to reject such cases earlier at
-> inode_need_compress(), so for such single block sized range we won't
-> even bother trying to go through compress path.
->
-> And since the inline small block check is inside inode_need_compress()
-> and compress_file_range() also calls that function, we no longer need a
-> dedicate check inside compress_file_range().
->
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+There are two tests in btrfs_fs_closing() but checking the
+BTRFS_FS_CLOSING_DONE bit is done only in one place
+load_extent_tree_free(). As this is an inline we can reduce size of the
+generated code. The types can be also changed to bool as this becomes a
+simple condition.
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+---
+ fs/btrfs/block-group.c |  2 +-
+ fs/btrfs/fs.h          | 21 +++++++++++++--------
+ 2 files changed, 14 insertions(+), 9 deletions(-)
 
-Looks good now, thanks.
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index e417aba4c4c7a0..a1119f06b6d106 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -761,7 +761,7 @@ static int load_extent_tree_free(struct btrfs_caching_control *caching_ctl)
+ 	nritems = btrfs_header_nritems(leaf);
+ 
+ 	while (1) {
+-		if (btrfs_fs_closing(fs_info) > 1) {
++		if (btrfs_fs_closing_done(fs_info)) {
+ 			last = (u64)-1;
+ 			break;
+ 		}
+diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
+index 0dc851b9c51bc2..e220202e6a10c3 100644
+--- a/fs/btrfs/fs.h
++++ b/fs/btrfs/fs.h
+@@ -1110,15 +1110,20 @@ void __btrfs_clear_fs_compat_ro(struct btrfs_fs_info *fs_info, u64 flag,
+ #define btrfs_test_opt(fs_info, opt)	((fs_info)->mount_opt & \
+ 					 BTRFS_MOUNT_##opt)
+ 
+-static inline int btrfs_fs_closing(const struct btrfs_fs_info *fs_info)
++static inline bool btrfs_fs_closing(const struct btrfs_fs_info *fs_info)
+ {
+-	/* Do it this way so we only ever do one test_bit in the normal case. */
+-	if (test_bit(BTRFS_FS_CLOSING_START, &fs_info->flags)) {
+-		if (test_bit(BTRFS_FS_CLOSING_DONE, &fs_info->flags))
+-			return 2;
+-		return 1;
+-	}
+-	return 0;
++	if (unlikely(test_bit(BTRFS_FS_CLOSING_START, &fs_info->flags)))
++		return true;
++
++	return false;
++}
++
++static inline bool btrfs_fs_closing_done(const struct btrfs_fs_info *fs_info)
++{
++	if (btrfs_fs_closing(fs_info) && test_bit(BTRFS_FS_CLOSING_DONE, &fs_info->flags))
++		return true;
++
++	return false;
+ }
+ 
+ /*
+-- 
+2.51.1
 
-> ---
-> Changelog:
-> v2:
-> - Remove the duplicated check inside compress_file_range() now
->   As the same check is done inside inode_need_compress() and
->   compress_file_range() also call that function to do the check.
-> ---
->  fs/btrfs/inode.c | 21 +++++++++------------
->  1 file changed, 9 insertions(+), 12 deletions(-)
->
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index cf452eaf0672..fbb8ad55b589 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -816,6 +816,13 @@ static inline int inode_need_compress(struct btrfs_i=
-node *inode, u64 start,
->                 return 0;
->         }
->
-> +       /*
-> +        * If the delalloc range is only one fs block and can not be inli=
-ned,
-> +        * do not even bother try compression, as there will be no space =
-saving
-> +        * and will always fallback to regular write later.
-> +        */
-> +       if (start !=3D 0 && end + 1 - start <=3D fs_info->sectorsize)
-> +               return 0;
->         /* Defrag ioctl takes precedence over mount options and propertie=
-s. */
->         if (inode->defrag_compress =3D=3D BTRFS_DEFRAG_DONT_COMPRESS)
->                 return 0;
-> @@ -953,18 +960,8 @@ static void compress_file_range(struct btrfs_work *w=
-ork)
->         if (actual_end <=3D start)
->                 goto cleanup_and_bail_uncompressed;
->
-> -       total_compressed =3D actual_end - start;
-> -
-> -       /*
-> -        * Skip compression for a small file range(<=3Dblocksize) that
-> -        * isn't an inline extent, since it doesn't save disk space at al=
-l.
-> -        */
-> -       if (total_compressed <=3D blocksize &&
-> -          (start > 0 || end + 1 < inode->disk_i_size))
-> -               goto cleanup_and_bail_uncompressed;
-> -
-> -       total_compressed =3D min_t(unsigned long, total_compressed,
-> -                       BTRFS_MAX_UNCOMPRESSED);
-> +       total_compressed =3D min_t(unsigned long, actual_end - start,
-> +                                BTRFS_MAX_UNCOMPRESSED);
->         total_in =3D 0;
->         ret =3D 0;
->
-> --
-> 2.52.0
->
->
 
