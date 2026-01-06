@@ -1,164 +1,183 @@
-Return-Path: <linux-btrfs+bounces-20159-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20160-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3FF89CF861D
-	for <lists+linux-btrfs@lfdr.de>; Tue, 06 Jan 2026 13:48:09 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B8FFCF8662
+	for <lists+linux-btrfs@lfdr.de>; Tue, 06 Jan 2026 13:59:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E8587303B19C
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Jan 2026 12:38:56 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id E95A23009266
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Jan 2026 12:59:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40515326D79;
-	Tue,  6 Jan 2026 12:38:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B26532E692;
+	Tue,  6 Jan 2026 12:59:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="G8eBscYZ";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="9g6f+twr";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="F7J1YV4p";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="RyICP5DT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DnYZT9Og"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B996E5695
-	for <linux-btrfs@vger.kernel.org>; Tue,  6 Jan 2026 12:38:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E6CA32694F;
+	Tue,  6 Jan 2026 12:59:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767703134; cv=none; b=DaVj0HS3b+Ne9lcBaCt9oaos7qVkua6k7zO2ly8x+j8qrBlY7ffcfSEYZbYTs3ThiqliDb2Jmwhx78lG7+DeZlwrN994q08XtZD9udrblLIWK3aRvoqacmt94ue+ppAoTNoZM1tNpHb1c0bn81b1OgHr82Q4CdUwPLyRzUesddw=
+	t=1767704351; cv=none; b=e1qCMO1uJS7AeTKn9LBSU9eiEcposQWAvnSw0IBOaq1OzzTV8S+VMk/6dpkyQFCJBs0OamQ+eIkIOFmtDP4Dreyb6mcMB2zCHBsVwpfo+3kYDiw/ZfjMqBfhGO5vh2aHREFSriGnF4s0SAnoZ5flGkBE5DrmfXAjJdxEN0aY0BU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767703134; c=relaxed/simple;
-	bh=yqE+BOm3v/cJODveeoWWAitbSJ2NxV/v3z6TiWbZjo0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TufHayQdZaXhfOUAGooIVAiyvt7vmrT1TPFmoNglUOmQ7SRAcO+XggLNfCA8eCBmJhcSHSE0aM95bIrgTly/rEpGTJ8Ws0CPcodKMo9og5cO42qpQtPXyhTDu6LNScLU1xHIvxZY3TGrvwaLvWR9jeuTEo6BvCGzSbu6FnzRJ/I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=G8eBscYZ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=9g6f+twr; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=F7J1YV4p; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=RyICP5DT; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id CC2B8339E8;
-	Tue,  6 Jan 2026 12:38:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1767703131;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PEDbYwcpGPKi84Xg8AUVJ6p6hbYEZeK3ylKAPDqGnUA=;
-	b=G8eBscYZ6brwy9hZnwlu3dWCLiBSXQjJdVXw60WX0/qRhAXz8Ppqt7dr2WIdnX9EmirUBT
-	5KrAmJL+3UkZ5B4BXpD6d7dyLevHrTSwtWrxeutVfwYehGRrBV91N4RSJIJmbK8xp3Uksl
-	kMAXBsfFHP7QqtyTVm4UBrZdDDIPhW0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1767703131;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PEDbYwcpGPKi84Xg8AUVJ6p6hbYEZeK3ylKAPDqGnUA=;
-	b=9g6f+twrBCa+lwSpeNIQTpMdHoecDMDHZxv4s65T1zfpvulLoGKCZrN4mDLo7tRL52Kxmt
-	aGiJmm1cYY+7dWDg==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=F7J1YV4p;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=RyICP5DT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1767703130;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PEDbYwcpGPKi84Xg8AUVJ6p6hbYEZeK3ylKAPDqGnUA=;
-	b=F7J1YV4ptELs0hbIamZ2UVO73w79a2dZIo020B9Sk2bnR6gMaoxZvYI8KIfePeFxQG8+PO
-	k31G7xnYXXmDqW0mj6ZTT06NIYyPpFctf2TMTeqaBnQMwxCmOkYQ1a4CYXn/eprnAyp5i5
-	Qh3C+XTQ9QXGPeFoUCfer+YGRl5Gel8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1767703130;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PEDbYwcpGPKi84Xg8AUVJ6p6hbYEZeK3ylKAPDqGnUA=;
-	b=RyICP5DTpZCWLA50DtVez2hsq2ZW2blwFxIj18hsx1MjBRp3zw47YSRZVlYtbU4e1A4QCl
-	udjXxT1II22O2hCg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AFFDF3EA65;
-	Tue,  6 Jan 2026 12:38:50 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id OgjOKloCXWnoEQAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Tue, 06 Jan 2026 12:38:50 +0000
-Date: Tue, 6 Jan 2026 13:38:45 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Zilin Guan <zilin@seu.edu.cn>
-Cc: clm@fb.com, dsterba@suse.com, sunk67188@gmail.com,
-	dan.carpenter@linaro.org, linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org, jianhao.xu@seu.edu.cn
-Subject: Re: [PATCH v2] btrfs: tests: Fix memory leak in btrfs_test_qgroups()
-Message-ID: <20260106123845.GD21071@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20251226113022.1883689-1-zilin@seu.edu.cn>
+	s=arc-20240116; t=1767704351; c=relaxed/simple;
+	bh=qsZo1CkCU6x6KE9vn2C+7QXzDEsW7+XmCXn5LiqZng0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=nWVCP9QsJMXULCQtpJRi/DN+enPwNYDrOZq6XyJv0hIzlKsgVWuYvfRw2BCWF4xwqzxEW5flinYnkc2q28ITjr4rBCvzR9Sfb/dRxeA0mlouLm0HZsFLS9XMTr5lDwnqoj8CgmU2kxQHfve6D0nshi8FNrOfeDe7L5buZausWjU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DnYZT9Og; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44288C16AAE;
+	Tue,  6 Jan 2026 12:59:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1767704351;
+	bh=qsZo1CkCU6x6KE9vn2C+7QXzDEsW7+XmCXn5LiqZng0=;
+	h=From:To:Cc:Subject:Date:From;
+	b=DnYZT9OggnT9OejBD4KimZYVtizM6zZH6vzgKPKk8vUb7xF5rqee31XAJRrWnPpjq
+	 fNiws4qMV3yC++F/iASRtbGQO4Z4YMVVrg2FHYJaaRgkLJIeLfMENQwVTAV7/ld/On
+	 NozIV+Wk+uHjaJE0Kh9vKjv33mhiGMVGNzAq3+vbmrcRzL4ZK52zeJCpsXpQNGC2hN
+	 7s2PVTWmuPxXsCyUE3cCY/b8e+82M/xvxC1oS1hquA6jNuadEdhY3BR5CnpKMLb8lF
+	 MaBWb1e+YfAWnr3tbfJltSFoIsSUwdV4i9+O7vAHGnqGJUw7ikJOw+myL369hVRO1T
+	 krhlFZnW5kENQ==
+From: fdmanana@kernel.org
+To: fstests@vger.kernel.org
+Cc: linux-btrfs@vger.kernel.org,
+	Filipe Manana <fdmanana@suse.com>
+Subject: [PATCH v2] btrfs: test power failure after fsync and rename exchanging directories
+Date: Tue,  6 Jan 2026 12:59:05 +0000
+Message-ID: <a28c38d771946a662a9596449f63e6060f3fc7a4.1767704259.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.47.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251226113022.1883689-1-zilin@seu.edu.cn>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Flag: NO
-X-Spam-Score: -4.21
-X-Rspamd-Queue-Id: CC2B8339E8
-X-Spamd-Result: default: False [-4.21 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	HAS_REPLYTO(0.30)[dsterba@suse.cz];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_SOME(0.00)[];
-	ARC_NA(0.00)[];
-	FREEMAIL_CC(0.00)[fb.com,suse.com,gmail.com,linaro.org,vger.kernel.org,seu.edu.cn];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Level: 
+Content-Transfer-Encoding: 8bit
 
-On Fri, Dec 26, 2025 at 11:30:22AM +0000, Zilin Guan wrote:
-> If btrfs_insert_fs_root() fails, the tmp_root allocated by
-> btrfs_alloc_dummy_root() is leaked because its initial reference count
-> is not decremented.
-> 
-> Fix this by calling btrfs_put_root() unconditionally after
-> btrfs_insert_fs_root(). This ensures the local reference is always
-> dropped.
-> 
-> Also fix a copy-paste error in the error message where the subvolume
-> root insertion failure was incorrectly logged as "fs root".
-> 
-> Co-developed-by: Jianhao Xu <jianhao.xu@seu.edu.cn>
-> Signed-off-by: Jianhao Xu <jianhao.xu@seu.edu.cn>
-> Signed-off-by: Zilin Guan <zilin@seu.edu.cn>
-> ---
-> Changes in v2:
-> - Reword commit message to be more concise.
-> - Fix copy-paste error in the error message.
-> - Add Co-developed-by and Signed-off-by tag.
+From: Filipe Manana <fdmanana@suse.com>
 
-Added to for-next, thanks.
+Test renaming one directory over another one that has a subvolume inside
+it and fsync a file in the other directory that was previously renamed.
+We want to verify that after a power failure we are able to mount the
+filesystem and it has the correct content (all renames visible).
+
+This exercises a bug fixed by the following kernel commit:
+
+  7ba0b6461bc4 ("btrfs: always detect conflicting inodes when logging inode refs")
+
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+
+V2: Rebase to latest for-next, include kernel fix commit ID since it
+    was merged to Linus' tree yesterday.
+
+ tests/btrfs/341     | 73 +++++++++++++++++++++++++++++++++++++++++++++
+ tests/btrfs/341.out | 15 ++++++++++
+ 2 files changed, 88 insertions(+)
+ create mode 100755 tests/btrfs/341
+ create mode 100644 tests/btrfs/341.out
+
+diff --git a/tests/btrfs/341 b/tests/btrfs/341
+new file mode 100755
+index 00000000..d92f9614
+--- /dev/null
++++ b/tests/btrfs/341
+@@ -0,0 +1,73 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (c) 2026 SUSE S.A.  All Rights Reserved.
++#
++# FS QA Test 341
++#
++# Test renaming one directory over another one that has a subvolume inside it
++# and fsync a file in the other directory that was previously renamed. We want
++# to verify that after a power failure we are able to mount the filesystem and
++# it has the correct content (all renames visible).
++#
++. ./common/preamble
++_begin_fstest auto quick subvol rename log
++
++_cleanup()
++{
++	_cleanup_flakey
++	cd /
++	rm -r -f $tmp.*
++}
++
++. ./common/filter
++. ./common/dmflakey
++. ./common/renameat2
++
++_require_scratch
++_require_dm_target flakey
++_require_renameat2 exchange
++
++_fixed_by_kernel_commit 7ba0b6461bc4 \
++	"btrfs: always detect conflicting inodes when logging inode refs"
++
++_scratch_mkfs >>$seqres.full 2>&1 || _fail "mkfs failed"
++_require_metadata_journaling $SCRATCH_DEV
++_init_flakey
++_scratch_mount
++
++# Create our test directories, one with a file inside, another with a subvolume
++# that is not empty (has one file).
++mkdir $SCRATCH_MNT/dir1
++echo -n > $SCRATCH_MNT/dir1/foo
++
++mkdir $SCRATCH_MNT/dir2
++_btrfs subvolume create $SCRATCH_MNT/dir2/subvol
++echo -n > $SCRATCH_MNT/dir2/subvol/subvol_file
++
++_scratch_sync
++
++# Rename file foo so that its inode's last_unlink_trans is updated to the
++# current transaction.
++mv $SCRATCH_MNT/dir1/foo $SCRATCH_MNT/dir1/bar
++
++# Rename exchange dir1 with dir2.
++$here/src/renameat2 -x $SCRATCH_MNT/dir1 $SCRATCH_MNT/dir2
++
++# Fsync file bar, we just renamed from foo.
++# Until the kernel fix mentioned above, it would result in logging dir2 without
++# logging dir1, causing log replay to attempt to remove the inode for dir1 since
++# the inode for dir2 has the same name in the same parent directory. Not only
++# this was not correct, since we did not delete the directory, but it would also
++# result in a log replay failure (and therefore mount failure) because we would
++# be attempting to delete a directory with a non-empty subvolume inside it.
++$XFS_IO_PROG -c "fsync" $SCRATCH_MNT/dir2/bar
++
++# Simulate a power failure and then mount again the filesystem to replay the
++# journal/log. We should be able to replay the log tree and mount successfully.
++_flakey_drop_and_remount
++
++echo -e "Filesystem contents after power failure:\n"
++ls -1R $SCRATCH_MNT | _filter_scratch
++
++# success, all done
++_exit 0
+diff --git a/tests/btrfs/341.out b/tests/btrfs/341.out
+new file mode 100644
+index 00000000..bd46bdea
+--- /dev/null
++++ b/tests/btrfs/341.out
+@@ -0,0 +1,15 @@
++QA output created by 341
++Filesystem contents after power failure:
++
++SCRATCH_MNT:
++dir1
++dir2
++
++SCRATCH_MNT/dir1:
++subvol
++
++SCRATCH_MNT/dir1/subvol:
++subvol_file
++
++SCRATCH_MNT/dir2:
++bar
+-- 
+2.47.2
+
 
