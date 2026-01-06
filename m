@@ -1,135 +1,201 @@
-Return-Path: <linux-btrfs+bounces-20116-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20117-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 404CFCF634A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 06 Jan 2026 02:12:06 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id F058BCF6770
+	for <lists+linux-btrfs@lfdr.de>; Tue, 06 Jan 2026 03:28:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 47659301386D
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Jan 2026 01:11:52 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id B58013031341
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Jan 2026 02:27:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDE4932ABCD;
-	Tue,  6 Jan 2026 01:02:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 351AE14A60C;
+	Tue,  6 Jan 2026 02:27:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jWBDPwd0"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ot1-f77.google.com (mail-ot1-f77.google.com [209.85.210.77])
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7E4E32AAA7
-	for <linux-btrfs@vger.kernel.org>; Tue,  6 Jan 2026 01:02:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.77
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5BD6202C5C
+	for <linux-btrfs@vger.kernel.org>; Tue,  6 Jan 2026 02:27:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767661345; cv=none; b=JEqSxxplIChHeccK3O9tcWdme5AuAWlPqROoiKDr6+3jmSm08KgwykjI9z4SAr3SEggoKO2UtsiPtLVQHRcpu+M8GsdNSIq9vDB2cdVpv9ygPz2UlEpXiDJNloMZ0hW8A2/XjnLTprrHbzaW4vMAx/+W+4wafaQE59cv+HGDbBU=
+	t=1767666435; cv=none; b=klFug0rxo7JOT9ZgFtGRFuf5g5QRN/d2vIrYWrnnWWssyA+dQv6Bpffg5hM5o+k/UXTgpP2HkBYhWah8UuXgFBod39KaMMlZk+R/bGHqeP3Kvckdy3XE02cYXMYmtSl7rth70kbdl+RMui408hPl5GRYYgOQEvFgE2KkV6nPZnk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767661345; c=relaxed/simple;
-	bh=CW5mH7R8jU22uKPKQQW9TGVcA/j74nIgvDwZikrQN5E=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=LuR1Te0Bg/8ZbA6U4Tnzx4Qv7QJMJMtVXzkyqf5viXokH2CSzAi7GHNvbAEvTyFAC6Pt/UQsO8w5mlOdPbfAglgD0J6UjKgZfQ8CB5P56ZKMHR6ewFAAviC+cKU1uqm1BTJIDo+KyvgLOpIznGPIoQMAa6j01QsfucqI2f9+lms=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.210.77
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-ot1-f77.google.com with SMTP id 46e09a7af769-7c75798bfacso1479193a34.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 05 Jan 2026 17:02:22 -0800 (PST)
+	s=arc-20240116; t=1767666435; c=relaxed/simple;
+	bh=AkTdqTlAbNgghPAZNdbQnJrykMGcjV6vextJRyo2v2c=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=pGCntXRZuD7QvoMUddPk8nty5uMhN4m2PomYKRT9aIuU6BEPqhtydLxU9kibsDIWd9aaxbjhvzxN+aSYg0cR0kbZQX8h/x/6NjaP4ZVGvRWxdwlrH3gqv/ZZdi+fygm09o719izEoPMEW0Ip8HwkpKwEo2dlFqEKMOGUUkU1r5U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jWBDPwd0; arc=none smtp.client-ip=209.85.208.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-64d30dc4ed7so981331a12.0
+        for <linux-btrfs@vger.kernel.org>; Mon, 05 Jan 2026 18:27:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1767666432; x=1768271232; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6RlsXGJMO8IblDstpL+JsaPUrEAP5vkLRIsGOWYAc6E=;
+        b=jWBDPwd0kQgwZOVOrxVAWTInQrmcxSsRwvtxGW2PbXiq0p2g6Mw5fME5c2CtORIGh4
+         MdkRSJ/eQo7jgNFkjYwZPkmg9zcZXp5V9aeNhYdsCVBx0dSuNpxAQ6zJ5K7x0BU/E7yy
+         wyzU6lU60DCHuRcvCMgB6eY1qd7yPWUi7xn5o3Z7FVBELm+L/bT0d9KoWYcwi/FspFAo
+         w5xbF1ghJOY/uogg1sem9NwnrXVOo6eDoDLWUWH+eVcmPPt08reUAUdp7tBkY6Yoau51
+         dyW/AHVzxwjGSRatuB+BBNXcZg9uTR4rLYJ5FHyGraqWQfS4Sp3Abh2mtB3LV0sJ1YUC
+         JJpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767661342; x=1768266142;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=AECU3kGblORPS4UnsO7HEl0FKt2cbm56ofBHa9ZgJYg=;
-        b=r9ZDVNpob9/PoXiKrOEuiXNIoNDGmZ6hiE/ZnXBEZA05+EMsn6BrucLIyklrn7QxwK
-         ND51wQKiCc8P0OfILYFe/pvFTIp9wEQKv1pIG/GPXJogZ+7huimRfRBKqeNqj1odBRzD
-         aZEKz11/H6V7HmkW2WGc6U7PKedXecO1K3PAUKjozTaoxC/KHrt6yPIAbmo2fTA9MT2n
-         1O4vQwtEKbueDB1V1oOajxG6ASmiFLMe5Xxh5fUSHGEaiIgfMRBpHwuRUCmCsDzUK+f2
-         5LNYOWNelSjQMbluS+juDqNhLu6UrdyrD166X7X6MxxQr2TinnmNbQW3QngGeLRu4wVa
-         MQoA==
-X-Forwarded-Encrypted: i=1; AJvYcCUNf/NRVe3c1PRT5uTdUbCyNDc5/HjgCZXzVnxl3x1eVPDC1dwKfOGmQw3DETsY8u+cSdImoBodoFx58w==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwBaSBYyaTG/r46f0s9HtHyFIzurSgQ7tey5psYKLssQtIKWnh+
-	anhMa4j7L3kpNfTBL4nasK6xCyZG0mmQZErB9LjQW3+bXdJvD/D1Jsd+Vv6IFeJoeWmIVD8Gp/4
-	XtVOnUL5/GtSijkYRTRlzfwlz8Izr70zYO7gEieJX1X57u71g8giuXZdq1NY=
-X-Google-Smtp-Source: AGHT+IHgx/sxjiLkOPdW89o/aOmfCHot5DV+G0ahkV6nRW2ZWhQeRvp7tvLyYwRAK98ifwZEutgPW9jcQSiYzyFEqdG5pj3qcsAk
+        d=1e100.net; s=20230601; t=1767666432; x=1768271232;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=6RlsXGJMO8IblDstpL+JsaPUrEAP5vkLRIsGOWYAc6E=;
+        b=EKMO37MaqPnYHBNXoe/Q4yUCTSGsdvZJ+VrxJbnU+mmu6LQPH40Vm256gdxt5ptnUN
+         mx2WLOk1dqdcPlxO53AmlQrBkEna/hmR8GZKi+pcT9WtXvqja1AfilNY81wtiSBBqomh
+         Vu/opGa9Os32WhXuwad4hknrBU+p2mP4gD81qWcnnKjg186bQfuDv9sNkFHaAxN2iwjd
+         mpiCXxMMPrQaymN83fqSWabP/Y2ewQtvfBIuXXWJz4RvuaUnrloB4AKSXtoMylk7h1iL
+         4Il2LXKIlNBjKMM+TmRxYC/Dl6GsF+IR5vBGrSk6u4hmyKLuDka7Lelo5cDF6tif5+r2
+         96rg==
+X-Forwarded-Encrypted: i=1; AJvYcCX0bb9Odr0YzEKYVQfXGGx5JmYqQWICmMogySvrdMFdne/73ErjKzSLfKkubLnz+jUjgKNxCA+Nj4nZhQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxUjP0I9P26rzN0PsDF8eLq3zajZdiVpnF3BBTUOQiTBLWTuxQC
+	RsLXb1TYIjzfO2dIr4evwdfT1MvskHRh+qVI9Ll7/Gl5Aue6GxK5zFqSzU4/t8J7qW3DjnO7dgr
+	+lJIjnLSy62fYuDpi/ck2zTyjnuURerA=
+X-Gm-Gg: AY/fxX6eJBIynNfLOs+aiRyUBs2gFm4q0ai7iCVPQTyZFXa1dIdir3UJuIXtOwv+8MM
+	as0+07Zd0mx7lfAEWmB1vl1tqPIgLYF7qTd1V5dGqUDKfiF0g30HF1S+5olrHsb4DBNZFCAx2Sz
+	zMKK+TFqS+hM9TkmQ6lUgzmp1t246wvptAAH6BEclqGAOw1lV/JcR4dbiqCySBU2bCbfx9OGIcQ
+	R/FDW7EReNJKoCCpG4EsagOu20tzX0mw0ha4NxyqUoSS4QSkmZP8/IRt33viyMIumXKAgRhaw==
+X-Google-Smtp-Source: AGHT+IHyQ36f6AWfjYiWTHwv7TMV6FG8r+vTsMu8+oJln5TruFAMBs+WmCj3kqCkB2Rz/X6crBy9myGHHke4c6LfKPE=
+X-Received: by 2002:a17:907:e8c:b0:b7a:6178:2b4a with SMTP id
+ a640c23a62f3a-b8426aa1d98mr181020766b.26.1767666431704; Mon, 05 Jan 2026
+ 18:27:11 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a4a:b303:0:b0:65f:20c8:5e7a with SMTP id
- 006d021491bc7-65f47a2701bmr642087eaf.67.1767661341776; Mon, 05 Jan 2026
- 17:02:21 -0800 (PST)
-Date: Mon, 05 Jan 2026 17:02:21 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <695c5f1d.050a0220.1c677c.0335.GAE@google.com>
-Subject: [syzbot] [btrfs?] WARNING in btrfs_put_transaction (5)
-From: syzbot <syzbot+6d30e046bbd449d3f6f1@syzkaller.appspotmail.com>
-To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
+References: <7cdad50af2ac47b00bc1d81dfc97ad8776528d86.1766874707.git.wqu@suse.com>
+ <CAL3q7H5rboRQD0GGAVHtGvcJcUnrOuJQuwEw1WfN6K-jzaT1cg@mail.gmail.com>
+In-Reply-To: <CAL3q7H5rboRQD0GGAVHtGvcJcUnrOuJQuwEw1WfN6K-jzaT1cg@mail.gmail.com>
+From: ZhengYuan Huang <gality369@gmail.com>
+Date: Tue, 6 Jan 2026 10:28:13 +0800
+X-Gm-Features: AQt7F2oLSsYajmPV-3hp65iur-tCroW_vwKvfEYdwD7DAOjxNomRLVvnRs2XVt0
+Message-ID: <CAOmEq9VtNQqC=OHqXwRaZPYXnOW89D+ahgxRSJBg8SCjzwN-6Q@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: do not sync fs when the fs is not yet fully mounted
+To: Filipe Manana <fdmanana@kernel.org>
+Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+On Tue, Jan 6, 2026 at 12:16=E2=80=AFAM Filipe Manana <fdmanana@kernel.org>=
+ wrote:
+>
+> On Sat, Dec 27, 2025 at 10:32=E2=80=AFPM Qu Wenruo <wqu@suse.com> wrote:
+> >
+> > [LOCKDEP WARNING]
+> > There is a lockdep warning between qgroup related tree lock and
+> > kernfs_rwsem.
+> >
+> > However the involved call chains show that the fs is being mounted
+> > meanwhile the fs is also triggering sync_fs() from unmounting process:
+>
+> So we can have an unmount during mount?
+> That sentence is confusing.
+>
+> >
+> > WARNING: possible circular locking dependency detected
+> > 6.18.0-dirty #1 Tainted: G           OE
+> > ------------------------------------------------------
+> > syz.0.279/4686 is trying to acquire lock:
+> > ffff888014b4d7e0 (&mm->mmap_lock){++++}-{4:4}, at:
+> > mmap_read_lock_killable include/linux/mmap_lock.h:377 [inline]
+> > ffff888014b4d7e0 (&mm->mmap_lock){++++}-{4:4}, at:
+> > get_mmap_lock_carefully mm/mmap_lock.c:378 [inline]
+> > ffff888014b4d7e0 (&mm->mmap_lock){++++}-{4:4}, at:
+> > lock_mm_and_find_vma+0x146/0x630 mm/mmap_lock.c:429
+> >
+> > but task is already holding lock:
+> > ffff88800aa8c188 (&root->kernfs_rwsem){++++}-{4:4}, at:
+> > kernfs_fop_readdir+0x146/0x860 fs/kernfs/dir.c:1893
+> >
+> > which lock already depends on the new lock.
+> >
+> > the existing dependency chain (in reverse order) is:
+> >
+> > -> #7 (&root->kernfs_rwsem){++++}-{4:4}:
+> >       down_write+0x91/0x210 kernel/locking/rwsem.c:1590
+> >       kernfs_add_one+0x39/0x700 fs/kernfs/dir.c:791
+> >       kernfs_create_dir_ns+0x103/0x1a0 fs/kernfs/dir.c:1093
+> >       sysfs_create_dir_ns+0x143/0x2b0 fs/sysfs/dir.c:59
+> >       create_dir lib/kobject.c:73 [inline]
+> >       kobject_add_internal+0x24d/0xad0 lib/kobject.c:240
+> >       kobject_add_varg lib/kobject.c:374 [inline]
+> >       kobject_init_and_add+0x114/0x1a0 lib/kobject.c:457
+> >       btrfs_sysfs_add_one_qgroup+0xe2/0x170 fs/btrfs/sysfs.c:2599
+> >       btrfs_read_qgroup_config+0x86f/0x1310 fs/btrfs/qgroup.c:488
+> >       open_ctree+0x3bda/0x6d60 fs/btrfs/disk-io.c:3592
+> >       btrfs_fill_super fs/btrfs/super.c:987 [inline]
+> >       btrfs_get_tree_super fs/btrfs/super.c:1951 [inline]
+> >       btrfs_get_tree_subvol fs/btrfs/super.c:2094 [inline]
+> >       btrfs_get_tree+0x114c/0x22e0 fs/btrfs/super.c:2128
+> >       vfs_get_tree+0x9a/0x370 fs/super.c:1758
+> >       fc_mount fs/namespace.c:1199 [inline] <<<<
+> >       do_new_mount_fc fs/namespace.c:3642 [inline]
+> >       do_new_mount fs/namespace.c:3718 [inline]
+> >       path_mount+0x5aa/0x1e90 fs/namespace.c:4028
+> >       do_mount fs/namespace.c:4041 [inline]
+> >       __do_sys_mount fs/namespace.c:4229 [inline]
+> >       __se_sys_mount fs/namespace.c:4206 [inline]
+> >       __x64_sys_mount+0x282/0x320 fs/namespace.c:4206
+> >       x64_sys_call+0x1a7d/0x26a0
+> > arch/x86/include/generated/asm/syscalls_64.h:166
+> >       do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+> >       do_syscall_64+0x91/0xa90 arch/x86/entry/syscall_64.c:94
+> >       entry_SYSCALL_64_after_hwframe+0x76/0x7e
+> >
+> > -> #6 (btrfs-quota-00){++++}-{4:4}:
+> >       down_read_nested+0xa0/0x4d0 kernel/locking/rwsem.c:1662
+> >       btrfs_tree_read_lock_nested+0x32/0x1d0 fs/btrfs/locking.c:145
+> >       btrfs_tree_read_lock fs/btrfs/locking.h:188 [inline]
+> >       btrfs_read_lock_root_node+0x73/0xb0 fs/btrfs/locking.c:266
+> >       btrfs_search_slot_get_root fs/btrfs/ctree.c:1742 [inline]
+> >       btrfs_search_slot+0x3e0/0x3580 fs/btrfs/ctree.c:2066
+> >       update_qgroup_info_item fs/btrfs/qgroup.c:882 [inline]
+> >       btrfs_run_qgroups+0x4f3/0x870 fs/btrfs/qgroup.c:3112
+> >       commit_cowonly_roots+0x1f3/0x8f0 fs/btrfs/transaction.c:1354
+> >       btrfs_commit_transaction+0x1c64/0x3f70 fs/btrfs/transaction.c:245=
+9
+> >       btrfs_sync_fs+0xf2/0x660 fs/btrfs/super.c:1057
+> >       sync_filesystem fs/sync.c:66 [inline]
+> >       sync_filesystem+0x1ba/0x260 fs/sync.c:30
+> >       generic_shutdown_super+0x88/0x520 fs/super.c:621 <<<<
+> >       kill_anon_super+0x41/0x80 fs/super.c:1288
+> >       btrfs_kill_super+0x41/0x60 fs/btrfs/super.c:2134
+> >       deactivate_locked_super+0xb5/0x1a0 fs/super.c:473
+> >       deactivate_super fs/super.c:506 [inline]
+> >       deactivate_super+0xad/0xd0 fs/super.c:502
+> >       cleanup_mnt+0x214/0x460 fs/namespace.c:1318
+> >       __cleanup_mnt+0x1b/0x30 fs/namespace.c:1325
+> >       task_work_run+0x16a/0x270 kernel/task_work.c:227
+> >       resume_user_mode_work include/linux/resume_user_mode.h:50 [inline=
+]
+> >       exit_to_user_mode_loop+0x147/0x190 kernel/entry/common.c:43
+> >       exit_to_user_mode_prepare include/linux/irq-entry-common.h:225 [i=
+nline]
+> >       syscall_exit_to_user_mode_work include/linux/entry-common.h:175 [=
+inline]
+> >       syscall_exit_to_user_mode include/linux/entry-common.h:210 [inlin=
+e]
+> >       do_syscall_64+0x3a0/0xa90 arch/x86/entry/syscall_64.c:100
+> >       entry_SYSCALL_64_after_hwframe+0x76/0x7e
+>
+> Can you please paste the whole lockdep splat?
+> This misses several stack traces and the report at the bottom with the
+> detected lock dependencies:
 
-syzbot found the following issue on:
+Sure. The full lockdep splat from the original report can be found here:
+https://lore.kernel.org/all/CAOmEq9WKw2_Xq4hEMZte=3DZdMiXphWJW7759untUxc19Q=
+8iOj5A@mail.gmail.com/
 
-HEAD commit:    b69053dd3ffb wifi: mt76: Remove blank line after mt792x fi..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=137c3fb4580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a94030c847137a18
-dashboard link: https://syzkaller.appspot.com/bug?extid=6d30e046bbd449d3f6f1
-compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/18036fd3b399/disk-b69053dd.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/bcf4c5ec9d8e/vmlinux-b69053dd.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/b4101a9d1eed/bzImage-b69053dd.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+6d30e046bbd449d3f6f1@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: fs/btrfs/transaction.c:145 at btrfs_put_transaction+0x52d/0x560 fs/btrfs/transaction.c:145, CPU#0: btrfs-transacti/1033
-Modules linked in:
-CPU: 0 UID: 0 PID: 1033 Comm: btrfs-transacti Tainted: G             L      syzkaller #0 PREEMPT(full) 
-Tainted: [L]=SOFTLOCKUP
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/25/2025
-RIP: 0010:btrfs_put_transaction+0x52d/0x560 fs/btrfs/transaction.c:145
-Code: 07 fc ff ff e8 94 2a f1 fd 4c 89 f7 be 03 00 00 00 48 83 c4 18 5b 41 5c 41 5d 41 5e 41 5f 5d e9 b9 1b be 00 e8 74 2a f1 fd 90 <0f> 0b 90 e9 6f fb ff ff e8 66 2a f1 fd 90 0f 0b 90 e9 8c fb ff ff
-RSP: 0018:ffffc900052e7970 EFLAGS: 00010293
-RAX: ffffffff83cfcd4c RBX: ffff8880a4cba000 RCX: ffff888034bf3d00
-RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000001
-RBP: dffffc0000000000 R08: ffff8880a4cba013 R09: 1ffff11014997402
-R10: dffffc0000000000 R11: ffffed1014997403 R12: ffff8880a4cba000
-R13: 0000000000000000 R14: ffff8880a4cba358 R15: ffff88803251cc88
-FS:  0000000000000000(0000) GS:ffff888125e1f000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffde9f8b92c CR3: 000000000dd3a000 CR4: 0000000000350ef0
-Call Trace:
- <TASK>
- btrfs_commit_transaction+0x22cf/0x3b10 fs/btrfs/transaction.c:2598
- transaction_kthread+0x2b1/0x450 fs/btrfs/disk-io.c:1587
- kthread+0x711/0x8a0 kernel/kthread.c:463
- ret_from_fork+0x510/0xa50 arch/x86/kernel/process.c:158
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:246
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+Thanks,
+ZhengYuan Huang
 
