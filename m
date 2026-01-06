@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-20172-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20168-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 354B7CF9590
-	for <lists+linux-btrfs@lfdr.de>; Tue, 06 Jan 2026 17:28:53 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id DED71CF9582
+	for <lists+linux-btrfs@lfdr.de>; Tue, 06 Jan 2026 17:28:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 31651303899F
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Jan 2026 16:21:33 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id CFB42302F698
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Jan 2026 16:21:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54C16329378;
-	Tue,  6 Jan 2026 16:21:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02BC1335091;
+	Tue,  6 Jan 2026 16:21:15 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F15427B50F
-	for <linux-btrfs@vger.kernel.org>; Tue,  6 Jan 2026 16:21:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEAE9326933
+	for <linux-btrfs@vger.kernel.org>; Tue,  6 Jan 2026 16:21:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767716490; cv=none; b=Cdp+FS+737ZSa70pWpOvLhKJpJpucu/NRzt0Xr7oS9Xp/Vv/+zI6Io0c91uKQxTng3ThAkT6wH11BM+bDV1/6ZRNFNe/OHjRo7o/T8mQMecI6WVoYhaCy/+mZaHr/X8ZUS+QxL+RYCO4lgKCy/DAjW9zsLiTpG4H7997CcHbYZA=
+	t=1767716474; cv=none; b=Mfnq9wb9fsgwjmBKuCb3ozl26lbBlBIyezRezqIBRMQTJjz9oqRp2MY9BYjF1RMKCOdCa++8Up5i840yKjYVKMF7fS5HpgNBc9AL0NXfwriZ8Ro6kUydXGSpYu+pg6GRDp+ef1nnYItjlOvS0ZYcTJqEewFYMzrHwdmEn97cFo0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767716490; c=relaxed/simple;
-	bh=+kisj/5mRdbp9GMWK5wFdKpjoN1S/Tu+opD71R4v1gY=;
+	s=arc-20240116; t=1767716474; c=relaxed/simple;
+	bh=xx4Ziklrv1X/fYvuvBVhGa14eFdxKJUrjRz6rgSxpxY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MwWo8+XpbO8k7E3mzoty+g8qUsw5KtfJ3awmTqeYrltDA7y8G+vJnROcV1imswdJVVKVyMLb997fEUk7rmFOmu+2AJLhDfZpMjZClT6I+NqgWsVAV64Hcoi+e494gyPX1R8Vw+s5KqPc/NDEq3KXlB7knWy77eIPT1XUItlKMA8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; arc=none smtp.client-ip=195.135.223.130
+	 MIME-Version; b=BkCwOEDaNwjC/Vs6tvILc4i7aFju215hSmDVbgN2bU5hKMyWjtuSUESXb2Tlb/SehqxkbwfU6LeToykJP1jFFmZY/EGh6EG8OGKi9Iy3v/0Sfi9FhiWx9sSs5f468d05CjXCsMh6Y5i/RRXX1UsjoK77IDoAGutef03nOcXFbgw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 1BBE5336A2;
-	Tue,  6 Jan 2026 16:21:05 +0000 (UTC)
-Authentication-Results: smtp-out1.suse.de;
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 4F0D35BCD1;
+	Tue,  6 Jan 2026 16:21:11 +0000 (UTC)
+Authentication-Results: smtp-out2.suse.de;
 	none
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 15D723EA63;
-	Tue,  6 Jan 2026 16:21:05 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 494513EA63;
+	Tue,  6 Jan 2026 16:21:11 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id WPBSBXE2XWm9WQAAD6G6ig
-	(envelope-from <dsterba@suse.com>); Tue, 06 Jan 2026 16:21:05 +0000
+	id ajHgEXc2XWm/WQAAD6G6ig
+	(envelope-from <dsterba@suse.com>); Tue, 06 Jan 2026 16:21:11 +0000
 From: David Sterba <dsterba@suse.com>
 To: linux-btrfs@vger.kernel.org
 Cc: David Sterba <dsterba@suse.com>
-Subject: [PATCH 08/12] btrfs: zlib: don't cache sectorsize in a local variable
-Date: Tue,  6 Jan 2026 17:20:31 +0100
-Message-ID: <81eb1c802d917f865de33a456c438d62e1859bc5.1767716314.git.dsterba@suse.com>
+Subject: [PATCH 09/12] btrfs: zlib: remove local variable nr_dest_folios in zlib_compress_folios()
+Date: Tue,  6 Jan 2026 17:20:32 +0100
+Message-ID: <6a4a71802a5f26209bed59b492fd07029d52686f.1767716314.git.dsterba@suse.com>
 X-Mailer: git-send-email 2.51.1
 In-Reply-To: <cover.1767716314.git.dsterba@suse.com>
 References: <cover.1767716314.git.dsterba@suse.com>
@@ -66,64 +66,56 @@ X-Rspamd-Pre-Result: action=no action;
 	Message is reply to one we originated
 X-Spamd-Result: default: False [-4.00 / 50.00];
 	REPLY(-4.00)[]
-X-Rspamd-Queue-Id: 1BBE5336A2
+X-Spam-Flag: NO
+X-Spam-Score: -4.00
+X-Rspamd-Queue-Id: 4F0D35BCD1
 X-Rspamd-Pre-Result: action=no action;
 	module=replies;
 	Message is reply to one we originated
-X-Spam-Score: -4.00
-X-Spam-Level: 
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spam-Flag: NO
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Rspamd-Action: no action
+X-Spam-Level: 
 
-The sectorsize is used once or at most twice in the callbacks, no need
-to cache it on stack.
+The value of *out_folios does not change and nr_dest_folios is only a
+local copy, we can remove it. This saves 8 bytes of stack.
 
 Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/zlib.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
+ fs/btrfs/zlib.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
 diff --git a/fs/btrfs/zlib.c b/fs/btrfs/zlib.c
-index d1a680da26ba53..bb4a9f70714682 100644
+index bb4a9f70714682..fa35513267ae42 100644
 --- a/fs/btrfs/zlib.c
 +++ b/fs/btrfs/zlib.c
-@@ -71,7 +71,6 @@ static bool need_special_buffer(struct btrfs_fs_info *fs_info)
- 
- struct list_head *zlib_alloc_workspace(struct btrfs_fs_info *fs_info, unsigned int level)
- {
--	const u32 blocksize = fs_info->sectorsize;
- 	struct workspace *workspace;
- 	int workspacesize;
- 
-@@ -91,8 +90,8 @@ struct list_head *zlib_alloc_workspace(struct btrfs_fs_info *fs_info, unsigned i
- 		workspace->buf_size = ZLIB_DFLTCC_BUF_SIZE;
- 	}
- 	if (!workspace->buf) {
--		workspace->buf = kmalloc(blocksize, GFP_KERNEL);
--		workspace->buf_size = blocksize;
-+		workspace->buf = kmalloc(fs_info->sectorsize, GFP_KERNEL);
-+		workspace->buf_size = fs_info->sectorsize;
- 	}
- 	if (!workspace->strm.workspace || !workspace->buf)
- 		goto fail;
-@@ -161,7 +160,6 @@ int zlib_compress_folios(struct list_head *ws, struct btrfs_inode *inode,
+@@ -158,8 +158,7 @@ int zlib_compress_folios(struct list_head *ws, struct btrfs_inode *inode,
+ 	struct folio *in_folio = NULL;
+ 	struct folio *out_folio = NULL;
  	unsigned long len = *total_out;
- 	unsigned long nr_dest_folios = *out_folios;
- 	const unsigned long max_out = nr_dest_folios << min_folio_shift;
--	const u32 blocksize = fs_info->sectorsize;
+-	unsigned long nr_dest_folios = *out_folios;
+-	const unsigned long max_out = nr_dest_folios << min_folio_shift;
++	const unsigned long max_out = *out_folios << min_folio_shift;
  	const u64 orig_end = start + len;
  
  	*out_folios = 0;
-@@ -248,7 +246,7 @@ int zlib_compress_folios(struct list_head *ws, struct btrfs_inode *inode,
- 		}
- 
- 		/* we're making it bigger, give up */
--		if (workspace->strm.total_in > blocksize * 2 &&
-+		if (workspace->strm.total_in > fs_info->sectorsize * 2 &&
- 		    workspace->strm.total_in <
- 		    workspace->strm.total_out) {
- 			ret = -E2BIG;
+@@ -257,7 +256,7 @@ int zlib_compress_folios(struct list_head *ws, struct btrfs_inode *inode,
+ 		 * the stream end if required
+ 		 */
+ 		if (workspace->strm.avail_out == 0) {
+-			if (nr_folios == nr_dest_folios) {
++			if (nr_folios == *out_folios) {
+ 				ret = -E2BIG;
+ 				goto out;
+ 			}
+@@ -292,7 +291,7 @@ int zlib_compress_folios(struct list_head *ws, struct btrfs_inode *inode,
+ 			goto out;
+ 		} else if (workspace->strm.avail_out == 0) {
+ 			/* Get another folio for the stream end. */
+-			if (nr_folios == nr_dest_folios) {
++			if (nr_folios == *out_folios) {
+ 				ret = -E2BIG;
+ 				goto out;
+ 			}
 -- 
 2.51.1
 
