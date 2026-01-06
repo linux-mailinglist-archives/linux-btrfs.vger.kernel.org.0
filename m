@@ -1,276 +1,340 @@
-Return-Path: <linux-btrfs+bounces-20149-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20150-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35FF6CF8289
-	for <lists+linux-btrfs@lfdr.de>; Tue, 06 Jan 2026 12:53:32 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A046CF8316
+	for <lists+linux-btrfs@lfdr.de>; Tue, 06 Jan 2026 13:00:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 71C4730124E1
-	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Jan 2026 11:53:31 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id DBA14305482E
+	for <lists+linux-btrfs@lfdr.de>; Tue,  6 Jan 2026 11:59:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDFBF219A8E;
-	Tue,  6 Jan 2026 11:53:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18366327BF6;
+	Tue,  6 Jan 2026 11:59:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="e45fRE7E";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="V7DFt+dT"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ApR0x8fp";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="0WcTgiko";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ApR0x8fp";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="0WcTgiko"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CC517DA66
-	for <linux-btrfs@vger.kernel.org>; Tue,  6 Jan 2026 11:53:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3841F3254AE
+	for <linux-btrfs@vger.kernel.org>; Tue,  6 Jan 2026 11:58:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767700408; cv=none; b=gq5goH2/9mlNlUbbOQ97aZ779OyEvgcaXBmS+nBEvGGvAbJIRu5reKDeLiMX1PEDc0xDN3ENvcPXhkO83f3V68lDPmlQo8ZyFb83UTsuh98fDXFdS4QwBFkLxrPslsW6AUBZXtgpblbiRo2sZMWxYM/D+tQqG5T9wQqwQ+Bi/cU=
+	t=1767700740; cv=none; b=E6jGVe2KC/c6lsUtbIT00F615HdSZFeLxU0V/0uvWPWgW9IV81sCrNqI4QYGW6uKXsvsrMWsglMX7IUlJmTVY/GWudJY4aeIgmJy+Z5n9S9W0Qyg63yxfkUQvtsJS5b4qTKxxg6tcORbDWRpzVqri8mB0BhXWvMeLU1zoA3Q8iY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767700408; c=relaxed/simple;
-	bh=MWG0Zglvd29bx6a4AZGV6SqQpZdhADDXtzQ0c4Ds978=;
+	s=arc-20240116; t=1767700740; c=relaxed/simple;
+	bh=DE3h7XPHKXKAtMrHjg9/u5oezu8yeFLJFoRL8sB7/2U=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rrgniczmQNMfvI4FAcgef2gpdYX0F4T9akxoQJLTny7iEyaK2B1/y4ZP2+irtgvW6LKFJdmLjLuq7mBT2gIATlB5y1APoTQOxGWaz3/0eTPXPFaYVwsiaauCx1ZwMz1RH+gc88+q8WjvxRcrYGy8nm9wbuqwW/yWH7cNC2SAKhM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=e45fRE7E; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=V7DFt+dT; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1767700405;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qMqX2zdY/MSohfCMTj/uT3SjUxBnByv4yYqfGvL1z5i2hN5xBiD6R3zOGmYH6neav2qlv6Ihg37pTlrZ6+7Dnvf0oK0zVzDZIBZrC9Ss9lhEedhWtqobdzZy3RXGN5zJ41B5lyj44EPEsDo+i5Xua1CkKWh5h/aFh1dfsghVpQY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ApR0x8fp; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=0WcTgiko; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ApR0x8fp; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=0WcTgiko; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 5C4005BCC3;
+	Tue,  6 Jan 2026 11:58:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1767700736; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=aEgid8z1Mi7abwQ5T3UH1jzdW67mQ6CtP9yV7wpbSb0=;
-	b=e45fRE7EYHLsReJChlg0UDx7GLDGrEvaIx4usB/o1kqvR4T8pObpDPxzB4dkfo7MSWBm/A
-	ewYdqmPPyABdBBG/c+Ac67Dex1qAQXCmM3Gg9GgFDahqSEDNcyNKXOK9rj/fnZGuFY+cLu
-	AJD2Quyi2lNwcrBbHpbMbK+JXUscvLI=
-Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
- [209.85.215.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-648-UMAlKQCIOVqRYUjWNFVYfA-1; Tue, 06 Jan 2026 06:53:24 -0500
-X-MC-Unique: UMAlKQCIOVqRYUjWNFVYfA-1
-X-Mimecast-MFC-AGG-ID: UMAlKQCIOVqRYUjWNFVYfA_1767700403
-Received: by mail-pg1-f200.google.com with SMTP id 41be03b00d2f7-c0c7e0a8ac1so1344002a12.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 06 Jan 2026 03:53:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1767700403; x=1768305203; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=aEgid8z1Mi7abwQ5T3UH1jzdW67mQ6CtP9yV7wpbSb0=;
-        b=V7DFt+dTI5JvJyMjqoVFqIa7NeSp3dXiOpQdHeYBVpxJqodeZ5qkvNFb7HNxCxE8E2
-         ViojD/BalqashQTvteaBb1qWCIvFIQXp2Ja+8J4I2uDhSgBo6JsesGiM9zQZrPihFqq2
-         3UC2B7cOoN3yvHeQCmg7HLGVpYifrSR1L9VZkDJ4jbrHtbtzluVF+40/SqMpZNGtnSV8
-         H+WDqxu3BaA52EI8MUl9Gp4eCoD1S+0S+r0NOw0Yllad6MheVF7LHi8IwlqRACeEERG/
-         CThqEsgrUUuR0oh57/it9Fbnps+HxDvJw8HzjR5N+iafHevn53nMvSn/bcURPo6ybAvx
-         GGAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767700403; x=1768305203;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=aEgid8z1Mi7abwQ5T3UH1jzdW67mQ6CtP9yV7wpbSb0=;
-        b=nGwkFNI3EL9wMPQerVIAbtT012Hhbzsb2Q3PKMpwCWDCYMf6iS+Qya1guXHAQ9WlL6
-         MvTGw2f+AFEV/zAAEqjHkJlGe8HPxLY3dMZaBqvBdMnHDhwoPr8sG8rxZtG4p4jFLU8z
-         R4PKUub478lAgP0oq54ISRbGrz4Bitf9eYcvQwy0Qdt3tH/TJIFMK2K22CZCLKuX/Uzh
-         yXCokGU+qED2R6btkIZMv+nHICH3O/KuVblsoR2461oyT4gMyTgW9u7xZd57HWVdwhDW
-         Zo8+4Olb7Tc76x0AT7BJbLF3f/4Q+E03ouOtunE1d+UKF+p6dE88GsjF2jl6BhLIFlQo
-         KmCQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUaV8FKxOl+ml9/aUzRvUM1JYCYKjmSN/H5jkIjJbW+bPq0xmZa/KRpOpW/fYUkHOjL1HXe1UY1xvg9wA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyNf64DwFTM4Mv+iMOY3B4QiMj/lTtEenB2yLmyAX6vMGjU6wuF
-	cpjfROWhSDMjiJF38lbUAZl5h7e5GrlD1hydqqO96U6RNKRnwkn26xkqCdAi/oT43RInfR0p1pP
-	4CIONimFKel1CI6RSrUlAzN+7+u05NduB5k+lkscmuftfUaLzQIkyANklVEI+nzMw
-X-Gm-Gg: AY/fxX52WDp9ycYBV/MyNg6OoRU2d+IGiHyL2/aqjRai5f/7rgFzN/+0eb7IfwB559c
-	CG80YpfJzVi8SOUeBSCjtzwYAQrmo4WBVdLxwVHPmGTVsXwAlTGHIll6ohlLIERUPxs6pot/LsQ
-	GzY2FuR2JCbQPVIQw+SnPufGnfJRJek+3h/VJNHP1NixxVW7M3fKjqyXXCcfduEmhA8C8f+s+ya
-	+CeERdJhwpop4VUQyiNNvPEZQxOU6r9x1jo1+i0ZSyBeZKgUNMRluz5qQI7bOtHC9COrya6JaSZ
-	e+zyAT4grL9O8giJ16XOgTUyi2Whde3tCcBh6yZXfTlnVXyDps0SlflIrwpxd/j8eNjIe52xavN
-	Bv61AUkiVQurL7wVnW8gX+C2jas1Xxolv1VKkJFGR5x5Hzj6GUw==
-X-Received: by 2002:a05:6a20:72a6:b0:366:19fd:dbe4 with SMTP id adf61e73a8af0-389822c1e44mr2526897637.4.1767700403246;
-        Tue, 06 Jan 2026 03:53:23 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGahWa5NKO+aagTbF1nIRt2Qo0M7Wk2kJAm/td/1+Dzw3K5r3/sDFz13B0KHyMpnopi/tM4VQ==
-X-Received: by 2002:a05:6a20:72a6:b0:366:19fd:dbe4 with SMTP id adf61e73a8af0-389822c1e44mr2526876637.4.1767700402691;
-        Tue, 06 Jan 2026 03:53:22 -0800 (PST)
-Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([209.132.188.88])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-c4cc8d2932bsm2324272a12.21.2026.01.06.03.53.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jan 2026 03:53:20 -0800 (PST)
-Date: Tue, 6 Jan 2026 19:53:16 +0800
-From: Zorro Lang <zlang@redhat.com>
-To: Filipe Manana <fdmanana@kernel.org>
-Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	Filipe Manana <fdmanana@suse.com>, Zorro Lang <zlang@kernel.org>
-Subject: Re: [PATCH] btrfs: test power failure after fsync and rename
- exchanging directories
-Message-ID: <20260106115316.jzdtch6zmdo7w5hb@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-References: <3cb8fdeec6e3bf977682d1074bf3e7ba1719b98c.1765466812.git.fdmanana@suse.com>
- <CAL3q7H7AY2iC+Z8LEv8+TawbuXJdwoXei_0d+NEccVYE5Wu3PA@mail.gmail.com>
+	bh=2ObRgs3d+g8PveAEGr4BxnLJWbvM8QtjCZ0j19IkX9A=;
+	b=ApR0x8fpWk4JE2WuMUwrbWrF5F+bOpeM9gn0Lq62/Wj/4SxZeeXoNdFA/sWRRGKHz1OC8n
+	CV6y9fRm2czfPMGWASwCYwVd5NfTi/rzUC38vdiVwO5GsR4VP4sP/M2ArpbIvu19OEyJM+
+	zdgJJGI8GTBXwzOicofRX9aQXZn8QSM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1767700736;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2ObRgs3d+g8PveAEGr4BxnLJWbvM8QtjCZ0j19IkX9A=;
+	b=0WcTgikoiNw+yJEt8j+Xz4ALXZeXDmh3Fda7sdWR3afv6MYizQLg0cZfR9dXSGroO7aP2C
+	WFw+7D+wNUq6rJDw==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1767700736; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2ObRgs3d+g8PveAEGr4BxnLJWbvM8QtjCZ0j19IkX9A=;
+	b=ApR0x8fpWk4JE2WuMUwrbWrF5F+bOpeM9gn0Lq62/Wj/4SxZeeXoNdFA/sWRRGKHz1OC8n
+	CV6y9fRm2czfPMGWASwCYwVd5NfTi/rzUC38vdiVwO5GsR4VP4sP/M2ArpbIvu19OEyJM+
+	zdgJJGI8GTBXwzOicofRX9aQXZn8QSM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1767700736;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=2ObRgs3d+g8PveAEGr4BxnLJWbvM8QtjCZ0j19IkX9A=;
+	b=0WcTgikoiNw+yJEt8j+Xz4ALXZeXDmh3Fda7sdWR3afv6MYizQLg0cZfR9dXSGroO7aP2C
+	WFw+7D+wNUq6rJDw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3CDEF3EA63;
+	Tue,  6 Jan 2026 11:58:56 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id jzWMDgD5XGmibQAAD6G6ig
+	(envelope-from <jack@suse.cz>); Tue, 06 Jan 2026 11:58:56 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id EE62FA08E3; Tue,  6 Jan 2026 12:58:47 +0100 (CET)
+Date: Tue, 6 Jan 2026 12:58:47 +0100
+From: Jan Kara <jack@suse.cz>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Christian Brauner <brauner@kernel.org>, 
+	Al Viro <viro@zeniv.linux.org.uk>, David Sterba <dsterba@suse.com>, Jan Kara <jack@suse.cz>, 
+	Mike Marshall <hubcap@omnibond.com>, Martin Brandenburg <martin@omnibond.com>, 
+	Carlos Maiolino <cem@kernel.org>, Stefan Roesch <shr@fb.com>, Jeff Layton <jlayton@kernel.org>, 
+	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>, Trond Myklebust <trondmy@kernel.org>, 
+	Anna Schumaker <anna@kernel.org>, linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, gfs2@lists.linux.dev, io-uring@vger.kernel.org, 
+	devel@lists.orangefs.org, linux-unionfs@vger.kernel.org, linux-mtd@lists.infradead.org, 
+	linux-xfs@vger.kernel.org, linux-nfs@vger.kernel.org
+Subject: Re: [PATCH 08/11] fs: add support for non-blocking timestamp updates
+Message-ID: <jdntrcr644ukmht5wq2xbbh6vmolawdahxahm22vuaihtvpa43@ixt3uehbbdiq>
+References: <20260106075008.1610195-1-hch@lst.de>
+ <20260106075008.1610195-9-hch@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAL3q7H7AY2iC+Z8LEv8+TawbuXJdwoXei_0d+NEccVYE5Wu3PA@mail.gmail.com>
+In-Reply-To: <20260106075008.1610195-9-hch@lst.de>
+X-Spamd-Result: default: False [-3.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-0.991];
+	MIME_GOOD(-0.10)[text/plain];
+	MISSING_XM_UA(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[23];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_TLS_LAST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo,lst.de:email,suse.cz:email]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: -3.80
 
-On Mon, Jan 05, 2026 at 04:22:28PM +0000, Filipe Manana wrote:
-> On Thu, Dec 11, 2025 at 3:42 PM <fdmanana@kernel.org> wrote:
-> >
-> > From: Filipe Manana <fdmanana@suse.com>
-> >
-> > Test renaming one directory over another one that has a subvolume inside
-> > it and fsync a file in the other directory that was previously renamed.
-> > We want to verify that after a power failure we are able to mount the
-> > filesystem and it has the correct content (all renames visible).
-> >
-> > This exercises a bug fixed by the following kernel patch:
-> >
-> >   "btrfs: always detect conflicting inodes when logging inode refs"
-> >
-> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
+On Tue 06-01-26 08:50:02, Christoph Hellwig wrote:
+> Currently file_update_time_flags unconditionally returns -EAGAIN if any
+> timestamp needs to be updated and IOCB_NOWAIT is passed.  This makes
+> non-blocking direct writes impossible on file systems with granular
+> enough timestamps.
 > 
-> Ping.
+> Pass IOCB_NOWAIT to ->update_time and return -EAGAIN if it could block.
 > 
-> Zorro, this missed the last update.
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-Hi Filipe, Happey new year :) I just backed from holiday, so hurried to
-merge some patches with enough RVB. This patch hasn't been reviewed,
-especially it conflicted with another patchset (refer to below review points),
-so I decided to deal with it in next release. Sorry for the delaying ...
+Much nicer now! Thanks for the refactoring. Feel free to add:
 
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
+> ---
+>  fs/btrfs/inode.c     |  2 ++
+>  fs/gfs2/inode.c      |  3 +++
+>  fs/inode.c           | 45 +++++++++++++++++++++++++++++++++-----------
+>  fs/orangefs/inode.c  |  3 +++
+>  fs/overlayfs/inode.c |  2 ++
+>  fs/ubifs/file.c      |  3 +++
+>  fs/xfs/xfs_iops.c    |  3 +++
+>  7 files changed, 50 insertions(+), 11 deletions(-)
 > 
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index 23fc38de9be5..241727459c0a 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -6362,6 +6362,8 @@ static int btrfs_update_time(struct inode *inode, enum fs_update_time type,
+>  
+>  	if (btrfs_root_readonly(root))
+>  		return -EROFS;
+> +	if (flags & IOCB_NOWAIT)
+> +		return -EAGAIN;
+>  
+>  	dirty = inode_update_time(inode, type, flags);
+>  	if (dirty <= 0)
+> diff --git a/fs/gfs2/inode.c b/fs/gfs2/inode.c
+> index 4ef39ff6889d..c02ebf0ca625 100644
+> --- a/fs/gfs2/inode.c
+> +++ b/fs/gfs2/inode.c
+> @@ -2250,6 +2250,9 @@ static int gfs2_update_time(struct inode *inode, enum fs_update_time type,
+>  	struct gfs2_holder *gh;
+>  	int error;
+>  
+> +	if (flags & IOCB_NOWAIT)
+> +		return -EAGAIN;
+> +
+>  	gh = gfs2_glock_is_locked_by_me(gl);
+>  	if (gh && gl->gl_state != LM_ST_EXCLUSIVE) {
+>  		gfs2_glock_dq(gh);
+> diff --git a/fs/inode.c b/fs/inode.c
+> index c08682524a8d..01e4f6b9b46e 100644
+> --- a/fs/inode.c
+> +++ b/fs/inode.c
+> @@ -2090,7 +2090,7 @@ static int inode_update_atime(struct inode *inode)
+>  	return inode_time_dirty_flag(inode);
+>  }
+>  
+> -static int inode_update_cmtime(struct inode *inode)
+> +static int inode_update_cmtime(struct inode *inode, unsigned int flags)
+>  {
+>  	struct timespec64 now = inode_set_ctime_current(inode);
+>  	struct timespec64 ctime = inode_get_ctime(inode);
+> @@ -2101,12 +2101,27 @@ static int inode_update_cmtime(struct inode *inode)
+>  	mtime_changed = !timespec64_equal(&now, &mtime);
+>  	if (mtime_changed || !timespec64_equal(&now, &ctime))
+>  		dirty = inode_time_dirty_flag(inode);
+> -	if (mtime_changed)
+> -		inode_set_mtime_to_ts(inode, now);
+>  
+> -	if (IS_I_VERSION(inode) && inode_maybe_inc_iversion(inode, !!dirty))
+> -		dirty |= I_DIRTY_SYNC;
+> +	/*
+> +	 * Pure timestamp updates can be recorded in the inode without blocking
+> +	 * by not dirtying the inode.  But when the file system requires
+> +	 * i_version updates, the update of i_version can still block.
+> +	 * Error out if we'd actually have to update i_version or don't support
+> +	 * lazytime.
+> +	 */
+> +	if (IS_I_VERSION(inode)) {
+> +		if (flags & IOCB_NOWAIT) {
+> +			if (!(inode->i_sb->s_flags & SB_LAZYTIME) ||
+> +			    inode_iversion_need_inc(inode))
+> +				return -EAGAIN;
+> +		} else {
+> +			if (inode_maybe_inc_iversion(inode, !!dirty))
+> +				dirty |= I_DIRTY_SYNC;
+> +		}
+> +	}
+>  
+> +	if (mtime_changed)
+> +		inode_set_mtime_to_ts(inode, now);
+>  	return dirty;
+>  }
+>  
+> @@ -2131,7 +2146,7 @@ int inode_update_time(struct inode *inode, enum fs_update_time type,
+>  	case FS_UPD_ATIME:
+>  		return inode_update_atime(inode);
+>  	case FS_UPD_CMTIME:
+> -		return inode_update_cmtime(inode);
+> +		return inode_update_cmtime(inode, flags);
+>  	default:
+>  		WARN_ON_ONCE(1);
+>  		return -EIO;
+> @@ -2152,6 +2167,16 @@ int generic_update_time(struct inode *inode, enum fs_update_time type,
+>  {
+>  	int dirty;
+>  
+> +	/*
+> +	 * ->dirty_inode is what could make generic timestamp updates block.
+> +	 * Don't support non-blocking timestamp updates here if it is set.
+> +	 * File systems that implement ->dirty_inode but want to support
+> +	 * non-blocking timestamp updates should call inode_update_time
+> +	 * directly.
+> +	 */
+> +	if ((flags & IOCB_NOWAIT) && inode->i_sb->s_op->dirty_inode)
+> +		return -EAGAIN;
+> +
+>  	dirty = inode_update_time(inode, type, flags);
+>  	if (dirty <= 0)
+>  		return dirty;
+> @@ -2380,15 +2405,13 @@ static int file_update_time_flags(struct file *file, unsigned int flags)
+>  	if (!need_update)
+>  		return 0;
+>  
+> -	if (flags & IOCB_NOWAIT)
+> -		return -EAGAIN;
+> -
+> +	flags &= IOCB_NOWAIT;
+>  	if (mnt_get_write_access_file(file))
+>  		return 0;
+>  	if (inode->i_op->update_time)
+> -		ret = inode->i_op->update_time(inode, FS_UPD_CMTIME, 0);
+> +		ret = inode->i_op->update_time(inode, FS_UPD_CMTIME, flags);
+>  	else
+> -		ret = generic_update_time(inode, FS_UPD_CMTIME, 0);
+> +		ret = generic_update_time(inode, FS_UPD_CMTIME, flags);
+>  	mnt_put_write_access_file(file);
+>  	return ret;
+>  }
+> diff --git a/fs/orangefs/inode.c b/fs/orangefs/inode.c
+> index eab16afb5b8a..f420f48fc069 100644
+> --- a/fs/orangefs/inode.c
+> +++ b/fs/orangefs/inode.c
+> @@ -878,6 +878,9 @@ int orangefs_update_time(struct inode *inode, enum fs_update_time type,
+>  	struct iattr iattr = { };
+>  	int dirty;
+>  
+> +	if (flags & IOCB_NOWAIT)
+> +		return -EAGAIN;
+> +
+>  	switch (type) {
+>  	case FS_UPD_ATIME:
+>  		iattr.ia_valid = ATTR_ATIME;
+> diff --git a/fs/overlayfs/inode.c b/fs/overlayfs/inode.c
+> index c0ce3519e4af..00c69707bda9 100644
+> --- a/fs/overlayfs/inode.c
+> +++ b/fs/overlayfs/inode.c
+> @@ -566,6 +566,8 @@ int ovl_update_time(struct inode *inode, enum fs_update_time type,
+>  		};
+>  
+>  		if (upperpath.dentry) {
+> +			if (flags & IOCB_NOWAIT)
+> +				return -EAGAIN;
+>  			touch_atime(&upperpath);
+>  			inode_set_atime_to_ts(inode,
+>  					      inode_get_atime(d_inode(upperpath.dentry)));
+> diff --git a/fs/ubifs/file.c b/fs/ubifs/file.c
+> index 0cc44ad142de..3dc3ca1cd803 100644
+> --- a/fs/ubifs/file.c
+> +++ b/fs/ubifs/file.c
+> @@ -1377,6 +1377,9 @@ int ubifs_update_time(struct inode *inode, enum fs_update_time type,
+>  	if (!IS_ENABLED(CONFIG_UBIFS_ATIME_SUPPORT))
+>  		return generic_update_time(inode, type, flags);
+>  
+> +	if (flags & IOCB_NOWAIT)
+> +		return -EAGAIN;
+> +
+>  	err = ubifs_budget_space(c, &req);
+>  	if (err)
+>  		return err;
+> diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
+> index d9eae1af14a8..aef5b05c1b76 100644
+> --- a/fs/xfs/xfs_iops.c
+> +++ b/fs/xfs/xfs_iops.c
+> @@ -1195,6 +1195,9 @@ xfs_vn_update_time(
+>  
+>  	trace_xfs_update_time(ip);
+>  
+> +	if (flags & IOCB_NOWAIT)
+> +		return -EAGAIN;
+> +
+>  	if (inode->i_sb->s_flags & SB_LAZYTIME) {
+>  		if (type == FS_UPD_ATIME ||
+>  		    !inode_maybe_inc_iversion(inode, false))
+> -- 
+> 2.47.3
 > 
-> > ---
-> >  tests/btrfs/340     | 75 +++++++++++++++++++++++++++++++++++++++++++++
-> >  tests/btrfs/340.out | 15 +++++++++
-> >  2 files changed, 90 insertions(+)
-> >  create mode 100755 tests/btrfs/340
-> >  create mode 100644 tests/btrfs/340.out
-> >
-> > diff --git a/tests/btrfs/340 b/tests/btrfs/340
-> > new file mode 100755
-> > index 00000000..d52893ae
-> > --- /dev/null
-> > +++ b/tests/btrfs/340
-> > @@ -0,0 +1,75 @@
-> > +#! /bin/bash
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +# Copyright (c) 2025 SUSE S.A.  All Rights Reserved.
-> > +#
-> > +# FS QA Test 340
-> > +#
-> > +# Test renaming one directory over another one that has a subvolume inside it
-> > +# and fsync a file in the other directory that was previously renamed. We want
-> > +# to verify that after a power failure we are able to mount the filesystem and
-> > +# it has the correct content (all renames visible).
-> > +#
-> > +. ./common/preamble
-> > +_begin_fstest auto quick subvol rename log
-> > +
-> > +_cleanup()
-> > +{
-> > +       _cleanup_flakey
-> > +       cd /
-> > +       rm -r -f $tmp.*
-> > +}
-> > +
-> > +. ./common/filter
-> > +. ./common/dmflakey
-> > +. ./common/renameat2
-> > +
-> > +_require_scratch
-> > +_require_dm_target flakey
-> > +_require_renameat2 exchange
-> > +
-> > +_fixed_by_kernel_commit xxxxxxxxxxxx \
-> > +       "btrfs: always detect conflicting inodes when logging inode refs"
-> > +
-> > +_scratch_mkfs >>$seqres.full 2>&1 || _fail "mkfs failed"
-> > +_require_metadata_journaling $SCRATCH_DEV
-> > +_init_flakey
-> > +_mount_flakey
-
-The _mount_flakey and _unmount_flakey have been removed by:
-
-  commit eb2ad950ea90d8d8d861f8beac138d6a19f0f819
-  Author: Christoph Hellwig <hch@lst.de>
-  Date:   Thu Dec 18 08:29:59 2025 +0100
-
-      dmflakey: override SCRATCH_DEV in _init_flakey
-
-> > +
-> > +# Create our test directories, one with a file inside, another with a subvolume
-> > +# that is not empty (has one file).
-> > +mkdir $SCRATCH_MNT/dir1
-> > +echo -n > $SCRATCH_MNT/dir1/foo
-> > +
-> > +mkdir $SCRATCH_MNT/dir2
-> > +_btrfs subvolume create $SCRATCH_MNT/dir2/subvol
-> > +echo -n > $SCRATCH_MNT/dir2/subvol/subvol_file
-> > +
-> > +_scratch_sync
-> > +
-> > +# Rename file foo so that its inode's last_unlink_trans is updated to the
-> > +# current transaction.
-> > +mv $SCRATCH_MNT/dir1/foo $SCRATCH_MNT/dir1/bar
-> > +
-> > +# Rename exchange dir1 with dir2.
-> > +$here/src/renameat2 -x $SCRATCH_MNT/dir1 $SCRATCH_MNT/dir2
-> > +
-> > +# Fsync file bar, we just renamed from foo.
-> > +# Until the kernel fix mentioned above, it would result in logging dir2 without
-> > +# logging dir1, causing log replay to attempt to remove the inode for dir1 since
-> > +# the inode for dir2 has the same name in the same parent directory. Not only
-> > +# this was not correct, since we did not delete the directory, but it would also
-> > +# result in a log replay failure (and therefore mount failure) because we would
-> > +# be attempting to delete a directory with a non-empty subvolume inside it.
-> > +$XFS_IO_PROG -c "fsync" $SCRATCH_MNT/dir2/bar
-> > +
-> > +# Simulate a power failure and then mount again the filesystem to replay the
-> > +# journal/log. We should be able to replay the log tree and mount successfully.
-> > +_flakey_drop_and_remount
-> > +
-> > +echo -e "Filesystem contents after power failure:\n"
-> > +ls -1R $SCRATCH_MNT | _filter_scratch
-> > +
-> > +_unmount_flakey
-
-The _cleanup_flakey in your _cleanup contains the _unmount $SCRATCH_MNT, so if
-you don't need "double umount", I think we can remove this line directly.
-
-Others looks good to me, please rebase to v2026.01.05 in v2, then I'll review
-and merge your v2 into patches-in-queue, then push it in next release :)
-
-Thanks,
-Zorro
-
-> > +
-> > +# success, all done
-> > +_exit 0
-> > diff --git a/tests/btrfs/340.out b/tests/btrfs/340.out
-> > new file mode 100644
-> > index 00000000..7745c639
-> > --- /dev/null
-> > +++ b/tests/btrfs/340.out
-> > @@ -0,0 +1,15 @@
-> > +QA output created by 340
-> > +Filesystem contents after power failure:
-> > +
-> > +SCRATCH_MNT:
-> > +dir1
-> > +dir2
-> > +
-> > +SCRATCH_MNT/dir1:
-> > +subvol
-> > +
-> > +SCRATCH_MNT/dir1/subvol:
-> > +subvol_file
-> > +
-> > +SCRATCH_MNT/dir2:
-> > +bar
-> > --
-> > 2.47.2
-> >
-> >
-> 
-
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
