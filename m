@@ -1,475 +1,198 @@
-Return-Path: <linux-btrfs+bounces-20213-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20214-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75A2BCFF402
-	for <lists+linux-btrfs@lfdr.de>; Wed, 07 Jan 2026 19:00:12 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 389BBCFF744
+	for <lists+linux-btrfs@lfdr.de>; Wed, 07 Jan 2026 19:31:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 365C53038F7D
-	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Jan 2026 17:58:25 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 5C5FF3001821
+	for <lists+linux-btrfs@lfdr.de>; Wed,  7 Jan 2026 18:30:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2781037D1C0;
-	Wed,  7 Jan 2026 17:57:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF898346AD3;
+	Wed,  7 Jan 2026 18:22:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="co1MZOPL";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="kD7d5AEG"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="IZyL5OvO";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="wdy0QIGM"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fout-a4-smtp.messagingengine.com (fout-a4-smtp.messagingengine.com [103.168.172.147])
+Received: from fhigh-a4-smtp.messagingengine.com (fhigh-a4-smtp.messagingengine.com [103.168.172.155])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C56D236C0D6
-	for <linux-btrfs@vger.kernel.org>; Wed,  7 Jan 2026 17:57:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.147
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 120432ECEBB
+	for <linux-btrfs@vger.kernel.org>; Wed,  7 Jan 2026 18:22:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.155
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767808629; cv=none; b=pMVvZA2C7DFJBsCUYxbUSTCryxKMPn64AypiIG6QGRn4A2DwcDLT0WU9oH09sRJ5nljm/1M11ug+4DQeiGLTAXzpMpDpzTYPN3NFOXc1C5MteDviTyQljs4jMVi/URD8BjtSxDp4sUt5FjYlH6pFdn0TucnMgPQmuUrEuRt6D5M=
+	t=1767810165; cv=none; b=Ng4rlP4yRGKq74u8j0qlMb5WgZPXlMAbz5BHUBWb3OQED6HGFODArfCJrHbBpMnBpTCzkE+0cxJvohrNjvUbp2Abtb02mEyLr8C1YHtSVVz2RAP9H//3VOBfTE43x83H0ioZuF/3d2uME17I8s9WOAO0tVbcoWttv2hdB9TgU90=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767808629; c=relaxed/simple;
-	bh=fYLsApHXUBhBVhrieAI6vg8Vs+5UaXXH41Mdp/WCOyU=;
+	s=arc-20240116; t=1767810165; c=relaxed/simple;
+	bh=VD/wNkRE4JywgqHW0OXZdYh3wbpS65ypIGEDAs1GQ9M=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JXXI/tMwI94ER1ItQPBkz3yice5i3fc+Hq5nZ9s1RZ/nYlK1OwWMtSR7GBL4A/bQRxP09i+tks4uMFUDvXVZvB/4o2MLZG78mp3M5igF5d7icLs+fAUvXbu8j17V7UavMGLvE23ZqT07FKPZsrFuSoT42z4vB6JSlDYFibmioL4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=co1MZOPL; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=kD7d5AEG; arc=none smtp.client-ip=103.168.172.147
+	 Content-Type:Content-Disposition:In-Reply-To; b=Zh8j8sYMNov0peUrPSmA0Qa6oslv8VvIk0ahLNt5kT7/Vcj0AMgMcLIcgrX5Ity2e7JFx4/7uep3gqqojwsnpjQ5Rhlipoj348vjmhLDMvkPimHrbm3DmXTIy3/p7ymwhF5WX7X5TTmO3RMokkRpEFYcw8cz1HOp3gvrSjeWAZY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=IZyL5OvO; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=wdy0QIGM; arc=none smtp.client-ip=103.168.172.155
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-11.internal (phl-compute-11.internal [10.202.2.51])
-	by mailfout.phl.internal (Postfix) with ESMTP id EEB47EC031A;
-	Wed,  7 Jan 2026 12:57:04 -0500 (EST)
-Received: from phl-frontend-03 ([10.202.2.162])
-  by phl-compute-11.internal (MEProxy); Wed, 07 Jan 2026 12:57:04 -0500
+Received: from phl-compute-03.internal (phl-compute-03.internal [10.202.2.43])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id 2953314000DF;
+	Wed,  7 Jan 2026 13:22:42 -0500 (EST)
+Received: from phl-frontend-04 ([10.202.2.163])
+  by phl-compute-03.internal (MEProxy); Wed, 07 Jan 2026 13:22:42 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-transfer-encoding:content-type:content-type:date:date
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1767808624;
-	 x=1767895024; bh=ktEgHYtxjPQQXBeB9JWdK9Yof4Q2AyZMHOlHhzN/J04=; b=
-	co1MZOPLjl4bFMJ5oBa/TL/Iy3hOb6xDE0VzP/xV/ac8jcoUFFrFxY3hHYNVGoYi
-	0D6V11KdRSmxdGufaadaUqh9F0BxKCmcwLuD8Dt4T08L4iMDWlNZLLMBxM3kwXqE
-	TlHsvwY8dzBzJINXvPBdSf63sxwfIQDhRio9e5GBnlhe2zhe4zy5Mc3Li++lg64b
-	XTxMsJW6/au6Yj22Tjudhmy1Xx18OclNM3VRKdGnK4aeQ0xXv9n8y1LBBv18PgYy
-	VyPVFdqVmVEqWDF+FFOOA7tWFol/qFhL7HClPSaRlnlHR91tQa3iDm8Qkupy7hV7
-	wXHBtGc/Cw5r8xBfQ7Cmmg==
+	:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1767810162; x=1767896562; bh=njK4AGIp3f
+	T/JtTKcWYbWS8TT4/1GmzntJEqUWU+84Y=; b=IZyL5OvO8i9szW81Go/I5OmE8m
+	ivtdXEybEQgRO6jIyHjC+IAuEJOFEt90s4zTpDlce7oVwQLMPi8GP9+bNVLod41j
+	VpyPQ4Mpu1l8wplsnTWYoQjc5dE+xCrP+oEGnyKwrMzFUxJCRV8XtFkbe05SUyIP
+	imH45SCqa/DOgeYNMdIHDKpMkbmoA8l+VAoFPjj04PJVkfC/B5Ryet9pDQUF6rl5
+	B3A9dUgyJK9K/AM3UqX7wHzJv6e3swwbWhSd/FCmjNUNAprt0s9uD83cZ7x/exbF
+	V6Yzks9Swvcse6E2pYpf8/cfQbKA0p7sL4ncoC5wzgX2Wk2ulPelusXfYQZg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1767808624; x=
-	1767895024; bh=ktEgHYtxjPQQXBeB9JWdK9Yof4Q2AyZMHOlHhzN/J04=; b=k
-	D7d5AEGsZEjGPWo3yRbWJeJR5LUc9kTRcgfRHu6URNMejg6mrVB7MUxEgy/7f/5U
-	oiWfzPxjeazPdDSII9LIxqfYxEenBBt8AG73rGqM8pcVXJFmElZH1TGvZ5ShAuKM
-	wPyrfn5HTRWlSuOyZ8jfe5o/bbf2ukahfhG9blRj1dVU3NTx/gcqcW2BcSGOjHye
-	rT3R03hutaGGJVN+VhNNGzjeQuHLVOQjKL0Uj0Wm2AUxEDhiCF167Wy12Fx4CTtP
-	jVbSH9NJ3lxYd3j+fDgtt8dezYZodBWlT3hmCZpebPECsGtkKLu0Xh1iztzUIRnx
-	7fE38Yf5JwxCEDzhCdD7A==
-X-ME-Sender: <xms:cJ5eaUJLZ42iRv_4T5hnHd1dKaQvbV5PSWKIefvqImJdn4DD-o2IlQ>
-    <xme:cJ5eaaL2A3gzgxf98onS3NEQhIaJiOpAwJJz-C-YGBmtHpTgiq85WuB3oop7FIi0S
-    qZGJvJYE22Wd7wbdvA5WrBQw6TxnxMW-S8erJp_fTXqgAE6TWi-dWs>
-X-ME-Received: <xmr:cJ5eaSWF5ranLWcjedM5PHQlxIxGA4cSi8miLlnifAC5YxXbTHwyfzO0ltHyIswOUAgIKHN9rttSl4oNcEst_isB-94>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddutdefjeefucetufdoteggodetrf
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+	1767810162; x=1767896562; bh=njK4AGIp3fT/JtTKcWYbWS8TT4/1GmzntJE
+	qUWU+84Y=; b=wdy0QIGM02TtvYQ1Way4bsKWChzGKSfXz+0r6SycW77drzwVaU3
+	whuUEkuX70OHu/UuuG0sCtFgnuSFmu4fVJkP1gombXyRcirpBPdZbakmLyC+B+fb
+	H+lcsfhUwFzU6PoP6NVV27m+oFFlHJCXVvMq4wX4TPnv3r1RtX2gqSmbK1OHAf5t
+	6EVSnCSYXj0/JitqS9AUkO4FMzoIWC9pllJuufdmH5hUg6y4uAMfEd74s/NUU9yo
+	SKPDvoydVFv2R2dZMWtL7ptmk/nJPyYeQh0fWefycxL9GZf9aW9PAgCMSN3qvphg
+	F37VLjdyjzEHzy4NudzTuTV0q9Rq3/fnLIA==
+X-ME-Sender: <xms:cqReaY-1zcfLeCvcuuqpYWuouBJLmvTA8kGTkvtdhlE4Sop9hwdKQw>
+    <xme:cqReaWtnHB74FKOtBGR7TRhihaSX0hpoI2quVuo_uvu2I7GN6Etn2WIaShXVHmk_w
+    gq2oUQf13Y1r0yC9SWTI7MSFkJikkM9qEZ_Z6d035Cb7E2iofm4sPw>
+X-ME-Received: <xmr:cqReabog76tdZ_qtfAYcCJu0l6Dc5K3dE6sKj7mABgSnNlGye7QSSSnMYWeJmnIDWySt921PMtB0f_5pYP7Ii2fWZo0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddutdefjeekucetufdoteggodetrf
     dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucenucfjughrpeffhffvvefukfhfgggtugfgjgesthekre
-    dttddtjeenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdr
-    ihhoqeenucggtffrrghtthgvrhhnpedulefhtdfhteduvdethfeftdeitdethedvtdekvd
-    eltddvveegtdeuuddtiedtieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhep
-    mhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhiohdpnhgspghrtghpthhtohepvddpmh
-    houggvpehsmhhtphhouhhtpdhrtghpthhtohepshhunhhkieejudekkeesghhmrghilhdr
-    tghomhdprhgtphhtthhopehlihhnuhigqdgsthhrfhhssehvghgvrhdrkhgvrhhnvghlrd
-    horhhg
-X-ME-Proxy: <xmx:cJ5eacg3vPcQ8J8MAnabpdQBx7b2dORa7uZkpANiONQ-nPJdXoptew>
-    <xmx:cJ5ead_tZ1upmSZyCIMmFucGPZBryoz4yUN7F1YrarT22E1i97bgFg>
-    <xmx:cJ5eaWCNIpS1NRctHNwrvBgR1nw-YewfTEPY7PYhajdoOAqnesLp_A>
-    <xmx:cJ5eaaIkz43xAX8xyzaCottXsXRjK_CYZjiWuZeZ9ILpLK_evCU83A>
-    <xmx:cJ5eaV6q4WtLMQ1jyWplrZKtKNVjsZPVsqRva1k7yxqHjnljH0TDaKKW>
+    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
+    gurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhishcu
+    uehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpeekvd
+    ekffejleelhfevhedvjeduhfejtdfhvdevieeiiedugfeugfdtjefgfeeljeenucevlhhu
+    shhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuh
+    hrrdhiohdpnhgspghrtghpthhtohepvddpmhhouggvpehsmhhtphhouhhtpdhrtghpthht
+    ohepfihquhesshhushgvrdgtohhmpdhrtghpthhtoheplhhinhhugidqsghtrhhfshesvh
+    hgvghrrdhkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:cqReaTlUiquprb1rfOHsBdF7Ff2yidgakJXgNB-5SJB114ebCImmRw>
+    <xmx:cqReafyP400bKmxBszgedjHU7o7AFzz4l2N831_1k6n-WykbeMkLug>
+    <xmx:cqReabmhKH_AoG_JjQbkBCKQryfb123HD4VAPd1CarsD2E6_T0oecg>
+    <xmx:cqReaYfEuQUksdcN-wihyKR-_BLj--gHceg7Zf-1CnIP1QruevvHdQ>
+    <xmx:cqReaepatgB5c1oq0vdZxyFIgonW70w0_DbJQk8mjSobAsn71yJnfNka>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 7 Jan 2026 12:57:04 -0500 (EST)
-Date: Wed, 7 Jan 2026 09:57:15 -0800
+ 7 Jan 2026 13:22:41 -0500 (EST)
+Date: Wed, 7 Jan 2026 10:22:52 -0800
 From: Boris Burkov <boris@bur.io>
-To: Sun Yangkai <sunk67188@gmail.com>
+To: Qu Wenruo <wqu@suse.com>
 Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 1/7] btrfs: fix periodic reclaim condition
-Message-ID: <20260107175715.GA2206053@zen.localdomain>
-References: <20260103122504.10924-2-sunk67188@gmail.com>
- <20260103122504.10924-3-sunk67188@gmail.com>
- <20260104194008.GA416121@zen.localdomain>
- <7797d6e2-99b6-4112-9c7c-4cb09dde8486@gmail.com>
- <20260105182102.GA1015682@zen.localdomain>
- <f5986918-d95f-400c-8d45-86551ec16397@gmail.com>
+Subject: Re: [PATCH] btrfs-progs: corrupt-block: allow to specify the value
+ for key corruption
+Message-ID: <20260107182252.GA2216040@zen.localdomain>
+References: <8460d20765914390ac2600d8e3f613f5b89060f3.1766975209.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <f5986918-d95f-400c-8d45-86551ec16397@gmail.com>
+In-Reply-To: <8460d20765914390ac2600d8e3f613f5b89060f3.1766975209.git.wqu@suse.com>
 
-On Wed, Jan 07, 2026 at 10:09:24PM +0800, Sun Yangkai wrote:
+On Mon, Dec 29, 2025 at 12:56:53PM +1030, Qu Wenruo wrote:
+> I tried to use btrfs-corrupt-block -K to corrupt a INODE_REF type, but
+> unfortunately the field is always filled with random value, and
+> sometimes it even break the key order.
 > 
+> To make it more useful to reproduce the biflip recently reported, allow
+> "-K" option to work with "--value".
 > 
-> 在 2026/1/6 02:21, Boris Burkov 写道:
+> There are some minor points to note though:
 > 
-> >> And we should continue periodic reclaim when we may be able to free more
-> >> blockgroups.
-> >>
-> > 
-> > This assumption I would push back on. This was my initial assumption as
-> > well, but it is worth challenging. At Meta, we used to use the automatic
-> > threshold based reclaim that reclaims every bg that goes over threshold
-> > (25% for us) then back under. This actually creates a huge amount of
-> > reclaim and was the reason for even coming up with dynamic thresholds.
-> > In practice, switching to the buggy dynamic+periodic drastically reduced
-> > this extra reclaim.
+> - (u64)-1 will not work
+>   We use that value if detect if "--value" is specified.
+>   For most cases we do not have key objectid/offset set to (u64)-1, so
+>   it should not be a big deal.
 > 
-> It seems hard to make periodic reclaim work practically with fixed threshold,
-> and maybe we can merge them into "auto reclaim" or something in future.
+> - Will keep the random value behavior if --value is not specified
+>   So old behavior is still kept.
 > 
-> > Suppose we allocate some block extents / block groups then free half the
-> > space and fragment them. You might think it's best to rapidly compact
-> > everything. But as long as we have unallocated and the holes are big
-> > enough for allocations to come through and re-fill them, it's mostly OK.
-> 
-> I agree. When we have enough unallocated space, the fragment of free space is
-> not that bad and it may disappear automatically with future allocation.
-> 
-> > We much more want to do a "minimal" amount of reclaim until we truly
-> > need it.
-> 
-> And I guess we also don't want a "cliff", or we'll only try once with a high
-> threshold when "urgent" instead of using a dynamic threshold :)
-> 
-> > With all that said, your points above about the threshold going up but
-> > reclaim staying asleep make a lot of sense to me. That is a signal that
-> > the "need" is increasing.
-> 
-> >> For pausing, it's hard to tell if we're freeing more unallocated directly
-> >> without changing current code. But in btrfs_reclaim_bgs_work() we have
-> >>
-> >> btrfs_relocate_chunk()
-> >>   ->btrfs_remove_chunk()
-> >>     ->btrfs_remove_block_group()
-> >>
-> >> So the old blockgroup is removed and we can see that in space_info->total_bytes.
-> >>
-> >> Let's start with all the blockgroups having the same size and reclaiming a
-> >> single blockgroup. If we succeeded moving extents into existing blockgroups,
-> >> we'll not allocate a new one and space_info->total_bytes is getting smaller
-> >> because we've freed the old one. If we failed moving things into existing bgs
-> >> and allocated a new one, then space_info->total_bytes will not change.
-> > 
-> > Some of my comments on this point were silly, I was thinking about
-> > used_bytes which would not change, not total_bytes. Thanks for the
-> > detailed description to knock me out of that mistake.
-> > 
-> > Also, I'm not sure the logic about total_bytes is 100% ironclad, as
-> > I haven't carefully checked what block group allocation/freeing is
-> > possible concurrently over the span where you track the sizes.
-> > 
-> >>
-> >> When reclaiming n blockgroups, as long as we're using less space, such as n-1
-> >> new blockgroups are allocated or n new smaller blockgroups, we're making some
-> >> progress and able to detect that from space_info->total_bytes.
-> >>
-> >> Reclaim may racing with some other work that free/allocate blockgroups, which
-> >> will lead to either an unnecessary extra periodic reclaim or an unexpected
-> >> pause. An extra periodic reclaim is not a big thing. But the unexpected pause
-> >> matters. This is the only regression currently and I think that will not happen
-> >> frequently.
-> > 
-> > OK, we're on the same page with the possibility of some racing :)
-> > Your explanation makes sense and I don't think it's a huge deal or
-> > anything.
-> > 
-> >>
-> >> For continuing, rather than tracing used_bytes, I think we should care more
-> >> about unused_bytes. This is inspired by calc_dynamic_reclaim_threshold(), which
-> >> will return 0 if there's no enough unused space. And also care about
-> >> reclaim_threshold to make dynamic periodic reclaim work.
-> >>
-> >>
-> > 
-> > First, I think let's agree what we want and don't want to pause:
-> > I don't think we care about running the reclaim sweep and checking
-> > thresholds, updating marks, etc. That is relatively cheap. So if we
-> > change the pausing logic to still allow that work more often, it's OK.
-> > We really want to prevent triggering reclaims in tight fail loops.
-> 
-> > With that said, let's consider all the cases again.
-> > 
-> > 1. We scan all the bgs and don't attempt any reclaims.
-> > 2. We attempt a reclaim of BG X at threshold T and it completely fails to
-> > allocate a new home for extent E of X.
-> > 3. We attempt a reclaim of BG X at threshold T and it "succeeds" by
-> > allocating a new BG Y and moving all the extents from X to Y.
-> > 4. We attempt a reclaim of BG X at threshold T and it makes proper
-> > progress and puts some the extents of X into the existing bgs.
-> > 
-> > After case 1, I think we agree pausing isn't needed, and is in fact bad.
-> 
-> Yes!
-> 
-> > After cases 2 and 3, we want to avoid triggering more reclaim until we
-> > have evidence that it is likely a reclaim could possibly succeed. If
-> > unused gets worse since then, and the threshold goes up, it is
-> > *possible* a reclaim will succeed (we might pick a more full block group
-> > that happens to be full of smaller easy to allocate extents) but it is
-> > much more likely it won't. As far as I can tell, the best signal for
-> > unpausing reclaim for the "we have seen a reclaim fail" case is still
-> > "relative freeing" of extents.
-> 
-> > After case 4, we don't *need* to pause, as it is going to increase
-> > unallocated and reduce the "pressure" on the reclaim system, but it
-> > doesn't fundamentally hurt either. We made some progress and we want to
-> > be conservative and not be too greedy. Let allocation breathe and do
-> > some work to fill the gaps up. However, this case is quite different
-> > from 2 and 3 in that a subsequent relocation seems likely enough to also
-> > succeed.
-> 
-> Yes. I started as a user of this function, monitoring the threshold,
-> blockgroups' used rates, and filesystem's unallocated space. So I got confused
-> when there were still some blockgroups could be reclaimed but periodic reclaim
-> stopped working.
-> 
-> While you are the author of the function and focus on resolving the problem
-> behind (running out of unallocated space) so just reclaim some blockgroups is ok
-> so we don't need to try that hard.
-> 
-> > My original (designed) logic was "pause on 2,3,4; unpause on the
-> > conditions that unstick 2,3" which I think you have correctly argued is
-> > suboptimal. 4 can get stuck never reclaiming even as things get worse,
-> > even if we might succeed (we've never failed..)
-> > 
-> > So I think the best (short term) solution is:
-> > "detect failure modes 2 and 3 and unpause on release"
-> > 
-> > I believe your patches already enact "detect failure modes 2 and 3" and
-> > we just disagree on the unpausing mechanism.
-> 
-> For unpausing, I think we both agree on
-> 
-> 1. enough space freed
-> 2. threshold changed to a larger value because the increase of "need"
-> 3. do not pause or unpause on case 4
-> 
-> I agree other unpausing conditions are not necessary.
-> 
-> 
+> - Values over 255 will be truncated for key.type
+>   Just give a warning and do the usual truncation.
 
-Given this and your other comments below about my proposed patch,
-would you like to send a v3 which mixes our two approaches and does
-something like:
+Seems useful.
 
-- no new "pause" concept, keep the reclaim_ready (like my patch)
-- only set ready = false in cases 2 and 3 (like your patch)
+I think it might be a little better to make it mirror --item and expect
+size, offset, value all to be set and corrupt the key fully generically.
 
-In that case we will *not* stop on pure success, and we will stop on
-both failures modes.
 
-Going forward on top of that with deeper testing, there can be more changes
-like "special pause on 4 which gets unpaused on threshold change" or
-something. Or "always unpause on threshold change" and of course more radical
-ideas.
-
-I'd just like to keep moving towards at least fixing the obvious
-horrible bug.
-
-Thanks,
-Boris
-
-> >>> I think the simplest pure "fix" is to change the current "ready = false"
-> >>> setting from unconditional on every run of periodic reclaim to only when
-> >>> a sweep actually queues a block group for reclaim. I have compiled but
-> >>> not yet tested the code I included in this mail :) We can do that more
-> >>> carefully once we agree how we want to move forward.
-> >>>
-> >>> If you still want to re-design things on top of a fix like this one, I
-> >>> am totally open to that.
-> >>>
-> >>> Thanks again for all your work on this, and happy new year,
-> >>> Boris
 > 
+> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> ---
+>  btrfs-corrupt-block.c | 26 ++++++++++++++++++++------
+>  1 file changed, 20 insertions(+), 6 deletions(-)
 > 
-> >>> @@ -2176,7 +2181,6 @@ static bool btrfs_should_periodic_reclaim(struct btrfs_space_info *space_info)
-> >>>
-> >>>  	spin_lock(&space_info->lock);
-> >>>  	ret = space_info->periodic_reclaim_ready;
-> >>> -	btrfs_set_periodic_reclaim_ready(space_info, false);
-> >>>  	spin_unlock(&space_info->lock);
-> >>>
-> >>>  	return ret;
-> >>> @@ -2190,8 +2194,10 @@ void btrfs_reclaim_sweep(const struct btrfs_fs_info *fs_info)
-> >>>  	list_for_each_entry(space_info, &fs_info->space_info, list) {
-> >>>  		if (!btrfs_should_periodic_reclaim(space_info))
-> >>>  			continue;
-> >>> -		for (raid = 0; raid < BTRFS_NR_RAID_TYPES; raid++)
-> >>> -			do_reclaim_sweep(space_info, raid);
-> >>> +		for (raid = 0; raid < BTRFS_NR_RAID_TYPES; raid++) {
-> >>> +			if (do_reclaim_sweep(space_info, raid))
-> >>> +				btrfs_set_periodic_reclaim_ready(space_info, false);
-> >>> +		}
-> >>
-> >> Even if we have blockgroups to reclaim in this turn, we still mark some
-> >> bg->reclaim_mark and expect the next periodic reclaim, which will not run, might
-> >> reclaim them.
-> > 
-> > Why won't it run? We only pause if we truly called
-> > btrfs_mark_bg_to_reclaim() (the word mark is unfortunately overloaded
-> > here... that function really queues the bg for a reclaim attempt)
-> 
-> After userspace stopped writing, we still need 2 periodic reclaims to finish our
-> work and each of them will reclaim some of the bgs in my experience. But with
-> this patch, after the first one reclaimed some bgs, the second one will not run.
-> We might reclaim less and the behavior is a little different. I called this a
-> regression. But if we focus on "just don't run out of unallocated space", this
-> patch seems fine.
-> 
-> >>>  	}
-> >>>  }
-> >>
-> >> So I'm afraid this patch will introduce obvious regression on periodic reclaim.
-> I called it regression here :)
-> >> Add the "changed threshold" condition can alleviate this when dynamic reclaim is
-> >> also enabled but will not work for fixed threshold. So I failed to come up with
-> >> a simple fix patch with no obvious regression :(
-> >>
-> > 
-> > Can you share a description of any workloads you've been testing
-> > against? I think that would also help frame the discussion to avoid me
-> > talking too much :D
-> 
-> I test this feature on by BT machine. Download, fill the fs to nearly full and
-> delete some files and repeat...
-> 
-> > The regression I can foresee here is that the successful passes will
-> > pause for too long (until the next chunk_sz of freeing)
-> 
-> > We can also relax that condition to something more like an extent size
-> > (1M or BTRFS_MAX_EXTENT_SIZE perhaps) to make it a little gentler of a pause.
-> > 
-> > We can also unpause on "urgent". I think that would likely be
-> > sufficient. I'll do some actual experiments.. :)
-> 
-> I love these two ideas and looking forward to your experiment results :)
-> 
-> Thanks,
-> Sun YangKai
-> 
-> > Thanks,
-> > Boris
-> > 
-> >>>> CC: Boris Burkov <boris@bur.io>
-> >>>> Fixes: 813d4c6422516 ("btrfs: prevent pathological periodic reclaim loops")
-> >>>> Signed-off-by: Sun YangKai <sunk67188@gmail.com>
-> >>>> ---
-> >>>>  fs/btrfs/block-group.c | 15 +++++++-------
-> >>>>  fs/btrfs/space-info.c  | 44 +++++++++++++++++++-----------------------
-> >>>>  fs/btrfs/space-info.h  | 28 ++++++++++++++++++---------
-> >>>>  3 files changed, 46 insertions(+), 41 deletions(-)
-> >>>>
-> >>>> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-> >>>> index e417aba4c4c7..94a4068cd42a 100644
-> >>>> --- a/fs/btrfs/block-group.c
-> >>>> +++ b/fs/btrfs/block-group.c
-> >>>> @@ -1871,6 +1871,7 @@ void btrfs_reclaim_bgs_work(struct work_struct *work)
-> >>>>  	while (!list_empty(&fs_info->reclaim_bgs)) {
-> >>>>  		u64 used;
-> >>>>  		u64 reserved;
-> >>>> +		u64 old_total;
-> >>>>  		int ret = 0;
-> >>>>  
-> >>>>  		bg = list_first_entry(&fs_info->reclaim_bgs,
-> >>>> @@ -1936,6 +1937,7 @@ void btrfs_reclaim_bgs_work(struct work_struct *work)
-> >>>>  		}
-> >>>>  
-> >>>>  		spin_unlock(&bg->lock);
-> >>>> +		old_total = space_info->total_bytes;
-> >>>>  		spin_unlock(&space_info->lock);
-> >>>>  
-> >>>>  		/*
-> >>>> @@ -1988,14 +1990,14 @@ void btrfs_reclaim_bgs_work(struct work_struct *work)
-> >>>>  			reserved = 0;
-> >>>>  			spin_lock(&space_info->lock);
-> >>>>  			space_info->reclaim_errors++;
-> >>>> -			if (READ_ONCE(space_info->periodic_reclaim))
-> >>>> -				space_info->periodic_reclaim_ready = false;
-> >>>>  			spin_unlock(&space_info->lock);
-> >>>>  		}
-> >>>>  		spin_lock(&space_info->lock);
-> >>>>  		space_info->reclaim_count++;
-> >>>>  		space_info->reclaim_bytes += used;
-> >>>>  		space_info->reclaim_bytes += reserved;
-> >>>> +		if (space_info->total_bytes < old_total)
-> >>>> +			btrfs_resume_periodic_reclaim(space_info);
-> >>>
-> >>> Why is this here? We've just completed a reclaim, which I would expect
-> >>> to be neutral to the space_info->total_bytes (just moving them around).
-> >>> So if (any) unrelated freeing happens to happen while we are reclaiming,
-> >>> we resume? Doesn't seem wrong, but also seems a little specific and
-> >>> random. I am probably missing some aspect of your new design.
-> >>>
-> >>> Put a different way, what is special about frees that happen *while* we
-> >>> are reclaiming?
-> >>
-> >> As explained, I want to use this to detect if the reclaim freed some unallocated
-> >> space.
-> >>
-> > 
-> > Makes sense now.
-> > 
-> >>>>  		spin_unlock(&space_info->lock);
-> >>>>  
-> >>>>  next:
-> >>>> @@ -3730,8 +3732,6 @@ int btrfs_update_block_group(struct btrfs_trans_handle *trans,
-> >>>>  		space_info->bytes_reserved -= num_bytes;
-> >>>>  		space_info->bytes_used += num_bytes;
-> >>>>  		space_info->disk_used += num_bytes * factor;
-> >>>> -		if (READ_ONCE(space_info->periodic_reclaim))
-> >>>> -			btrfs_space_info_update_reclaimable(space_info, -num_bytes);
-> >>>>  		spin_unlock(&cache->lock);
-> >>>>  		spin_unlock(&space_info->lock);
-> >>>>  	} else {
-> >>>> @@ -3741,12 +3741,11 @@ int btrfs_update_block_group(struct btrfs_trans_handle *trans,
-> >>>>  		btrfs_space_info_update_bytes_pinned(space_info, num_bytes);
-> >>>>  		space_info->bytes_used -= num_bytes;
-> >>>>  		space_info->disk_used -= num_bytes * factor;
-> >>>> -		if (READ_ONCE(space_info->periodic_reclaim))
-> >>>> -			btrfs_space_info_update_reclaimable(space_info, num_bytes);
-> >>>> -		else
-> >>>> -			reclaim = should_reclaim_block_group(cache, num_bytes);
-> >>>> +		reclaim = should_reclaim_block_group(cache, num_bytes);
-> >>>
-> >>> I think this is a bug with periodic_reclaim == 1
-> >>>
-> >>> In that case, if should_reclaim_block_group() returns true (could be a
-> >>> fixed or dynamic threshold), we will put that block group directly on
-> >>> the reclaim list, which is a complete contradiction of the point of
-> >>> periodic_reclaim.
-> >>
-> >> I guess you mean just resume periodic reclaim is enough and put it on reclaim
-> >> list is not necessary. I agree.
-> >>
-> > 
-> > +1
-> > 
-> >>>>  
-> >>>>  		spin_unlock(&cache->lock);
-> >>>> +		if (reclaim)
-> >>>> +			btrfs_resume_periodic_reclaim(space_info);
-> >>>
-> >>> This also makes me wonder about the idea behind your change. If you want
-> >>> periodic reclaim to "pause" until a block group meets the condition and
-> >>> then we "resume", that's not exactly in the spirit of checking at a
-> >>> periodic cadence, rather than as block groups update.
-> >>
-> >> Because IMO we need periodic reclaim to reclaim this blockgroup. So if it's
-> >> paused, resume here so the next periodic reclaim will handle this blockgroup.
-> >>
-> > 
-> > As argued above, we want to resume when there is space in the "target"
-> > block groups, not an exciting "source". Otherwise the failed stuck case
-> > can keep hammering hopelessly.
-> 
-> Make sense.
-> 
+> diff --git a/btrfs-corrupt-block.c b/btrfs-corrupt-block.c
+> index 3d349f8cf40a..b111206e685b 100644
+> --- a/btrfs-corrupt-block.c
+> +++ b/btrfs-corrupt-block.c
+> @@ -112,7 +112,7 @@ static const char * const corrupt_block_usage[] = {
+>  			"metadata block to corrupt (must also specify -f for the field to corrupt)"),
+>  	OPTLINE("-k|--keys"," corrupt block keys (set by --logical)"),
+>  	OPTLINE("-K|--key <u64,u8,u64>",
+> -		"corrupt the given key (must also specify -f for the field and optionally -r for the root)"),
+> +		"corrupt the given key (must also specify -f for the field, optionally -r for the root and -v for the value)"),
+>  	OPTLINE("-f|--field FIELD", "field name in the item to corrupt"),
+>  	OPTLINE("-I|--item", "corrupt an item corresponding to the passed key triplet "
+>  		"(must also specify the field, or a (bytes, offset, value) tuple to corrupt and root for the item)"),
+> @@ -557,7 +557,7 @@ out:
+>  }
+>  
+>  static int corrupt_key(struct btrfs_root *root, struct btrfs_key *key,
+> -		       char *field)
+> +		       char *field, u64 bogus_value)
+>  {
+>  	enum btrfs_key_field corrupt_field = convert_key_field(field);
+>  	struct btrfs_path *path;
+> @@ -590,13 +590,27 @@ static int corrupt_key(struct btrfs_root *root, struct btrfs_key *key,
+>  
+>  	switch (corrupt_field) {
+>  	case BTRFS_KEY_OBJECTID:
+> -		key->objectid = generate_u64(key->objectid);
+> +		if (bogus_value != (u64)-1)
+> +			key->objectid = bogus_value;
+> +		else
+> +			key->objectid = generate_u64(key->objectid);
+>  		break;
+>  	case BTRFS_KEY_TYPE:
+> -		key->type = generate_u8(key->type);
+> +		if (bogus_value != (u64)-1) {
+> +			if (bogus_value > UCHAR_MAX)
+> +				warning(
+> +		"value %llu is larger than U8_MAX, will be truncated for key.type",
+> +					bogus_value);
+> +			key->type = bogus_value;
+> +		} else {
+> +			key->type = generate_u8(key->type);
+> +		}
+>  		break;
+>  	case BTRFS_KEY_OFFSET:
+> -		key->offset = generate_u64(key->objectid);
+> +		if (bogus_value != (u64)-1)
+> +			key->offset = bogus_value;
+> +		else
+> +			key->offset = generate_u64(key->objectid);
+>  		break;
+>  	default:
+>  		error("invalid field %s, %d", field, corrupt_field);
+> @@ -1583,7 +1597,7 @@ int main(int argc, char **argv)
+>  		if (*field == 0)
+>  			usage(&corrupt_block_cmd, 1);
+>  
+> -		ret = corrupt_key(target_root, &key, field);
+> +		ret = corrupt_key(target_root, &key, field, bogus_value);
+>  		goto out_close;
+>  	}
+>  	if (block_group) {
+> -- 
+> 2.52.0
 > 
 
