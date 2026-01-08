@@ -1,228 +1,133 @@
-Return-Path: <linux-btrfs+bounces-20286-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20287-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B854D0569E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 08 Jan 2026 19:14:14 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE326D05926
+	for <lists+linux-btrfs@lfdr.de>; Thu, 08 Jan 2026 19:34:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 68142306E8C6
-	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Jan 2026 18:12:53 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 3C847306C987
+	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Jan 2026 18:32:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC9952F12D4;
-	Thu,  8 Jan 2026 18:12:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC15031195C;
+	Thu,  8 Jan 2026 18:32:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=parknet.co.jp header.i=@parknet.co.jp header.b="gca1nAhL";
-	dkim=permerror (0-bit key) header.d=parknet.co.jp header.i=@parknet.co.jp header.b="dpcKqiHv"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="ENk30/hj";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="MkTiaTqU"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail.parknet.co.jp (mail.parknet.co.jp [210.171.160.6])
+Received: from fhigh-b3-smtp.messagingengine.com (fhigh-b3-smtp.messagingengine.com [202.12.124.154])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6597A2EC080;
-	Thu,  8 Jan 2026 18:12:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.171.160.6
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AFD1319870
+	for <linux-btrfs@vger.kernel.org>; Thu,  8 Jan 2026 18:31:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767895965; cv=none; b=bkkNf1teI3t0z9UDteDFYCAOdTutTJfuRnVkzjEbGLT6LznIKTzj2ttJGGiJqVpuFFnh5Tvv2zkr9y6So1HUDEieE+G5Picbme2rpFZAwLbnRR5/Unqa073UgfRZdXcjpfor2g1sC8el7z7zYI4CHmm1t/q9B3A2TY6VTXHEovo=
+	t=1767897118; cv=none; b=fS8tI5n0P+rw7bajcXcOSLYnNGAw9m9qYD7NPhVB4oBWZEcEuAphqMIJFISwmPb+CE9wELy1iWOPgPb+SogJ8fw033b+HNpsm8GoLkTbKCJBbsjZUthXTq7kRGrPtGuiRv2owwzcxxxl4sImLS7I/isu0wINpop3crzPf1CyhyI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767895965; c=relaxed/simple;
-	bh=lr6OlOmY3kB/ZOQaj06MsqhcOcUPK4OqDP6ZzEwKWhA=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=ZVKpVoYhhVykBlxvo6Vcs1n8+EJowOiOSWsjADIILSoWQ2KCHnwncIIKwgV6elBjJj7LGstNpiYZ/M1S3Ke4OEpXOk/i6MJE5xd6nwFfmihOitr2htXOIWjZPLU0pN6PTZHolDreveu75Rl9Z9mNP9J0hewj2d9TtjtpkBRXfNQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mail.parknet.co.jp; spf=pass smtp.mailfrom=parknet.co.jp; dkim=pass (2048-bit key) header.d=parknet.co.jp header.i=@parknet.co.jp header.b=gca1nAhL; dkim=permerror (0-bit key) header.d=parknet.co.jp header.i=@parknet.co.jp header.b=dpcKqiHv; arc=none smtp.client-ip=210.171.160.6
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mail.parknet.co.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=parknet.co.jp
-Received: from ibmpc.myhome.or.jp (server.parknet.ne.jp [210.171.168.39])
-	by mail.parknet.co.jp (Postfix) with ESMTPSA id 4677D26F765D;
-	Fri,  9 Jan 2026 03:12:33 +0900 (JST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=parknet.co.jp;
-	s=20250114; t=1767895953;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VE+eLbPxS+2/NxdS4iC5ykEp/h4Ri6SH4uWUI0CKCww=;
-	b=gca1nAhL0iYeKhrMxVW/YkNVQGsmR2FtA0K2e0pt9zd3L8VZwxpcEfUTVG6wgn+2tFPTSO
-	HeW+ni5Q59lRV2kUjNcId9ow+1k5DhIo1N5oAHHp1l0frRz0p+GdCrJ5yDI66gxE8KEOn7
-	v8zc7gU5ici9xYmL+L7s3KQ9RND4Zj9v/GNEYNheUomswbwI2MAFPIY0boWLymkQQnV9lD
-	55Q1xjqtAMVsY4vr4S+L3pqkV4l+GHZ+5Sx/JiLr+J5yUBW4ypUc8Y8oNHBEL1KgKVh31j
-	qSpaEXlZVcdannHzIb1g2WajxumAtmJFSTEQRXXN49o5ilDnu6uppAB9swxKLA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=parknet.co.jp;
-	s=20250114-ed25519; t=1767895953;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VE+eLbPxS+2/NxdS4iC5ykEp/h4Ri6SH4uWUI0CKCww=;
-	b=dpcKqiHv5kPZON+sXPbBLz5lebhV2Omji1CcWNcfUdqkirKgF5cr6kEKLmZbrHERXCyoN2
-	F8vLjq1Lz09KhaCQ==
-Received: from devron.myhome.or.jp (foobar@devron.myhome.or.jp [192.168.0.3])
-	by ibmpc.myhome.or.jp (8.18.1/8.18.1/Debian-7) with ESMTPS id 608ICUsL013625
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-	Fri, 9 Jan 2026 03:12:31 +0900
-Received: from devron.myhome.or.jp (foobar@localhost [127.0.0.1])
-	by devron.myhome.or.jp (8.18.1/8.18.1/Debian-7) with ESMTPS id 608ICTic019851
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-	Fri, 9 Jan 2026 03:12:29 +0900
-Received: (from hirofumi@localhost)
-	by devron.myhome.or.jp (8.18.1/8.18.1/Submit) id 608ICKe4019849;
-	Fri, 9 Jan 2026 03:12:20 +0900
-From: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
-To: Jeff Layton <jlayton@kernel.org>
-Cc: Luis de Bethencourt <luisbg@kernel.org>,
-        Salah Triki
- <salah.triki@gmail.com>, Nicolas Pitre <nico@fluxnic.net>,
-        Christoph
- Hellwig <hch@infradead.org>, Jan Kara <jack@suse.cz>,
-        Anders Larsen
- <al@alarsen.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian
- Brauner <brauner@kernel.org>,
-        David Sterba <dsterba@suse.com>, Chris
- Mason <clm@fb.com>,
-        Gao Xiang <xiang@kernel.org>, Chao Yu
- <chao@kernel.org>,
-        Yue Hu <zbestahu@gmail.com>, Jeffle Xu
- <jefflexu@linux.alibaba.com>,
-        Sandeep Dhavale <dhavale@google.com>,
-        Hongbo Li <lihongbo22@huawei.com>, Chunhai Guo <guochunhai@vivo.com>,
-        Jan Kara <jack@suse.com>, "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger
- <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        David
- Woodhouse <dwmw2@infradead.org>,
-        Richard Weinberger <richard@nod.at>, Dave Kleikamp <shaggy@kernel.org>,
-        Ryusuke Konishi
- <konishi.ryusuke@gmail.com>,
-        Viacheslav Dubeyko <slava@dubeyko.com>,
-        Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-        Mark
- Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>,
-        Joseph Qi
- <joseph.qi@linux.alibaba.com>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Martin Brandenburg <martin@omnibond.com>,
-        Miklos Szeredi
- <miklos@szeredi.hu>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Phillip
- Lougher <phillip@squashfs.org.uk>,
-        Carlos Maiolino <cem@kernel.org>, Hugh Dickins <hughd@google.com>,
-        Baolin Wang
- <baolin.wang@linux.alibaba.com>,
-        Andrew Morton
- <akpm@linux-foundation.org>,
-        Namjae Jeon <linkinjeon@kernel.org>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        Yuezhang Mo
- <yuezhang.mo@sony.com>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Alexander
- Aring <alex.aring@gmail.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Matthew Wilcox (Oracle)"
- <willy@infradead.org>,
-        Eric Van Hensbergen <ericvh@kernel.org>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        Dominique Martinet
- <asmadeus@codewreck.org>,
-        Christian Schoenebeck
- <linux_oss@crudebyte.com>,
-        Xiubo Li <xiubli@redhat.com>, Ilya Dryomov
- <idryomov@gmail.com>,
-        Trond Myklebust <trondmy@kernel.org>,
-        Anna
- Schumaker <anna@kernel.org>, Steve French <sfrench@samba.org>,
-        Paulo
- Alcantara <pc@manguebit.org>,
-        Ronnie Sahlberg <ronniesahlberg@gmail.com>,
-        Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
-        Bharath SM <bharathsm@microsoft.com>, Hans de Goede <hansg@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-erofs@lists.ozlabs.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-mtd@lists.infradead.org, jfs-discussion@lists.sourceforge.net,
-        linux-nilfs@vger.kernel.org, ntfs3@lists.linux.dev,
-        ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
-        linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-mm@kvack.org, gfs2@lists.linux.dev, linux-doc@vger.kernel.org,
-        v9fs@lists.linux.dev, ceph-devel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-        samba-technical@lists.samba.org
-Subject: Re: [PATCH 09/24] fat: add setlease file operation
-In-Reply-To: <20260108-setlease-6-20-v1-9-ea4dec9b67fa@kernel.org>
-References: <20260108-setlease-6-20-v1-0-ea4dec9b67fa@kernel.org>
-	<20260108-setlease-6-20-v1-9-ea4dec9b67fa@kernel.org>
-Date: Fri, 09 Jan 2026 03:12:20 +0900
-Message-ID: <875x9c3rej.fsf@mail.parknet.co.jp>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1767897118; c=relaxed/simple;
+	bh=mQgGFCHW0HNlXIlNQA+SuPPU7wKeqIus1C8VefyOsOg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JQlksNLywlribiJYM0k+F7pHWKk9OLsc7jueALhJ/6fpW7NxQX4M1unLxY5yV2d86tMtoGzCHBP9w8/VM3bdyRhqbpcwuHljajPTzYCjudmAlU6RhZYw6wJA1iVI5xSg/1OVbh9ggRBIePSWehqXTw0NTvDmEck7pO9Kmb/O2uE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=ENk30/hj; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=MkTiaTqU; arc=none smtp.client-ip=202.12.124.154
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
+Received: from phl-compute-11.internal (phl-compute-11.internal [10.202.2.51])
+	by mailfhigh.stl.internal (Postfix) with ESMTP id 666587A005A;
+	Thu,  8 Jan 2026 13:31:55 -0500 (EST)
+Received: from phl-frontend-03 ([10.202.2.162])
+  by phl-compute-11.internal (MEProxy); Thu, 08 Jan 2026 13:31:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+	:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1767897115; x=1767983515; bh=5qrqLDd9U8
+	MH49b7Ddgmvgs8IuDIqbTjxn9jw6WJCPs=; b=ENk30/hjvUoMs8hR6i0SGSCLz5
+	ij28f3GNqEUgk5ln67JSbw2065jHT/1PVkpO5ozofBJit3ujzzZkcL4pZ8fyapGp
+	Om8oIwuOC6bHdh85tvrlB0WDe4v/rY7zShr3wL8M4VN0dW28KnMNRRnsTfveSY9j
+	hHkgfAtTbsgYdc7vj1AR3wmuWSAbEWXo3nOMhwroD5mqGJK2auUfGlVxzTy6G5Lp
+	AxnT9z0joyrwF03rwAh6Aq0UkV0WI99kEoPRyjoa1rI2s5eGzOycLPcMZn9ASyut
+	ISG/I5g64x3C7gbXAgUh7Ew9IOcCIzbsSEXILGDIOesmudL7oWzoJ7fHlQEA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+	1767897115; x=1767983515; bh=5qrqLDd9U8MH49b7Ddgmvgs8IuDIqbTjxn9
+	jw6WJCPs=; b=MkTiaTqUwoMIf/OVuu6C1mXVaaVcFeGHrbBsovmHHu52FHs5N4s
+	nkhw45YZ4imeZIBLAPkLeO0RUAl/0U/F6fxRw9R4Mo54T7YsVUUHeKkSoRotl9FL
+	jvmvr1iBwCrSbNmfeNRmL/rjWloqrmEprPLAvfkBd6wmYxDVqTH0j9eCghiHmTcU
+	DTkRTFltczj0rEGgBDaAmufs0KeZcWgfrHB/2AtI+HAmpkouUNkTZ2R0DSszUhzC
+	J67HIKB51uzeblG/WaGDIqUyJS902CjQjUrCestpbtYpOcxKT5WEvp638bmHS3E8
+	kgG6zPRDB5GvWQvgcu/sFVI8K+ueJRZlfog==
+X-ME-Sender: <xms:G_hfaVi6C9ouaIYp5krIzrLVyTZtdeQf4EZ_Mefth96oGHmZEHcbkA>
+    <xme:G_hfaQAHHVKE3LvzFA8WYlyklsBUHqYuSAR6hgqV6nvrz7Ry792YfY67lXYs1ShR2
+    J2yv0bh0JX2r1ne8Pt26mCfgw_8dR-asLHc28vJB_EP_9Xb43fM8Pw>
+X-ME-Received: <xmr:G_hfaSvx7rKfVTbxZJpJEP7CfdGurs8UKex0_GHfeAJEXG-vMk-PudCvZsGHLdrqgIjBcT_5pZxkXtd-QVwA3YEJEaE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddutdeiieejucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
+    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
+    gurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhishcu
+    uehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpeekvd
+    ekffejleelhfevhedvjeduhfejtdfhvdevieeiiedugfeugfdtjefgfeeljeenucevlhhu
+    shhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuh
+    hrrdhiohdpnhgspghrtghpthhtohepvddpmhhouggvpehsmhhtphhouhhtpdhrtghpthht
+    ohepughsthgvrhgsrgesshhushgvrdgtohhmpdhrtghpthhtoheplhhinhhugidqsghtrh
+    hfshesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:G_hfaVaa56H5svDa5zyee38hR2aKAzFAVJaQdRmCK7orE_Io3zalbQ>
+    <xmx:G_hfaVV4VMnsJv0xBxl8a3tx10Esm7yUYB987AVuFaPR5CVm3TDPxA>
+    <xmx:G_hfaZ6FB99sNKDYfvoYuJh8gue-KYVbcmMf2VejUKmtGDO43u1-jg>
+    <xmx:G_hfaQiLfMU-58S3oWa6oQlZmGXXGO_20Y_k5P69cFPz9wUC7Mit-Q>
+    <xmx:G_hfabvujVpz4ODKboTwbLQ0bu9q25KAVlAFFDQaK7Ajd3X9fUH-TgaA>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 8 Jan 2026 13:31:54 -0500 (EST)
+Date: Thu, 8 Jan 2026 10:32:03 -0800
+From: Boris Burkov <boris@bur.io>
+To: David Sterba <dsterba@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 05/12] btrfs: use common eb range validation in
+ read_extent_buffer_to_user_nofault()
+Message-ID: <20260108183203.GG2216040@zen.localdomain>
+References: <cover.1767716314.git.dsterba@suse.com>
+ <1a00041c9fec994ea70ba05edad7fd53a1630bc2.1767716314.git.dsterba@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1a00041c9fec994ea70ba05edad7fd53a1630bc2.1767716314.git.dsterba@suse.com>
 
-Jeff Layton <jlayton@kernel.org> writes:
+On Tue, Jan 06, 2026 at 05:20:28PM +0100, David Sterba wrote:
+> The extent buffer access is checked in other helpers by
+> check_eb_range(), which validates the requested start, length against
+> the extent buffer. While this almost never fails we should still handle
+> it as an error and not just warn.
+> 
+> Signed-off-by: David Sterba <dsterba@suse.com>
 
-> Add the setlease file_operation to fat_file_operations and
-> fat_dir_operations, pointing to generic_setlease.  A future patch will
-> change the default behavior to reject lease attempts with -EINVAL when
-> there is no setlease file operation defined. Add generic_setlease to
-> retain the ability to set leases on this filesystem.
->
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
-
-Looks good.
-
-Acked-by: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+Reviewed-by: Boris Burkov <boris@bur.io>
 
 > ---
->  fs/fat/dir.c  | 2 ++
->  fs/fat/file.c | 2 ++
->  2 files changed, 4 insertions(+)
->
-> diff --git a/fs/fat/dir.c b/fs/fat/dir.c
-> index 92b091783966af6a9e6f5ead1a382a98dd92bba0..807bc8b1bc145a9f15765920670c6233f7e87e55 100644
-> --- a/fs/fat/dir.c
-> +++ b/fs/fat/dir.c
-> @@ -16,6 +16,7 @@
+>  fs/btrfs/extent_io.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index 97cf1ad91e5780..897ea52167c612 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -4003,8 +4003,8 @@ int read_extent_buffer_to_user_nofault(const struct extent_buffer *eb,
+>  	unsigned long i;
+>  	int ret = 0;
 >  
->  #include <linux/slab.h>
->  #include <linux/compat.h>
-> +#include <linux/filelock.h>
->  #include <linux/uaccess.h>
->  #include <linux/iversion.h>
->  #include "fat.h"
-> @@ -876,6 +877,7 @@ const struct file_operations fat_dir_operations = {
->  	.compat_ioctl	= fat_compat_dir_ioctl,
->  #endif
->  	.fsync		= fat_file_fsync,
-> +	.setlease	= generic_setlease,
->  };
+> -	WARN_ON(start > eb->len);
+> -	WARN_ON(start + len > eb->start + eb->len);
+> +	if (check_eb_range(eb, start, len))
+> +		return -EINVAL;
 >  
->  static int fat_get_short_entry(struct inode *dir, loff_t *pos,
-> diff --git a/fs/fat/file.c b/fs/fat/file.c
-> index 4fc49a614fb8fd64e219db60c6d9e7dd100aea1c..d50a6d8bfaae0c75b2dbe838d108135206d0f123 100644
-> --- a/fs/fat/file.c
-> +++ b/fs/fat/file.c
-> @@ -13,6 +13,7 @@
->  #include <linux/mount.h>
->  #include <linux/blkdev.h>
->  #include <linux/backing-dev.h>
-> +#include <linux/filelock.h>
->  #include <linux/fsnotify.h>
->  #include <linux/security.h>
->  #include <linux/falloc.h>
-> @@ -212,6 +213,7 @@ const struct file_operations fat_file_operations = {
->  	.splice_read	= filemap_splice_read,
->  	.splice_write	= iter_file_splice_write,
->  	.fallocate	= fat_fallocate,
-> +	.setlease	= generic_setlease,
->  };
->  
->  static int fat_cont_expand(struct inode *inode, loff_t size)
-
--- 
-OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+>  	if (eb->addr) {
+>  		if (copy_to_user_nofault(dstv, eb->addr + start, len))
+> -- 
+> 2.51.1
+> 
 
