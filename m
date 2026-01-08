@@ -1,80 +1,80 @@
-Return-Path: <linux-btrfs+bounces-20223-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20224-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 938A9D0105A
-	for <lists+linux-btrfs@lfdr.de>; Thu, 08 Jan 2026 05:56:20 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 280E5D010A9
+	for <lists+linux-btrfs@lfdr.de>; Thu, 08 Jan 2026 06:10:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 854CB304F15E
-	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Jan 2026 04:54:47 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 901A53003FEC
+	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Jan 2026 05:10:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CE692D0617;
-	Thu,  8 Jan 2026 04:54:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D376D2D249A;
+	Thu,  8 Jan 2026 05:10:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="KNtSsJb1"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="BSH27jbe"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DC102C21F2
-	for <linux-btrfs@vger.kernel.org>; Thu,  8 Jan 2026 04:54:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E97E52C0F7F
+	for <linux-btrfs@vger.kernel.org>; Thu,  8 Jan 2026 05:10:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767848085; cv=none; b=oA7huU7TJF3VGg0ImlaPKYD/J2U2QM2wN9ORTzmSIr+ryRzjRRm2MkcpsDmjnYx9j/5NOd0C0zRjQIulHcaACiKbvfp/w93q9fLPLQwY2ee3COHoj8Dn1MyliMBkP6gWNht9Od0cNyOdp8tvTfEkAZHl4HYqyrI+uEOi4Z0MeyY=
+	t=1767849016; cv=none; b=ePXMxswEsQ4833IUgn/mXw7N6bgWQg+Ib9nP51U50UL8SGL1x7U9ijB6vIapXHlOOJi+KaVGp23ex1AyMDhRI4XLIsCDhYW3PBGSZgaBFDNZXVywt38GOXmJuJNYX2U9hNLpxUt2oEIsOUbS85Jkjk8mBpNp/oVHlUo15bDQl3s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767848085; c=relaxed/simple;
-	bh=lf9tbZPQC2vldXc6xpGlIahad/kFPImjZgEqDBquWQQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rkLrb/L0VZCXHFCeuWgz6e5ZEfsrhWfnXt5rubwIf9jF1BBaBzLnXABidUYnF9CPvTtJQ/j419yB35QDGn70neyaW+jDJAD0JyWqVYksqhzD9hOSZp8oUUs0PPXXr7o2LlJE0iU4hAm2Y2TXJ4FVqWOo8Wsgz1/mXDs7uvkhgEk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=KNtSsJb1; arc=none smtp.client-ip=209.85.128.49
+	s=arc-20240116; t=1767849016; c=relaxed/simple;
+	bh=TeDhKdX2i1pu0oyLAWXpzETngVWQyWTcsYXI+Aw22PY=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=nC7OwlKPAkmGcApbmxJfqryRcgCDZgmuEBNFLMI6rseSGtiTHdmdttLlCGTm7vAS/Dp/3U7v5p5BsAvqltMuZHm/ddfdMCYYQNyU/BUF2rCExMPSQV7BzwtnUN4HxmCdo2HPkYgefnZFfwhDEWpk2SpEMZlZNEWGIrlNFkqeZA0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=BSH27jbe; arc=none smtp.client-ip=209.85.128.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-47d3ffa6720so27943765e9.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 07 Jan 2026 20:54:43 -0800 (PST)
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-47775fb6c56so25389925e9.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 07 Jan 2026 21:10:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1767848082; x=1768452882; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=AczRykxlHPGe7GMjyjFSL+mHmZOPG+Sx8I2PL/1Jdt4=;
-        b=KNtSsJb1ke3sjeKEq0vrusnYgFu2P/lmOIOpKXmjJKakrAyDh1WUwX5g5GYXIo6QQT
-         JNUOaAL/5Y2Giae2bhYt96BxhqB6x1moGfNGG4nOeLhFBUpPQogXp/g0gBEqt7JEqgCX
-         LX615I+X48JbFVCSm92kTbl6e2wyemtzp6p8+MmlMOOOJ0WRVJXuDrMKOYm4MQdmiNNb
-         +LGjHUuUo1hSyB5N9MN5y1CxFUPoNrb5ns9ygOiIPPmHfNRaxRf6if/MGDGfpKu3W478
-         ldVrAau0uzb+HWTUiRYs5yvkjsD5d6miiyRVkzi2fEe7R+Gift2h4pDKD5thjwIJ/Omb
-         aRVA==
+        d=suse.com; s=google; t=1767849012; x=1768453812; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :references:cc:to:from:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=vqAK3sVU6/wnYja1UehMcs3j90V8HvHsu940WgfmUDw=;
+        b=BSH27jbeJi0MPz2b65BS+G5nT8DEyBjp3khCMt2Szi6BuKRxPmc+AQz1ioAwMHmIOA
+         jp+EfZaQLE6ygrGpGkaNgp7ykxKndASf0J5lamT81e11bL2SiGIuH4m14KkbtYuIrMjB
+         PYndHRvgNRL4jCJlzaEppovdrDCiF7d1VXs71sA0bRfy/TUBpvCVxKDmlxFqc8RLrCG5
+         UDm9uK2jbNSR4N/4rVE9fMAi5m2I/Z7VQ7rm4VycJy+B4b4uKeI6Mp1ayksamPtfK99j
+         Zlhya+pSonXs0uB3YBB1PfASn+m2s8Kv2fGQTpD+L5qP1O70tYwHQorW2evFkn/YvhUm
+         69Jw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767848082; x=1768452882;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1767849012; x=1768453812;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :references:cc:to:from:subject:user-agent:mime-version:date
+         :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=AczRykxlHPGe7GMjyjFSL+mHmZOPG+Sx8I2PL/1Jdt4=;
-        b=WjsNZa7LxaP6zWmaY+PWbTIloY4kLyYViUxoR6fvPcSnNDSA0K3p9TPi2ZZfQEVzoD
-         59Zcxrj+CsL6a1F/Mr1E8EgHLPgnCUo1Iy4NE9kTdfGeZ/2KHZHNA3mTQDzxAqIF7iK1
-         rT1ZBsqEfifqMzVX8OrRUEZCV0pBMDKpBJZ/tF2xwyk5iic8fcz50jb6+bisZfXkOqJm
-         Xg7UKDajC33grRhbdSGhp8MKqh7atCv6tEbTIgFGC+MHDnj6O+GujjxMDmxtwqOd2pbp
-         /EMeblr4kZp9L12aOlzGOJzERvxx5e2FPe9fasPi5L3mf+yfYsT1MUni+4+me1hL9jYm
-         uVkw==
-X-Gm-Message-State: AOJu0YwpMKm8m6YOrsD8cD3DZ+cOTzqziZa1I1HCjy8ddMKvvZblXkwC
-	EEduF1hConzsEvvT4B8qIuZE9TZ0sjDFKbxJGPrpyyer47elEe/geyerJ7VtfB+gll2GUFOfXyT
-	XrlpkQkY=
-X-Gm-Gg: AY/fxX4ubS1NeCJ/NEYvDOj4wUQ0B0TOdgAS67IDahLWoQ6ASlqLL8oSziGkEQhsdKq
-	vNyRegq6R8Sitt8q2CDk+oqTYCc6rXwDa1DCc64zwgOSLS2Dd1GpegzJyAfCnz8xr4GGkLP1xYP
-	0AZTjKT1+vpORyYiw9se3PqQ46nvTHhxeBTdxuQt1LZSu6oTQvvKHnJo9t6vrAFMIgl4xCafxon
-	fPu/L82tWPkBXmUfu66b4bB+a5EI2IR52Zw2RfgDTdyNUoSlsIpKU9Ti635ry11Ms3nqw4ounBS
-	842Rd/7ZWxJMtom/16/TkIcyyYCamblBiYCWyJLkWGmJ9lv8WZoS9fOmxSiJnnzbCd+4iBZRsQd
-	CiUzo2jNxJKHI+FkJzhyOSbe4UgEAy8vypZnn6Z1Ky40mWx6olGF7vZmNhKViyynhsUQNoq/Dbn
-	51LAOR0yh3VavCrN9/swHvKQV2SPaeOval8k2aMVk=
-X-Google-Smtp-Source: AGHT+IGkg0TS5yv/M017VwTy69thPMHq1IqXsmFSRrevFQVF/Y/ljPBmHkh+CPPDLHwzJPlyCPcrSw==
-X-Received: by 2002:a05:600c:c4a5:b0:477:95a0:fe95 with SMTP id 5b1f17b1804b1-47d84b347ebmr65698235e9.24.1767848081504;
-        Wed, 07 Jan 2026 20:54:41 -0800 (PST)
+        bh=vqAK3sVU6/wnYja1UehMcs3j90V8HvHsu940WgfmUDw=;
+        b=lnXgiNqEFScG0k/xlD4NgAac+VFeE8j2t3V+FFnoEcog0Fx8s8b/iuO4kKhfM2M0hd
+         GS6zme3JYmbgPRdsOnd6U/v6cyZUjNKYTfpkfhWmwDX/SO5/JCX0M7WJkRRnyhC/UmyZ
+         W9a+jkgORXjtlf0jY/gsYeIQuwPi8q97+Hq6NokshGevIxQM9eYRO40VBbgjtkSEajop
+         n1a20OVgfWCgR4pH5uoW4fx+pS2Xqc7Fp4CRiBcM/yjAAteXwCVs6VgO5EUsgHNltXTB
+         3uI8rO6HlJCj01q5LQyaWOs+nSNU32jBHjczNEyrRnmiE3SmvWZFqCkKegvNExDDsYIt
+         +rgA==
+X-Gm-Message-State: AOJu0YxNs2E2vHitMJvIOBCwUQjW8CBePiDKTFtXZgnSP0VYfvQuN7Xk
+	Avjp8ZXfKYilJeLl3/NZwUe4DyIwpgqaNEEunfE9iuO8OlFs3blvKvvKGGnn6EyKmbRTgXN3Rrl
+	7H5vYuo0=
+X-Gm-Gg: AY/fxX77+nxrsKtcXmG55AcpdqNLoyu2bm9k+0gQk/UeIVBUOYs+fX6WYykKPEQQqWg
+	2sN2c+2VlY9/oVnZLYfRGEt0QJJ1TiNUUEsse5+pDQWHGq+I/7rJM49hThPEoYNoqtT+VpkrGHG
+	i7Bki4hgnMFIC3Rnl06+aqR8NDK6X3xCgtPJXEMSRMEgAC/4mdELIRSKC0XRerGYwGxDCYp8+/I
+	Zgb3PGpVpD7Du21pRhRIaHv1zb1mwKe8Sdjg3LOldKGiieUwHcSghbD694b+f9D7ZthOEE6YPHf
+	S8KxN3yPsHEvKaE4+Q0PatPNpC6/uFuOiUv9kR/2qbYldf1LtsdXiRFL8vKJ537ZDmL/dcoAV8w
+	nWydHl0O2QbZqWq3Of69rxrZy4BZeTeSJZWhH8O1w+yvPY7YtBfd7NTX5ypECXhXu1zdgeL4Lys
+	Cdjez92dAkNHLNP6kjnW9kyKbWE+wsBeWgOKiVzg==
+X-Google-Smtp-Source: AGHT+IF68HJsw2s5/0ap3KGsa+CwJtSITU0/Gd7r78bT5omJ5xz9Q53BhRq8reNJ3hrVpiDEzck5IA==
+X-Received: by 2002:a05:600c:6994:b0:47d:649b:5c48 with SMTP id 5b1f17b1804b1-47d84b540f0mr46973985e9.36.1767849011970;
+        Wed, 07 Jan 2026 21:10:11 -0800 (PST)
 Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2a3e3cc88cdsm64153695ad.73.2026.01.07.20.54.39
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-34f6b9a1881sm1182622a91.13.2026.01.07.21.10.09
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 07 Jan 2026 20:54:40 -0800 (PST)
-Message-ID: <35a26759-cd26-4d1f-9d84-03d13e909f07@suse.com>
-Date: Thu, 8 Jan 2026 15:24:35 +1030
+        Wed, 07 Jan 2026 21:10:11 -0800 (PST)
+Message-ID: <5ff5f6b0-148a-4b48-a5f9-19215ffa3d36@suse.com>
+Date: Thu, 8 Jan 2026 15:40:07 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -84,12 +84,12 @@ MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH] btrfs-progs: mkfs: use device_discard_blocks() to replace
  prepare_discard_device()
+From: Qu Wenruo <wqu@suse.com>
 To: Roman Mamedov <rm@romanrm.net>
 Cc: linux-btrfs@vger.kernel.org
 References: <284c38aeccd4abefa2349d2bab1cefb09e89b5bd.1767847334.git.wqu@suse.com>
- <20260108095120.0d85f706@nvm>
+ <20260108095120.0d85f706@nvm> <35a26759-cd26-4d1f-9d84-03d13e909f07@suse.com>
 Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
 Autocrypt: addr=wqu@suse.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
  8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
@@ -114,75 +114,102 @@ Autocrypt: addr=wqu@suse.com; keydata=
  /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
  o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
  JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <20260108095120.0d85f706@nvm>
+In-Reply-To: <35a26759-cd26-4d1f-9d84-03d13e909f07@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
 
 
-在 2026/1/8 15:21, Roman Mamedov 写道:
-> On Thu,  8 Jan 2026 15:12:17 +1030
-> Qu Wenruo <wqu@suse.com> wrote:
+在 2026/1/8 15:24, Qu Wenruo 写道:
 > 
->> -static void prepare_discard_device(const char *filename, int fd, u64 byte_count, unsigned opflags)
->> -{
->> -	u64 cur = 0;
->> -
->> -	while (cur < byte_count) {
->> -		/* 1G granularity */
->> -		u64 chunk_size = (cur == 0) ? SZ_1M : min_t(u64, byte_count - cur, SZ_1G);
->> -		int ret;
->> -
->> -		ret = discard_range(fd, cur, chunk_size);
->> -		if (ret)
->> -			return;
->> -		/*
->> -		 * The first range discarded successfully, meaning the device supports
->> -		 * discard.
->> -		 */
->> -		if (opflags & PREP_DEVICE_VERBOSE && cur == 0)
->> -			printf("Performing full device TRIM %s (%s) ...\n",
->> -			       filename, pretty_size(byte_count));
->> -		cur += chunk_size;
->> -	}
->> -}
->> -
->>   /*
->>    * Write zeros to the given range [start, start + len)
->>    */
->> @@ -293,8 +270,16 @@ int btrfs_prepare_device(int fd, const char *file, u64 *byte_count_ret,
->>   		goto err;
->>   	}
->>   
->> -	if (!(opflags & PREP_DEVICE_ZONED) && (opflags & PREP_DEVICE_DISCARD))
->> -		prepare_discard_device(file, fd, byte_count, opflags);
->> +	if (!(opflags & PREP_DEVICE_ZONED) && (opflags & PREP_DEVICE_DISCARD)) {
->> +		ret = device_discard_blocks(fd, 0, byte_count);
->> +		if (ret < 0) {
->> +			errno = -ret;
->> +			warning("failed to discard device '%s': %m", file);
->> +		} else {
->> +			printf("Performing full device TRIM %s (%s) ...\n",
->> +			       file, pretty_size(byte_count));
->> +		}
->> +	}
->>   
->>   	ret = btrfs_wipe_existing_sb(fd, zinfo);
->>   	if (ret < 0) {
 > 
-> Before: the message is printed after the first successful discard of a 1G
-> range, so with any real-world device at the very beginning of operation.
+> 在 2026/1/8 15:21, Roman Mamedov 写道:
+>> On Thu,  8 Jan 2026 15:12:17 +1030
+>> Qu Wenruo <wqu@suse.com> wrote:
+>>
+>>> -static void prepare_discard_device(const char *filename, int fd, u64 
+>>> byte_count, unsigned opflags)
+>>> -{
+>>> -    u64 cur = 0;
+>>> -
+>>> -    while (cur < byte_count) {
+>>> -        /* 1G granularity */
+>>> -        u64 chunk_size = (cur == 0) ? SZ_1M : min_t(u64, byte_count 
+>>> - cur, SZ_1G);
+>>> -        int ret;
+>>> -
+>>> -        ret = discard_range(fd, cur, chunk_size);
+>>> -        if (ret)
+>>> -            return;
+>>> -        /*
+>>> -         * The first range discarded successfully, meaning the 
+>>> device supports
+>>> -         * discard.
+>>> -         */
+>>> -        if (opflags & PREP_DEVICE_VERBOSE && cur == 0)
+>>> -            printf("Performing full device TRIM %s (%s) ...\n",
+>>> -                   filename, pretty_size(byte_count));
+>>> -        cur += chunk_size;
+>>> -    }
+>>> -}
+>>> -
+>>>   /*
+>>>    * Write zeros to the given range [start, start + len)
+>>>    */
+>>> @@ -293,8 +270,16 @@ int btrfs_prepare_device(int fd, const char 
+>>> *file, u64 *byte_count_ret,
+>>>           goto err;
+>>>       }
+>>> -    if (!(opflags & PREP_DEVICE_ZONED) && (opflags & 
+>>> PREP_DEVICE_DISCARD))
+>>> -        prepare_discard_device(file, fd, byte_count, opflags);
+>>> +    if (!(opflags & PREP_DEVICE_ZONED) && (opflags & 
+>>> PREP_DEVICE_DISCARD)) {
+>>> +        ret = device_discard_blocks(fd, 0, byte_count);
+>>> +        if (ret < 0) {
+>>> +            errno = -ret;
+>>> +            warning("failed to discard device '%s': %m", file);
+>>> +        } else {
+>>> +            printf("Performing full device TRIM %s (%s) ...\n",
+>>> +                   file, pretty_size(byte_count));
+>>> +        }
+>>> +    }
+>>>       ret = btrfs_wipe_existing_sb(fd, zinfo);
+>>>       if (ret < 0) {
+>>
+>> Before: the message is printed after the first successful discard of a 1G
+>> range, so with any real-world device at the very beginning of operation.
+>>
+>> After: the message is printed only after the full device is discarded???
+>> And it still implies the operation has just begun and is in progress.
 > 
-> After: the message is printed only after the full device is discarded???
-> And it still implies the operation has just begun and is in progress.
+> I'll change the message timing to before the call.
 
-I'll change the message timing to before the call.
+Well, this is a special handling for full device trim, where we don't do 
+any special probing on if the device support TRIM.
+But based on the first discard try to determine and output needed message.
+
+Either we need a reliable way to do the probe (which is not that simple, 
+previously we had some try to use 0 length discard, but it's not 
+reliable), thus we changed to use the current way.
+
+So it's not that easy to change without changing the timing of the 
+message or the behavior.
+
+Please ignore this patch.
+
+Thanks,
+Qu
 
 > 
-> It could take a significant time and it was good to print it in the beginning
-> to let the user know what is going on.
+>>
+>> It could take a significant time and it was good to print it in the 
+>> beginning
+>> to let the user know what is going on.
+>>
+>> Or I am missing something here?
+>>
 > 
-> Or I am missing something here?
 > 
 
 
