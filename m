@@ -1,219 +1,198 @@
-Return-Path: <linux-btrfs+bounces-20226-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20227-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0244D0220F
-	for <lists+linux-btrfs@lfdr.de>; Thu, 08 Jan 2026 11:32:35 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id F22E3D02E75
+	for <lists+linux-btrfs@lfdr.de>; Thu, 08 Jan 2026 14:12:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 98B603372F96
-	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Jan 2026 09:50:09 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id B41B9304A100
+	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Jan 2026 13:06:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB7B5350A02;
-	Thu,  8 Jan 2026 08:56:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Zykgg9o6";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Zykgg9o6"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 920974CACF2;
+	Thu,  8 Jan 2026 13:00:23 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-oa1-f77.google.com (mail-oa1-f77.google.com [209.85.160.77])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9928E3ACF05
-	for <linux-btrfs@vger.kernel.org>; Thu,  8 Jan 2026 08:56:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D9594A13A7
+	for <linux-btrfs@vger.kernel.org>; Thu,  8 Jan 2026 13:00:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.77
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767862589; cv=none; b=XH2MqydrhzWNM1P2lsGqk5pXWgvWSTq73SudHq0uvwq5PacFIK4xLp8s2sIqHke4l9UOruTVZZTtvnNRLipoBdPXiR/xA4tQjx35PmxKP6ba6o4cj0vlFuWD/ScdOiVtaxCPj0xN0lKRR+ZcYDNV4jcmk8mJBpuqV89WLhpx/ec=
+	t=1767877223; cv=none; b=Gnhu5e4kHVvFYBTae0vPMWuhgUNR4z48fuDnAfElTmXckpAvdViWAhtFWX9Kc9rm2lAQ6elo6nzlEfqmgl/9CaOnCkkf62zaYRmKsxaDDdTqsq9Ys97kJsIhZ/V8KzGC4KzVAy8ZaiDMZcl9ozmsuwD8AqxcS/SOR4KrZnym3wY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767862589; c=relaxed/simple;
-	bh=OoGQgs8c9LjgSaR0oQkIqEyjGZ0uAwRqVmqkliY0e+I=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=kf0G6H0up3qQlZqLwd+neAgqAC+GyFiFuATPikUjyZlqxyF5tIIhyis72faYBqPDwXjEFNHmL+x+hfLZAXrXqdqU8C4Z2CYqgdzY5RFRFrDnNO/fIBeD2M2OFqDsfRQ8brSjRpE3VfW22VQuJDeE2thfP5i1asmMGVJSoUN6s6k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Zykgg9o6; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Zykgg9o6; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 234DB33AE6
-	for <linux-btrfs@vger.kernel.org>; Thu,  8 Jan 2026 08:56:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1767862579; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=Be5pYCGH87g0qum12Tk59t2spvIIjmf9JD6C0TPwpwM=;
-	b=Zykgg9o66rt3QGz3FNd70qpjOkxU+y0a6FXtaxqXaQl11gVppo1Dmul7F6Jz+tnCUdXauM
-	Ab/c8o/YV/Ti4+QanmGlcFeGiWODIVugHTcbpuHQox98DW370x0MQ3c1QbIaAlaXhHmFjB
-	qOdTrp8vxMZRm7CMGT2qW7BiHg4g09s=
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1767862579; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=Be5pYCGH87g0qum12Tk59t2spvIIjmf9JD6C0TPwpwM=;
-	b=Zykgg9o66rt3QGz3FNd70qpjOkxU+y0a6FXtaxqXaQl11gVppo1Dmul7F6Jz+tnCUdXauM
-	Ab/c8o/YV/Ti4+QanmGlcFeGiWODIVugHTcbpuHQox98DW370x0MQ3c1QbIaAlaXhHmFjB
-	qOdTrp8vxMZRm7CMGT2qW7BiHg4g09s=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6011E3EA63
-	for <linux-btrfs@vger.kernel.org>; Thu,  8 Jan 2026 08:56:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id E+PxCDJxX2lRewAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Thu, 08 Jan 2026 08:56:18 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: automatically cleanup aborted transaction on fs close
-Date: Thu,  8 Jan 2026 19:26:00 +1030
-Message-ID: <f52130e6f1c9f5bdd90902a88aa448316191c77b.1767862489.git.wqu@suse.com>
-X-Mailer: git-send-email 2.52.0
+	s=arc-20240116; t=1767877223; c=relaxed/simple;
+	bh=1hk9MD7pXRJ/TTAwQPHJ1hHVzAFdMvWFsDr7UOqkPog=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=MaRq17MjEZwKf82Yl1XfccEq4mYKAosjdSKYChfn8Yyrk3ekhVbskKcsUndb4yWKdLlMmXAGGX7w5DIiblxMQL6N774TgifQo6wBw/4SMIM8FB22BoNGUtmXLx4fcmGLcbykAT/LwXAMcRB/Ig8+48KoshdBSD7RZtc0yjfxILI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.160.77
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-oa1-f77.google.com with SMTP id 586e51a60fabf-3fecd18ffa0so3112210fac.2
+        for <linux-btrfs@vger.kernel.org>; Thu, 08 Jan 2026 05:00:20 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1767877220; x=1768482020;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=XE9gGL8rvOJ8lyGl3XeJAAg4yrw1c8hPnG7pTwECVQs=;
+        b=gvyyEF/hiUSxJ96xUS4LYCrQ0MF3ZqREggOdqsymaj3hSGR+irGgBaIwX3QIABhRcH
+         /Rn3bqQckBOxSGCnRa5FolcC9L4ARFTAeJdQq+z2NS5QgtQ0f1eKeVtNZXI5MKDpiWhX
+         ZMLeGoiG9d2zkm2RMq7KZQTbEutvoSkrC/W2RgibFJ5AOgj3y+u2VAMHtaIf3APwTVo3
+         6Prr5d2UOOL359XWEByOMyPolUtcKN0T0lQXwfpiz86slxy1WB9kz8diqPzilbabdQuI
+         MdBnGBWsQmyGifRF60S2w+Y+0g0XMxfzzO6nWjNe/TQNTW3VPlgykl2c6yT2MOHq2M1+
+         XFdA==
+X-Forwarded-Encrypted: i=1; AJvYcCWe9vTswApA4v60xPiWQkFz703ORqfo3FwqVePtuhebMUGR0vefDneqHSsK+4GnccHzMz6FtRHYEQnbbw==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy0S8dLsKedSn2hBPq2c2xv/wcde7jKIcy0vweqgJaMU0DZRJfG
+	wj8b5I2eoGfWhBxXreBLCsRqaGSaNXJJ0UG5Ms9mbLoIpzNdvu07Xhcfc6j06pa1w4+KTiKONfC
+	OSd9TMo2PnKDLDdzp/bVJqXGGN9RkgVU2CWnN1KZpepSyxGVo6eQ0A7VxogI=
+X-Google-Smtp-Source: AGHT+IGRxtX5pL97erKgPG0byxMkLDMzhLrzmJbgqpkJfyvqd8oYYBQLMd8UOmCAczCVbdHQzkN9C/sqI8I5xv43dr1Mn8qcP3pT
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-2.77 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.17)[-0.827];
-	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:mid,suse.com:email];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	RCVD_TLS_ALL(0.00)[]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -2.77
+X-Received: by 2002:a05:6820:1613:b0:65e:d467:147c with SMTP id
+ 006d021491bc7-65f5507e8c0mr2540333eaf.71.1767877219485; Thu, 08 Jan 2026
+ 05:00:19 -0800 (PST)
+Date: Thu, 08 Jan 2026 05:00:19 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <695faa63.050a0220.1c677c.039b.GAE@google.com>
+Subject: [syzbot] [btrfs?] general protection fault in create_empty_buffers (5)
+From: syzbot <syzbot+b4a2af3000eaa84d95d5@syzkaller.appspotmail.com>
+To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-[BUG]
-Inspired by a recent bug report that due to an incorrect use case
-(using mkfs.btrfs --reflink option with NODATACOW files), that a failed
-mkfs.btrfs will lead to the following leaked extent buffer:
+Hello,
 
-  btrfs-progs v6.17.1
-  See https://btrfs.readthedocs.io for more information.
+syzbot found the following issue on:
 
-  Rootdir from:       /var/tmp/.#repartc2f366b20457a16d
-    Compress:         no
-  ERROR: cannot clone range: Invalid argument
-  ERROR: failed to write /var/tmp/.#repartc2f366b20457a16d/var/lib/systemd/catalog/database
-  ERROR: failed to add file extents for inode 265 ('/var/tmp/.#repartc2f366b20457a16d/var/lib/systemd/catalog/database'): Invalid argument
-  ERROR: unable to traverse directory /var/tmp/.#repartc2f366b20457a16d: -22
-  ERROR: error while filling filesystem: Invalid argument
-  WARNING: reserved space leaked, flag=0x4 bytes_reserved=16384
-  extent buffer leak: start 30408704 len 16384
-  WARNING: dirty eb leak (aborted trans): start 30408704 len 16384
+HEAD commit:    f0b9d8eb98df Merge tag 'nfsd-6.19-3' of git://git.kernel.o..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1311ef92580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a11e0f726bfb6765
+dashboard link: https://syzkaller.appspot.com/bug?extid=b4a2af3000eaa84d95d5
+compiler:       gcc (Debian 12.2.0-14+deb12u1) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10663e9a580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14936074580000
 
-[CAUSE]
-The error path of btrfs_mkfs_fill_dir() has properly called
-btrfs_abort_transaction().
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/d900f083ada3/non_bootable_disk-f0b9d8eb.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/d6eefae97e89/vmlinux-f0b9d8eb.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/a16fafcc4238/bzImage-f0b9d8eb.xz
 
-But btrfs_abort_transaction() itself only marks the fs error but do
-nothing to cleanup any dirtied extent buffer or whatever.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b4a2af3000eaa84d95d5@syzkaller.appspotmail.com
 
-The reason is we can not easily do the full transaction abort cleanup
-including freeing the trans handle pointer, thus we need to call
-btrfs_commit_transaction() to do the proper cleanup.
+Oops: general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] SMP KASAN NOPTI
+KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+CPU: 2 UID: 0 PID: 6261 Comm: syz.0.73 Not tainted syzkaller #0 PREEMPT(full) 
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
+RIP: 0010:create_empty_buffers+0x4d/0x480 fs/buffer.c:1694
+Code: ec 6d ff 48 89 de ba 40 8c 40 00 4c 89 ef e8 0a f6 ff ff 49 89 c6 48 89 c3 eb 03 48 89 c3 e8 ea eb 6d ff 48 89 d8 48 c1 e8 03 <80> 3c 28 00 0f 85 81 03 00 00 48 8d 7b 08 4c 09 23 48 89 f8 48 c1
+RSP: 0018:ffffc9000408f870 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff8250f7ec
+RDX: ffff88802a4d8000 RSI: ffffffff8250fcc6 RDI: ffff88802a4d9680
+RBP: dffffc0000000000 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000000000000 R11: ffff88802a4d8b30 R12: 0000000000000000
+R13: ffffea0000a9e5c0 R14: 0000000000000000 R15: dffffc0000000000
+FS:  00007f1ac84a46c0(0000) GS:ffff8880d6af5000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f1ac84a3f98 CR3: 000000002b14f000 CR4: 0000000000352ef0
+Call Trace:
+ <TASK>
+ folio_create_buffers+0x109/0x150 fs/buffer.c:1802
+ block_read_full_folio+0x14c/0x850 fs/buffer.c:2403
+ filemap_read_folio+0xc8/0x2a0 mm/filemap.c:2496
+ do_read_cache_folio+0x266/0x5c0 mm/filemap.c:4096
+ do_read_cache_page mm/filemap.c:4162 [inline]
+ read_cache_page_gfp+0x29/0x120 mm/filemap.c:4195
+ btrfs_read_disk_super+0x192/0x500 fs/btrfs/volumes.c:1367
+ btrfs_scan_one_device+0x109/0x820 fs/btrfs/volumes.c:1475
+ btrfs_get_tree_super fs/btrfs/super.c:1860 [inline]
+ btrfs_get_tree_subvol fs/btrfs/super.c:2089 [inline]
+ btrfs_get_tree+0x5b3/0x2710 fs/btrfs/super.c:2123
+ vfs_get_tree+0x8e/0x330 fs/super.c:1751
+ fc_mount fs/namespace.c:1199 [inline]
+ do_new_mount_fc fs/namespace.c:3636 [inline]
+ do_new_mount fs/namespace.c:3712 [inline]
+ path_mount+0x7bf/0x23a0 fs/namespace.c:4022
+ do_mount fs/namespace.c:4035 [inline]
+ __do_sys_mount fs/namespace.c:4224 [inline]
+ __se_sys_mount fs/namespace.c:4201 [inline]
+ __x64_sys_mount+0x293/0x310 fs/namespace.c:4201
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xcd/0xf80 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f1ac758f7c9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f1ac84a4038 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007f1ac77e6090 RCX: 00007f1ac758f7c9
+RDX: 00002000000000c0 RSI: 0000200000000080 RDI: 00002000000001c0
+RBP: 00007f1ac7613f91 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000004418 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007f1ac77e6128 R14: 00007f1ac77e6090 R15: 00007ffe5d1bb9d8
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:create_empty_buffers+0x4d/0x480 fs/buffer.c:1694
+Code: ec 6d ff 48 89 de ba 40 8c 40 00 4c 89 ef e8 0a f6 ff ff 49 89 c6 48 89 c3 eb 03 48 89 c3 e8 ea eb 6d ff 48 89 d8 48 c1 e8 03 <80> 3c 28 00 0f 85 81 03 00 00 48 8d 7b 08 4c 09 23 48 89 f8 48 c1
+RSP: 0018:ffffc9000408f870 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff8250f7ec
+RDX: ffff88802a4d8000 RSI: ffffffff8250fcc6 RDI: ffff88802a4d9680
+RBP: dffffc0000000000 R08: 0000000000000005 R09: 0000000000000000
+R10: 0000000000000000 R11: ffff88802a4d8b30 R12: 0000000000000000
+R13: ffffea0000a9e5c0 R14: 0000000000000000 R15: dffffc0000000000
+FS:  00007f1ac84a46c0(0000) GS:ffff8880d6af5000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f1ac84a3f98 CR3: 000000002b14f000 CR4: 0000000000352ef0
+----------------
+Code disassembly (best guess):
+   0:	ec                   	in     (%dx),%al
+   1:	6d                   	insl   (%dx),%es:(%rdi)
+   2:	ff 48 89             	decl   -0x77(%rax)
+   5:	de ba 40 8c 40 00    	fidivrs 0x408c40(%rdx)
+   b:	4c 89 ef             	mov    %r13,%rdi
+   e:	e8 0a f6 ff ff       	call   0xfffff61d
+  13:	49 89 c6             	mov    %rax,%r14
+  16:	48 89 c3             	mov    %rax,%rbx
+  19:	eb 03                	jmp    0x1e
+  1b:	48 89 c3             	mov    %rax,%rbx
+  1e:	e8 ea eb 6d ff       	call   0xff6dec0d
+  23:	48 89 d8             	mov    %rbx,%rax
+  26:	48 c1 e8 03          	shr    $0x3,%rax
+* 2a:	80 3c 28 00          	cmpb   $0x0,(%rax,%rbp,1) <-- trapping instruction
+  2e:	0f 85 81 03 00 00    	jne    0x3b5
+  34:	48 8d 7b 08          	lea    0x8(%rbx),%rdi
+  38:	4c 09 23             	or     %r12,(%rbx)
+  3b:	48 89 f8             	mov    %rdi,%rax
+  3e:	48                   	rex.W
+  3f:	c1                   	.byte 0xc1
 
-[FIX]
-I considered calling btrfs_commit_transaction() for every
-btrfs_abort_transaction() call, but it is a lot of work and never looks
-good to me.
 
-So instead I add the proper cleanup into close_ctree_fs_info(), that if
-we detected an aborted transaction that is not yet commited, do the
-proper cleanup so we won't have leaked dirty extent buffers:
-
-Issue: #1073
-Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- kernel-shared/disk-io.c     |  5 +++++
- kernel-shared/transaction.c | 20 ++++++++++++++++----
- kernel-shared/transaction.h |  1 +
- 3 files changed, 22 insertions(+), 4 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/kernel-shared/disk-io.c b/kernel-shared/disk-io.c
-index dff800f55a74..1a1707f37480 100644
---- a/kernel-shared/disk-io.c
-+++ b/kernel-shared/disk-io.c
-@@ -2270,6 +2270,11 @@ int close_ctree_fs_info(struct btrfs_fs_info *fs_info)
- 	struct btrfs_trans_handle *trans;
- 	struct btrfs_root *root = fs_info->tree_root;
- 
-+	if (fs_info->transaction_aborted && fs_info->running_transaction) {
-+		btrfs_cleanup_aborted_transaction(fs_info);
-+		goto skip_commit;
-+	}
-+
- 	if (fs_info->last_trans_committed !=
- 	    fs_info->generation) {
- 		BUG_ON(!root);
-diff --git a/kernel-shared/transaction.c b/kernel-shared/transaction.c
-index 4f5155e46542..3e271cb6af34 100644
---- a/kernel-shared/transaction.c
-+++ b/kernel-shared/transaction.c
-@@ -332,6 +332,21 @@ cleanup:
- 	return ret;
- }
- 
-+void btrfs_cleanup_aborted_transaction(struct btrfs_fs_info *fs_info)
-+{
-+	struct btrfs_trans_handle *trans = fs_info->running_transaction;
-+	int error = fs_info->transaction_aborted;
-+
-+	if (!error || !trans)
-+		return;
-+
-+	btrfs_abort_transaction(trans, error);
-+	clean_dirty_buffers(trans);
-+	btrfs_destroy_delayed_refs(trans);
-+	kfree(trans);
-+	fs_info->running_transaction = NULL;
-+}
-+
- int btrfs_commit_transaction(struct btrfs_trans_handle *trans,
- 			     struct btrfs_root *root)
- {
-@@ -417,10 +432,7 @@ commit_tree:
- 	}
- 	return ret;
- error:
--	btrfs_abort_transaction(trans, ret);
--	clean_dirty_buffers(trans);
--	btrfs_destroy_delayed_refs(trans);
--	kfree(trans);
-+	btrfs_cleanup_aborted_transaction(fs_info);
- 	return ret;
- }
- 
-diff --git a/kernel-shared/transaction.h b/kernel-shared/transaction.h
-index b1739be4283e..9d479a8aece2 100644
---- a/kernel-shared/transaction.h
-+++ b/kernel-shared/transaction.h
-@@ -173,6 +173,7 @@ struct btrfs_pending_snapshot {
- 
- bool __cold abort_should_print_stack(int error);
- 
-+void btrfs_cleanup_aborted_transaction(struct btrfs_fs_info *fs_info);
- void btrfs_abort_transaction(struct btrfs_trans_handle *trans, int error);
- int btrfs_end_transaction(struct btrfs_trans_handle *trans);
- struct btrfs_trans_handle *btrfs_start_transaction(struct btrfs_root *root,
--- 
-2.52.0
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
