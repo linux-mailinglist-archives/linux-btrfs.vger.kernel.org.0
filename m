@@ -1,56 +1,74 @@
-Return-Path: <linux-btrfs+bounces-20232-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20233-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07BD2D033AC
-	for <lists+linux-btrfs@lfdr.de>; Thu, 08 Jan 2026 15:08:01 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2459FD03681
+	for <lists+linux-btrfs@lfdr.de>; Thu, 08 Jan 2026 15:38:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 371313157148
-	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Jan 2026 13:45:12 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 863CB301D2EE
+	for <lists+linux-btrfs@lfdr.de>; Thu,  8 Jan 2026 14:37:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE4F549B60C;
-	Thu,  8 Jan 2026 13:37:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6C15458C8A;
+	Thu,  8 Jan 2026 14:19:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ESjcFKh/"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="HCkUV5Sg"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4DC54A1584;
-	Thu,  8 Jan 2026 13:37:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 710EB4E819E;
+	Thu,  8 Jan 2026 14:19:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767879454; cv=none; b=F2bLPjBsk7w4QWR56tT+J+DtLZ702JErT1MsQFNKc3Mwatp1KChBSfsGPetK7h6ZFfHe26mdhRr3OspRWOg3uxUg/LB/RT4D7p7h61qzEdSPREIDxGvcegR7B7UgiJPxZzhMlnqRRXFoYAKMJ6K00IN00wkZkmgpyKJGVfj8yKY=
+	t=1767881992; cv=none; b=l5H8rRNRi+njebvKGF7CKkaB+cve0IuIFc9xF7LIalOuvHI9FP3zVCeWKAz3d5eMlPm0YmT9qf+sZHUokGApyd92XecdwSd4WFM/676JEgTG016hYnbGfr2OxP3LiIfw3q50LVex3X9fTlqHBK+75IbDGXZhzjwARkppG05zBrg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767879454; c=relaxed/simple;
-	bh=jnpE+GOhx5EoNWwHLxdul7nCM/ZBv6dkrLJ9V7znT+Y=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=K6FZikcVC2LBT7L6ifp18EIhXFkY3/znXIOi6r2ZcGyUfFAmpJYRKi/JWId3DLO/Zj3HZ4Hq7z6agviYIx8lDQ/+e4lQea3K2C9l79yiTHgl2ONrqoekSXThumDyURAzT6vf2DKazZkLxErxlmTC9QcFGHogfgjEOjfjyjdBuf8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ESjcFKh/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42FBFC116C6;
-	Thu,  8 Jan 2026 13:37:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767879452;
-	bh=jnpE+GOhx5EoNWwHLxdul7nCM/ZBv6dkrLJ9V7znT+Y=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ESjcFKh/efIQ6whZlcl+onsojTWGS56BuRCs2vjUpMzL8tLDuIpVwg1VXGSASrKpB
-	 8A5LZpTizY9b5iva872+8PCNj1iXevJLXPVE07NRxCG+vd7KYVQns07TnSbYMaPl6d
-	 KA5AJ3YEbABxyOMAQhUUFX7DBld1NXIHgmEX9sL+2MZH9lr8IJ4Jdv/Xj2eKAz+EWj
-	 xMYu+H0UoeLDEtEP3ubLyJ0RU/SHLATNJtN6WwYBqEkvU5geu3rBAZ+9Nz/1/66/sl
-	 Yk+RdnjIf4AI9ON+ntrj9rTk76YstuslTtQCJgVupNGyPUDSCpBiOIUEy6n73I2fWc
-	 2TQFTG+ePsYuw==
-From: fdmanana@kernel.org
-To: linux-btrfs@vger.kernel.org
-Cc: linux-fsdevel@vger.kernel.org,
-	brauner@kernel.org,
-	viro@zeniv.linux.org.uk,
-	Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH 4/4] btrfs: use may_create_dentry() in btrfs_mksubvol()
-Date: Thu,  8 Jan 2026 13:35:34 +0000
-Message-ID: <a56191f13dc946951f94ddec1dc714991576d38f.1767801889.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.47.2
-In-Reply-To: <cover.1767801889.git.fdmanana@suse.com>
-References: <cover.1767801889.git.fdmanana@suse.com>
+	s=arc-20240116; t=1767881992; c=relaxed/simple;
+	bh=pgFo/tGly54ijlfTPPtxx0Ky8wb8MMinxNhrt4wuMLg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=cC4rPmZYLTBSvaaEzOfToN0yXD0xWt7jPEwERbQkDphYs6t5NgjD4mbBKltJ1Fe4Nis4dox3F619ugrna98wB66uf3WqsHFqy0C0SaEUi6BAlREAbXUr3kpLKDjXu6EERS+YRST0Hqu42FuFLUOcd3HAeMxdUySeUMPZhNserVs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=HCkUV5Sg; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=47j3Vb5ECJCThNE4hZUuOAtfhlxTrOYUcu9LaYfkCP0=; b=HCkUV5Sg9RjiYn4vXDrQU9X8X2
+	QN7lpU67efTqRh1BaVJtEpKYMQAxG7T0N5995XKnZJk7w2W6cfF7OalQFG+1xpn4iCS1mLCF8LFZU
+	gI2xKmgSvoXaJnySBF9YEhWtKLaWW7n6Y8WsCHdLazXAFwFVgQFsrhIxgACJfaKplPExgcdHw01Kq
+	Ke4GwPEVve9HwaXeITYANFM+28/9dKysmfdekPnByN9rEJlzWGQfqqhw/sYk5H/myvcdC4/dP73NO
+	EnAdF+bwO9giTfj+kY8VlOmqBYEyM2N4eNeUEjVZQAm6jkNPHOIPZEmQEn0ZAp410vM3yx9JmCZ62
+	jjcnpyIg==;
+Received: from 2a02-8389-2341-5b80-d601-7564-c2e0-491c.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:d601:7564:c2e0:491c] helo=localhost)
+	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vdqrX-0000000HJ7f-3drf;
+	Thu, 08 Jan 2026 14:19:44 +0000
+From: Christoph Hellwig <hch@lst.de>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Al Viro <viro@zeniv.linux.org.uk>,
+	David Sterba <dsterba@suse.com>,
+	Jan Kara <jack@suse.cz>,
+	Mike Marshall <hubcap@omnibond.com>,
+	Martin Brandenburg <martin@omnibond.com>,
+	Carlos Maiolino <cem@kernel.org>,
+	Stefan Roesch <shr@fb.com>,
+	Jeff Layton <jlayton@kernel.org>,
+	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+	Trond Myklebust <trondmy@kernel.org>,
+	Anna Schumaker <anna@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	linux-btrfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	gfs2@lists.linux.dev,
+	io-uring@vger.kernel.org,
+	devel@lists.orangefs.org,
+	linux-unionfs@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	linux-xfs@vger.kernel.org,
+	linux-nfs@vger.kernel.org
+Subject: re-enable IOCB_NOWAIT writes to files v6
+Date: Thu,  8 Jan 2026 15:19:00 +0100
+Message-ID: <20260108141934.2052404-1-hch@lst.de>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,53 +76,68 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-From: Filipe Manana <fdmanana@suse.com>
+Hi all,
 
-There is no longer the need to use btrfs_may_create(), which was a copy
-of the VFS private function may_create(), since now that functionality
-is exported by the VFS as a function named may_create_dentry(). So change
-btrfs_mksubvol() to use the VFS function and remove btrfs_may_create().
+commit 66fa3cedf16a ("fs: Add async write file modification handling.")
+effectively disabled IOCB_NOWAIT writes as timestamp updates currently
+always require blocking, and the modern timestamp resolution means we
+always update timestamps.  This leads to a lot of context switches from
+applications using io_uring to submit file writes, making it often worse
+than using the legacy aio code that is not using IOCB_NOWAIT.
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/ioctl.c | 15 +--------------
- 1 file changed, 1 insertion(+), 14 deletions(-)
+This series allows non-blocking updates for lazytime if the file system
+supports it, and adds that support for XFS.
 
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index 0cb3cd3d05a5..9cf37459ef6d 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -815,19 +815,6 @@ static int create_snapshot(struct btrfs_root *root, struct inode *dir,
- 	return ret;
- }
- 
--/* copy of may_create in fs/namei.c() */
--static inline int btrfs_may_create(struct mnt_idmap *idmap,
--				   struct inode *dir, const struct dentry *child)
--{
--	if (d_really_is_positive(child))
--		return -EEXIST;
--	if (IS_DEADDIR(dir))
--		return -ENOENT;
--	if (!fsuidgid_has_mapping(dir->i_sb, idmap))
--		return -EOVERFLOW;
--	return inode_permission(idmap, dir, MAY_WRITE | MAY_EXEC);
--}
--
- /*
-  * Create a new subvolume below @parent.  This is largely modeled after
-  * sys_mkdirat and vfs_mkdir, but we only do a single component lookup
-@@ -849,7 +836,7 @@ static noinline int btrfs_mksubvol(struct dentry *parent,
- 	if (IS_ERR(dentry))
- 		return PTR_ERR(dentry);
- 
--	ret = btrfs_may_create(idmap, dir, dentry);
-+	ret = may_create_dentry(idmap, dir, dentry);
- 	if (ret)
- 		goto out_dput;
- 
--- 
-2.47.2
+Changes since v5:
+ - sample ctime before calling inode_set_ctime_current
+ - fix a mild bisection hazard in fat
 
+Changes since v4:
+ - replace the S_* flags with an enum indicating either access or
+   modification time updates to make the logic less fragile and to
+   fix a bug in the previous version
+
+Changes since v3:
+ - fix was_dirty_time handling in __mark_inode_dirty for the racy flag
+   update case
+ - refactor inode_update_timestamps to make the lazytime vs blocking
+   logical more clear
+ - allow non-blocking timestamp updates for fat
+
+Changes since v2:
+ - drop patches merged upstream
+ - adjust for the inode state accesors
+ - keep a check in __writeback_single_inode instead of exercising
+   potentially undefined behavior
+ - more spelling fixes
+
+Changes since v1:
+ - more regular numbering of the S_* flags
+ - fix XFS to actually not block
+ - don't ignore the generic_update_time return value in
+   file_update_time_flags
+ - fix the sync_lazytime return value
+ - fix an out of data comment in btrfs
+ - fix a race that would update i_version before returning -EAGAIN in XFS
+
+Diffstat:
+ Documentation/filesystems/locking.rst |    2 
+ Documentation/filesystems/vfs.rst     |    6 +
+ fs/btrfs/inode.c                      |    8 +-
+ fs/fs-writeback.c                     |   33 +++++++---
+ fs/gfs2/inode.c                       |    6 +
+ fs/inode.c                            |  111 +++++++++++++++++++++-------------
+ fs/internal.h                         |    3 
+ fs/nfs/inode.c                        |    4 -
+ fs/orangefs/inode.c                   |    5 +
+ fs/overlayfs/inode.c                  |    2 
+ fs/sync.c                             |    4 -
+ fs/ubifs/file.c                       |   13 ++-
+ fs/xfs/xfs_iops.c                     |   34 +++++++++-
+ fs/xfs/xfs_super.c                    |   29 --------
+ include/linux/fs.h                    |   27 ++++++--
+ include/trace/events/writeback.h      |    6 -
+ 16 files changed, 182 insertions(+), 111 deletions(-)
 
