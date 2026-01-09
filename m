@@ -1,171 +1,193 @@
-Return-Path: <linux-btrfs+bounces-20314-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20315-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68772D0703C
-	for <lists+linux-btrfs@lfdr.de>; Fri, 09 Jan 2026 04:42:56 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C27DD07324
+	for <lists+linux-btrfs@lfdr.de>; Fri, 09 Jan 2026 06:26:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id E84BE300792E
-	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Jan 2026 03:42:53 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 961E23044C07
+	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Jan 2026 05:26:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 996E425D53B;
-	Fri,  9 Jan 2026 03:42:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 115CA262D0B;
+	Fri,  9 Jan 2026 05:26:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="ctOBQT0d"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FCNW4zBK"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5098423BF91
-	for <linux-btrfs@vger.kernel.org>; Fri,  9 Jan 2026 03:42:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7A3022576E
+	for <linux-btrfs@vger.kernel.org>; Fri,  9 Jan 2026 05:26:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767930172; cv=none; b=KSyGJCnVv4KXhF1uuuWbePbwmyWqKXscMw8WiQ9ey1GZDT0HSnW/XhLqqfG/ND6ibdYvQkiDe5e0936RaNQ9QbZHZz8yGpPid50d1IhZdzuHJvdmVO2+jqAK1nNkayEtGjm7mNXHhpB6qNmSfPyOjxc3vyp9UD7tuvA8w/DsnF8=
+	t=1767936385; cv=none; b=Gep3ZA6CY+ASrSdG7AVTmhvlhnf31j0mJqmJ2UP4GKsCKTGsSdMV7GJJUrcJLYBZIB5BhD9/5a4DIlQtHtfUPGCk6y9nbjqE+2ImEy/tQhBZ+59yDr1H3O2WtDUxAryzz2MbzIqOkP0K5vtjkjNWeX2ZNdk9j+EYvBlZldjNoYc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767930172; c=relaxed/simple;
-	bh=yrsVywKxiCT8zlycoeh+r5ziG9OlcmrTQbSt6Li/mz4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=X8V76aoD+ZY6uL/A0g/CDnEv0bSav3rpbw+gFzQWgNni7/gUx/zy3eg8yx2r3jdi/v8slGLvpo2cJwcAaMbPQDP9L5De+qVbffBxcG9JyVqjRvbv11KgpdEuX0+k8+d7fnh4SFEQzc5okDCet9Bn3U9nti1xSaRHpHocu1KbuMQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=ctOBQT0d; arc=none smtp.client-ip=209.85.128.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-47775fb6c56so35855775e9.1
-        for <linux-btrfs@vger.kernel.org>; Thu, 08 Jan 2026 19:42:50 -0800 (PST)
+	s=arc-20240116; t=1767936385; c=relaxed/simple;
+	bh=SMlm1Zj+VPtmhO+U2BlswVGk3VmIYNq8C/pi+eNGgFU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=nvN749WA9semtUY8U8R4YqU8NjiT7yDIMhrNYsUQ73TgLN9iFPI+wBqJe91F5ahKtWsRmuFMPL2fGlykYV+JKdJoMbSwSNT2lHAhuHfV7hwrwOMv+gJWzKYL+RibdnO40aUrWRpdsdlZhM8okN5Im6oyKG7qVRK399xwzXq2DCQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FCNW4zBK; arc=none smtp.client-ip=209.85.208.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-382fea4a160so23998101fa.2
+        for <linux-btrfs@vger.kernel.org>; Thu, 08 Jan 2026 21:26:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1767930169; x=1768534969; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=GZOVLSj2ck/R24Kq5lyw8KJmSvRNfhPOVRdT1D1mGvM=;
-        b=ctOBQT0drOpSUoncyPfoF4PMx0O8w44KS3ei1TpxXlr1ixNihxWydla3QlcTjg6hZt
-         QJ7e/JWwVWJrD6GevYyuoCi8Z2m6aEKHOKR3qi92BbfEzLyQoajOBrVzF538uhTsMOAL
-         Rurlz5TS6Yxw8SAi7Z9X4KizPHxt+cCxBoNFVTZ5MSHjn0+Oiybyu9rPjGgxXOpB/X4X
-         5zU4R61tlHhGbtOA0siv2deKat36M3O4fcO6E9v6jVyTeOziVhLoQO1KKAjAHWmUuQxD
-         DPC84xypqFqySlX3haEwqg+mvLWxXmFJg/G5Uw/lFo0vp+BhidHdKzazsBDV92djaz7d
-         2AtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767930169; x=1768534969;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1767936380; x=1768541180; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=GZOVLSj2ck/R24Kq5lyw8KJmSvRNfhPOVRdT1D1mGvM=;
-        b=sNiUW2aM2MiviHIOwCeCMLnWYq0bY/9VWIUGaPD69LVUG6cVH4HQ7qldDbrRqi7CHQ
-         DrAP6STfrPzzjplTBMFztDKpIJLnANCyeDyQmytzjwKkBh+1fX5FI3NLF6mB6cwBm2Ht
-         S6TodoMKCVJKoGJP35Mj6H4oFR39YqaN/0O6kJC9Rz6G29YZMP4wWueWb8nGRPmbbD80
-         MjcCz/nijqszyQN3SV0YRlnobLV9gpxq4E6gHezrtLbCO3IC6QUqQXRI2rYeYXftEpEL
-         /poMfbTW1RvM8l/j3cSJu5qZDYrUM6Gjpr0oK5gjp2sEdryJnIPH/azpSjJJZE6pkQAg
-         /Rsw==
-X-Gm-Message-State: AOJu0YzQFskrHmuNNu2isxyWzd3hF1YLiSNb+2z6Anazi7qh15ANfRwl
-	oaJJH9IWAF4e2mW5HAzWByc4sSo24koB0sWs31wUPhNO4JTGc+5JC0TBS398DcgIna8kPS/uUsF
-	6+mAfFmA=
-X-Gm-Gg: AY/fxX6NDPJ3nOYzdyKiPBCNxnhWyuNQDbYpJV61LRLX4GSvI+mDNZfryICowUyzmKV
-	5mGi4Jf6Scdsh3d20WOJ8TIv6vNpMFvGDTFjOjHpjfSuXIlWxuRbw9vHh6dU//1V2NTjHdOLTIG
-	MWXinG5Oa7U4Ryn/am7APW0MEQwFd/I/l1Wynj4GsCiipVqQz3pfKOKUICWwUpVH+bwh39NTyfq
-	T/zcCO3OuAWzNHEbwi9SHqTjI8YWEPrRceRJ6voQOOKp4Eata4vSwthCCR6u+O5z8zM3gwToCYX
-	WFsohJgkjQzWOwl5DmgDAb2mNenUJaHcJ0Tw28Lub9E0fKz5Z5faLj+5qCpZ3LE2QntaN7KQJPq
-	otlQhYaQS/BLO7+3qb5bmWQJSkcPqx+Tju8Gya4gn4jquYq4PSYEpmFiaZuiGL01AdmqZzgRrsa
-	4Q7YaUVRYPCcytXYCpnMSPGav9/7Z4ZdRnnN4Yw3ycIioJFev0
-X-Google-Smtp-Source: AGHT+IHQE25B+1fwul06x/3unLSpEHfeEkmgq/GrsxyHlsk1oM0sj9t039V0AuyPAgFH0NdO5UqBgQ==
-X-Received: by 2002:a05:600c:3556:b0:477:6374:6347 with SMTP id 5b1f17b1804b1-47d84b3bb18mr97730515e9.22.1767930168582;
-        Thu, 08 Jan 2026 19:42:48 -0800 (PST)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-34f5fb75902sm9088702a91.16.2026.01.08.19.42.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Jan 2026 19:42:47 -0800 (PST)
-Message-ID: <ed724086-b7a2-4df4-878e-751dfa614a71@suse.com>
-Date: Fri, 9 Jan 2026 14:12:44 +1030
+        bh=EEF8CAf2dAOD+neWtLdI+w7NxCIZ2WohswMXxqPrdck=;
+        b=FCNW4zBKvwe06rYcMueAfiJkXaVx77askqwvwX7CaEFH+6L3KlGJSk+bEnT7twnFlu
+         P/yPNDuhFF9KldguIgfQJUEYrjzXBpzGr9ymhPd8+54KoK8cbP5kMcMedYnuV8Kj4agV
+         DY0xjwrqP/6J413PUFdioqjbYLqYGCmxXPgnNCdMLjil7XqO5qmH5efBobLJT6gh3OGz
+         VE+LNRMzj1W0betHwvCbJtPCcXjicJ4dWKL9ELgIHdLGNeHo8bGeEw3mOVIMRWPnhzPQ
+         gBNuDOAwxH6WtvQg2uVaK+Xg7hl16AIP+FUkv3+pddWPJlc9FSeriHsKVG5oPAPuqF32
+         hcAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1767936380; x=1768541180;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=EEF8CAf2dAOD+neWtLdI+w7NxCIZ2WohswMXxqPrdck=;
+        b=IezCnP+k4+3/46KxY20dVZIlDdAGUlq2eCZpu4wdLSE93zgldGaPpJh9Px6eFHMvqr
+         xFEOxuIAX3vFS9x4YIJi1eZyp5tpGWHM3QFQtcBc4zUUAPNy+AzlEhLsjnpxGtJ9e4hy
+         kdp7ISTL8YXr/+xIUkH4UuQ7AiisLpAG+iP34w5LyGyBszyeFDRO4wXNRVx5hxI6Y+An
+         p7wC13HQtx3mlKf1/2V1VYKx3aVl2AmL1lzGZ0chX8v1Oua/RZ5wWDgwhdQOm6OOgYiR
+         6SsIJnhpjtHKVaAk49n3bwVMHeHCwgU2f9Iuyn7IlmtYw7mNfe/Q8Vx/B+Zrep7ZNVsx
+         14vA==
+X-Forwarded-Encrypted: i=1; AJvYcCV9J/EQpx+xevN8B0fnN3gzP8tQQgfIlbgk5Hn52hOIlAm5skuo3yNwnZshEYWj6X58E/yaLU52ReB8Gw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxFgvWQrUu4in0AMgiu3bBu8bdnJ3C3JYAB7zNqAqDglZfELbMI
+	5jINzuCKAl2STWgE2ASDQdeWQ1rn0oL3MjSQaCJeXZ1pOFuXTi/On3llCV9t3uQIGoGBNO1CCxy
+	kc6cx+PLVaJP1ev47cpb6K1iPl7akRIM=
+X-Gm-Gg: AY/fxX7yGKUnpPqR2zM0Wh+Rj7MkT7zoqPxqm5ewUrGN4hTtg8J6rn2+llanfgiu0Dx
+	DHYXBUboh/FUxkIIF+YjR6sC9jMXbk6qU2DjC34Z+X3Gb9aPy0YVP7Cdt60iezSiSrC+3UfoyoJ
+	KnXSHA6QObCtFo8qnRI+r+VPb3Gv2+TCR9WR8u8Mn3E5NkPFXvMuB485rRexgx3Qr+NI7oSYrA7
+	qDMjPzuBQgcbwuciJNKBECZZcrcLqmzbk3mjQcRqX6imbwVuXEossieSs6chQhiBHQmSd7o
+X-Google-Smtp-Source: AGHT+IFacKbx/HloTRDyL3KNE+dISSFeSIeO5gnLVmi9ry+Gc3uB4ma+c7Q9oZoxnNZINjg1j054MzA1urN4ujLkRdE=
+X-Received: by 2002:a05:651c:419b:b0:378:e3f9:2d26 with SMTP id
+ 38308e7fff4ca-382ff823bdamr21702801fa.39.1767936379607; Thu, 08 Jan 2026
+ 21:26:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: remove offload csum mode
-To: dsterba@suse.cz
-Cc: linux-btrfs@vger.kernel.org
-References: <318d41265ab70ffc1220355b3396209d12b23373.1767845479.git.wqu@suse.com>
- <20260108214022.GN21071@twin.jikos.cz>
-Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <20260108214022.GN21071@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20260108-setlease-6-20-v1-0-ea4dec9b67fa@kernel.org> <20260108-setlease-6-20-v1-13-ea4dec9b67fa@kernel.org>
+In-Reply-To: <20260108-setlease-6-20-v1-13-ea4dec9b67fa@kernel.org>
+From: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Date: Fri, 9 Jan 2026 14:26:03 +0900
+X-Gm-Features: AQt7F2pmUKGJKWpVwxhIrI-U32G4ALuqYGKPCGsBpfUc51GGTfk1sxJMQ_5a6zs
+Message-ID: <CAKFNMok9FG=hhzr8YrHYws5z3jTWOf2TXtFWvSfYbNy6+XLHxw@mail.gmail.com>
+Subject: Re: [PATCH 13/24] nilfs2: add setlease file operation
+To: Jeff Layton <jlayton@kernel.org>
+Cc: Luis de Bethencourt <luisbg@kernel.org>, Salah Triki <salah.triki@gmail.com>, 
+	Nicolas Pitre <nico@fluxnic.net>, Christoph Hellwig <hch@infradead.org>, Jan Kara <jack@suse.cz>, 
+	Anders Larsen <al@alarsen.net>, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Christian Brauner <brauner@kernel.org>, David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>, 
+	Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>, Yue Hu <zbestahu@gmail.com>, 
+	Jeffle Xu <jefflexu@linux.alibaba.com>, Sandeep Dhavale <dhavale@google.com>, 
+	Hongbo Li <lihongbo22@huawei.com>, Chunhai Guo <guochunhai@vivo.com>, Jan Kara <jack@suse.com>, 
+	"Theodore Ts'o" <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>, 
+	Jaegeuk Kim <jaegeuk@kernel.org>, OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>, 
+	David Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>, Dave Kleikamp <shaggy@kernel.org>, 
+	Viacheslav Dubeyko <slava@dubeyko.com>, 
+	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>, Mark Fasheh <mark@fasheh.com>, 
+	Joel Becker <jlbec@evilplan.org>, Joseph Qi <joseph.qi@linux.alibaba.com>, 
+	Mike Marshall <hubcap@omnibond.com>, Martin Brandenburg <martin@omnibond.com>, 
+	Miklos Szeredi <miklos@szeredi.hu>, Amir Goldstein <amir73il@gmail.com>, 
+	Phillip Lougher <phillip@squashfs.org.uk>, Carlos Maiolino <cem@kernel.org>, 
+	Hugh Dickins <hughd@google.com>, Baolin Wang <baolin.wang@linux.alibaba.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, Namjae Jeon <linkinjeon@kernel.org>, 
+	Sungjong Seo <sj1557.seo@samsung.com>, Yuezhang Mo <yuezhang.mo@sony.com>, 
+	Chuck Lever <chuck.lever@oracle.com>, Alexander Aring <alex.aring@gmail.com>, 
+	Andreas Gruenbacher <agruenba@redhat.com>, Jonathan Corbet <corbet@lwn.net>, 
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>, Eric Van Hensbergen <ericvh@kernel.org>, 
+	Latchesar Ionkov <lucho@ionkov.net>, Dominique Martinet <asmadeus@codewreck.org>, 
+	Christian Schoenebeck <linux_oss@crudebyte.com>, Xiubo Li <xiubli@redhat.com>, 
+	Ilya Dryomov <idryomov@gmail.com>, Trond Myklebust <trondmy@kernel.org>, 
+	Anna Schumaker <anna@kernel.org>, Steve French <sfrench@samba.org>, Paulo Alcantara <pc@manguebit.org>, 
+	Ronnie Sahlberg <ronniesahlberg@gmail.com>, Shyam Prasad N <sprasad@microsoft.com>, 
+	Tom Talpey <tom@talpey.com>, Bharath SM <bharathsm@microsoft.com>, 
+	Hans de Goede <hansg@kernel.org>, linux-kernel@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org, 
+	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org, 
+	linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org, 
+	jfs-discussion@lists.sourceforge.net, linux-nilfs@vger.kernel.org, 
+	ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org, 
+	linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org, linux-mm@kvack.org, 
+	gfs2@lists.linux.dev, linux-doc@vger.kernel.org, v9fs@lists.linux.dev, 
+	ceph-devel@vger.kernel.org, linux-nfs@vger.kernel.org, 
+	linux-cifs@vger.kernel.org, samba-technical@lists.samba.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Fri, Jan 9, 2026 at 2:15=E2=80=AFAM Jeff Layton wrote:
+>
+> Add the setlease file_operation to nilfs_file_operations and
+> nilfs_dir_operations, pointing to generic_setlease.  A future patch
+> will change the default behavior to reject lease attempts with -EINVAL
+> when there is no setlease file operation defined. Add generic_setlease
+> to retain the ability to set leases on this filesystem.
+>
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
 
+Looks good, Thanks!
 
-在 2026/1/9 08:10, David Sterba 写道:
-> On Thu, Jan 08, 2026 at 02:41:26PM +1030, Qu Wenruo wrote:
->> The offload csum mode is introduced to allow developers to compare the
->> performance of generating checksum for data writes at different timings:
->>
->> - During btrfs_submit_chunk()
->>    This is the most common one, if any of the following condition is met
->>    we go this path:
->>
->>    * The csum is fast
->>      For now it's CRC32C and xxhash.
->>
->>    * It's a synchronous write
->>
->>    * Zoned
->>
->> - Delay the checksum generation to a workqueue
->>
->> However since commit dd57c78aec39 ("btrfs: introduce
->> btrfs_bio::async_csum") we no longer need to bother any of them.
->>
->> As if it's an experimental build, async checksum generation at the
->> background will be faster anyway.
->>
->> And if not an experimental build, we won't even have the offload csum
->> mode support.
->>
->> Considering the async csum will be the new default, let's remove the
->> offload csum mode code.
->>
->> There will be no impact to end users, and offload csum mode is still
->> under experimental features.
->>
->> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> 
-> Reviewed-by: David Sterba <dsterba@suse.com>
-> 
->> ---
->>   fs/btrfs/bio.c     |  5 -----
->>   fs/btrfs/sysfs.c   | 44 --------------------------------------------
->>   fs/btrfs/volumes.h |  3 ---
-> 
-> Please also remove the entry from Kconfig.
+Acked-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
 
-Done and pushed to for-next, with the 3 enum definition for offload csum 
-mode removed too.
+Ryusuke Konishi
 
-Thanks,
-Qu
+> ---
+>  fs/nilfs2/dir.c  | 3 ++-
+>  fs/nilfs2/file.c | 2 ++
+>  2 files changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/fs/nilfs2/dir.c b/fs/nilfs2/dir.c
+> index 6ca3d74be1e16d5bc577e2520f1e841287a2511f..b243199036dfa1ab2299efaaa=
+5bdf5da2d159ff2 100644
+> --- a/fs/nilfs2/dir.c
+> +++ b/fs/nilfs2/dir.c
+> @@ -30,6 +30,7 @@
+>   */
+>
+>  #include <linux/pagemap.h>
+> +#include <linux/filelock.h>
+>  #include "nilfs.h"
+>  #include "page.h"
+>
+> @@ -661,5 +662,5 @@ const struct file_operations nilfs_dir_operations =3D=
+ {
+>         .compat_ioctl   =3D nilfs_compat_ioctl,
+>  #endif /* CONFIG_COMPAT */
+>         .fsync          =3D nilfs_sync_file,
+> -
+> +       .setlease       =3D generic_setlease,
+>  };
+> diff --git a/fs/nilfs2/file.c b/fs/nilfs2/file.c
+> index 1b8d754db44d44d25dcd13f008d266ec83c74d3f..f93b68c4877c5ed369e90b723=
+517e117142335de 100644
+> --- a/fs/nilfs2/file.c
+> +++ b/fs/nilfs2/file.c
+> @@ -8,6 +8,7 @@
+>   */
+>
+>  #include <linux/fs.h>
+> +#include <linux/filelock.h>
+>  #include <linux/mm.h>
+>  #include <linux/writeback.h>
+>  #include "nilfs.h"
+> @@ -150,6 +151,7 @@ const struct file_operations nilfs_file_operations =
+=3D {
+>         .fsync          =3D nilfs_sync_file,
+>         .splice_read    =3D filemap_splice_read,
+>         .splice_write   =3D iter_file_splice_write,
+> +       .setlease       =3D generic_setlease,
+>  };
+>
+>  const struct inode_operations nilfs_file_inode_operations =3D {
+>
+> --
+> 2.52.0
+>
 
