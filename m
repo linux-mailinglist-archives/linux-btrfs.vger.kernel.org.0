@@ -1,145 +1,171 @@
-Return-Path: <linux-btrfs+bounces-20313-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20314-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94765D06FFD
-	for <lists+linux-btrfs@lfdr.de>; Fri, 09 Jan 2026 04:32:52 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68772D0703C
+	for <lists+linux-btrfs@lfdr.de>; Fri, 09 Jan 2026 04:42:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 3F44430213F6
-	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Jan 2026 03:31:41 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id E84BE300792E
+	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Jan 2026 03:42:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC0C4347C6;
-	Fri,  9 Jan 2026 03:31:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 996E425D53B;
+	Fri,  9 Jan 2026 03:42:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="kakx2yuV";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="kakx2yuV"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="ctOBQT0d"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C69D350094D
-	for <linux-btrfs@vger.kernel.org>; Fri,  9 Jan 2026 03:31:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5098423BF91
+	for <linux-btrfs@vger.kernel.org>; Fri,  9 Jan 2026 03:42:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767929500; cv=none; b=f9+8fvQhrdrF1MKpzv5sl3PeWbUE+YKeAjexKxH6V7d+mcKrWcMGr42nwqMHVm/xZvEWLbIrDSJSRIzr1Sg3+fb2rgEk0NGshMZSDSgtEmQa8zuZ3y04fDxGpfRkFHBLY3Hay6ELeZd924uJD7uqEFiVuZkKNfxtmDniN+l3oyg=
+	t=1767930172; cv=none; b=KSyGJCnVv4KXhF1uuuWbePbwmyWqKXscMw8WiQ9ey1GZDT0HSnW/XhLqqfG/ND6ibdYvQkiDe5e0936RaNQ9QbZHZz8yGpPid50d1IhZdzuHJvdmVO2+jqAK1nNkayEtGjm7mNXHhpB6qNmSfPyOjxc3vyp9UD7tuvA8w/DsnF8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767929500; c=relaxed/simple;
-	bh=G8vfoNEx3NxH1ILNUn7/8hwmd7ACr+eSdlszXGO8eKE=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=EjOI3O43Cl7IOrcuhBKwKiPnC210fdKnzb8So6VJXasU3GhFVTkktJSxHTa8SaZrDbfGcOeJuz8bIL3bygqHtqmmUb5od3FANO18oAJqpUJaXIFvM28FtxKuqQd2M8SO9+Nhbe2qT2K1KcXsfx8GxmZJOIGUm09alCcBMgcTyIU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=kakx2yuV; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=kakx2yuV; arc=none smtp.client-ip=195.135.223.130
+	s=arc-20240116; t=1767930172; c=relaxed/simple;
+	bh=yrsVywKxiCT8zlycoeh+r5ziG9OlcmrTQbSt6Li/mz4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=X8V76aoD+ZY6uL/A0g/CDnEv0bSav3rpbw+gFzQWgNni7/gUx/zy3eg8yx2r3jdi/v8slGLvpo2cJwcAaMbPQDP9L5De+qVbffBxcG9JyVqjRvbv11KgpdEuX0+k8+d7fnh4SFEQzc5okDCet9Bn3U9nti1xSaRHpHocu1KbuMQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=ctOBQT0d; arc=none smtp.client-ip=209.85.128.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id C895333952
-	for <linux-btrfs@vger.kernel.org>; Fri,  9 Jan 2026 03:31:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1767929496; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=fslRaYaMZ+zQFEefS0CSAq8597fBZiVS2hO3UcZSCmU=;
-	b=kakx2yuVVCagl74PWygyX5vjCtZHu9PcYoN8FwFBz40+n0ThkLONs8qfJhTGayWebe7svB
-	Aq4Fz7SYXpYdE1NOsKg0lL+k7u9SmzzWJp7S4ZxbBTg4UxlFPztmym/DefL5gtIEqskBxd
-	OViMrUcnsZYPSKMAsB/DdKoerNfJOfo=
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=kakx2yuV
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1767929496; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=fslRaYaMZ+zQFEefS0CSAq8597fBZiVS2hO3UcZSCmU=;
-	b=kakx2yuVVCagl74PWygyX5vjCtZHu9PcYoN8FwFBz40+n0ThkLONs8qfJhTGayWebe7svB
-	Aq4Fz7SYXpYdE1NOsKg0lL+k7u9SmzzWJp7S4ZxbBTg4UxlFPztmym/DefL5gtIEqskBxd
-	OViMrUcnsZYPSKMAsB/DdKoerNfJOfo=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0B5143EA63
-	for <linux-btrfs@vger.kernel.org>; Fri,  9 Jan 2026 03:31:35 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id S+BOL5d2YGk1MgAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Fri, 09 Jan 2026 03:31:35 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: update the Kconfig string for CONFIG_BTRFS_EXPERIMENTAL
-Date: Fri,  9 Jan 2026 14:01:14 +1030
-Message-ID: <0dcb589d5f20e70bca6f95c7c6919efa0bedd663.1767929472.git.wqu@suse.com>
-X-Mailer: git-send-email 2.52.0
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-47775fb6c56so35855775e9.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 08 Jan 2026 19:42:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1767930169; x=1768534969; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=GZOVLSj2ck/R24Kq5lyw8KJmSvRNfhPOVRdT1D1mGvM=;
+        b=ctOBQT0drOpSUoncyPfoF4PMx0O8w44KS3ei1TpxXlr1ixNihxWydla3QlcTjg6hZt
+         QJ7e/JWwVWJrD6GevYyuoCi8Z2m6aEKHOKR3qi92BbfEzLyQoajOBrVzF538uhTsMOAL
+         Rurlz5TS6Yxw8SAi7Z9X4KizPHxt+cCxBoNFVTZ5MSHjn0+Oiybyu9rPjGgxXOpB/X4X
+         5zU4R61tlHhGbtOA0siv2deKat36M3O4fcO6E9v6jVyTeOziVhLoQO1KKAjAHWmUuQxD
+         DPC84xypqFqySlX3haEwqg+mvLWxXmFJg/G5Uw/lFo0vp+BhidHdKzazsBDV92djaz7d
+         2AtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1767930169; x=1768534969;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GZOVLSj2ck/R24Kq5lyw8KJmSvRNfhPOVRdT1D1mGvM=;
+        b=sNiUW2aM2MiviHIOwCeCMLnWYq0bY/9VWIUGaPD69LVUG6cVH4HQ7qldDbrRqi7CHQ
+         DrAP6STfrPzzjplTBMFztDKpIJLnANCyeDyQmytzjwKkBh+1fX5FI3NLF6mB6cwBm2Ht
+         S6TodoMKCVJKoGJP35Mj6H4oFR39YqaN/0O6kJC9Rz6G29YZMP4wWueWb8nGRPmbbD80
+         MjcCz/nijqszyQN3SV0YRlnobLV9gpxq4E6gHezrtLbCO3IC6QUqQXRI2rYeYXftEpEL
+         /poMfbTW1RvM8l/j3cSJu5qZDYrUM6Gjpr0oK5gjp2sEdryJnIPH/azpSjJJZE6pkQAg
+         /Rsw==
+X-Gm-Message-State: AOJu0YzQFskrHmuNNu2isxyWzd3hF1YLiSNb+2z6Anazi7qh15ANfRwl
+	oaJJH9IWAF4e2mW5HAzWByc4sSo24koB0sWs31wUPhNO4JTGc+5JC0TBS398DcgIna8kPS/uUsF
+	6+mAfFmA=
+X-Gm-Gg: AY/fxX6NDPJ3nOYzdyKiPBCNxnhWyuNQDbYpJV61LRLX4GSvI+mDNZfryICowUyzmKV
+	5mGi4Jf6Scdsh3d20WOJ8TIv6vNpMFvGDTFjOjHpjfSuXIlWxuRbw9vHh6dU//1V2NTjHdOLTIG
+	MWXinG5Oa7U4Ryn/am7APW0MEQwFd/I/l1Wynj4GsCiipVqQz3pfKOKUICWwUpVH+bwh39NTyfq
+	T/zcCO3OuAWzNHEbwi9SHqTjI8YWEPrRceRJ6voQOOKp4Eata4vSwthCCR6u+O5z8zM3gwToCYX
+	WFsohJgkjQzWOwl5DmgDAb2mNenUJaHcJ0Tw28Lub9E0fKz5Z5faLj+5qCpZ3LE2QntaN7KQJPq
+	otlQhYaQS/BLO7+3qb5bmWQJSkcPqx+Tju8Gya4gn4jquYq4PSYEpmFiaZuiGL01AdmqZzgRrsa
+	4Q7YaUVRYPCcytXYCpnMSPGav9/7Z4ZdRnnN4Yw3ycIioJFev0
+X-Google-Smtp-Source: AGHT+IHQE25B+1fwul06x/3unLSpEHfeEkmgq/GrsxyHlsk1oM0sj9t039V0AuyPAgFH0NdO5UqBgQ==
+X-Received: by 2002:a05:600c:3556:b0:477:6374:6347 with SMTP id 5b1f17b1804b1-47d84b3bb18mr97730515e9.22.1767930168582;
+        Thu, 08 Jan 2026 19:42:48 -0800 (PST)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-34f5fb75902sm9088702a91.16.2026.01.08.19.42.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 08 Jan 2026 19:42:47 -0800 (PST)
+Message-ID: <ed724086-b7a2-4df4-878e-751dfa614a71@suse.com>
+Date: Fri, 9 Jan 2026 14:12:44 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] btrfs: remove offload csum mode
+To: dsterba@suse.cz
+Cc: linux-btrfs@vger.kernel.org
+References: <318d41265ab70ffc1220355b3396209d12b23373.1767845479.git.wqu@suse.com>
+ <20260108214022.GN21071@twin.jikos.cz>
+Content-Language: en-US
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
+ Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
+ fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
+ 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
+ V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
+ rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
+ cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
+ qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
+ /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
+ o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
+ JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+In-Reply-To: <20260108214022.GN21071@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Score: -3.01
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCPT_COUNT_ONE(0.00)[1];
-	ARC_NA(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DKIM_TRACE(0.00)[suse.com:+];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo]
-X-Spam-Level: 
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: C895333952
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
 
-The following new features are missing:
 
-- Async checksum
 
-- Shutdown ioctl and auto-degradation
+在 2026/1/9 08:10, David Sterba 写道:
+> On Thu, Jan 08, 2026 at 02:41:26PM +1030, Qu Wenruo wrote:
+>> The offload csum mode is introduced to allow developers to compare the
+>> performance of generating checksum for data writes at different timings:
+>>
+>> - During btrfs_submit_chunk()
+>>    This is the most common one, if any of the following condition is met
+>>    we go this path:
+>>
+>>    * The csum is fast
+>>      For now it's CRC32C and xxhash.
+>>
+>>    * It's a synchronous write
+>>
+>>    * Zoned
+>>
+>> - Delay the checksum generation to a workqueue
+>>
+>> However since commit dd57c78aec39 ("btrfs: introduce
+>> btrfs_bio::async_csum") we no longer need to bother any of them.
+>>
+>> As if it's an experimental build, async checksum generation at the
+>> background will be faster anyway.
+>>
+>> And if not an experimental build, we won't even have the offload csum
+>> mode support.
+>>
+>> Considering the async csum will be the new default, let's remove the
+>> offload csum mode code.
+>>
+>> There will be no impact to end users, and offload csum mode is still
+>> under experimental features.
+>>
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> 
+> Reviewed-by: David Sterba <dsterba@suse.com>
+> 
+>> ---
+>>   fs/btrfs/bio.c     |  5 -----
+>>   fs/btrfs/sysfs.c   | 44 --------------------------------------------
+>>   fs/btrfs/volumes.h |  3 ---
+> 
+> Please also remove the entry from Kconfig.
 
-- Larger block size support
-  Which is dependent on larger folios.
+Done and pushed to for-next, with the 3 enum definition for offload csum 
+mode removed too.
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/Kconfig | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/Kconfig b/fs/btrfs/Kconfig
-index 127e12284b05..423122786a93 100644
---- a/fs/btrfs/Kconfig
-+++ b/fs/btrfs/Kconfig
-@@ -110,6 +110,10 @@ config BTRFS_EXPERIMENTAL
- 
- 	  - extent tree v2 - complex rework of extent tracking
- 
--	  - large folio support
-+	  - large folio and block size (> page size) support
-+
-+	  - shutdown ioctl and auto-degradation support
-+
-+	  - asynchronous checksum generation for data writes
- 
- 	  If unsure, say N.
--- 
-2.52.0
-
+Thanks,
+Qu
 
