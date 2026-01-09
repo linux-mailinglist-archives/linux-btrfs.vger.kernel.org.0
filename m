@@ -1,193 +1,154 @@
-Return-Path: <linux-btrfs+bounces-20315-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20316-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C27DD07324
-	for <lists+linux-btrfs@lfdr.de>; Fri, 09 Jan 2026 06:26:45 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id BA80ED0734D
+	for <lists+linux-btrfs@lfdr.de>; Fri, 09 Jan 2026 06:31:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 961E23044C07
-	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Jan 2026 05:26:29 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 172E73018950
+	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Jan 2026 05:31:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 115CA262D0B;
-	Fri,  9 Jan 2026 05:26:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B5021E5201;
+	Fri,  9 Jan 2026 05:31:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FCNW4zBK"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="QURHIJI1";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="QURHIJI1"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7A3022576E
-	for <linux-btrfs@vger.kernel.org>; Fri,  9 Jan 2026 05:26:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88DAF78F3E
+	for <linux-btrfs@vger.kernel.org>; Fri,  9 Jan 2026 05:31:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767936385; cv=none; b=Gep3ZA6CY+ASrSdG7AVTmhvlhnf31j0mJqmJ2UP4GKsCKTGsSdMV7GJJUrcJLYBZIB5BhD9/5a4DIlQtHtfUPGCk6y9nbjqE+2ImEy/tQhBZ+59yDr1H3O2WtDUxAryzz2MbzIqOkP0K5vtjkjNWeX2ZNdk9j+EYvBlZldjNoYc=
+	t=1767936698; cv=none; b=l3CqFoevWEJLpLhSObNkoleUoZCXZSQ7/cajrSEJ+u37b8pfI1RtlxDO8ei7eTrPXK8s6cES4pfbPJtkh6xazrIzwf4/P7Xe7gb3zIfGB4qwm+ERVYlD6ZzLV/UEWDIojhTxMluVN0JuM+euFLs5Z40i7BfE4z4Zm0qQdA73PU0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767936385; c=relaxed/simple;
-	bh=SMlm1Zj+VPtmhO+U2BlswVGk3VmIYNq8C/pi+eNGgFU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nvN749WA9semtUY8U8R4YqU8NjiT7yDIMhrNYsUQ73TgLN9iFPI+wBqJe91F5ahKtWsRmuFMPL2fGlykYV+JKdJoMbSwSNT2lHAhuHfV7hwrwOMv+gJWzKYL+RibdnO40aUrWRpdsdlZhM8okN5Im6oyKG7qVRK399xwzXq2DCQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FCNW4zBK; arc=none smtp.client-ip=209.85.208.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-382fea4a160so23998101fa.2
-        for <linux-btrfs@vger.kernel.org>; Thu, 08 Jan 2026 21:26:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767936380; x=1768541180; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EEF8CAf2dAOD+neWtLdI+w7NxCIZ2WohswMXxqPrdck=;
-        b=FCNW4zBKvwe06rYcMueAfiJkXaVx77askqwvwX7CaEFH+6L3KlGJSk+bEnT7twnFlu
-         P/yPNDuhFF9KldguIgfQJUEYrjzXBpzGr9ymhPd8+54KoK8cbP5kMcMedYnuV8Kj4agV
-         DY0xjwrqP/6J413PUFdioqjbYLqYGCmxXPgnNCdMLjil7XqO5qmH5efBobLJT6gh3OGz
-         VE+LNRMzj1W0betHwvCbJtPCcXjicJ4dWKL9ELgIHdLGNeHo8bGeEw3mOVIMRWPnhzPQ
-         gBNuDOAwxH6WtvQg2uVaK+Xg7hl16AIP+FUkv3+pddWPJlc9FSeriHsKVG5oPAPuqF32
-         hcAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767936380; x=1768541180;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=EEF8CAf2dAOD+neWtLdI+w7NxCIZ2WohswMXxqPrdck=;
-        b=IezCnP+k4+3/46KxY20dVZIlDdAGUlq2eCZpu4wdLSE93zgldGaPpJh9Px6eFHMvqr
-         xFEOxuIAX3vFS9x4YIJi1eZyp5tpGWHM3QFQtcBc4zUUAPNy+AzlEhLsjnpxGtJ9e4hy
-         kdp7ISTL8YXr/+xIUkH4UuQ7AiisLpAG+iP34w5LyGyBszyeFDRO4wXNRVx5hxI6Y+An
-         p7wC13HQtx3mlKf1/2V1VYKx3aVl2AmL1lzGZ0chX8v1Oua/RZ5wWDgwhdQOm6OOgYiR
-         6SsIJnhpjtHKVaAk49n3bwVMHeHCwgU2f9Iuyn7IlmtYw7mNfe/Q8Vx/B+Zrep7ZNVsx
-         14vA==
-X-Forwarded-Encrypted: i=1; AJvYcCV9J/EQpx+xevN8B0fnN3gzP8tQQgfIlbgk5Hn52hOIlAm5skuo3yNwnZshEYWj6X58E/yaLU52ReB8Gw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxFgvWQrUu4in0AMgiu3bBu8bdnJ3C3JYAB7zNqAqDglZfELbMI
-	5jINzuCKAl2STWgE2ASDQdeWQ1rn0oL3MjSQaCJeXZ1pOFuXTi/On3llCV9t3uQIGoGBNO1CCxy
-	kc6cx+PLVaJP1ev47cpb6K1iPl7akRIM=
-X-Gm-Gg: AY/fxX7yGKUnpPqR2zM0Wh+Rj7MkT7zoqPxqm5ewUrGN4hTtg8J6rn2+llanfgiu0Dx
-	DHYXBUboh/FUxkIIF+YjR6sC9jMXbk6qU2DjC34Z+X3Gb9aPy0YVP7Cdt60iezSiSrC+3UfoyoJ
-	KnXSHA6QObCtFo8qnRI+r+VPb3Gv2+TCR9WR8u8Mn3E5NkPFXvMuB485rRexgx3Qr+NI7oSYrA7
-	qDMjPzuBQgcbwuciJNKBECZZcrcLqmzbk3mjQcRqX6imbwVuXEossieSs6chQhiBHQmSd7o
-X-Google-Smtp-Source: AGHT+IFacKbx/HloTRDyL3KNE+dISSFeSIeO5gnLVmi9ry+Gc3uB4ma+c7Q9oZoxnNZINjg1j054MzA1urN4ujLkRdE=
-X-Received: by 2002:a05:651c:419b:b0:378:e3f9:2d26 with SMTP id
- 38308e7fff4ca-382ff823bdamr21702801fa.39.1767936379607; Thu, 08 Jan 2026
- 21:26:19 -0800 (PST)
+	s=arc-20240116; t=1767936698; c=relaxed/simple;
+	bh=jdhXlGmBp8XMCNu6pQZ3UWIqpb1FjRh1h9QAb5w8Hx4=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=Lni9yIENBTj0TiKscexdBdyDvNU/cWySEG81fWSzDaTk5KCPwTGlvL1gaBcrXA09v18UgUEL+s044QmODm5GYi70/MwUhxgEH/iI5XSImLw/WZvBrNHuFIvSmX6oXvyYhbhjcOOGzH/ol9J5hlHo5SJj6tMxEV31ASz+c2ChUqI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=QURHIJI1; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=QURHIJI1; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 947FE3451F
+	for <linux-btrfs@vger.kernel.org>; Fri,  9 Jan 2026 05:31:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1767936694; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=stZ3fGRHOPi0lcyyKhi3MCQ4mY/kELR418ZYf5AeMwk=;
+	b=QURHIJI1V3GThtuXxMaBPV9o99bQRsi8RX2VuVmmSMe5hzSvNME37hwY04QJmwRwWBim0M
+	PxFBO0jod+3lke05rEirhUpiyMxrhLlM78oU8UTP9BbdXnMu+NTZsZ5a+x5Dtt2vuym9RS
+	KiAh7Y4xiL9Q709s3w0fxH0Fx6qHHMI=
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=QURHIJI1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1767936694; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=stZ3fGRHOPi0lcyyKhi3MCQ4mY/kELR418ZYf5AeMwk=;
+	b=QURHIJI1V3GThtuXxMaBPV9o99bQRsi8RX2VuVmmSMe5hzSvNME37hwY04QJmwRwWBim0M
+	PxFBO0jod+3lke05rEirhUpiyMxrhLlM78oU8UTP9BbdXnMu+NTZsZ5a+x5Dtt2vuym9RS
+	KiAh7Y4xiL9Q709s3w0fxH0Fx6qHHMI=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C876D3EA63
+	for <linux-btrfs@vger.kernel.org>; Fri,  9 Jan 2026 05:31:33 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 8tprIbWSYGk9IQAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Fri, 09 Jan 2026 05:31:33 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH 0/2] btrfs-progs: mkfs: optimize the discard behavior so it won't drive me crazy
+Date: Fri,  9 Jan 2026 16:01:13 +1030
+Message-ID: <cover.1767936141.git.wqu@suse.com>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260108-setlease-6-20-v1-0-ea4dec9b67fa@kernel.org> <20260108-setlease-6-20-v1-13-ea4dec9b67fa@kernel.org>
-In-Reply-To: <20260108-setlease-6-20-v1-13-ea4dec9b67fa@kernel.org>
-From: Ryusuke Konishi <konishi.ryusuke@gmail.com>
-Date: Fri, 9 Jan 2026 14:26:03 +0900
-X-Gm-Features: AQt7F2pmUKGJKWpVwxhIrI-U32G4ALuqYGKPCGsBpfUc51GGTfk1sxJMQ_5a6zs
-Message-ID: <CAKFNMok9FG=hhzr8YrHYws5z3jTWOf2TXtFWvSfYbNy6+XLHxw@mail.gmail.com>
-Subject: Re: [PATCH 13/24] nilfs2: add setlease file operation
-To: Jeff Layton <jlayton@kernel.org>
-Cc: Luis de Bethencourt <luisbg@kernel.org>, Salah Triki <salah.triki@gmail.com>, 
-	Nicolas Pitre <nico@fluxnic.net>, Christoph Hellwig <hch@infradead.org>, Jan Kara <jack@suse.cz>, 
-	Anders Larsen <al@alarsen.net>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Christian Brauner <brauner@kernel.org>, David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>, 
-	Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>, Yue Hu <zbestahu@gmail.com>, 
-	Jeffle Xu <jefflexu@linux.alibaba.com>, Sandeep Dhavale <dhavale@google.com>, 
-	Hongbo Li <lihongbo22@huawei.com>, Chunhai Guo <guochunhai@vivo.com>, Jan Kara <jack@suse.com>, 
-	"Theodore Ts'o" <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>, 
-	Jaegeuk Kim <jaegeuk@kernel.org>, OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>, 
-	David Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>, Dave Kleikamp <shaggy@kernel.org>, 
-	Viacheslav Dubeyko <slava@dubeyko.com>, 
-	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>, Mark Fasheh <mark@fasheh.com>, 
-	Joel Becker <jlbec@evilplan.org>, Joseph Qi <joseph.qi@linux.alibaba.com>, 
-	Mike Marshall <hubcap@omnibond.com>, Martin Brandenburg <martin@omnibond.com>, 
-	Miklos Szeredi <miklos@szeredi.hu>, Amir Goldstein <amir73il@gmail.com>, 
-	Phillip Lougher <phillip@squashfs.org.uk>, Carlos Maiolino <cem@kernel.org>, 
-	Hugh Dickins <hughd@google.com>, Baolin Wang <baolin.wang@linux.alibaba.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Namjae Jeon <linkinjeon@kernel.org>, 
-	Sungjong Seo <sj1557.seo@samsung.com>, Yuezhang Mo <yuezhang.mo@sony.com>, 
-	Chuck Lever <chuck.lever@oracle.com>, Alexander Aring <alex.aring@gmail.com>, 
-	Andreas Gruenbacher <agruenba@redhat.com>, Jonathan Corbet <corbet@lwn.net>, 
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>, Eric Van Hensbergen <ericvh@kernel.org>, 
-	Latchesar Ionkov <lucho@ionkov.net>, Dominique Martinet <asmadeus@codewreck.org>, 
-	Christian Schoenebeck <linux_oss@crudebyte.com>, Xiubo Li <xiubli@redhat.com>, 
-	Ilya Dryomov <idryomov@gmail.com>, Trond Myklebust <trondmy@kernel.org>, 
-	Anna Schumaker <anna@kernel.org>, Steve French <sfrench@samba.org>, Paulo Alcantara <pc@manguebit.org>, 
-	Ronnie Sahlberg <ronniesahlberg@gmail.com>, Shyam Prasad N <sprasad@microsoft.com>, 
-	Tom Talpey <tom@talpey.com>, Bharath SM <bharathsm@microsoft.com>, 
-	Hans de Goede <hansg@kernel.org>, linux-kernel@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org, 
-	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org, 
-	linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org, 
-	jfs-discussion@lists.sourceforge.net, linux-nilfs@vger.kernel.org, 
-	ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org, 
-	linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org, linux-mm@kvack.org, 
-	gfs2@lists.linux.dev, linux-doc@vger.kernel.org, v9fs@lists.linux.dev, 
-	ceph-devel@vger.kernel.org, linux-nfs@vger.kernel.org, 
-	linux-cifs@vger.kernel.org, samba-technical@lists.samba.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Spam-Score: -3.01
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCPT_COUNT_ONE(0.00)[1];
+	ARC_NA(0.00)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	DKIM_TRACE(0.00)[suse.com:+];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_TWO(0.00)[2];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:mid,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo]
+X-Spam-Level: 
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: 947FE3451F
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
 
-On Fri, Jan 9, 2026 at 2:15=E2=80=AFAM Jeff Layton wrote:
->
-> Add the setlease file_operation to nilfs_file_operations and
-> nilfs_dir_operations, pointing to generic_setlease.  A future patch
-> will change the default behavior to reject lease attempts with -EINVAL
-> when there is no setlease file operation defined. Add generic_setlease
-> to retain the ability to set leases on this filesystem.
->
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+After commit 4b861c186592 ("btrfs-progs: mkfs: discard free space"),
+mkfs.btrfs inside my VM is much slower.
 
-Looks good, Thanks!
+Previously it takes only around 0.015s, now it takes over 0.750s, which
+is around 50x regression, and that's already when that virtio-blk device
+is already ignoring discard commands.
 
-Acked-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+It turns out that the main problem is inside how we submit discard
+requests.
 
-Ryusuke Konishi
+Currently we submit the discard immediately after finding a free space,
+but for DUP profiles (the default one for metadata/system chunks), we
+send a discard request for each mirror.
 
-> ---
->  fs/nilfs2/dir.c  | 3 ++-
->  fs/nilfs2/file.c | 2 ++
->  2 files changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/fs/nilfs2/dir.c b/fs/nilfs2/dir.c
-> index 6ca3d74be1e16d5bc577e2520f1e841287a2511f..b243199036dfa1ab2299efaaa=
-5bdf5da2d159ff2 100644
-> --- a/fs/nilfs2/dir.c
-> +++ b/fs/nilfs2/dir.c
-> @@ -30,6 +30,7 @@
->   */
->
->  #include <linux/pagemap.h>
-> +#include <linux/filelock.h>
->  #include "nilfs.h"
->  #include "page.h"
->
-> @@ -661,5 +662,5 @@ const struct file_operations nilfs_dir_operations =3D=
- {
->         .compat_ioctl   =3D nilfs_compat_ioctl,
->  #endif /* CONFIG_COMPAT */
->         .fsync          =3D nilfs_sync_file,
-> -
-> +       .setlease       =3D generic_setlease,
->  };
-> diff --git a/fs/nilfs2/file.c b/fs/nilfs2/file.c
-> index 1b8d754db44d44d25dcd13f008d266ec83c74d3f..f93b68c4877c5ed369e90b723=
-517e117142335de 100644
-> --- a/fs/nilfs2/file.c
-> +++ b/fs/nilfs2/file.c
-> @@ -8,6 +8,7 @@
->   */
->
->  #include <linux/fs.h>
-> +#include <linux/filelock.h>
->  #include <linux/mm.h>
->  #include <linux/writeback.h>
->  #include "nilfs.h"
-> @@ -150,6 +151,7 @@ const struct file_operations nilfs_file_operations =
-=3D {
->         .fsync          =3D nilfs_sync_file,
->         .splice_read    =3D filemap_splice_read,
->         .splice_write   =3D iter_file_splice_write,
-> +       .setlease       =3D generic_setlease,
->  };
->
->  const struct inode_operations nilfs_file_inode_operations =3D {
->
-> --
-> 2.52.0
->
+Since it's DUP, the two device extents are on the same device, then the
+for next free space we send two discard requests again, meaning we're
+switching between two different dev extents, making the discard requests
+more like some random writes, greatly reduce the peroformance.
+
+The root fix is in the second patch, where we record and re-order the
+discard requests for each device, so that the eventual requests are all
+in ascending order and are merged when possible.
+
+The first patch is just a minor cleanup to reduce the call of
+btrfs_map_blocks() by using WRITE for discard.
+
+With this series, the runtime of mkfs.btrfs is still increased (by the
+free space discarding), but still fast enough that even I can not sense
+it (0.015s - > 0.017s), finally bring back my inner peace.
+
+Qu Wenruo (2):
+  btrfs-progs: mkfs: discard the logical range in one search
+  btrfs-progs: mkfs: optimise the block group discarding behavior
+
+ kernel-shared/volumes.c |   4 ++
+ kernel-shared/volumes.h |   3 ++
+ mkfs/main.c             | 100 ++++++++++++++++++++++++++++++----------
+ 3 files changed, 83 insertions(+), 24 deletions(-)
+
+--
+2.52.0
+
 
