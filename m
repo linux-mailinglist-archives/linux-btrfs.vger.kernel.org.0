@@ -1,67 +1,67 @@
-Return-Path: <linux-btrfs+bounces-20355-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20356-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B4BFD0C58F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 09 Jan 2026 22:40:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D0BDD0C746
+	for <lists+linux-btrfs@lfdr.de>; Fri, 09 Jan 2026 23:27:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 6AA9D3031361
-	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Jan 2026 21:39:51 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 11A49303BE39
+	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Jan 2026 22:27:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C31833D6CF;
-	Fri,  9 Jan 2026 21:39:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BBFD345CA0;
+	Fri,  9 Jan 2026 22:27:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="LnCvOyZt";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="InOeuoP1"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="F8ojmkNJ";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="hbYqQkYE"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from fout-a4-smtp.messagingengine.com (fout-a4-smtp.messagingengine.com [103.168.172.147])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7831733D4F6
-	for <linux-btrfs@vger.kernel.org>; Fri,  9 Jan 2026 21:39:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4E9C21C9EA
+	for <linux-btrfs@vger.kernel.org>; Fri,  9 Jan 2026 22:27:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.147
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767994790; cv=none; b=hyd9E0rEKfHeu6Ltx4x9wTKdsI9Ttct55B/YAvZ08zC/8dVZDi5NWUUUZQaA9FENhjBYe4/nJyF+zS7qW0Bn18H4FcoNzqNuC5bmcxF8Dsr+cFMLlkn65u5AjvDD8Ob33/OUjqqnNWSwlhszJQRX+P8oHA5pBXditUsWrqWJ2y8=
+	t=1767997640; cv=none; b=HNVQcn5nqKLl1O/mtYvNl9TM+GTOIjDYFqJYArJ3s681IUvEbD54R4klU8d/55A6FZ8iePXFierHL/2BJ8etONfEM+H3JB8O6a7SmJNUH7M1iRbFdTO3kyaa/JmTJ4F427UYJZeGis82vthrFibOaVqeJq531ZqSbPR4X2lwqcY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767994790; c=relaxed/simple;
-	bh=Pon9WtaO0R+MEUtqkmCAsSy6tVRLJ/vuxdVHECxE7dY=;
+	s=arc-20240116; t=1767997640; c=relaxed/simple;
+	bh=aZTuzoYs4nhjKFRwpJd1vhCTzm0aQcOmU6X4GirEq7M=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=S3vasan4Ml0tHXJ8o4q18bR3vrnKmyiMADk2A5ULxd1+JDgvGW71ettAcwMqDHPK5EoTSFO93n/CVLMd96flqm80lCDuYrFFlgwVdSoYm1qTsG0ccnqcFdhSv59+ycu0HOjeL9GEkFj7007pIz1RY/yKfbl8Bz63J/xSXARiWBo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=LnCvOyZt; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=InOeuoP1; arc=none smtp.client-ip=103.168.172.147
+	 Content-Type:Content-Disposition:In-Reply-To; b=PdVRk4PzpDltnQlK94o4gK2wLrF8cTB9Gi/41WnXf9AqQYe5f4g+eZfPe5zFNkyrJPN7r1iGO1NhJpnwiJ66mRJl+k5URd01qMjgfS5cIdSN24345tpjO371kfJryd5TSO0vWF1ijcJFqRR89zBpLm5wuJO54FeYLM81qKfM238=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=F8ojmkNJ; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=hbYqQkYE; arc=none smtp.client-ip=103.168.172.147
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
 Received: from phl-compute-03.internal (phl-compute-03.internal [10.202.2.43])
-	by mailfout.phl.internal (Postfix) with ESMTP id 2D92EEC014B;
-	Fri,  9 Jan 2026 16:39:47 -0500 (EST)
+	by mailfout.phl.internal (Postfix) with ESMTP id 1283BEC0100;
+	Fri,  9 Jan 2026 17:27:18 -0500 (EST)
 Received: from phl-frontend-04 ([10.202.2.163])
-  by phl-compute-03.internal (MEProxy); Fri, 09 Jan 2026 16:39:47 -0500
+  by phl-compute-03.internal (MEProxy); Fri, 09 Jan 2026 17:27:18 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
 	:content-type:content-type:date:date:from:from:in-reply-to
 	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1767994787; x=1768081187; bh=EqnpetSawA
-	meht/WSOizhexkCe2eeeor/usloMYp5dc=; b=LnCvOyZtzqP4M9RUxZyl8Nqhmz
-	hzAhWOWHhh2/vUbBK/ZmJzMkYVwG3TT1YtyA+ZOZP/izmK5aaZIuhpVO9+pCXu7i
-	PacT1Xf39W2h65i3NDCGoEfdZeWj3061v1wdoWcwEfnC4lkWNyUwWY4yUFNOG9fy
-	8od5gXmqOMYvcSjRGPHBrr0DI5+7sOJGt0myDTlyz6T34YvrZK42YVh1MHAip+Qx
-	jgeogNB1p5bDt6hWC4QfBRiEe316X3IywZ1oVUWPUiYxTRt8aEBw8xWSi4vHuzSs
-	1KNMOQ0IdSXXRjc1gJMWlQJrPhPf51xm2VzR33pm1Z4xZS9kYWlomw05PTpA==
+	:subject:to:to; s=fm3; t=1767997638; x=1768084038; bh=2s7fPnwFGd
+	ykS5ar5n1BtoTfDYEv3BGcgCgdK8Mt+3Y=; b=F8ojmkNJyo3bfquG4cz3DWYEPj
+	xuXDxP+evtURlxIr2F+M2v1zHhMNOM9YVLPig52mY27DB5VReU6AZf+G8l2LGD7C
+	wSk8RzREjkk3vt4SAq46UzpKW35Po9cxtsQTHiKjWmD3vphvQY2PuRyWgfKKd9je
+	6oXIf7p0neXtlhdstcqGTlf72WkyIdDM4vSfopMhRHSen9tTVcSbnxwmDlSuu2KY
+	5pu32VS1W+wVP5od9QM5sBuXQropZfGIv0JA+n1eJxntaQWkob0XuD2LPtV6QrmQ
+	2ZNrjekGX+5+tipv2JdyHsdM7ghaw90+0YkfrCTvue7yytvpPOJohkQgjF8w==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-type:content-type:date:date
 	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
 	:message-id:mime-version:references:reply-to:subject:subject:to
 	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-	1767994787; x=1768081187; bh=EqnpetSawAmeht/WSOizhexkCe2eeeor/us
-	loMYp5dc=; b=InOeuoP1/idr8SF8o5eHq+g6U6+Fu/sv0XzO21qzciJ29YyRbYL
-	H1egx2iUMQ37ZL5FDR0bRzz+jGUO27vEKb6iOvqpI05VhUzTmNfQ3Ebsc/xXok0Y
-	8prA2AJdLlVmT1qA7Er8YmPNZ7T1aaNDZw1Vo1RJS5lBS1Bem4cJEwC3lPeGmLGx
-	RQ0IR8UkyE9GBHAS8ZG4pA4fo6ZYlgiDf7ztLOfBqDbe3S1WvAooGO/G8NDCtZLp
-	v8f5smcX8SP9nC7TZI58NEYrKhcVk6zg7g8vhLFlrOcClOI+gfPBpf7FWZseSzEp
-	WDEguP4HfusSnWyNDdb5vsEOdmSibW+GD+Q==
-X-ME-Sender: <xms:onVhaa_MatsiDjzVPQSgndh4p6WW6gCpNGye4CbiHXy_gLxLN4W3rQ>
-    <xme:onVhaSJYhIXyBj2lWNMKQZWvuEoafGLi1wX1xxGq23B99qBCWoTU5Up78W2ydDQ0D
-    i_alSpubSwE4kB_5wzc3lYvrj3EfWcNwgdLM8qeRNlze3g6N9QHN1I>
-X-ME-Received: <xmr:onVhadYaXrC2nb0I8-4Z5F3JaERU4_yvlzpikDg-SnNOwsZJUtpXEl4hKaJu1SbkBDm-ZdSylkKL4oQ3GmgmUXRPtl4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddutdelleduucetufdoteggodetrf
+	1767997638; x=1768084038; bh=2s7fPnwFGdykS5ar5n1BtoTfDYEv3BGcgCg
+	dK8Mt+3Y=; b=hbYqQkYE6qNxRiyvEyKe+hrDJ9Jud/wylPIt1nJHNpiiijScQ5N
+	INMxQ7GL1XVyVXixdSVvDyEvrga9p7MA8dyrRIxjrmVdhN3ccn0MN05qHVvaYskv
+	fxLb7tl2Nq5QHDGMf2koMVuNvTlo1yeruTft8km2i3tWSyOGJ41/ydiIzpbYrg3a
+	G/BR1q9rjzNWQgLtr0MeRHqw9GVgpq5c97wtpqCqRazk1DGAjkVEcJTmKS/VF7JJ
+	bpakQc/YXXjQOfh1ipDF5YxT+okO5ee8RrSOWhcFsKW0qWKzwfziVNV2Hhy4ItEK
+	X7yk3j92/Hs812Hz0tnf6EBXPrLoHyoCQOQ==
+X-ME-Sender: <xms:xYBhabwYz1q_MN1Q1_b6J8hZHjQ5gXTByzpCh-vocqPiPMaPUPn_gg>
+    <xme:xYBhaatniEFW03U3ge-8tBPesWGAyL71mpCncGYuHGLJNSs8Ie_1Gzu9F2L8lQBMQ
+    Q-dzI3qdDLTRr4Yc2A-Q4lz7H_jzNnRRWkbSX5_H9SxY2RF1cDsTU1j>
+X-ME-Received: <xmr:xYBhaSvOWYRrHnwfay1-moEhrrySJLgdRYZFJqatb6zljkA_2nwgCJzyEovyZ0X0WxRMwLu_6Ducu_Tqt8qK0nIOlnw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdduuddttdduucetufdoteggodetrf
     dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
     rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
     gurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhishcu
@@ -72,20 +72,20 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddutdelleduucetufdote
     ohepughsthgvrhgsrgesshhushgvrdgtiidprhgtphhtthhopegushhtvghrsggrsehsuh
     hsvgdrtghomhdprhgtphhtthhopehlihhnuhigqdgsthhrfhhssehvghgvrhdrkhgvrhhn
     vghlrdhorhhg
-X-ME-Proxy: <xmx:onVhacI0QN4lFAfGXXeVdp_ig69nZbK7F55XV-NYQN1laTGFmIOL1Q>
-    <xmx:onVhaTA-9pluQcY6d8mVg7oSoM3xWG0Aynr-Zo00Dc8gz-UNaC0XuA>
-    <xmx:onVhaZobicgbTmC-RSzscFTp4nwLi2VEeTqpa8W4LLzczqmo0KY7WQ>
-    <xmx:onVhaWgm-PwjWsWDpzwi6XK5c1fvp4lJ7Usc9RfFfGXZxqTDp-AQCA>
-    <xmx:o3Vhac0nSf1Z_ejxjz13KOFS0SjHm07R4egdikN96hKZi5cKrLFYtb-T>
+X-ME-Proxy: <xmx:xYBhafPt5Uu2fjJXvyJnq9UHTq9SSk8KmuTMU_p4l_6l177wu5oZvQ>
+    <xmx:xYBhaQ0eFGU04cCusyzEayAryyR9VbvlXEql4iCGXAx5Z5K7OXI6cw>
+    <xmx:xYBhabP6HSHZQSu8LOfsmLsRqfJpXMLydWEhQzOrf6pa6CCRlVggbg>
+    <xmx:xYBhaQ2a1807kn1OqNGRqbehrSwCh3HpL5O-jvzKp03CJeqsA-yl_Q>
+    <xmx:xoBhaY5Xe1onnm7hNeT1Af6cPukJZ91Wfr9GW4msEeJLfGwKILHKD0dF>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 9 Jan 2026 16:39:46 -0500 (EST)
-Date: Fri, 9 Jan 2026 13:39:53 -0800
+ 9 Jan 2026 17:27:17 -0500 (EST)
+Date: Fri, 9 Jan 2026 14:27:24 -0800
 From: Boris Burkov <boris@bur.io>
 To: David Sterba <dsterba@suse.cz>
 Cc: David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
 Subject: Re: [PATCH 0/4] Delayed ref root cleanups
-Message-ID: <20260109213953.GA3129444@zen.localdomain>
+Message-ID: <20260109222724.GB3129444@zen.localdomain>
 References: <cover.1767979013.git.dsterba@suse.com>
  <20260109181627.GB3036615@zen.localdomain>
  <20260109210921.GT21071@twin.jikos.cz>
@@ -113,17 +113,6 @@ On Fri, Jan 09, 2026 at 10:09:21PM +0100, David Sterba wrote:
 > my mind. The motivation is that the two objects have same lifetime and
 > whe have spare bytes in the slab.
 > 
-
-Sorry for the slightly hyperbolic language. My point was merely that it
-is the main observable outcome. I agree with you that it's not an actual
-meaningful regression in any way that we care about today.
-
-All I'm saying is we consider it a minor win (all else being equal) to
-shrink structs, so it's only fair to consider growing them a minor
-regression.
-
-It can be offset by other benefits and be an attractive choice anyway.
-
 > > If the answer is just that it's simpler and there is no need for a
 > > separate allocation, then fair enough. But then why not directly embed
 > > all the one-off structures pointed to by fs_info? Like all the global
@@ -136,27 +125,9 @@ It can be offset by other benefits and be an attractive choice anyway.
 > threshold I'm considering is 4K, which is 4K page on the most common
 > architecture x86_64. ARM can be configured to have 4K or 64K on the most
 > common setups, so I'm not making it worse by the 4K choice.
-
-Agreed.
-
 > 
 > So, if the structure for embedding is small enough not to cross 4K and
 > still leave some space then I consider it worth doing. In the case of
-
-All I'm really asking is for some durable explanation why it is that you
-consider it worth doing. Your email and patch messages just explained
-why it was possible.
-
-Even something like "if a non optional object is smaller than ~X, we
-prefer not to use up slab" would be a helpful explanation.
-
-Understanding how you think about these things is important to other
-developers so we know what principles to try to follow in our own work.
-
-Otherwise, we are just guessing at your taste preferences, and we can
-monkey around and you can clean up after us :). I assume that is not the
-most desirable.
-
 > increasing the fs_info by required and small new members (spinlocks,
 > atomics, various stats etc) we can first look how to shring the size by
 > reordering it. Currently I see there are 97 bytes in holes. Then we can
@@ -168,10 +139,6 @@ most desirable.
 > for a separate data structure would be some kind of static
 > almost-read-only information, like mount option bits or status flags
 > etc.
-
-I mean, it's not impossible to imagine a future where the lower hanging
-fruit are exhausted and we are butting up on 4k.
-
 > 
 > Also I don't want people to worry about fs_info size when there's
 > something new to implement. We have some space to use and I will notice
@@ -183,10 +150,11 @@ fruit are exhausted and we are butting up on 4k.
 > portions of it. My long term goal is to keep the level the same without
 > hindering development.
 
-I won't say pointless, since you're right, there is a point to reducing
-stack size. Perhaps the better expression of how I feel about that is
-"arbitrary". But individual improvements are always useful.
+Also, all quibbling aside, I don't want to hold you up on trivialities.
 
-Thanks,
-Boris
+If you can think of a short, specific explanation for why this is
+preferable, I would appreciate you adding it. But even if not, please
+add:
+
+Reviewed-by: Boris Burkov <boris@bur.io>
 
