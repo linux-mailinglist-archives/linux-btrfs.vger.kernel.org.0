@@ -1,75 +1,77 @@
-Return-Path: <linux-btrfs+bounces-20334-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20335-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6C64D0A144
-	for <lists+linux-btrfs@lfdr.de>; Fri, 09 Jan 2026 13:57:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F27E8D0A2EC
+	for <lists+linux-btrfs@lfdr.de>; Fri, 09 Jan 2026 14:05:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 854B1301D4A0
-	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Jan 2026 12:57:03 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 0C7843052A5E
+	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Jan 2026 13:02:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB32435B12B;
-	Fri,  9 Jan 2026 12:57:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DB6035C1BF;
+	Fri,  9 Jan 2026 13:02:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="GZ2f7/oc"
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="v5oNG/1D"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from out162-62-57-87.mail.qq.com (out162-62-57-87.mail.qq.com [162.62.57.87])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAC1532572F;
-	Fri,  9 Jan 2026 12:56:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E406631D750;
+	Fri,  9 Jan 2026 13:02:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.87
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767963420; cv=none; b=Obf4AR8V9viHODEDnzVcG5Co4CJ/0s8T3n4BJbOApsxsve4HEHVxdcn+teFWZlv7SyReEpiZ53Jn8RwEAJvM3CYAZnN525SDMcam3YSbAwl/4hiiQhGRmyZT0DAvTTks70b0SE9eid0b9KOfVWGt8Hj2UmMSX1NA6fUrpOJNwPw=
+	t=1767963731; cv=none; b=ahnS1DZ7cq0b2pJhFQz365A2kaSYA/pHLxLYIJPALm5YuuSXW0OZWjO/JdJKmxSj//OLwKTxsQQCTUJ3QrTnGJXV9knt0wLVS7IY86GcaCw1gmkMq8efaygCpO3195UB4P8dQqa+KDDehdna8DeOaJowF5IE+B1kckxBurwVZgA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767963420; c=relaxed/simple;
-	bh=3nu36tbY8u4DraqT7/qo1MR2c9zYL3m5G14G+tjdYLc=;
+	s=arc-20240116; t=1767963731; c=relaxed/simple;
+	bh=+7PY/KVDj8uK+lZkZ47j3ad3MAbH5d8pEFNezE5WBjY=;
 	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=KQvxIp01N1YfDOas56Tk5EXW1Mfg1tho2ttsJBdOZNCm5CH8yXBPazKVeT1oGVDyPEOf9sP+LcxpylLPMm5czEHVx5CawzBdgWs4rz+Nd1JjsD7VCMqMgEPGl1qHTyfUko5k9r5vgpEP4cHvfPGWk27NGdXjQCJ/C2jIR78zjzo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=GZ2f7/oc; arc=none smtp.client-ip=162.62.57.87
+	 MIME-Version; b=JLF+oBEZ1MsScbLzIq3QfIwndGc05GiiOlWrAqR6N0jwre+8zWI+iZ7Qvz0PRtKkejLAWMAjG3xcsGeWYj4aIstO0te0iZGNB4P5tM9dm2JaTlwlxD/HSxbVOuKg5cjpz2v29a7Nt4n++j1b3SrSZJkfqvTVyjgM6HgVlcRpS5A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=v5oNG/1D; arc=none smtp.client-ip=162.62.57.87
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1767963412; bh=Bp8myDrLbM52r/qKYcZaXxFmEJ1b8I6IcEwo4TWqsVY=;
+	t=1767963724; bh=D3l/sfnWxsH5xrdnd6Prr0ITRMzRQ082UEvLFyDJRLs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=GZ2f7/ocZ7hqxSZbCqdo8JXqFZKVyfeyEokDnZoos9f46qti7IKAydJqzIMZ8/55D
-	 mDpmdtDJH1DeM163BlBKOwenqGbxuajfXmfvE1XDEIEh4mrJDQJiCoa+MQHAJMWkoE
-	 usvf9hUZgMARaor2on5rpAM30bfjS9/L28DzyB2U=
+	b=v5oNG/1DaSieX5YzZq3l7lMqGaakha5m3xPyQwEH2ef8TN7pKd3WOG9wT7I/PYlAt
+	 uZFqLnckIdkfPoTb9zOVgPOXPp9POB61WBvOxYvs5aICG4mlGQLuoEmlk5fBFUlvWv
+	 O74wyFZS86fiWRj71iZR9xH6mDboogeRGJYCDFac=
 Received: from lxu-ped-host.. ([114.244.57.24])
-	by newxmesmtplogicsvrszc41-0.qq.com (NewEsmtp) with SMTP
-	id E328BA9E; Fri, 09 Jan 2026 20:56:50 +0800
-X-QQ-mid: xmsmtpt1767963410t0ej21fxj
-Message-ID: <tencent_1B9D99764FFD8DAEA5888DF9926EDDB5DD07@qq.com>
-X-QQ-XMAILINFO: NMGzQWUSIfvTgxBl4hzXZtMjkZsk8cyTMx6KJn31Z6rU0a7nkJhd8HxRW/Qigr
-	 ULGzS9ZuatHP7LLQ7AJmMJ5zFOcWY5U+24n9z3jjTGcLJhUc2/Da42oqj3+MINaJX7Q3s3v2SKUh
-	 4O8IdzvUMq0bQ7srKsS1g03RY/gm/Y8rTLnOe6h/ljNH9sgSsp0VUdlZRnOasR4U988a3YhbUryI
-	 n5lt2e3EPWqSDOrlI2EeZxACpTkGEEPy3j728enpFHQ0S79DzkpLCI5CcCWeGuiqYb12EvdtRwM5
-	 zsf0q9hUBM6uv09ZkPo4kv0Jn5f1JPf9rykG6bnKQc3Ww9SqrqYUX+KjmwrdvFC5dBZ4JpK3ivZn
-	 vUpH3Rdrg/JzQTHt98qoPAjHsTQJ0SBIBpRwd7fdRYHOkgla08z8J/6h2WoVDEih9mhptImN1wGA
-	 3hZp6gwNR/TYrRyiECYOwbaKYXcj0sSNm9OxDmOplw1EOiotUngaDQrD0SBCXHT223v1V7hUhtfl
-	 D8t2Vk4cFkzotEUtm2dKrgoYLPatK7Nk5WCXe7SrU5vRV7B3d+iPXRqB7lq6ZVqaowiqgu5FfMC3
-	 hQ+uSEdGLVKrGZSGH7Xsevw4bFcw379D4WW/SaFqOOiZfhT0JF0SYoqNiZRGiwQFVRBiC+1rAN1S
-	 Qo7anrPq0EmttV6LCR8G7yk/nDkk9J9t6lGsxRUmbSbEfJMTlz7nsdGhgEWPCQ2oh01CPyDTzzSs
-	 vP5rzmtLbrvPhLNSWuwd6H46xiwm6vGxDcGGct6HgTyi3umgZ/lfANnbTF1IiL8zlVnP+JjeiI+c
-	 vuB5wKCyT4n3JLACkSN3yC7dYQvy1aGXqx4bLQABkjRwtgMZZdJVwJz+vtvCQx02T2k9LbZOtj+M
-	 fXXa8e2fIwxNLYLllcfNbLutU2juimxplBE6dBQ1AwITXZpnoRCiGgIvDrRk2zR4ByPmY2Y/p9i5
-	 /7HHZFNq4y33yoMluTqFJYsnUxLkirrgSqlmEV98+EJfqqvOHRLBX6iakuK59JDzDX8qaPHeGxRN
-	 5Auqyph4jxDF6Eb+GLbPvjrTdekWI70h+vsBPGzw==
-X-QQ-XMRINFO: MPJ6Tf5t3I/ylTmHUqvI8+Wpn+Gzalws3A==
+	by newxmesmtplogicsvrszb51-0.qq.com (NewEsmtp) with SMTP
+	id 82284E3; Fri, 09 Jan 2026 21:02:02 +0800
+X-QQ-mid: xmsmtpt1767963722t34e1qj1z
+Message-ID: <tencent_A63C4B6C74A576F566AA3C0B37CE96AC3609@qq.com>
+X-QQ-XMAILINFO: MDbayGdXPuoetqGaC8ciTZpZp5nNI0wvJdXZMFpxDGw9IGmxYs+qhOFpwjAidB
+	 jnFe7IUj7MpaMNaZsnnIlRRayrVKKW3P423z1rDCNH+nwv8YH5RiIXPyD31DVU+2wduC9fWhadPK
+	 GgvQ8hJ7W0KjnuRvTgQ8TgFT30AXgs6gDCYf6uU979G5LmLud9WilRErWXSpeZ1eiQmxw7YRd0XV
+	 Djn8dsNgPZiV1CgcAnb0ESvzSjULjyhNphjCw/HGZLTWo4jW+rY7hFFYZKMLDqi3th42wSw4/y6d
+	 X3tKm01QcILUpv3IEAizfKyA6zjVVHcXEXylxahMEVpyOmuo4Wu/xXJlleVcCWLe/MlvtacsewVc
+	 580MlMKrTHzH+dFLqrrxEmro6j+iiV/Zsozxh06jC3//Fef2qZbwx73xbSFj20hefDvdteoOqcu7
+	 ipgdHy5SwXBvDG4GUsgIhU5ViK+Z8M8/Y0SYEc+j3ZdeM20ZLhIkMq+yivcuR7UqmyNrcfjjv37p
+	 vLSie6lo715xjwROGdm8Q/MCy2ff9HawVDeA1YnVvYfr+XZaLYtcy7QoTDlS/ggLPMei4lCzeF2d
+	 LIXs8wYVPpeTKPoFPp25yASWbAhK7fE9w/c7pE3IeZ/ETM6hRmf5Zc0rLpMlNmeT8F+EliLVIFD+
+	 uvHh0hwJzlc0s3qYHEEsMPmsM1kG+LNGds91+ZLN+iJEIpHn363kTzQODWt/6Y/wotJ1B03rTiE2
+	 vybTIAP0ZAttAwEfaLASU0Jq2cdgxgfhekDI8b+eo8hl68zdGBJ+E3qwy5yp9JFEOewzAKLsgseS
+	 eLhT4xC+oj/fGnbJcG79HmNR4Uly/d/fUUB4zYtNsaYAEEboBgGMGGy+9svrQ/3fyBynrPLk++lZ
+	 exKs94rbsDVv8kPxee+nGlGpx8/0U9+MRNe7DQYQlVcwgJpoj7zW16+VcTRKO3ZfCxyYhiTfsnd5
+	 kpoqnFfBeWF/igyohGROYKaB/WfX8kEnxVa3yL455RL/x/Lrqj2f/IdP/W7XPfWc5JbKMEtnfdoW
+	 Nl7uXxCIfb8uFmHTbVq5r4PnX+gPBkkmdyObyxi9BydGlr47TsU8MH7DycKHIxKIoykbo1cA==
+X-QQ-XMRINFO: NI4Ajvh11aEjEMj13RCX7UuhPEoou2bs1g==
 From: Edward Adam Davis <eadavis@qq.com>
-To: syzbot+b4a2af3000eaa84d95d5@syzkaller.appspotmail.com
+To: fdmanana@kernel.org
 Cc: clm@fb.com,
 	dsterba@suse.com,
+	eadavis@qq.com,
 	josef@toxicpanda.com,
 	linux-btrfs@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
+	syzbot+b4a2af3000eaa84d95d5@syzkaller.appspotmail.com,
 	syzkaller-bugs@googlegroups.com
-Subject: [PATCH] btrfs: Sync read disk super and set block size
-Date: Fri,  9 Jan 2026 20:56:51 +0800
-X-OQ-MSGID: <20260109125650.560171-2-eadavis@qq.com>
+Subject: [PATCH v2] btrfs: Sync read disk super and set block size
+Date: Fri,  9 Jan 2026 21:02:02 +0800
+X-OQ-MSGID: <20260109130201.560996-2-eadavis@qq.com>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <695faa63.050a0220.1c677c.039b.GAE@google.com>
-References: <695faa63.050a0220.1c677c.039b.GAE@google.com>
+In-Reply-To: <CAL3q7H4k3Dj9gQQhBz_eadnRUaWaNPaf7+MYucshY6cis2by5Q@mail.gmail.com>
+References: <CAL3q7H4k3Dj9gQQhBz_eadnRUaWaNPaf7+MYucshY6cis2by5Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -116,34 +118,27 @@ Call Trace:
  do_read_cache_page mm/filemap.c:4162 [inline]
  read_cache_page_gfp+0x29/0x120 mm/filemap.c:4195
  btrfs_read_disk_super+0x192/0x500 fs/btrfs/volumes.c:1367
- 
+
 Reported-by: syzbot+b4a2af3000eaa84d95d5@syzkaller.appspotmail.com
 Closes: https://syzkaller.appspot.com/bug?extid=b4a2af3000eaa84d95d5
-Tested-by: syzbot+b4a2af3000eaa84d95d5@syzkaller.appspotmail.com
 Signed-off-by: Edward Adam Davis <eadavis@qq.com>
 ---
- fs/btrfs/volumes.c | 3 +++
- 1 file changed, 3 insertions(+)
+v1 -> v2: replace inode lock with invalidate lock
+
+ fs/btrfs/volumes.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index 13c514684cfb..eee7471a3e03 100644
+index 13c514684cfb..68ff166fe445 100644
 --- a/fs/btrfs/volumes.c
 +++ b/fs/btrfs/volumes.c
-@@ -1339,6 +1339,7 @@ struct btrfs_super_block *btrfs_read_disk_super(struct block_device *bdev,
- 	struct page *page;
- 	u64 bytenr, bytenr_orig;
- 	struct address_space *mapping = bdev->bd_mapping;
-+	struct inode *inode = mapping->host;
- 	int ret;
- 
- 	bytenr_orig = btrfs_sb_offset(copy_num);
-@@ -1364,7 +1365,9 @@ struct btrfs_super_block *btrfs_read_disk_super(struct block_device *bdev,
+@@ -1364,7 +1364,9 @@ struct btrfs_super_block *btrfs_read_disk_super(struct block_device *bdev,
  				      (bytenr + BTRFS_SUPER_INFO_SIZE) >> PAGE_SHIFT);
  	}
  
-+	inode_lock(inode);
++	filemap_invalidate_lock(mapping);
  	page = read_cache_page_gfp(mapping, bytenr >> PAGE_SHIFT, GFP_NOFS);
-+	inode_unlock(inode);
++	filemap_invalidate_unlock(mapping);
  	if (IS_ERR(page))
  		return ERR_CAST(page);
  
