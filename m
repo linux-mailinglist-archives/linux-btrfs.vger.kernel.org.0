@@ -1,215 +1,180 @@
-Return-Path: <linux-btrfs+bounces-20352-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20353-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 063E1D0C3D8
-	for <lists+linux-btrfs@lfdr.de>; Fri, 09 Jan 2026 22:05:11 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 56368D0C43B
+	for <lists+linux-btrfs@lfdr.de>; Fri, 09 Jan 2026 22:09:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 5107330128F0
-	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Jan 2026 21:04:58 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 864F73013E8F
+	for <lists+linux-btrfs@lfdr.de>; Fri,  9 Jan 2026 21:09:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30D7731B101;
-	Fri,  9 Jan 2026 21:04:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0480531D725;
+	Fri,  9 Jan 2026 21:09:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="VtPWOqtA"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="KBzGR+Zu";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Gm2P89Uk";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="KBzGR+Zu";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Gm2P89Uk"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7870A31AF30
-	for <linux-btrfs@vger.kernel.org>; Fri,  9 Jan 2026 21:04:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C99122DF145
+	for <linux-btrfs@vger.kernel.org>; Fri,  9 Jan 2026 21:09:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767992696; cv=none; b=NHi3xypddLvENSzM5Rrq9xDhHTjRNHU5j37Co1owDksVIylDkmDNxKaiVxJY3tSIr+gTb5Ld6SxgJ1tG1Dwbm4GGwA85cacWQ43nAjUT5zY2MQ1XgS+JO1qxTTnciSymOlUDWq20vkeVY+nVQcMHCp/jpkCBSq8rHd5lvUn/Ai8=
+	t=1767992970; cv=none; b=ruPXaHd+a6D1Huw+g9cgemsR5M00/I7edr2iyGeStFfY/Wh6f8Q7PPeKxvLzmnKzGhhWpiHAEnwJwJNz1uZw1ELnTGwLbyQWOcvecAKv2BcWZUNtsuUpt7QzfJ68OaZEISR3ZSGolpjCQs69syIlrUyRGIZKLyZiKKa9jhrCaUs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767992696; c=relaxed/simple;
-	bh=94ackt0ak+oOLNgG8vYCTodN0hGZD4GgeUtUdtMMGLs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=E085sXWijz0Lc0mvuCZQMI89txn3J8xMfYsKWkHdpaZZ/8qaIWg18odcx1VSWPyF4XLVqZnHWRoZWpVBO8cl76CUSukNZedyhBk9w35LWTtE0jE7QhrwlEreTdRWvzJkMStxUbSLjzLUJPl4P7SbEwngmmlM0gjZpZftzxHS1v4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=VtPWOqtA; arc=none smtp.client-ip=209.85.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-477770019e4so36542605e9.3
-        for <linux-btrfs@vger.kernel.org>; Fri, 09 Jan 2026 13:04:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1767992692; x=1768597492; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=7GOFVLS3DKFuaCj16Yj7n73eucTN11H2x8XLfBj4fA8=;
-        b=VtPWOqtAtiY+6PXcqta5/0U9GQKFSIw3cGDYDP1QUee/XEzAMz2KI9lonjVwoVxmWM
-         uv8b4Q9XsATMfzFqNkyVUzUQx1grn3yWtj/dTY5YPzbaBR5T2YbHfp19YlRwVDg/xPkt
-         HPmSGuHFyDuGNqIxI+OMOwDVVsMJNAY3cgVDGGJL2IO0moCIKBxgxTYvjvbwEKioEpNt
-         gkJoeyP8F1LDhpUUvsp+kK+M53yuLoJDvQUcJa0NdXGhAqGWaJPNd2ClFDdgZoUOQN9+
-         YNLYw3qOl1OLO63RwUXOxGNAZZxZkYt7Y8Z/GjtiSu7gGtnhoazbvEOqZPOcNuHEGl3x
-         7Z7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767992692; x=1768597492;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7GOFVLS3DKFuaCj16Yj7n73eucTN11H2x8XLfBj4fA8=;
-        b=sd7fBaCzkA6PMQglUfOi6+YOCz4+kBYMIiL0CWRS5zemdRENCYoDKEHEPF6CTXae2F
-         crT0znOc7HtBvJhpSXPHkpXTyUsBmSV17juBBz/IZQq0ZqHwaJridVWexW7ciZtkgkW9
-         72xeN5Bcvqo32NFqrLkIojw9Wl5xJfKIY/a4YrGIu52SvhrL6y5KUPPKl/qj3u2uKAFm
-         EZ8N+PyPA1uAPlLi39zCuIGvricjcFpcDblf8XaTnxbszEBiobJUho10lb67JcHvVS6Y
-         BqGy1JnBu9g1VTw34s7gtsLppsyZJBDNI/2rPyRA4L3ztidqIHJLQqjkmrQevW4bEKFG
-         znSg==
-X-Forwarded-Encrypted: i=1; AJvYcCU++DNOD5yZ7Sl0H+X2SOcDFEX/tED2oDE5RrcD6xuul06GmzkFgPXUcs6KmaA5cwWPmEIJT1S+wJbRGQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzRb8c7NXyz37Bnw761zvdz2UklCvw8g9FEz7j2ULQ2SJ7JipYy
-	GtWg/PwPNvqtL3HZSUBPIeRMlyrLTLqz+awnkg0sAToS8ivj3Lya2QlJ6LLieWQQU80=
-X-Gm-Gg: AY/fxX4kBs2PXQ2FaEzBhShYsFutwW2AWpODev4wHUe8LfvvVAIcC8cj9hiAtZ2KX2E
-	b9ps8+26acSQJe/Z/vHEURQaNmx2PfpRq3mewxXRm6eeKjqk9zbdJ5GS4R3qA22zbHIXGGH0WIS
-	f0CV4INjY27o7BcpJiGR2WuMv7C3UsDuMYEp5ARAgsfCS4dhQiwAJSZZvWiUTaJs0wCwCi6pBRp
-	3lht42npP96LWAwyjMNTRFo2lDEoD5PJExBShoUQes3nniaEUBRaaqUwPdv6f0Rpejh6Ln3kY0o
-	sBgJDnM/roAb2+HdSWyxEfzb92moXbrFOBDClUkiG72So5NQK3SrzGwDD9dQIVNmXxf7yKY/l2v
-	oGo3fSWTbFkPE1SjRBnDFy4Xq/eB+OSuzMbo6HCQpjNkCevOX24obX5AlLJm7YFnPQx4avgeG8X
-	5y6rth/XpG6d4cC/DeNojMhV6a/h8YaPCW/v0yzHYzjsvlg5tInw==
-X-Google-Smtp-Source: AGHT+IENEuwdgmB6VCpfeMF13aZot4+coU8pCx8GVCsLnkLrKNm7mmXUF2YKCK7nX6ec5YpJGNMH6w==
-X-Received: by 2002:a05:600c:6096:b0:47a:935f:61a0 with SMTP id 5b1f17b1804b1-47d849ba979mr118457515e9.0.1767992691696;
-        Fri, 09 Jan 2026 13:04:51 -0800 (PST)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-c4cbfc2f475sm11305984a12.8.2026.01.09.13.04.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Jan 2026 13:04:51 -0800 (PST)
-Message-ID: <b1e4dbd8-0a02-4761-97a8-885465bd18da@suse.com>
-Date: Sat, 10 Jan 2026 07:34:45 +1030
+	s=arc-20240116; t=1767992970; c=relaxed/simple;
+	bh=oPgfmqIAzcyIu8H53JfGZjhU04YqJqPiBJke+Sqbw0s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TmvfeQYiC9sMTQR4WNVLuvc2EFcUM40cPM5B7POOtP9FuxsmtYOhjR5EPNBIi32IYzQg+SI8yaKqNtUJBh4U3A92obVc07rFuIPqzUSbLys5zMR0XTfbu9QrVd5SSI8sAj7N1YpNFCPHRzpjktuzKfW+D0/HlEbNgbcw/iCwmzA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=KBzGR+Zu; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Gm2P89Uk; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=KBzGR+Zu; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Gm2P89Uk; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 09ACD5BD4F;
+	Fri,  9 Jan 2026 21:09:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1767992967;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QADP+3eVp2acDOR7i5jfKUHG+j8MdehJI0Qg7s4pj1I=;
+	b=KBzGR+Zu3KJno3IkPYpB74hQZyv/7Tsun2Kx3L6tUZjk0m6zonkr6V9rP7dbmDdml5CTRO
+	jlXqtBaR2ABPFQVVGBtBLiew6wpxZEBowRGUPCyByFgP0zC0y5WAru6W30bQV9I5/aU/Kn
+	vjFpUcY/tMfVz8FrVm1eFVE6B9OTozQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1767992967;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QADP+3eVp2acDOR7i5jfKUHG+j8MdehJI0Qg7s4pj1I=;
+	b=Gm2P89Uk3PM+LzF6MWdqqpllLEgbIdomnNsggf62PHxbEgDTguJrTb3ZDMeh4j4S77xSov
+	Rs0um99u6VkyR6BA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1767992967;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QADP+3eVp2acDOR7i5jfKUHG+j8MdehJI0Qg7s4pj1I=;
+	b=KBzGR+Zu3KJno3IkPYpB74hQZyv/7Tsun2Kx3L6tUZjk0m6zonkr6V9rP7dbmDdml5CTRO
+	jlXqtBaR2ABPFQVVGBtBLiew6wpxZEBowRGUPCyByFgP0zC0y5WAru6W30bQV9I5/aU/Kn
+	vjFpUcY/tMfVz8FrVm1eFVE6B9OTozQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1767992967;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QADP+3eVp2acDOR7i5jfKUHG+j8MdehJI0Qg7s4pj1I=;
+	b=Gm2P89Uk3PM+LzF6MWdqqpllLEgbIdomnNsggf62PHxbEgDTguJrTb3ZDMeh4j4S77xSov
+	Rs0um99u6VkyR6BA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DAD2C3EA63;
+	Fri,  9 Jan 2026 21:09:26 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id Kiz5NIZuYWkUMAAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Fri, 09 Jan 2026 21:09:26 +0000
+Date: Fri, 9 Jan 2026 22:09:21 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Boris Burkov <boris@bur.io>
+Cc: David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 0/4] Delayed ref root cleanups
+Message-ID: <20260109210921.GT21071@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1767979013.git.dsterba@suse.com>
+ <20260109181627.GB3036615@zen.localdomain>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] btrfs: Sync read disk super and set block size
-To: Edward Adam Davis <eadavis@qq.com>, fdmanana@kernel.org
-Cc: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com,
- linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
- syzbot+b4a2af3000eaa84d95d5@syzkaller.appspotmail.com,
- syzkaller-bugs@googlegroups.com
-References: <CAL3q7H4k3Dj9gQQhBz_eadnRUaWaNPaf7+MYucshY6cis2by5Q@mail.gmail.com>
- <tencent_A63C4B6C74A576F566AA3C0B37CE96AC3609@qq.com>
-Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <tencent_A63C4B6C74A576F566AA3C0B37CE96AC3609@qq.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260109181627.GB3036615@zen.localdomain>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_TLS_ALL(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_THREE(0.00)[3];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo];
+	RCVD_COUNT_TWO(0.00)[2];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Score: -4.00
+X-Spam-Level: 
 
-
-
-在 2026/1/9 23:32, Edward Adam Davis 写道:
-> When the user performs a btrfs mount, the block device is not set
-> correctly.
-
-Explain "the block device is not set correctly", all your later commit 
-message is showing that it's end user re-setting the device block size.
-There is nothing "not set correctly".
-
-> The user sets the block size of the block device to 0x4000
-> by executing the BLKBSZSET command.
-> Since the block size change also changes the mapping->flags value, this
-> further affects the result of the mapping_min_folio_order() calculation.
+On Fri, Jan 09, 2026 at 10:16:27AM -0800, Boris Burkov wrote:
+> On Fri, Jan 09, 2026 at 06:17:39PM +0100, David Sterba wrote:
+> > Embed delayed root into btrfs_fs_info.
 > 
-> Let's analyze the following two scenarios:
-> Scenario 1: Without executing the BLKBSZSET command, the block size is
-> 0x1000, and mapping_min_folio_order() returns 0;
-> 
-> Scenario 2: After executing the BLKBSZSET command, the block size is
-> 0x4000, and mapping_min_folio_order() returns 2.
-> 
-> do_read_cache_folio() allocates a folio before the BLKBSZSET command
-> is executed. This results in the allocated folio having an order value
-> of 0. Later, after BLKBSZSET is executed, the block size increases to
-> 0x4000, and the mapping_min_folio_order() calculation result becomes 2.
-> This leads to two undesirable consequences:
-> 1. filemap_add_folio() triggers a VM_BUG_ON_FOLIO(folio_order(folio) <
-> mapping_min_folio_order(mapping)) assertion.
-> 2. The syzbot report [1] shows a null pointer dereference in
-> create_empty_buffers() due to a buffer head allocation failure.
+> The patches all look fine to me, but I think it would be nice to give
+> some justification for why it is desirable to make this change besides
+> "it's possible". If anything, it is a regression on the size of struct
+> btrfs_fs_info as you mention in the first patch.
 
-Although I agree with the analyze so far, I didn't see we should 
-continue stick to the old read_page_cache_gfp() call.
+A regression? That's an unusal way how to look at it and I did not cross
+my mind. The motivation is that the two objects have same lifetime and
+whe have spare bytes in the slab.
 
-There is already an old series which will address it pretty well:
+> If the answer is just that it's simpler and there is no need for a
+> separate allocation, then fair enough. But then why not directly embed
+> all the one-off structures pointed to by fs_info? Like all the global
+> roots, for example. Are they too large? What constitutes too large?
+> Later, when we slowly add stuff to fs_info till it is bigger than 4k,
+> should we undo this patch set? Or look for other, bigger structs to
+> unembed first?
 
-https://lore.kernel.org/linux-btrfs/cover.1752097916.git.wqu@suse.com/
+Fair questions. If we embed everything the fs_info would be say 16K. The
+threshold I'm considering is 4K, which is 4K page on the most common
+architecture x86_64. ARM can be configured to have 4K or 64K on the most
+common setups, so I'm not making it worse by the 4K choice.
 
-Although at that time I'm not aware of the race between blocksize set 
-and read_page_cache_gfp().
+So, if the structure for embedding is small enough not to cross 4K and
+still leave some space then I consider it worth doing. In the case of
+increasing the fs_info by required and small new members (spinlocks,
+atomics, various stats etc) we can first look how to shring the size by
+reordering it. Currently I see there are 97 bytes in holes. Then we can
+look what is used optionally, eg. depends on a mount option and move it
+to a separate structure.
 
-Since btrfs is the last one utilizing this interface, I think it's 
-better to completely remove it other than bothering the extra locking 
-requirement.
+The delayed root is a core data structure so we will not have to
+separate it again and revert this patchset. What I'd start looking for
+for a separate data structure would be some kind of static
+almost-read-only information, like mount option bits or status flags
+etc.
 
-> 
-> Synchronization should be established based on the inode between the
-> BLKBSZSET command and read cache page to prevent inconsistencies in
-> block size or mapping flags before and after folio allocation.
-> 
-> [1]
-> KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
-> RIP: 0010:create_empty_buffers+0x4d/0x480 fs/buffer.c:1694
-> Call Trace:
->   folio_create_buffers+0x109/0x150 fs/buffer.c:1802
->   block_read_full_folio+0x14c/0x850 fs/buffer.c:2403
->   filemap_read_folio+0xc8/0x2a0 mm/filemap.c:2496
->   do_read_cache_folio+0x266/0x5c0 mm/filemap.c:4096
->   do_read_cache_page mm/filemap.c:4162 [inline]
->   read_cache_page_gfp+0x29/0x120 mm/filemap.c:4195
->   btrfs_read_disk_super+0x192/0x500 fs/btrfs/volumes.c:1367
-> 
-> Reported-by: syzbot+b4a2af3000eaa84d95d5@syzkaller.appspotmail.com
-> Closes: https://syzkaller.appspot.com/bug?extid=b4a2af3000eaa84d95d5
-> Signed-off-by: Edward Adam Davis <eadavis@qq.com>
-
-Anyway you won't reply to any review/comment, I doubt if you will change 
-this time.
-
-
-> ---
-> v1 -> v2: replace inode lock with invalidate lock
-> 
->   fs/btrfs/volumes.c | 2 ++
->   1 file changed, 2 insertions(+)
-> 
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 13c514684cfb..68ff166fe445 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -1364,7 +1364,9 @@ struct btrfs_super_block *btrfs_read_disk_super(struct block_device *bdev,
->   				      (bytenr + BTRFS_SUPER_INFO_SIZE) >> PAGE_SHIFT);
->   	}
->   
-> +	filemap_invalidate_lock(mapping);
->   	page = read_cache_page_gfp(mapping, bytenr >> PAGE_SHIFT, GFP_NOFS);
-> +	filemap_invalidate_unlock(mapping);
->   	if (IS_ERR(page))
->   		return ERR_CAST(page);
->   
-
+Also I don't want people to worry about fs_info size when there's
+something new to implement. We have some space to use and I will notice
+if we cross the boundary as I do random checks of the patch effects
+every now and then. This applies to parameters and stack space
+consumption. You may say this is pointless like in the other patchset
+but even on machines with terabytes of memory a kernel thread is still
+limited to 16K of stack and layering subsystems can use substantial
+portions of it. My long term goal is to keep the level the same without
+hindering development.
 
