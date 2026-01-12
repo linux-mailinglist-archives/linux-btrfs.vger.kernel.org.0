@@ -1,67 +1,67 @@
-Return-Path: <linux-btrfs+bounces-20425-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20426-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D337D1594D
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Jan 2026 23:32:28 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39F80D15B4B
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Jan 2026 23:58:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 180A73034A14
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Jan 2026 22:32:21 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 3A7F0301E683
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Jan 2026 22:58:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4135269D18;
-	Mon, 12 Jan 2026 22:32:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7AE82BE64A;
+	Mon, 12 Jan 2026 22:58:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="TsTtFE+T";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="D/CIErAn"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="n7anCKwe";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="cf99kCdq"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from fhigh-b1-smtp.messagingengine.com (fhigh-b1-smtp.messagingengine.com [202.12.124.152])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DA399476
-	for <linux-btrfs@vger.kernel.org>; Mon, 12 Jan 2026 22:32:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A453270EC1
+	for <linux-btrfs@vger.kernel.org>; Mon, 12 Jan 2026 22:58:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.152
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768257139; cv=none; b=GdRnS5lqj3jaVTBQbayw5P16THGiF036nC5wko4jkfTvlJbSibWiIvOV4xsOV0uH0eMvoVqh6nWQBBErcC5SpNivznqLtFsqpg1gkEBIMQ8mBHpMJ6xXiPa3lGuVwK8ACCZLwZrE6QlUlXcSgLQ1C2vQLCPiviwn3pyvPcgAZ54=
+	t=1768258686; cv=none; b=rDrGHxlfR4bImrWxMbbaq6ZkIfLsN9C7p7Jj4JMbTXo8lOzFDbWf0nrsM3kgl+YDqi26STpRa2p/ei7zo4BypkHPPSBlxV7Sn9+HLKrwD8Z0SuVxd7aXZM3KxtrEdeRCsCPR2q2PJfNpOjTnD6UZ21SRY9o4EyclqW+0TEJ7bOI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768257139; c=relaxed/simple;
-	bh=3AGpa9Fc64dl1xVXMlCGP/UOsgpYSGjXb6de8IyeUuY=;
+	s=arc-20240116; t=1768258686; c=relaxed/simple;
+	bh=Fwa13SYsjay6Vg4XB+1C43Qs5Bj7IXQG//wGVtUMsRI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=O+JozejFRsNF33GpvFIPV5sG2La45rE8E/oB79zdd81juGlyQ3fGUt0VeFjxvxTb9xx9zbZj3YrwSDekkt3YTI6Qkvh/j7Fm8DPDEvB82AFx5fGGMYS7cY1TLlBn4+hhQDamog3I0ugCPv5CtR8Jx6ikclYxU8zCZnCbFrJLRyA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=TsTtFE+T; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=D/CIErAn; arc=none smtp.client-ip=202.12.124.152
+	 Content-Type:Content-Disposition:In-Reply-To; b=pbmt3Sa7KSskjc48tIL5sDM47QYH/k+RItarLQ4t24UvGHgxJNHLycUvH+fgLrt+ij8KF/ulHIO51wLYM+pSvRky0OlnYp0hMyt9X3Sx0NikZ7deThH51Au6hqOzbRX/D9ZnsPY5Mv3GvJDn09gjgjzhOQggRRbHxD27u1v/KZc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=n7anCKwe; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=cf99kCdq; arc=none smtp.client-ip=202.12.124.152
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
-	by mailfhigh.stl.internal (Postfix) with ESMTP id 81FB77A0050;
-	Mon, 12 Jan 2026 17:32:16 -0500 (EST)
-Received: from phl-frontend-03 ([10.202.2.162])
-  by phl-compute-04.internal (MEProxy); Mon, 12 Jan 2026 17:32:16 -0500
+Received: from phl-compute-09.internal (phl-compute-09.internal [10.202.2.49])
+	by mailfhigh.stl.internal (Postfix) with ESMTP id 62E427A00C1;
+	Mon, 12 Jan 2026 17:58:03 -0500 (EST)
+Received: from phl-frontend-04 ([10.202.2.163])
+  by phl-compute-09.internal (MEProxy); Mon, 12 Jan 2026 17:58:03 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
 	:content-type:content-type:date:date:from:from:in-reply-to
 	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1768257136; x=1768343536; bh=sU1UC6qYf1
-	BGPLajlBNdG2hDDHtkpn8Ux7yW6ENY3bw=; b=TsTtFE+TYxga3FpiJ8wExZogk+
-	/Jq3DTLPp+xrkKeDR04JtHhiBO3jHbuLBR6HeWCkUGuGULHaom8SKsSvWaE953ie
-	78xuJVv2hnTEFpKaEI4P6qBWousLcD4TA3KMz5WR/VvUugeIBjwb9wWiwM/YYe2C
-	XcbDBhppMJx9xMiPu+3c6sVMxJSttYhUYz6jEzP6Nsk3ixQwE65MweeHFH0BQjd7
-	e9yvcLCcjaRKLi7gdN2zp+VByHTUiRmZD01AVPvwuuC7uRYuMRMDqJ7YWqYmmZYZ
-	0ZfI58XaO1GQeRHbce944tvNiWdUcrBWjiv19Wp1BLYo/9xF6y4aBL3iBMRg==
+	:subject:to:to; s=fm3; t=1768258683; x=1768345083; bh=lZJJAtfUAd
+	9l4AKLsgY0+HzGp9ZbJFnQHmP7BHR1Rig=; b=n7anCKweyCDPXohrEgCFErheBP
+	hP0XJDmFQpbIqqdYUnJuhxXDHPR4D9GdrfMtPSHOudglxLBffUOtTSBHh3vSpssR
+	xt/ESNdVqzIEg+GgOIom9dn8kly7uaDaSdTb9mzqD144s1vPa7cJven8tBefojH4
+	387QjNtlsrk72hnjkiSp6oxC9ILbUMcTLCDNH0xqLrbTz3v6J0O5wqbgRhAWUKk3
+	dP4+KyAh7FuMPose3VLHjb3m8ZBRluvm6Xej8+uKpY0G+fYJy5h8e7vqALBIPDJn
+	2k8pFK84xsMlO1uD2iLj0RHnVyMTwOgEa4LN125Z/GWy/pK/Pk8f3PpekMvA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-type:content-type:date:date
 	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
 	:message-id:mime-version:references:reply-to:subject:subject:to
 	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-	1768257136; x=1768343536; bh=sU1UC6qYf1BGPLajlBNdG2hDDHtkpn8Ux7y
-	W6ENY3bw=; b=D/CIErAn0GSdZLvi0WVaOpBbR/dGX0C2/sct+E8IkNoylwJEw5a
-	qMk6Neks6ikDRwbYCu9bA46D6BapQMySKoj4w8YtPjoN7XaKDprzEvMHGrh5S3C+
-	/zOTy0rZoZSN78FA1rlzvBQ3VowXGIELqYP8N6GytPy9BEVBMVAPI0sXi453pTVG
-	FlWMELFAp/+hwF0HXHU458Lmvsdj4Fv0/Y3G4UP2Mzxe1tSEKh0cEnULjMkd1Pzt
-	eV4T2pFEWAyhXTBRIDkKU53i5cYSHovc4OinfJ/wq4VWyOmokOWlddQfK4m6VWn9
-	Mc5Bzqrc9Ue+vHEncjrgyr0kbAcNANjWM6g==
-X-ME-Sender: <xms:cHZlafESrtMcoQiILNcpJta7yceTyvBveqFiGLf0bwlp9NgPE703VA>
-    <xme:cHZlaSU24tLnojl2IUCHpZXjKjWToEVaCIwx2cLUvKgKXzLB4_M_ihRbceuXUFCjg
-    _LbaQkXNq8s70soHs7UgZs4CSpBERKG2fo3e0i5BKVewuRtGLRxCHk9>
-X-ME-Received: <xmr:cHZlaexBWzsbavOrzPk28K49inKG_7CQ2_KlpcWSidCatqfBiELqZN8V3SSKfI5U5PvWZmiZhKFKk_ZkqfeyolEnmZI>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdduudekieeiucetufdoteggodetrf
+	1768258683; x=1768345083; bh=lZJJAtfUAd9l4AKLsgY0+HzGp9ZbJFnQHmP
+	7BHR1Rig=; b=cf99kCdqmOUDJWifs900nIDwgF7BfUIGHsb3NiZm26WJrUFlKot
+	IyDB3n/uLYX0f7lvGk58y9VDURkpjAiV5YT6Zbw6DK8zcdfOPVEcDlQNoMdCrYyU
+	g3yhcMzdo6SR7gjvwg/cKVLHtLa6gS6C2noI7iXlNflJPp8Zp/sNo4VAHIcbKZvf
+	mtfbGvGdg/+EY5yocIHNeDj7rfuuOAZuZguxsdVxXjiYCFa8+onZjer2E07kRg4R
+	oI0k06LFmY5GceTXbmozqUCKAnhnoZAt3tsk+mZSu9U6/oQLmwLLp1EkUeGseAKA
+	M2mzKdh//cUFi/+JKeNJIL4uYZir0K0gGmA==
+X-ME-Sender: <xms:e3xlaTGRUh2SvlOaL6cplqtFT4HPglULSVta-bMyZIZmn1d7aQC6VQ>
+    <xme:e3xlaWV3Wdp0u50jua4VCDnpFJDQEWingWAnYrdSyCDXrbzN_rQvNPTVYMvGZdP63
+    Ntmc3rmXK04DFW2DpTPKOHwEeZemOYek6CkSISZj12PJ5cuVu0QQnw>
+X-ME-Received: <xmr:e3xlaSyKwTT1ukccntOGtIn4w3Imaw3Q9sqGVaEOQU4g-9VsRaqADi73JlqqNlFE8e4p6-yS5Jp2_-9GWHIkfEaGQZM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdduudekjeduucetufdoteggodetrf
     dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
     rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
     gurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhishcu
@@ -71,22 +71,22 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdduudekieeiucetufdote
     hrrdhiohdpnhgspghrtghpthhtohepvddpmhhouggvpehsmhhtphhouhhtpdhrtghpthht
     ohepmhgrrhhtihhnsehurhgsrggtkhhuphdrohhrghdprhgtphhtthhopehlihhnuhigqd
     gsthhrfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:cHZlaYNif9gwSTPb4cF8DzLV8krDUeUAPXpC5uo80I0ss1pQsoF0Pw>
-    <xmx:cHZlaX4hSfWS6pVAXSp47LaQ7oALbntt03eM94v_1-x5fnt-5lDLNA>
-    <xmx:cHZlaRNi-uWKA38pLrlcCDpisoTIX1GAx5B95DSR4OL3ZuKECPYD2w>
-    <xmx:cHZladmG0Z411VXn2TljbzA8aN6Zu3WiZqLohuFz3LbmIlgnH8c3NQ>
-    <xmx:cHZladzw5nqqUZU4HmtbG1fwKm7iNkxiVdODAMGRYSXUpifg_X20xogT>
+X-ME-Proxy: <xmx:e3xlacOl9Qi7SJbOH0Yrf6b8lV1MdIaXVwL_f0VZ9sKnHO1E9yCfMg>
+    <xmx:e3xlab5DD1egQ6HzDSpTF6ZdCVLI5Z9csZfrRUexWexlArhs8RNlXw>
+    <xmx:e3xlaVN3HJ1pTjzHRYMMQdxRuCxzNTKyp3HUHIDfGp6Bjq7FDixbqw>
+    <xmx:e3xlaRkTbE59HodKDqyyMJ3bfJUK9pl4FvuiZrG6H64ozkGMYGKLUQ>
+    <xmx:e3xlaRyRGujr2ouGfx3MywdC55CM5n0Bb7Agtcy-Ej_L-1goXi_TTY6P>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 12 Jan 2026 17:32:15 -0500 (EST)
-Date: Mon, 12 Jan 2026 14:32:17 -0800
+ 12 Jan 2026 17:58:02 -0500 (EST)
+Date: Mon, 12 Jan 2026 14:58:04 -0800
 From: Boris Burkov <boris@bur.io>
 To: Martin Raiber <martin@urbackup.org>
 Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 1/7] btrfs: Use percpu refcounting for block groups
-Message-ID: <20260112223217.GA459994@zen.localdomain>
+Subject: Re: [PATCH 2/7] btrfs: Use percpu semaphore for space info groups_sem
+Message-ID: <20260112225804.GB459994@zen.localdomain>
 References: <20260112161549.2786827-1-martin@urbackup.org>
- <0102019bb2ff56b7-9302e783-c17d-452d-b6a7-11f773776ae7-000000@eu-west-1.amazonses.com>
+ <0102019bb2ff5805-8aa151b8-1fe7-4087-9610-4c3314b3b144-000000@eu-west-1.amazonses.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -95,311 +95,331 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0102019bb2ff56b7-9302e783-c17d-452d-b6a7-11f773776ae7-000000@eu-west-1.amazonses.com>
+In-Reply-To: <0102019bb2ff5805-8aa151b8-1fe7-4087-9610-4c3314b3b144-000000@eu-west-1.amazonses.com>
 
-On Mon, Jan 12, 2026 at 04:17:16PM +0000, Martin Raiber wrote:
-> Use a percpu counter to keep track of the block group refs.
-> This prevents CPU synchronization completely as long as the main reference
-> is not freed via btrfs_remove_block_group, improving performance of
-> btrfs_put_block_group, btrfs_get_block_group significantly.
+On Mon, Jan 12, 2026 at 04:17:17PM +0000, Martin Raiber wrote:
+> Groups_sem is locked for write mostly only when adding
+> or removing block groups, whereas it is locked for read
+> constantly by multiple CPUs.
+> Change it into a percpu semaphore to significantly
+> increase the performance of find_free_extent.
 
-Besides the potential mixup with patch 2, this looks like a nice
-improvement to me, since we adhere to the pattern of having a "main"
-refcount for the rb tree entry.
+This argument makes sense to me, and I don't think the proposal is wrong
+or anything.
 
-My only other complaint is that this seems to lose the helpful
-refcount_t warning feature. But I think I can live with that.
+However, I am concerned about the low amount of evidence and detail for
+a major change like this.
+
+Can you share your benchmarking results?
+
+What, if any, changes in fairness behavior would we expect going from
+rwsem to percpu-rwsem?
+
+Can you characterize the effect on adding / removing block groups? How
+long does it currently take? How long does it take once you make it wait
+for an rcu grace period? That will affect ENOSPC flushing which can be
+blocking some task, so drastically hurting that performance could be bad.
+
+I suspect it will be fine, though.
+
+Thanks,
+Boris
 
 > 
 > Signed-off-by: Martin Raiber <martin@urbackup.org>
 > ---
->  fs/btrfs/block-group.c | 111 +++++++++++++++++++++++------------------
->  fs/btrfs/block-group.h |   2 +-
->  2 files changed, 63 insertions(+), 50 deletions(-)
+>  fs/btrfs/extent-tree.c |  8 ++++----
+>  fs/btrfs/ioctl.c       |  8 ++++----
+>  fs/btrfs/space-info.c  | 29 +++++++++++++++++++----------
+>  fs/btrfs/space-info.h  |  2 +-
+>  fs/btrfs/sysfs.c       |  9 +++++----
+>  fs/btrfs/zoned.c       | 11 +++++------
+>  6 files changed, 38 insertions(+), 29 deletions(-)
 > 
-> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-> index a1119f06b6d1..7569438ccbd5 100644
-> --- a/fs/btrfs/block-group.c
-> +++ b/fs/btrfs/block-group.c
-> @@ -153,37 +153,44 @@ u64 btrfs_get_alloc_profile(struct btrfs_fs_info *fs_info, u64 orig_flags)
->  
->  void btrfs_get_block_group(struct btrfs_block_group *cache)
->  {
-> -	refcount_inc(&cache->refs);
-> +	percpu_ref_get(&cache->refs);
->  }
->  
-> -void btrfs_put_block_group(struct btrfs_block_group *cache)
-> +static void btrfs_free_block_group(struct percpu_ref *ref)
->  {
-> -	if (refcount_dec_and_test(&cache->refs)) {
-> -		WARN_ON(cache->pinned > 0);
-> -		/*
-> -		 * If there was a failure to cleanup a log tree, very likely due
-> -		 * to an IO failure on a writeback attempt of one or more of its
-> -		 * extent buffers, we could not do proper (and cheap) unaccounting
-> -		 * of their reserved space, so don't warn on reserved > 0 in that
-> -		 * case.
-> -		 */
-> -		if (!(cache->flags & BTRFS_BLOCK_GROUP_METADATA) ||
-> -		    !BTRFS_FS_LOG_CLEANUP_ERROR(cache->fs_info))
-> -			WARN_ON(cache->reserved > 0);
-> +	struct btrfs_block_group *cache =
-> +		container_of(ref, struct btrfs_block_group, refs);
-
-I think for most new code we call these 'block_group' rather than
-'cache', so I think this is a good opportunity to update it.
-
->  
-> -		/*
-> -		 * A block_group shouldn't be on the discard_list anymore.
-> -		 * Remove the block_group from the discard_list to prevent us
-> -		 * from causing a panic due to NULL pointer dereference.
-> -		 */
-> -		if (WARN_ON(!list_empty(&cache->discard_list)))
-> -			btrfs_discard_cancel_work(&cache->fs_info->discard_ctl,
-> -						  cache);
-> +	WARN_ON(cache->pinned > 0);
-> +	/*
-> +	* If there was a failure to cleanup a log tree, very likely due
-> +	* to an IO failure on a writeback attempt of one or more of its
-> +	* extent buffers, we could not do proper (and cheap) unaccounting
-> +	* of their reserved space, so don't warn on reserved > 0 in that
-> +	* case.
-> +	*/
-> +	if (!(cache->flags & BTRFS_BLOCK_GROUP_METADATA) ||
-> +		!BTRFS_FS_LOG_CLEANUP_ERROR(cache->fs_info))
-> +		WARN_ON(cache->reserved > 0);
->  
-> -		kfree(cache->free_space_ctl);
-> -		btrfs_free_chunk_map(cache->physical_map);
-> -		kfree(cache);
-> -	}
-> +	/*
-> +	* A block_group shouldn't be on the discard_list anymore.
-> +	* Remove the block_group from the discard_list to prevent us
-> +	* from causing a panic due to NULL pointer dereference.
-> +	*/
-> +	if (WARN_ON(!list_empty(&cache->discard_list)))
-> +		btrfs_discard_cancel_work(&cache->fs_info->discard_ctl,
-> +						cache);
-> +
-> +	percpu_ref_exit(&cache->refs);
-> +	kfree(cache->free_space_ctl);
-> +	btrfs_free_chunk_map(cache->physical_map);
-> +	kfree(cache);
-> +}
-> +
-> +void btrfs_put_block_group(struct btrfs_block_group *cache)
-> +{
-> +	percpu_ref_put(&cache->refs);
->  }
->  
->  static int btrfs_bg_start_cmp(const struct rb_node *new,
-> @@ -406,8 +413,8 @@ void btrfs_wait_block_group_reservations(struct btrfs_block_group *bg)
->  	 * on the groups' semaphore is held and decremented after releasing
->  	 * the read access on that semaphore and creating the ordered extent.
->  	 */
-> -	down_write(&space_info->groups_sem);
-> -	up_write(&space_info->groups_sem);
-> +	percpu_down_write(&space_info->groups_sem);
-> +	percpu_up_write(&space_info->groups_sem);
-
-Did this sneak out of patch 2 into this patch? (several other instances
-in this patch that I won't note)
-
->  
->  	wait_var_event(&bg->reservations, !atomic_read(&bg->reservations));
->  }
-> @@ -1012,7 +1019,7 @@ static void clear_incompat_bg_bits(struct btrfs_fs_info *fs_info, u64 flags)
->  		struct btrfs_space_info *sinfo;
->  
->  		list_for_each_entry_rcu(sinfo, head, list) {
-> -			down_read(&sinfo->groups_sem);
-> +			percpu_down_read(&sinfo->groups_sem);
->  			if (!list_empty(&sinfo->block_groups[BTRFS_RAID_RAID5]))
->  				found_raid56 = true;
->  			if (!list_empty(&sinfo->block_groups[BTRFS_RAID_RAID6]))
-> @@ -1021,7 +1028,7 @@ static void clear_incompat_bg_bits(struct btrfs_fs_info *fs_info, u64 flags)
->  				found_raid1c34 = true;
->  			if (!list_empty(&sinfo->block_groups[BTRFS_RAID_RAID1C4]))
->  				found_raid1c34 = true;
-> -			up_read(&sinfo->groups_sem);
-> +			percpu_up_read(&sinfo->groups_sem);
->  		}
->  		if (!found_raid56)
->  			btrfs_clear_fs_incompat(fs_info, RAID56);
-> @@ -1159,11 +1166,11 @@ int btrfs_remove_block_group(struct btrfs_trans_handle *trans,
->  	RB_CLEAR_NODE(&block_group->cache_node);
->  
->  	/* Once for the block groups rbtree */
-> -	btrfs_put_block_group(block_group);
-> +	percpu_ref_kill(&block_group->refs);
->  
->  	write_unlock(&fs_info->block_group_cache_lock);
->  
-> -	down_write(&block_group->space_info->groups_sem);
-> +	percpu_down_write(&block_group->space_info->groups_sem);
->  	/*
->  	 * we must use list_del_init so people can check to see if they
->  	 * are still on the list after taking the semaphore
-> @@ -1174,7 +1181,7 @@ int btrfs_remove_block_group(struct btrfs_trans_handle *trans,
->  		block_group->space_info->block_group_kobjs[index] = NULL;
->  		clear_avail_alloc_bits(fs_info, block_group->flags);
+> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+> index 1dcd69fe97ed..ce2eef069663 100644
+> --- a/fs/btrfs/extent-tree.c
+> +++ b/fs/btrfs/extent-tree.c
+> @@ -4442,7 +4442,7 @@ static noinline int find_free_extent(struct btrfs_root *root,
+>  		if (block_group && block_group_bits(block_group, ffe_ctl->flags) &&
+>  		    block_group->space_info == space_info &&
+>  		    block_group->cached != BTRFS_CACHE_NO) {
+> -			down_read(&space_info->groups_sem);
+> +			percpu_down_read(&space_info->groups_sem);
+>  			if (list_empty(&block_group->list) ||
+>  			    block_group->ro) {
+>  				/*
+> @@ -4452,7 +4452,7 @@ static noinline int find_free_extent(struct btrfs_root *root,
+>  				 * valid
+>  				 */
+>  				btrfs_put_block_group(block_group);
+> -				up_read(&space_info->groups_sem);
+> +				percpu_up_read(&space_info->groups_sem);
+>  			} else {
+>  				ffe_ctl->index = btrfs_bg_flags_to_raid_index(
+>  							block_group->flags);
+> @@ -4471,7 +4471,7 @@ static noinline int find_free_extent(struct btrfs_root *root,
+>  	if (ffe_ctl->index == btrfs_bg_flags_to_raid_index(ffe_ctl->flags) ||
+>  	    ffe_ctl->index == 0)
+>  		full_search = true;
+> -	down_read(&space_info->groups_sem);
+> +	percpu_down_read(&space_info->groups_sem);
+>  	list_for_each_entry(block_group,
+>  			    &space_info->block_groups[ffe_ctl->index], list) {
+>  		struct btrfs_block_group *bg_ret;
+> @@ -4609,7 +4609,7 @@ static noinline int find_free_extent(struct btrfs_root *root,
+>  		release_block_group(block_group, ffe_ctl, ffe_ctl->delalloc);
+>  		cond_resched();
 >  	}
-> -	up_write(&block_group->space_info->groups_sem);
-> +	percpu_up_write(&block_group->space_info->groups_sem);
->  	clear_incompat_bg_bits(fs_info, block_group->flags);
->  	if (kobj) {
->  		kobject_del(kobj);
-> @@ -1544,7 +1551,7 @@ void btrfs_delete_unused_bgs(struct btrfs_fs_info *fs_info)
->  		btrfs_discard_cancel_work(&fs_info->discard_ctl, block_group);
+> -	up_read(&space_info->groups_sem);
+> +	percpu_up_read(&space_info->groups_sem);
 >  
->  		/* Don't want to race with allocators so take the groups_sem */
-> -		down_write(&space_info->groups_sem);
-> +		percpu_down_write(&space_info->groups_sem);
+>  	ret = find_free_extent_update_loop(fs_info, ins, ffe_ctl, space_info,
+>  					   full_search);
+> diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+> index d9e7dd317670..73ff0efc0381 100644
+> --- a/fs/btrfs/ioctl.c
+> +++ b/fs/btrfs/ioctl.c
+> @@ -2940,12 +2940,12 @@ static long btrfs_ioctl_space_info(struct btrfs_fs_info *fs_info,
+>  		if (!info)
+>  			continue;
 >  
->  		/*
->  		 * Async discard moves the final block group discard to be prior
-> @@ -1554,7 +1561,7 @@ void btrfs_delete_unused_bgs(struct btrfs_fs_info *fs_info)
->  		if (btrfs_test_opt(fs_info, DISCARD_ASYNC) &&
->  		    !btrfs_is_free_space_trimmed(block_group)) {
->  			trace_btrfs_skip_unused_block_group(block_group);
-> -			up_write(&space_info->groups_sem);
-> +			percpu_up_write(&space_info->groups_sem);
->  			/* Requeue if we failed because of async discard */
->  			btrfs_discard_queue_work(&fs_info->discard_ctl,
->  						 block_group);
-> @@ -1581,7 +1588,7 @@ void btrfs_delete_unused_bgs(struct btrfs_fs_info *fs_info)
->  			trace_btrfs_skip_unused_block_group(block_group);
->  			spin_unlock(&block_group->lock);
->  			spin_unlock(&space_info->lock);
-> -			up_write(&space_info->groups_sem);
-> +			percpu_up_write(&space_info->groups_sem);
->  			goto next;
+> -		down_read(&info->groups_sem);
+> +		percpu_down_read(&info->groups_sem);
+>  		for (c = 0; c < BTRFS_NR_RAID_TYPES; c++) {
+>  			if (!list_empty(&info->block_groups[c]))
+>  				slot_count++;
 >  		}
+> -		up_read(&info->groups_sem);
+> +		percpu_up_read(&info->groups_sem);
+>  	}
 >  
-> @@ -1618,7 +1625,7 @@ void btrfs_delete_unused_bgs(struct btrfs_fs_info *fs_info)
->  			trace_btrfs_skip_unused_block_group(block_group);
->  			spin_unlock(&block_group->lock);
->  			spin_unlock(&space_info->lock);
-> -			up_write(&space_info->groups_sem);
-> +			percpu_up_write(&space_info->groups_sem);
->  			goto next;
+>  	/*
+> @@ -2992,7 +2992,7 @@ static long btrfs_ioctl_space_info(struct btrfs_fs_info *fs_info,
+>  
+>  		if (!info)
+>  			continue;
+> -		down_read(&info->groups_sem);
+> +		percpu_down_read(&info->groups_sem);
+>  		for (c = 0; c < BTRFS_NR_RAID_TYPES; c++) {
+>  			if (!list_empty(&info->block_groups[c])) {
+>  				get_block_group_info(&info->block_groups[c],
+> @@ -3005,7 +3005,7 @@ static long btrfs_ioctl_space_info(struct btrfs_fs_info *fs_info,
+>  			if (!slot_count)
+>  				break;
 >  		}
+> -		up_read(&info->groups_sem);
+> +		percpu_up_read(&info->groups_sem);
+>  	}
 >  
-> @@ -1627,7 +1634,7 @@ void btrfs_delete_unused_bgs(struct btrfs_fs_info *fs_info)
+>  	/*
+> diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+> index 857e4fd2c77e..ddedeccbdade 100644
+> --- a/fs/btrfs/space-info.c
+> +++ b/fs/btrfs/space-info.c
+> @@ -234,13 +234,14 @@ void btrfs_update_space_info_chunk_size(struct btrfs_space_info *space_info,
+>  	WRITE_ONCE(space_info->chunk_size, chunk_size);
+>  }
 >  
->  		/* We don't want to force the issue, only flip if it's ok. */
->  		ret = inc_block_group_ro(block_group, 0);
-> -		up_write(&space_info->groups_sem);
-> +		percpu_up_write(&space_info->groups_sem);
->  		if (ret < 0) {
->  			ret = 0;
->  			goto next;
-> @@ -1882,7 +1889,7 @@ void btrfs_reclaim_bgs_work(struct work_struct *work)
->  		spin_unlock(&fs_info->unused_bgs_lock);
+> -static void init_space_info(struct btrfs_fs_info *info,
+> +static int init_space_info(struct btrfs_fs_info *info,
+>  			    struct btrfs_space_info *space_info, u64 flags)
+>  {
+>  	space_info->fs_info = info;
+>  	for (int i = 0; i < BTRFS_NR_RAID_TYPES; i++)
+>  		INIT_LIST_HEAD(&space_info->block_groups[i]);
+> -	init_rwsem(&space_info->groups_sem);
+> +	if (!percpu_init_rwsem(&space_info->groups_sem))
+> +		return -ENOMEM;
+>  	spin_lock_init(&space_info->lock);
+>  	space_info->flags = flags & BTRFS_BLOCK_GROUP_TYPE_MASK;
+>  	space_info->force_alloc = CHUNK_ALLOC_NO_FORCE;
+> @@ -253,6 +254,8 @@ static void init_space_info(struct btrfs_fs_info *info,
 >  
->  		/* Don't race with allocators so take the groups_sem */
-> -		down_write(&space_info->groups_sem);
-> +		percpu_down_write(&space_info->groups_sem);
+>  	if (btrfs_is_zoned(info))
+>  		space_info->bg_reclaim_threshold = BTRFS_DEFAULT_ZONED_RECLAIM_THRESH;
+> +
+> +	return 0;
+>  }
 >  
->  		spin_lock(&space_info->lock);
->  		spin_lock(&bg->lock);
-> @@ -1895,7 +1902,7 @@ void btrfs_reclaim_bgs_work(struct work_struct *work)
->  			 */
->  			spin_unlock(&bg->lock);
->  			spin_unlock(&space_info->lock);
-> -			up_write(&space_info->groups_sem);
-> +			percpu_up_write(&space_info->groups_sem);
->  			goto next;
->  		}
->  		if (bg->used == 0) {
-> @@ -1914,7 +1921,7 @@ void btrfs_reclaim_bgs_work(struct work_struct *work)
->  				btrfs_mark_bg_unused(bg);
->  			spin_unlock(&bg->lock);
->  			spin_unlock(&space_info->lock);
-> -			up_write(&space_info->groups_sem);
-> +			percpu_up_write(&space_info->groups_sem);
->  			goto next;
+>  static int create_space_info_sub_group(struct btrfs_space_info *parent, u64 flags,
+> @@ -270,7 +273,10 @@ static int create_space_info_sub_group(struct btrfs_space_info *parent, u64 flag
+>  	if (!sub_group)
+>  		return -ENOMEM;
 >  
->  		}
-> @@ -1931,7 +1938,7 @@ void btrfs_reclaim_bgs_work(struct work_struct *work)
->  		if (!should_reclaim_block_group(bg, bg->length)) {
->  			spin_unlock(&bg->lock);
->  			spin_unlock(&space_info->lock);
-> -			up_write(&space_info->groups_sem);
-> +			percpu_up_write(&space_info->groups_sem);
->  			goto next;
->  		}
->  
-> @@ -1947,12 +1954,12 @@ void btrfs_reclaim_bgs_work(struct work_struct *work)
->  		 * never gets back to read-write to let us reclaim again.
->  		 */
->  		if (btrfs_need_cleaner_sleep(fs_info)) {
-> -			up_write(&space_info->groups_sem);
-> +			percpu_up_write(&space_info->groups_sem);
->  			goto next;
->  		}
->  
->  		ret = inc_block_group_ro(bg, 0);
-> -		up_write(&space_info->groups_sem);
-> +		percpu_up_write(&space_info->groups_sem);
->  		if (ret < 0)
->  			goto next;
->  
-> @@ -2288,7 +2295,12 @@ static struct btrfs_block_group *btrfs_create_block_group(
->  
->  	cache->discard_index = BTRFS_DISCARD_INDEX_UNUSED;
->  
-> -	refcount_set(&cache->refs, 1);
-> +	if (percpu_ref_init(&cache->refs, btrfs_free_block_group,
-> +			  0, GFP_NOFS)) {
-> +		kfree(cache->free_space_ctl);
-> +		kfree(cache);
-> +		return NULL;
+> -	init_space_info(fs_info, sub_group, flags);
+> +	if (init_space_info(fs_info, sub_group, flags)) {
+> +		kfree(sub_group);
+> +		return -ENOMEM;
 > +	}
->  	spin_lock_init(&cache->lock);
->  	init_rwsem(&cache->data_rwsem);
->  	INIT_LIST_HEAD(&cache->list);
-> @@ -4550,9 +4562,9 @@ int btrfs_free_block_groups(struct btrfs_fs_info *info)
->  		RB_CLEAR_NODE(&block_group->cache_node);
->  		write_unlock(&info->block_group_cache_lock);
+>  	parent->sub_group[index] = sub_group;
+>  	sub_group->parent = parent;
+>  	sub_group->subgroup_id = id;
+> @@ -293,7 +299,10 @@ static int create_space_info(struct btrfs_fs_info *info, u64 flags)
+>  	if (!space_info)
+>  		return -ENOMEM;
 >  
-> -		down_write(&block_group->space_info->groups_sem);
-> +		percpu_down_write(&block_group->space_info->groups_sem);
->  		list_del(&block_group->list);
-> -		up_write(&block_group->space_info->groups_sem);
-> +		percpu_up_write(&block_group->space_info->groups_sem);
+> -	init_space_info(info, space_info, flags);
+> +	if (init_space_info(info, space_info, flags)) {
+> +		kfree(space_info);
+> +		return -ENOMEM;
+> +	}
 >  
->  		/*
->  		 * We haven't cached this block group, which means we could
-> @@ -4567,9 +4579,10 @@ int btrfs_free_block_groups(struct btrfs_fs_info *info)
->  		ASSERT(list_empty(&block_group->dirty_list));
->  		ASSERT(list_empty(&block_group->io_list));
->  		ASSERT(list_empty(&block_group->bg_list));
-> -		ASSERT(refcount_read(&block_group->refs) == 1);
-> +		ASSERT(!percpu_ref_is_zero(&block_group->refs));
->  		ASSERT(block_group->swap_extents == 0);
-> -		btrfs_put_block_group(block_group);
-> +		percpu_ref_kill(&block_group->refs);
-> +		ASSERT(percpu_ref_is_zero(&block_group->refs));
+>  	if (btrfs_is_zoned(info)) {
+>  		if (flags & BTRFS_BLOCK_GROUP_DATA)
+> @@ -384,9 +393,9 @@ void btrfs_add_bg_to_space_info(struct btrfs_fs_info *info,
+>  	block_group->space_info = space_info;
 >  
->  		write_lock(&info->block_group_cache_lock);
+>  	index = btrfs_bg_flags_to_raid_index(block_group->flags);
+> -	down_write(&space_info->groups_sem);
+> +	percpu_down_write(&space_info->groups_sem);
+>  	list_add_tail(&block_group->list, &space_info->block_groups[index]);
+> -	up_write(&space_info->groups_sem);
+> +	percpu_up_write(&space_info->groups_sem);
+>  }
+>  
+>  struct btrfs_space_info *btrfs_find_space_info(struct btrfs_fs_info *info,
+> @@ -650,7 +659,7 @@ void btrfs_dump_space_info(struct btrfs_space_info *info, u64 bytes,
+>  	if (!dump_block_groups)
+>  		return;
+>  
+> -	down_read(&info->groups_sem);
+> +	percpu_down_read(&info->groups_sem);
+>  again:
+>  	list_for_each_entry(cache, &info->block_groups[index], list) {
+>  		u64 avail;
+> @@ -670,7 +679,7 @@ void btrfs_dump_space_info(struct btrfs_space_info *info, u64 bytes,
 >  	}
-> diff --git a/fs/btrfs/block-group.h b/fs/btrfs/block-group.h
-> index 5f933455118c..d44675f9d601 100644
-> --- a/fs/btrfs/block-group.h
-> +++ b/fs/btrfs/block-group.h
-> @@ -178,7 +178,7 @@ struct btrfs_block_group {
->  	/* For block groups in the same raid type */
->  	struct list_head list;
+>  	if (++index < BTRFS_NR_RAID_TYPES)
+>  		goto again;
+> -	up_read(&info->groups_sem);
+> +	percpu_up_read(&info->groups_sem);
 >  
-> -	refcount_t refs;
-> +	struct percpu_ref refs;
+>  	btrfs_info(fs_info, "%llu bytes available across all block groups", total_avail);
+>  }
+> @@ -2095,7 +2104,7 @@ static void do_reclaim_sweep(struct btrfs_space_info *space_info, int raid)
+>  	thresh_pct = btrfs_calc_reclaim_threshold(space_info);
+>  	spin_unlock(&space_info->lock);
 >  
->  	/*
->  	 * List of struct btrfs_free_clusters for this block group.
+> -	down_read(&space_info->groups_sem);
+> +	percpu_down_read(&space_info->groups_sem);
+>  again:
+>  	list_for_each_entry(bg, &space_info->block_groups[raid], list) {
+>  		u64 thresh;
+> @@ -2127,7 +2136,7 @@ static void do_reclaim_sweep(struct btrfs_space_info *space_info, int raid)
+>  		goto again;
+>  	}
+>  
+> -	up_read(&space_info->groups_sem);
+> +	percpu_up_read(&space_info->groups_sem);
+>  }
+>  
+>  void btrfs_space_info_update_reclaimable(struct btrfs_space_info *space_info, s64 bytes)
+> diff --git a/fs/btrfs/space-info.h b/fs/btrfs/space-info.h
+> index 0703f24b23f7..f99624069391 100644
+> --- a/fs/btrfs/space-info.h
+> +++ b/fs/btrfs/space-info.h
+> @@ -175,7 +175,7 @@ struct btrfs_space_info {
+>  	 */
+>  	u64 tickets_id;
+>  
+> -	struct rw_semaphore groups_sem;
+> +	struct percpu_rw_semaphore groups_sem;
+>  	/* for block groups in our same type */
+>  	struct list_head block_groups[BTRFS_NR_RAID_TYPES];
+>  
+> diff --git a/fs/btrfs/sysfs.c b/fs/btrfs/sysfs.c
+> index ebd6d1d6778b..ccec9eb1fa4f 100644
+> --- a/fs/btrfs/sysfs.c
+> +++ b/fs/btrfs/sysfs.c
+> @@ -701,14 +701,14 @@ static ssize_t raid_bytes_show(struct kobject *kobj,
+>  	int index = btrfs_bg_flags_to_raid_index(to_raid_kobj(kobj)->flags);
+>  	u64 val = 0;
+>  
+> -	down_read(&sinfo->groups_sem);
+> +	percpu_down_read(&sinfo->groups_sem);
+>  	list_for_each_entry(block_group, &sinfo->block_groups[index], list) {
+>  		if (&attr->attr == BTRFS_ATTR_PTR(raid, total_bytes))
+>  			val += block_group->length;
+>  		else
+>  			val += block_group->used;
+>  	}
+> -	up_read(&sinfo->groups_sem);
+> +	percpu_up_read(&sinfo->groups_sem);
+>  	return sysfs_emit(buf, "%llu\n", val);
+>  }
+>  
+> @@ -816,7 +816,7 @@ static ssize_t btrfs_size_classes_show(struct kobject *kobj,
+>  	u32 large = 0;
+>  
+>  	for (int i = 0; i < BTRFS_NR_RAID_TYPES; ++i) {
+> -		down_read(&sinfo->groups_sem);
+> +		percpu_down_read(&sinfo->groups_sem);
+>  		list_for_each_entry(bg, &sinfo->block_groups[i], list) {
+>  			if (!btrfs_block_group_should_use_size_class(bg))
+>  				continue;
+> @@ -835,7 +835,7 @@ static ssize_t btrfs_size_classes_show(struct kobject *kobj,
+>  				break;
+>  			}
+>  		}
+> -		up_read(&sinfo->groups_sem);
+> +		percpu_up_read(&sinfo->groups_sem);
+>  	}
+>  	return sysfs_emit(buf, "none %u\n"
+>  			       "small %u\n"
+> @@ -1046,6 +1046,7 @@ ATTRIBUTE_GROUPS(space_info);
+>  static void space_info_release(struct kobject *kobj)
+>  {
+>  	struct btrfs_space_info *sinfo = to_space_info(kobj);
+> +	percpu_free_rwsem(&sinfo->groups_sem);
+>  	kfree(sinfo);
+>  }
+>  
+> diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+> index 2e861eef5cd8..da92b0d38a1b 100644
+> --- a/fs/btrfs/zoned.c
+> +++ b/fs/btrfs/zoned.c
+> @@ -2588,12 +2588,11 @@ void btrfs_zoned_reserve_data_reloc_bg(struct btrfs_fs_info *fs_info)
+>  			       "reloc_sinfo->subgroup_id=%d", reloc_sinfo->subgroup_id);
+>  			factor = btrfs_bg_type_to_factor(bg->flags);
+>  
+> -			down_write(&space_info->groups_sem);
+> +			percpu_down_write(&space_info->groups_sem);
+>  			list_del_init(&bg->list);
+>  			/* We can assume this as we choose the second empty one. */
+>  			ASSERT(!list_empty(&space_info->block_groups[index]));
+> -			up_write(&space_info->groups_sem);
+> -
+> +			percpu_up_write(&space_info->groups_sem);
+>  			spin_lock(&space_info->lock);
+>  			space_info->total_bytes -= bg->length;
+>  			space_info->disk_total -= bg->length * factor;
+> @@ -2771,7 +2770,7 @@ int btrfs_zoned_activate_one_bg(struct btrfs_space_info *space_info, bool do_fin
+>  		int ret;
+>  		bool need_finish = false;
+>  
+> -		down_read(&space_info->groups_sem);
+> +		percpu_down_read(&space_info->groups_sem);
+>  		for (index = 0; index < BTRFS_NR_RAID_TYPES; index++) {
+>  			list_for_each_entry(bg, &space_info->block_groups[index],
+>  					    list) {
+> @@ -2786,14 +2785,14 @@ int btrfs_zoned_activate_one_bg(struct btrfs_space_info *space_info, bool do_fin
+>  				spin_unlock(&bg->lock);
+>  
+>  				if (btrfs_zone_activate(bg)) {
+> -					up_read(&space_info->groups_sem);
+> +					percpu_up_read(&space_info->groups_sem);
+>  					return 1;
+>  				}
+>  
+>  				need_finish = true;
+>  			}
+>  		}
+> -		up_read(&space_info->groups_sem);
+> +		percpu_up_read(&space_info->groups_sem);
+>  
+>  		if (!do_finish || !need_finish)
+>  			break;
 > -- 
 > 2.39.5
 > 
