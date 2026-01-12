@@ -1,250 +1,154 @@
-Return-Path: <linux-btrfs+bounces-20407-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20408-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF557D137C2
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Jan 2026 16:09:14 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB0BBD1397C
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Jan 2026 16:20:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C57503178CF5
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Jan 2026 15:00:13 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id B1F0031E4702
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Jan 2026 15:03:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF8AF2EA151;
-	Mon, 12 Jan 2026 14:59:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F262F2DF144;
+	Mon, 12 Jan 2026 15:02:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fPUhb6/z"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Vy8SUOPz"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f65.google.com (mail-ot1-f65.google.com [209.85.210.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC31C2DF130;
-	Mon, 12 Jan 2026 14:59:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEB4A2DB797
+	for <linux-btrfs@vger.kernel.org>; Mon, 12 Jan 2026 15:02:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768229957; cv=none; b=di2UUMyBmep04Po8+oeQGhQrEiWXu0hXEG31tNrGYWTQ4b71Clk5kxq/P5xeOB1oHYyro2JEq+R9v5V9YEh/iYJCvLUUXg5+nhG9q336BMFFwUZIBAaDs8TXffS5OmjJWxeup8KQSzEpHtwNOaJUH8omeQwEwIhdL4rPBCOj01k=
+	t=1768230176; cv=none; b=iWDrgYaWZwMrjyGNiK6qxaxld2ijKcySEgbFfHFwWmak6IDKt0qgdHy50l5MRdQ9EpTqqf0P8OOUiX1CrZL/6K8bUB/utFZLHlM2adkPR6WdRs0rYZxXjLfekSFqPInt/R801dksZHUHX0V5GgHRM8ZJKyosfpgU39MBSTXENWE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768229957; c=relaxed/simple;
-	bh=Z5TDojuMgBADVfYFxKXv8kAQqPgNhjA9xpQie0XtfDI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=cnUQHBhzDQNryjzYGHGuhQVDi4hSpp4W6zdB7iUL8kaQFo6efEilrs9igDlk0/JEGzLcTAO/VWvyGvQNRn/GFakTzQwnIaZaGBMhAwMaryyssWgly2hdw/FC70sqrxVIJ4vBgHFLoUZyrE3hmEzWeEA3z5EZsVxNf7EpoPkPBiA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fPUhb6/z; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9F06C2BCB1;
-	Mon, 12 Jan 2026 14:59:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768229956;
-	bh=Z5TDojuMgBADVfYFxKXv8kAQqPgNhjA9xpQie0XtfDI=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=fPUhb6/zIEAUotn87+ppxnjcQVZqf+ZI5NuoBhIEAIAaRYwd37qpjptGxYEi5PYg/
-	 d3lfG1YRVrg1UvNUvv6k10qxfkv500ZvNen1KJ827+uMRwJw9Phh4iXR2XKtxMy2gz
-	 fu9VNx2ir/XKOe+s9rfFI9BTsgNVb1ZbVav+ppbtMUcXKCYTMlteClLFBny4MzPX2F
-	 k2qSC6oJYjV0fRZhxAxZReqDGeuAJ0RQQ7m4BoAIBheyLhiZjc78Ky9oij3Nl+dyQ5
-	 4korHy9KGW/IIvRfbKyFl0WvyuXaTDqC1msxA6hOHr4Sq9Wd/aSZDLD15P4gGWjdJK
-	 zsdtfn3HcXoHA==
-From: Sasha Levin <sashal@kernel.org>
-To: patches@lists.linux.dev,
-	stable@vger.kernel.org
-Cc: Filipe Manana <fdmanana@suse.com>,
-	David Sterba <dsterba@suse.com>,
-	Sasha Levin <sashal@kernel.org>,
-	clm@fb.com,
-	linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.18-6.1] btrfs: fix reservation leak in some error paths when inserting inline extent
-Date: Mon, 12 Jan 2026 09:58:22 -0500
-Message-ID: <20260112145840.724774-21-sashal@kernel.org>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20260112145840.724774-1-sashal@kernel.org>
-References: <20260112145840.724774-1-sashal@kernel.org>
+	s=arc-20240116; t=1768230176; c=relaxed/simple;
+	bh=oaj+1KQRb/TnihudJZJAP4TYRAcFQBAu10VP3WkIu7o=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=eQz5hYqyRQDS5cyTlllFnX6wPwJIgMRyNjrawNFQgjQdk0+cGT9m1D9CTkj6BkC96yuUUG0Nhnekb3MomuqW5oOE9Ja8ygbu2SwVbDER1LjTCR6T+0NjuOKLA509VT0L+TNr+UCiDqWeHZLiTYJkKPpVgabg53roi/SQkEHmj8o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Vy8SUOPz; arc=none smtp.client-ip=209.85.210.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f65.google.com with SMTP id 46e09a7af769-7c6cc44ff62so5221515a34.3
+        for <linux-btrfs@vger.kernel.org>; Mon, 12 Jan 2026 07:02:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1768230172; x=1768834972; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kQbUZBlwnVIE/0tOVdzdzTy0LaUN1JEnxmyyVOiPwHw=;
+        b=Vy8SUOPz+zy/BU43QGnC4VYKoiPsMyLhM3GPepeGlyY/plN82D3buH+8WX0ZXn1IrP
+         EuTmwJowxEZJ0UanM75aw2Z+kqfjVKZkw1iBi+Z3TkR78vzh78t89W5UJlOBhkeS8BsC
+         0vD4bpQYgRMPiTKb5ja/NL9hYwn2oKa4Maj50JLYy0dn2+kIEa/qcik9qq3QHS6kPJBT
+         Q84JhoWvAOD1Yj7e1N0ywOnC6W+aY5sKb2kAsco7AkeYLT6I3jXRLgUbrGn25b+wQ4qd
+         UwdO1304sHFpKGrAeIm6WC81X5rdlXXKfI54J/amL+pEIRQVZBAWlFBwHcdR+OOlt5HP
+         mnvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1768230172; x=1768834972;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=kQbUZBlwnVIE/0tOVdzdzTy0LaUN1JEnxmyyVOiPwHw=;
+        b=qNkXIFURMW0Q6gsojcoZYXsMxKLUotgXxrs7imHmENWSzPyy19mB8OY2D/llIurvUu
+         ieqY2uB42BFT1kpiGmLU0KUYhqnvPzdFji3RtXApsxcAP1jPcXC+cTlQrgn8+Y3RdEBT
+         x8sN0D1eBpn1+4x5jI3yyB0lt+Oae+S19iLtb/CwSJOPrhG2qH6h1xsFKcoaF+tz1Yq2
+         hodXDzThTJIXTooofBR6mK2cEbZvnNl8HLV7TpwslM/g5p0tsWsk3uirz+2hhbadhBzC
+         EhxKmYoZOg+rN3WJZdWal23OWpIGQ2+IEnKAuApSxgePE3qFEPuouSlNpEK6i8TItBVR
+         DX1Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXWq/7sE8ue7Wy1lMg0f+Y4fsqqqo/+iJmSELX/YEbVnX2k+U43L/CuV8HuMjNF3sSdeE03i27pBzZv2Q==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyHubv3Iz36ZGu92Z3rZdG07iriFLFEFa1+GXGGN8ceKyaEHPNl
+	OE8+EpmA5PGulpTKEXYPxuuKpzh2J3VzFnPf1Pkg8J55ZL+BYTRMb/Yw
+X-Gm-Gg: AY/fxX52cLwqTAD9+riRWDsnbbXVpy+njEMXfZp11sIjnJfH7t/aU8UGk4vJUiBFhSA
+	pYlUta7GQXRkNuKXjMPbXniJ7xOeKLeDP6Nwjn1m5yrzs5ggiL9CtidMNYTl/SabEG/HBGiRCVc
+	kkV5xZB9BsGkVkgfH38EtaE8rNrc9AJQsJCZIaEX2RKc/7a0MxQXnjvipBufu0/0aQzOAaSqK5F
+	5IHHBIQm+Zx50OyVtjEtto26HgXxpmcw1AF2gqVFTq7HAmmWpOf2h86ZOKGwo8W7XXpLtbr1jsM
+	evd0bWe2k8d7mUi58zw3yAUoK2bDhJ8PtVF69LgXdVkvwRW9sXrryDqv5dKgaFXcRyhdLqOp8Qr
+	HJE0yrO+P5mYob0bsUzx8jRznFkWbPIVHR1xTp5jvyqOgerQI6JBagYnqd2FEmEtylCKGGTZOcq
+	CkqPMnkHZycoyx4V280zylHGZ4y8Po1uH5
+X-Google-Smtp-Source: AGHT+IEQFur2qhGuoz2oKzCG1BeyVo4cXFujy/+8zzGLBZM+Y/h+R8u/nYyCPEY0B8NCAByJnQWVzA==
+X-Received: by 2002:a05:6820:1613:b0:659:9a49:8ea2 with SMTP id 006d021491bc7-65f54f5e7f8mr8630491eaf.38.1768230172463;
+        Mon, 12 Jan 2026 07:02:52 -0800 (PST)
+Received: from newman.cs.purdue.edu ([128.10.127.250])
+        by smtp.gmail.com with ESMTPSA id 006d021491bc7-65f48ab2d00sm7311748eaf.0.2026.01.12.07.02.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Jan 2026 07:02:51 -0800 (PST)
+From: Jiasheng Jiang <jiashengjiangcool@gmail.com>
+To: jiashengjiangcool@gmail.com
+Cc: clm@fb.com,
+	dsterba@suse.com,
+	fdmanana@kernel.org,
+	linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v3] btrfs: reset block group size class when reservations are freed
+Date: Mon, 12 Jan 2026 15:02:48 +0000
+Message-Id: <20260112150248.32570-1-jiashengjiangcool@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20260112143523.31542-1-jiashengjiangcool@gmail.com>
+References: <20260112143523.31542-1-jiashengjiangcool@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.18.5
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-From: Filipe Manana <fdmanana@suse.com>
+Differential analysis of block-group.c shows an inconsistency between
+btrfs_add_reserved_bytes() and btrfs_free_reserved_bytes().
 
-[ Upstream commit c1c050f92d8f6aac4e17f7f2230160794fceef0c ]
+When space is reserved, btrfs_use_block_group_size_class() is called to
+set a block group's size class, specializing it for a specific allocation
+size to reduce fragmentation. However, when these reservations are
+subsequently freed (e.g., due to an error or transaction abort),
+btrfs_free_reserved_bytes() fails to perform the corresponding cleanup.
 
-If we fail to allocate a path or join a transaction, we return from
-__cow_file_range_inline() without freeing the reserved qgroup data,
-resulting in a leak. Fix this by ensuring we call btrfs_qgroup_free_data()
-in such cases.
+This leads to a state where a block group remains stuck with a specific
+size class even if it contains no used or reserved bytes. While the
+impact depends on the workload, this stale state can cause
+find_free_extent to unnecessarily skip these block groups for mismatched
+size requests.
+In some cases, it may even trigger the allocation of new block groups if
+no matching or unassigned block groups are available.
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fix this by resetting the size class to BTRFS_BG_SZ_NONE in
+btrfs_free_reserved_bytes() when the block group becomes completely
+empty.
+
+Fixes: 52bb7a2166af ("btrfs: introduce size class to block group allocator")
+Signed-off-by: Jiasheng Jiang <jiashengjiangcool@gmail.com>
 ---
+Changelog:
 
-LLM Generated explanations, may be completely bogus:
+v2 -> v3:
+1. Corrected the "Fixes" tag to 52bb7a2166af.
+2. Updated the commit message to reflect that the performance impact is workload-dependent.
+3. Added mention that the issue can lead to unnecessary allocation of new block groups.
 
-## Commit Analysis: btrfs: fix reservation leak in some error paths when
-inserting inline extent
+v1 -> v2:
+1. Inlined btrfs_maybe_reset_size_class() function.
+2. Moved check below the reserved bytes decrement in btrfs_free_reserved_bytes().
+---
+ fs/btrfs/block-group.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-### 1. COMMIT MESSAGE ANALYSIS
-
-The subject clearly indicates a **bug fix** for a "reservation leak" in
-error paths. The body explains:
-- When `btrfs_alloc_path()` fails or `btrfs_join_transaction()` fails,
-  the function returned early
-- The reserved qgroup data was never freed in these error paths
-- This results in a resource leak
-
-**Tags**: Reviewed-by and Signed-off-by from David Sterba (btrfs
-maintainer), authored by Filipe Manana (experienced btrfs developer).
-Excellent review coverage.
-
-### 2. CODE CHANGE ANALYSIS
-
-**The Bug (Before):**
-```c
-path = btrfs_alloc_path();
-if (!path)
-    return -ENOMEM;  // Early return - leaks qgroup reservation
-
-trans = btrfs_join_transaction(root);
-if (IS_ERR(trans)) {
-    btrfs_free_path(path);
-    return PTR_ERR(trans);  // Early return - leaks qgroup reservation
-}
-```
-
-**The Fix (After):**
-```c
-path = btrfs_alloc_path();
-if (!path) {
-    ret = -ENOMEM;
-    goto out;  // Goes to cleanup that calls btrfs_qgroup_free_data()
-}
-
-trans = btrfs_join_transaction(root);
-if (IS_ERR(trans)) {
-    ret = PTR_ERR(trans);
-    trans = NULL;
-    goto out;  // Goes to cleanup that calls btrfs_qgroup_free_data()
-}
-```
-
-Additional changes:
-- Initialize `trans = NULL` at declaration
-- Add NULL check before `btrfs_end_transaction(trans)` in cleanup
-
-**Root cause**: Early returns bypassed the `out` label where
-`btrfs_qgroup_free_data()` is called for error cases (`ret <= 0`).
-
-**Why the fix works**: Redirects error paths to use `goto out`, ensuring
-all exits pass through existing cleanup logic.
-
-### 3. CLASSIFICATION
-
-- **Type**: Bug fix (resource leak)
-- **Category**: Error handling fix in filesystem code
-- **Not a feature addition**: Pure cleanup path fix
-
-### 4. SCOPE AND RISK ASSESSMENT
-
-- **Size**: ~20 lines changed in a single file (`fs/btrfs/inode.c`)
-- **Scope**: Single function `__cow_file_range_inline()`
-- **Complexity**: Very low - simple control flow change (early return →
-  goto)
-- **Risk**: Very low
-  - Uses existing cleanup logic already tested for other error paths
-  - The NULL check on `trans` is a proper safeguard
-  - No algorithm changes, no new logic
-
-### 5. USER IMPACT
-
-- **Affected users**: btrfs users with qgroups enabled
-- **Trigger conditions**: ENOMEM or transaction join failure during
-  inline extent insertion
-- **Severity**: Resource leak that accumulates over time, can cause
-  incorrect qgroup accounting
-- **Frequency**: Error conditions are rare, but when they occur, the
-  leak is guaranteed
-
-### 6. STABILITY INDICATORS
-
-- Authored by Filipe Manana (prolific btrfs contributor)
-- Reviewed by David Sterba (btrfs maintainer)
-- Signed-off by David Sterba
-
-### 7. DEPENDENCY CHECK
-
-- Self-contained fix
-- No dependencies on other commits
-- The affected function and `btrfs_qgroup_free_data()` exist in stable
-  trees
-- The code structure is stable and not recently added
-
-## Conclusion
-
-This commit is an **ideal stable candidate**:
-
-1. **Obviously correct**: Simple redirection of error paths to existing
-   cleanup code
-2. **Fixes a real bug**: Qgroup data reservation leak that can
-   accumulate over time
-3. **Small and contained**: ~20 lines, one file, one function
-4. **No new features**: Pure bug fix
-5. **Well-reviewed**: By btrfs maintainers
-6. **Low risk**: Uses existing cleanup logic, minimal code change
-7. **Important for users**: Btrfs with qgroups is a common configuration
-
-The fix is surgical, low-risk, and addresses a genuine resource leak in
-the btrfs filesystem. It meets all stable kernel criteria.
-
-**YES**
-
- fs/btrfs/inode.c | 16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
-
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 9e8be59ea3deb..0d61e0ee2f86f 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -614,19 +614,22 @@ static noinline int __cow_file_range_inline(struct btrfs_inode *inode,
- 	struct btrfs_drop_extents_args drop_args = { 0 };
- 	struct btrfs_root *root = inode->root;
- 	struct btrfs_fs_info *fs_info = root->fs_info;
--	struct btrfs_trans_handle *trans;
-+	struct btrfs_trans_handle *trans = NULL;
- 	u64 data_len = (compressed_size ?: size);
- 	int ret;
- 	struct btrfs_path *path;
- 
- 	path = btrfs_alloc_path();
--	if (!path)
--		return -ENOMEM;
-+	if (!path) {
-+		ret = -ENOMEM;
-+		goto out;
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index 08b14449fabe..8339ad001d3f 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -3867,6 +3867,12 @@ void btrfs_free_reserved_bytes(struct btrfs_block_group *cache, u64 num_bytes,
+ 	spin_lock(&cache->lock);
+ 	bg_ro = cache->ro;
+ 	cache->reserved -= num_bytes;
++
++	if (btrfs_block_group_should_use_size_class(cache)) {
++		if (cache->used == 0 && cache->reserved == 0)
++			cache->size_class = BTRFS_BG_SZ_NONE;
 +	}
- 
- 	trans = btrfs_join_transaction(root);
- 	if (IS_ERR(trans)) {
--		btrfs_free_path(path);
--		return PTR_ERR(trans);
-+		ret = PTR_ERR(trans);
-+		trans = NULL;
-+		goto out;
- 	}
- 	trans->block_rsv = &inode->block_rsv;
- 
-@@ -677,7 +680,8 @@ static noinline int __cow_file_range_inline(struct btrfs_inode *inode,
- 	if (ret <= 0)
- 		btrfs_qgroup_free_data(inode, NULL, 0, fs_info->sectorsize, NULL);
- 	btrfs_free_path(path);
--	btrfs_end_transaction(trans);
-+	if (trans)
-+		btrfs_end_transaction(trans);
- 	return ret;
- }
- 
++
+ 	if (is_delalloc)
+ 		cache->delalloc_bytes -= num_bytes;
+ 	spin_unlock(&cache->lock);
 -- 
-2.51.0
+2.25.1
 
 
