@@ -1,73 +1,130 @@
-Return-Path: <linux-btrfs+bounces-20396-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20397-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98A98D129B9
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Jan 2026 13:49:13 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9165FD12AB1
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Jan 2026 14:02:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 7CEF2301E106
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Jan 2026 12:49:00 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id B9998301BDCE
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Jan 2026 13:02:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9C6C357A5F;
-	Mon, 12 Jan 2026 12:48:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DD85358D1A;
+	Mon, 12 Jan 2026 13:02:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IvulzzvO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GuBawYgi"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31AD934DB7C;
-	Mon, 12 Jan 2026 12:48:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CF522D47E3;
+	Mon, 12 Jan 2026 13:02:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768222135; cv=none; b=ZKwTuCYqQuNlKCK1gYdEiAKJS5UYc2CjqTA9wzTfaPU8zTpWaHNZYkfYxYzJsIlvAKcQob2nCN8oTnNJm3EVAY8PNxhqt+5+l0CgGyKMxKVyQRDpIwKfGC++i77RjA2b0mFfcscE0ykET5nT4yVAjCktRdAIddUfowrKo76V8uk=
+	t=1768222932; cv=none; b=Rekm7lgVLXBgiAAMQ+om4GvmNEqGwDMrGEcoOPYQkAQB6J1eLtUeH1KwGlQqPLBNDdaXzmAwLeJ/HYiheTPATAj932eKnQa5PR0ZvypZURKgJp5zlaQpNfbFc6BKgAJI/fFNLiyMmJDrJVv+hOO4c7EQ32FjaxQ1B/BhBPE6qB0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768222135; c=relaxed/simple;
-	bh=RmC5fFTY83NZXuYaTscyfYhCMn2DaAIo5s2lhxtmxqg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=X74zLUFj1QzjOYnP6HQCGzfb+0lyreTnEljt446P4jRO77gYUd+9lFrarUFd+SF/CQhFW++3FvBwSkG36DJ2mCuw1V7cgq6yydItuMyFdJ/kEM9I66XeINPnV55a8+BtfRgvwtpeXhzpbM2RUXLsy/ALIu6gALAd11QlbNPAAvo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IvulzzvO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58A5DC16AAE;
-	Mon, 12 Jan 2026 12:48:53 +0000 (UTC)
+	s=arc-20240116; t=1768222932; c=relaxed/simple;
+	bh=RIH5DGw9iaODSe+GboFTs0O7c0cEBRdRfN8567Qvz9A=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=pOdeLo4ZbMxZPciLiPUTxU9M4D5eXoSJujLY5srCHZjYqK7q9yjLCK8ERKKfwMOzFzgrSm3Gt3Rtv1r2wcEkzKy1wr7lPzdMK5QJTm5knd7IxPVTio/m1vyhqgx98T/YNe0fBtqOgy2IQMPxWGzmrojMTfIBxE3u4CiE0CNjj+s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GuBawYgi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34EF4C16AAE;
+	Mon, 12 Jan 2026 13:02:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768222134;
-	bh=RmC5fFTY83NZXuYaTscyfYhCMn2DaAIo5s2lhxtmxqg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=IvulzzvOMTvJ9gY3RP8fknnfrw34vOmQnYDZiRGfbH1t/FYue9uk2LYvJDlJk4Dtg
-	 kffxMk7jciU0SZxq2c/8ISjv3QUQ+VntvzDAVg0HLkFyyWBWx7SQsA+SAyApzIzzEr
-	 L1A4cVQIIq7xNGTaeZ44gP3OFyRBny8/7C6FLTQgJKPwi1KqKHV1EH9NC3x4sjg8Ig
-	 5W+fd6D5CQt2bg9lfAsw222RVVP7zfXl9NGX7Dnho/zkOiNZG96ENJkbPyVexuW0Kb
-	 xarctrWtbPrlHVxY8rhjpcefeUKl/MEOclYsBML2ZRlWmc86vEbhtw6uI4rCwzG1U6
-	 SQR5b2tLXMJKQ==
-Date: Mon, 12 Jan 2026 13:48:51 +0100
+	s=k20201202; t=1768222932;
+	bh=RIH5DGw9iaODSe+GboFTs0O7c0cEBRdRfN8567Qvz9A=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=GuBawYgiub2dv2qsF9RKZVhe0V/aSnkEu4nPJWorZt+trDE7QgUWV0DL+v3F9lYFb
+	 S8jkjZescwZ86TegZq0zHtZhaq9OiP/XT4Ek5oC6djgknJE1zX7QEA/iqpuP2EIHYd
+	 i/AUasa7Z7UImS/J0tHpsy/U9HlOS5XOAxCNzfi5lx8vhyf2Wb4IsdXz0HYl/2ybgd
+	 zyMbLaIzdD+bTqh0IYPV9h+8sw3TKlpbpGyacEvIK+RA3MswzE5pZ8VVVdUD7aZwhB
+	 Xj9stBjtg4cBkuHHRQP3fuSvhrKmcBkeAARfw51Fmp9ppfpQRplOXvMpP4uYYgpMYD
+	 hcqUp5Kh8q71w==
 From: Christian Brauner <brauner@kernel.org>
-To: fdmanana@kernel.org
-Cc: linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	viro@zeniv.linux.org.uk, Filipe Manana <fdmanana@suse.com>
-Subject: Re: [PATCH 0/4] btrfs: stop duplicating VFS code for
- subvolume/snapshot dentry
-Message-ID: <20260112-wonach-mochten-cd6c14b298ae@brauner>
-References: <cover.1767801889.git.fdmanana@suse.com>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Christian Brauner <brauner@kernel.org>,
+	Al Viro <viro@zeniv.linux.org.uk>,
+	David Sterba <dsterba@suse.com>,
+	Jan Kara <jack@suse.cz>,
+	Mike Marshall <hubcap@omnibond.com>,
+	Martin Brandenburg <martin@omnibond.com>,
+	Carlos Maiolino <cem@kernel.org>,
+	Stefan Roesch <shr@fb.com>,
+	Jeff Layton <jlayton@kernel.org>,
+	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+	Trond Myklebust <trondmy@kernel.org>,
+	Anna Schumaker <anna@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	linux-btrfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	gfs2@lists.linux.dev,
+	io-uring@vger.kernel.org,
+	devel@lists.orangefs.org,
+	linux-unionfs@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	linux-xfs@vger.kernel.org,
+	linux-nfs@vger.kernel.org
+Subject: Re: re-enable IOCB_NOWAIT writes to files v6
+Date: Mon, 12 Jan 2026 14:02:02 +0100
+Message-ID: <20260112-geben-ausrichten-20a6cad7e163@brauner>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20260108141934.2052404-1-hch@lst.de>
+References: <20260108141934.2052404-1-hch@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <cover.1767801889.git.fdmanana@suse.com>
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2358; i=brauner@kernel.org; h=from:subject:message-id; bh=RIH5DGw9iaODSe+GboFTs0O7c0cEBRdRfN8567Qvz9A=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWSmfDgTzOJR2bBdxfHs4lPvNzr2Vs6TUNwx6US+esA93 wOa+bFsHaUsDGJcDLJiiiwO7Sbhcst5KjYbZWrAzGFlAhnCwMUpABN5dI2R4ZP6ftH/fWt4PbWW uef2Z5wtW9WpnhlzeM35ddH5pfqvghj+lxkqrN5Xtz+j/JXujQs9eTrzbzdP4Od/964lr1hHb7E MCwA=
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
 
-On Thu, Jan 08, 2026 at 01:35:30PM +0000, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
+On Thu, 08 Jan 2026 15:19:00 +0100, Christoph Hellwig wrote:
+> commit 66fa3cedf16a ("fs: Add async write file modification handling.")
+> effectively disabled IOCB_NOWAIT writes as timestamp updates currently
+> always require blocking, and the modern timestamp resolution means we
+> always update timestamps.  This leads to a lot of context switches from
+> applications using io_uring to submit file writes, making it often worse
+> than using the legacy aio code that is not using IOCB_NOWAIT.
 > 
-> Currently btrfs has copies of two unexported functions from fs/namei.c
-> used in the snapshot/subvolume creation and deletion. This patchset
-> exports those functions and makes btrfs use them, to avoid duplication
-> and the burden of keeping the copies up to date.
+> [...]
 
-Seems like a good idea to me.
-Let me know once it's ready and I'll give you a stable branch with the
-VFS bits applied where you can apply the btrfs specific changes on top.
-Thanks!
+Applied to the vfs-7.0.nonblocking_timestamps branch of the vfs/vfs.git tree.
+Patches in the vfs-7.0.nonblocking_timestamps branch should appear in linux-next soon.
+
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
+
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
+
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs-7.0.nonblocking_timestamps
+
+[01/11] fs: remove inode_update_time
+        https://git.kernel.org/vfs/vfs/c/20b781834ea0
+[02/11] fs: allow error returns from generic_update_time
+        https://git.kernel.org/vfs/vfs/c/dc9629faef0a
+[03/11] nfs: split nfs_update_timestamps
+        https://git.kernel.org/vfs/vfs/c/b8b3002fbfef
+[04/11] fat: cleanup the flags for fat_truncate_time
+        https://git.kernel.org/vfs/vfs/c/1cbc82281675
+[05/11] fs: refactor ->update_time handling
+        https://git.kernel.org/vfs/vfs/c/761475268fa8
+[06/11] fs: factor out a sync_lazytime helper
+        https://git.kernel.org/vfs/vfs/c/188344c8ac0b
+[07/11] fs: add a ->sync_lazytime method
+        https://git.kernel.org/vfs/vfs/c/5cf06ea56ee6
+[08/11] fs: add support for non-blocking timestamp updates
+        https://git.kernel.org/vfs/vfs/c/85c871a02b03
+[09/11] fs: refactor file_update_time_flags
+        https://git.kernel.org/vfs/vfs/c/2d72003ba244
+[10/11] xfs: implement ->sync_lazytime
+        https://git.kernel.org/vfs/vfs/c/f92f8eddbbfb
+[11/11] xfs: enable non-blocking timestamp updates
+        https://git.kernel.org/vfs/vfs/c/08489c4f4133
 
