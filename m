@@ -1,154 +1,215 @@
-Return-Path: <linux-btrfs+bounces-20408-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20409-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB0BBD1397C
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Jan 2026 16:20:12 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 900FED13B27
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Jan 2026 16:33:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id B1F0031E4702
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Jan 2026 15:03:24 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 1D4213004CE8
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Jan 2026 15:33:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F262F2DF144;
-	Mon, 12 Jan 2026 15:02:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E4AC35E527;
+	Mon, 12 Jan 2026 15:33:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Vy8SUOPz"
+	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="OeVg+8UV"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ot1-f65.google.com (mail-ot1-f65.google.com [209.85.210.65])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail-07.mail-europe.com (mail-0701.mail-europe.com [51.83.17.38])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEB4A2DB797
-	for <linux-btrfs@vger.kernel.org>; Mon, 12 Jan 2026 15:02:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42A342EAD16;
+	Mon, 12 Jan 2026 15:33:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=51.83.17.38
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768230176; cv=none; b=iWDrgYaWZwMrjyGNiK6qxaxld2ijKcySEgbFfHFwWmak6IDKt0qgdHy50l5MRdQ9EpTqqf0P8OOUiX1CrZL/6K8bUB/utFZLHlM2adkPR6WdRs0rYZxXjLfekSFqPInt/R801dksZHUHX0V5GgHRM8ZJKyosfpgU39MBSTXENWE=
+	t=1768232022; cv=none; b=BDnowRdl97W4kL8mcp/LQ0k7Q1za7/50hnbKKn2BOAcLprjgv/cMGBPmTcv7BbvnitUid1QIzJDDJ30ox51zwpFYWvSesxFCaKJHICoFnRZe5IOUc2SNURaxqy0xe71OcZ7Z0hwqpx6JQOISbq59xz8qgLep0kCzyQSt9PvP8bk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768230176; c=relaxed/simple;
-	bh=oaj+1KQRb/TnihudJZJAP4TYRAcFQBAu10VP3WkIu7o=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=eQz5hYqyRQDS5cyTlllFnX6wPwJIgMRyNjrawNFQgjQdk0+cGT9m1D9CTkj6BkC96yuUUG0Nhnekb3MomuqW5oOE9Ja8ygbu2SwVbDER1LjTCR6T+0NjuOKLA509VT0L+TNr+UCiDqWeHZLiTYJkKPpVgabg53roi/SQkEHmj8o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Vy8SUOPz; arc=none smtp.client-ip=209.85.210.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f65.google.com with SMTP id 46e09a7af769-7c6cc44ff62so5221515a34.3
-        for <linux-btrfs@vger.kernel.org>; Mon, 12 Jan 2026 07:02:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768230172; x=1768834972; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kQbUZBlwnVIE/0tOVdzdzTy0LaUN1JEnxmyyVOiPwHw=;
-        b=Vy8SUOPz+zy/BU43QGnC4VYKoiPsMyLhM3GPepeGlyY/plN82D3buH+8WX0ZXn1IrP
-         EuTmwJowxEZJ0UanM75aw2Z+kqfjVKZkw1iBi+Z3TkR78vzh78t89W5UJlOBhkeS8BsC
-         0vD4bpQYgRMPiTKb5ja/NL9hYwn2oKa4Maj50JLYy0dn2+kIEa/qcik9qq3QHS6kPJBT
-         Q84JhoWvAOD1Yj7e1N0ywOnC6W+aY5sKb2kAsco7AkeYLT6I3jXRLgUbrGn25b+wQ4qd
-         UwdO1304sHFpKGrAeIm6WC81X5rdlXXKfI54J/amL+pEIRQVZBAWlFBwHcdR+OOlt5HP
-         mnvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768230172; x=1768834972;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=kQbUZBlwnVIE/0tOVdzdzTy0LaUN1JEnxmyyVOiPwHw=;
-        b=qNkXIFURMW0Q6gsojcoZYXsMxKLUotgXxrs7imHmENWSzPyy19mB8OY2D/llIurvUu
-         ieqY2uB42BFT1kpiGmLU0KUYhqnvPzdFji3RtXApsxcAP1jPcXC+cTlQrgn8+Y3RdEBT
-         x8sN0D1eBpn1+4x5jI3yyB0lt+Oae+S19iLtb/CwSJOPrhG2qH6h1xsFKcoaF+tz1Yq2
-         hodXDzThTJIXTooofBR6mK2cEbZvnNl8HLV7TpwslM/g5p0tsWsk3uirz+2hhbadhBzC
-         EhxKmYoZOg+rN3WJZdWal23OWpIGQ2+IEnKAuApSxgePE3qFEPuouSlNpEK6i8TItBVR
-         DX1Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXWq/7sE8ue7Wy1lMg0f+Y4fsqqqo/+iJmSELX/YEbVnX2k+U43L/CuV8HuMjNF3sSdeE03i27pBzZv2Q==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyHubv3Iz36ZGu92Z3rZdG07iriFLFEFa1+GXGGN8ceKyaEHPNl
-	OE8+EpmA5PGulpTKEXYPxuuKpzh2J3VzFnPf1Pkg8J55ZL+BYTRMb/Yw
-X-Gm-Gg: AY/fxX52cLwqTAD9+riRWDsnbbXVpy+njEMXfZp11sIjnJfH7t/aU8UGk4vJUiBFhSA
-	pYlUta7GQXRkNuKXjMPbXniJ7xOeKLeDP6Nwjn1m5yrzs5ggiL9CtidMNYTl/SabEG/HBGiRCVc
-	kkV5xZB9BsGkVkgfH38EtaE8rNrc9AJQsJCZIaEX2RKc/7a0MxQXnjvipBufu0/0aQzOAaSqK5F
-	5IHHBIQm+Zx50OyVtjEtto26HgXxpmcw1AF2gqVFTq7HAmmWpOf2h86ZOKGwo8W7XXpLtbr1jsM
-	evd0bWe2k8d7mUi58zw3yAUoK2bDhJ8PtVF69LgXdVkvwRW9sXrryDqv5dKgaFXcRyhdLqOp8Qr
-	HJE0yrO+P5mYob0bsUzx8jRznFkWbPIVHR1xTp5jvyqOgerQI6JBagYnqd2FEmEtylCKGGTZOcq
-	CkqPMnkHZycoyx4V280zylHGZ4y8Po1uH5
-X-Google-Smtp-Source: AGHT+IEQFur2qhGuoz2oKzCG1BeyVo4cXFujy/+8zzGLBZM+Y/h+R8u/nYyCPEY0B8NCAByJnQWVzA==
-X-Received: by 2002:a05:6820:1613:b0:659:9a49:8ea2 with SMTP id 006d021491bc7-65f54f5e7f8mr8630491eaf.38.1768230172463;
-        Mon, 12 Jan 2026 07:02:52 -0800 (PST)
-Received: from newman.cs.purdue.edu ([128.10.127.250])
-        by smtp.gmail.com with ESMTPSA id 006d021491bc7-65f48ab2d00sm7311748eaf.0.2026.01.12.07.02.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jan 2026 07:02:51 -0800 (PST)
-From: Jiasheng Jiang <jiashengjiangcool@gmail.com>
-To: jiashengjiangcool@gmail.com
-Cc: clm@fb.com,
-	dsterba@suse.com,
-	fdmanana@kernel.org,
-	linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v3] btrfs: reset block group size class when reservations are freed
-Date: Mon, 12 Jan 2026 15:02:48 +0000
-Message-Id: <20260112150248.32570-1-jiashengjiangcool@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20260112143523.31542-1-jiashengjiangcool@gmail.com>
-References: <20260112143523.31542-1-jiashengjiangcool@gmail.com>
+	s=arc-20240116; t=1768232022; c=relaxed/simple;
+	bh=UC2rjDugE9v89Gc9Zvti3z5Rgit0aFf8ZfVdenpunNg=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=UUIa1kYTxb3uSvTWaOQe36KDBRo8IBQXksnEukEQsrI4uQe4n3RPCJp4iAdRF8KzAadJ79lM8nfrH5rBf1x21hZRqzNV5cb1b6ZRGXeKX1zKGBGT9TdOffp6twgtgeP6sxF/oH8Knvi5fKkO5cHc05HUgjO6hyOrVjCxmUf77eY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=fail smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=OeVg+8UV; arc=none smtp.client-ip=51.83.17.38
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=proton.me
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=mbnpruwjbverxciloz7mu3lcqq.protonmail; t=1768231999; x=1768491199;
+	bh=UC2rjDugE9v89Gc9Zvti3z5Rgit0aFf8ZfVdenpunNg=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=OeVg+8UVM3D3e1TOvMdbwEUX2/Zu2h7LP5Kp4z2F6+XJ74KCj9a0O3Laj1wnVVnvW
+	 npVcuIdIj60lCwUITlTN1JsYeyEFLtyOfgPLe4i1bh1no6jULCgjGpFQCEV18sWc6R
+	 lh/fUQ/NU/ToZBsjtWxeb8YTYzG+2MH2KoVXucZ6cpdtgilZwedy6jL/PmobniSvGU
+	 UyvqOHu8Uk71N3c/Dtq7MBecGK2F/x6Dc0eSUMJMTIAhv+Y+jQp11JR6eUYlX9oj/j
+	 zc1eV85bgJbmaBx4QuzMx8bi8rEB/AJ2fbVJaiwGFYLYw81e8TwR+YIepuDG5AlDVr
+	 xHgvkvh5ruFvQ==
+Date: Mon, 12 Jan 2026 15:33:14 +0000
+To: Qu Wenruo <wqu@suse.com>
+From: jollycar <jollycar@proton.me>
+Cc: "regressions@lists.linux.dev" <regressions@lists.linux.dev>, "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [REGRESSION] VirtualBox VM crashes (BSOD) during Windows installation on btrfs with kernels 6.18+ (works on 6.12 LTS)
+Message-ID: <FmCqd98aDZ5GTLc-1FUc4NRHRhDEDUDy1ylzO4rrFy_mV1zgC2tnmht5ov8px3ME3pBa6dioALVRD_tDKC3FhdUd4alND6G5g2bx8N7R154=@proton.me>
+In-Reply-To: <20c3ba51-fbf1-4de2-b88f-5edf817a24d6@suse.com>
+References: <sT06uA3Gtv1kgeL80ZRMshbw6whJNUom-UxnS06H6eVrB4AqGWuzo0P23AhwOn3WsnAq9QfhFYciSAWK3eBeGaKjNJG1oSQLyclv4d2E0L4=@proton.me> <5b466d2f-80ad-4b45-a643-ab64bf2b252d@suse.com> <LCM3zm3y1s51pkWBZg6NU-4R6f89SVYSAxtNqq0gM5IlDFZfFjwSqvl-8yAvYcl7VizHjXIENm1vf6b7z2e25YQce7IQCr3Ms-w6vKkOKfY=@proton.me> <20c3ba51-fbf1-4de2-b88f-5edf817a24d6@suse.com>
+Feedback-ID: 175904438:user:proton
+X-Pm-Message-ID: c832a120c01de0670311cc664a540bd406d036ec
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Differential analysis of block-group.c shows an inconsistency between
-btrfs_add_reserved_bytes() and btrfs_free_reserved_bytes().
+Qemu/libvirt test results on kernel 6.18.3:
 
-When space is reserved, btrfs_use_block_group_size_class() is called to
-set a block group's size class, specializing it for a specific allocation
-size to reduce fragmentation. However, when these reservations are
-subsequently freed (e.g., due to an error or transaction abort),
-btrfs_free_reserved_bytes() fails to perform the corresponding cleanup.
+Setup:
+- Virtualization: qemu via libvirt (virt-manager)
+- Disk format: qcow2
+- Disk location: /data/virtual-os/win10-qemu-test.qcow2 (same btrfs subvolu=
+me as VirtualBox VMs)
+- COW disabled on disk image (chattr +C)
+- ISO: Same Windows 10 ISO used in VirtualBox tests
+- Guest: Windows 10
 
-This leads to a state where a block group remains stuck with a specific
-size class even if it contains no used or reserved bytes. While the
-impact depends on the workload, this stale state can cause
-find_free_extent to unnecessarily skip these block groups for mismatched
-size requests.
-In some cases, it may even trigger the allocation of new block groups if
-no matching or unassigned block groups are available.
+Result:
+Windows 10 installation completed successfully without any crashes. Install=
+ation proceeded through all phases including multiple reboots and reached t=
+he desktop without issues.
 
-Fix this by resetting the size class to BTRFS_BG_SZ_NONE in
-btrfs_free_reserved_bytes() when the block group becomes completely
-empty.
+Summary of all tests on kernel 6.18.3:
+- VirtualBox 7.2.4: Crashes during installation (all cache/mtype configurat=
+ions tested)
+- Qemu via libvirt: No crashes, installation completes successfully
 
-Fixes: 52bb7a2166af ("btrfs: introduce size class to block group allocator")
-Signed-off-by: Jiasheng Jiang <jiashengjiangcool@gmail.com>
----
-Changelog:
+Both using the same btrfs filesystem, same subvolume location, same Windows=
+ ISO, and COW disabled.
 
-v2 -> v3:
-1. Corrected the "Fixes" tag to 52bb7a2166af.
-2. Updated the commit message to reflect that the performance impact is workload-dependent.
-3. Added mention that the issue can lead to unnecessary allocation of new block groups.
 
-v1 -> v2:
-1. Inlined btrfs_maybe_reset_size_class() function.
-2. Moved check below the reserved bytes decrement in btrfs_free_reserved_bytes().
----
- fs/btrfs/block-group.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+On Sunday, January 11th, 2026 at 8:43 PM, Qu Wenruo <wqu@suse.com> wrote:
 
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 08b14449fabe..8339ad001d3f 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -3867,6 +3867,12 @@ void btrfs_free_reserved_bytes(struct btrfs_block_group *cache, u64 num_bytes,
- 	spin_lock(&cache->lock);
- 	bg_ro = cache->ro;
- 	cache->reserved -= num_bytes;
-+
-+	if (btrfs_block_group_should_use_size_class(cache)) {
-+		if (cache->used == 0 && cache->reserved == 0)
-+			cache->size_class = BTRFS_BG_SZ_NONE;
-+	}
-+
- 	if (is_delalloc)
- 		cache->delalloc_bytes -= num_bytes;
- 	spin_unlock(&cache->lock);
--- 
-2.25.1
-
+>=20
+>=20
+>=20
+>=20
+> =E5=9C=A8 2026/1/11 21:39, jollycar =E5=86=99=E9=81=93:
+>=20
+> > Storage configuration details:
+> >=20
+> > Storage format: VDI (VirtualBox Disk Image)
+> > Storage location: /data/virtual-os/ (btrfs subvolume with COW disabled,=
+ verified with lsattr)
+>=20
+>=20
+> OK, this means it's not related to the direct IO changes in newer kernels=
+.
+>=20
+> When COW is disabled, data checksum is also disables, thus direct IO is
+> still doing the true zero-copy behavior.
+>=20
+> This ruled out the btrfs direct io change, but this means I have no clue
+> what is going wrong at all now.
+>=20
+> > Controller: IntelAhci (SATA)
+> > Default configuration: hostiocache on, mtype normal
+> >=20
+> > Cache and media type testing on kernel 6.18.3:
+> > - Default (hostiocache on, mtype normal): BSOD within 1 minute during i=
+nstallation
+> > - mtype writethrough: Gets much further, BSOD occurs on first VM reboot
+> > - hostiocache off (mtype normal): Gets much further, BSOD occurs on fir=
+st VM reboot
+> >=20
+> > None of the configurations provide a working solution - they only delay=
+ the crash.
+> >=20
+> > On kernel 6.12.63 with default settings (hostiocache on, mtype normal),=
+ Windows installation completes successfully without any crashes.
+> >=20
+> > I have not yet tested with qemu/libvirt. Should I proceed with that tes=
+t?
+>=20
+>=20
+> Yes please. Libvirt/qemu is a more common solution among developers.
+> If you can reproduce it using libvirt/qemu, more btrfs developers can
+> try to reproduce it and look into it.
+>=20
+> And if not, the cause may shift towards vbox other than btrfs.
+>=20
+> Thanks,
+> Qu
+>=20
+> > On Sunday, January 11th, 2026 at 10:15 AM, Qu Wenruo wqu@suse.com wrote=
+:
+> >=20
+> > > =E5=9C=A8 2026/1/11 20:33, jollycar =E5=86=99=E9=81=93:
+> > >=20
+> > > > #regzbot introduced: v6.12..v6.18
+> > > >=20
+> > > > [1.] One line summary of the problem:
+> > > > VirtualBox VM crashes with BSOD during Windows installation on kern=
+els 6.18+ (works fine on 6.12 LTS)
+> > > >=20
+> > > > [2.] Full description of the problem:
+> > > > Windows 10 and Windows 11 installation inside VirtualBox consistent=
+ly crashes with BSOD within 1-3 minutes on Linux kernels 6.18.3 and 6.19-rc=
+3. The same VirtualBox configuration and VM image work perfectly on kernel =
+6.12 LTS. The BSOD errors vary each time (most recent: 0x80070470 - "file m=
+ay be corrupt or missing"). The host system remains completely stable with =
+no logged errors.
+> > > >=20
+> > > > [3] Kernel & Hardware:
+> > > > - Kernel versions tested:
+> > > > * Working: 6.12.63-1
+> > > > * Broken: 6.18.3-2, 6.19.0-rc3-1
+> > > > - Distribution: Manjaro Linux
+> > > > - Architecture: x86_64
+> > > > - VirtualBox: 7.2.4 r170995 (vboxdrv vermagic: 6.18.3-2-MANJARO SMP=
+ preempt mod_unload)
+> > > >=20
+> > > > [4.] Filesystem and storage:
+> > > > - Root filesystem: btrfs on LUKS encryption
+> > > > - Mount options: zstd compression level 3, SSD optimizations, async=
+ discard, free space tree
+> > > > - VM storage: separate btrfs subvolume
+> > >=20
+> > > What's the storage file configuration? Like what's the cache mode set=
+ting?
+> > > I don't know VBox at all, but there may be something similar to
+> > > libvirt's cache mode (none/unsafe/writethrough etc).
+> > >=20
+> > > More importantly, will tweaking the cache mode change fix the broken
+> > > kernels?
+> > > If so it may point to direct IO related behavior changes.
+> > >=20
+> > > And what's the storage file format? QCOW2? RAW? Or whatever format
+> > > provided by Vbox?
+> > >=20
+> > > And one final question, have you tried qemu (or libvirt + qemu) and c=
+an
+> > > it still be reproduced with qemu?
+> > > As I'm wondering if the direct IO related change will even affects qe=
+mu
+> > >=20
+> > > Thanks,
+> > > Qu
+> > >=20
+> > > > - btrfs device stats: all zeros (no errors)
+> > > >=20
+> > > > [5.] Reproduction:
+> > > > - Boot kernel 6.18.3-2 or 6.19.0-rc3
+> > > > - Start VirtualBox 7.2.4 r170995
+> > > > - Create new Windows 10 or Windows 11 VM
+> > > > - Begin OS installation
+> > > > - BSOD occurs within 1-3 minutes with varying errors (latest: 0x800=
+70470)
+> > > > - Issue is 100% reproducible on 6.18+, never occurs on 6.12
+> > > >=20
+> > > > Additional context:
+> > > > - Host system remains completely stable during VM crashes
+> > > > - No btrfs errors in dmesg or device stats (all zero)
+> > > > - Issue persists across multiple 6.18/6.19 releases over one month
+> > > > - VirtualBox 7.2.4 modules load successfully on all kernel versions
+> > > >=20
+> > > > Regards,
+> > > > Jollycar
 
