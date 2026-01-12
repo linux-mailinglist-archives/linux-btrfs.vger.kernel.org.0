@@ -1,86 +1,100 @@
-Return-Path: <linux-btrfs+bounces-20400-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20401-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37C48D12DFB
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Jan 2026 14:44:33 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBFCED12EE5
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Jan 2026 14:54:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 3BA2A301FC1B
-	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Jan 2026 13:44:17 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 5C6DF30BC951
+	for <lists+linux-btrfs@lfdr.de>; Mon, 12 Jan 2026 13:49:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0C42359F8F;
-	Mon, 12 Jan 2026 13:44:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5957635B14C;
+	Mon, 12 Jan 2026 13:49:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t+APAdb7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PGcAKr7b"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E586E330339;
-	Mon, 12 Jan 2026 13:44:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80509330339
+	for <linux-btrfs@vger.kernel.org>; Mon, 12 Jan 2026 13:49:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768225456; cv=none; b=Y6Q3gz5yGsA4OkwcBoHLgZTC/Fxma4I440eo7VGc8j8DafJ4+INXrmaUeL/kiLgL0YWHR6oqu5GHvJC55d/dEgNYUQQYIQgBvMHmE8sxu/4sZ106+e7nNkhzNU6cfDuReVa+tvOPxT3DPUte8OGEewMHWy5U/vMiYsMkiA91aQk=
+	t=1768225786; cv=none; b=AiGkYbexr/RHjBp0IoYJjEUcjuH10Hrd60Jk/DWWxvxTp5NlkzrNkV1rELCbkEFUchJ1duoAagk4lX7KKJcVKPo7mw69bPtsUZ9sgo6dF0KPnNyd2ykgZOsJFVRmePCKw5c9+8ECmc6/9UCB0pXR70URqDEfvs/4lRqdz3ldyro=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768225456; c=relaxed/simple;
-	bh=fmwIlMbdtLz/erEbIxpMcWSvLpOC9hkYVlKBKlxgI78=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=WMxspjisIuFJruy7Q5hl2mHd6W55XJEJLm+Drw1BwN2uhv2Is1AbBUpXA9y3B3kltgCQF9O1CuY4Qrfg2y5AiIVRdhBtfQUnBlLh+YR/IFVFegSkrShshUm96XW2cojNWZM9VOp5XuayIaDUg3Rfu3GO205cXmAJraxI/5ptrY8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=t+APAdb7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6538C16AAE;
-	Mon, 12 Jan 2026 13:44:14 +0000 (UTC)
+	s=arc-20240116; t=1768225786; c=relaxed/simple;
+	bh=lDHPOlQO6NK45Ee0lf8PttXfMechH2rgOyt0vVV4zbU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hdo79n7F740NlYsphTUyMTOIHElfMWePmOmIxCqv+d5DXtX+2eXh72C0uqR5shwSmxlZd/lYzjRdhvX5XuPwJoe5vCays0DYSnRl4LJVim+b2w6LJS5wS88jSmO4fhAPpzkdaBbNZ1/5kP9NdeF64ZuJEUIs0I4LdC/qsXl2X4o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PGcAKr7b; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31BE8C4AF09
+	for <linux-btrfs@vger.kernel.org>; Mon, 12 Jan 2026 13:49:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768225455;
-	bh=fmwIlMbdtLz/erEbIxpMcWSvLpOC9hkYVlKBKlxgI78=;
-	h=From:To:Cc:Subject:Date:From;
-	b=t+APAdb7tvLfkPcMboWWzhDMytrrFnJjsyMrnXC/ZOLZmuV6qhCLWLJpgFZWnU4gE
-	 at9uSG/Q6ytliV5q7Enrq0qvgy5ecGFUy9x2cDrG7Oy/XFI0V7iLUeCz3RBoKfiKkq
-	 CvvsvHXHRg1Rzropeo40pErSErQ2WHfLtDUJrGFruuolfiKEXdoLGAx6MJx6jiY8gV
-	 OKqLdQeqyJ9Ktmz6W4Kqa7Ov/41OUI4cmEKVD4LS7c31epoaHQOlFn/L+Tm8EtIN/2
-	 s1Hn/x/iL4czKEZsQw4fBE1g7q6oFi6AMsOTZ2xqSAM5VhF7cZiVm82TCUR3WjqLwW
-	 8Ma+FnXT2bzgA==
-From: fdmanana@kernel.org
-To: fstests@vger.kernel.org
-Cc: linux-btrfs@vger.kernel.org,
-	Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH] fsx: add missing -T option to getopt_long()
-Date: Mon, 12 Jan 2026 13:44:09 +0000
-Message-ID: <dcbecbe996375e0f04962aa2e1a97ade927ecf74.1768225429.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.47.2
+	s=k20201202; t=1768225786;
+	bh=lDHPOlQO6NK45Ee0lf8PttXfMechH2rgOyt0vVV4zbU=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=PGcAKr7bUaAW69zX0HzqEsfLzRoF1/EFA4cY67B+6KjZo7oqheydt/HnHoEuhHD+b
+	 E7ArYmtFrhDcC358WlAUnFs837GPNAvfE5Vz0Inah1AkAd2qVFSO2+yHk8Y8UFkhct
+	 4H+A33NtB/4hRQWJ0a8cqyXEj/6t2K+7QQq9lwxUctU2mR8xPxdNYhbh6MdIPbHx/B
+	 /zn4Diq4Nl69GlBZ2gw6lPIFdVEbLxsKxPsslVYGHhD41mv3lMmoH7Jv5ONkg++02g
+	 ygxaxFXAWMlP0vDIrMa7oUmHj0ktD4DonHJQZezMmQZ2p3Ct9EgiayTDHeOipLULXT
+	 CO6+pcJ26cbcw==
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-b86ef1e864cso219528666b.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 12 Jan 2026 05:49:46 -0800 (PST)
+X-Gm-Message-State: AOJu0Yw1/+fRhlh/bVpjOe7n4rYfyQE9Qi3dWAk2VS/MFEfI+ur4Z3O4
+	Iubm9FWGv+/JP3tLxfi1y8ve1TbQyXoKjXnXNFy9tcqMHzL4knMMnXN6jPlMxDc7Ew1LBZ/Kk6m
+	8Bh5KmtyiL9G3pTt3JMuC4fQaiX/3oIQ=
+X-Google-Smtp-Source: AGHT+IGaMNy10FNxRfABjsJCSSCxfLMr2wQAoUM+pIe87fiO9u6JlSWS8I/6FNM93S0/YONZeRXKF/nhbyZ5XvCg+MA=
+X-Received: by 2002:a17:907:268b:b0:b77:1b05:a081 with SMTP id
+ a640c23a62f3a-b8445283562mr1936797966b.27.1768225784776; Mon, 12 Jan 2026
+ 05:49:44 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1767801889.git.fdmanana@suse.com> <20260112-wonach-mochten-cd6c14b298ae@brauner>
+In-Reply-To: <20260112-wonach-mochten-cd6c14b298ae@brauner>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Mon, 12 Jan 2026 13:49:07 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H5xB1RFQK6fn1KL73AiGr-A+SoKCFH1pfwBTxHCkHPXCg@mail.gmail.com>
+X-Gm-Features: AZwV_QhEcZYFGmLny8HuzAivfUMi3fmVl1kBcKczPMNBNhNSLfRTgWENGlb5yHQ
+Message-ID: <CAL3q7H5xB1RFQK6fn1KL73AiGr-A+SoKCFH1pfwBTxHCkHPXCg@mail.gmail.com>
+Subject: Re: [PATCH 0/4] btrfs: stop duplicating VFS code for
+ subvolume/snapshot dentry
+To: Christian Brauner <brauner@kernel.org>
+Cc: linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	viro@zeniv.linux.org.uk, Filipe Manana <fdmanana@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-From: Filipe Manana <fdmanana@suse.com>
+On Mon, Jan 12, 2026 at 12:48=E2=80=AFPM Christian Brauner <brauner@kernel.=
+org> wrote:
+>
+> On Thu, Jan 08, 2026 at 01:35:30PM +0000, fdmanana@kernel.org wrote:
+> > From: Filipe Manana <fdmanana@suse.com>
+> >
+> > Currently btrfs has copies of two unexported functions from fs/namei.c
+> > used in the snapshot/subvolume creation and deletion. This patchset
+> > exports those functions and makes btrfs use them, to avoid duplication
+> > and the burden of keeping the copies up to date.
+>
+> Seems like a good idea to me.
+> Let me know once it's ready and I'll give you a stable branch with the
+> VFS bits applied where you can apply the btrfs specific changes on top.
 
-Currently fsx fails with an invalid argument error when we pass the -T
-option (do not use dontcache IO) to it because it's not listed in the
-gepopt_long() call.
+Right now what's missing is just an update to the changelog of patch
+4/4 to mention that the btrfs copy is missing the audit_inode_child()
+call.
 
-Fix this and add T to the getopt_long() call.
+If there are no other comments, I can prepare a v2 with that update,
+and then you can pick the patches into a branch.
+For the btrfs patches, you can probably pick them too as they are
+trivial, though I'll defer to David in case he has a different
+preference.
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- ltp/fsx.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks.
 
-diff --git a/ltp/fsx.c b/ltp/fsx.c
-index 626976dd..8626662b 100644
---- a/ltp/fsx.c
-+++ b/ltp/fsx.c
-@@ -3160,7 +3160,7 @@ main(int argc, char **argv)
- 	setvbuf(stdout, (char *)0, _IOLBF, 0); /* line buffered stdout */
- 
- 	while ((ch = getopt_long(argc, argv,
--				 "0ab:c:de:fg:hi:j:kl:m:no:p:qr:s:t:uw:xyABD:EFJKHzCILN:OP:RS:UWXZ",
-+				 "0ab:c:de:fg:hi:j:kl:m:no:p:qr:s:t:uw:xyABD:EFJKHzCILN:TOP:RS:UWXZ",
- 				 longopts, NULL)) != EOF)
- 		switch (ch) {
- 		case 'a':
--- 
-2.47.2
-
+> Thanks!
 
