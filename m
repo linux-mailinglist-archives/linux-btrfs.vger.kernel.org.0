@@ -1,91 +1,92 @@
-Return-Path: <linux-btrfs+bounces-20457-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20458-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5EA67D1AD48
-	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Jan 2026 19:25:33 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA31ED1AD66
+	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Jan 2026 19:27:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 4C0C93035CFF
-	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Jan 2026 18:25:30 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 82E59303B7EC
+	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Jan 2026 18:27:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C98434DCD7;
-	Tue, 13 Jan 2026 18:25:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FF7E34DCD7;
+	Tue, 13 Jan 2026 18:27:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="HC4dMWjc";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="ZeNb3k0n"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="ndlRxnq2";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="fwgrK3G2"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fout-a5-smtp.messagingengine.com (fout-a5-smtp.messagingengine.com [103.168.172.148])
+Received: from fhigh-a4-smtp.messagingengine.com (fhigh-a4-smtp.messagingengine.com [103.168.172.155])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B59FF34BA24
-	for <linux-btrfs@vger.kernel.org>; Tue, 13 Jan 2026 18:25:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.148
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 649CA342CB1
+	for <linux-btrfs@vger.kernel.org>; Tue, 13 Jan 2026 18:27:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.155
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768328726; cv=none; b=pITpQ9rqlKAZ93D3ZOeMseq4DJf3uPEyCiVQIVry5rXMNGB9/0LEwJ4Rqx+q3CMZTZOM5s3wdSyonEikSci6oApggN+jQfIRua93NOr+/wdfjVri3/30XUI8dEbmiYO1HrStm4G1fh66ZlFvIXzjqbY8EQuj7jrCpL6312O6UtQ=
+	t=1768328854; cv=none; b=m3QaGuLHsy/u35n76ecP8xlVmGFW2fvzSkTRNk+ZxZppazzBRJQzNW8wx0OAECi7I+SbSUtiuQyq1+pnJO9A9bl4EIboORP4734vRgOuXXtToytSai98glUrBG7HwXqAmkiaQQ1eP5SCSysll4MgmFXeYMoDG3AqyDVsQq8AY7w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768328726; c=relaxed/simple;
-	bh=mgwIkSf0sYUcpdGkNYXvL2xvOkz4xx5UmTxdl/z9AAs=;
+	s=arc-20240116; t=1768328854; c=relaxed/simple;
+	bh=dY8esNADBm1GvWPyTGaDiY8ps3jW0xCQ2ArGElzEq8Y=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=h0CGHi/1S10vVOKUdZk1KG3W7Vt3MnTBGCjJiAsjEj9yXSZD9tGLPbniyd6J+fLKt59HD9CKo6MZ0mb8vqYcs39oKqmt2CGZ25l1sRru6I2eVCS0jgVpgP5oAMgQXXurZOh/GmuLdo7DbJaT0saGAz3XrpDCSBbnc0B0ZQkb0dk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=HC4dMWjc; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=ZeNb3k0n; arc=none smtp.client-ip=103.168.172.148
+	 Content-Type:Content-Disposition:In-Reply-To; b=Hi5145LaEIY2PTi8FJCqIo3z3UAsKKcmNgAyI+geHp2X/0yQZ1S4orCtQUi/pgqBqg3UgjSNILv+5Q9+qRFEoyjKWUOER+QMu24qwO9kb9UYzS65s6xUKCVgBqs7v05ArOVBdZuwoLvkdxZBgoLgOr/qH8Ipbj17TtxeggoHl34=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=ndlRxnq2; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=fwgrK3G2; arc=none smtp.client-ip=103.168.172.155
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
-	by mailfout.phl.internal (Postfix) with ESMTP id D8E19EC0237;
-	Tue, 13 Jan 2026 13:25:23 -0500 (EST)
+Received: from phl-compute-11.internal (phl-compute-11.internal [10.202.2.51])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id 8D3AA140005C;
+	Tue, 13 Jan 2026 13:27:32 -0500 (EST)
 Received: from phl-frontend-03 ([10.202.2.162])
-  by phl-compute-04.internal (MEProxy); Tue, 13 Jan 2026 13:25:23 -0500
+  by phl-compute-11.internal (MEProxy); Tue, 13 Jan 2026 13:27:32 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
 	:content-type:content-type:date:date:from:from:in-reply-to
 	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1768328723; x=1768415123; bh=1eFALudRU4
-	zAPqC7/flRTIsydqHp55OiarIIDFtDtuk=; b=HC4dMWjcIHWBICMChpviYR6VNh
-	dk4+jnUUBWehIPN2Q0eyAUUXsIknS3eZhw9nqxkl92KbSyLH4r+9b9FY9iocAmua
-	byCIC14YaX5yi4Gs+5bZb7pb3DKESKbaSar+J3n2BUHoa+cYUsgKCpn+9/dXqqPl
-	MpEZDA54M/uAn/x9d4LRqCHksO2c02y+SI1ora6XGWs7Xbl97SrFWd0TWDd3OpT9
-	nGnogU+Be5nrju6VqLIo5mRSiMwmB3/RpNKQ4For/0lNPIiZauOvMUBWIi7T3pJG
-	PGqS3RkRYaWg2Q0tCHVpdnTVQKuXBXAJ7rMap+Yal2DkJwfPQ8JAwPe8pbdA==
+	:subject:to:to; s=fm3; t=1768328852; x=1768415252; bh=XizoBGUjF1
+	aSii6eJ+Rxp1JFpUVN5BxWUL91oRY/A+0=; b=ndlRxnq2VxqNcYJzxcOhtlKTlP
+	UlVKEeGqtxt3+DAlphTzomO2Dzx1MVJYIjnRSWkgzK6FP4g12Jig+0B80AXtLO1p
+	hT0xh/LYD6QqpD/3XV/8o7jWrftfykFqTBAEWYFg75ZPeVwOTGyMGlAH2wizKj84
+	trw0a3k59KMXyX4302CyJSfox38WqkAjC7VQ7V9LHN5RD6KrKr3DjEBEkDdY4aLs
+	bAU6BVktyfHlAfUHdmg+GVNkURP01deCgWMCNd1dPTQ4GseTooHwoR6C25ugryGp
+	zo+gOgb9DSuBY1xYHidzuP7Vw9zdN7pMv/c0/37ntjlGWlJHmQR+1tTTO7hg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-type:content-type:date:date
 	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
 	:message-id:mime-version:references:reply-to:subject:subject:to
 	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-	1768328723; x=1768415123; bh=1eFALudRU4zAPqC7/flRTIsydqHp55OiarI
-	IDFtDtuk=; b=ZeNb3k0nMGQH3/sqZDNNBZlnOtTDTExd8ZVwQ1yVKOab5qLoUaS
-	NpPOgJc112Q9MVkz6b6OtCoqt1KwLF9481DF58Js0Wo+Lm4xy6/GX2PRW5J0m+r2
-	yc4f9wxocrouPfLpPGrGp9pOMqWm1afCookBOIevVcm/b1kcMfdXDTrbD0+MYKbF
-	J68t22wLMqa+ZPoeKYnjDvs5aLh6yKCDTZTU9lLhvvPKMOQ61Rj1HydJl5hgwO6h
-	dWfjeJ66LX34fOuJ8dnVyFa4hUIXzFFXxRrxsWGUJ4PfDb//KnpoJOgtNBmxCdrW
-	wPeapfnt65Rm/wlbPOjvoWj6+dB1N3nJwmg==
-X-ME-Sender: <xms:E45maSDXAKZR5nC1J1WtHPQJNiZP3sL7QTYAJNW2ytwbqnswDUB_vg>
-    <xme:E45maSj4tVn3l_nXtfLkT8ulwWcv-fPr2yct_I1CNlX9WueiitAy_VXyLDQvP_nEx
-    aqVJ3KNwR61nZIHEfONPsuycyPxsZ08xVUKc9UusZSVMgk_xBrZAA>
-X-ME-Received: <xmr:E45maTOPl1hv0craVVBqhxxJbxJqDG8-wQym117Lx_0IgJvvCW1AlLKT9hnlt-Z1EYveDMCIp9CsW9kcNbBS4lmdpLM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdduvddutdefucetufdoteggodetrf
+	1768328852; x=1768415252; bh=XizoBGUjF1aSii6eJ+Rxp1JFpUVN5BxWUL9
+	1oRY/A+0=; b=fwgrK3G2omGV1Obri05GzG7GKyOmSZZ5YwxD6+glAZtxDAFuAj8
+	G5ezG8lvgCE5w3q6TGgr9z8f0bUfXdhBQJGOTURxPBthZv6gf1ZAruiG/rVLkDdf
+	sCu+o+aFxLF5JmhL5QGyIz6b04qOiu3MjdSQi3w296QXPlyXx4VcleR8RqrXGxaP
+	Ihc44Y45uTjLecIQ6DhDEW6tjus7j5UxIjGojuVqXv1ki8w24q7BWliXV9i1arsR
+	7+8SRQJ37MzsPC2djKstBPnIp/38mKfCOr7mwuIQaNrSupcePZpVyb8Bu/XVnsHn
+	4N6vp1BKzi5smBnoQ1Zh7zchrikN/SJLTGA==
+X-ME-Sender: <xms:lI5maRnPK6T-xsYSjUwAFhhvcGfNYZ2hjByngDpXA4rqaEZVA96Oaw>
+    <xme:lI5maS1DV7Tl2pyyNixNh_tFnVF3VHp8sl57FjgzD2BoDVCos0egy9rdwFarojQOq
+    NZariuxKkiqEeVS27cJiEhJznTFkYUAh9tydJz8uJbnNb-0-UHPxw>
+X-ME-Received: <xmr:lI5maVT-RleksfVTjDGoVsOMNt-TZHlxRG-50owhsQ1Kx2ALzv3rP-WJZz3h0sMxWWhD_7WlpkaIPUiWaKFCQojFmYc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdduvddutdegucetufdoteggodetrf
     dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhishcu
-    uehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpeekvd
-    ekffejleelhfevhedvjeduhfejtdfhvdevieeiiedugfeugfdtjefgfeeljeenucevlhhu
-    shhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhrihhssegsuh
-    hrrdhiohdpnhgspghrtghpthhtohepvddpmhhouggvpehsmhhtphhouhhtpdhrtghpthht
-    ohepmhgrrhhtihhnsehurhgsrggtkhhuphdrohhrghdprhgtphhtthhopehlihhnuhigqd
-    gsthhrfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:E45mab4TDkjNFJR41dgyA0okF9UtTiqTQscs_0pt3pABmLG30p89Dg>
-    <xmx:E45maZ2ZqTRYb9BQiyc6azMlCY6PZptrqoprQTrD-W4NU6XcPY7OpQ>
-    <xmx:E45maUZhjSxErS7JseQZKMj5NyqJVBpA9gNFHWO5IqnpH0chZAD62A>
-    <xmx:E45maZABtDnQwsPDIsFkd6uPmoTkudzbq4wXfC7KzgkOMl6Gc_8Xdg>
-    <xmx:E45macMXvcd8soZ0ujJ8h8sTCHj1og5IXu-0g0RJ2p4jo9_QbZwSiVSY>
+    rghilhhouhhtmecufedttdenucenucfjughrpeffhffvvefukfhfgggtuggjsehttdertd
+    dttddvnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhi
+    oheqnecuggftrfgrthhtvghrnhepkedvkeffjeellefhveehvdejudfhjedthfdvveeiie
+    eiudfguefgtdejgfefleejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehm
+    rghilhhfrhhomhepsghorhhishessghurhdrihhopdhnsggprhgtphhtthhopedvpdhmoh
+    guvgepshhmthhpohhuthdprhgtphhtthhopehfughmrghnrghnrgeskhgvrhhnvghlrdho
+    rhhgpdhrtghpthhtoheplhhinhhugidqsghtrhhfshesvhhgvghrrdhkvghrnhgvlhdroh
+    hrgh
+X-ME-Proxy: <xmx:lI5macsKBGdEkBsLwmY8QXUUOR3YHtDoFO62XQypJEHoGcx4_XuhsA>
+    <xmx:lI5maSZ4VWW5_vvKkGTCCk89rLQmV23kUIXWrvyGreFU8YxL118Weg>
+    <xmx:lI5maZs39kMUQXCf-O8I1iinMM3Tq_Su92CnNqRa4re5rXTVm44QnQ>
+    <xmx:lI5macGhQ645VXGIUAEbg4J1Sbbv7pKamEsF59_YxttG2b8YUNtQpg>
+    <xmx:lI5maV4DYkQkmTniEvbGxFAzzMPRoJSsGr4py7UYDx7jkHXy-1drsg7r>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 13 Jan 2026 13:25:23 -0500 (EST)
-Date: Tue, 13 Jan 2026 10:25:23 -0800
+ 13 Jan 2026 13:27:32 -0500 (EST)
+Date: Tue, 13 Jan 2026 10:27:33 -0800
 From: Boris Burkov <boris@bur.io>
-To: Martin Raiber <martin@urbackup.org>
+To: fdmanana@kernel.org
 Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/7] Improve performance of find_free_extent
-Message-ID: <20260113182523.GA972704@zen.localdomain>
-References: <0102019bb2ff554d-2be39adf-dd94-4f37-864a-69bbf700de33-000000@eu-west-1.amazonses.com>
+Subject: Re: [PATCH 0/3] btrfs: get rid of a BUG() in run_one_delayed_ref()
+ and cleanups
+Message-ID: <20260113182733.GB972704@zen.localdomain>
+References: <cover.1768322747.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -94,46 +95,26 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0102019bb2ff554d-2be39adf-dd94-4f37-864a-69bbf700de33-000000@eu-west-1.amazonses.com>
+In-Reply-To: <cover.1768322747.git.fdmanana@suse.com>
 
-On Mon, Jan 12, 2026 at 04:17:16PM +0000, Martin Raiber wrote:
-> On a system with large btrfs file system and old (but many cores) CPU, I saw the throughput bottlenecked
-> by find_free_extent performance, running in parallel, e.g., by flush_delalloc and btrfs-flush.
-> While the logic in find_free_extent can probably be improved (not iterating through tens of 
-> thousands of block groups), I was able to fix the immediate problem by using percpu synchronization
-> primitives and two other micro-optimizations.
+On Tue, Jan 13, 2026 at 04:50:56PM +0000, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> Remove a BUG() call in run_one_delayed_ref() and a couple trivial cleanups
+> in that function.
 
-One more high level question, since I haven't worked with you on btrfs
-before. Do you have a good setup for running fstests? If not, this is a
-sweet patch series and I would be happy to help you test it, since
-setting that up can be a pain.
-
-Let me know,
-Boris
+Reviewed-by: Boris Burkov <boris@bur.io>
 
 > 
-> Martin Raiber (7):
->   btrfs: Use percpu refcounting for block groups
->   btrfs: Use percpu semaphore for space info groups_sem
->   btrfs: Don't lock data_rwsem if space cache v1 is not used
->   btrfs: Use percpu sem for block_group_cache_lock
->   btrfs: Skip locking percpu semaphores on mount
->   btrfs: Introduce fast path for checking if a block group is done
->   btrfs: Move block group members frequently accessed together  closer
+> Filipe Manana (3):
+>   btrfs: don't BUG() on unexpected delayed ref type in run_one_delayed_ref()
+>   btrfs: remove unnecessary else branch in run_one_delayed_ref()
+>   btrfs: tag as unlikely error handling in run_one_delayed_ref()
 > 
->  fs/btrfs/block-group.c | 168 +++++++++++++++++++++++------------------
->  fs/btrfs/block-group.h |  18 +++--
->  fs/btrfs/disk-io.c     |   6 +-
->  fs/btrfs/extent-tree.c |  24 +++---
->  fs/btrfs/fs.h          |   2 +-
->  fs/btrfs/ioctl.c       |   8 +-
->  fs/btrfs/space-info.c  |  33 +++++---
->  fs/btrfs/space-info.h  |   4 +-
->  fs/btrfs/sysfs.c       |   9 ++-
->  fs/btrfs/zoned.c       |  13 ++--
->  10 files changed, 163 insertions(+), 122 deletions(-)
+>  fs/btrfs/extent-tree.c | 28 ++++++++++++++++------------
+>  1 file changed, 16 insertions(+), 12 deletions(-)
 > 
 > -- 
-> 2.39.5
+> 2.47.2
 > 
 
