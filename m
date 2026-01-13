@@ -1,235 +1,206 @@
-Return-Path: <linux-btrfs+bounces-20472-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20473-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9713CD1B7C4
-	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Jan 2026 22:54:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 67E85D1B7E2
+	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Jan 2026 22:57:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 93C31303DD09
-	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Jan 2026 21:54:22 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 2F64D3043229
+	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Jan 2026 21:57:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19DC4350A02;
-	Tue, 13 Jan 2026 21:54:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A994350A0E;
+	Tue, 13 Jan 2026 21:57:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="gPRAAGcO";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="cCB+AEcT"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="huVafrFa";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="bXSlSM6I"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from fhigh-a6-smtp.messagingengine.com (fhigh-a6-smtp.messagingengine.com [103.168.172.157])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63DD434F46A
-	for <linux-btrfs@vger.kernel.org>; Tue, 13 Jan 2026 21:54:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11D2D2E9749;
+	Tue, 13 Jan 2026 21:57:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.157
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768341261; cv=none; b=kIeRhY0JChxES4kQPKC39qdITbDytZwMdL5f4XUuiY/ancq2gkzM8j58sDzeqiUEZAgdMVtf5Y4iQz1nU2Z6b7RCzyPrgNMbnjUqG6p+v5Vl2V6UYBZiT0lfUf7wQLTJJx4qnpGbhFEcMbZDDlrUmBOALmydyXxtWeHUrRbax7U=
+	t=1768341427; cv=none; b=l0zeLInw5mMujGuAN4wnitaMeGy8UV0LMt9IRRPMO18RszPc2RaI82061dgIy6ULeAWh/qMcA7hYBhuBwcso498c+hNVaxR1JiIAvBrfapboW/RcTO10k8M06H5NrsHt+1V6H9DMVq+fVVf5f0QvTe/9cJ63982RorDxV6M780E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768341261; c=relaxed/simple;
-	bh=ikA7BKNIBhZUAWyoEmoaaDpknAUn4OKzdofxiCzDIDA=;
+	s=arc-20240116; t=1768341427; c=relaxed/simple;
+	bh=Q5bxNzZLJmoWZi2jvYus1kHT++0hJH9MC9l/B1zaYHs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lcZPEpeu/K/SgENn3dcXpYrrA7OtHRKEXiZjxA3uipBbN0xqZcakrAaS1fNgn+jy5rtUwCHtl18j/OyBXUgZeJitl0YRZUk+7Aig36ul54Nulnjs21C+zjm0FScB1TO6rQhk3QYlhnZ483Fitm/c0wzLZJNOUPpWh27k2Ap7c4U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=gPRAAGcO; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=cCB+AEcT; arc=none smtp.client-ip=103.168.172.157
+	 Content-Type:Content-Disposition:In-Reply-To; b=C0FT4evVhlBuk/iC8/ixmFUFcUF4guWqg0kgDvvg2DS91TFIs6Qb2VaB+18YuPOKVsXtS/8m4uxC7T7GsNlxgr/lrDRqYI9fI5gLdKYAQgsvgTsXVjcOEA/neAtXqUejfyT6YmGoXauJDvA2Xps4+JPpElToVdqsSllWP/JT3tU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=huVafrFa; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=bXSlSM6I; arc=none smtp.client-ip=103.168.172.157
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
 Received: from phl-compute-06.internal (phl-compute-06.internal [10.202.2.46])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id 811B6140002E;
-	Tue, 13 Jan 2026 16:54:06 -0500 (EST)
-Received: from phl-frontend-03 ([10.202.2.162])
-  by phl-compute-06.internal (MEProxy); Tue, 13 Jan 2026 16:54:06 -0500
+	by mailfhigh.phl.internal (Postfix) with ESMTP id 4EEDC14000F3;
+	Tue, 13 Jan 2026 16:57:05 -0500 (EST)
+Received: from phl-frontend-04 ([10.202.2.163])
+  by phl-compute-06.internal (MEProxy); Tue, 13 Jan 2026 16:57:05 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1768341246; x=1768427646; bh=m5iN9HO/vA
-	39uzeeoaXsad+cyuojyZpQ/GxLB0w4+Mo=; b=gPRAAGcOEM1S4rweOZXrO4ZBYU
-	jrKH7kdsc2H9AH+I1E0v/eC1bU6I9h05t8U4HYhpCnZ9fH560b4QGfBofF5556Hf
-	IugbI9vXb8EMA8iKp+dNgC8LpvSFTobhl+RI7cY0SRBt+nL7tEyx/q+G5hoqeuW4
-	70v4JlTsRuwADbl3ZGX+Q9VwLgIKSUH/jxyoZnnbnTlrJibpUfvN2IR6xiQmVWzP
-	ESZSKbdn4pw/1Vn3Xmb8f//KjBwa6QGdJOmBOqylIqON35F3RUiKaVU1VgRMpXLC
-	AsWnwuGFexQlGhfev6vOoDM5pEJJqUK2sLJkmvLYtjXNel7VwEnR34ILle3Q==
+	:content-transfer-encoding:content-type:content-type:date:date
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1768341425;
+	 x=1768427825; bh=rbsdhJQoJd7KhVeQOaKNtJrgGHcEpox6Luyg20a0nFw=; b=
+	huVafrFa47NoV036Z1PfQbjtvexEphGxK+czP80/eeLlnu1jc5OEhmkBq5VcFjwR
+	07sVQbM4ETJopNmqQIKlWRBj30pQ8c5YPvNfy+qh4DiP1a07bJzo6Lv8n3OcqS5i
+	y6FqXpVKyT1FiMRk0n5GRqneHw2C3wEDTeaHPlqsqbevmDLm29xLKVWKlAA9A/og
+	beXCLWs7PyXupeV0OFexha0FbWWdTPhrJFAIn/X8mpzbto2Q/fzYW0gqo7xsuDmn
+	Jd4139poiH5IBgRnCHbhkPIRP09uyRoUlftstsG39mMUaHbT+9l+wU5pFxT7lBSW
+	EaER/rVPCUBN9cE4rbVNbQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-	1768341246; x=1768427646; bh=m5iN9HO/vA39uzeeoaXsad+cyuojyZpQ/Gx
-	LB0w4+Mo=; b=cCB+AEcTsY10kq7X5j0PT8dM16XgHau/v1WY3xiH9avZr3EQ1RF
-	+X9z5pWn8p+NHDb7CstVFK3O12EB/c8/2RDnPm6E74RIUYloSo7eq1HVEMF66FUw
-	/NDW/jE+nFcSDQ7sRhbaXu/6S3lhtngy0I4P0UhVdar71i7LAf43tf0bDNMazmRj
-	3qA4maVeG0kTStp7lFsKpeTJmEb2JtoMAAEXZ3O65tCGjIcl2yFVKUiKWCiyj3d3
-	/MimQYw6+BH1r58lC8shfBO/17DvThh1obADNTZexSOyalMuNz2SyZ6uix0O/d73
-	/VWjGH9TshSvpvZ7ykji1TQV4JbvMywjKLA==
-X-ME-Sender: <xms:_r5maW3fhAiaOOY20-hBRys9eXH6mJ1gO3d8a_elrEL13WBtckexOg>
-    <xme:_r5maQgHnTEodaMQ3Z97NdLdXwnuUDSb6Ep0Z8-VoOt5zg1y1OkU2B3Bs0KrqsTP0
-    EvJ0qZB1X6IcToyLyTqAQ_ksu4__-pculM7tARIv41rRb34ulF8SQ>
-X-ME-Received: <xmr:_r5macQ2C9S0PLApewOH9X7sawJpjis6a4AXsUiz7PtqLK3vLp0wYi2GXBdpyJKgOSEQrZzOycRgMLo7F2fA50_3-IA>
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1768341425; x=
+	1768427825; bh=rbsdhJQoJd7KhVeQOaKNtJrgGHcEpox6Luyg20a0nFw=; b=b
+	XSlSM6I+CsXHPETMFatKFevJeTYzLLBeSZFDDlLZI2arJY3SxJNqfZh6LrrBS7jR
+	Wm7t7R8B7Zu0MQusNhmBpbspuuQG1yAevCAd+eEbZCXu4Uh4l9/p9gGHibvLlstj
+	iVNpDkMPuqFA1hfOhhz8cAOuL2s8qg4ZJ6uzpfTRAMaqYC4xUBhj4QHOM+UHO/cJ
+	nYqHhGHGiECm6dHVA22b1EIdbQSFcNGnaPynClaGqd8pjzRC1whteQYi8llN+b/C
+	v8TsqYpuUheYoqHjQ1+gNd/BGQKFehbCm4d2cgUOAPT7c/sPbAATuAIYuwJJpubB
+	tGuNBTjjnXes4p+445IXQ==
+X-ME-Sender: <xms:sb9mabXmfO4q-BT4jrMSPuV2WYthM_6USJ-PLVKzIHoDwoiP5RBoug>
+    <xme:sb9mac5IPkuUYXYtQmF5sOT8BSNLhq5eGlnrBnODbnc3I5wdk1nOFAJ3TqWR_MlBQ
+    YBZ_sh-ZUPB5F62UQ69fcpM4VmNM9Vfa2ijq6V_bHDlg3VvwiOPtg>
+X-ME-Received: <xmr:sb9maeriSyeCB-a3MQEnrc-t1crnGLwnQn2vU_yfQjri9kXiOs6X3dIXPqLMiAv3cjP_WPVjTVQdbUpf_c6rPeR9mCI>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdduvddugeehucetufdoteggodetrf
     dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhishcu
-    uehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpeehtd
-    fhvefghfdtvefghfelhffgueeugedtveduieehieehteelgeehvdefgeefgeenucffohhm
-    rghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
-    hmpehmrghilhhfrhhomhepsghorhhishessghurhdrihhopdhnsggprhgtphhtthhopeef
-    pdhmohguvgepshhmthhpohhuthdprhgtphhtthhopeifqhhusehsuhhsvgdrtghomhdprh
-    gtphhtthhopehlihhnuhigqdgsthhrfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhr
-    tghpthhtoheprhejjedvheejjeelhedvsehgmhgrihhlrdgtohhm
-X-ME-Proxy: <xmx:_r5maRjtdLnLYmhXz0loiwO6kR4UHr86jl0z67Rfl_Co3yctleiXPQ>
-    <xmx:_r5mac7-TdBuR_80Vdb-kv53X-ZWzwNCk70kjPWPGQNI5F4Qg6HXUg>
-    <xmx:_r5maeASnFiHlYHJDOsp79KUQlSfKvXocr-e6_AH811cZKy4PtCnlA>
-    <xmx:_r5maTZTvAfHM-QCd3w_a8SIiwVbrU8LUtXhOPMYmTDqLo5dVSaREQ>
-    <xmx:_r5maYtsnR1pBj2WI7WWU0FWY_3qVAElZwxzy47yuenwBn_KlK6cURAP>
+    rghilhhouhhtmecufedttdenucenucfjughrpeffhffvvefukfhfgggtugfgjgesthekre
+    dttddtjeenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdr
+    ihhoqeenucggtffrrghtthgvrhhnpedulefhtdfhteduvdethfeftdeitdethedvtdekvd
+    eltddvveegtdeuuddtiedtieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhep
+    mhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhiohdpnhgspghrtghpthhtohepiedpmh
+    houggvpehsmhhtphhouhhtpdhrtghpthhtohepjhhirghshhgvnhhgjhhirghnghgtohho
+    lhesghhmrghilhdrtghomhdprhgtphhtthhopegtlhhmsehfsgdrtghomhdprhgtphhtth
+    hopegushhtvghrsggrsehsuhhsvgdrtghomhdprhgtphhtthhopehfughmrghnrghnrges
+    khgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqsghtrhhfshesvhhgvghrrd
+    hkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghr
+    rdhkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:sb9maXn4FZSdLaxbWjjPvK_tiOIN0-teRKYSqIFiMycYBXNVNzwr3Q>
+    <xmx:sb9maSP4K9Y5NcQH60VgNz1ppN2_sGh6JV_9RBdoxW93x0r1LW_4kQ>
+    <xmx:sb9maTMduspAqXiUltfTzovlVXpAMmDwHCc_PIRUlmeetBXTL1zc0Q>
+    <xmx:sb9mabgcwpfZ2nr7G1r_9YW_hnJfQ1zKiwgV-hRnq9bQShx3QBzxsQ>
+    <xmx:sb9maaAbzy1zWr_mqlDK8Lxtsj34SXzdtkOknItVP88X7BCk3_v2GMaC>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 13 Jan 2026 16:54:05 -0500 (EST)
-Date: Tue, 13 Jan 2026 13:54:06 -0800
+ 13 Jan 2026 16:57:04 -0500 (EST)
+Date: Tue, 13 Jan 2026 13:57:05 -0800
 From: Boris Burkov <boris@bur.io>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org, Jiaming Zhang <r772577952@gmail.com>
-Subject: Re: [PATCH] btrfs: reject new transactions if the fs is fully
- read-only
-Message-ID: <20260113215344.GA1048609@zen.localdomain>
-References: <f0a259857d106f82ea377b49a85bc422fff001fc.1768337256.git.wqu@suse.com>
+To: Jiasheng Jiang <jiashengjiangcool@gmail.com>
+Cc: clm@fb.com, dsterba@suse.com, fdmanana@kernel.org,
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4] btrfs: reset block group size class when it becomes
+ empty
+Message-ID: <20260113215705.GB1048609@zen.localdomain>
+References: <20260112185001.GA450687@zen.localdomain>
+ <20260113205532.42625-1-jiashengjiangcool@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <f0a259857d106f82ea377b49a85bc422fff001fc.1768337256.git.wqu@suse.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20260113205532.42625-1-jiashengjiangcool@gmail.com>
 
-On Wed, Jan 14, 2026 at 07:28:28AM +1030, Qu Wenruo wrote:
-> [BUG]
-> There is a bug report where a heavily fuzzed fs is mounted with all
-> rescue mount options, which leads to the following warnings during
-> unmount:
+On Tue, Jan 13, 2026 at 08:55:32PM +0000, Jiasheng Jiang wrote:
+> Differential analysis of block-group.c shows an inconsistency in how
+> block group size classes are managed.
 > 
->  BTRFS: Transaction aborted (error -22)
->  Modules linked in:
->  CPU: 0 UID: 0 PID: 9758 Comm: repro.out Not tainted
->  6.19.0-rc5-00002-gb71e635feefc #7 PREEMPT(full)
->  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014
->  RIP: 0010:find_free_extent_update_loop fs/btrfs/extent-tree.c:4208 [inline]
->  RIP: 0010:find_free_extent+0x52f0/0x5d20 fs/btrfs/extent-tree.c:4611
->  Call Trace:
->   <TASK>
->   btrfs_reserve_extent+0x2cd/0x790 fs/btrfs/extent-tree.c:4705
->   btrfs_alloc_tree_block+0x1e1/0x10e0 fs/btrfs/extent-tree.c:5157
->   btrfs_force_cow_block+0x578/0x2410 fs/btrfs/ctree.c:517
->   btrfs_cow_block+0x3c4/0xa80 fs/btrfs/ctree.c:708
->   btrfs_search_slot+0xcad/0x2b50 fs/btrfs/ctree.c:2130
->   btrfs_truncate_inode_items+0x45d/0x2350 fs/btrfs/inode-item.c:499
->   btrfs_evict_inode+0x923/0xe70 fs/btrfs/inode.c:5628
->   evict+0x5f4/0xae0 fs/inode.c:837
->   __dentry_kill+0x209/0x660 fs/dcache.c:670
->   finish_dput+0xc9/0x480 fs/dcache.c:879
->   shrink_dcache_for_umount+0xa0/0x170 fs/dcache.c:1661
->   generic_shutdown_super+0x67/0x2c0 fs/super.c:621
->   kill_anon_super+0x3b/0x70 fs/super.c:1289
->   btrfs_kill_super+0x41/0x50 fs/btrfs/super.c:2127
->   deactivate_locked_super+0xbc/0x130 fs/super.c:474
->   cleanup_mnt+0x425/0x4c0 fs/namespace.c:1318
->   task_work_run+0x1d4/0x260 kernel/task_work.c:233
->   exit_task_work include/linux/task_work.h:40 [inline]
->   do_exit+0x694/0x22f0 kernel/exit.c:971
->   do_group_exit+0x21c/0x2d0 kernel/exit.c:1112
->   __do_sys_exit_group kernel/exit.c:1123 [inline]
->   __se_sys_exit_group kernel/exit.c:1121 [inline]
->   __x64_sys_exit_group+0x3f/0x40 kernel/exit.c:1121
->   x64_sys_call+0x2210/0x2210 arch/x86/include/generated/asm/syscalls_64.h:232
->   do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
->   do_syscall_64+0xe8/0xf80 arch/x86/entry/syscall_64.c:94
->   entry_SYSCALL_64_after_hwframe+0x77/0x7f
->  RIP: 0033:0x44f639
->  Code: Unable to access opcode bytes at 0x44f60f.
->  RSP: 002b:00007ffc15c4e088 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
->  RAX: ffffffffffffffda RBX: 00000000004c32f0 RCX: 000000000044f639
->  RDX: 000000000000003c RSI: 00000000000000e7 RDI: 0000000000000001
->  RBP: 0000000000000001 R08: ffffffffffffffc0 R09: 0000000000000000
->  R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004c32f0
->  R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000001
->   </TASK>
+> Currently, btrfs_use_block_group_size_class() sets a block group's size
+> class to specialize it for a specific allocation size. However, this
+> size class remains "stale" even if the block group becomes completely
+> empty (both used and reserved bytes reach zero).
 > 
-> Since rescue mount options will mark the full fs read-only, there should
-> be no new transaction triggered.
+> This happens in two scenarios:
+> 1. When space reservations are freed (e.g., due to errors or transaction
+>    aborts) via btrfs_free_reserved_bytes().
+> 2. When the last extent in a block group is freed via
+>    btrfs_update_block_group().
 > 
-> But during unmount we will evict all inodes, which can trigger a new
-> transaction, and triggers warnings on a heavy corrupted fs.
+> While size classes are advisory, a stale size class can cause
+> find_free_extent to unnecessarily skip candidate block groups during
+> initial search loops. This undermines the purpose of size classes—to
+> reduce fragmentation—by keeping block groups restricted to a specific
+> size class when they could be reused for any size.
 > 
-> [CAUSE]
-> Btrfs allows new transaction even on a read-only fs, this is to allow
-> log replay happen even on read-only mounts, just like what ext4/xfs.
+> Fix this by resetting the size class to BTRFS_BG_SZ_NONE whenever a
+> block group's used and reserved counts both reach zero. This ensures
+> that empty block groups are fully available for any allocation size in
+> the next cycle.
 > 
-> However with rescue mount options, the fs is fully read-only and can not
-> be remounted read-write, thus in that case we should also reject any new
-> transactions.
-> 
-> [FIX]
-> If we find the fs has rescue mount options, we should treat the fs as
-> error, so that no new transaction can be started.
-> 
-> Reported-by: Jiaming Zhang <r772577952@gmail.com>
-> Link: https://lore.kernel.org/linux-btrfs/CANypQFYw8Nt8stgbhoycFojOoUmt+BoZ-z8WJOZVxcogDdwm=Q@mail.gmail.com/
+> Fixes: 52bb7a2166af ("btrfs: introduce size class to block group allocator")
+
+I don't think this necessarily amounts to a bug of the level that needs
+a Fixes tag, since I don't think it should realistically break any
+workload nor is it that urgent to backport to stable branches.
+
+But if we want to use these tags to note targeted improvements / semi-bugs
+then I am fine leaving it.
+
+Either way,
 
 Reviewed-by: Boris Burkov <boris@bur.io>
 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
+> Signed-off-by: Jiasheng Jiang <jiashengjiangcool@gmail.com>
 > ---
->  fs/btrfs/disk-io.c | 13 +++++++++++++
->  fs/btrfs/fs.h      |  8 ++++++++
->  2 files changed, 21 insertions(+)
+> Changelog:
 > 
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index cecb81d0f9e0..02cb79fc5b7a 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -3230,6 +3230,15 @@ int btrfs_check_features(struct btrfs_fs_info *fs_info, bool is_rw_mount)
->  	return 0;
+> v3 -> v4:
+> 1. Introduced btrfs_maybe_reset_size_class() helper to unify the logic.
+> 2. Expanded the fix to include btrfs_update_block_group() to handle cases where the last extent in a block group is freed.
+> 3. Refined the commit message to clarify that size classes are advisory and their stale state impacts allocation efficiency rather than causing absolute allocation failures.
+> 
+> v2 -> v3:
+> 1. Corrected the "Fixes" tag to 52bb7a2166af.
+> 2. Updated the commit message to reflect that the performance impact is workload-dependent.
+> 3. Added mention that the issue can lead to unnecessary allocation of new block groups.
+> 
+> v1 -> v2:
+> 1. Inlined btrfs_maybe_reset_size_class() function.
+> 2. Moved check below the reserved bytes decrement in btrfs_free_reserved_bytes().
+> ---
+>  fs/btrfs/block-group.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+> 
+> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+> index 08b14449fabe..343d7724939f 100644
+> --- a/fs/btrfs/block-group.c
+> +++ b/fs/btrfs/block-group.c
+> @@ -3675,6 +3675,14 @@ int btrfs_write_dirty_block_groups(struct btrfs_trans_handle *trans)
+>  	return ret;
 >  }
 >  
-> +static bool fs_is_full_ro(struct btrfs_fs_info *fs_info)
+> +static void btrfs_maybe_reset_size_class(struct btrfs_block_group *cache)
 > +{
-> +	if (!sb_rdonly(fs_info->sb))
-> +		return false;
-> +	if (unlikely(fs_info->mount_opt & BTRFS_MOUNT_FULL_RO_MASK))
-> +		return true;
-> +	return false;
+> +	lockdep_assert_held(&cache->lock);
+> +	if (btrfs_block_group_should_use_size_class(cache) &&
+> +	    cache->used == 0 && cache->reserved == 0)
+> +		cache->size_class = BTRFS_BG_SZ_NONE;
 > +}
 > +
->  int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_devices)
+>  int btrfs_update_block_group(struct btrfs_trans_handle *trans,
+>  			     u64 bytenr, u64 num_bytes, bool alloc)
 >  {
->  	u32 sectorsize;
-> @@ -3335,6 +3344,10 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
->  	if (btrfs_super_flags(disk_super) & BTRFS_SUPER_FLAG_ERROR)
->  		WRITE_ONCE(fs_info->fs_error, -EUCLEAN);
->  
-> +	/* If the fs has any rescue options, no transaction is allowed. */
-> +	if (fs_is_full_ro(fs_info))
-> +		WRITE_ONCE(fs_info->fs_error, -EROFS);
-> +
->  	/* Set up fs_info before parsing mount options */
->  	nodesize = btrfs_super_nodesize(disk_super);
->  	sectorsize = btrfs_super_sectorsize(disk_super);
-> diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
-> index 859551cf9bee..a54fbf341ce1 100644
-> --- a/fs/btrfs/fs.h
-> +++ b/fs/btrfs/fs.h
-> @@ -266,6 +266,14 @@ enum {
->  	BTRFS_MOUNT_REF_TRACKER			= (1ULL << 33),
->  };
->  
-> +/* Those mount options requires a full RO fs, no new transaction is allowed. */
-> +#define BTRFS_MOUNT_FULL_RO_MASK		\
-> +	(BTRFS_MOUNT_NOLOGREPLAY |		\
-> +	 BTRFS_MOUNT_IGNOREBADROOTS |		\
-> +	 BTRFS_MOUNT_IGNOREDATACSUMS |		\
-> +	 BTRFS_MOUNT_IGNOREMETACSUMS |		\
-> +	 BTRFS_MOUNT_IGNORESUPERFLAGS)
-> +
->  /*
->   * Compat flags that we support.  If any incompat flags are set other than the
->   * ones specified below then we will fail to mount
+> @@ -3739,6 +3747,7 @@ int btrfs_update_block_group(struct btrfs_trans_handle *trans,
+>  		old_val -= num_bytes;
+>  		cache->used = old_val;
+>  		cache->pinned += num_bytes;
+> +		btrfs_maybe_reset_size_class(cache);
+>  		btrfs_space_info_update_bytes_pinned(space_info, num_bytes);
+>  		space_info->bytes_used -= num_bytes;
+>  		space_info->disk_used -= num_bytes * factor;
+> @@ -3867,6 +3876,7 @@ void btrfs_free_reserved_bytes(struct btrfs_block_group *cache, u64 num_bytes,
+>  	spin_lock(&cache->lock);
+>  	bg_ro = cache->ro;
+>  	cache->reserved -= num_bytes;
+> +	btrfs_maybe_reset_size_class(cache);
+>  	if (is_delalloc)
+>  		cache->delalloc_bytes -= num_bytes;
+>  	spin_unlock(&cache->lock);
 > -- 
-> 2.52.0
+> 2.25.1
 > 
 
