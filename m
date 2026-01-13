@@ -1,182 +1,243 @@
-Return-Path: <linux-btrfs+bounces-20468-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20469-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AE03D1B4E8
-	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Jan 2026 21:55:48 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78C72D1B52E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Jan 2026 21:58:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id E0BD43013D60
-	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Jan 2026 20:55:45 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 104C330445FC
+	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Jan 2026 20:58:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 613D7321F27;
-	Tue, 13 Jan 2026 20:55:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34E79261B78;
+	Tue, 13 Jan 2026 20:58:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Boh8UKif"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="eXoFStFC";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="eXoFStFC"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yw1-f193.google.com (mail-yw1-f193.google.com [209.85.128.193])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BAE23191D1
-	for <linux-btrfs@vger.kernel.org>; Tue, 13 Jan 2026 20:55:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E820A322B6E
+	for <linux-btrfs@vger.kernel.org>; Tue, 13 Jan 2026 20:58:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768337739; cv=none; b=psOWrcK43T0nmCYUINvnh6LUTyqmkfupGsYnixuhohkVyaoik6fUUDG69YUK/GhuPOFaFr5ADcMaZsgNxxOxH1spr69YW2QQAQLoLMa1tWNBPu+CQBULRz7nxMrcsFEcEeL53nVpYm9OwMMidOsQQ+5PAvFXJVfp2TSCHJmU0Ug=
+	t=1768337915; cv=none; b=Ec2BVRmdMPtwh07lIzyhxt31uROh+dp//7OuusEM2CI75JzISIFz/tjbJHH46j9xMYUzNx8Hx1EIx2sYJPmmpDcsfho9X0JyQjcXNWinwj1BnPsLE6yGkCHlLGfoiqZ4ccSFeKr/p+3nruRgV4ZJwtsrVbQlFKvvjoyP7banrJ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768337739; c=relaxed/simple;
-	bh=sij+zoexnWppQ2ihhwPzrCR1FqbRGPbuFYgbLfSeL3k=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=J36gNOKdReECqcvLAbS+HGodl8Dvpy/Amy6t4yelBYfHBQy2Q4rSgEbcp7t8p45znozvaeuS+uKkITowCVOY9kWFO/xuNxn7bMPdka+Z8IhyWomaCjBro8bY62arfKOuL44tuCR+kl2u9Mw6tVleSjYzz1NSklwWVRr7Rbsa+5U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Boh8UKif; arc=none smtp.client-ip=209.85.128.193
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f193.google.com with SMTP id 00721157ae682-78f89501423so2857127b3.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 13 Jan 2026 12:55:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768337736; x=1768942536; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3g1ZsvGsx2nm1P4yPpEV7+WbS+tP/MjMFVscDshGg3U=;
-        b=Boh8UKifb+Ambd+K4HEqec6AqBaQIHM2eL42UuErenNG2V5wyNbpMYPbV0+ouUbtmW
-         yXN7HXULy8hCXuazpztUrousURijbhI3/ExRe5KuHThwcm0D3izcCBeHTxBMiGO1AUuX
-         yS3j7lGh+R/x/C8PpFz9QRqcuulnCWds652jzWlLUNHgFiR6sR7Rjzpv5gJ5EJIhzReZ
-         2h0bQxhNFrMB8WvCHjmzhv0kf2VqvBMryPVDaUtfvnjLo1jS6GLkCn1qjWU5W7HwfEWo
-         cmea+jhmUAMR+DZ2SemzcS9r0/tcdhJ+YyTEWV7W8raOKDh3hfwyg5etkGzacI4Q6Xzq
-         DEGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768337736; x=1768942536;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=3g1ZsvGsx2nm1P4yPpEV7+WbS+tP/MjMFVscDshGg3U=;
-        b=q/w0DtMZ6k42Uu4ugCaYX7sXjXxRD86MAvYUx9PggL1lj4zUWtqt9n/dBP0hQ4GfWi
-         mAnKl9e80JiwOiNg+VPoDlKvWII4EAd4eL5Zs7b/KGTlW426zXNSadJpYV5ChIMFsio3
-         dUrgI9t2GPdkU2vwYxe3VDysbDSyNw60xA8bay2cgC+v/llnQTKqi3bQXGy1V98gWXYd
-         EO+Y9vwG2LzjqsBbYaIaDPPctNu+EIapmzkbzo9t1A4qdcztYFPyHBtEIQSTDe4wben6
-         IiwVcLCVthzg6TkULPac9oY1t7AS0S0q+DHN68Uxiirtai8NQhcUN78SDhkd1+OwgxnB
-         zh/A==
-X-Forwarded-Encrypted: i=1; AJvYcCVqh+Wi/apcJX7jrw2EexlPBH1k6/1+OwFMAT6mfT/bezk5EAIKruxaRDNI24Hoh82AEudCa4wUek/H0A==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxTdoLmFDhlbtWEzhFlsRxP46AyfQF7A2Fs/bRZwNDHNc52hx9t
-	1/cMB0VKCCn30w69B6I5JCYdpoMuOBsxkwE582qCG3tjwkS1F+3qvDEr
-X-Gm-Gg: AY/fxX5NcRXNU7aw8CJI8ih1jcnXF3Aazwzlc/DeW2Ce8vevsd+PnU96DxThbs1ijvi
-	U1aqa4TPts7obMvtUFpWirnpqqzC20ovAjYoOca0NjZOyLkQUjZVOVbTGZU8XSiu8BnSKDSFeP/
-	NTj92wD/ZBhYX0BKFLo/KvApAzccm9cZEijBOWVL9WuP4ThAY9f96ORMyuEV01LsXecChoWyXev
-	rDU88HIaD8uvamCLLu3wnoAegRNYXZduUD4SQq44tf4AhY0e+Otn0yc7zQrs4QXqmY0wO4xhaWd
-	O5zUUYIxZTHhQgXTR0qH8otsrevx1hCGAjelH8hGpldEdSrbQoAaoobnCJucvuBUiwNukhlItzb
-	J44Egr2RZYSyY6SfN+0H89RkFIrB+jtkQiWr+WHZ4rsiqiDmx5u3EEUb3Kf+rHGnKU2IVmM+HK8
-	K7z7ocBeTShsEI0p6Bn/OpFswS+gp1Kj7r
-X-Received: by 2002:a05:690e:c42:b0:646:69a2:d400 with SMTP id 956f58d0204a3-648f61f8d26mr3813349d50.10.1768337736012;
-        Tue, 13 Jan 2026 12:55:36 -0800 (PST)
-Received: from newman.cs.purdue.edu ([128.10.127.250])
-        by smtp.gmail.com with ESMTPSA id 956f58d0204a3-6470d8b2623sm9712831d50.20.2026.01.13.12.55.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jan 2026 12:55:35 -0800 (PST)
-From: Jiasheng Jiang <jiashengjiangcool@gmail.com>
-To: boris@bur.io
-Cc: clm@fb.com,
-	dsterba@suse.com,
-	fdmanana@kernel.org,
-	jiashengjiangcool@gmail.com,
-	linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v4] btrfs: reset block group size class when it becomes empty
-Date: Tue, 13 Jan 2026 20:55:32 +0000
-Message-Id: <20260113205532.42625-1-jiashengjiangcool@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20260112185001.GA450687@zen.localdomain>
-References: <20260112185001.GA450687@zen.localdomain>
+	s=arc-20240116; t=1768337915; c=relaxed/simple;
+	bh=2vQPMHHGCS/Ik011hzeaqhNM//kgcy06iHj/g0007RY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=LzbocY9B1MaQpbUDF81NzcLdpzkuvMuEGlv/via0sVe/r2WSL54DB5gdl0hjm21VxJLryVhAw3xsq8y7BwVUGKbDReI06eNYdoOIVqMU/A1HmFqPyZhz5/fq1YHk6LElHi96xiQdsQC7Ap5o7tl3uOAokxugtVckyTGXhgI/kpY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=eXoFStFC; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=eXoFStFC; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 00486336A0;
+	Tue, 13 Jan 2026 20:58:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1768337912; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=ASJRUNV3Gbe+oiHix3TRa7NmUJpNMFllPbBE/g3/YoI=;
+	b=eXoFStFCLzJb686Q+kAFvm+S8fSkU3bL12UMk21vPnIkmJ0U8cHfdWAaJDJ1mSRx1quRru
+	DLG7JGlYAH3DsEEBATQ60VkEkSkzRjC9Pm4yuubp/T67WZK8+FZsDB+lv2W5uobHj46JG9
+	mvNvQBXc02KE9OgWOXmCQkY489vaBoY=
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=eXoFStFC
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1768337912; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=ASJRUNV3Gbe+oiHix3TRa7NmUJpNMFllPbBE/g3/YoI=;
+	b=eXoFStFCLzJb686Q+kAFvm+S8fSkU3bL12UMk21vPnIkmJ0U8cHfdWAaJDJ1mSRx1quRru
+	DLG7JGlYAH3DsEEBATQ60VkEkSkzRjC9Pm4yuubp/T67WZK8+FZsDB+lv2W5uobHj46JG9
+	mvNvQBXc02KE9OgWOXmCQkY489vaBoY=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0D9193EA63;
+	Tue, 13 Jan 2026 20:58:30 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id x3UXMfaxZmn+SQAAD6G6ig
+	(envelope-from <wqu@suse.com>); Tue, 13 Jan 2026 20:58:30 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Cc: Jiaming Zhang <r772577952@gmail.com>
+Subject: [PATCH] btrfs: reject new transactions if the fs is fully read-only
+Date: Wed, 14 Jan 2026 07:28:28 +1030
+Message-ID: <f0a259857d106f82ea377b49a85bc422fff001fc.1768337256.git.wqu@suse.com>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_TWO(0.00)[2];
+	DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	MIME_TRACE(0.00)[0:+];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	TO_DN_SOME(0.00)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:dkim,suse.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
+	FROM_EQ_ENVFROM(0.00)[];
+	DKIM_TRACE(0.00)[suse.com:+];
+	FREEMAIL_CC(0.00)[gmail.com];
+	RCVD_TLS_ALL(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com]
+X-Spam-Flag: NO
+X-Spam-Score: -3.01
+X-Rspamd-Queue-Id: 00486336A0
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spam-Level: 
 
-Differential analysis of block-group.c shows an inconsistency in how
-block group size classes are managed.
+[BUG]
+There is a bug report where a heavily fuzzed fs is mounted with all
+rescue mount options, which leads to the following warnings during
+unmount:
 
-Currently, btrfs_use_block_group_size_class() sets a block group's size
-class to specialize it for a specific allocation size. However, this
-size class remains "stale" even if the block group becomes completely
-empty (both used and reserved bytes reach zero).
+ BTRFS: Transaction aborted (error -22)
+ Modules linked in:
+ CPU: 0 UID: 0 PID: 9758 Comm: repro.out Not tainted
+ 6.19.0-rc5-00002-gb71e635feefc #7 PREEMPT(full)
+ Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014
+ RIP: 0010:find_free_extent_update_loop fs/btrfs/extent-tree.c:4208 [inline]
+ RIP: 0010:find_free_extent+0x52f0/0x5d20 fs/btrfs/extent-tree.c:4611
+ Call Trace:
+  <TASK>
+  btrfs_reserve_extent+0x2cd/0x790 fs/btrfs/extent-tree.c:4705
+  btrfs_alloc_tree_block+0x1e1/0x10e0 fs/btrfs/extent-tree.c:5157
+  btrfs_force_cow_block+0x578/0x2410 fs/btrfs/ctree.c:517
+  btrfs_cow_block+0x3c4/0xa80 fs/btrfs/ctree.c:708
+  btrfs_search_slot+0xcad/0x2b50 fs/btrfs/ctree.c:2130
+  btrfs_truncate_inode_items+0x45d/0x2350 fs/btrfs/inode-item.c:499
+  btrfs_evict_inode+0x923/0xe70 fs/btrfs/inode.c:5628
+  evict+0x5f4/0xae0 fs/inode.c:837
+  __dentry_kill+0x209/0x660 fs/dcache.c:670
+  finish_dput+0xc9/0x480 fs/dcache.c:879
+  shrink_dcache_for_umount+0xa0/0x170 fs/dcache.c:1661
+  generic_shutdown_super+0x67/0x2c0 fs/super.c:621
+  kill_anon_super+0x3b/0x70 fs/super.c:1289
+  btrfs_kill_super+0x41/0x50 fs/btrfs/super.c:2127
+  deactivate_locked_super+0xbc/0x130 fs/super.c:474
+  cleanup_mnt+0x425/0x4c0 fs/namespace.c:1318
+  task_work_run+0x1d4/0x260 kernel/task_work.c:233
+  exit_task_work include/linux/task_work.h:40 [inline]
+  do_exit+0x694/0x22f0 kernel/exit.c:971
+  do_group_exit+0x21c/0x2d0 kernel/exit.c:1112
+  __do_sys_exit_group kernel/exit.c:1123 [inline]
+  __se_sys_exit_group kernel/exit.c:1121 [inline]
+  __x64_sys_exit_group+0x3f/0x40 kernel/exit.c:1121
+  x64_sys_call+0x2210/0x2210 arch/x86/include/generated/asm/syscalls_64.h:232
+  do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+  do_syscall_64+0xe8/0xf80 arch/x86/entry/syscall_64.c:94
+  entry_SYSCALL_64_after_hwframe+0x77/0x7f
+ RIP: 0033:0x44f639
+ Code: Unable to access opcode bytes at 0x44f60f.
+ RSP: 002b:00007ffc15c4e088 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+ RAX: ffffffffffffffda RBX: 00000000004c32f0 RCX: 000000000044f639
+ RDX: 000000000000003c RSI: 00000000000000e7 RDI: 0000000000000001
+ RBP: 0000000000000001 R08: ffffffffffffffc0 R09: 0000000000000000
+ R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004c32f0
+ R13: 0000000000000001 R14: 0000000000000000 R15: 0000000000000001
+  </TASK>
 
-This happens in two scenarios:
-1. When space reservations are freed (e.g., due to errors or transaction
-   aborts) via btrfs_free_reserved_bytes().
-2. When the last extent in a block group is freed via
-   btrfs_update_block_group().
+Since rescue mount options will mark the full fs read-only, there should
+be no new transaction triggered.
 
-While size classes are advisory, a stale size class can cause
-find_free_extent to unnecessarily skip candidate block groups during
-initial search loops. This undermines the purpose of size classes—to
-reduce fragmentation—by keeping block groups restricted to a specific
-size class when they could be reused for any size.
+But during unmount we will evict all inodes, which can trigger a new
+transaction, and triggers warnings on a heavy corrupted fs.
 
-Fix this by resetting the size class to BTRFS_BG_SZ_NONE whenever a
-block group's used and reserved counts both reach zero. This ensures
-that empty block groups are fully available for any allocation size in
-the next cycle.
+[CAUSE]
+Btrfs allows new transaction even on a read-only fs, this is to allow
+log replay happen even on read-only mounts, just like what ext4/xfs.
 
-Fixes: 52bb7a2166af ("btrfs: introduce size class to block group allocator")
-Signed-off-by: Jiasheng Jiang <jiashengjiangcool@gmail.com>
+However with rescue mount options, the fs is fully read-only and can not
+be remounted read-write, thus in that case we should also reject any new
+transactions.
+
+[FIX]
+If we find the fs has rescue mount options, we should treat the fs as
+error, so that no new transaction can be started.
+
+Reported-by: Jiaming Zhang <r772577952@gmail.com>
+Link: https://lore.kernel.org/linux-btrfs/CANypQFYw8Nt8stgbhoycFojOoUmt+BoZ-z8WJOZVxcogDdwm=Q@mail.gmail.com/
+Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
-Changelog:
+ fs/btrfs/disk-io.c | 13 +++++++++++++
+ fs/btrfs/fs.h      |  8 ++++++++
+ 2 files changed, 21 insertions(+)
 
-v3 -> v4:
-1. Introduced btrfs_maybe_reset_size_class() helper to unify the logic.
-2. Expanded the fix to include btrfs_update_block_group() to handle cases where the last extent in a block group is freed.
-3. Refined the commit message to clarify that size classes are advisory and their stale state impacts allocation efficiency rather than causing absolute allocation failures.
-
-v2 -> v3:
-1. Corrected the "Fixes" tag to 52bb7a2166af.
-2. Updated the commit message to reflect that the performance impact is workload-dependent.
-3. Added mention that the issue can lead to unnecessary allocation of new block groups.
-
-v1 -> v2:
-1. Inlined btrfs_maybe_reset_size_class() function.
-2. Moved check below the reserved bytes decrement in btrfs_free_reserved_bytes().
----
- fs/btrfs/block-group.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 08b14449fabe..343d7724939f 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -3675,6 +3675,14 @@ int btrfs_write_dirty_block_groups(struct btrfs_trans_handle *trans)
- 	return ret;
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index cecb81d0f9e0..02cb79fc5b7a 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -3230,6 +3230,15 @@ int btrfs_check_features(struct btrfs_fs_info *fs_info, bool is_rw_mount)
+ 	return 0;
  }
  
-+static void btrfs_maybe_reset_size_class(struct btrfs_block_group *cache)
++static bool fs_is_full_ro(struct btrfs_fs_info *fs_info)
 +{
-+	lockdep_assert_held(&cache->lock);
-+	if (btrfs_block_group_should_use_size_class(cache) &&
-+	    cache->used == 0 && cache->reserved == 0)
-+		cache->size_class = BTRFS_BG_SZ_NONE;
++	if (!sb_rdonly(fs_info->sb))
++		return false;
++	if (unlikely(fs_info->mount_opt & BTRFS_MOUNT_FULL_RO_MASK))
++		return true;
++	return false;
 +}
 +
- int btrfs_update_block_group(struct btrfs_trans_handle *trans,
- 			     u64 bytenr, u64 num_bytes, bool alloc)
+ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_devices)
  {
-@@ -3739,6 +3747,7 @@ int btrfs_update_block_group(struct btrfs_trans_handle *trans,
- 		old_val -= num_bytes;
- 		cache->used = old_val;
- 		cache->pinned += num_bytes;
-+		btrfs_maybe_reset_size_class(cache);
- 		btrfs_space_info_update_bytes_pinned(space_info, num_bytes);
- 		space_info->bytes_used -= num_bytes;
- 		space_info->disk_used -= num_bytes * factor;
-@@ -3867,6 +3876,7 @@ void btrfs_free_reserved_bytes(struct btrfs_block_group *cache, u64 num_bytes,
- 	spin_lock(&cache->lock);
- 	bg_ro = cache->ro;
- 	cache->reserved -= num_bytes;
-+	btrfs_maybe_reset_size_class(cache);
- 	if (is_delalloc)
- 		cache->delalloc_bytes -= num_bytes;
- 	spin_unlock(&cache->lock);
+ 	u32 sectorsize;
+@@ -3335,6 +3344,10 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
+ 	if (btrfs_super_flags(disk_super) & BTRFS_SUPER_FLAG_ERROR)
+ 		WRITE_ONCE(fs_info->fs_error, -EUCLEAN);
+ 
++	/* If the fs has any rescue options, no transaction is allowed. */
++	if (fs_is_full_ro(fs_info))
++		WRITE_ONCE(fs_info->fs_error, -EROFS);
++
+ 	/* Set up fs_info before parsing mount options */
+ 	nodesize = btrfs_super_nodesize(disk_super);
+ 	sectorsize = btrfs_super_sectorsize(disk_super);
+diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
+index 859551cf9bee..a54fbf341ce1 100644
+--- a/fs/btrfs/fs.h
++++ b/fs/btrfs/fs.h
+@@ -266,6 +266,14 @@ enum {
+ 	BTRFS_MOUNT_REF_TRACKER			= (1ULL << 33),
+ };
+ 
++/* Those mount options requires a full RO fs, no new transaction is allowed. */
++#define BTRFS_MOUNT_FULL_RO_MASK		\
++	(BTRFS_MOUNT_NOLOGREPLAY |		\
++	 BTRFS_MOUNT_IGNOREBADROOTS |		\
++	 BTRFS_MOUNT_IGNOREDATACSUMS |		\
++	 BTRFS_MOUNT_IGNOREMETACSUMS |		\
++	 BTRFS_MOUNT_IGNORESUPERFLAGS)
++
+ /*
+  * Compat flags that we support.  If any incompat flags are set other than the
+  * ones specified below then we will fail to mount
 -- 
-2.25.1
+2.52.0
 
 
