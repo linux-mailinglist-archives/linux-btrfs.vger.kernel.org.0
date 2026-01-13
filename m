@@ -1,141 +1,153 @@
-Return-Path: <linux-btrfs+bounces-20470-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20471-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE056D1B577
-	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Jan 2026 22:04:43 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3CB6D1B62F
+	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Jan 2026 22:25:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 6707B30383A9
-	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Jan 2026 21:04:42 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 071A3301E16F
+	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Jan 2026 21:24:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3EBA318BBD;
-	Tue, 13 Jan 2026 21:04:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D123332B9A2;
+	Tue, 13 Jan 2026 21:24:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="TZiYetla"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="zAHXw+yz";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ut5XmWOq";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="zAHXw+yz";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ut5XmWOq"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6AF2EEBB
-	for <linux-btrfs@vger.kernel.org>; Tue, 13 Jan 2026 21:04:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8BD22F9984
+	for <linux-btrfs@vger.kernel.org>; Tue, 13 Jan 2026 21:24:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768338281; cv=none; b=i9rBb7iLRAshisPhWwpgGJIwHBbmLfR+J8JI/5nHV2TAyDkRBWppXrfDXvWecdd7lHUhHj4Qar5u8Fktq8XcXV3/64sL65Yy5XxoJAhdYuNagGN7dUoBl6MGPche/W2Iww7jamiR7Fk/W/9P4ql/9EWqmYeBe3MfMV7rdHsYK40=
+	t=1768339494; cv=none; b=McXz+A+4BL7894HePvV7HiUCYZS2caM1erD9HmcnTZJLPI8IzKpixb1jP8WA1jnJlcPDACPT8lL74IYhyVEXyuLoZhYrVaS++IrSpazL9N58v6s7dw/SpGVeUGoe+20bqE/riL1RFP2I+Tu9FCEUVU5E/6lqyrbxuuh2PYjCeI8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768338281; c=relaxed/simple;
-	bh=PvWteaDQv9H82dBJMNmY3RVDDYCHfUQxUBvezCPYRno=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=U3palmcPHDCgR3aafSsgm3h86w+If2Se5oORzr5NcpkgQu0ejgKwtZHs+pbVmudU+mw/l8TOqsPgY+K+6CT7I71xoIz5wHR3lt0R0iNtrIhts/vMO6cdKnwCb5URUDMqjd2ceT3G/Pq4ydKjWWgGJ+xRcV20cKutYizdtZ98A8E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=TZiYetla; arc=none smtp.client-ip=209.85.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-477619f8ae5so59695625e9.3
-        for <linux-btrfs@vger.kernel.org>; Tue, 13 Jan 2026 13:04:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1768338278; x=1768943078; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=Lr6I4sFLOF7pEQXQtE49ONSOXQ3w+siiUs6sZfttsSo=;
-        b=TZiYetlaRKrtRm3sU5Dh5TlWvGsiFGLEdYj0DsEbd/4oZ//GGx7+bM2ceN2Y8VxqeS
-         MdhAInSzD8vN6B/u3fcudINZWvKyulSGJvTQURTejDo6JZTGLs6PdzO7kuoJhmT1HG6E
-         OAUEr2YcpWF9bBxB/I1LomsoesA1kJOKOJhVCsdzyXlXx7nx3HAPJeD4beNy0TcHibOG
-         IT1UCNBXXCYU3aITMgPfEDHD7r+GJWodZZW4dzj4q8wrgQ+ZykJpVHG4VF78JomQa0C+
-         zsiyqcBhTZLbT7Pa4kvmju3mYWGAUrPP2qP4co2CIqzXsoSGxXf04RZol+Jps39yOQQa
-         Xj9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768338278; x=1768943078;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Lr6I4sFLOF7pEQXQtE49ONSOXQ3w+siiUs6sZfttsSo=;
-        b=thOYXSqyPMAXV2ol0s5EZkSiD+YhJfa0MFyoam+k8Sh79NmpxiaodUedj9/l575XqI
-         MZBSn40HMwO+CMTu6ZkjXFFS5AhS7UIJrpSzqvz9jZCzFUTTLkeUdqOJpHT107n0VloK
-         8j7OOyFgj5q8OMquQ3ktyUvOV2zX9yQp2cEwmg00mL5g4SopgRN7w65gzCsvEF7Yn9Dx
-         8BZ8kM6bBIYRNgoXZhTxjMtkJtW49+KihJz5/RMfmeDQTKowVT98rzzoCEx3YlqI7VfV
-         uONws/DWhvPL7fcEbX7NHcszB2JCCYZmzyoqIYcdjbioUMZxpmM0fAB6cqo8h3hd4Tct
-         FsZQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVtrD/JEcTN6JeFao+kY5oAQsDWZRUddQKusXDdVJpG97ZIWsHqq40lvNP+eeFxg1ApOEPqf428lmXXTw==@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywh8Radt/5JZHKpAPsumFZH+Tm51l8PULLiovtPv7NJ72xPv/JX
-	6cgwDXKMA2EkALJtddVIbJ7K3ldxpSJ1ufEDJVioM6rWbTcylVA3vQfvqurCf7KoAIs=
-X-Gm-Gg: AY/fxX5N4CxzxXFMBhoGrViHJVfd73otKrtUsoN9CJnUUB+HrXLx2d6D3Zd+3OcHfHr
-	qBC+XhelNwPUrImRvOI//YUZzli4UyybdW774RHorIv2xaHfiZgKtnhlSaiY34sJmHnbukp07+a
-	t4GkE7v3BYvjL1Bd/+0XkfJgs/mWQmYoQ5hXsDxn2SmQgTVhQO3SsTuobwUwIWOqAD86gBEpzxs
-	V7SU3f4lwAfMKd5Cv2k9M92MZ05VJFN6iekiA7mTjMfiYi/teFW9HUabTrYjW89XW8+6FzrNBl6
-	GH5vDTpLqueBRUjZwKhR3QKcceH2Fic3HJpxqPY8fmvMQh4PIWp/hFo1IynCVkGfbLxV93+Hilo
-	j4iKVqUO26x1Snm3aE5e5QSbV+lm/dUfBxH1q5h5PHBk0lcASJRdf7W41kyaVOy/uPpkHG6IbdC
-	AYvkv8YHM0B1zm+s39S28JQxax978GLazU/QY3lXM=
-X-Received: by 2002:a05:600c:6989:b0:477:9a28:b09a with SMTP id 5b1f17b1804b1-47ee306b1b0mr6848775e9.0.1768338277973;
-        Tue, 13 Jan 2026 13:04:37 -0800 (PST)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-81e042e75b1sm9318044b3a.21.2026.01.13.13.04.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 13 Jan 2026 13:04:37 -0800 (PST)
-Message-ID: <d0295334-1288-417c-9832-d7647460cb35@suse.com>
-Date: Wed, 14 Jan 2026 07:34:34 +1030
+	s=arc-20240116; t=1768339494; c=relaxed/simple;
+	bh=uVM8E5K8SyMkz2Vb23Vk0V2k2g0gG9sRz7WbONugAPo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Jo3I+XL3q+La3afmvpjgF/XklnZxmuF/Ci3gpaRHbbI/W/OYCJk69rbxjc0+dgCh4c2ShMhYMMj+v1FRT9HnvdLcHNptwfCqvzNxojWKmJyOBeswST4BlE13ZPKOpu6D1C/2VPHsLUf5Ba2D6HQqy0DpyjG1nOI6vCOT8UZ5GC8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=zAHXw+yz; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ut5XmWOq; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=zAHXw+yz; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ut5XmWOq; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 38386336B1;
+	Tue, 13 Jan 2026 21:24:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1768339491;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aBeaCgwapimJJ5j24O6e37UmEpMn7TZLbjKK2UNpCXU=;
+	b=zAHXw+yzxki8EaRv8pIoV8pqvGM1amJDuwoeGhAQqIGW/92iLVY1FpbKSAFGri8MgHFSJc
+	BYOOj/idfwS7UzwzzKf2aIhlCPLJSxYs/Nb2eOzUlQh96AW0Q2Y5Gb5RNzZzowCwn5DlmT
+	rQZnJwwe02JphO5C4o/63XO5FuIU80M=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1768339491;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aBeaCgwapimJJ5j24O6e37UmEpMn7TZLbjKK2UNpCXU=;
+	b=ut5XmWOqQSZhtqlFc5+WKaoB/bYR9KaQBlJ6IzBEZTGzCCP62w7rJoeFFQ5hV/4TzWSwhL
+	MPzlSpC1XPBSgDCA==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1768339491;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aBeaCgwapimJJ5j24O6e37UmEpMn7TZLbjKK2UNpCXU=;
+	b=zAHXw+yzxki8EaRv8pIoV8pqvGM1amJDuwoeGhAQqIGW/92iLVY1FpbKSAFGri8MgHFSJc
+	BYOOj/idfwS7UzwzzKf2aIhlCPLJSxYs/Nb2eOzUlQh96AW0Q2Y5Gb5RNzZzowCwn5DlmT
+	rQZnJwwe02JphO5C4o/63XO5FuIU80M=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1768339491;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aBeaCgwapimJJ5j24O6e37UmEpMn7TZLbjKK2UNpCXU=;
+	b=ut5XmWOqQSZhtqlFc5+WKaoB/bYR9KaQBlJ6IzBEZTGzCCP62w7rJoeFFQ5hV/4TzWSwhL
+	MPzlSpC1XPBSgDCA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1DABF3EA63;
+	Tue, 13 Jan 2026 21:24:51 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id +D8RByO4ZmkpYwAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Tue, 13 Jan 2026 21:24:51 +0000
+Date: Tue, 13 Jan 2026 22:24:49 +0100
+From: David Sterba <dsterba@suse.cz>
+To: fdmanana@kernel.org
+Cc: linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	brauner@kernel.org, viro@zeniv.linux.org.uk, dsterba@suse.com,
+	Filipe Manana <fdmanana@suse.com>
+Subject: Re: [PATCH v2 0/4] btrfs: stop duplicating VFS code for
+ subvolume/snapshot dentry
+Message-ID: <20260113212449.GA26902@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1768307858.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/3] btrfs: get rid of a BUG() in run_one_delayed_ref()
- and cleanups
-To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <cover.1768322747.git.fdmanana@suse.com>
-Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <cover.1768322747.git.fdmanana@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1768307858.git.fdmanana@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_TLS_ALL(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	FROM_HAS_DN(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Score: -4.00
+X-Spam-Level: 
 
-
-
-在 2026/1/14 03:20, fdmanana@kernel.org 写道:
+On Tue, Jan 13, 2026 at 12:39:49PM +0000, fdmanana@kernel.org wrote:
 > From: Filipe Manana <fdmanana@suse.com>
 > 
-> Remove a BUG() call in run_one_delayed_ref() and a couple trivial cleanups
-> in that function.
-
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-
-Thanks,
-Qu
-
+> Currently btrfs has copies of two unexported functions from fs/namei.c
+> used in the snapshot/subvolume creation and deletion. This patchset
+> exports those functions and makes btrfs use them, to avoid duplication
+> and the burden of keeping the copies up to date.
 > 
-> Filipe Manana (3):
->    btrfs: don't BUG() on unexpected delayed ref type in run_one_delayed_ref()
->    btrfs: remove unnecessary else branch in run_one_delayed_ref()
->    btrfs: tag as unlikely error handling in run_one_delayed_ref()
+> V2: Updated changelog of patch 4/4 to mention the btrfs copy misses a
+>     call to audit_inode_child().
 > 
->   fs/btrfs/extent-tree.c | 28 ++++++++++++++++------------
->   1 file changed, 16 insertions(+), 12 deletions(-)
+> Link to V1: https://lore.kernel.org/linux-btrfs/cover.1767801889.git.fdmanana@suse.com/
 > 
+> Filipe Manana (4):
+>   fs: export may_delete() as may_delete_dentry()
+>   fs: export may_create() as may_create_dentry()
+>   btrfs: use may_delete_dentry() in btrfs_ioctl_snap_destroy()
+>   btrfs: use may_create_dentry() in btrfs_mksubvol()
 
+Reviewed-by: David Sterba <dsterba@suse.com>
 
