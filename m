@@ -1,68 +1,71 @@
-Return-Path: <linux-btrfs+bounces-20450-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20451-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id D19DAD1A103
-	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Jan 2026 17:02:22 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D06AD1A68C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Jan 2026 17:51:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A1A223032137
-	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Jan 2026 16:02:15 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 710FB30183B9
+	for <lists+linux-btrfs@lfdr.de>; Tue, 13 Jan 2026 16:51:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEB5B332EBE;
-	Tue, 13 Jan 2026 16:02:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AC8134DCD2;
+	Tue, 13 Jan 2026 16:51:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="djYwGuIG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bLnEst6P"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 709EE221F0A;
-	Tue, 13 Jan 2026 16:02:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45FD934DCE3
+	for <linux-btrfs@vger.kernel.org>; Tue, 13 Jan 2026 16:51:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768320134; cv=none; b=g0rzT3WebOFeQZUhD45Ar3zdcr0Vqiapayg+/7s9HrxN42rbw5Qu71msOVj3gnkw7qBKVipAPH9Qo4/ipfInw58UMw5BfbEj4z7XfqzXxf2P9hC3vDdjkvtcEMYQdabOZlC7hcoYOnF3Bp2cXhWoMGPCa3JqK7ed+US1UUbceBI=
+	t=1768323062; cv=none; b=DU9uszUjPxjzyCoKi7NdQPah0/NFcZQxuG9BRmFJQZokPf9u1nq87pnJUVNI7hfVPxx+iyJ5TiVYWD7+g/QdRQc7946/UMhp6fZCyd9VQ0/LuoHLdESKchFU0AhYteeeU0QPYmqnR1KnVnAWizwSpgp3ADverIRG6fpj0Z606F8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768320134; c=relaxed/simple;
-	bh=M7NmYC/Iylm9myghHwqILim55SAUt9QrM+UZYk0eJlw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=D7GEr3vZDBLHpr1VCYlNsemVJ94StFj0LrIUbBaOubzCSxOOny8aEMHgQY+xFXSNW/VfSV+0f+3qPd/S6Oe3QM/F6Kyprc9mGxtlbMeuuU2y9vP5SaHYZm8KStdDQinSAymg/LzndfbnTf0cTexrucsU/ZgajzbVaVp0yyeXfzQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=djYwGuIG; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=M7NmYC/Iylm9myghHwqILim55SAUt9QrM+UZYk0eJlw=; b=djYwGuIGTafOzPYMOKUUbdIrLa
-	ILYy0/8tsChJZBBu1FerweqUvnWZ3JPq1voC+wbY7tsz4YFZwokf0N0NvkwtlNx3gViG6VmLBYGMJ
-	anviHlCDEMvleUK3Aj9kXyiQGQdujbZUdS438AGSjpAcPRpC1wYs2VyRa89z3fUsa/QFOHsdRD/lQ
-	nIJdvrlmY3hMaS06k3lhxmcpmm0KpvXvIlPaKMzdnyg+eL9i5u61azZRzT1isVyWI5AWkyyxfQDhQ
-	RAIb/hsXx08IEeeLg2Gzr5WeraArY+TYBIeNgJlQ06/h+azvJq20wqMSrgmCVrVW2wG3nRqM3z5OI
-	vAt+/Bdg==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vfgqR-00000007R4x-3mcK;
-	Tue, 13 Jan 2026 16:02:11 +0000
-Date: Tue, 13 Jan 2026 08:02:11 -0800
-From: Christoph Hellwig <hch@infradead.org>
-To: fdmanana@kernel.org
-Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	Filipe Manana <fdmanana@suse.com>
-Subject: Re: [PATCH] fsx: add missing -T option to getopt_long()
-Message-ID: <aWZsg2N06upcVfq9@infradead.org>
-References: <dcbecbe996375e0f04962aa2e1a97ade927ecf74.1768225429.git.fdmanana@suse.com>
+	s=arc-20240116; t=1768323062; c=relaxed/simple;
+	bh=SYSvhlD6D2do2g7mkStcyTRW4n2Q9nYr9AiuFo1KFv4=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=NoSSCxM9y/db6CZ1AGIIgPapbTs90vUtlhJNQGlk04jIFkLmYe0g34am3Dz+Bl9EzUsuzsB9zCgwgStI/onE0vRXOcjKyIXkeqQ2uofyTpv05/JWghmBkQpHbN08M0MgZdXlP4qRiwcuCIA9JIC0c9vwq0wqpwMFuH/NbcI7Lyw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bLnEst6P; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A332AC116C6
+	for <linux-btrfs@vger.kernel.org>; Tue, 13 Jan 2026 16:51:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1768323062;
+	bh=SYSvhlD6D2do2g7mkStcyTRW4n2Q9nYr9AiuFo1KFv4=;
+	h=From:To:Subject:Date:From;
+	b=bLnEst6PdfaKTLIPqUp5bVuI1U2DY14qAHNQ1jYe64OxwlNenlRXSObg0g9zlVBAj
+	 kEiavwh2K3IwFe3B5xcibhxyl1ZACBE60dofV2ligDqFzOa5uf6ouPIJfNi89kqBu9
+	 +rNCiR6matkqkYz+mGASbTErBWmAWbt/Hv3A6s1PXYivPqs4gMDm48Py9EJe86APRK
+	 jjNRdkV43px3Dlpj7uTjKHtRpDZ6eCsqsbbfyrct7BfImNy6FVxm/PBF8P/Lop+B7d
+	 D2zKygYmpo8AkjsMX5NQM6hORbjnoPA1Q3umzdxg0nOT0agCMQxrAw18if+MUaGqlw
+	 kC1Q2/Tuqb4qg==
+From: fdmanana@kernel.org
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH 0/3] btrfs: get rid of a BUG() in run_one_delayed_ref() and cleanups
+Date: Tue, 13 Jan 2026 16:50:56 +0000
+Message-ID: <cover.1768322747.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.47.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dcbecbe996375e0f04962aa2e1a97ade927ecf74.1768225429.git.fdmanana@suse.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
 
-Looks good:
+From: Filipe Manana <fdmanana@suse.com>
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+Remove a BUG() call in run_one_delayed_ref() and a couple trivial cleanups
+in that function.
+
+Filipe Manana (3):
+  btrfs: don't BUG() on unexpected delayed ref type in run_one_delayed_ref()
+  btrfs: remove unnecessary else branch in run_one_delayed_ref()
+  btrfs: tag as unlikely error handling in run_one_delayed_ref()
+
+ fs/btrfs/extent-tree.c | 28 ++++++++++++++++------------
+ 1 file changed, 16 insertions(+), 12 deletions(-)
+
+-- 
+2.47.2
 
 
