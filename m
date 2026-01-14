@@ -1,173 +1,187 @@
-Return-Path: <linux-btrfs+bounces-20503-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20504-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D7C3D1E7DB
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Jan 2026 12:44:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D4B02D1EF89
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Jan 2026 14:07:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 2AF47302E3FA
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Jan 2026 11:44:17 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 194D6303BA98
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Jan 2026 13:07:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE50A395274;
-	Wed, 14 Jan 2026 11:44:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43B2639A80A;
+	Wed, 14 Jan 2026 13:07:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZAvlNa9X"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="CsUTToet"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AC7E389DEE
-	for <linux-btrfs@vger.kernel.org>; Wed, 14 Jan 2026 11:44:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7BDA34A771;
+	Wed, 14 Jan 2026 13:06:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768391053; cv=none; b=MhiLrbw32AMvB+rcCP2/gckCTjm0We4ufBjOZY9ryCMBiEbgeLVxdfLzqWjMB+C7Y71eJ94bJW1bXJDNmKCRdxTX3YIE8OeFuCEbb/x5PeFVi26g7jqpUC/62+Jh0tR00V3tlKdXDEowHYpxU3h+JIaYtTFwCEWEBLzQ9nsqHMA=
+	t=1768396021; cv=none; b=fzNvVPesYt9XS9IybPaICM1kOX7KDxqaf6inXgmqj36dGl1eghSnGvtqKRO81wl8KV0g3ozBemNTX9YyMndtUI50IoS/xlJiY3/Me2OGxbjscUBUFk3v8tqBgRoUWcgBnfQXJpIGMiNTzIyTt/Cnqk6V+YBqCtkVN+wtUAgT8JE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768391053; c=relaxed/simple;
-	bh=z9+SW7dXp/S50MXlsBkrIqSMUwngvi8AGlYviirdjgo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UGZmbU4cnkQu8Sl772bjxa2PkSLH5HOLsKNaTYr+O3vAd3gQs14dy3pWl2lUhVZKpvVy9OZX8X9kd03QPTHLYodrmdzGx+9CoEUO3jvOu/jfmAsmtFJoYP+alV3bjZ7tCwC28/gYWRySfJV0lEAvmmuRWxVxRipsz4tEx4OWYH4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZAvlNa9X; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DAFDAC19422
-	for <linux-btrfs@vger.kernel.org>; Wed, 14 Jan 2026 11:44:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768391052;
-	bh=z9+SW7dXp/S50MXlsBkrIqSMUwngvi8AGlYviirdjgo=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=ZAvlNa9Xunkgag4w4PKR0SHDwNiD+7gHXsxtNHOY8wqm0qRsKg7I0wH5S4EbOX5Pi
-	 SRMyUSvGAZbpNdrV0JdJEJ619jMS9q5nwzQnsgHYvoqsB+oe2Ir8roWwXPPSD6uH64
-	 19x122SahOzhwld5eCXSbCDF1PHNT12ch5ufXB9YEQJg8s2BB0QDQnIRBMBuIrYnDP
-	 RDv2QreYWXxQjAp6m3T4drt9PeHbpAyHTst47k7bHkZTd8RsQ/axUOggZfMunbvtmI
-	 /qf9W20BW/WuYxMmsWf3/GlXpozf9MDeg7yPA1YbIIwBuh712xnGt8GdnlyYS8oVJy
-	 FAvAig/w5c4pw==
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-64b921d9e67so14857527a12.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 14 Jan 2026 03:44:12 -0800 (PST)
-X-Gm-Message-State: AOJu0YzloXIEIrXjZkGPx+m9DDJ+BAMV+5kLb09EaWe9OLBd0+4DfxWc
-	Uuup3UshTfnJcapGADsouIfSKdpupIHGJLlU+gRgFGBWiCrIqIgpkFRErLUCJG+KygmmFFL77ll
-	cdSdgKnjR0eCvY7Mu0wkgFw2a80Jtr84=
-X-Received: by 2002:a17:907:a191:b0:b87:711f:97a3 with SMTP id
- a640c23a62f3a-b87711fa143mr37659566b.35.1768391051358; Wed, 14 Jan 2026
- 03:44:11 -0800 (PST)
+	s=arc-20240116; t=1768396021; c=relaxed/simple;
+	bh=swA2Z+cvI7i5nnmNw9LviIKuh4fmhAEhMcaz35sVbIE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UlJDm21/lq0s/5RKvuUEVZSKxvNE+lqDEW5S3AMXWdNj/e1Hq2gQvx+FxM19ij8w4aj7q8QpoL3vRxcnY3vm7G/N4iinQo7wKmR13wJnhFFei1LNYu+j5F8p50sgMRFSaUZJdjpomlVH8vSpm4qhk7AaWNrvo3mKyFRcgQqjOaY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=CsUTToet; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Transfer-Encoding
+	:Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=frpDmmp1i4r1AZelS3CVor2fKx/lP0Tq5j8/mhEG/8s=; b=CsUTToetKF+Id6BSRt8PfLBnAS
+	Y0ul3yOPNvK2EqLosGUY3uqxb0rBGjpkb3pFkF+nzL0tn0KOBAl2xhlehcW9SbJloDYCaYos/fI+R
+	/3mikrJStWJrWeOJzR2PeycF0eBRtBI6m7fleAVeDpZJmAWb5/mhUGXdyVHOSGGKP+FgMpRotCkGe
+	U4rxrSW9vdcoJ/4xvbYl6nQLLy/pVnBBXwulC6bpAsoSvSw4Aw1pxxyPY2C1RxEdi/vm7DGCPqLOa
+	XPJH2SpQwhbv/9XjUm+ADr7Kr9Po4kKl3x0XMHBhpwdVI/FJYFR2ISU4AMVB1IFKkKKX1rv/bPqoF
+	Uf0wlX6w==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vg0Zb-00000009Gnt-0ut4;
+	Wed, 14 Jan 2026 13:06:07 +0000
+Date: Wed, 14 Jan 2026 05:06:07 -0800
+From: Christoph Hellwig <hch@infradead.org>
+To: Amir Goldstein <amir73il@gmail.com>
+Cc: Christoph Hellwig <hch@infradead.org>, Jeff Layton <jlayton@kernel.org>,
+	Christian Brauner <brauner@kernel.org>,
+	Chuck Lever <chuck.lever@oracle.com>, Jan Kara <jack@suse.cz>,
+	Luis de Bethencourt <luisbg@kernel.org>,
+	Salah Triki <salah.triki@gmail.com>,
+	Nicolas Pitre <nico@fluxnic.net>, Anders Larsen <al@alarsen.net>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
+	Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>,
+	Yue Hu <zbestahu@gmail.com>, Jeffle Xu <jefflexu@linux.alibaba.com>,
+	Sandeep Dhavale <dhavale@google.com>,
+	Hongbo Li <lihongbo22@huawei.com>,
+	Chunhai Guo <guochunhai@vivo.com>, Jan Kara <jack@suse.com>,
+	Theodore Ts'o <tytso@mit.edu>,
+	Andreas Dilger <adilger.kernel@dilger.ca>,
+	Jaegeuk Kim <jaegeuk@kernel.org>,
+	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Richard Weinberger <richard@nod.at>,
+	Dave Kleikamp <shaggy@kernel.org>,
+	Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+	Viacheslav Dubeyko <slava@dubeyko.com>,
+	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+	Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>,
+	Joseph Qi <joseph.qi@linux.alibaba.com>,
+	Mike Marshall <hubcap@omnibond.com>,
+	Martin Brandenburg <martin@omnibond.com>,
+	Miklos Szeredi <miklos@szeredi.hu>,
+	Phillip Lougher <phillip@squashfs.org.uk>,
+	Carlos Maiolino <cem@kernel.org>, Hugh Dickins <hughd@google.com>,
+	Baolin Wang <baolin.wang@linux.alibaba.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Namjae Jeon <linkinjeon@kernel.org>,
+	Sungjong Seo <sj1557.seo@samsung.com>,
+	Yuezhang Mo <yuezhang.mo@sony.com>,
+	Alexander Aring <alex.aring@gmail.com>,
+	Andreas Gruenbacher <agruenba@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	Eric Van Hensbergen <ericvh@kernel.org>,
+	Latchesar Ionkov <lucho@ionkov.net>,
+	Dominique Martinet <asmadeus@codewreck.org>,
+	Christian Schoenebeck <linux_oss@crudebyte.com>,
+	Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>,
+	Trond Myklebust <trondmy@kernel.org>,
+	Anna Schumaker <anna@kernel.org>, Steve French <sfrench@samba.org>,
+	Paulo Alcantara <pc@manguebit.org>,
+	Ronnie Sahlberg <ronniesahlberg@gmail.com>,
+	Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
+	Bharath SM <bharathsm@microsoft.com>,
+	Hans de Goede <hansg@kernel.org>, linux-kernel@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	linux-mtd@lists.infradead.org, jfs-discussion@lists.sourceforge.net,
+	linux-nilfs@vger.kernel.org, ntfs3@lists.linux.dev,
+	ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
+	linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org,
+	linux-mm@kvack.org, gfs2@lists.linux.dev, linux-doc@vger.kernel.org,
+	v9fs@lists.linux.dev, ceph-devel@vger.kernel.org,
+	linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
+	samba-technical@lists.samba.org
+Subject: Re: [PATCH 00/24] vfs: require filesystems to explicitly opt-in to
+ lease support
+Message-ID: <aWeUv2UUJ_NdgozS@infradead.org>
+References: <8af369636c32b868f83669c49aea708ca3b894ac.camel@kernel.org>
+ <CAOQ4uxgD+Sgbbg9K2U0SF9TyUOBb==Z6auShUWc4FfPaDCQ=rg@mail.gmail.com>
+ <ec78bf021fa1f6243798945943541ba171e337e7.camel@kernel.org>
+ <cb5d2da6-2090-4639-ad96-138342bba56d@oracle.com>
+ <ce700ee20834631eceededc8cd15fc5d00fee28e.camel@kernel.org>
+ <20260113-mondlicht-raven-82fc4eb70e9d@brauner>
+ <aWZcoyQLvbJKUxDU@infradead.org>
+ <ce418800f06aa61a7f47f0d19394988f87a3da07.camel@kernel.org>
+ <aWc3mwBNs8LNFN4W@infradead.org>
+ <CAOQ4uxhMjitW_DC9WK9eku51gE1Ft+ENhD=qq3uehwrHO=RByA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <179097dcd57ea022d37d97eb0bcc69dcd24243ba.1768356495.git.wqu@suse.com>
-In-Reply-To: <179097dcd57ea022d37d97eb0bcc69dcd24243ba.1768356495.git.wqu@suse.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Wed, 14 Jan 2026 11:43:34 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H4FbrDYSfwNTDkje4dKY13bosbxJap8u8zM8pUHuqWtAg@mail.gmail.com>
-X-Gm-Features: AZwV_Qjy_bKJaA5oiF77CMBKIWHNUtdUPlQ8meEqZOOMpGpu9tM1mDWiV-YfCys
-Message-ID: <CAL3q7H4FbrDYSfwNTDkje4dKY13bosbxJap8u8zM8pUHuqWtAg@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: minor improvement on cow_file_range() error handling
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOQ4uxhMjitW_DC9WK9eku51gE1Ft+ENhD=qq3uehwrHO=RByA@mail.gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-On Wed, Jan 14, 2026 at 2:08=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
->
-> There are some minor problems related to the error handling of
-> cow_file_range():
->
-> - The label out_unlock: is not obvious
->   In fact we only go that tag for error handling.
->
-> - mapping_set_error() is not always called
->   It's only called if we have processed some range.
->
-> Enhance those minor problems by:
->
-> - Rename out_unlock: to error:
->   So it's clear we only go there for error handling, not some generic
->   handling shared by the common path.
->
-> - Always call mapping_set_error()
->   Not hiding it behind certain error pattern nor behind @lock_folio
->   parameter, which is always provided for all call sites.
+On Wed, Jan 14, 2026 at 10:34:04AM +0100, Amir Goldstein wrote:
+> On Wed, Jan 14, 2026 at 7:28 AM Christoph Hellwig <hch@infradead.org> wrote:
+> >
+> > On Tue, Jan 13, 2026 at 12:06:42PM -0500, Jeff Layton wrote:
+> > > Fair point, but it's not that hard to conceive of a situation where
+> > > someone inadvertantly exports cgroupfs or some similar filesystem:
+> >
+> > Sure.  But how is this worse than accidentally exporting private data
+> > or any other misconfiguration?
+> >
+> 
+> My POV is that it is less about security (as your question implies), and
+> more about correctness.
 
-We don't need to call mapping_set_error() in cow_file_range(), as
-that's always called in the upper call chain already:
+I was just replying to Jeff.
 
-extent_writepage() -> writepage_delalloc() ->
-btrfs_run_delalloc_range() -> cow_file_range()
+> The special thing about NFS export, as opposed to, say, ksmbd, is
+> open by file handle, IOW, the export_operations.
+> 
+> I perceive this as a very strange and undesired situation when NFS
+> file handles do not behave as persistent file handles.
 
-Any error returned by cow_file_range() is propagated up to
-extent_writepage(), which does:
+That is not just very strange, but actually broken (discounting the
+obscure volatile file handles features not implemented in Linux NFS
+and NFSD).  And the export ops always worked under the assumption
+that these file handles are indeed persistent.  If they're not we
+do have a problem.
 
-done:
-    if (ret < 0)
-           mapping_set_error(folio->mapping, ret);
+> 
+> cgroupfs, pidfs, nsfs, all gained open_by_handle_at() capability for
+> a known reason, which was NOT NFS export.
+> 
+> If the author of open_by_handle_at() support (i.e. brauner) does not
+> wish to imply that those fs should be exported to NFS, why object?
 
-Thanks.
+Because "want to export" is a stupid category.
 
->
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  fs/btrfs/inode.c | 12 +++++-------
->  1 file changed, 5 insertions(+), 7 deletions(-)
->
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index 67220ed62000..62d43b5bf910 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -1456,12 +1456,12 @@ static noinline int cow_file_range(struct btrfs_i=
-node *inode,
->
->         if (unlikely(btrfs_is_shutdown(fs_info))) {
->                 ret =3D -EIO;
-> -               goto out_unlock;
-> +               goto error;
->         }
->
->         if (btrfs_is_free_space_inode(inode)) {
->                 ret =3D -EINVAL;
-> -               goto out_unlock;
-> +               goto error;
->         }
->
->         num_bytes =3D ALIGN(end - start + 1, blocksize);
-> @@ -1553,7 +1553,7 @@ static noinline int cow_file_range(struct btrfs_ino=
-de *inode,
->                         ret =3D -ENOSPC;
->                 }
->                 if (ret < 0)
-> -                       goto out_unlock;
-> +                       goto error;
->
->                 /* We should not allocate an extent larger than requested=
-.*/
->                 ASSERT(cur_alloc_size <=3D num_bytes);
-> @@ -1570,7 +1570,8 @@ static noinline int cow_file_range(struct btrfs_ino=
-de *inode,
->                 *done_offset =3D end;
->         return ret;
->
-> -out_unlock:
-> +error:
-> +       mapping_set_error(inode->vfs_inode.i_mapping, ret);
->         /*
->          * Now, we have three regions to clean up:
->          *
-> @@ -1593,9 +1594,6 @@ static noinline int cow_file_range(struct btrfs_ino=
-de *inode,
->                 clear_bits =3D EXTENT_LOCKED | EXTENT_DELALLOC;
->                 page_ops =3D PAGE_UNLOCK | PAGE_START_WRITEBACK | PAGE_EN=
-D_WRITEBACK;
->
-> -               if (!locked_folio)
-> -                       mapping_set_error(inode->vfs_inode.i_mapping, ret=
-);
-> -
->                 btrfs_cleanup_ordered_extents(inode, orig_start, start - =
-orig_start);
->                 extent_clear_unlock_delalloc(inode, orig_start, start - 1=
-,
->                                              locked_folio, NULL, clear_bi=
-ts, page_ops);
-> --
-> 2.52.0
->
->
+OTOH "NFS exporting doesn't actually properly work because someone
+overloaded export_ops with different semantics" is a valid category.
+
+> We could have the opt-in/out of NFS export fixes per EXPORT_OP_
+> flags and we could even think of allowing admin to make this decision
+> per vfsmount (e.g. for cgroupfs).
+> 
+> In any case, I fail to see how objecting to the possibility of NFS export
+> opt-out serves anyone.
+
+You're still think of it the wrong way.  If we do have file systems
+that break the original exportfs semantics we need to fix that, and
+something like a "stable handles" flag will work well for that.  But
+a totally arbitrary "is exportable" flag is total nonsense.
+
 
