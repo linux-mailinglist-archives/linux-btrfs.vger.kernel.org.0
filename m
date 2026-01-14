@@ -1,135 +1,133 @@
-Return-Path: <linux-btrfs+bounces-20483-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20484-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55128D1C4C3
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Jan 2026 04:52:10 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id E72AED1C80C
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Jan 2026 05:55:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 275203022AA0
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Jan 2026 03:51:48 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id AB8F83111897
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Jan 2026 04:48:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF2A32820A4;
-	Wed, 14 Jan 2026 03:51:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3119332A3E5;
+	Wed, 14 Jan 2026 04:32:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TwyBBPCZ"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="GMgTl0Aq"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pj1-f66.google.com (mail-pj1-f66.google.com [209.85.216.66])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06EB013FEE
-	for <linux-btrfs@vger.kernel.org>; Wed, 14 Jan 2026 03:51:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.66
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 788002EA731;
+	Wed, 14 Jan 2026 04:32:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768362707; cv=none; b=j/IMVI1WQPfY7r2QKtKXnJ7GIeiAynaF3SSF1Jwasyyr6PllfCOlwsJsqxK+34cD3LyoHzfefrUxu35s3O05nsOku9WCnqiXcKRGyNDvN/ozr+H1BptZq0n5GWVO+kvPpU8ZnQHBEIXYiwmmOdrBM6bJcDbGbm6qUyv6E3HVnIk=
+	t=1768365165; cv=none; b=PAHIoyQWOpR+pUWw0SRz/nzY4MGDJkw4ZUzxS0n46AM+uoCDxqd1w3+wlwORPnlbmSgkaq2V251Nbv2wqVz//dZY7vJQLKta6jXbYNdCWQW12B4wQW8KAxTOzTa6NgsmFay6ZYXg34bu+s2506kihby+sCTnO8b383nQgasln8M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768362707; c=relaxed/simple;
-	bh=TN5pcy2tcUgSim1cC0jgTOIcbpyV3pnrFalvyLNEWlE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=sEeFdyTYbT2NKUyIU2TgZtBggEF5pRekal7IP3jFF0oRkGqmNVjG6AmC4cs/blGqySCY0L10B6FZGtzHONcA5jkdUucpPw+Cbl1IX85aSMhBi9IROT2rBR4KvrJt0JD9rCKpbd/Nf/zwov3zn6Nr/xpo5MJWkM/ECeK6Nag1Hcw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TwyBBPCZ; arc=none smtp.client-ip=209.85.216.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f66.google.com with SMTP id 98e67ed59e1d1-34e949d6416so910586a91.3
-        for <linux-btrfs@vger.kernel.org>; Tue, 13 Jan 2026 19:51:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768362705; x=1768967505; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Q7PDag0xoAVudL2Nr0obcC5irAM8Wpilyr1+ZYGGRgw=;
-        b=TwyBBPCZhTjH72+R8GoTkDtmA8BqseP4zzAdkFuv6ivNJ9JukrlLOeY3RCJf6KxJaO
-         BPTBMvxkzdLsRVn+4RWsogyhMMHTbK7vJdIEOf0wnvDZ58tSIu2MfYlkHmAbtbEEnH4Q
-         XPuWFe9mKCX0uGPOPbK+mQ/VRcCFTgz3bpebr34K4xnoQ60ff8Dqn8TY8/pMhAh9jU6A
-         G+8F3BZztDBFN1lXqXc5EG8BPJF5u2DjFvEaaKeMd2VVb+9mZj4ZLz99MC176UjQ2I1B
-         SwKlZM50ir9I54YxyZIk65SgaqkerHVstz6GRQV4hwCKDhMXtj7W7fJubv9kqRc9ra2r
-         lvcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768362705; x=1768967505;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=Q7PDag0xoAVudL2Nr0obcC5irAM8Wpilyr1+ZYGGRgw=;
-        b=JdVUGLDLdgg2iKLrUMjECqGXTmedTUvNg/AAxcKYRKP5FQ7C12pZNYtqYq+mBBIHHQ
-         VkA9cyTr9JhzVkZGNIbTxI80h79SlRfaMIHqPdcjnn1DVcbEnzeJg6BBOrVCCcyXwlmX
-         v/zKn0txFfAajs1/myi3VmoaLBEipk/3JO7tXCrJM+8wd16mAAnpYSG6papFWJJoE8kL
-         dPoUMP3MZEdG749/fRNzGV/jBq2N1Ud6fCxXJ291UHELdNnENPNY1BnB8R2kn4Idw1+G
-         AJr4m2T2P4599CzRLnDJiSAtXiFN+prbYqvvzLoW5p2VUk0ZIuuA2eMweA48yMuCOKVJ
-         WIkQ==
-X-Gm-Message-State: AOJu0YzCl5CJCg5r6f7vjLZefFPaREUQHuVRq7EMDLwLDRxzxnDFg0a8
-	jszoucP5Ol2D4ld/P6QZI+Xa+7wxu1lyxxa2hAbXu+hUqgVrfnR9aFk7O8hxBkhedXwB0w==
-X-Gm-Gg: AY/fxX5wXhz/c8fD2tqIMxnoIaPVJ2lYGT6/lFA8Ws1l/vxAiwVPNa9PDV/+B+YL8oJ
-	qufB8e6u1FKm9PG90xCiismlad+qY4vdHJzY3MzSYLhQZf2Hu2krpNQU+HQs4o+qqAbefUMzAVm
-	JKbyAZwIab6pN8qCFbjuZd4UaHtZNSyLQs+tziBgTnHoYifJIWNO8nkhenNPtoOEtDNMMGKBNb5
-	fWE8+pcUKXAHGW7dXzqSTls9C+ZN9OR9mt9ok6kETMwYDjDCWQ5p/J63cr/wgwZUN1SkB398quB
-	baFMcTeY3Lxn5jmPu3vFScpo+NxH6bHGVm9oXmJsc0m8XsiF4Af5jdkBjqhdkgF7XSNZdQCCsZ0
-	xNKwGsJ6PfkbYhAxN1FhIeTC9Wem+L7Ln5tybVqG7uNPytMulT1u5CDjWAhWY9bwn9ioJNdVhx8
-	2JVacItTdfb5bcW3zz82r3
-X-Received: by 2002:a17:90b:37cc:b0:341:8bda:f04b with SMTP id 98e67ed59e1d1-351092d8e9cmr891441a91.7.1768362705300;
-        Tue, 13 Jan 2026 19:51:45 -0800 (PST)
-Received: from SaltyKitkat ([45.144.167.102])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-35109e7ee68sm525647a91.17.2026.01.13.19.51.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jan 2026 19:51:45 -0800 (PST)
-From: Sun YangKai <sunk67188@gmail.com>
-To: linux-btrfs@vger.kernel.org
-Cc: Sun YangKai <sunk67188@gmail.com>,
-	Boris Burkov <boris@bur.io>
-Subject: [PATCH v4 2/2] btrfs: consolidate reclaim readiness checks in btrfs_should_reclaim()
-Date: Wed, 14 Jan 2026 11:47:03 +0800
-Message-ID: <20260114035126.20095-3-sunk67188@gmail.com>
-X-Mailer: git-send-email 2.52.0
-In-Reply-To: <20260114035126.20095-1-sunk67188@gmail.com>
-References: <20260114035126.20095-1-sunk67188@gmail.com>
+	s=arc-20240116; t=1768365165; c=relaxed/simple;
+	bh=3bqQoNek4pRxFqezsA2+g8zptv+Ik6YnPNJcq2bN3XM=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=K4gJaBHnJhDZVDmn5meOXCVX1SoPo/PtQsAlQdqdSgWPd5Wd5HUFIq6plzBP7mFHnAxCI6YiXzaNVcL6fxp7NCadaNDMlwqihxTUT+pl+eGb5W4SBGwtyEOle5vmlH9recXf8CbPR5cgCHk9G7uu6lpBvYNUcvKY10e73d60HI8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=GMgTl0Aq; arc=none smtp.client-ip=213.97.179.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+	s=20170329; h=Cc:To:Content-Transfer-Encoding:Content-Type:MIME-Version:
+	Message-Id:Date:Subject:From:Sender:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=PGZcLNgD2fLtRQC4vTg/9LPDYxs+kOJKJt/oECjLmSQ=; b=GMgTl0AqzoP4xsQQ5nlvusBqYw
+	WNFHaxEgjT2CHbBr/vWX/PNgMb0EY0srxkSkS4VmQsiylvyR7IuAGFrtXN0Suwo2evNjgMam0UgWn
+	ZWo4qUWKR3UWvjigItXSbxXMfF7UAiJRUXZqlI63x3HksaxE8XkGAEOtVXDF6jmqNy/TVEZb4YYcE
+	DPb2sDH8712VJVH+32nEg+9ckLtt8Uw4OWSbosjC3pLWZYgMO1UYInzcZK9X30TjfLzL+HWXxMoi2
+	1wjnED3VRSm5f2i4jsVifVTb9IJjRopufbxckKNcEFOvJHcR8AJPlFfNvgFOmXfzd+gimOVmM1U8C
+	HE1+8QGg==;
+Received: from [177.139.22.247] (helo=[192.168.15.100])
+	by fanzine2.igalia.com with esmtpsa 
+	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
+	id 1vfsYO-0057lT-OX; Wed, 14 Jan 2026 05:32:20 +0100
+From: =?utf-8?q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>
+Subject: [PATCH 0/3] fs: Support btrfs cloned images and overlayfs
+Date: Wed, 14 Jan 2026 01:31:40 -0300
+Message-Id: <20260114-tonyk-get_disk_uuid-v1-0-e6a319e25d57@igalia.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAC0cZ2kC/x3MTQqAIBBA4avIrBM0+oGuEiHhjDYEFlpRhHdPW
+ n6L915IFJkSDOKFSBcn3kKBrgTYZQ6eJGMx1KrulNaNPLbwrNLTYZDTas6TUTqFTd8S6l5ZKOU
+ eyfH9X8cp5w8GaC2xZQAAAA==
+X-Change-ID: 20260114-tonyk-get_disk_uuid-f0d475ed170c
+To: Christoph Hellwig <hch@lst.de>, Chuck Lever <chuck.lever@oracle.com>, 
+ Jeff Layton <jlayton@kernel.org>, NeilBrown <neil@brown.name>, 
+ Olga Kornievskaia <okorniev@redhat.com>, Dai Ngo <Dai.Ngo@oracle.com>, 
+ Tom Talpey <tom@talpey.com>, Carlos Maiolino <cem@kernel.org>, 
+ Amir Goldstein <amir73il@gmail.com>, Chris Mason <clm@fb.com>, 
+ David Sterba <dsterba@suse.com>, Miklos Szeredi <miklos@szeredi.hu>, 
+ Christian Brauner <brauner@kernel.org>, 
+ Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>
+Cc: linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+ linux-btrfs@vger.kernel.org, linux-unionfs@vger.kernel.org, 
+ kernel-dev@igalia.com, 
+ =?utf-8?q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>
+X-Mailer: b4 0.14.3
 
-Move the filesystem state validation from btrfs_reclaim_bgs_work() into
-btrfs_should_reclaim() to centralize the reclaim eligibility logic.
-Since it is the only caller of btrfs_should_reclaim(), there's no
-functional change.
+Hi everyone,
 
-Reviewed-by: Boris Burkov <boris@bur.io>
-Signed-off-by: Sun YangKai <sunk67188@gmail.com>
+As I reported some time ago, btrfs cloned images support and overlayfs
+"index" check don't get along together[1]. Every time the same image
+cloned is mounted, btrfs assigns a new random UUID for it to avoid
+clashing with the exist UUID. This UUID is then used by overlayfs origin
+check, to avoid reusing the same directory for a different filesystem.
+Remounting the same filesystem in the same directory is supported, but
+the different random UUIDs will make the check fail.
+
+In an attempt to solve this, I reused export_operations::get_uuid() for
+this purpose, to get the "real" UUID of a image, regardless of the
+random UUID being exposed to userspace. overlayfs then use this UUID
+internally for the origin check, and the remounting finally works.
+
+I understand that not everyone is happy about repurposing get_uuid() for
+that, but I'm totally open for going in another direction for solving
+this problem not only for the combination of btrfs+overlayfs, but for
+any filesytem that have similar issues with random UUIDs.
+
+Using `btrfstune -m` or similar to change the cloned image UUID doesn't
+work for the SteamOS use case, as we, well... use the UUIDs to identify
+unmounted images and check if they are the same.
+
+This series is based on top of another series[2], that should be available
+at vfs-7.0.misc by now.
+
+Thanks!
+
+[1] https://lore.kernel.org/lkml/20251014015707.129013-1-andrealmeid@igalia.com/
+[2] https://lore.kernel.org/lkml/20260112-tonyk-fs_uuid-v1-0-acc1889de772@igalia.com/
+
 ---
- fs/btrfs/block-group.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+André Almeida (3):
+      exportfs: Rename get_uuid() to get_disk_uuid()
+      btrfs: Implement get_disk_uuid()
+      ovl: Use real disk UUID for origin file handles
 
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 79d86b233dda..1594d58304b9 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -1804,6 +1804,12 @@ static int reclaim_bgs_cmp(void *unused, const struct list_head *a,
- 
- static inline bool btrfs_should_reclaim(const struct btrfs_fs_info *fs_info)
- {
-+	if (!test_bit(BTRFS_FS_OPEN, &fs_info->flags))
-+		return false;
-+
-+	if (btrfs_fs_closing(fs_info))
-+		return false;
-+
- 	if (btrfs_is_zoned(fs_info))
- 		return btrfs_zoned_should_reclaim(fs_info);
- 	return true;
-@@ -1838,12 +1844,6 @@ void btrfs_reclaim_bgs_work(struct work_struct *work)
- 	struct btrfs_space_info *space_info;
- 	LIST_HEAD(retry_list);
- 
--	if (!test_bit(BTRFS_FS_OPEN, &fs_info->flags))
--		return;
--
--	if (btrfs_fs_closing(fs_info))
--		return;
--
- 	if (!btrfs_should_reclaim(fs_info))
- 		return;
- 
+ fs/btrfs/export.c        | 20 ++++++++++++++++++++
+ fs/nfsd/blocklayout.c    |  2 +-
+ fs/nfsd/nfs4layouts.c    |  2 +-
+ fs/overlayfs/copy_up.c   | 22 ++++++++++++++++++++--
+ fs/xfs/xfs_export.c      |  2 +-
+ fs/xfs/xfs_pnfs.c        |  2 +-
+ fs/xfs/xfs_pnfs.h        |  2 +-
+ include/linux/exportfs.h |  8 +++++---
+ 8 files changed, 50 insertions(+), 10 deletions(-)
+---
+base-commit: 336cebc7376296b2c25cf8433ff62b71fe929b0d
+change-id: 20260114-tonyk-get_disk_uuid-f0d475ed170c
+
+Best regards,
 -- 
-2.52.0
+André Almeida <andrealmeid@igalia.com>
 
 
