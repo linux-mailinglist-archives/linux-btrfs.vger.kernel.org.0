@@ -1,161 +1,181 @@
-Return-Path: <linux-btrfs+bounces-20521-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20522-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 105CBD2083E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Jan 2026 18:22:19 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0631CD20AF0
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Jan 2026 18:55:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 9EBE8303E293
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Jan 2026 17:21:44 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 7006A304020A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Jan 2026 17:55:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 766022F83A7;
-	Wed, 14 Jan 2026 17:21:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED36B32ED57;
+	Wed, 14 Jan 2026 17:54:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H5qw8Oh6"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D96vrZPV"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BECDD2E1730
-	for <linux-btrfs@vger.kernel.org>; Wed, 14 Jan 2026 17:21:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77C1E329377
+	for <linux-btrfs@vger.kernel.org>; Wed, 14 Jan 2026 17:54:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768411298; cv=none; b=JHvFhUf1kR7O9mGnKI2EBJJ5FafUtqtmCOn6C1Wi88iHoMuh/loPBBNLBW/HcJDAwi6vuOdAIlmSoiy1SQGx8sA94IyTNHOMXCu446J5qBbDktPkx+G5gQSVgpQE/CQkrJJc2FWmpaxIXMLGTY7fP90zFuqf5RAPedzZlrdnnd0=
+	t=1768413293; cv=none; b=JrPNK6vtNhfa63Zl4YaQFCAyMHFTEImibCmopSFbTFvyKVAZ2hcIijcui7qw/zZl2aMjcmMFwVE/ntaG7DeXdESOvL7hVTmoiUz05wnpw4Q8NO4TR+QQNclAJAnKXOJGpHdYha2H5UiGkEyXgxcbNDWdvtqs/OrYIYpr2gli18k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768411298; c=relaxed/simple;
-	bh=4gEX6Wfo34Pvtpk1xlDNFPxvpUaMSXm/OKPrK//1iYw=;
+	s=arc-20240116; t=1768413293; c=relaxed/simple;
+	bh=ri6XdCQOo82mlaJDsd+QmjUF07km5DczjkYwbJrj+3s=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ACeExFPS9wQy8m6WenB3LVGES25gsDTCXgwpQm27unFhWKdtr1u9xLpSfwOwJQSaXVw2ZRLLUmymoS60PAjr0uR2oQXJ1TiR4XN+TgYqQtq3Z8DBQ37k+cd6FnpOnAimr4Z6au4h2oeFcyRD+zR0Js6FG5OO7diwMN6Xxw5TLCo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H5qw8Oh6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C68EBC4CEF7
-	for <linux-btrfs@vger.kernel.org>; Wed, 14 Jan 2026 17:21:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768411297;
-	bh=4gEX6Wfo34Pvtpk1xlDNFPxvpUaMSXm/OKPrK//1iYw=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=H5qw8Oh6R/TgUuZoSo4lY9m1V/NRV6ZaTKP5NT+bJk3BIwHq3O7YkZi3dHixLGUGG
-	 OZ2kq9pvlTbzaG/3SdLyry7d++oTYVxEcHin85vajqbDOGMX6aW0TK6+JbeiRr3KY8
-	 P8kBlMaSfCa2U/QVS11OKvGsOA0KBS60p4IQaARyBZ4k8UmsHr1mIGsOtSp/WjaB5Q
-	 LAjtGrz05KG596s9DcPUZde44EC/MUGZznx6Fo7HQeL4GCA7Rl8zZ6VNDqrlnkc5MH
-	 1cNIvpumYTUqM0LN7w3Tfc1dXeiH3bbLgQrebR9/uzbpV5g1iIvdj86oMGfKxCrJXr
-	 5nihdtvZn+ghg==
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-b872f1c31f1so15061166b.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 14 Jan 2026 09:21:37 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCV6OZaH+NB2vXPp3q7bqgX0vxsVHhuCr+AwrlqxqqIN7znzKLTBwBhVWvxRy7i1SPHuHtUL/feF6YJY0Q==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzuGzrwPgwgRqx5x4dNdvK7zMTDBW7EeuX1/9SqeMB5hbSG5+mW
-	N9HMFhi4CGd1MjYWv4DGRNNngAhMVTe730EuYl20X6vSeFSIwfMHRhbxtJBu6dMD0bNrBp9nepd
-	DyDrkYhcrnNlFkaSXEHvNk7O+/R5ISjw=
-X-Received: by 2002:a17:907:7851:b0:b87:3396:d152 with SMTP id
- a640c23a62f3a-b8760fe0f65mr216710166b.15.1768411296352; Wed, 14 Jan 2026
- 09:21:36 -0800 (PST)
+	 To:Cc:Content-Type; b=L4cgRHftrKWcVU4+MBL8pwjygv05xDpuxQ17i3mExvwq27NNj2mA/rEzMjPgzJQaZrSnJVNzhasmHzKhpetznbF4NpURnXWcqP8cbcZbZhvBsIWs7f34HEBACt7ViVQn695g2178F1uiB7nY28wWYyXHsxdEUoZ8sIgffJhShEo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=D96vrZPV; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-b876bf5277dso126037566b.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 14 Jan 2026 09:54:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1768413290; x=1769018090; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7JRxCvP4g5SpKNn0OXYTsa9XAVvPE6OA4ZzPHkT0Yco=;
+        b=D96vrZPVd1Hu2aUVU0IU+r4oqOYsdqtv6md/7d7E44q7bwze1IwHI1ly0EI7BAtyQZ
+         ++AeCxY1VkY7tke0rvuAS5oU+fttP/7/IoEk1PQcYh5Q4w7KItRlGsZdlzH746I3Imfn
+         ITygMLQb5EOd1iAi+voF0elp/huUZ0zL1xzoTM7P4wTU7BOSZvVQEbEnBkdgCgaynITO
+         IP8y7i2A9TUSZd6vcmIVWM6JVHMk2lAcmXQKdbK2UhR/DOhjgS/s9VBZvuvKUBWDRHnC
+         kcXmpRLKbB6uGJ5E8aTrhoCX+PuczveFn6BAUE69KUbuiOeXzYdW/mWtxUjFoNhaUsxP
+         lWjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1768413290; x=1769018090;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=7JRxCvP4g5SpKNn0OXYTsa9XAVvPE6OA4ZzPHkT0Yco=;
+        b=ptpx8gShSC/aFJNH9L9sqda0ZFd51vnp6LQ1ugVHe/6UVqs47x3BhHNGoHSFqwhn0A
+         /7k39TDxlBtHFD7z4W9idw4ZM9O9mF1QsvhzpjPgn9M3oIBjSBoBCZxcA+xXSVR0PLEW
+         uM0Mxve1yASy29toSeeGEoYf3GE0QDCj5PU8VHw8RpW8aD3VDCRnXubPn+M1+uJCoRak
+         5CmWTM5p46INiQvolzGhaiEZzZC1OQ++07bvlxPjJ5kHJv36Cncp3AKw9mVdxcJ3q5Q3
+         zSbTkPPzKRo87+fJftDVB/ZIz+zHFXiNBWrs1FHRzfSpuORLcbJeY1rDfI/5fbNGPwto
+         o4sQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWNnN3T99TIrrO+BW8Bzdku6NNvF2G76S23A4os0pEOd4oBHtTj5jQnocpOV7SSEHM8/hRq1mY3W4H6Gw==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy/hCmg1cMsVuzqhBFHBbkUwGKa10e/c0qhcnoRcOIGAn2JcC7D
+	iWFU8YvCdBl5Ls3tkqAdHe0ASwF5fVRb01Y5vLgE3yNNK7aI6RK4FYB08uHdxLfv9WXZcwONurM
+	dqZ9Q7UFztYjdWBKR+eFrKUK/ZK+fdf0=
+X-Gm-Gg: AY/fxX6Hkx2/H3nlAWbU/rGb8dUyoXALdA1JDA+odAO5juOhbxRVPz3Q8yfUQWbVbe+
+	10z/IaSDf+ChiRxQknN/BhpCeHuoGr/ZLyrRqtMiCoadJ8zrhzXzcDM9oZ0aAI6LNQYya5cKdzV
+	n2e8hYb+XMJVeZOL8QIJYBFZ75qbSrhN/jwr84IfywEZ2IrxG3h9dbJOx7f8JsW1pSZccGyThD1
+	qu2NEP8MIYDyIRdqpIT7/Z0bYEgUITAmx1XW33gEr0XoxKIEknkr4AH3a8xxS8L/7l000Q6fJhN
+	p2kUE4PgQF+ERPECOquU+KghbJOF6LQN77wa+T6Y
+X-Received: by 2002:a17:906:3ca1:b0:b87:6c41:bd6e with SMTP id
+ a640c23a62f3a-b8777a0b1a2mr20024966b.5.1768413289489; Wed, 14 Jan 2026
+ 09:54:49 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260114170701.6018-1-jiashengjiangcool@gmail.com>
-In-Reply-To: <20260114170701.6018-1-jiashengjiangcool@gmail.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Wed, 14 Jan 2026 17:20:59 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H4rLMtmWTe4jHrYMnUbOkJb_5rMUfB8YUNhJ=JXnJp5AQ@mail.gmail.com>
-X-Gm-Features: AZwV_QgOj6c3Rl0hYMpWnR1Yk4rrdCxKhkUHe-GvR0RayLUwJtJ1hLQcMV0h0Ls
-Message-ID: <CAL3q7H4rLMtmWTe4jHrYMnUbOkJb_5rMUfB8YUNhJ=JXnJp5AQ@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: fail priority tickets in maybe_fail_all_tickets
-To: Jiasheng Jiang <jiashengjiangcool@gmail.com>
-Cc: Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
+References: <20260114-tonyk-get_disk_uuid-v1-0-e6a319e25d57@igalia.com> <20260114-tonyk-get_disk_uuid-v1-3-e6a319e25d57@igalia.com>
+In-Reply-To: <20260114-tonyk-get_disk_uuid-v1-3-e6a319e25d57@igalia.com>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Wed, 14 Jan 2026 18:54:37 +0100
+X-Gm-Features: AZwV_QjJMBsMMFjKP053WyHEfg80dXeyrhI42AdnL-ae8ei5FSGNGR_90taCtJg
+Message-ID: <CAOQ4uxjAQu9sQt3qOOVWS5cz5B51Hg0m4RAjsreBkmPhg-2cyw@mail.gmail.com>
+Subject: Re: [PATCH 3/3] ovl: Use real disk UUID for origin file handles
+To: =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>
+Cc: Christoph Hellwig <hch@lst.de>, Chuck Lever <chuck.lever@oracle.com>, Jeff Layton <jlayton@kernel.org>, 
+	NeilBrown <neil@brown.name>, Olga Kornievskaia <okorniev@redhat.com>, Dai Ngo <Dai.Ngo@oracle.com>, 
+	Tom Talpey <tom@talpey.com>, Carlos Maiolino <cem@kernel.org>, Chris Mason <clm@fb.com>, 
+	David Sterba <dsterba@suse.com>, Miklos Szeredi <miklos@szeredi.hu>, 
+	Christian Brauner <brauner@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
+	linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-btrfs@vger.kernel.org, linux-unionfs@vger.kernel.org, 
+	kernel-dev@igalia.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jan 14, 2026 at 5:07=E2=80=AFPM Jiasheng Jiang
-<jiashengjiangcool@gmail.com> wrote:
+On Wed, Jan 14, 2026 at 5:32=E2=80=AFAM Andr=C3=A9 Almeida <andrealmeid@iga=
+lia.com> wrote:
 >
-> Differential analysis reveals that while btrfs_try_granting_tickets
-
-Let's pause for a second.
-This is yet another patch where you mention this "differential analysis".
-Please try to understand the code instead of comparing parts of the
-code and assuming any differences mean a bug or that we need to do
-something.
-
-> correctly iterates over both space_info->priority_tickets and
-> space_info->tickets, the maybe_fail_all_tickets function only processes
-> space_info->tickets.
-
-Yes, and there's a reason for that.
-
+> Some filesystem, like btrfs, supports mounting cloned images, but assign
+> random UUIDs for them to avoid conflicts. This breaks overlayfs "index"
+> check, given that every time the same image is mounted, it get's
+> assigned a new UUID.
 >
-> In scenarios where the filesystem is aborted (BTRFS_FS_ERROR), we rely
-> on maybe_fail_all_tickets() to wake up all tasks waiting on reservations
-> and notify them of the error. Because priority tickets are currently
-> ignored, tasks waiting on them (typically high-priority flush workers)
-> will not be woken up, leading to permanent tasks hangs.
-
-Wrong.
-We never wait on a ticket's waitqueue when it's a priority ticket...
-That's why maybe_fail_all_tickets() ignores the priority tickets list.
-
-Doing this "differential analysis" without understanding all the code
-and how different parts interact, and without hitting the bug or
-seeing someone reporting such a hang, is just a waste of time.
-
+> Fix this assigning the disk UUID for filesystem that implements the
+> export operation get_disk_uuid(), so overlayfs check is also against the
+> same value.
 >
-> Fix this inconsistency by updating maybe_fail_all_tickets() to iterate
-> over both priority_tickets and tickets lists, ensuring all waiting tasks
-> are properly errored out during a filesystem abort.
->
-> Signed-off-by: Jiasheng Jiang <jiashengjiangcool@gmail.com>
+> Signed-off-by: Andr=C3=A9 Almeida <andrealmeid@igalia.com>
 > ---
->  fs/btrfs/space-info.c | 14 ++++++++++----
->  1 file changed, 10 insertions(+), 4 deletions(-)
+>  fs/overlayfs/copy_up.c | 22 ++++++++++++++++++++--
+>  1 file changed, 20 insertions(+), 2 deletions(-)
 >
-> diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-> index 6babbe333741..09c76df8dbc8 100644
-> --- a/fs/btrfs/space-info.c
-> +++ b/fs/btrfs/space-info.c
-> @@ -1120,6 +1120,7 @@ static bool maybe_fail_all_tickets(struct btrfs_spa=
-ce_info *space_info)
->         struct reserve_ticket *ticket;
->         u64 tickets_id =3D space_info->tickets_id;
->         const int abort_error =3D BTRFS_FS_ERROR(fs_info);
-> +       struct list_head *head =3D &space_info->priority_tickets;
->
->         trace_btrfs_fail_all_tickets(fs_info, space_info);
->
-> @@ -1128,10 +1129,9 @@ static bool maybe_fail_all_tickets(struct btrfs_sp=
-ace_info *space_info)
->                 __btrfs_dump_space_info(space_info);
->         }
->
-> -       while (!list_empty(&space_info->tickets) &&
-> -              tickets_id =3D=3D space_info->tickets_id) {
-> -               ticket =3D list_first_entry(&space_info->tickets,
-> -                                         struct reserve_ticket, list);
-> +again:
-> +       while (!list_empty(head) && tickets_id =3D=3D space_info->tickets=
-_id) {
-> +               ticket =3D list_first_entry(head, struct reserve_ticket, =
-list);
->                 if (unlikely(abort_error)) {
->                         remove_ticket(space_info, ticket, abort_error);
->                 } else {
-> @@ -1153,6 +1153,12 @@ static bool maybe_fail_all_tickets(struct btrfs_sp=
-ace_info *space_info)
->                         btrfs_try_granting_tickets(space_info);
->                 }
->         }
+> diff --git a/fs/overlayfs/copy_up.c b/fs/overlayfs/copy_up.c
+> index 758611ee4475..8551681fffd3 100644
+> --- a/fs/overlayfs/copy_up.c
+> +++ b/fs/overlayfs/copy_up.c
+> @@ -421,8 +421,26 @@ struct ovl_fh *ovl_encode_real_fh(struct ovl_fs *ofs=
+, struct inode *realinode,
+>         struct ovl_fh *fh;
+>         int fh_type, dwords;
+>         int buflen =3D MAX_HANDLE_SZ;
+> -       uuid_t *uuid =3D &realinode->i_sb->s_uuid;
+> -       int err;
+> +       struct super_block *real_sb =3D realinode->i_sb;
+> +       uuid_t *uuid =3D &real_sb->s_uuid, real_uuid;
+> +       u32 len =3D sizeof(uuid_t);
+> +       int err, ret;
+> +       u64 offset;
 > +
-> +       if (head =3D=3D &space_info->priority_tickets) {
-> +               head =3D &space_info->tickets;
-> +               goto again;
+> +       /*
+> +        * Some filesystems that support cloned devices may expose random=
+ UUIDs
+> +        * for userspace, which will cause the upper root origin check to=
+ fail
+> +        * during a remount. To avoid this, store the real disk UUID.
+> +        *
+> +        * ENODATA means that the filesystem implements get_disk_uuid(), =
+but
+> +        * this instance is using the real UUID so we can skip the operat=
+ion.
+> +        */
+> +       if (real_sb->s_export_op && real_sb->s_export_op->get_disk_uuid) =
+{
+> +               ret =3D real_sb->s_export_op->get_disk_uuid(real_sb, real=
+_uuid.b, &len, &offset);
+> +
+> +               if (!ret || ret !=3D ENODATA)
+> +                       uuid =3D &real_uuid;
 > +       }
-> +
->         return (tickets_id !=3D space_info->tickets_id);
->  }
 >
-> --
-> 2.25.1
->
->
+
+Perhaps this is the wrong way to abstract what overlayfs needs from real fs=
+.
+Maybe better to extend ->encode_fh() to take a flags argument (see similar
+suggested patch at [1]) and let overlayfs do something like:
+
+fh_type =3D 0;
+if (ovl_origin_uuid(ofs))
+        fh_type =3D exportfs_encode_inode_fh(realinode, (void *)fh->fb.uuid=
+.b,
+                                           &dwords, NULL, EXPORT_FH_WITH_UU=
+ID);
+if (fh_type <=3D 0)
+        fh_type =3D exportfs_encode_inode_fh(realinode, (void *)fh->fb.fid,
+                                           &dwords, NULL, 0);
+
+Similarly, in ovl_decode_real_fh() overlayfs won't verify the UUID,
+this will be also delegated to the filesystem via exportfs_decode_fh()
+whose fh->fb.type already has the EXPORT_FH_WITH_UUID flag.
+
+This is very rough hand waving and details need to be worked out,
+but it essentially delegates the encoding  of a "globally unique file handl=
+e"
+to the filesystem without specifying this or that version of uuid.
+
+Thanks,
+Amir.
+
+[1] https://lore.kernel.org/linux-fsdevel/CAOQ4uxj=3DXOFqHBmYY1aBFAnJtSkxzS=
+yPu5G3xP1rx=3DZfPfe-kg@mail.gmail.com/
 
