@@ -1,142 +1,195 @@
-Return-Path: <linux-btrfs+bounces-20492-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20493-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00CF8D1CAF2
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Jan 2026 07:31:32 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22A38D1CD2E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Jan 2026 08:27:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 4344F30478DB
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Jan 2026 06:29:55 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 529DA3087B4F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Jan 2026 07:27:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BBCD36CE16;
-	Wed, 14 Jan 2026 06:29:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17AAE3612EA;
+	Wed, 14 Jan 2026 07:27:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="MkKROcR+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Jsy3RiMK"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D455636C5AF;
-	Wed, 14 Jan 2026 06:29:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7BCC35FF64
+	for <linux-btrfs@vger.kernel.org>; Wed, 14 Jan 2026 07:27:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768372186; cv=none; b=E2FxjjfhNQWOHA7+Fvo3hoEdsjfFtaUR4bY072Awig6MsfU3xLFiZJhrXqPCDG6zZ/t07INbIZ5N+fn4neUmzJX/E/sQr+ZTTJgkvv5n8aJIWQ+KF1SDZXHn/vG5t7kBBusGVdsxgM5xIjDsLq+rQNH/d/d4SQOc3w8OzmDz01Q=
+	t=1768375649; cv=none; b=Xb9NTXKOLStztTvijUTOaPXqTZmGEL7BMIBTA9D2qDh8/NfvYRbHqLjlMzErIuxTA+OLCwFqoFcaWavtKFxHbITbKRiYtZBxFdGAXkYui85GldKUTwiMGTSoEijbBfyhW0F9YZyHTix6V5IC63K70Bldsfn74BgBVIkboYPkvk0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768372186; c=relaxed/simple;
-	bh=Fe9eTs9a327UQmmnr4zDsu4XzNFUmS/8f3UN/pnnrek=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iVtvlcZM5pTCmrig5eGGxvxRcxiNAOzOTFrC/e0s9zDa3BCOpcUS3hqENXD7J8PAHwx0v0Gn9RshE015fwYyaQ3MYD5CN5NPPhlLDQ6P1QkRatNng9vV2NclW3wqvuXs1UievmOlECQddxxPyK7StAigxFw+HUQCW5ovCBdHpQ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=MkKROcR+; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=t1lJVfHRx2M73EEQBeyjJ4ZU0g5MJMBt85jgXIscgqk=; b=MkKROcR+fTRxETHChOoegafJYd
-	rVnSIecuPjzpPHAi79Z/9E8hnQE/6D+duG7uKE8Etw/Bm6dWntrsVhsVurmjDh6xZsV+8pHxkeSoJ
-	ndNxzNYJknNqsW3hr24nqZHB3ULW5yRVpmnifag0V9pVxlQPJMOiWJmWmZkBz5qjZPdJ3c+mjXSGp
-	4Jy+no+6j4YYszNuWSWw4+r+n062YwVhPa2zS+YyqyK8Q1gdzXfH19dNw1oI7HYA5BvmSfu1ZVJSl
-	ACN0osF2p0zrPz6GjW8Z8JvD9QXvhwnkzyztUTe+XucT4knsGMqADhm06qixbeOjah8JvRXTt4+np
-	/3dA1Z+Q==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vfuN1-000000087m5-2rva;
-	Wed, 14 Jan 2026 06:28:43 +0000
-Date: Tue, 13 Jan 2026 22:28:43 -0800
-From: Christoph Hellwig <hch@infradead.org>
-To: Jeff Layton <jlayton@kernel.org>
-Cc: Christoph Hellwig <hch@infradead.org>,
-	Christian Brauner <brauner@kernel.org>,
-	Amir Goldstein <amir73il@gmail.com>,
-	Chuck Lever <chuck.lever@oracle.com>, Jan Kara <jack@suse.cz>,
-	Luis de Bethencourt <luisbg@kernel.org>,
-	Salah Triki <salah.triki@gmail.com>,
-	Nicolas Pitre <nico@fluxnic.net>, Anders Larsen <al@alarsen.net>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>,
-	Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>,
-	Yue Hu <zbestahu@gmail.com>, Jeffle Xu <jefflexu@linux.alibaba.com>,
-	Sandeep Dhavale <dhavale@google.com>,
-	Hongbo Li <lihongbo22@huawei.com>,
-	Chunhai Guo <guochunhai@vivo.com>, Jan Kara <jack@suse.com>,
-	Theodore Ts'o <tytso@mit.edu>,
-	Andreas Dilger <adilger.kernel@dilger.ca>,
-	Jaegeuk Kim <jaegeuk@kernel.org>,
-	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Richard Weinberger <richard@nod.at>,
-	Dave Kleikamp <shaggy@kernel.org>,
-	Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-	Viacheslav Dubeyko <slava@dubeyko.com>,
-	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-	Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>,
-	Joseph Qi <joseph.qi@linux.alibaba.com>,
-	Mike Marshall <hubcap@omnibond.com>,
-	Martin Brandenburg <martin@omnibond.com>,
-	Miklos Szeredi <miklos@szeredi.hu>,
-	Phillip Lougher <phillip@squashfs.org.uk>,
-	Carlos Maiolino <cem@kernel.org>, Hugh Dickins <hughd@google.com>,
-	Baolin Wang <baolin.wang@linux.alibaba.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Namjae Jeon <linkinjeon@kernel.org>,
-	Sungjong Seo <sj1557.seo@samsung.com>,
-	Yuezhang Mo <yuezhang.mo@sony.com>,
-	Alexander Aring <alex.aring@gmail.com>,
-	Andreas Gruenbacher <agruenba@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	Eric Van Hensbergen <ericvh@kernel.org>,
-	Latchesar Ionkov <lucho@ionkov.net>,
-	Dominique Martinet <asmadeus@codewreck.org>,
-	Christian Schoenebeck <linux_oss@crudebyte.com>,
-	Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>,
-	Trond Myklebust <trondmy@kernel.org>,
-	Anna Schumaker <anna@kernel.org>, Steve French <sfrench@samba.org>,
-	Paulo Alcantara <pc@manguebit.org>,
-	Ronnie Sahlberg <ronniesahlberg@gmail.com>,
-	Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
-	Bharath SM <bharathsm@microsoft.com>,
-	Hans de Goede <hansg@kernel.org>, linux-kernel@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	linux-mtd@lists.infradead.org, jfs-discussion@lists.sourceforge.net,
-	linux-nilfs@vger.kernel.org, ntfs3@lists.linux.dev,
-	ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org,
-	linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org,
-	linux-mm@kvack.org, gfs2@lists.linux.dev, linux-doc@vger.kernel.org,
-	v9fs@lists.linux.dev, ceph-devel@vger.kernel.org,
-	linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org,
-	samba-technical@lists.samba.org
-Subject: Re: [PATCH 00/24] vfs: require filesystems to explicitly opt-in to
- lease support
-Message-ID: <aWc3mwBNs8LNFN4W@infradead.org>
-References: <20260108-setlease-6-20-v1-0-ea4dec9b67fa@kernel.org>
- <m3mywef74xhcakianlrovrnaadnhzhfqjfusulkcnyioforfml@j2xnk7dzkmv4>
- <8af369636c32b868f83669c49aea708ca3b894ac.camel@kernel.org>
- <CAOQ4uxgD+Sgbbg9K2U0SF9TyUOBb==Z6auShUWc4FfPaDCQ=rg@mail.gmail.com>
- <ec78bf021fa1f6243798945943541ba171e337e7.camel@kernel.org>
- <cb5d2da6-2090-4639-ad96-138342bba56d@oracle.com>
- <ce700ee20834631eceededc8cd15fc5d00fee28e.camel@kernel.org>
- <20260113-mondlicht-raven-82fc4eb70e9d@brauner>
- <aWZcoyQLvbJKUxDU@infradead.org>
- <ce418800f06aa61a7f47f0d19394988f87a3da07.camel@kernel.org>
+	s=arc-20240116; t=1768375649; c=relaxed/simple;
+	bh=DQUeirNpPP89aLFHeqsLAGeTASvH8cy8TfogQVOev1c=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=V6cyuxYuZBFlMVF/1I7vOmtU4VD3yoWoV7CIGPQ0tFnZWco8fiVCRP8lOZ0EzTEUuJYu4SeSO6kKtte7oN+yzFNi8+GbLTGvYEFo3VQYOQPpzpksaO0crYFOaFjhDTd1CiKUxOk5Hw0Ozi4g71k/wzEpmJdyHrfqVMGC32deZsM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Jsy3RiMK; arc=none smtp.client-ip=209.85.221.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-43277900fb4so210082f8f.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 13 Jan 2026 23:27:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1768375643; x=1768980443; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Iatfbkb039XtZtG7yO5eMvoMHygvxkVJOdhG6yXVCuE=;
+        b=Jsy3RiMKatD5gGcBzlt8vZgyZbSjtRMF8NHUerUpH4iSTn7cmUTXXg40ZxLiDVI4S+
+         lMU6+0a3Vml9Oh4ebjleWnz1bjJDztZ9k3iAHceao/RIIQyE4Ou6Ago20/rDN2s6xZIV
+         2Y0ZC61ca89sSy/eNeTN6tZqpAw4QSkuZX2X3u0JXIndZIppyAP0uZfg4T86VCjy1Mdz
+         1GdJif+MPFpHCjjdnTsWlw9oWTmDkgiDNW25tQ5iwWjdEcBTtD9BuycYum9dGuJ1QRVX
+         spcA1/CUW1fgVL2W14ffZsgyTWT07+WrJ+qsiNDoScL7QtD8/yR1kDToKCNvB1KFN9wh
+         6/QA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1768375643; x=1768980443;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=Iatfbkb039XtZtG7yO5eMvoMHygvxkVJOdhG6yXVCuE=;
+        b=cYg7sfoqO+Cep6+if0pbnOQ4uJsnOPL/H71mWwyPCJd9ZJfM0uht7zAtg71TAt7t/U
+         tdVo4cNM8dzLEsUZOfLOEwHyl1Il9mKHFHa5v+hTTOBi6vNaQOyQYTXrSdZGcCyFsRL3
+         Gg6ryQgzIhdF1zCzTrw5oXBtJCK0vmYmduYNlrp5SMGeapG1Lzl8jylz8D4Jr8JxSuJ7
+         6OwCVfPH8Z3ctRmxhRxsZgSZEES9azhli1Q7D6nbEqe97nCF5Xk25/0+8tT5F2H6Hzr4
+         BhDRnDhj14p22OwxW2JN9jW7go954MG08muo/es6MmUbsH63r6pLpZKltQ45i1Qxg897
+         tAAw==
+X-Forwarded-Encrypted: i=1; AJvYcCUpMFTyFZ9xDbcgXQbIylej+PwSWODWFOkfQURb3fmKmz5krooU1iSy7FCTuTp1p4geR8GRv/exlSv2vg==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz4KaSOHHFoTuWPwxSDu1gPtdDGLe1vvAI6gohGQvbLr+Ni9MXs
+	nw9VACqZvID4FwkRVIBUDWq8X5YFBp/DBe17fG1CDnhI2nFJdmXKVarL
+X-Gm-Gg: AY/fxX45AgAVGNzurq+BrAyCrnWoY2aLaTq3esWD3G0Bagr79jGQz0JQpOodJbuTRbv
+	WTYMJlH0TD+s4jFEp8mlvuZ+teY3j8WS49bjODz8/Ur8fgc/KVuepzBDUFLzLYd2W19zpBaqpSK
+	gY/GBkB3FzCo+0UcRZxfgaZ/0BulCMtDhiuO9Fb6Q7BH1wCwDBGvmXvOv+nBIskh/2V6Kzeumv2
+	z5JiurRMix+lVS0CebdLoMtjjYvPx9+UoXHmvqmPAcYR3X2TBr7UHauy1cWN6XO2v1fud9j0mgY
+	MKSFe7uFfZYssNSFJP8AzkCegB2lDO4MTW0neG2KJGMlU2RsmIO54be0aTYOgZ3YaFxoNnzJDFE
+	hRDLdaAuD78C5RPkQctfZeWh8SEURGXcrRsnjW+Bos7gMGrEmrdERxItoAOFNSyjxM1s8dMKt3L
+	0QLCnIt4g=
+X-Received: by 2002:a05:6000:402c:b0:431:66a:cbda with SMTP id ffacd0b85a97d-43423d4709emr6998700f8f.0.1768375642965;
+        Tue, 13 Jan 2026 23:27:22 -0800 (PST)
+Received: from localhost ([212.73.77.104])
+        by smtp.gmail.com with UTF8SMTPSA id ffacd0b85a97d-432bd0dacd1sm47532193f8f.4.2026.01.13.23.27.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Jan 2026 23:27:22 -0800 (PST)
+From: Askar Safin <safinaskar@gmail.com>
+To: mpatocka@redhat.com
+Cc: Dell.Client.Kernel@dell.com,
+	agk@redhat.com,
+	brauner@kernel.org,
+	dm-devel@lists.linux.dev,
+	ebiggers@kernel.org,
+	kix@kix.es,
+	linux-block@vger.kernel.org,
+	linux-btrfs@vger.kernel.org,
+	linux-crypto@vger.kernel.org,
+	linux-lvm@lists.linux.dev,
+	linux-mm@kvack.org,
+	linux-pm@vger.kernel.org,
+	linux-raid@vger.kernel.org,
+	lvm-devel@lists.linux.dev,
+	milan@mazyland.cz,
+	msnitzer@redhat.com,
+	mzxreary@0pointer.de,
+	nphamcs@gmail.com,
+	pavel@ucw.cz,
+	rafael@kernel.org,
+	ryncsn@gmail.com,
+	torvalds@linux-foundation.org
+Subject: Re: [RFC PATCH 2/2] swsusp: make it possible to hibernate to device mapper devices
+Date: Wed, 14 Jan 2026 10:27:05 +0300
+Message-ID: <20260114072705.2798057-1-safinaskar@gmail.com>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <b32d0701-4399-9c5d-ecc8-071162df97a7@redhat.com>
+References: <b32d0701-4399-9c5d-ecc8-071162df97a7@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ce418800f06aa61a7f47f0d19394988f87a3da07.camel@kernel.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
 
-On Tue, Jan 13, 2026 at 12:06:42PM -0500, Jeff Layton wrote:
-> Fair point, but it's not that hard to conceive of a situation where
-> someone inadvertantly exports cgroupfs or some similar filesystem:
+Mikulas Patocka <mpatocka@redhat.com>:
+> Askar Safin requires swap and hibernation on the dm-integrity device mapper
+> target because he needs to protect his data.
 
-Sure.  But how is this worse than accidentally exporting private data
-or any other misconfiguration?
+Now I see that your approach is valid. (But some small changes are needed.)
 
+[[ TL;DR: you approach is good. I kindly ask you to continue with this patch.
+Needed changes are in section "Needed changes". ]]
+
+Let me explain why I initially rejected your patch and why now I think it is good.
+
+
+= Why I rejected =
+
+In your patch "notify_swap_device" call located before "pm_restrict_gfp_mask".
+
+But "pm_restrict_gfp_mask" is call, which forbids further swapping. I. e.
+we still can swap till "pm_restrict_gfp_mask" call!
+
+Thus "notify_swap_device" should be moved after "pm_restrict_gfp_mask" call.
+
+But then I thought about more complex storage hierarchies. For example,
+swap on top of some dm device on top of loop device on top of some filesystem
+on top of some another dm device, etc.
+
+If we have such hierarchy, then hibernating dm devices should be intertwined
+with freezing of filesystems, which happens in "filesystems_freeze" call.
+
+But "filesystems_freeze" call located before "pm_restrict_gfp_mask" call, so
+here we got contradiction.
+
+In other words, we should satisfy this 3 things at the same time:
+
+- Hibernating of dm devices should happen inside "filesystems_freeze" call
+intermixed with freezing of filesystems
+- Hibernating of dm devices should happen after "pm_restrict_gfp_mask" call
+- "pm_restrict_gfp_mask" is located after "filesystems_freeze" call in current
+kernel
+
+These 3 points obviously contradict to each other.
+
+So in this point I gave up.
+
+The only remaining solution (as I thought at that time) was to move
+"filesystems_freeze" after "pm_restrict_gfp_mask" call (or to move
+"pm_restrict_gfp_mask" before "filesystems_freeze").
+
+But:
+- Freezing of filesystem might require memory. It is bad idea to call
+"filesystems_freeze" after we forbid to swap
+- This would be pretty big change to the kernel. I'm not sure that my
+small use case justifies such change
+
+So in this point I totally gave up.
+
+
+= Why now I think your patch is good =
+
+But then I found this your email:
+https://lore.kernel.org/all/3f3d871a-6a86-354f-f83d-a871793a4a47@redhat.com/ .
+
+And now I see that complex hierarchies, such as described above, are not
+supported anyway!
+
+This fully ruins my argument above.
+
+And this means that your patch in fact works!
+
+
+= Needed changes =
+
+Please, move "notify_swap_device" after "pm_restrict_gfp_mask".
+
+Also: you introduced new operation to target_type: hibernate.
+I'm not sure we need this operation, we already have presuspend
+and postsuspend. In my personal hacky patch I simply added
+"dm_bufio_client_reset" to the end of "dm_integrity_postsuspend",
+and it worked. But I'm not sure about this point, i. e. if
+you think that we need "hibernate", then go with it.
+
+
+-- 
+Askar Safin
 
