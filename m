@@ -1,181 +1,331 @@
-Return-Path: <linux-btrfs+bounces-20496-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20497-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E3D1D1D91A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Jan 2026 10:35:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E169D1DD83
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Jan 2026 11:09:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 9F712303EF81
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Jan 2026 09:34:27 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id E2879304BC93
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Jan 2026 10:06:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FF673803CF;
-	Wed, 14 Jan 2026 09:34:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30A0638BDD0;
+	Wed, 14 Jan 2026 10:05:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l4R9ZtWz"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="rv8L17Hd"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA7DE3876D7
-	for <linux-btrfs@vger.kernel.org>; Wed, 14 Jan 2026 09:34:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 381D7389E16
+	for <linux-btrfs@vger.kernel.org>; Wed, 14 Jan 2026 10:05:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768383261; cv=none; b=rLkx8msYuf8wDi2QNKKbZRE7xL4bU/oKSTjQt4DJoGvgzzsbJl/15qPCqbjXj9eipGETIOEtqXBm4SKBAwpWDVXeLTWHe8SSahL+OaYHvax12Zi0b6NweUX5LdTJqiVwr3eCDuhSBcOLuGBOGjPHdLI9vQffqeyVllOBNQJQhpY=
+	t=1768385153; cv=none; b=loq9pqU5rJC66FKdeQdhRfRKt0N4qMjdtexOCPFv69goheEr4TS0KnV3k4X9vlwdFfdwNn+v+2X79eoMraoWtpGPBHyZKYxdd/ipz816oDtxXOVk58JVcEU0Nfw80ZKNbyA9l/EqRxO3qgqecEEH0F4UtrSi1Lab1YQGCbRIZWM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768383261; c=relaxed/simple;
-	bh=1et5czBbAtdqXmgJG4CYdcCCm2KxQaiqpQUINwrSInw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JCSxhdmoPCmagTWEa4Rp8dr1cf0xRjFzS+qg04UqvuDzXS+fQ5JMw2es69tAqqwwJXz05D+vkL4TkDWe9464Bxdre92GVzWdZJMmeZRIgFm6gmOoVTsoFgD58EsVV+20blHLFJnA8WJduuT9rvaqJDj5J7N4uh80wKIQvSvdPvk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=l4R9ZtWz; arc=none smtp.client-ip=209.85.218.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-b86f3e88d4dso533681966b.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 14 Jan 2026 01:34:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768383257; x=1768988057; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cV5qgJhr5qbvOPleJHxrmxwzjsLTEkwpqcVKyAw90ng=;
-        b=l4R9ZtWzmll6jo5HBanFLByjlkqXQwG+AsCW4DICvdDo4WF3sDvpj2eJOv3dVPo/iF
-         B9OPR6yzN5WOr9LnfVQVQPIaZ5dKfwxv8IoCz8sH0q4qgpIQmlJCiHMiUEgcCYj9cDi3
-         LUVEmz63xFT6TSr8KIUhYDMH7bf7fdIC3g1PgC+HFxSzGLjU2b9M5xwvJkmhU9BDl/Ac
-         KA0NrfmQQjuFePgQk3BZMgWoAsJUycNFL5UQClkJzuN2LaTt6y/8PyOUMhcfHveom8Vj
-         eUcATSwIrI17h12uKrpWWvmBOsQosxRHCi9c46TCRMyvB+pTweoBAZ9/mhr3kiRYuQZf
-         09Vg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768383257; x=1768988057;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=cV5qgJhr5qbvOPleJHxrmxwzjsLTEkwpqcVKyAw90ng=;
-        b=wtmJye/cgFfXcjWQr3pd/Og+kFR16sorid77K4tfo2vnQUl2bBF/QQU75T8qIRjnK+
-         0K5TRQxjayf+wd/rpEaNtdleSgsCt6iKvmR1rFmC5Mb7x5f0vCeMF4OeF6BbkEWsjsAr
-         KZMRQQmJOx7vzokB5wI7xDnHVivDaEh4HutwVGQLJ03zeGoysNdW0WGaQym42QQSm0m7
-         je6B7epOKtFz4BMsuoSHmq6H/MwLH4xtKphhwDYal009RUlLA0ZqmSgrPirxwHXzoANi
-         StYVcYkDBMRxqVo4o1jjQOyTGVbf9dmZkEfkMKFRVPEGrtF63Z23Od5gcHQc/LTIG+EC
-         WdAA==
-X-Forwarded-Encrypted: i=1; AJvYcCXCS9iWCqWHCBvyI+N7Q1ECg0eJf91cK8mz0epb6Zz9ecrkqaV6ZegGmybem//l1D1y5d0Xr+Na3Zb2fA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwhxUUdX8Y6zp3QGvLSCT6qlt0S7uiEqFIDlZVOWATtn21yFqqN
-	2f2x60NGyorOapMBDdDk1T8h6mQLfopPn3rWbtoONwprG42Syi/mxyeltoKfu5nkNR+OqxmxEaE
-	CPPcu+xMMlvFirDC4c6cHHSPjPdZnLAQ=
-X-Gm-Gg: AY/fxX4V4iXfsBFFXxqmUK7ek4S961kV2HZCs9BUiXcUWWGfkIUnpM/HA2fGhpSwc0W
-	lZMjxGV/au7v1wKILyBmLWrPHKj/mo62vW4bHvF6p6FxySSV6Nuzd74UVd5Vgb0+M7bd0loLOEz
-	1LVR2vcG/augIunrMT5jvYCYEMqpikb0U9VO7fwux1+pVuBGZep1oq9FxfCUqFGK21K/7R2wYz8
-	z+RnJ2gPZqeOzdDY1GbSBx64NIN4JP1s669q/U22x8C49iedCnGihwJ+RARTTRL7UtEmDPMidPL
-	nTA06boRdRGKzPhWw3utv2Mq3b3oTm4YUleBQOCN
-X-Received: by 2002:a17:906:6a02:b0:b87:25a6:a906 with SMTP id
- a640c23a62f3a-b87677e0680mr108491266b.46.1768383255915; Wed, 14 Jan 2026
- 01:34:15 -0800 (PST)
+	s=arc-20240116; t=1768385153; c=relaxed/simple;
+	bh=1UTDk4pQeFdhEXdUi2oLwZCdErgPM1QpG/UQgmKBL74=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=gmwOi45wU6EKXOVMTGWcfiULxdVzO8mMj7qs4/wOj/VHdQcrkuZ4BrQvQQph77hbsInvndBk3LP4JI/3A//mCmqEOkNhrSLvnm39EAC0XyJBSQ06TFFb51bn98wzOfn7taIFuzR4wkIimsIdc1D8WyN5poy2sj/YcrBrGJ/FuAU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=rv8L17Hd; arc=none smtp.client-ip=212.227.15.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1768385148; x=1768989948; i=quwenruo.btrfs@gmx.com;
+	bh=iRWQVKl5Q5qdnpHe+SRWEQMwuVh8cxWi5BShbp1d1C4=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=rv8L17HdSOZweC+Iv+gkBll0jLESx1PCWE4PFLthxj0GET/8uoPKe78qNlLx+sqc
+	 Z24RzW/7eOSlqj3sWt39AE66JgrTfAp1kdqy9M5rwVV2UKrFWNvdysV9EggSSuZzA
+	 I2ZNQIZrhtWhZl+R8O/p91WpXdfHjtuJshSz9uayCRqlUUlnR2lI00KFktw7AN3Ny
+	 WjVRi67MWZ8YP6/exEC3I37IZWaJ6DuGIk40nqmphLWwNhTwlONtzvgPEt1O867N8
+	 zqOE5s7Trf9YDGUES/pheCZa6JBL0PkjlMU9cErQrRwOSNlrUzLTyGpIlRmUnKpGO
+	 K/c7+Kg6hab8ENZ+7w==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MhD6W-1wJABl2K1K-00dJop; Wed, 14
+ Jan 2026 11:05:48 +0100
+Message-ID: <f53f9520-9168-49a3-8354-33d90d2ee3e5@gmx.com>
+Date: Wed, 14 Jan 2026 20:35:44 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260108-setlease-6-20-v1-0-ea4dec9b67fa@kernel.org>
- <m3mywef74xhcakianlrovrnaadnhzhfqjfusulkcnyioforfml@j2xnk7dzkmv4>
- <8af369636c32b868f83669c49aea708ca3b894ac.camel@kernel.org>
- <CAOQ4uxgD+Sgbbg9K2U0SF9TyUOBb==Z6auShUWc4FfPaDCQ=rg@mail.gmail.com>
- <ec78bf021fa1f6243798945943541ba171e337e7.camel@kernel.org>
- <cb5d2da6-2090-4639-ad96-138342bba56d@oracle.com> <ce700ee20834631eceededc8cd15fc5d00fee28e.camel@kernel.org>
- <20260113-mondlicht-raven-82fc4eb70e9d@brauner> <aWZcoyQLvbJKUxDU@infradead.org>
- <ce418800f06aa61a7f47f0d19394988f87a3da07.camel@kernel.org> <aWc3mwBNs8LNFN4W@infradead.org>
-In-Reply-To: <aWc3mwBNs8LNFN4W@infradead.org>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Wed, 14 Jan 2026 10:34:04 +0100
-X-Gm-Features: AZwV_QjTKvsgUAM6BTw2rpBHAs0ymZXhE-dNbh6dt2ll27JlZs1InITXkkYC5Xs
-Message-ID: <CAOQ4uxhMjitW_DC9WK9eku51gE1Ft+ENhD=qq3uehwrHO=RByA@mail.gmail.com>
-Subject: Re: [PATCH 00/24] vfs: require filesystems to explicitly opt-in to
- lease support
-To: Christoph Hellwig <hch@infradead.org>
-Cc: Jeff Layton <jlayton@kernel.org>, Christian Brauner <brauner@kernel.org>, 
-	Chuck Lever <chuck.lever@oracle.com>, Jan Kara <jack@suse.cz>, 
-	Luis de Bethencourt <luisbg@kernel.org>, Salah Triki <salah.triki@gmail.com>, 
-	Nicolas Pitre <nico@fluxnic.net>, Anders Larsen <al@alarsen.net>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>, 
-	Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>, Yue Hu <zbestahu@gmail.com>, 
-	Jeffle Xu <jefflexu@linux.alibaba.com>, Sandeep Dhavale <dhavale@google.com>, 
-	Hongbo Li <lihongbo22@huawei.com>, Chunhai Guo <guochunhai@vivo.com>, Jan Kara <jack@suse.com>, 
-	"Theodore Ts'o" <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>, 
-	Jaegeuk Kim <jaegeuk@kernel.org>, OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>, 
-	David Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>, Dave Kleikamp <shaggy@kernel.org>, 
-	Ryusuke Konishi <konishi.ryusuke@gmail.com>, Viacheslav Dubeyko <slava@dubeyko.com>, 
-	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>, Mark Fasheh <mark@fasheh.com>, 
-	Joel Becker <jlbec@evilplan.org>, Joseph Qi <joseph.qi@linux.alibaba.com>, 
-	Mike Marshall <hubcap@omnibond.com>, Martin Brandenburg <martin@omnibond.com>, 
-	Miklos Szeredi <miklos@szeredi.hu>, Phillip Lougher <phillip@squashfs.org.uk>, 
-	Carlos Maiolino <cem@kernel.org>, Hugh Dickins <hughd@google.com>, 
-	Baolin Wang <baolin.wang@linux.alibaba.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Namjae Jeon <linkinjeon@kernel.org>, Sungjong Seo <sj1557.seo@samsung.com>, 
-	Yuezhang Mo <yuezhang.mo@sony.com>, Alexander Aring <alex.aring@gmail.com>, 
-	Andreas Gruenbacher <agruenba@redhat.com>, Jonathan Corbet <corbet@lwn.net>, 
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>, Eric Van Hensbergen <ericvh@kernel.org>, 
-	Latchesar Ionkov <lucho@ionkov.net>, Dominique Martinet <asmadeus@codewreck.org>, 
-	Christian Schoenebeck <linux_oss@crudebyte.com>, Xiubo Li <xiubli@redhat.com>, 
-	Ilya Dryomov <idryomov@gmail.com>, Trond Myklebust <trondmy@kernel.org>, 
-	Anna Schumaker <anna@kernel.org>, Steve French <sfrench@samba.org>, Paulo Alcantara <pc@manguebit.org>, 
-	Ronnie Sahlberg <ronniesahlberg@gmail.com>, Shyam Prasad N <sprasad@microsoft.com>, 
-	Tom Talpey <tom@talpey.com>, Bharath SM <bharathsm@microsoft.com>, 
-	Hans de Goede <hansg@kernel.org>, linux-kernel@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org, 
-	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org, 
-	linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org, 
-	jfs-discussion@lists.sourceforge.net, linux-nilfs@vger.kernel.org, 
-	ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org, 
-	linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org, linux-mm@kvack.org, 
-	gfs2@lists.linux.dev, linux-doc@vger.kernel.org, v9fs@lists.linux.dev, 
-	ceph-devel@vger.kernel.org, linux-nfs@vger.kernel.org, 
-	linux-cifs@vger.kernel.org, samba-technical@lists.samba.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: btrfs stopps working when stressed
+To: Aleksandar Gerasimovski <Aleksandar.Gerasimovski@belden.com>,
+ "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+References: <SA1PR18MB56922F690C5EC2D85371408B998FA@SA1PR18MB5692.namprd18.prod.outlook.com>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
+ sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
+ xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
+ naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
+ tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
+ 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
+ VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
+ CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
+ B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
+ Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
+ +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
+ HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
+In-Reply-To: <SA1PR18MB56922F690C5EC2D85371408B998FA@SA1PR18MB5692.namprd18.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:eOX7FlRrmLMB2oAym64lJ2yRlFTSv0o4HZ3FoYGEMhySTHd+8k0
+ MTVdXsO0EXTAqvgVTLQwLtFbh2o3se2klVgwd+VZbizXyUmHwLaoE8cwnKeTa0Kt/Nfn5Jv
+ wduk2IOEFmdG41g9hfWorS9erV5ynCAYNMh/EcDkItv4h3U0FvnPp/8A3srRr5LMtp8E0qe
+ 4JGulKN73lPvbdduQDbfA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:PJjGumIJL2Q=;7Mg50gFOdlFMfefV1VWFwqaFShJ
+ sLzTR446CxyM583G1sca+F3jpq2DTHIEl4ly8Glv1abfrqRF+avE90j5DAl1Yukb+3/+MMgYv
+ aoVToK2P5pD5tsCkXdhhLteZBwz38zS7iSAfaJ27ObLfI7LSXwQhsndpVfBhkcGZL6vnr4yOq
+ P8Dm6+qa7kjDOLjlMvxY3UDwJ+lpLUmnSQNC8W0KYubF2mc32wEQeMOGnCvqGqvdJHEkwriE5
+ CdMuowIUA25Km+b5ux1imcpwfVFcwjoGRkLRbSxRSqf3HSdChQeIRnGKQJ4z9RXcM681FbTC8
+ VL8UceQ6+ZNV1PgLIHivJoXrXd5hUFCbaHSmQKxB/GeAlc7P75ODHdPugX4DAu5Ce1rLEFf+i
+ jpzJxZRhgQka39FBoqyu+hojhLvaHDsZzior4rTq1eMsVPMrRHZrswDehGzRWAtdzCgyke7+m
+ lJfuwcw1iGNt2GVUmUd3qO/X8WKUgL5B305oraLwzlpon65qrw/1DXfKTeT8NUNcD2a1zYWK2
+ FxVxPKH19ZvpemdpOYiubWl5r8peH/2/pUaptRphAuiYEaNJEyySyjaUCFi3gKHsPvpA8wCkI
+ FGwNYyLBFE23ICPp+d+6XM3r7KSQP5KvhCfndgt3p5UtY3GPu0um3UD+fQG3D6Sf/ZHbIwVJV
+ /bUBEHcEEzboGtzUJP+8NSIeD4GyxZSX6Ntwe3qI5Seok19Q8EcnwjaVipU76am51k6hrQRJp
+ JlG09uBo6oP6V/kZ3BlEJjQm2m//TpD76x+7pxgBD/UE0gg4lk3hM8mUfiNtVyp/EYndmfOpG
+ R8uy2n+11jVal/GpVhZILKlrz/8br1HtOIrdXHRNFbRhlOtuBVAhC27eGBcAcUAo62n3VQAfn
+ SH/oN9t+4XOtynLBoZNVO8gNIWnaUfC5hGYRiEBHwCk4Kr9MjK8vH8GmxcjCp4+FuDJyhv8a7
+ D0b5adFJOTh/vgOZ/RlzYhhdCb4JqG1Bk41Ep/LjmWsb7KtwRYWKYK5Esx0tieqfjSeh74DcJ
+ Tzc02MNlR3Pzy2c6gvsUUbg7U++IhdLwc+fHTAhRDj38//AaN3Eu6ODDorV32hITzY2ySQYS0
+ N4SwWYv3z94Kq9qAt+sU3mT53/7vzpcK9o7RIGc2lZeTsojinQY8UIw0xyWxalbO0FJLeX8qN
+ FkX3m4J3Sf6gTtBhKqE7Rlb+5lxBtPvsdobQgYYThwRYDp3wbeBAlNI70vcTeZqvbofRw0kbX
+ o+S9o0Ql2rGVmtKAPEWeUC+Kgs87tkoXjBBr+wJPG31UF93Q5SGYPRN7R1dMvZOUSty2D2Ytl
+ D2OkgH864ytJpct2bgimZzxA+kc/sznq/6bpdMWiRNW5hrhOhuo9mA04K8mgYBhc39jTIFt9S
+ v4Q5l8+KbOR8u1gVd1nURUEG+2eRxP75XXG3q45lgNXCcrybB8wHOjp2NvS3e2zCosEOJIgrb
+ hy3OkfhiKGAxoQRJfuGmO2IWZ3ba+uKfrm0mebBbKvecjFIiQVGvzBcyh6aY/3yjfErpilxBe
+ KPAILMDsZzgXIroMug3OJKn5LlSQQQchgkSXP55vBYSh/Tfh3RB6KZRglaG+CXfGeBaYM0aUj
+ VQI35qp2ic+6HSABCsrjf1thSO67jW5cNIAwSphMbbZqniy9vgb2dyvbcmIhKGnJt3ZO8Buuk
+ YJ8hE276874wwILKE0Ad2AqI8Cy8Zbo+bKLyXk2y8H0JFn/oXaj6kS55jRWURQKieO9f6/g3Q
+ bjyX27Vhn4y+xYFgOGqPFBCSGUiikBAoFi8pT1X5fpDS6A3pzSKaFy+rSUTiX2Y6cmh18H85v
+ UFzR3iobjuzGBvfb7/hOSLq1nKfaJA7JFDSr7pO7P/cAk03FnTfdVBt0aqvaUm+/uudDH/1eD
+ Gm3m4h1dFwnb12N4vbP/17S97EB+a+rs0eacdnqJqBdQpQtxXlJTP56DxRHzkGSC6Q6/BrZ15
+ U0PnHm+tV3/fw7CosTgw2AgR1HLiZUwodTFNpO0aEMhk0JktoEDcSh9k0+ORsi8yjydXRLOzH
+ OEQ7UjzCyoKd8T0agsdtJrTok04DtIyP3eBiyuUZcZfbdO9spdIR9mkGKUjZrS8udB2GfM7u8
+ hcv3j7hFwlxyJT11RW1BC7YnPNHHIknVFidFatOoyPVLbB7sePDJS5zaLEq289KBF+uNJsN15
+ 9/9HV+4Qqk8okjQmqi2rZW4DXfXd9ugA/5xOD6TfRCXDm7OJ4VFOe+ngDAG+gZe3uaJtHc4+x
+ avDOWS89b9/VFsiBvh3RvJQazc7qwC2C8hknHtuB94hvC936OmkoaucK2zCfl1gAr2EkFJ4Du
+ ggePy9m9eMXwzIUMaferOQGZDtoNX0nfOu7f1/181TloS81yacWTd5KRmdvv5N2wtU7cdTcZ5
+ LSPcpKtxJc4JraDgMfqbXfOQghO/dXa8XbOK6/v16Fpakr+r+erHdlVn43hfU+La59IMBVt3c
+ KAct7ggXdwQZT2BeSTAcB2NHNZ3uPZbmcGSxS7vln9okeSMS/yyycFE1wu7W9xqwN0z5vL3Ol
+ TNIho0CFsu0JkX2bu/wY1WWCjOlokeGfsQzzdWGXSfoSCqjtfX/4w8LuphjNSZ8Z61FqLqqEN
+ DhnjSQ1ejP6Ebjcv1WyN6sMALtwGSF/sFlFUfoSEbnE9U1aW4lxKHk2uFT5kqqyZ7gWH4vkAY
+ YDLByjW8R0GSuMbJa2OABq9JpWoBPNkbeNxgL0KUuRiap8k+rRpwBCn83hJDV2V7hZoijuL5r
+ jPzCrdLDYrNeyAX3hdMgWEQK4HNFNp6wC6e2PYp8oK7sM4U/VX+/rlLbYN8Va7QlebdHYqNCx
+ jDUqb01b+nZ//7UBzXSRvXirzgycAJPa0OvZ57LXzNDOsNS9Whnc6qBTgS4bmhhKqpO+7tkL0
+ Z4U0+kkFNSBcZlz6AAc55jGPm8+iTVPp0603QkQLZUC/pVQE0SAtuJj9wgcC42dYbsPnnO4Vf
+ ao0jPMg4ns7yr+fw1ZapfwQ5mJJNCrM/cm9oYmVImuLP7Kl3Cqzxtg/xHZ8ZpDfhWKy2qsALA
+ HgoYyk/dYUr06oh6aAgsN2vpTH0+deU9UMOMUQrcgy1KWrXXNDYwO81yt3V57vvjDIRFfoAxc
+ 8EQRW1qWhekIyv2/iEbWpwi9bS1rjBvsaGkwCIWXf6YCdEwWtnJfmivjk0eMnGB494ap9Yuao
+ XfFxfNedNZyzuFFsRWtsPfr38XBy46kiRSE3M04FkZ2KqE77m3ENEqGvmBJ/1rKq6wpmeC4JN
+ aT01n6AQO+8OWAHxqBqmkh0zmXQ+JYQMfCWJigDfNX55pMW+iLhFgK6ej48L/AHp97Z7OtN0l
+ zQvpE8AUaJW0IoJch8cE2iG7T7BaIc06VaE4g4yt5G+ffvShbnjcpOaXNpxgoq/VaP2aq47PC
+ FXak7kB7IdNj/OXsVRUX/xqVb0+zD9yX17qrMvJ30+fbq9tBikQWm+MyA5v0O48mhIT/yCLks
+ nnesTPRQZtiTaqIn2pvCTQllgb9+pdcrNFGoJpyTDD7Rj8MYN+9uzZGnSwP7VkueuESKIN7CD
+ KlTDzVjScZ0+JNmt2Lbdnoohc19mxnOvz1NGg6bkWdr/BrGavdOM8XeMe8q/U10EmE/9mfIqq
+ hL9QG5IHR+DVEOL7NiFFyu3tf+FzZlwWPssvu7jv+bk3B1EV8u0qtw0UyMhE3psLuwdpxNMe+
+ 5Q+bAVsdO6m5CkqN+pIwS3r3zP7xkAwX5gCStXsxm/LwnUydMMgNauL15SwWwUWDx67l8a5Db
+ 64OM4bk2LPwcd5YsO32b9LYgXvYLbJXq0C2UfatscCmSrSuwymPhV/8kJD2NE7CNREL7xo5tI
+ SD4tICDSCQn0MHFBkQHA8EtYk52nPNe3rI8xIgUqT3boypzzKTvB8rcWvOZdEFypKjm034dgy
+ fE/IC6ZzEV7Kp+r5di8F8LltkgYe4GLT99nWWT1kXLlVLZQulZpy9vu3hw/AIp0K1Q/O9Mo5E
+ OGe/bx7YPwKGXCfjoACw8DPXMKii5bhyitlOn+T7VNw3KRdNv2pvNZDXu/cg1A75DOP0HP1CV
+ hyWCakmxvDEglHMOA3yyRce+uoX6H2DEkYWIEb3C9+vCXRszBDp66CMUTDZoze9kUT5ctju4B
+ wXGLbDg0OhB7IjRvYrsBDRGJLpXUbotL50OEo/sZ7IPLQG7ZEtMQ83hURHe7C/Is8fqFWsYCa
+ bCyhmgp/7NTLmbpZDPMjuXzH2EHHouBFp8ZrxjmPX3IaHGZmON4DneLZajDWOwQGpaoYP4ZmH
+ Yi2uauRZ7yvyW7MpLrNmqhFuNegaqagLyQFfMUnSc8zsU4ZgN3+Alqq/BAhGI4bRbNrNtwIHc
+ 9QHyfgGK/KH8b1hxxAjP3/7PgEg2y6ZVmh5FlngCupacywBsJLaiXrnexbVMdW1LoISktgaXN
+ P3hWHWKB+su5WFshef/vzs+VxVbl4B3TceT1GijxSPxCeE+BbwVcsjt0B4noUQD1aszDdNxN/
+ 4NaY5UXwWinlQn/TaXoz+CAKgUhXuXTwxl3kJ2j3AZT7ch2UFityfh0uStD7gEI3S8l1EWRPn
+ e3EN3QcnjjkOrp5oP01BVLSZqdp0LffYBvgkFLqOVoENt0GUN3IGXZIuSETWQ/FqoZ/5p0fep
+ id8SLjPJRjWyRUcCpjAvwrKBlrR8KNOU0uDkUym05Fpz/DUO6zwHftd7d4EEvI1EyLcbzIwHI
+ 5potgFs8zwcGvZb2BBVTRzHzmaY8Uab5MyK08vYC0eklFKq291MZr6PdMZDl8gcRUT9wEhswx
+ 9IkCAkQXedNy2a6T9p1TNCXAGIpanoHBODdkYgeRIWXeLBIfEK6vIlrqh7F3J2LtxMPuUavu9
+ Ex1lEUUApdlr1NfQIEX1Hk/mdzMSTGpf84Nl+ezsjtf0K3qct4iFAHj5eK2IjtKqFSNoTa80q
+ 5DzQLJvsTvwjHwXyc+EPJzusKZoG8lKmdtJdwCIsG2pdIZMfFWMskrfwu+k/A4KIir4ETXWmo
+ cPDiuZnP3QnSzlY4anfW8CH0H908lMqQu80fQyd+OBrIwq8UQhxqYn45bj324tRQxvc8iY7qY
+ 4k9bKFVJZkYq1o2c+JW5tro7b424ysx/RONqaWQwU8e7dPanI7LgwnbuqVhHML6PRh2Awutc9
+ Me4exIaI5yDR7wM5UNlzHsYnWDpJuFfqPEBDNld1rxXrx6TzRuEVdu7cHPXiEqZU9CPuZIqAy
+ gbDisffs=
 
-On Wed, Jan 14, 2026 at 7:28=E2=80=AFAM Christoph Hellwig <hch@infradead.or=
-g> wrote:
->
-> On Tue, Jan 13, 2026 at 12:06:42PM -0500, Jeff Layton wrote:
-> > Fair point, but it's not that hard to conceive of a situation where
-> > someone inadvertantly exports cgroupfs or some similar filesystem:
->
-> Sure.  But how is this worse than accidentally exporting private data
-> or any other misconfiguration?
->
 
-My POV is that it is less about security (as your question implies), and
-more about correctness.
 
-The special thing about NFS export, as opposed to, say, ksmbd, is
-open by file handle, IOW, the export_operations.
+=E5=9C=A8 2026/1/14 19:55, Aleksandar Gerasimovski =E5=86=99=E9=81=93:
+> Hello everyone,
+>=20
+> I'm looking for a solution for a problem that we have with the btrfs.
+>=20
+> We have tried to do some initial investigation on our side however we ha=
+ve limited knowledge and experience in this area.
+> I hope you can give us some pointers how to investigate this further and=
+ in what corners we shall start looking.
+>=20
+> So, on our products using the btrfs we see that the filesystem sometimes=
+ stops working when we stress it with bonnie++ tool.
+> We see the problem with mainstream 6.12 and 6.18 Kernels, our current gu=
+ess from the debugging done so far is that
+> we run in kind of a concurrency	and/or scheduling issue were the asynchr=
+on meta data space reclaiming is not executed on time,
+> and this leads to metadata space to not be free up on time for the new d=
+ata. We can even see that adding a printk trace in a specific
+> point is covering the problem.
 
-I perceive this as a very strange and undesired situation when NFS
-file handles do not behave as persistent file handles.
+Did your setup have multiple devices involved?
 
-FUSE will gladly open a completely different object, sometimes
-a different object type from an NFS client request after server restart.
+If so there is a known bug that slightly unbalanced device size can=20
+trick btrfs into it can still over-commit metadata, but it can not in=20
+fact and error out at one of the critical path that we can not do=20
+anything but aborting the transaction.
 
-I suppose that the same could happen with tmpfs and probably some
-other fs.
 
-This problem is old and welded into the system, but IMO adding more
-kernel filesystems, which consciously export file handles that do not
-survive server reboot does not serve users interests well.
+Although even without that specific quirk, it's still known that btrfs=20
+has some other problems related to metadata space reservation.
 
-One could claim that this is a bug that can be fixed by adding boot_id
-to said file handles, but why fix something that nobody asked for?
+>=20
+> To reproduce the problem, we run: "bonnie++ -d test/ -m BTRFS -u 0 -s 25=
+6M -r 128M -b"
+> Note that the tested partition is for sure not full we have 800MB space =
+there and we test with 256MB so it's not a space issue.
 
-cgroupfs, pidfs, nsfs, all gained open_by_handle_at() capability for
-a known reason, which was NOT NFS export.
+Unfortunately it's too small for btrfs.
 
-If the author of open_by_handle_at() support (i.e. brauner) does not
-wish to imply that those fs should be exported to NFS, why object?
+Btrfs has the requirement to strictly split metadata and data space,=20
+thus it's possible to let unbalanced metadata and data chunk usage to=20
+exhaust one while the other has a lot of free space.
 
-We could have the opt-in/out of NFS export fixes per EXPORT_OP_
-flags and we could even think of allowing admin to make this decision
-per vfsmount (e.g. for cgroupfs).
+You can consider it as the ext4/xfs inode number limits vs data space=20
+usage. One can exhaust all the available inodes way before exhausting=20
+the available data.
 
-In any case, I fail to see how objecting to the possibility of NFS export
-opt-out serves anyone.
+It's just way worse in btrfs for smaller fses.
+
+[...]
+> [ 174.013001] BTRFS info (device mmcblk0p7 state A): space_info DATA has=
+ 234418176 free, is not full
+> [ 174.022018] BTRFS info (device mmcblk0p7 state A): space_info total=3D=
+255852544, used=3D21434368, pinned=3D0, reserved=3D0, may_use=3D0, readonl=
+y=3D0 zone_unusable=3D0
+
+You have only 244MiB of data chunk, which is already tiny for btrfs.
+The worse part is, there is only 20MiB utilized
+
+> [ 174.035829] BTRFS info (device mmcblk0p7 state A): space_info METADATA=
+ has -5767168 free, is full
+> [ 174.044752] BTRFS info (device mmcblk0p7 state A): space_info total=3D=
+53673984, used=3D1146880, pinned=3D52445184, reserved=3D16384, may_use=3D5=
+767168, readonly=3D65536 zone_unusable=3D0
+
+Your metadata is tiny, only less than 52MiB (and will be doubled by the=20
+default DUP profile for single dev setup).
+
+This means your fs is only around 350MiB?
+
+This is definitely not a good disk size for btrfs.
+
+My recommendation for any btrfs is at least 10GiB.
+
+This will allow btrfs to use 1Gib chunk stripe size (the max), so that=20
+we won't have those tiny metadata blocks, and greatly reduce the problem=
+=20
+caused by unbalacned data/metadata.
+
+
+But still, flipping RO is not a good behavior, although in such small=20
+fs, you may have a better experience using mixed-bg feature, which will=20
+let data and metadata share the same block groups, resolving the=20
+unbalance problem (but introducing more limits).
 
 Thanks,
-Amir.
+Qu
+
+> [ 174.060221] BTRFS info (device mmcblk0p7 state A): space_info SYSTEM h=
+as 8355840 free, is not full
+> [ 174.069252] BTRFS info (device mmcblk0p7 state A): space_info total=3D=
+8388608, used=3D16384, pinned=3D16384, reserved=3D0, may_use=3D0, readonly=
+=3D0 zone_unusable=3D0
+> [ 174.082979] BTRFS info (device mmcblk0p7 state A): global_block_rsv: s=
+ize 5767168 reserved 5767168
+> [ 174.091989] BTRFS info (device mmcblk0p7 state A): trans_block_rsv: si=
+ze 0 reserved 0
+> [ 174.099865] BTRFS info (device mmcblk0p7 state A): chunk_block_rsv: si=
+ze 0 reserved 0
+> [ 174.107739] BTRFS info (device mmcblk0p7 state A): delayed_block_rsv: =
+size 0 reserved 0
+> [ 174.115794] BTRFS info (device mmcblk0p7 state A): delayed_refs_rsv: s=
+ize 0 reserved 0
+> [ 174.123787] BTRFS: error (device mmcblk0p7 state A) in cleanup_transac=
+tion:2027: errno=3D-28 No space left
+> [ 174.133336] BTRFS info (device mmcblk0p7 state EA): forced readonly
+> Can't sync file.
+> Cleaning up test directory after error.
+> Bonnie: drastic I/O error (rmdir): Read-only file system
+> ------------------------------------------------
+>=20
+> Trying to follow the "btrfs_add_bg_to_space_info" that is in "async_recl=
+aim_work" context:
+> -------------------------------------------------
+> @@ -322,15 +322,21 @@ void btrfs_add_bg_to_space_info(struct btrfs_fs_in=
+fo *info,
+>          struct btrfs_space_info *found;
+>          int factor, index;
+>=20
+>          factor =3D btrfs_bg_type_to_factor(block_group->flags);
+>=20
+>          found =3D btrfs_find_space_info(info, block_group->flags);
+>          ASSERT(found);
+>          spin_lock(&found->lock);
+> +       pr_info("%s(%d): %s %lld %lld\n", __func__, __LINE__, space_info=
+_flag_to_str(found), found->total_bytes, block_group->length);
+> +       // OK: trigger twice free space is freed at second attempt.
+> +       // METADATA 53673984 6291456
+> +       // ..
+> +       // METADATA 59965440 117440512
+> +
+> +       // KO: triggered one, no space
+> +       // METADATA 53673984 6291456
+> +       // crash...
+> -------------------------------------------------
+>=20
+> Also maybe interesting to know is that trying to trace (printk) "btrfs_a=
+dd_bg_to_space_info" influence the reproducibility.
+>=20
+> Any hints to resolve this problem are welcome.
+>=20
+> Regards,
+> Aleksandar
+>=20
+>=20
+>=20
+>=20
+> **********************************************************************
+> DISCLAIMER:
+> Privileged and/or Confidential information may be contained in this mess=
+age. If you are not the addressee of this message, you may not copy, use o=
+r deliver this message to anyone. In such event, you should destroy the me=
+ssage and kindly notify the sender by reply e-mail. It is understood that =
+opinions or conclusions that do not relate to the official business of the=
+ company are neither given nor endorsed by the company. Thank You.
+>=20
+
 
