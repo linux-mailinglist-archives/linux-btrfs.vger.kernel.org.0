@@ -1,54 +1,54 @@
-Return-Path: <linux-btrfs+bounces-20524-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20525-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA31BD213F2
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Jan 2026 21:59:25 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD26BD21438
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Jan 2026 22:06:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 44DAD301738E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Jan 2026 20:57:17 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A5D813019B6F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Jan 2026 21:06:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 926FB357A30;
-	Wed, 14 Jan 2026 20:57:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95A39357A3A;
+	Wed, 14 Jan 2026 21:06:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="KnRZNyFa"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="SMfiST2y"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AAA3352C41
-	for <linux-btrfs@vger.kernel.org>; Wed, 14 Jan 2026 20:57:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADBA52D73B8
+	for <linux-btrfs@vger.kernel.org>; Wed, 14 Jan 2026 21:06:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768424235; cv=none; b=sXS4t3ldKtgNXbQAsEnqVcskObCYZaqudL1FEHHz9hVyVVY53tDpqExw4TXr3Gz1BT7vB5zANreQKOGlfa62Okxm6ZGdUuk8LrhvOeXyc2jdriJvgvizkx5qVGh+oSyrLjc5oqBOYKsfmkZL3dm7BBj2mZ0JvAoxuWWc1W4PCKw=
+	t=1768424767; cv=none; b=jdZ1LfMXKeEdq24iFS+LxzxVhf/vqE6DU8rmnMolOHbn4pqKwlLeJotjPM40ZMwTjFC6IbI5TKhwX2ue/l8SGRypRYxoieMLfA8JrKhJEJ8prTMWrmokhirFDHOsRW32NWT2bMUldyplnDRVoh3Pc4Fd1N8SDp8/23OFuYRKkCw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768424235; c=relaxed/simple;
-	bh=pKt3B7ItzK1+OZX6A/c4yqCuIOs6t+OBYf5EQ3bhPks=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=KuK+dwOf9AwkJ4ySjacmEAeT6t0ZjeuW9VMsXYQ36q1/DNgMxUEumfakcZHjmh40eUoFq94bnI2U9CtD6sItQKLELsrj7+73K8am6QUPIH1xegZsmKIi9eQrgQtUd9Uh0M5AzH4eO6kGQzect4NvvfX039rz05dQOZ17hYPGy2A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=KnRZNyFa; arc=none smtp.client-ip=212.227.17.21
+	s=arc-20240116; t=1768424767; c=relaxed/simple;
+	bh=655pQXBWpDhg3ULAEIOLGXW4HiTGprDPnTKbV2UaU+c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=YvpOZmo+/j2aFt39R4voEM7aPDBH4ZUMQvkg/vcPShNeIgSqSA0WU1pIyUBXXTc6iJXZFQ120fB78PjVSB49VK+qK1MCpFiDMmNBcqZAPyX+7XnqZixvv+sBurpFX2LHg3pa+rG3/goUw9VQYr4dZnaZEGibrgFs5w5ykyq00c4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=SMfiST2y; arc=none smtp.client-ip=212.227.17.21
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1768424231; x=1769029031; i=quwenruo.btrfs@gmx.com;
-	bh=fAD8SuzRTcvuLj56HxgNUYgQMl4qDRdELthKpuZh5/4=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
+	s=s31663417; t=1768424762; x=1769029562; i=quwenruo.btrfs@gmx.com;
+	bh=pu2QaIvd8xQklA6LbU1w8pCOOtk9Ix6oW4l0CSnFFro=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=KnRZNyFanzYdTDxb+3Q4N+Mn92AmxjfMqY0KoMH9j235mltlHGLGgT89/xr7zI/+
-	 5eUSRw7afsZlCCPHLc+Kl7QSGOP4/xZyV8/cNV/vuamdsxgi4mLYcp0+gL7Z3IfhY
-	 7SnEJ9hHs1JfX86zdNiakWd3hrOJW3WlW+hEEXLAqAVln8ko6Ux8VtTgjSfD/lv20
-	 nnZ6PM+T6ru1Ze3jXs+KtmECgG41WTyzr2I/pwMD+kohpsvQYY3fqhoaaeSM2XbKi
-	 c3bB7dzex/1MK3/UIOjHn8sy1elnnl9dHf2/o+9CG8VYNIeXa8e4LweELh23tzV0h
-	 SZi4yPTkE7yOXPVS3g==
+	b=SMfiST2yianuqJ5MF4pxDeREXegWVMZ39dkjVehOF8VHhZVxyFPiPxBBu9qkJN3G
+	 B1evOGsHiDqnp1yUfc1UGNx+MmfEkch4MVpUa35Ajq/v/ksMh52fX5k0//5rzNCvD
+	 G8axlEODEAeQfojzlw/mp+9y5EKbk6mDS4Y+wwkCcRUE7FJag370UZNT60zaLAHhZ
+	 kxGU3lyviildgxoXSE7iewqIOtrqc5zxGT13Qmp0fCZIj7N2EiPmWLJVN1oKsqkDg
+	 vEGMx8Fkzu/bOpjkW/vj7aaK79/tLwh2qJgQJDMYtZ+zT1kFLiWdjALyUiCwyoMLk
+	 CgVt9luRbPCPKcIz+w==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx105
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1N3siG-1vpARy4Aim-017wF2; Wed, 14
- Jan 2026 21:57:11 +0100
-Message-ID: <12a4bcff-0cd5-4c20-8e15-67d9e6e854b5@gmx.com>
-Date: Thu, 15 Jan 2026 07:27:08 +1030
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M6lpG-1vk0Cy1LBe-000B4r; Wed, 14
+ Jan 2026 22:06:02 +0100
+Message-ID: <2debc9e7-a6d5-4bc4-a85c-052371221300@gmx.com>
+Date: Thu, 15 Jan 2026 07:35:59 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -56,12 +56,12 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: btrfs stopps working when stressed
-To: Aleksandar Gerasimovski <Aleksandar.Gerasimovski@belden.com>,
- "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-References: <SA1PR18MB56922F690C5EC2D85371408B998FA@SA1PR18MB5692.namprd18.prod.outlook.com>
- <f53f9520-9168-49a3-8354-33d90d2ee3e5@gmx.com>
- <SA1PR18MB5692EBE3FFC7694F733E6007998FA@SA1PR18MB5692.namprd18.prod.outlook.com>
+Subject: Re: [PATCH] btrfs: minor improvement on cow_file_range() error
+ handling
+To: Filipe Manana <fdmanana@kernel.org>, Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+References: <179097dcd57ea022d37d97eb0bcc69dcd24243ba.1768356495.git.wqu@suse.com>
+ <CAL3q7H4FbrDYSfwNTDkje4dKY13bosbxJap8u8zM8pUHuqWtAg@mail.gmail.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -88,461 +88,206 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
  +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
  HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <SA1PR18MB5692EBE3FFC7694F733E6007998FA@SA1PR18MB5692.namprd18.prod.outlook.com>
+In-Reply-To: <CAL3q7H4FbrDYSfwNTDkje4dKY13bosbxJap8u8zM8pUHuqWtAg@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:f0qMJBdbu6tFp2tZrnx8xIt+mYHGJyQWBM6o0TCHrk5XW68DYGT
- gVTmZi5msd48Cd/5F7y6IvofWdG34D6Wh0P7cwYsHrTuaVyqmtVeIDKUxpVYhoXvWUsEk4l
- +UvXY9Qxvg0qGjhv7UcTn5yP6YdN1pd77qFQ3kZm/ZeDCxKKgo29D0Ho2HhziEsA8srkZBS
- I/mVlZ9rD1osCFDKFACBw==
+X-Provags-ID: V03:K1:Qf0zMQYXG1oQD1kASBEWuVhZtMw0Gnns09BlmvBvaRWJEl1UVPa
+ Ao06Vd2gXCUlkrheV85QvYafA8KtWpH98q8VdbwWw8yxm0/vwlx6fB7JSG2L34SfdcIpPkC
+ TB/bK8f9/CE/t9ARbsmCyE6tCORaAmhCYqV0GBmFo3onoP9GwB1LbfGevjR8UOkIv1vDLy2
+ EVJO+X1LB69ykaTLf7s/w==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:a6HKcDEO4yE=;ri+l/b8xUFhQYLQXjC4n+bdtVsy
- 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
- RAXGL1gA=
+UI-OutboundReport: notjunk:1;M01:P0:MNiFLVnRqho=;SU4e+urM+KVPePkCynUGcDKW2Ns
+ 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
+ hfxD6GqE=
 
 
 
-=E5=9C=A8 2026/1/15 00:34, Aleksandar Gerasimovski =E5=86=99=E9=81=93:
-> Hi Qu,
+=E5=9C=A8 2026/1/14 22:13, Filipe Manana =E5=86=99=E9=81=93:
+> On Wed, Jan 14, 2026 at 2:08=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
+>>
+>> There are some minor problems related to the error handling of
+>> cow_file_range():
+>>
+>> - The label out_unlock: is not obvious
+>>    In fact we only go that tag for error handling.
+>>
+>> - mapping_set_error() is not always called
+>>    It's only called if we have processed some range.
+>>
+>> Enhance those minor problems by:
+>>
+>> - Rename out_unlock: to error:
+>>    So it's clear we only go there for error handling, not some generic
+>>    handling shared by the common path.
+>>
+>> - Always call mapping_set_error()
+>>    Not hiding it behind certain error pattern nor behind @lock_folio
+>>    parameter, which is always provided for all call sites.
 >=20
-> Many thanks for answering:
+> We don't need to call mapping_set_error() in cow_file_range(), as
+> that's always called in the upper call chain already:
 >=20
-> No, our setup has single device (btrfs output is posted below).
->=20
-> We are on an embedded device so the specific partition with btrfs is 1Gi=
-B, so if you really suggest 10GiB minimum than do we indeed do wrong FS se=
-lection?
+> extent_writepage() -> writepage_delalloc() ->
+> btrfs_run_delalloc_range() -> cow_file_range()
 
-OK, there is a real bug.
+And also in the lower call chain, e.g. cow_one_range() also calls=20
+mapping_set_error().
 
-The problem is, when the failure happened, there are only around 350MiB=20
-utilized, not 1GiB.
+So we can remove those duplicated calls and only rely on the higher=20
+level one.
 
-The metadata over-allocation decision is correct as we should be able to=
-=20
-allocate new metadata chunks.
-
-Thanks,
+Thanks for pointing this out,
 Qu
 
 >=20
-> We could for sure try if mixed-bg improves the robustness.
-> Is this known limitation of the btrfs?
+> Any error returned by cow_file_range() is propagated up to
+> extent_writepage(), which does:
 >=20
-> BTRFS status before the test:
-> ------------------------------------------------------------
-> # btrfs filesystem usage /mnt/data
-> Overall:
->      Device size:                   1.00GiB
->      Device allocated:            350.38MiB
->      Device unallocated:          673.62MiB
->      Device missing:                  0.00B
->      Device slack:                    0.00B
->      Used:                         20.80MiB
->      Free (estimated):            885.20MiB      (min: 548.39MiB)
->      Free (statfs, df):           884.20MiB
->      Data ratio:                       1.00
->      Metadata ratio:                   2.00
->      Global reserve:                5.50MiB      (used: 0.00B)
->      Multiple profiles:                  no
+> done:
+>      if (ret < 0)
+>             mapping_set_error(folio->mapping, ret);
 >=20
-> Data,single: Size:232.00MiB, Used:20.43MiB (8.80%)
->     /dev/mmcblk1p9        232.00MiB
->=20
-> Metadata,DUP: Size:51.19MiB, Used:176.00KiB (0.34%)
->     /dev/mmcblk1p9        102.38MiB
->=20
-> System,DUP: Size:8.00MiB, Used:16.00KiB (0.20%)
->     /dev/mmcblk1p9         16.00MiB
->=20
-> Unallocated:
->     /dev/mmcblk1p9        673.62MiB
-> -------------------------------------------------------
->=20
-> ------------------------------------------------------
-> # btrfs filesystem df /mnt/data/
-> Data, single: total=3D232.00MiB, used=3D20.43MiB
-> System, DUP: total=3D8.00MiB, used=3D16.00KiB
-> Metadata, DUP: total=3D51.19MiB, used=3D176.00KiB
-> GlobalReserve, single: total=3D5.50MiB, used=3D0.00B
->=20
-> Running the test:
-> # bonnie++ -d test/ -m NITROC -u 0 -s 256M -r 128M -b
-> Using uid:0, gid:0.
-> Writing a byte at a time...done
-> Writing intelligently...done
-> Rewriting...done
-> Reading a byte at a time...done
-> Reading intelligently...done
-> start 'em...done...done...done...done...done...
-> Create files in sequential order...[  971.162957] BTRFS warning (device =
-mmcblk1p9): Skipping commit of aborted transaction.
-> [  971.170964] ------------[ cut here ]------------
-> [  971.175668] BTRFS: Transaction aborted (error -28)
-> [  971.180579] WARNING: CPU: 2 PID: 845 at /fs/btrfs/transaction.c:2027 =
-btrfs_commit_transaction+0x9ec/0xb34
-> [  971.190238] Modules linked in: omap_rng rng_core mac80211(O) cfg80211=
-(O) firmware_class compat(O)
-> [  971.199251] CPU: 2 UID: 0 PID: 845 Comm: bonnie++ Tainted: G         =
-  O       6.12.62-coreos-cn913x-tiny #1
-> [  971.209161] Tainted: [O]=3DOOT_MODULE
-> [  971.212684] Hardware name: belden nitroc VNX/NetModule CN9131 based N=
-ITROC platform V1, BIOS 2024.10-g97cd8f3422eb 10/01/2024
-> [  971.224059] pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -SSBS BTY=
-PE=3D--)
-> [  971.231082] pc : btrfs_commit_transaction+0x9ec/0xb34
-> [  971.236182] lr : btrfs_commit_transaction+0x9ec/0xb34
-> [  971.241281] sp : ffff8000822a3c70
-> [  971.244628] x29: ffff8000822a3ca0 x28: ffff0001012a3000 x27: ffff0001=
-012a3c9c
-> [  971.251854] x26: ffff0001012a3000 x25: ffff000100432b90 x24: ffff0001=
-00432b90
-> [  971.259076] x23: ffff000100432a78 x22: ffff0001012a3000 x21: ffff0001=
-00432b28
-> [  971.266294] x20: 00000000ffffffe4 x19: ffff0001012e4c00 x18: 00000000=
-0000000a
-> [  971.273513] x17: 0000000000000000 x16: 0000000000000000 x15: ffff8000=
-822a36d0
-> [  971.280732] x14: 0000000000000000 x13: 2938322d20726f72 x12: 72652820=
-64657472
-> [  971.287951] x11: 0000000000000293 x10: ffff800080f0a730 x9 : ffff8000=
-80f62760
-> [  971.295170] x8 : ffff00013f795708 x7 : ffff00013f795708 x6 : ffff0001=
-3f7976f0
-> [  971.302387] x5 : 0000000000000000 x4 : 0000000000000000 x3 : 00000000=
-00000000
-> [  971.309604] x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff0001=
-0f911e00
-> [  971.316821] Call trace:
-> [  971.319298]  btrfs_commit_transaction+0x9ec/0xb34
-> [  971.324051]  btrfs_sync_file+0x43c/0x488
-> [  971.328028]  vfs_fsync_range+0x68/0x84
-> [  971.331833]  vfs_fsync+0x1c/0x28
-> [  971.335108]  do_fsync+0x30/0x58
-> [  971.338296]  __arm64_sys_fsync+0x18/0x28
-> [  971.342272]  invoke_syscall.constprop.0+0x74/0xc8
-> [  971.347034]  do_el0_svc+0x90/0xb0
-> [  971.350396]  el0_svc+0xbc/0x104
-> [  971.353581]  el0t_64_sync_handler+0x84/0x12c
-> [  971.357899]  el0t_64_sync+0x190/0x194
-> [  971.361604] ---[ end trace 0000000000000000 ]---
-> [  971.366654] BTRFS info (device mmcblk1p9 state A): dumping space info=
-:
-> [  971.373230] BTRFS info (device mmcblk1p9 state A): space_info DATA ha=
-s 562245632 free, is not full
-> [  971.382247] BTRFS info (device mmcblk1p9 state A): space_info total=
-=3D583663616, used=3D21417984, pinned=3D0, reserved=3D0, may_use=3D0, read=
-only=3D0 zone_unusable=3D0
-> [  971.396066] BTRFS info (device mmcblk1p9 state A): space_info METADAT=
-A has -5767168 free, is full
-> [  971.404994] BTRFS info (device mmcblk1p9 state A): space_info total=
-=3D53673984, used=3D475136, pinned=3D53116928, reserved=3D16384, may_use=
-=3D5767168, readonly=3D65536 zone_unusable=3D0
-> [  971.420375] BTRFS info (device mmcblk1p9 state A): space_info SYSTEM =
-has 8355840 free, is not full
-> [  971.429389] BTRFS info (device mmcblk1p9 state A): space_info total=
-=3D8388608, used=3D16384, pinned=3D16384, reserved=3D0, may_use=3D0, reado=
-nly=3D0 zone_unusable=3D0
-> [  971.443110] BTRFS info (device mmcblk1p9 state A): global_block_rsv: =
-size 5767168 reserved 5767168
-> [  971.452117] BTRFS info (device mmcblk1p9 state A): trans_block_rsv: s=
-ize 0 reserved 0
-> [  971.459991] BTRFS info (device mmcblk1p9 state A): chunk_block_rsv: s=
-ize 0 reserved 0
-> [  971.467865] BTRFS info (device mmcblk1p9 state A): delayed_block_rsv:=
- size 0 reserved 0
-> [  971.475915] BTRFS info (device mmcblk1p9 state A): delayed_refs_rsv: =
-size 0 reserved 0
-> [  971.483876] BTRFS: error (device mmcblk1p9 state A) in cleanup_transa=
-ction:2027: errno=3D-28 No space left
-> [  971.493414] BTRFS info (device mmcblk1p9 state EA): forced readonly
-> Can't sync directory, turning off dir-sync.
-> Can't create file 000000028fIyc
-> Cleaning up test directory after error.
-> Bonnie: drastic I/O error (rmdir): Read-only file system
-> ------------------------------------------------------------------------
->=20
-> BTRFS status after the failing test:
-> ---------------------------------------------
-> # btrfs filesystem usage /mnt/data
-> Overall:
->      Device size:                   1.00GiB
->      Device allocated:            675.00MiB
->      Device unallocated:          349.00MiB
->      Device missing:                  0.00B
->      Device slack:                    0.00B
->      Used:                         21.36MiB
->      Free (estimated):            885.20MiB      (min: 710.70MiB)
->      Free (statfs, df):           884.20MiB
->      Data ratio:                       1.00
->      Metadata ratio:                   2.00
->      Global reserve:                5.50MiB      (used: 0.00B)
->      Multiple profiles:                  no
->=20
-> Data,single: Size:556.62MiB, Used:20.43MiB (3.67%)
->     /dev/mmcblk1p9        556.62MiB
->=20
-> Metadata,DUP: Size:51.19MiB, Used:464.00KiB (0.89%)
->     /dev/mmcblk1p9        102.38MiB
->=20
-> System,DUP: Size:8.00MiB, Used:16.00KiB (0.20%)
->     /dev/mmcblk1p9         16.00MiB
->=20
-> Unallocated:
->     /dev/mmcblk1p9        349.00MiB
-> -------------------------------------------------
->=20
-> Regards,
-> Aleksandar
->=20
-> From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-> Sent: Wednesday, January 14, 2026 11:06 AM
-> To: Aleksandar Gerasimovski <Aleksandar.Gerasimovski@belden.com>; linux-=
-btrfs@vger.kernel.org
-> Subject: Re: btrfs stopps working when stressed
->=20
-> =E5=9C=A8 2026/1/14 19:=E2=80=8A55, Aleksandar Gerasimovski =E5=86=99=E9=
-=81=93: > Hello everyone, > > I'm looking for a solution for a problem tha=
-t we have with the btrfs. > > We have tried to do some initial investigati=
-on on our side however we have limited
->=20
->=20
->=20
-> =E5=9C=A8 2026/1/14 19:55, Aleksandar Gerasimovski =E5=86=99=E9=81=93:
->> Hello everyone,
->>
->> I'm looking for a solution for a problem that we have with the btrfs.
->>
->> We have tried to do some initial investigation on our side however we h=
-ave limited knowledge and experience in this area.
->> I hope you can give us some pointers how to investigate this further an=
-d in what corners we shall start looking.
->>
->> So, on our products using the btrfs we see that the filesystem sometime=
-s stops working when we stress it with bonnie++ tool.
->> We see the problem with mainstream 6.12 and 6.18 Kernels, our current g=
-uess from the debugging done so far is that
->> we run in kind of a concurrency	and/or scheduling issue were the asynch=
-ron meta data space reclaiming is not executed on time,
->> and this leads to metadata space to not be free up on time for the new =
-data. We can even see that adding a printk trace in a specific
->> point is covering the problem.
->=20
-> Did your setup have multiple devices involved?
->=20
-> If so there is a known bug that slightly unbalanced device size can
-> trick btrfs into it can still over-commit metadata, but it can not in
-> fact and error out at one of the critical path that we can not do
-> anything but aborting the transaction.
->=20
->=20
-> Although even without that specific quirk, it's still known that btrfs
-> has some other problems related to metadata space reservation.
+> Thanks.
 >=20
 >>
->> To reproduce the problem, we run: "bonnie++ -d test/ -m BTRFS -u 0 -s 2=
-56M -r 128M -b"
->> Note that the tested partition is for sure not full we have 800MB space=
- there and we test with 256MB so it's not a space issue.
->=20
-> Unfortunately it's too small for btrfs.
->=20
-> Btrfs has the requirement to strictly split metadata and data space,
-> thus it's possible to let unbalanced metadata and data chunk usage to
-> exhaust one while the other has a lot of free space.
->=20
-> You can consider it as the ext4/xfs inode number limits vs data space
-> usage. One can exhaust all the available inodes way before exhausting
-> the available data.
->=20
-> It's just way worse in btrfs for smaller fses.
->=20
-> [...]
->> [ 174.013001] BTRFS info (device mmcblk0p7 state A): space_info DATA ha=
-s 234418176 free, is not full
->> [ 174.022018] BTRFS info (device mmcblk0p7 state A): space_info total=
-=3D255852544, used=3D21434368, pinned=3D0, reserved=3D0, may_use=3D0, read=
-only=3D0 zone_unusable=3D0
->=20
-> You have only 244MiB of data chunk, which is already tiny for btrfs.
-> The worse part is, there is only 20MiB utilized
->=20
->> [ 174.035829] BTRFS info (device mmcblk0p7 state A): space_info METADAT=
-A has -5767168 free, is full
->> [ 174.044752] BTRFS info (device mmcblk0p7 state A): space_info total=
-=3D53673984, used=3D1146880, pinned=3D52445184, reserved=3D16384, may_use=
-=3D5767168, readonly=3D65536 zone_unusable=3D0
->=20
-> Your metadata is tiny, only less than 52MiB (and will be doubled by the
-> default DUP profile for single dev setup).
->=20
-> This means your fs is only around 350MiB?
->=20
-> This is definitely not a good disk size for btrfs.
->=20
-> My recommendation for any btrfs is at least 10GiB.
->=20
-> This will allow btrfs to use 1Gib chunk stripe size (the max), so that
-> we won't have those tiny metadata blocks, and greatly reduce the problem
-> caused by unbalacned data/metadata.
->=20
->=20
-> But still, flipping RO is not a good behavior, although in such small
-> fs, you may have a better experience using mixed-bg feature, which will
-> let data and metadata share the same block groups, resolving the
-> unbalance problem (but introducing more limits).
->=20
-> Thanks,
-> Qu
->=20
->> [ 174.060221] BTRFS info (device mmcblk0p7 state A): space_info SYSTEM =
-has 8355840 free, is not full
->> [ 174.069252] BTRFS info (device mmcblk0p7 state A): space_info total=
-=3D8388608, used=3D16384, pinned=3D16384, reserved=3D0, may_use=3D0, reado=
-nly=3D0 zone_unusable=3D0
->> [ 174.082979] BTRFS info (device mmcblk0p7 state A): global_block_rsv: =
-size 5767168 reserved 5767168
->> [ 174.091989] BTRFS info (device mmcblk0p7 state A): trans_block_rsv: s=
-ize 0 reserved 0
->> [ 174.099865] BTRFS info (device mmcblk0p7 state A): chunk_block_rsv: s=
-ize 0 reserved 0
->> [ 174.107739] BTRFS info (device mmcblk0p7 state A): delayed_block_rsv:=
- size 0 reserved 0
->> [ 174.115794] BTRFS info (device mmcblk0p7 state A): delayed_refs_rsv: =
-size 0 reserved 0
->> [ 174.123787] BTRFS: error (device mmcblk0p7 state A) in cleanup_transa=
-ction:2027: errno=3D-28 No space left
->> [ 174.133336] BTRFS info (device mmcblk0p7 state EA): forced readonly
->> Can't sync file.
->> Cleaning up test directory after error.
->> Bonnie: drastic I/O error (rmdir): Read-only file system
->> ------------------------------------------------
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>>   fs/btrfs/inode.c | 12 +++++-------
+>>   1 file changed, 5 insertions(+), 7 deletions(-)
 >>
->> Trying to follow the "btrfs_add_bg_to_space_info" that is in "async_rec=
-laim_work" context:
->> -------------------------------------------------
->> @@ -322,15 +322,21 @@ void btrfs_add_bg_to_space_info(struct btrfs_fs_i=
-nfo *info,
->>           struct btrfs_space_info *found;
->>           int factor, index;
+>> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+>> index 67220ed62000..62d43b5bf910 100644
+>> --- a/fs/btrfs/inode.c
+>> +++ b/fs/btrfs/inode.c
+>> @@ -1456,12 +1456,12 @@ static noinline int cow_file_range(struct btrfs=
+_inode *inode,
 >>
->>           factor =3D btrfs_bg_type_to_factor(block_group->flags);
+>>          if (unlikely(btrfs_is_shutdown(fs_info))) {
+>>                  ret =3D -EIO;
+>> -               goto out_unlock;
+>> +               goto error;
+>>          }
 >>
->>           found =3D btrfs_find_space_info(info, block_group->flags);
->>           ASSERT(found);
->>           spin_lock(&found->lock);
->> +       pr_info("%s(%d): %s %lld %lld\n", __func__, __LINE__, space_inf=
-o_flag_to_str(found), found->total_bytes, block_group->length);
->> +       // OK: trigger twice free space is freed at second attempt.
->> +       // METADATA 53673984 6291456
->> +       // ..
->> +       // METADATA 59965440 117440512
->> +
->> +       // KO: triggered one, no space
->> +       // METADATA 53673984 6291456
->> +       // crash...
->> -------------------------------------------------
+>>          if (btrfs_is_free_space_inode(inode)) {
+>>                  ret =3D -EINVAL;
+>> -               goto out_unlock;
+>> +               goto error;
+>>          }
 >>
->> Also maybe interesting to know is that trying to trace (printk) "btrfs_=
-add_bg_to_space_info" influence the reproducibility.
+>>          num_bytes =3D ALIGN(end - start + 1, blocksize);
+>> @@ -1553,7 +1553,7 @@ static noinline int cow_file_range(struct btrfs_i=
+node *inode,
+>>                          ret =3D -ENOSPC;
+>>                  }
+>>                  if (ret < 0)
+>> -                       goto out_unlock;
+>> +                       goto error;
 >>
->> Any hints to resolve this problem are welcome.
+>>                  /* We should not allocate an extent larger than reques=
+ted.*/
+>>                  ASSERT(cur_alloc_size <=3D num_bytes);
+>> @@ -1570,7 +1570,8 @@ static noinline int cow_file_range(struct btrfs_i=
+node *inode,
+>>                  *done_offset =3D end;
+>>          return ret;
 >>
->> Regards,
->> Aleksandar
+>> -out_unlock:
+>> +error:
+>> +       mapping_set_error(inode->vfs_inode.i_mapping, ret);
+>>          /*
+>>           * Now, we have three regions to clean up:
+>>           *
+>> @@ -1593,9 +1594,6 @@ static noinline int cow_file_range(struct btrfs_i=
+node *inode,
+>>                  clear_bits =3D EXTENT_LOCKED | EXTENT_DELALLOC;
+>>                  page_ops =3D PAGE_UNLOCK | PAGE_START_WRITEBACK | PAGE=
+_END_WRITEBACK;
+>>
+>> -               if (!locked_folio)
+>> -                       mapping_set_error(inode->vfs_inode.i_mapping, r=
+et);
+>> -
+>>                  btrfs_cleanup_ordered_extents(inode, orig_start, start=
+ - orig_start);
+>>                  extent_clear_unlock_delalloc(inode, orig_start, start =
+- 1,
+>>                                               locked_folio, NULL, clear=
+_bits, page_ops);
+>> --
+>> 2.52.0
 >>
 >>
->>
->>
->> **********************************************************************
->> DISCLAIMER:
->> Privileged and/or Confidential information may be contained in this mes=
-sage. If you are not the addressee of this message, you may not copy, use =
-or deliver this message to anyone. In such event, you should destroy the m=
-essage and kindly notify the sender by reply e-mail. It is understood that=
- opinions or conclusions that do not relate to the official business of th=
-e company are neither given nor endorsed by the company. Thank You.
->>
->=20
-> **********************************************************************
-> DISCLAIMER:
-> Privileged and/or Confidential information may be contained in this mess=
-age. If you are not the addressee of this message, you may not copy, use o=
-r deliver this message to anyone. In such event, you should destroy the me=
-ssage and kindly notify the sender by reply e-mail. It is understood that =
-opinions or conclusions that do not relate to the official business of the=
- company are neither given nor endorsed by the company. Thank You.
 >=20
 
 
