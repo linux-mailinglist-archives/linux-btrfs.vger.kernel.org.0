@@ -1,231 +1,167 @@
-Return-Path: <linux-btrfs+bounces-20511-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20512-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B6DBD1F585
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Jan 2026 15:16:41 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FC3ED1F865
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Jan 2026 15:45:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id DAD2130915FF
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Jan 2026 14:14:36 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 438F23028F7A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Jan 2026 14:44:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FD7C2D77E5;
-	Wed, 14 Jan 2026 14:14:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 511E62E9749;
+	Wed, 14 Jan 2026 14:44:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ATDvkPvs"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bqQffqvC"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CF4C2D739C
-	for <linux-btrfs@vger.kernel.org>; Wed, 14 Jan 2026 14:14:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55E5F19CC28
+	for <linux-btrfs@vger.kernel.org>; Wed, 14 Jan 2026 14:44:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768400072; cv=none; b=VTEpSRi5O+MxF2EECf2Z8xwgMW8PRRzDd8TmsY+jGIOAKuw1gMVc115QjVDq+FE2D0TJvmMjiDIzp/XES/MAYIkobDvm9gHixVkT2MxJo61S93GSeTAUZ9sADawalfuTn1XwdiFqRnW2UInQR3OlIZvlj3Lg/yOnTfo4fQRhwSU=
+	t=1768401895; cv=none; b=uavRmSckUMPoWNzGmaKClc3qxDvA53tNL82/36sbYr0QDv34bEMJD5bciZaH5tSonhztSfYSMNgzk7QLIlRjDqAPiFAF+ilEC72rZlQYOOMSPklYn6JkYZijbtuBaTd6xPSTg+R0D0OQvXT8Xo3lF+JA1b4dnXw8HxsflQfVoNE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768400072; c=relaxed/simple;
-	bh=EVxOIndNclLVBz66EPG+/56lwGCRWQUQFbefqx9zJEA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Y5kzTQ0/N63bYYmoMCQH4QJKN94H8hYV2JmmaGFKf9FNLqddQm2hk9lCtcslo0qCtI1ED0PVA0E4ubhkCqiIYStBrlh4WxS02hD6LqaM5y4Rva1aUx7etcSpmts3hkg4TBc46qpfZTKLiZICmrTKgbeWYAvKkKozhfXvUE1V6xs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ATDvkPvs; arc=none smtp.client-ip=209.85.208.54
+	s=arc-20240116; t=1768401895; c=relaxed/simple;
+	bh=ZdGn+g3+1OS0nkrvB4E8l23YybK09xBeJh00yNHe9bo=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=Nqf5IJa1c7+rtj8bNpeWbQ5K8QzpaI2GNGAMhGzrsJt50xnh3VPPlp37uxvxKgYV2IU+276ylkeCC9Ki0zvvFytSN/BbBVN26gSxfT8c7YAc6z7b+/NCB3qs/j5jK0jDsq4zOM0qHGk7Ff61O9pRH7te39zePpfIsBjezIZ1c3Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bqQffqvC; arc=none smtp.client-ip=209.85.210.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-65089cebdb4so12198016a12.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 14 Jan 2026 06:14:28 -0800 (PST)
+Received: by mail-ot1-f47.google.com with SMTP id 46e09a7af769-7cdae63171aso6483854a34.1
+        for <linux-btrfs@vger.kernel.org>; Wed, 14 Jan 2026 06:44:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768400067; x=1769004867; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1768401893; x=1769006693; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=LXI/JsxBbKF9LcEy7WQN83dkdhDN53l6d1BjVlfpBx8=;
-        b=ATDvkPvsgMJyP3EIhSx+waeN9em7laMQLBeBB3nIO+P3DLVzV5+OaA+5w7ya7SWhN8
-         wxwHQhvJgPAWmt6bUYWUHbmYg+0uA+NXPZ27hecPI96gQRzBbIIMHPS88+NAz+S2onWh
-         IITOWoxVIC/1im6BVMkfcl6YB9fPp9i7tIlNEeE+z1DHFBYIlBTQXnVMON5eCvNh29i2
-         gui/dtbkxpTqMyfBpOA8f7X1MzRlvBCgmW/njxfFa4ST5kIbk7NQ8bL7m07qTToF/Mmq
-         kPMZz0eQcj4/Yi8GH6Zjk8I6SVs2qWA0kbfAyllVjXHX6l8TuerIvVK9OcJa+huOZOJx
-         fxlw==
+        bh=Tk41miGTpx94qcsuSJtMLlzWI+q+8a0dYgXV36tfo7U=;
+        b=bqQffqvCbWUc7S9qF00nOcg/fNrrUnBauefE97r7GTbzLVqxBKCv20d3puFTioe1ih
+         jtC2CEJHW6BwakAGYG4U0k04cWhlspk+aU0iAjyz4X8K598j6MV9wM7F7MX4/D2F+s1Q
+         hmi/oViOV9S2Mgle5oAXqdhFntcABjbQAhzJhQ2NJdrnbLuvwtaJ97IUeFp3vPtG46X7
+         cx6dNZOv2Bfq6Joa8YXkKkvvJRTcs9VohHKsv4n9CIJCC6NDjKNGTp9y5DEqA50Nayfw
+         KvbvIACqBG1RHQlRLE46ubkrkm/6hKBtcqk/u2d/LkKj1DvHD3MvJBEbx+Qp5zr/JE9F
+         FizA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768400067; x=1769004867;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+        d=1e100.net; s=20230601; t=1768401893; x=1769006693;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=LXI/JsxBbKF9LcEy7WQN83dkdhDN53l6d1BjVlfpBx8=;
-        b=mrgc1VYYdBFfK3Uv+gqlhiUAPwmh9zeiZU2kvI7kfDlsX3j9kItsQhkS9hIIGA9rDW
-         SCowLSSFe3odXOEJsaWT1dMuRGbghA+JlzB1gT5ZpdDFhk7ayZh2HUqYinTSNMOZ+w18
-         nTQMVdBuRZjOAco66e3VhPeEw4r0aVE1CLOZfbMZbOEYVeNlLSvY/HHNaUx4++4YhuMs
-         Y74yNxliL6/CnA2pxso/3a40PrwlYeVu4nEhoOZ8dMYqWiirhZP/eax/bR8h/erkv/Zz
-         tvDVGQXwbQKXRnZJs3T3mGsGGZHQqo2eP6sOxGlPTIc4hWNCXgf5ui0/fYy/wdLmdoYi
-         bcgg==
-X-Forwarded-Encrypted: i=1; AJvYcCXXDc7CSTe2XCLw9fl9/plfxHIO0mINxJ/3BKVqeYde0oLqCbwEcAmA+REcS0g9nJxIdxKpbGwQOcCWCg==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx4/P46arKZ/4+Bex6acRF3xzpt2tyzZOmLmQnQE94RwNtNrmpH
-	gTfM8V9YvZ19i8N5q1aUGflIM5+9ZFww5Md2E2IkMBhnySWMUgmqY4vxPYM35gwxO99yqF8teU+
-	HGCvlVyI0Un/50Yec4YuFLibJK5x3wHw=
-X-Gm-Gg: AY/fxX4pjY5oaGojfD+n3yOqOiG0FRBKxWhAtNkkMP+8SwZNZrpJATN34cFNpUXhMyP
-	c5KrjmRQMHrxS0Y/heU9tFmvVAj4H9NX8g1SJtbcKbGwFAnikzDYJfTvboMclaIeAw8DDnoaRPV
-	L4hctzInI/8Q2RwogADWh8posVJ8uiTxvAbLpHBYl8I5bLQsx9RPB01O/Q26zReGmjVNF7R0R5i
-	Ayz1/H5I23ScT6CK+0oO35EJoenf5+WHuC3RTAKo4b3l52qRrB3JqGV2pz505Pfu+UsAC5Onbji
-	Cc2CEz17Yqo37UIxz7kbVJrqcqIhXQ==
-X-Received: by 2002:a05:6402:210c:b0:64b:42a6:3946 with SMTP id
- 4fb4d7f45d1cf-653ec10b2c1mr2391600a12.7.1768400066360; Wed, 14 Jan 2026
- 06:14:26 -0800 (PST)
+        bh=Tk41miGTpx94qcsuSJtMLlzWI+q+8a0dYgXV36tfo7U=;
+        b=rxBxAP2mK7wdC96/8jQ2sPuYeRtIHCnEUj1UKCOyoP3iOGr9IkBWtTQd8Z7kSSpLHP
+         mMqJq1ff7DJX6X4ddRooBg2GaPP+tWmwaScsLsyTlHRG3EKt8Go5qwOM7wHLyhsV8vBr
+         mLJ0OdOOFELyfLAuzt6BpKLcAO5OOq7qrTijFxMN2hkWyJgVPq3fEzhfO59nBka5gl+f
+         6rwRk1BQw3Jzsn8Lc/AFX7K4jIJPOopPsCkh1r2unZY2ob+Hu8td85pdmudd5flw1sl2
+         sJ2EDimHRXTyEt4rOoMdL6mhlmHcrqGb3jxiVqPmNTJ3BBlnlsrGoTrrIWd56eGMLogd
+         OMGA==
+X-Forwarded-Encrypted: i=1; AJvYcCXDLw4qxGl1I4Lt6q5hoOxmUqsvwz4MjqWj0IdaHXqA42LPRDqr/h5oZ9Mw/2KPqGwUFh9D1nBvvQ7reA==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy/aUTPk4Scq76RYOplN8ON4oqUhYX8w1cauDS0Uae2Zy0XtWrB
+	HaHAmKLRmAZAB5jq17vP1/RZtKy10F7kDS4hQLDU39VhCoNmOIeaClgq
+X-Gm-Gg: AY/fxX4APUmUd/AHj5Ob0TIr82UYpzU4hUW9C/XdjfONvkqNb8z2Z7x6OrKxcZ1yk1P
+	O5tjkOz0YFkS6LnmOew3x2P/DdjR4bFf8JPM0fMSuBJEl4QxMkpiwJ012ZtmNCWmbTgQZ84jVw6
+	D7Abu7ugNI8Dc4HpenxlTObssa4iS5+7xYdplWEtypcgPdWXwjZm8ck8CIG3NktHnuEGUlHpSRL
+	8wA3u85Yl+gIGW+NzuPaWpHvk+pXTcF9o8Kb9+WJz2MVR7mmYHdYMMJtwJrffwCat4mZCSljBQp
+	7v6HOuRiWOttao2yXK+z758aWXgaA8AQC59JRXuRKKMOuf6MHqaLFYmv/L40HJy8MO3wKinChbC
+	UzAgFTXpy28P6aksovv/J9QPa7e1SDHaOHewnzuYptjBuno0Ba3egJKy4k5ZB9yxARSWv757jOA
+	aHMt3xu/nTE27PofzVLpoDeNuFpVyEZ4IfB97ZepCURzc=
+X-Received: by 2002:a05:6808:d4d:b0:453:77d6:1784 with SMTP id 5614622812f47-45c7153d1aamr1775376b6e.33.1768401893309;
+        Wed, 14 Jan 2026 06:44:53 -0800 (PST)
+Received: from newman.cs.purdue.edu ([128.10.127.250])
+        by smtp.gmail.com with ESMTPSA id 5614622812f47-45a5e1b1285sm11015763b6e.8.2026.01.14.06.44.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Jan 2026 06:44:52 -0800 (PST)
+From: Jiasheng Jiang <jiashengjiangcool@gmail.com>
+To: naohiro.aota@wdc.com
+Cc: boris@bur.io,
+	clm@fb.com,
+	dsterba@suse.com,
+	jiashengjiangcool@gmail.com,
+	linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v3] btrfs: zoned: remove redundant space_info lock and variable in do_allocation_zoned
+Date: Wed, 14 Jan 2026 14:44:50 +0000
+Message-Id: <20260114144450.48776-1-jiashengjiangcool@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <DFOC3S5F0LN3.158CDRO798GJ8@wdc.com>
+References: <DFOC3S5F0LN3.158CDRO798GJ8@wdc.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <8af369636c32b868f83669c49aea708ca3b894ac.camel@kernel.org>
- <CAOQ4uxgD+Sgbbg9K2U0SF9TyUOBb==Z6auShUWc4FfPaDCQ=rg@mail.gmail.com>
- <ec78bf021fa1f6243798945943541ba171e337e7.camel@kernel.org>
- <cb5d2da6-2090-4639-ad96-138342bba56d@oracle.com> <ce700ee20834631eceededc8cd15fc5d00fee28e.camel@kernel.org>
- <20260113-mondlicht-raven-82fc4eb70e9d@brauner> <aWZcoyQLvbJKUxDU@infradead.org>
- <ce418800f06aa61a7f47f0d19394988f87a3da07.camel@kernel.org>
- <aWc3mwBNs8LNFN4W@infradead.org> <CAOQ4uxhMjitW_DC9WK9eku51gE1Ft+ENhD=qq3uehwrHO=RByA@mail.gmail.com>
- <aWeUv2UUJ_NdgozS@infradead.org> <c40862cd65a059ad45fa88f5473722ea5c5f70a5.camel@kernel.org>
-In-Reply-To: <c40862cd65a059ad45fa88f5473722ea5c5f70a5.camel@kernel.org>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Wed, 14 Jan 2026 15:14:13 +0100
-X-Gm-Features: AZwV_QgcgdaBnds1gv_V4-TD2P8OEmx8uWYCKQoKmrAoITMmwNZxXsYhEeLI48A
-Message-ID: <CAOQ4uxhDwR7dteLaqURX+9CooGM1hA7PL6KnVmSwX11ZdKxZTA@mail.gmail.com>
-Subject: Re: [PATCH 00/24] vfs: require filesystems to explicitly opt-in to
- lease support
-To: Jeff Layton <jlayton@kernel.org>
-Cc: Christoph Hellwig <hch@infradead.org>, Christian Brauner <brauner@kernel.org>, 
-	Chuck Lever <chuck.lever@oracle.com>, Jan Kara <jack@suse.cz>, 
-	Luis de Bethencourt <luisbg@kernel.org>, Salah Triki <salah.triki@gmail.com>, 
-	Nicolas Pitre <nico@fluxnic.net>, Anders Larsen <al@alarsen.net>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, David Sterba <dsterba@suse.com>, Chris Mason <clm@fb.com>, 
-	Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>, Yue Hu <zbestahu@gmail.com>, 
-	Jeffle Xu <jefflexu@linux.alibaba.com>, Sandeep Dhavale <dhavale@google.com>, 
-	Hongbo Li <lihongbo22@huawei.com>, Chunhai Guo <guochunhai@vivo.com>, Jan Kara <jack@suse.com>, 
-	"Theodore Ts'o" <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>, 
-	Jaegeuk Kim <jaegeuk@kernel.org>, OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>, 
-	David Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>, Dave Kleikamp <shaggy@kernel.org>, 
-	Ryusuke Konishi <konishi.ryusuke@gmail.com>, Viacheslav Dubeyko <slava@dubeyko.com>, 
-	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>, Mark Fasheh <mark@fasheh.com>, 
-	Joel Becker <jlbec@evilplan.org>, Joseph Qi <joseph.qi@linux.alibaba.com>, 
-	Mike Marshall <hubcap@omnibond.com>, Martin Brandenburg <martin@omnibond.com>, 
-	Miklos Szeredi <miklos@szeredi.hu>, Phillip Lougher <phillip@squashfs.org.uk>, 
-	Carlos Maiolino <cem@kernel.org>, Hugh Dickins <hughd@google.com>, 
-	Baolin Wang <baolin.wang@linux.alibaba.com>, Andrew Morton <akpm@linux-foundation.org>, 
-	Namjae Jeon <linkinjeon@kernel.org>, Sungjong Seo <sj1557.seo@samsung.com>, 
-	Yuezhang Mo <yuezhang.mo@sony.com>, Alexander Aring <alex.aring@gmail.com>, 
-	Andreas Gruenbacher <agruenba@redhat.com>, Jonathan Corbet <corbet@lwn.net>, 
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>, Eric Van Hensbergen <ericvh@kernel.org>, 
-	Latchesar Ionkov <lucho@ionkov.net>, Dominique Martinet <asmadeus@codewreck.org>, 
-	Christian Schoenebeck <linux_oss@crudebyte.com>, Xiubo Li <xiubli@redhat.com>, 
-	Ilya Dryomov <idryomov@gmail.com>, Trond Myklebust <trondmy@kernel.org>, 
-	Anna Schumaker <anna@kernel.org>, Steve French <sfrench@samba.org>, Paulo Alcantara <pc@manguebit.org>, 
-	Ronnie Sahlberg <ronniesahlberg@gmail.com>, Shyam Prasad N <sprasad@microsoft.com>, 
-	Tom Talpey <tom@talpey.com>, Bharath SM <bharathsm@microsoft.com>, 
-	Hans de Goede <hansg@kernel.org>, linux-kernel@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org, 
-	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org, 
-	linux-f2fs-devel@lists.sourceforge.net, linux-mtd@lists.infradead.org, 
-	jfs-discussion@lists.sourceforge.net, linux-nilfs@vger.kernel.org, 
-	ntfs3@lists.linux.dev, ocfs2-devel@lists.linux.dev, devel@lists.orangefs.org, 
-	linux-unionfs@vger.kernel.org, linux-xfs@vger.kernel.org, linux-mm@kvack.org, 
-	gfs2@lists.linux.dev, linux-doc@vger.kernel.org, v9fs@lists.linux.dev, 
-	ceph-devel@vger.kernel.org, linux-nfs@vger.kernel.org, 
-	linux-cifs@vger.kernel.org, samba-technical@lists.samba.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jan 14, 2026 at 2:41=E2=80=AFPM Jeff Layton <jlayton@kernel.org> wr=
-ote:
->
-> On Wed, 2026-01-14 at 05:06 -0800, Christoph Hellwig wrote:
-> > On Wed, Jan 14, 2026 at 10:34:04AM +0100, Amir Goldstein wrote:
-> > > On Wed, Jan 14, 2026 at 7:28=E2=80=AFAM Christoph Hellwig <hch@infrad=
-ead.org> wrote:
-> > > >
-> > > > On Tue, Jan 13, 2026 at 12:06:42PM -0500, Jeff Layton wrote:
-> > > > > Fair point, but it's not that hard to conceive of a situation whe=
-re
-> > > > > someone inadvertantly exports cgroupfs or some similar filesystem=
-:
-> > > >
-> > > > Sure.  But how is this worse than accidentally exporting private da=
-ta
-> > > > or any other misconfiguration?
-> > > >
-> > >
-> > > My POV is that it is less about security (as your question implies), =
-and
-> > > more about correctness.
-> >
-> > I was just replying to Jeff.
-> >
-> > > The special thing about NFS export, as opposed to, say, ksmbd, is
-> > > open by file handle, IOW, the export_operations.
-> > >
-> > > I perceive this as a very strange and undesired situation when NFS
-> > > file handles do not behave as persistent file handles.
-> >
-> > That is not just very strange, but actually broken (discounting the
-> > obscure volatile file handles features not implemented in Linux NFS
-> > and NFSD).  And the export ops always worked under the assumption
-> > that these file handles are indeed persistent.  If they're not we
-> > do have a problem.
-> >
-> > >
-> > > cgroupfs, pidfs, nsfs, all gained open_by_handle_at() capability for
-> > > a known reason, which was NOT NFS export.
-> > >
-> > > If the author of open_by_handle_at() support (i.e. brauner) does not
-> > > wish to imply that those fs should be exported to NFS, why object?
-> >
-> > Because "want to export" is a stupid category.
-> >
-> > OTOH "NFS exporting doesn't actually properly work because someone
-> > overloaded export_ops with different semantics" is a valid category.
-> >
->
-> cgroupfs definitely doesn't behave as expected when exported via NFS.
-> The files aren't readable, at least. I'd also be surprised if the
-> filehandles were stable across a reboot, which is sort of necessary for
-> proper operation. I didn't test writing, but who knows whether that
-> might also just not work, crash the box, or do something else entirely.
->
-> I imagine this is the case for all sorts of filesystems like /proc,
-> /sys, etc. Those aren't exportable today (to my knowledge), but we're
-> growing export_operations across a wide range of fs's these days.
->
-> I'd prefer that we require someone to take the deliberate step to say
-> "yes, allow nfsd to access this type of filesystem".
->
-> > > We could have the opt-in/out of NFS export fixes per EXPORT_OP_
-> > > flags and we could even think of allowing admin to make this decision
-> > > per vfsmount (e.g. for cgroupfs).
-> > >
-> > > In any case, I fail to see how objecting to the possibility of NFS ex=
-port
-> > > opt-out serves anyone.
-> >
-> > You're still think of it the wrong way.  If we do have file systems
-> > that break the original exportfs semantics we need to fix that, and
-> > something like a "stable handles" flag will work well for that.  But
-> > a totally arbitrary "is exportable" flag is total nonsense.
->
+In do_allocation_zoned(), the code acquires space_info->lock before
+block_group->lock. However, the critical section does not access or
+modify any members of the space_info structure. Thus, the lock is
+redundant as it provides no necessary synchronization here.
 
-Very well then.
-How about EXPORT_OP_PERSISTENT_HANDLES?
+This change simplifies the locking logic and aligns the function with
+other zoned paths, such as __btrfs_add_free_space_zoned(), which only
+rely on block_group->lock. Since the 'space_info' local variable is
+no longer used after removing the lock calls, it is also removed.
 
-This terminology is from the NFS protocol spec and it is also used
-to describe the same trait in SMB protocol.
+Removing this unnecessary lock reduces contention on the global
+space_info lock, improving concurrency in the zoned allocation path.
 
-> The problem there is that we very much do want to keep tmpfs
-> exportable, but it doesn't have stable handles (per-se).
+Signed-off-by: Jiasheng Jiang <jiashengjiangcool@gmail.com>
+---
+Changelog:
 
-Thinking out loud -
-It would be misguided to declare tmpfs as
-EXPORT_OP_PERSISTENT_HANDLES
-and regressing exports of tmpfs will surely not go unnoticed.
+v2 -> v3:
 
-How about adding an exportfs option "persistent_handles",
-use it as default IFF neither options fsid=3D, uuid=3D are used,
-so that at least when exporting tmpfs, exportfs -v will show
-"no_persistent_handles" explicitly?
+1. Removed the description about the 'space_info->lock' in the comment block above do_allocation_zoned().
 
-Thanks,
-Amir.
+v1 -> v2:
+
+1. Removed the description about avoiding deadlocks.
+---
+ fs/btrfs/extent-tree.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
+
+diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+index e4cae34620d1..36b06ee47c1a 100644
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -3824,9 +3824,8 @@ static int do_allocation_clustered(struct btrfs_block_group *block_group,
+  * Lock nesting
+  * ============
+  *
+- * space_info::lock
+- *   block_group::lock
+- *     fs_info::treelog_bg_lock
++ * block_group::lock
++ *   fs_info::treelog_bg_lock
+  */
+ 
+ /*
+@@ -3839,7 +3838,6 @@ static int do_allocation_zoned(struct btrfs_block_group *block_group,
+ 			       struct btrfs_block_group **bg_ret)
+ {
+ 	struct btrfs_fs_info *fs_info = block_group->fs_info;
+-	struct btrfs_space_info *space_info = block_group->space_info;
+ 	struct btrfs_free_space_ctl *ctl = block_group->free_space_ctl;
+ 	u64 start = block_group->start;
+ 	u64 num_bytes = ffe_ctl->num_bytes;
+@@ -3900,7 +3898,6 @@ static int do_allocation_zoned(struct btrfs_block_group *block_group,
+ 		 */
+ 	}
+ 
+-	spin_lock(&space_info->lock);
+ 	spin_lock(&block_group->lock);
+ 	spin_lock(&fs_info->treelog_bg_lock);
+ 	spin_lock(&fs_info->relocation_bg_lock);
+@@ -4002,7 +3999,6 @@ static int do_allocation_zoned(struct btrfs_block_group *block_group,
+ 	spin_unlock(&fs_info->relocation_bg_lock);
+ 	spin_unlock(&fs_info->treelog_bg_lock);
+ 	spin_unlock(&block_group->lock);
+-	spin_unlock(&space_info->lock);
+ 	return ret;
+ }
+ 
+-- 
+2.25.1
+
 
