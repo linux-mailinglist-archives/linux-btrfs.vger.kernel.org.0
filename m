@@ -1,178 +1,245 @@
-Return-Path: <linux-btrfs+bounces-20479-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20480-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE0CDD1C16E
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Jan 2026 03:08:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A598CD1C4AE
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Jan 2026 04:45:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id BB8A430206AD
-	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Jan 2026 02:08:50 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D208330184F8
+	for <lists+linux-btrfs@lfdr.de>; Wed, 14 Jan 2026 03:44:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A68D21D3F6;
-	Wed, 14 Jan 2026 02:08:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F3112DEA87;
+	Wed, 14 Jan 2026 03:44:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="kjBihVLV";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ZTGMjHcq"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M7DH0poN"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-yw1-f195.google.com (mail-yw1-f195.google.com [209.85.128.195])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 965892F3C3D
-	for <linux-btrfs@vger.kernel.org>; Wed, 14 Jan 2026 02:08:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F85A944F
+	for <linux-btrfs@vger.kernel.org>; Wed, 14 Jan 2026 03:44:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768356528; cv=none; b=mKdWpYEnSyQ+OVLctc/ZoUtQEdUOxmeotENmkeVqW43VeHtafHTMw8gJOfs8RAzDe/yI4YHFxD18/+j7gqetGRzK7eBj4Zn5mHslKhi1n7ToX0vjUvrGb2kg/70PBvzQ8eC+4kM6n+87pJpJEEZL201gPq9+oQ2TsbMmlQEJM0I=
+	t=1768362296; cv=none; b=nr6fpkM58WNn2mnXK6GwJT8j+T0Wr8EXMTWDVMgqmYRUEQkUhnmratc35XtoMtHH0o1HCHRmUdmSY3h+7AAVQS/Ik1yz15aWIfMzP+0yyLUGhDqw/dAe5LpietrNry7s6ukQcJ8GMuyFM6l1i0CjgYE2FtPlKII5x2SgfNiVVBQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768356528; c=relaxed/simple;
-	bh=aupGFnwQ3YTOMyuzX6zAaHe3ujPVOd2OmuwPRowOrDY=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=eDv+VWLTE4M7Vd+dwW/6AxbNcIr7rfmc6Y+/YZamtAJ9wgkk8WukG1iU8422MDXsrqFEurWWijCZyTwxv1cltxd72ghQ1192LV4/KbTdTP0NSSQJ9akSysfqg7/i0SVqoIH1Kra8zj5JPvxwBZC7M/ngnqUvHaF1YH/gtT0PchI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=kjBihVLV; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ZTGMjHcq; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id DB5225BCCA
-	for <linux-btrfs@vger.kernel.org>; Wed, 14 Jan 2026 02:08:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1768356519; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=BvK/NbW4wO1NP1OSuBObBH4VZrsiaU1T2nxwongRvww=;
-	b=kjBihVLVfty6B35FPnjMOymSRojcnbBpOQ1guRAPWT9Eb7BU2WlmW2GqeDkvKjzZ5gh/VW
-	Xb8GGJDDk6Bo0SGk/OHegpl3FEDglrFY3TkY/soixfrcejuNHTwhLR/ZlF3I/tyGN8jdsB
-	fBh6C77NCLpJe3K453hk6wPSqlXMm34=
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1768356518; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=BvK/NbW4wO1NP1OSuBObBH4VZrsiaU1T2nxwongRvww=;
-	b=ZTGMjHcq6F6MBPWk+ZJa1PDO+d9o2MQzSxJ8YEP2atpNJqObpPwHZRBbs3wk0ed4K6NuKW
-	a6QZE39UunM6vEX65FFOb3+4HFg5xqsp1H0NaS9Kd6OeTiLwts7KqsTZOvEnDxEiWMBREg
-	iC7O4ISrsxZSrg4n3OX8/mtQpRprzsI=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 159553EA63
-	for <linux-btrfs@vger.kernel.org>; Wed, 14 Jan 2026 02:08:37 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id LxTIMaX6Zmk3bQAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Wed, 14 Jan 2026 02:08:37 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: minor improvement on cow_file_range() error handling
-Date: Wed, 14 Jan 2026 12:38:16 +1030
-Message-ID: <179097dcd57ea022d37d97eb0bcc69dcd24243ba.1768356495.git.wqu@suse.com>
-X-Mailer: git-send-email 2.52.0
+	s=arc-20240116; t=1768362296; c=relaxed/simple;
+	bh=mwJPOedgouBXRnIPcmIeQhjI2m6gWku/P9hoXzOmhGA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jjMTpV2/rVljgXrJVLcNLX/TfGJcvuE/QXlC3bx9OdzR/+AfUzg1iJKbjBOz06+ios24QgeuDs8DFTranbW2oMIqFymNIVm01ufXc1dCg2U8CaSpdQw5KrdXYRUBiHtv3lMhnrtC/GYbZUJ9WSdsGW+Su5gUepkgTs7qUJtX7Eg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M7DH0poN; arc=none smtp.client-ip=209.85.128.195
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f195.google.com with SMTP id 00721157ae682-790b12998beso3889607b3.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 13 Jan 2026 19:44:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1768362294; x=1768967094; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=VlGJmR99c0s/yv+Y4foIQWntcWkq5cfejAvdCCNyLts=;
+        b=M7DH0poNzHr/8K1F2LYOyL1fhbQI4YAvG88XiwvQWJ/CnifBakjvbY13/tAmPjhO4D
+         ktRjUSywnBgZfXl0srnpwpDGUbQaE1o1IpcbVa4EBLwd1r3lLYxw99AtGpGZrrQROf58
+         wZ8tCay/i/fwyMHbHmL0Qjn6SuVTlIrBDBTdlly8w1rr83tBzWbWBGtGYQUXxHr7jEuG
+         ZDF3+5zinPk1T6H/q/yNEc8i68GkKLxI5vvFTr5vc4F/jEWpDBKLGqYw60/8NA9usOv1
+         dXH/WtGb/RA7qAHtReZzprmaQlCJTiB867x/hMILsRDPqsJ18FDMlmq8GeH9V8t782MX
+         SP9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1768362294; x=1768967094;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VlGJmR99c0s/yv+Y4foIQWntcWkq5cfejAvdCCNyLts=;
+        b=jhYV0YMfq8yCUKuBlpT51RmXlXF09lGT5MJ7rvaX+TdyivJqC2q4Mw6G0TufdV8idg
+         m5pZqfm1NCKJ8CpKlJUakrgmoyU7kTERYT1TZzjxl0tYpZBmRJW2systxy7k/HT7d4L1
+         XPijPD1AlAKF+p3ShLTxFm0KyWvfNZN2nlS9uaYz1DTh9b1iL/Rx84xHuCZo4Odq3H6S
+         biYbCUfTL/W/buf7ulza5FHRR6apPq2b/GSIfWcjH6hDAZ7zCPsu5NjNcNWN+p8KWrRf
+         TiUz027wUQIygbkMG1gljP0JfpEVrrN0PajprVm7KhRvx3HpvhQIQagYaSNQvmnQ1sPM
+         zmuw==
+X-Gm-Message-State: AOJu0YzCSqzz1GJC0GHaP/IRlnoKhasB3sgVycZuDZ/5EcR4eHlaxc6h
+	Iy57gONlpN73XnmMsqCcyUKZMCju1rQOZ3SeRQSdqyRMEZrRfMDJ2MDet3XzENndm5EKFg==
+X-Gm-Gg: AY/fxX7/f65pO0wtcC70Z1lNqUTmuB6iutS70aWhX7meQB9LcTEI+riUZMZX0N7HsXY
+	BfwI5eHxz+5/Kz4rWu13xVlRZDjr+AuZAT1QahqXoADyR4Ah9zb5+eJ4CwFl+7xMCCcX7CO2Ygj
+	TdODHvK3HDPiyJ1PqBTZcuJi1ra4+cG0FKo8ecgfMGxeI9G4L7PGX1ycJM04CW0fyWFUS8q0Rb6
+	03aMqm3tHoA4DbjqThOZSLufj92pS+IGp45NLVpJsaMrEGZdLutUuow87fCM0TCr7b1FREVEd4B
+	P+ZzDGAZv5G3leCO2wWVA7Yul3PYHW6Pnbpe85z7g9dRxWQgK0G4VdHonOZKw+0hrjm/fCRjuoO
+	w3DUND0+rjhC18dUd/dVGVaAopafNRxFTYc8M2VTidkPUL+lsewZT5fvKyW4EsLAX+ZI1slk3W2
+	dvypVpEwhvHikKFw3FsaYtS47ZXA==
+X-Received: by 2002:a05:690c:f03:b0:78f:dbdd:6546 with SMTP id 00721157ae682-793a1d6f591mr9688637b3.5.1768362294267;
+        Tue, 13 Jan 2026 19:44:54 -0800 (PST)
+Received: from [192.168.1.13] ([103.173.155.177])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-790aa6dcd4asm87165167b3.52.2026.01.13.19.44.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 13 Jan 2026 19:44:53 -0800 (PST)
+Message-ID: <e4b8626d-160f-4f28-a4dc-c803e2d5823f@gmail.com>
+Date: Wed, 14 Jan 2026 11:44:49 +0800
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/2] btrfs: fix periodic reclaim condition
+To: Boris Burkov <boris@bur.io>
+Cc: linux-btrfs@vger.kernel.org
+References: <20260113060935.21814-2-sunk67188@gmail.com>
+ <20260113060935.21814-3-sunk67188@gmail.com>
+ <20260113183204.GD972704@zen.localdomain>
+Content-Language: en-US
+From: Sun Yangkai <sunk67188@gmail.com>
+In-Reply-To: <20260113183204.GD972704@zen.localdomain>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-0.999];
-	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_NONE(0.00)[];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	RCVD_TLS_ALL(0.00)[]
-X-Spam-Flag: NO
-X-Spam-Score: -2.80
-X-Spam-Level: 
 
-There are some minor problems related to the error handling of
-cow_file_range():
 
-- The label out_unlock: is not obvious
-  In fact we only go that tag for error handling.
 
-- mapping_set_error() is not always called
-  It's only called if we have processed some range.
+在 2026/1/14 02:32, Boris Burkov 写道:
+> On Tue, Jan 13, 2026 at 12:07:04PM +0800, Sun YangKai wrote:
+>> Problems with current implementation:
+>> 1. reclaimable_bytes is signed while chunk_sz is unsigned, causing
+>>    negative reclaimable_bytes to trigger reclaim unexpectedly
+>> 2. The "space must be freed between scans" assumption breaks the
+>>    two-scan requirement: first scan marks block groups, second scan
+>>    reclaims them. Without the second scan, no reclamation occurs.
+>>
+>> Instead, track actual reclaim progress: pause reclaim when block groups
+>> will be reclaimed, and resume only when progress is made. This ensures
+>> reclaim continues until no further progress can be made. And resume
+>> perioidc reclaim  when there's enough free space.
+>>
+>> Suggested-by: Boris Burkov <boris@bur.io>
+>> Fixes: 813d4c6422516 ("btrfs: prevent pathological periodic reclaim loops")
+> 
+> Made a small inline suggestion, but you can add
+> Reviewed-by: Boris Burkov <boris@bur.io>
+> 
+>> Signed-off-by: Sun YangKai <sunk67188@gmail.com>
+>> ---
+>>  fs/btrfs/block-group.c |  6 +++++-
+>>  fs/btrfs/space-info.c  | 21 ++++++++++++---------
+>>  2 files changed, 17 insertions(+), 10 deletions(-)
+>>
+>> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+>> index e417aba4c4c7..f0945a799aed 100644
+>> --- a/fs/btrfs/block-group.c
+>> +++ b/fs/btrfs/block-group.c
+>> @@ -1871,6 +1871,7 @@ void btrfs_reclaim_bgs_work(struct work_struct *work)
+>>  	while (!list_empty(&fs_info->reclaim_bgs)) {
+>>  		u64 used;
+>>  		u64 reserved;
+>> +		u64 old_total;
+>>  		int ret = 0;
+>>  
+>>  		bg = list_first_entry(&fs_info->reclaim_bgs,
+>> @@ -1936,6 +1937,7 @@ void btrfs_reclaim_bgs_work(struct work_struct *work)
+>>  		}
+>>  
+>>  		spin_unlock(&bg->lock);
+>> +		old_total = space_info->total_bytes;
+>>  		spin_unlock(&space_info->lock);
+>>  
+>>  		/*
+>> @@ -1989,13 +1991,15 @@ void btrfs_reclaim_bgs_work(struct work_struct *work)
+>>  			spin_lock(&space_info->lock);
+>>  			space_info->reclaim_errors++;
+>>  			if (READ_ONCE(space_info->periodic_reclaim))
+>> -				space_info->periodic_reclaim_ready = false;
+>> +				btrfs_set_periodic_reclaim_ready(space_info, false);
+> 
+> I think it probably makes more sense to remove this one entirely, since
+> it's already false from the sweep, then only set it true if we succeed
+> and the total_bytes goes down.
 
-Enhance those minor problems by:
+Yes, that makes a lot of sense. Thanks a lot.
 
-- Rename out_unlock: to error:
-  So it's clear we only go there for error handling, not some generic
-  handling shared by the common path.
-
-- Always call mapping_set_error()
-  Not hiding it behind certain error pattern nor behind @lock_folio
-  parameter, which is always provided for all call sites.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/inode.c | 12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
-
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 67220ed62000..62d43b5bf910 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -1456,12 +1456,12 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
- 
- 	if (unlikely(btrfs_is_shutdown(fs_info))) {
- 		ret = -EIO;
--		goto out_unlock;
-+		goto error;
- 	}
- 
- 	if (btrfs_is_free_space_inode(inode)) {
- 		ret = -EINVAL;
--		goto out_unlock;
-+		goto error;
- 	}
- 
- 	num_bytes = ALIGN(end - start + 1, blocksize);
-@@ -1553,7 +1553,7 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
- 			ret = -ENOSPC;
- 		}
- 		if (ret < 0)
--			goto out_unlock;
-+			goto error;
- 
- 		/* We should not allocate an extent larger than requested.*/
- 		ASSERT(cur_alloc_size <= num_bytes);
-@@ -1570,7 +1570,8 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
- 		*done_offset = end;
- 	return ret;
- 
--out_unlock:
-+error:
-+	mapping_set_error(inode->vfs_inode.i_mapping, ret);
- 	/*
- 	 * Now, we have three regions to clean up:
- 	 *
-@@ -1593,9 +1594,6 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
- 		clear_bits = EXTENT_LOCKED | EXTENT_DELALLOC;
- 		page_ops = PAGE_UNLOCK | PAGE_START_WRITEBACK | PAGE_END_WRITEBACK;
- 
--		if (!locked_folio)
--			mapping_set_error(inode->vfs_inode.i_mapping, ret);
--
- 		btrfs_cleanup_ordered_extents(inode, orig_start, start - orig_start);
- 		extent_clear_unlock_delalloc(inode, orig_start, start - 1,
- 					     locked_folio, NULL, clear_bits, page_ops);
--- 
-2.52.0
+>>  			spin_unlock(&space_info->lock);
+>>  		}
+>>  		spin_lock(&space_info->lock);
+>>  		space_info->reclaim_count++;
+>>  		space_info->reclaim_bytes += used;
+>>  		space_info->reclaim_bytes += reserved;
+>> +		if (space_info->total_bytes < old_total)
+>> +			btrfs_set_periodic_reclaim_ready(space_info, true);
+>>  		spin_unlock(&space_info->lock);
+>>  
+>>  next:
+>> diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+>> index 7b7b7255f7d8..7d2386ea86c5 100644
+>> --- a/fs/btrfs/space-info.c
+>> +++ b/fs/btrfs/space-info.c
+>> @@ -2079,11 +2079,11 @@ static bool is_reclaim_urgent(struct btrfs_space_info *space_info)
+>>  	return unalloc < data_chunk_size;
+>>  }
+>>  
+>> -static void do_reclaim_sweep(struct btrfs_space_info *space_info, int raid)
+>> +static bool do_reclaim_sweep(struct btrfs_space_info *space_info, int raid)
+>>  {
+>>  	struct btrfs_block_group *bg;
+>>  	int thresh_pct;
+>> -	bool try_again = true;
+>> +	bool will_reclaim = false;
+>>  	bool urgent;
+>>  
+>>  	spin_lock(&space_info->lock);
+>> @@ -2101,7 +2101,7 @@ static void do_reclaim_sweep(struct btrfs_space_info *space_info, int raid)
+>>  		spin_lock(&bg->lock);
+>>  		thresh = mult_perc(bg->length, thresh_pct);
+>>  		if (bg->used < thresh && bg->reclaim_mark) {
+>> -			try_again = false;
+>> +			will_reclaim = true;
+>>  			reclaim = true;
+>>  		}
+>>  		bg->reclaim_mark++;
+>> @@ -2118,12 +2118,13 @@ static void do_reclaim_sweep(struct btrfs_space_info *space_info, int raid)
+>>  	 * If we have any staler groups, we don't touch the fresher ones, but if we
+>>  	 * really need a block group, do take a fresh one.
+>>  	 */
+>> -	if (try_again && urgent) {
+>> -		try_again = false;
+>> +	if (!will_reclaim && urgent) {
+>> +		urgent = false;
+>>  		goto again;
+>>  	}
+>>  
+>>  	up_read(&space_info->groups_sem);
+>> +	return will_reclaim;
+>>  }
+>>  
+>>  void btrfs_space_info_update_reclaimable(struct btrfs_space_info *space_info, s64 bytes)
+>> @@ -2133,7 +2134,8 @@ void btrfs_space_info_update_reclaimable(struct btrfs_space_info *space_info, s6
+>>  	lockdep_assert_held(&space_info->lock);
+>>  	space_info->reclaimable_bytes += bytes;
+>>  
+>> -	if (space_info->reclaimable_bytes >= chunk_sz)
+>> +	if (space_info->reclaimable_bytes > 0 &&
+>> +	    space_info->reclaimable_bytes >= chunk_sz)
+>>  		btrfs_set_periodic_reclaim_ready(space_info, true);
+>>  }
+>>  
+>> @@ -2160,7 +2162,6 @@ static bool btrfs_should_periodic_reclaim(struct btrfs_space_info *space_info)
+>>  
+>>  	spin_lock(&space_info->lock);
+>>  	ret = space_info->periodic_reclaim_ready;
+>> -	btrfs_set_periodic_reclaim_ready(space_info, false);
+>>  	spin_unlock(&space_info->lock);
+>>  
+>>  	return ret;
+>> @@ -2174,8 +2175,10 @@ void btrfs_reclaim_sweep(const struct btrfs_fs_info *fs_info)
+>>  	list_for_each_entry(space_info, &fs_info->space_info, list) {
+>>  		if (!btrfs_should_periodic_reclaim(space_info))
+>>  			continue;
+>> -		for (raid = 0; raid < BTRFS_NR_RAID_TYPES; raid++)
+>> -			do_reclaim_sweep(space_info, raid);
+>> +		for (raid = 0; raid < BTRFS_NR_RAID_TYPES; raid++) {
+>> +			if (do_reclaim_sweep(space_info, raid))
+>> +				btrfs_set_periodic_reclaim_ready(space_info, false);
+>> +		}
+>>  	}
+>>  }
+>>  
+>> -- 
+>> 2.52.0
+>>
 
 
