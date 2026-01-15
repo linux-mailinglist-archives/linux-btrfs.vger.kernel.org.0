@@ -1,110 +1,181 @@
-Return-Path: <linux-btrfs+bounces-20544-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20545-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12FEAD25981
-	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Jan 2026 17:07:11 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4409AD259E2
+	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Jan 2026 17:10:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 0026B30262A9
-	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Jan 2026 16:03:37 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id BF9153047029
+	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Jan 2026 16:08:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDEC830F54B;
-	Thu, 15 Jan 2026 16:03:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE8783BC4D6;
+	Thu, 15 Jan 2026 16:07:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=gooddata.com header.i=@gooddata.com header.b="PYawOAWM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VxkV/2AH"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-dl1-f46.google.com (mail-dl1-f46.google.com [74.125.82.46])
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com [209.85.221.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B37D92C0F68
-	for <linux-btrfs@vger.kernel.org>; Thu, 15 Jan 2026 16:03:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A7283B8BA8
+	for <linux-btrfs@vger.kernel.org>; Thu, 15 Jan 2026 16:07:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768493012; cv=none; b=ECJp3OMBoUagsnCIXpwzVGjg5RrSa+JagqNvNnaO061Rg/EuCjBRpfoXMF1D+g6QPyuZAnbHLY9qHMbpUnQxQSL+ibjTG01+kr+oEkEn2PRXK40bdtNFfdtExyAHgM2wLkQPTlv9agcRB78LhypgBCRmo7APo3k9Vpcvf2BeRNE=
+	t=1768493262; cv=none; b=IGFx/7Ry3YvdMcsxuoUPBdrky2wHkr2+1NGUMvEHsnMG2XBio5RuBW6adyVA1i9XmIotWUmb2lo8QfMZVj7ImFpoqr7VM+fXpWOtmvfZV5UflGRnzExa5MnXzgAfM8Xdil+fksZn2pw7xR35VQZQovi34wmWvVEk551ALBFM3qA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768493012; c=relaxed/simple;
-	bh=mBxML9gOhhwyXXGjIjDgrKEVP5kaCpj/ZTMAbIzibdo=;
+	s=arc-20240116; t=1768493262; c=relaxed/simple;
+	bh=x596PaRllNdpIS5h9hbxK5VONKk86ckOfrPn2xRuoYU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NDdMqxZdH1uCGDCVUmXwZzJv35LIO1T2IWmF8EDYO5ZeOCXLCTGTe+bbQFgNDopmQ93YmWd3UKxUZo1t0p6gG5NYEJqJ3MEX2n98CBtT/QIlTfy3PM8CQH1+WjchLmkgNPjcurOFBCWHUxyZu1tKlJlDNS2SFW+OuNuvlKqFXUc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gooddata.com; spf=pass smtp.mailfrom=gooddata.com; dkim=pass (1024-bit key) header.d=gooddata.com header.i=@gooddata.com header.b=PYawOAWM; arc=none smtp.client-ip=74.125.82.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gooddata.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gooddata.com
-Received: by mail-dl1-f46.google.com with SMTP id a92af1059eb24-1232d9f25e9so1903748c88.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 15 Jan 2026 08:03:30 -0800 (PST)
+	 To:Cc:Content-Type; b=rI9giCEYQYwck2BY2ZDgPjcLis62EBx9ftl2636t5amExlpdDIlDnC4N2JzFPecgEFtp3hIj3/61bpWL3LjLEVe+QnLqxPkAqg6gCiJmiCgHroe4Iqtc1iwO+qCURsNA1zIc8x6H5xZft4pNfmvoUtOAxj34+J+LZqnbmbZPUzs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VxkV/2AH; arc=none smtp.client-ip=209.85.221.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f43.google.com with SMTP id ffacd0b85a97d-42fb6ce71c7so968261f8f.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 15 Jan 2026 08:07:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gooddata.com; s=google; t=1768493010; x=1769097810; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1768493256; x=1769098056; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=mBxML9gOhhwyXXGjIjDgrKEVP5kaCpj/ZTMAbIzibdo=;
-        b=PYawOAWMNE0dPNb07NTklf+jvAt7X266wczCvFfsJBGLhubyMgZnx2nm8CKn6pZvsR
-         HN6gPAPOpgBNzccaZZGeokdhbMTEJBv55U94JjEMzzPhy6GdCPnfea+XoRlpKNVJtLql
-         YBBTiR5Bwbt08u9Ak3g66gZ4ZBIbUG9Ax7j4Q=
+        bh=bL4KgiUjakccFp8GDyIgH1rXwphyq4QxNLCwr+nqA/M=;
+        b=VxkV/2AHa5JQBaAQICa5sas+eHcjykHVbERA704p8HnhoB2mMgb2rXtLkj//IoI3AC
+         btn2Bo5JoPN2LhEwuy2ibPdWaRYrkxUqhWKpHXYu25u25lBKAdozXbYixKpAMtZ02Slu
+         JDCQ+F2JeKsgrI2ECJhZmapjAM6rD1QMf0a1zcDwvvTHhTF/e4Grrujl3C0HJWL/fueg
+         zchtSCwwaxIcmPAZlJqJGfqrQOC37L/Efl7Qg+KF2AnkfZtpGUdhgm+mw96D5jkAgJcR
+         k3Kyx1PWB8XnuzwCmwkhZdLLB5YFkYUOgi1FOGKxlbpnPHLOvuZnm5rPR8enVS/t8dJz
+         t8AA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768493010; x=1769097810;
+        d=1e100.net; s=20230601; t=1768493256; x=1769098056;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=mBxML9gOhhwyXXGjIjDgrKEVP5kaCpj/ZTMAbIzibdo=;
-        b=bF9MXpN28EBD4wdh20hqoZ2CwytnLXGE6sNZF6xB/Z9COGUZiOepyLA0n6YchUv/FZ
-         n4FZNmQKrMIgXGTYDAmrASkkqyahMh10drqGwE09yoMz4/bPsEPjLD+KqcZ+cPVC2iU5
-         Z3ivtOhK6OaaWP+7RUcMFI19LT76aeHsK8JXpzmkDjpmC4VXr/y9V2TL62k09J13udNU
-         ftHkVuULKOs6eE/9T0PrpIgqzVCEpbdEr71GKnHZPzIdnez3Hzb0crMdx9dy4sn/RpCS
-         KYfG98tsFkZhDZ9uA+Ke4yeSaZZkpompcampa8l1Rq617Fzw+38PI4Qv8cVTJcXiLjs5
-         jejQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX1RYCJOQC8C/fq2KTZe3d0+SbdeX6972RMfUZehLM0hQWhvxMumAytz0ZCXD0CBZiGgGcmqZBIycgnKA==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy2FHXUeG3IgvL3zclzTwFwP0owlzT182shVzyg7ndWWlRY4UiN
-	KrAVM2LrrgiRIdTX1sTuI8JvKtEg7xmWqWpqp6U+VjA/CFH94wpVG/DKzFvbVquo7TKpwlLmcyc
-	wcxGdE7Zyr1z2EBn7lZI7+tJjPCKqPKYzzlR1sp3g
-X-Gm-Gg: AY/fxX5kjZ5f/ckdSGFRmixG+7Df5vBppRt2/Na+cZo0IjJBwWhNnUEv7a1HSPcrcyO
-	VGyzRaSRTz67Vjm84txtsJkyXrWQT4+ioaflKSgRDhl6ugOgf1iiCEEVVu4F4t9PAej1kcQO/jw
-	9Ku4qeweWfOCTDmUdoBbalQeh9G+FB00G6xhMHt96eRaVH0NRBsQpD8Vu5GdaKfEFpx/78gjkhp
-	B9NxEYlFrEaS3HmLJmAPnHTtw2acyra6sZPoZgjmlZIKBedj0z5p6ceg9nco65fcFcANCRO
-X-Received: by 2002:a05:7022:2386:b0:11b:9386:8263 with SMTP id
- a92af1059eb24-1244a7b4f5dmr70259c88.48.1768493009398; Thu, 15 Jan 2026
- 08:03:29 -0800 (PST)
+        bh=bL4KgiUjakccFp8GDyIgH1rXwphyq4QxNLCwr+nqA/M=;
+        b=mRy4fAurFfMQT/xMrJG1AX8PuUpdrKIr2NTndahAXm50aVTiPIJ8QV69lBADOgXm7n
+         cimlqzQhIBI4aOQPH4A05wvFMbCYuZCFLar1soYKXCch7ehk5FcXYr5SIppu53T6rPNt
+         3H0Gt7pKzFvugElJs5j1yexLNqDyl9uaNGDAqZXOtlRUB5wQ/j1kyVZ0j/ANzOyki/lf
+         fXiovYIZoXomY/nweAoZDa8quf35Mbl14+I30kDKU1hTAJwXLr9mILCk++1t83zOLDpW
+         B6OYQwKEr8Z8EQCJEGTruwWY7d1oPRTldEWV7xAmKD5mRJ/vYXcB1sNuCuAX91Sj/rzQ
+         6fOg==
+X-Forwarded-Encrypted: i=1; AJvYcCUbYoqDxh+m6fLD/sTD+EPixGzP85mdx9x2LcY30Fr8JHeecsl0KjHL3NCiaRmLMEy5rFtZYRhRf863bg==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx1TnLkmIIQBFWu57IYeXBidyaUFCgCeCYi4IoGwoLUqE2C9LdQ
+	y26RB+ty0cHmAhq2vuMgHcK39nCr5tZ0lO2S9NxObl21hXx54PENceWg5t90mk+H1sW9C4pEaKr
+	A1h7BuSAZBkIHH+kgFV2WeN8DQ6t7yE8=
+X-Gm-Gg: AY/fxX7FjvQnGWtry6YcVBxj0gjAyjf14UhOcreUiXmdcrdXstMlw+4IK2CR9H+mLJO
+	ZpezIuu8z+9rCvdcjMrppWr1DKGIyODyv28T/0mgBBSLJcx6LQdq42j+kNIrk/dxQVLpN9zTHTB
+	EoDrh0ftbsL+W5gGdAvwNqK85Ci/HlkJ74weRsDsEvObe8GCIR+cq9eQLxuRZc4eoAffXG/dMRa
+	T0GARdcagP+onWqPnd4S0kmqs/ooYbF+bKT113H/ButfRGBJFD2DEpCTwUIPuOfqEr/LojUCVyu
+	MEGTBrZiFP6+/YIaOYpa7f3YLpQbog==
+X-Received: by 2002:a05:6000:2303:b0:42f:a025:92b3 with SMTP id
+ ffacd0b85a97d-4342d3895a7mr7282018f8f.2.1768493256065; Thu, 15 Jan 2026
+ 08:07:36 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAK8fFZ6EBcV2p8NRBbKxWQj16yzKVpn1gsobvcpgjz7QDnyxfA@mail.gmail.com>
- <34dc9243-95a2-bb3a-2182-0e6ddf16c3b5@applied-asynchrony.com>
-In-Reply-To: <34dc9243-95a2-bb3a-2182-0e6ddf16c3b5@applied-asynchrony.com>
-From: Jaroslav Pulchart <jaroslav.pulchart@gooddata.com>
-Date: Thu, 15 Jan 2026 17:03:02 +0100
-X-Gm-Features: AZwV_QiDE2LAV0hRi1xI2rCCDxtMk8fOJVHWycdh7gew1yLvwK8A-uAvjnTzP3k
-Message-ID: <CAK8fFZ6uE7iZNb3zjFGZLXZoscB5PgRGXCwXr=6YzYr5v442Wg@mail.gmail.com>
-Subject: Re: btrfs: refcount_t underflow/use-after-free in delayed inode
- update on 6.18.y (works on 6.17.y)
-To: =?UTF-8?Q?Holger_Hoffst=C3=A4tte?= <holger@applied-asynchrony.com>
-Cc: clm@fb.com, dsterba@suse.com, linux-btrfs@vger.kernel.org, 
-	Igor Raits <igor@gooddata.com>, Jan Cipa <jan.cipa@gooddata.com>
+References: <20260114-tonyk-get_disk_uuid-v1-0-e6a319e25d57@igalia.com>
+ <20260114-tonyk-get_disk_uuid-v1-3-e6a319e25d57@igalia.com>
+ <20260114062608.GB10805@lst.de> <5334ebc6-ceee-4262-b477-6b161c5ca704@igalia.com>
+ <20260115062944.GA9590@lst.de> <633bb5f3-4582-416c-b8b9-fd1f3b3452ab@suse.com>
+ <20260115072311.GA10352@lst.de> <22b16e24-d10e-43f6-bc2b-eeaa94310e3a@igalia.com>
+In-Reply-To: <22b16e24-d10e-43f6-bc2b-eeaa94310e3a@igalia.com>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Thu, 15 Jan 2026 17:07:24 +0100
+X-Gm-Features: AZwV_QiiOfVz5MjHOOW7TnQI8q-5ZkSKoahnBApAROcQQgB7iPXfsZHV_rRz004
+Message-ID: <CAOQ4uxhbz7=XT=C3R8XqL0K_o7KwLKsoNwgk=qJGuw2375MTJw@mail.gmail.com>
+Subject: Re: [PATCH 3/3] ovl: Use real disk UUID for origin file handles
+To: =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>
+Cc: Christoph Hellwig <hch@lst.de>, Chuck Lever <chuck.lever@oracle.com>, Jeff Layton <jlayton@kernel.org>, 
+	NeilBrown <neil@brown.name>, Olga Kornievskaia <okorniev@redhat.com>, Dai Ngo <Dai.Ngo@oracle.com>, 
+	Tom Talpey <tom@talpey.com>, Carlos Maiolino <cem@kernel.org>, Chris Mason <clm@fb.com>, 
+	David Sterba <dsterba@suse.com>, Miklos Szeredi <miklos@szeredi.hu>, 
+	Christian Brauner <brauner@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
+	linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org, linux-unionfs@vger.kernel.org, 
+	kernel-dev@igalia.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-=C4=8Dt 15. 1. 2026 v 16:05 odes=C3=ADlatel Holger Hoffst=C3=A4tte
-<holger@applied-asynchrony.com> napsal:
+On Thu, Jan 15, 2026 at 4:42=E2=80=AFPM Andr=C3=A9 Almeida <andrealmeid@iga=
+lia.com> wrote:
 >
-> On 2026-01-15 15:46, Jaroslav Pulchart wrote:
-> > We started to see a kernel regression after rolling out Linux 6.18.y
-> > (vanilla-based) on our fleet. Systems upgraded from 6.17.y and were
-> > stable there. With 6.18.y we see refcount warnings in Btrfs related to
-> > delayed inode updates, followed by a general protection fault and a
-> > kernel panic.
+> Em 15/01/2026 04:23, Christoph Hellwig escreveu:
 >
-> Might be fixed soon by:
+> [...]
 >
-> https://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git/t=
-ree/queue-6.18/btrfs-fix-use-after-free-warning-in-btrfs_get_or_cre.patch
+> >
+> > I still wonder what the use case is here.  Looking at Andr=C3=A9's orig=
+inal
+> > mail it states:
+> >
+> > "However, btrfs mounts may have volatiles UUIDs. When mounting the exac=
+t same
+> > disk image with btrfs, a random UUID is assigned for the following disk=
+s each
+> > time they are mounted, stored at temp_fsid and used across the kernel a=
+s the
+> > disk UUID. `btrfs filesystem show` presents that. Calling statfs() howe=
+ver
+> > shows the original (and duplicated) UUID for all disks."
+> >
+> > and this doesn't even talk about multiple mounts, but looking at
+> > device_list_add it seems to only set the temp_fsid flag when set
+> > same_fsid_diff_dev is set by find_fsid_by_device, which isn't documente=
+d
+> > well, but does indeed seem to be done transparently when two file syste=
+ms
+> > with the same fsid are mounted.
+> >
+> > So Andr=C3=A9, can you confirm this what you're worried about?  And btr=
+fs
+> > developers, I think the main problem is indeed that btrfs simply allows
+> > mounting the same fsid twice.  Which is really fatal for anything using
+> > the fsid/uuid, such NFS exports, mount by fs uuid or any sb->s_uuid use=
+r.
+> >
 >
-> (unless I'm misreading things).
+> Yes, I'm would like to be able to mount two cloned btrfs images and to
+> use overlayfs with them. This is useful for SteamOS A/B partition scheme.
+>
+> >> If so, I think it's time to revert the behavior before it's too late.
+> >> Currently the main usage of such duplicated fsids is for Steam deck to
+> >> maintain A/B partitions, I think they can accept a new compat_ro flag =
+for
+> >> that.
+> >
+> > What's an A/B partition?  And how are these safely used at the same tim=
+e?
+> >
+>
+> The Steam Deck have two main partitions to install SteamOS updates
+> atomically. When you want to update the device, assuming that you are
+> using partition A, the updater will write the new image in partition B,
+> and vice versa. Then after the reboot, the system will mount the new
+> image on B.
+>
 
-Thanks for a tip I will apply all the btrfs patches from the 6.18
-series and give it a try.
+And what do you expect to happen wrt overlayfs when switching from
+image A to B?
 
->
-> cheers
-> Holger
+What are the origin file handles recorded in overlayfs index from image A
+lower worth when the lower image is B?
+
+Is there any guarantee that file handles are relevant and point to the
+same objects?
+
+The whole point of the overlayfs index feature is that overlayfs inodes
+can have a unique id across copy-up.
+
+Please explain in more details exactly which overlayfs setup you are
+trying to do with index feature.
+
+FWIW, the setup you are describing sounds very familiar.
+I am pretty sure that a similar setup with squashfs and OpenWRT [1]
+was the use case to add the uuid=3Doff overlayfs mount options.
+
+Thanks,
+Amir.
+
+[1] https://lore.kernel.org/linux-unionfs/32532923.JtPX5UtSzP@fgdesktop/
 
