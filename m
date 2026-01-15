@@ -1,189 +1,131 @@
-Return-Path: <linux-btrfs+bounces-20530-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20531-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B00FD22A9C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Jan 2026 07:53:25 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C783D22C0B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Jan 2026 08:14:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 949F8309EFB6
-	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Jan 2026 06:51:30 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id EABA0310D9AA
+	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Jan 2026 07:10:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E38730649C;
-	Thu, 15 Jan 2026 06:51:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80FD1326923;
+	Thu, 15 Jan 2026 07:10:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="WiSx3m/m"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="h0SsITSA"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+Received: from mail-pl1-f195.google.com (mail-pl1-f195.google.com [209.85.214.195])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75FA22FB962
-	for <linux-btrfs@vger.kernel.org>; Thu, 15 Jan 2026 06:51:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BE1841C63
+	for <linux-btrfs@vger.kernel.org>; Thu, 15 Jan 2026 07:10:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768459880; cv=none; b=CMgu22d/eME34jAixTBIUICKr1Hlxf/cAumUQjwCXKNyOS+DhT6YV5lU9Ixlm18UdFnCU3+CzQcKzYF/5cxBEoH7/Bx0ew397sqKd+rBK+t7NT/nkSLYD6VZzHXO0rJNju+DvmeefJlVgXXqb0RwBvFixTjXoI+TLLJcgdgTuiM=
+	t=1768461026; cv=none; b=gm/0+xayh13fd7YmddZ2AGZnZZO6Zb3YOYxiG8Dg4yHHb1gRRPYUy0T+UIAuzx8Sf/Dcz4xtHrOdRSDZpc6uMDmQkdo2p67LTluDXHm5PgqHUDc+SgxAEBFDopR3rPcPMxbgUnMDxtXgTImVEeil4ohUGNtNRVsgiuJhupR4HLM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768459880; c=relaxed/simple;
-	bh=Ee1Csys1ksCd9NqlqLh/StQZJWBO6brt7Q3qWHJsC3w=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=C2Wbq1nCmE34Ptnft16x+Vk9Ubn3J4dOuYEssIZuka2ebpe1iTZSYU3Linh0LZ0Jp0N5hSpK/a3/+4s5+lFEn/XPVxm5T/Y1JApOAcsz/WTXBSI1glFCF2iCU0u3nQ0QUiRX94ckuKy9S/SgPsno03531afoI7q3sFLR/tqzdtk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=WiSx3m/m; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-47a95efd2ceso4622675e9.2
-        for <linux-btrfs@vger.kernel.org>; Wed, 14 Jan 2026 22:51:15 -0800 (PST)
+	s=arc-20240116; t=1768461026; c=relaxed/simple;
+	bh=yiMdmTBKRrwqtK8V8o7vN72+HHJoz6mEPihezhkhuUw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KaaODk1YhSSVzkDwvC3Iev77os35DGZTfD/s39TvzTxhIwQjpqwZ26crgTVq0SraB21UnW5Vn/79neYdcKmq5rvWlP80uM52BQ3OQNvi6zTezoVlrQm3jL9wzksg0LDExUPa6Repj9L8H8bnPOk9q1Q+uySESBl+mWVvOKuWsxs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=h0SsITSA; arc=none smtp.client-ip=209.85.214.195
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f195.google.com with SMTP id d9443c01a7336-29f2d829667so1527855ad.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 14 Jan 2026 23:10:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1768459874; x=1769064674; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=T3FkarUmHOcpzKA+PRupkc1htRfHgGL+4ZRaiIQtBPU=;
-        b=WiSx3m/mD9ZePTapn2ZmNDt9+1wftmUx1fC2sE7w8szdtuS7tdMqnshavec/6Bhrk0
-         iW8n8706us5xJQQnt9jvhu5q+IKQnkqCJhKt2tdPh3qntMexPQIg6ZMKsbjbE8W+X/Z+
-         TkOjVIMiCzvGeE38d2Mxm1IyEhNLdPla0MB1tvkGTpaSjaMcwoJ3yck9vXdvo6B6pqDN
-         dJomkIma4tFpx4Cq6oez4JVaeqSWMNk3aVC3Jibcx28JtyiIW7sorigdhhNGN1zMTS9Y
-         FUAIRWFxwyIeZMCr9Yv/Kg6jY17s5WKFurgf054rpyQuVZFLcKePKX7a+c/gZQC3siId
-         934w==
+        d=gmail.com; s=20230601; t=1768461025; x=1769065825; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=CUErBZmRHlr5CluKjhAdKtQYq0291wEaMAaJzHU/k68=;
+        b=h0SsITSAHvD2MTgAFLdEqJtfnscC1CgGFodRi62Mh+vmdE9LpumOzNjDGnu3/IcMQ4
+         B99BnK9pxtGPdAzK7Tp7xpo3yebP1hYR1zZ+Z8KolQ8ijTG+uYCHBbUu36fM60c0zRyJ
+         zMJ8qFIjhEUzmY9id/TDFXA+IilVTT28Wi/zTVsDJtzNnHsz+K87oG96ExQiU5JmJXcA
+         3GB8XOT5R2PJLEWzOghfil0xEmh5KMUvb9Zqgwps5VsnTY55RYIx4HuyK7o3Xz+3V2vS
+         QhrJEcYZ19N3yYu9pod8bcZshJ6FzIVSneuqEp8rhfe9nV1iCrcPjKtdrSGSpJle5epC
+         jH0w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768459874; x=1769064674;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1768461025; x=1769065825;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=T3FkarUmHOcpzKA+PRupkc1htRfHgGL+4ZRaiIQtBPU=;
-        b=mzzCdEEArlyY4JUw79y3tyeY4ha08OFj1WeVnWw/XwJnl3Wg6ogBLKlFYcInpZlXRV
-         rWQqKt+jdxED9MFApIUqmz+VFkvFqRZTGNxB/YPWx1NtROg/URvEMTjiNt3MTH0u6ZBL
-         Jsb3piv9jeVKNINInS1rLDkRnb1xjR6I5UPKF8wHRTVMEMGG4iTjj6Pb5oqJHU/C9mSM
-         gK0bpzTE+sPQ0M7cBUuWMOJnkYmnCgPw2WgSpRCud5VQdIlQ5U4tRFfJNltX4WZUbV8G
-         ONHEjresto/Hg4kMKAwBL4Y9mWsXo/Xs0jKY2klUvgjLEVVauDJBtCV2QQkTUHgAVPy8
-         IeRA==
-X-Forwarded-Encrypted: i=1; AJvYcCWyaQ13QdQ31VfJwbYnQyr+f9c4u5fbhaqYGdWLYKWGeug7FLq+otLN8DiPS4rLgNCUYIlK8kJ2v6BXcw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwU2IA4fVWBXAs1tDW6wWG/JCF8rjy6GlITTmdo5zxmHrApfF3X
-	aSeCwG8rN5gdR4OJsesgFEtysyuTDZA0YmmEbynEGVOcg0ymUK06GcNGeVr3PxgUUAw=
-X-Gm-Gg: AY/fxX4EWw8qLlV45t6SsNFJh0SETYvU7PxsRjWLdnWrr4jsmTnnaGn8tAXTJWEv+SK
-	a0eZCSh/KNranjUL4MEMuy6r6VwBx3kVHyNCplsdtuWj2lmFt7tyhwEAHtBZfI/v/EQd4YVA1I5
-	57O6baAzJkS9MPUYMy6VaTsP2de3MJUkmKLdE0Q0E+wbzuy78rBVzLeZdcAMvPav3VtBYzR1VQL
-	E0JsmWowYbRgm/ujV3piXrO89gbSX3L/o3ioS9h0v9B0TwKR2jODo7cml673gZ4UUkjZCbRpdK1
-	eNrZEH7hbGZu9e8Zveptm8OPAphXJm5mQ8goKThdLsnv6myQfODdzIAgNI3ehRn3jiQArYqri1N
-	7dLgSCVrev9X5eCgHKTRH+daRkf0GGhCigtvbExQJwQCKIlQfCLqfO006BkqzErCvikEcVOZQ0w
-	iw9q7PLskZPyRQ2aIG/Sm2F6soPqoPPW5+gqmKOvw=
-X-Received: by 2002:a05:600c:8715:b0:477:b0b9:3129 with SMTP id 5b1f17b1804b1-47ee47bbaaamr46123415e9.3.1768459873888;
-        Wed, 14 Jan 2026 22:51:13 -0800 (PST)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-81f8e653a83sm1457718b3a.36.2026.01.14.22.51.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 14 Jan 2026 22:51:13 -0800 (PST)
-Message-ID: <633bb5f3-4582-416c-b8b9-fd1f3b3452ab@suse.com>
-Date: Thu, 15 Jan 2026 17:21:04 +1030
+        bh=CUErBZmRHlr5CluKjhAdKtQYq0291wEaMAaJzHU/k68=;
+        b=CMG7FrhhANHnsyXdAlVn2jNqMYJySo9YBLZQtHP14S6Z0VrlA1Cbs8pUzbgLbOGo2j
+         xj00qFxT2G/QgtTLOVU9CaSvwX0y61h/Nqx67ojclkGBf/4Mv6Ks1rZouLvEcfVcpbxf
+         WlpSYrAFEo2+MzWdyEyo+2kp9wfr8t738wvOV6fzYGi49GyJUooIHq31bW9wk/WbGuKy
+         og7rPQfYuoq8X+NGL3Oo+4JPfMocttzXbq77+FWW8fWxBHEfXqzwmixdSoEzIeukvhLR
+         0dhkjWwj3K6xLgikkpzx2EWjqSaXbVTykj3+IFgtRkcgEroI+Vn0YtdD/N7HHrjQsSqx
+         t9RQ==
+X-Gm-Message-State: AOJu0YwoqbKxnsKyM/KkBVGS+9XJxcXQL7FCRhAk5Va6MMRWljLKjvAg
+	MQ3S6lV1axv36Rn01QMgRB5oDQ1QbNs22kMLFUmhCppDRCM7M2cthTdOe5M8vcF87RRkTA==
+X-Gm-Gg: AY/fxX6NX2p5trC974Fk/ehP1VlKPCmK7Spmvta5FqflznaagwGwBKacmfp2GXAUve7
+	i2CiCvS1Y0jUi0HyaK/F2wTmzxdYGr5BRbgLboxHISoMng2rSW4Mrp35RPYOUnuDISn4HzTyZ7+
+	b00sRK47Jf9QHwxy0tsPbZyzoR+Lwe7LJTD8RJC2+8k0W3vk5XPg72M+zf7AH9asu84g4Ne7YFj
+	xtRLc7IMZaP0yfKSbItUHrF/REH/V0+Yn3nVzQrSUAG7Gqcl2Te3nr+4SYX3k0xkmVlHP9xU4Gv
+	SL8IiQ8SIR52ePWr27UBCqy3r8P1jigfJPpuvHePOOBvNQZVeNILWJ1VrXQBHo5TqJZIQgTEY2n
+	JF+89cx69Iaf7UvanhymUnBw3EE/LUe6sKJsMYXAcMM8skEW07hJol6eLO9qYL2dIJEZaFcdp6u
+	yePF+PNvUm/3VkpaRAckV1
+X-Received: by 2002:a05:6a00:198a:b0:81f:43f2:786a with SMTP id d2e1a72fcca58-81f81b17416mr3938655b3a.0.1768461024847;
+        Wed, 14 Jan 2026 23:10:24 -0800 (PST)
+Received: from SaltyKitkat ([45.144.167.102])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-81f8e6a728asm1522119b3a.62.2026.01.14.23.10.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 14 Jan 2026 23:10:24 -0800 (PST)
+From: Sun YangKai <sunk67188@gmail.com>
+To: linux-btrfs@vger.kernel.org
+Cc: Sun YangKai <sunk67188@gmail.com>
+Subject: [PATCH] btrfs: cleanup node balancing condition for balance_level()
+Date: Thu, 15 Jan 2026 15:09:58 +0800
+Message-ID: <20260115071006.15012-1-sunk67188@gmail.com>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/3] ovl: Use real disk UUID for origin file handles
-To: Christoph Hellwig <hch@lst.de>, =?UTF-8?Q?Andr=C3=A9_Almeida?=
- <andrealmeid@igalia.com>
-Cc: Chuck Lever <chuck.lever@oracle.com>, Jeff Layton <jlayton@kernel.org>,
- NeilBrown <neil@brown.name>, Olga Kornievskaia <okorniev@redhat.com>,
- Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
- Carlos Maiolino <cem@kernel.org>, Amir Goldstein <amir73il@gmail.com>,
- Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
- Miklos Szeredi <miklos@szeredi.hu>, Christian Brauner <brauner@kernel.org>,
- Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
- linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-btrfs@vger.kernel.org, linux-unionfs@vger.kernel.org,
- kernel-dev@igalia.com
-References: <20260114-tonyk-get_disk_uuid-v1-0-e6a319e25d57@igalia.com>
- <20260114-tonyk-get_disk_uuid-v1-3-e6a319e25d57@igalia.com>
- <20260114062608.GB10805@lst.de>
- <5334ebc6-ceee-4262-b477-6b161c5ca704@igalia.com>
- <20260115062944.GA9590@lst.de>
-Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <20260115062944.GA9590@lst.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
+Commit cfbb9308463f ("Btrfs: balance btree more often") intended to
+trigger node balancing when node utilization drops below 50% (capacity/2)
+by modifying the condition in setup_nodes_for_search(), which is the only
+caller of balance_level(). However, an undetected early return condition
+in balance_level() prevented this behavior and the change has never
+worked as expected.
 
+Since we're fine with the 25% threshold for years, remove the early
+return and keep the old threshold.
 
-在 2026/1/15 16:59, Christoph Hellwig 写道:
-> On Wed, Jan 14, 2026 at 01:17:15PM -0300, André Almeida wrote:
->> Em 14/01/2026 03:26, Christoph Hellwig escreveu:
->>> On Wed, Jan 14, 2026 at 01:31:43AM -0300, André Almeida wrote:
->>>> Some filesystem, like btrfs, supports mounting cloned images, but assign
->>>> random UUIDs for them to avoid conflicts. This breaks overlayfs "index"
->>>> check, given that every time the same image is mounted, it get's
->>>> assigned a new UUID.
->>>
->>> ... and the fix is to not assign random uuid, but to assign a new uuid
->>> to the cloned image that is persisted.  That might need a new field
->>> to distintguish the stamped into the format uuid from the visible
->>> uuid like the xfs metauuid, but not hacks like this.
->>>
->>
->> How can I create this non random and persisting UUID? I was thinking of
->> doing some operation on top the original UUID, like a circular shift, some
->> sort of rearrangement of the original value that we can always reproduce.
->> Is this in the right direction do you think?
-> 
-> Just allocate an entirely new uuid?  That's what XFS did with the
-> metadata uuid (persistent and stapted into all metadata headers) vs
-> user visible uuid that can be changed.
+No functional change intended.
 
-So that means let btrfs to convert the temp fsid into metadata uuid, 
-which I think is fine.
+Signed-off-by: Sun YangKai <sunk67188@gmail.com>
+---
+ fs/btrfs/ctree.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-But the problem is that will change the fsid of the new fs, which may or 
-may not be what's expected for the current temp fsid user (they really 
-want two btrfs with the same fsid).
+diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+index 7267b2502665..48e1ef594517 100644
+--- a/fs/btrfs/ctree.c
++++ b/fs/btrfs/ctree.c
+@@ -960,9 +960,6 @@ static noinline int balance_level(struct btrfs_trans_handle *trans,
+ 
+ 		return promote_child_to_root(trans, root, path, level, mid);
+ 	}
+-	if (btrfs_header_nritems(mid) >
+-	    BTRFS_NODEPTRS_PER_BLOCK(fs_info) / 4)
+-		return 0;
+ 
+ 	if (pslot) {
+ 		left = btrfs_read_node_slot(parent, pslot - 1);
+@@ -1646,8 +1643,8 @@ setup_nodes_for_search(struct btrfs_trans_handle *trans,
+ 		ret = split_node(trans, root, p, level);
+ 
+ 		b = p->nodes[level];
+-	} else if (ins_len < 0 && btrfs_header_nritems(b) <
+-		   BTRFS_NODEPTRS_PER_BLOCK(fs_info) / 2) {
++	} else if (ins_len < 0 && btrfs_header_nritems(b) <=
++		   BTRFS_NODEPTRS_PER_BLOCK(fs_info) / 4) {
+ 
+ 		if (*write_lock_level < level + 1) {
+ 			*write_lock_level = level + 1;
+-- 
+2.52.0
 
-
-My initial idea for this problem is to let btrfs not generate a tempfsid 
-automatically, but put some special flag (e.g. SINGLE_DEV compat ro 
-flag) on those fses that want duplicated fsid.
-
-Then for those SINGLE_DEV fses, disable any multi-device related 
-features, and use their dev_t to distinguish different fses just like 
-EXT4/XFS, without bothering the current tempfsid hack, and just return 
-the same fsid.
-
-Unfortunately that idea is not accepted and the current automatic new 
-tempfsid solution is merged.
-
-I'm wondering will that behavior (returning the same fsid) be acceptable 
-for overlayfs?
-
-If so, I think it's time to revert the behavior before it's too late.
-Currently the main usage of such duplicated fsids is for Steam deck to 
-maintain A/B partitions, I think they can accept a new compat_ro flag 
-for that.
-
-Thanks,
-Qu
 
