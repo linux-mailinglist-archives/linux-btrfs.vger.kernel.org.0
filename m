@@ -1,93 +1,93 @@
-Return-Path: <linux-btrfs+bounces-20579-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20585-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47B81D27F4A
-	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Jan 2026 20:11:16 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41C7FD27F7D
+	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Jan 2026 20:14:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 9B20630F5F8C
-	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Jan 2026 18:18:07 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id B778C30011A5
+	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Jan 2026 19:14:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6F4C3C008E;
-	Thu, 15 Jan 2026 18:17:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FA1C378D96;
+	Thu, 15 Jan 2026 19:14:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JRqy9Oiq"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eDvYdYL0"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62AD62F619D
-	for <linux-btrfs@vger.kernel.org>; Thu, 15 Jan 2026 18:17:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C82963A4AB7
+	for <linux-btrfs@vger.kernel.org>; Thu, 15 Jan 2026 19:14:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.128.45
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768501070; cv=pass; b=Y6zl241tVXUHW7H9ol5aNICCMGl2TkSRy20PKU1YacTdq7syUx6YrmO9tA6P45JuoHT7GnCchCu4l7+HR5/pGPAFz325Ezg3Um5v3ThdRektMhDWjhsHRTKbAaOpEbTB4KigCiC/BIxCOhzMlseWjIiPqFTFLnKwTqiYe1MZK4M=
+	t=1768504464; cv=pass; b=YSOu812trdL36d2coxfgSxZYUg4CJmgYgy0goVr65ado27Yz5qwO0J91HpjSdwS2BBhPRnv8YwupaoRXNhZIxPeNhgOZCOW+ApA8Lz38j10nIyG/nw7UVbpBZxYKhHCwia3zn5QanMZjHjf+Gd+hLGZwmLRaps9xFfz78bw3lgo=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768501070; c=relaxed/simple;
-	bh=lrPbqnzgCOvE5NgsFSOuHcaOEuIUQeGDqGbHFIodw8A=;
+	s=arc-20240116; t=1768504464; c=relaxed/simple;
+	bh=bpVL1RB5I8PR85y4mxEedr9T/Q0DYVA2jeDelSaqSc8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=n2lwoU82V071XbC7vbtit8lye8o4ELPpNcWxh1CBkvSZO75elLWZ3qRMfwqSFCvgAFxj9Uan1TByqewt8VlAUFTdK99SaE9nD/iXLslg+t0UMLixNMOi9wL6kFURI3fQziVqmdgBBAxXDaOCeP02JKM+PPWKGaErvAKRm9hPU44=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JRqy9Oiq; arc=pass smtp.client-ip=209.85.208.48
+	 To:Cc:Content-Type; b=fIup8lgMjVk/tjAViHvzHnKUPdDxusg6VaZAr9ksv+oeDQVJJL3n2gor7DaIwRycHhXauew9uNRWgd+OKKQkcFOIzezECIkRgr6QJIeS5K21mRv1DnhWSZNifuxKynLQ/ABqpOPidKhiigvCXpRepo2Tvlct7mVKxa1PKP4pU0Y=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eDvYdYL0; arc=pass smtp.client-ip=209.85.128.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-64ba9a00b5aso1741336a12.2
-        for <linux-btrfs@vger.kernel.org>; Thu, 15 Jan 2026 10:17:48 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1768501067; cv=none;
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-47ee974e230so11957185e9.2
+        for <linux-btrfs@vger.kernel.org>; Thu, 15 Jan 2026 11:14:22 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1768504461; cv=none;
         d=google.com; s=arc-20240605;
-        b=JQs16MbMl9Hs0Ct1iTlgSneEudmutmprxFaEzWugHxbk8YqbCnYtS1pKCT5rXzWvX+
-         tPy3Sv7Ppbe0pRjRz+46+OD5cDKAA+pS5m/0qNc9PSefq4mVbwvZ2XCoT/3rjC3gmaRi
-         XYqhy/f50OZyIC8+VE3zVXrNi3kRA4PHQ0mq7jlqCxbvw2jns/Hw6glWwEeALu5GOjNw
-         frqZkSz/Ik6FVRDzuX/Yl77GmYhP8jBpsCA0XAQPULQuDRlzTXfdAf9hC0OU74XQ4kmP
-         sWc2JvdJrMKGOK6bkqKbZQYF17tSFPOENtRMBhK+2j6ACZXFIcuRMbb8MseAm6oMsmyU
-         Kdbw==
+        b=kBaOAmTUhsi1o+/uLiOMYEcVKUi5PXoDCEnKGerwv0+IcBxVorxgGFZHGhsHv/5Arv
+         1bVn+DOTUXUtxAIsh82JIPa0Z6l/cXnpzsr6tfHeSzr4o9aIN4v7Phv+GTtZTbnUVqmC
+         2xHErABHl6NvhbTeIbhdtTeeW0laXqp9XORk1110cjxaZjzWkUeyRGEWhsIrAr9vGe2D
+         e9+I6zYqNRg2/6HwdSG2eJjaumnDddR/+VurrksFnePD88khR2iwBLmytmCVnY4jAkqZ
+         SVxRMr7tCQMhqtiZt2CUPLFWIjuhjWEQvkoV6h1aWOfF100yoUGjKneiRGinerNXNc47
+         Xeuw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:dkim-signature;
-        bh=lrPbqnzgCOvE5NgsFSOuHcaOEuIUQeGDqGbHFIodw8A=;
-        fh=2/a5TOiiX0sV1P6vbtAkBnjCvkTD6bl6+G0WHL6aejs=;
-        b=cN2mbIUNzaA3lV5FKvNNkAkBSzZm42bI/cg0E3zb9/dOG1/B35abg6QWr8+pcgNocA
-         MnHv4rAWJY2WTe/hNsPl82JXuDnvbtvHozGkYxjKC7O0DUgnPthsbCF7TPRzc9KBdyjs
-         OlgH7thBn5KP9PB8XVViPhR8/26m876qEqR3SzsY2BwwJTIjhLFeRm1/GNOT7JgMz7QQ
-         gOyvV7eqIx2I5QU4HXaLhgvAI4f5FeHNXI7zA2u3YllKy9PWCuVK+7ChTFatXjLXpaf3
-         J4fbbKJrZ64eMCGMdga28QrDACQ/t61OaUpMPVwT6lfZ7GiYwJVudkFvs6viojM43PS8
-         7QQA==;
+        bh=bpVL1RB5I8PR85y4mxEedr9T/Q0DYVA2jeDelSaqSc8=;
+        fh=rixRNR9r08IAQeElUD6S/MFHR/3jndgEVTlHFnkUf5s=;
+        b=FtwRcwpQ6CnRIwhXnq6JckMTzCMxf9MsqEhvoLZ6AKiyMNewE5KU7T7ejH86KvRckQ
+         A/h1feXkDKliALw2Yi9+IXPlZ7UdJr/92lR7pdKBzoAEl71JQy0AH+bcu3EpeWojCObJ
+         bXN8Uq00BvAiNolGiLO4FGPquOGa4DVlTPsFy2vbQX5UqirA9l3JKgB0SFSrCI2aG9GF
+         9+PX30qDrk0z3L+CO0kczCEI36Ght6TzVft1h/YkjFtKilhj1gjjnIDpv4Cgfh9VOCqQ
+         M7C6YeVew0gClwJC1W7zGEfu0CfwToFynkxJp142aiV7x7f8KeABf7fLWRTT9Aw7u/JK
+         rwHQ==;
         darn=vger.kernel.org
 ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768501067; x=1769105867; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1768504461; x=1769109261; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=lrPbqnzgCOvE5NgsFSOuHcaOEuIUQeGDqGbHFIodw8A=;
-        b=JRqy9OiqbHt3NQq3XCkGStTAlcxglCMEMq+vkPdztBR4c+MkrffxyXlppZJ7bL4sv3
-         +FXHo4WCeS6ifCEJXW+UdjZqdayxLi0mNMYJfj32IOulawR+3uE9C6Ut2x3X5eVTlY8+
-         6iRo29sMNevgrrtfjtiRzEF0k4plHYlK2kgxZb4KZPdGjfbpVgT/wXn6hxIwTOtPADbq
-         2v6VOk25RJEEoHnf4r5a+RfNediJCsI/4TTnPiMJgJQLHdyofqjBzPnr34u+fCoLT989
-         FV5CVbIQ4AFknrnsxqTVaClS78Bq+9klbvidUC90tZ/EK9JmXeohHKVG3ipODkA8GlnY
-         LSvg==
+        bh=bpVL1RB5I8PR85y4mxEedr9T/Q0DYVA2jeDelSaqSc8=;
+        b=eDvYdYL0yZ6SV5I85cBjsgP/sNA1X8xt4pIFzkPf14WQU8PWsnFTZbFP0w7gvj2vKR
+         su7k/MnvLCToRHyNtBK2Ctyl74xxKbrSK0oilR42ZtVbwVIidcOzpn6LGa+m0L219bov
+         LPfgSseqpVZriPFbBElJW4XsMxajo2fDIMAOwj69wq2QZXSx760mtGmSS7iSQT2OVYn3
+         nHlQxi2/qPexhK3NToOklsvBJV74vyrx0cnd0+iL4bB9t8TovQ8oOPh4KgdANp7Ff4FW
+         lIM5A0H6dpndNCHyHgWetB48LZIZV1yGHzsBBYn5Vz8YNJFWL/CrTlVVBJyKHRkqqpd9
+         IUPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768501067; x=1769105867;
+        d=1e100.net; s=20230601; t=1768504461; x=1769109261;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=lrPbqnzgCOvE5NgsFSOuHcaOEuIUQeGDqGbHFIodw8A=;
-        b=TWg75CE8xkN0AnEEbM9wWMJnCBbC/9L+oM9ct0GhOgeuDU4dcwBX+6Tb7khku0BzmA
-         iOh9xO7BXRNgyvsdv3j4Uos3xjznPd4DY7lfyNsnl2FOTcz+O3EPMwnHy6guU8+oufUJ
-         VM/+41zpjsA1aUd8e9SMNemg88FiQIULhSVxmTTvJ5a/Iz2kb12dJLnTze/x0fDQZmrP
-         baMwqdg4XlpNU+Bjl2yOJ7Nk8gOEvhpRWf7xrrippMzxw/WiyIGnzESmngrBAfs4x5m+
-         IBuoVk5xl7jPKTzbyOp7xlId5VRzidf/FtjPruM8V4Cwu/DJESf94K7PZw02n+M0eKOb
-         PK5g==
-X-Forwarded-Encrypted: i=1; AJvYcCWgjK8V79VuGx9olWSYNX7zqmeHIlGFnNJGdOaZa6qN89Z7Dq90ww6lHcrAgKELEdlOqmt/4koR24a2/Q==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzceSo9NawTRGsAmJMI8JFEddb+02QMhOa4mZHoGmPXrZMJKI2A
-	e1O4EE891eNejNBvNoVwnJ2G5XcCSMOEl4fz1LyHBnQKLOgWqCkRyTyrj+5RjVnIqPvlsemA2rQ
-	W1Io5f5knFXmLwPaPjbzLysenCWtkmkI=
-X-Gm-Gg: AY/fxX64Ps8VcElfgo6d11w6GXwSokOsjlBS/A5+nW+23C1zLmv98TipDlyGL5YJheU
-	GYubHalz/Gu69/Zyjll6yb9pAzWvXw85bqhKrrAE9KnQAas+PWLlQjyqxqlKTLzXhba2U4thZNX
-	6BMonGvCofZocUO7OES1trov3VKZ85jMFXPR9oMAxg7mam3vM0gbwq5HA2FOwnHpvitAZdJcOzO
-	ZeWtTEspTLyuOkgFSwW/AcBwwFCY4wKad0+wnZjNKQW/1B7xrLuMVcapV0tLF8FqC7O9wM42XfM
-	pmwSeo6eha9QT6AvoeGa3CCSK6G1aQ==
-X-Received: by 2002:a05:6402:510f:b0:64b:7eba:39ed with SMTP id
- 4fb4d7f45d1cf-654525ccad4mr346097a12.13.1768501066374; Thu, 15 Jan 2026
- 10:17:46 -0800 (PST)
+        bh=bpVL1RB5I8PR85y4mxEedr9T/Q0DYVA2jeDelSaqSc8=;
+        b=Fcb+viqy2saNYYwfibrCnR+bK9OkqDx/c8OnnNjDkDXYpfmLXTJfdNLgID8ZwBPCsV
+         k6JQw/hfLwhktJYg+WZ+mfwu1xX9UN2KX1RDbT8nxiEp5f9qFj3O/U+mCvHmSg4dWPV+
+         nMu5qwAw3x9cRx2gNKReeWn9LgrAn48S45ZUqayGJCM26ZsJ/0fHe/8MamTzZNx720V1
+         OuCPxXZwyi47nyHdmzC6JUL367iZr83/bkewI805h80+Ry9qQbXDwzzTdBgyvuedtqIp
+         jZjgaE9R0ktSZPJpNCt0l/fAC4zHP8Aii45+f58GrFSmYS9mJymHEXkB1iXtVEFByndM
+         XsLg==
+X-Forwarded-Encrypted: i=1; AJvYcCVa1LwPlfUa35WXD/QlmPxOvKDAPUTfW9ZrfNQq8hB7PqKa9oTFpoND/s9Klk+JOcwn+bZVpLGblA69/A==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzDBxbRQqBKY8BFFGjQ7hTBHMtFm0oxDE/F2zpKpGqIAYOymbh1
+	itvq08uZRV1C2bReGxEaqjb4DW5pDzZUrHp1rmOdfQGUUHBS/XsjI6lQ2jidvGkN8AbnVUfKT1F
+	mLqPoEdLcqSKPpvqez0dAufTEseMsDmo=
+X-Gm-Gg: AY/fxX6DgGDAq6lTRPa4ZqGpLT9j9myv4HtXZwTzvXsup0R8wKvsJM9Ws4FZhYmzRpP
+	Gg0DKJ/+PD1DdkB3555THZedUK7di0BoF2heUpyHGgDOY9m5oOng40eQVyz2zPONiaACdfO+azX
+	AcFABrmKbGDJEfpL0tmM/a0s0MWzmT85Nj62gsWk0hPfAOJh2JnTc41+pjtdrIR5p6gJpjLD7Sv
+	sJXoRRhLuZuO3O3TKlVqFL4Tg0MUcl4u8ontGCtjX0IpkaSFLKmVRAqoqn7UDfjpbU1R9+J9Lr9
+	HK5+Vi5gtRtG/TujKiTq/vrRbm7Ylw==
+X-Received: by 2002:a05:600c:5487:b0:46f:d682:3c3d with SMTP id
+ 5b1f17b1804b1-4801e30d482mr9929055e9.13.1768504460920; Thu, 15 Jan 2026
+ 11:14:20 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -95,21 +95,22 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20260115-exportfs-nfsd-v1-0-8e80160e3c0c@kernel.org>
-In-Reply-To: <20260115-exportfs-nfsd-v1-0-8e80160e3c0c@kernel.org>
+ <CAOQ4uxjOJMwv_hRVTn3tJHDLMQHbeaCGsdLupiZYcwm7M2rm3g@mail.gmail.com> <d486fdb8-686c-4426-9fac-49b7dbc28765@app.fastmail.com>
+In-Reply-To: <d486fdb8-686c-4426-9fac-49b7dbc28765@app.fastmail.com>
 From: Amir Goldstein <amir73il@gmail.com>
-Date: Thu, 15 Jan 2026 19:17:35 +0100
-X-Gm-Features: AZwV_QjhT3ZtgvkbHJB7796GEklGCbcNDL5CeRwrn_YYeN3X8FqPO-3_iRnRORw
-Message-ID: <CAOQ4uxjOJMwv_hRVTn3tJHDLMQHbeaCGsdLupiZYcwm7M2rm3g@mail.gmail.com>
+Date: Thu, 15 Jan 2026 20:14:09 +0100
+X-Gm-Features: AZwV_QgZJLcC_-bQ-_VIrtnGFnLgmiVjy_ytBB44u2cGVyBOwKNqVyWt_Jfm7Ds
+Message-ID: <CAOQ4uxhnoTC6KBmRVx2xhvTXYg1hRkCJWrq2eoBQGHKC3sv3Hw@mail.gmail.com>
 Subject: Re: [PATCH 00/29] fs: require filesystems to explicitly opt-in to
  nfsd export support
-To: Jeff Layton <jlayton@kernel.org>
-Cc: Christian Brauner <brauner@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Chuck Lever <chuck.lever@oracle.com>, NeilBrown <neil@brown.name>, 
-	Olga Kornievskaia <okorniev@redhat.com>, Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, 
-	Hugh Dickins <hughd@google.com>, Baolin Wang <baolin.wang@linux.alibaba.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, "Theodore Ts'o" <tytso@mit.edu>, 
-	Andreas Dilger <adilger.kernel@dilger.ca>, Jan Kara <jack@suse.com>, Gao Xiang <xiang@kernel.org>, 
-	Chao Yu <chao@kernel.org>, Yue Hu <zbestahu@gmail.com>, 
+To: Chuck Lever <cel@kernel.org>
+Cc: Jeff Layton <jlayton@kernel.org>, Christian Brauner <brauner@kernel.org>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, Chuck Lever <chuck.lever@oracle.com>, 
+	NeilBrown <neil@brown.name>, Olga Kornievskaia <okorniev@redhat.com>, Dai Ngo <Dai.Ngo@oracle.com>, 
+	Tom Talpey <tom@talpey.com>, Hugh Dickins <hughd@google.com>, 
+	Baolin Wang <baolin.wang@linux.alibaba.com>, Andrew Morton <akpm@linux-foundation.org>, 
+	Theodore Tso <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>, Jan Kara <jack@suse.com>, 
+	Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>, Yue Hu <zbestahu@gmail.com>, 
 	Jeffle Xu <jefflexu@linux.alibaba.com>, Sandeep Dhavale <dhavale@google.com>, 
 	Hongbo Li <lihongbo22@huawei.com>, Chunhai Guo <guochunhai@vivo.com>, 
 	Carlos Maiolino <cem@kernel.org>, Ilya Dryomov <idryomov@gmail.com>, Alex Markuze <amarkuze@redhat.com>, 
@@ -139,26 +140,56 @@ Cc: Christian Brauner <brauner@kernel.org>, Alexander Viro <viro@zeniv.linux.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jan 15, 2026 at 6:48=E2=80=AFPM Jeff Layton <jlayton@kernel.org> wr=
-ote:
+On Thu, Jan 15, 2026 at 7:32=E2=80=AFPM Chuck Lever <cel@kernel.org> wrote:
 >
-> In recent years, a number of filesystems that can't present stable
-> filehandles have grown struct export_operations. They've mostly done
-> this for local use-cases (enabling open_by_handle_at() and the like).
-> Unfortunately, having export_operations is generally sufficient to make
-> a filesystem be considered exportable via nfsd, but that requires that
-> the server present stable filehandles.
+>
+>
+> On Thu, Jan 15, 2026, at 1:17 PM, Amir Goldstein wrote:
+> > On Thu, Jan 15, 2026 at 6:48=E2=80=AFPM Jeff Layton <jlayton@kernel.org=
+> wrote:
+> >>
+> >> In recent years, a number of filesystems that can't present stable
+> >> filehandles have grown struct export_operations. They've mostly done
+> >> this for local use-cases (enabling open_by_handle_at() and the like).
+> >> Unfortunately, having export_operations is generally sufficient to mak=
+e
+> >> a filesystem be considered exportable via nfsd, but that requires that
+> >> the server present stable filehandles.
+> >
+> > Where does the term "stable file handles" come from? and what does it m=
+ean?
+> > Why not "persistent handles", which is described in NFS and SMB specs?
+> >
+> > Not to mention that EXPORT_OP_PERSISTENT_HANDLES was Acked
+> > by both Christoph and Christian:
+> >
+> > https://lore.kernel.org/linux-fsdevel/20260115-rundgang-leihgabe-12018e=
+93c00c@brauner/
+> >
+> > Am I missing anything?
+>
+> PERSISTENT generally implies that the file handle is saved on
+> persistent storage. This is not true of tmpfs.
 
-Where does the term "stable file handles" come from? and what does it mean?
-Why not "persistent handles", which is described in NFS and SMB specs?
+That's one way of interpreting "persistent".
+Another way is "continuing to exist or occur over a prolonged period."
+which works well for tmpfs that is mounted for a long time.
 
-Not to mention that EXPORT_OP_PERSISTENT_HANDLES was Acked
-by both Christoph and Christian:
+But I am confused, because I went looking for where Jeff said that
+you suggested stable file handles and this is what I found that you wrote:
 
-https://lore.kernel.org/linux-fsdevel/20260115-rundgang-leihgabe-12018e93c0=
-0c@brauner/
+"tmpfs filehandles align quite well with the traditional definition
+ of persistent filehandles. tmpfs filehandles live as long as tmpfs files d=
+o,
+ and that is all that is required to be considered "persistent".
 
-Am I missing anything?
+>
+> The use of "stable" means that the file handle is stable for
+> the life of the file. This /is/ true of tmpfs.
+
+I can live with STABLE_HANDLES I don't mind as much,
+I understand what it means, but the definition above is invented,
+whereas the term persistent handles is well known and well defined.
 
 Thanks,
 Amir.
