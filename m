@@ -1,49 +1,49 @@
-Return-Path: <linux-btrfs+bounces-20599-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20600-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F1B6D28C97
-	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Jan 2026 22:42:36 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F183D28E73
+	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Jan 2026 22:57:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 56D9E303828E
-	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Jan 2026 21:42:02 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id D710330080CB
+	for <lists+linux-btrfs@lfdr.de>; Thu, 15 Jan 2026 21:52:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E93C31D371;
-	Thu, 15 Jan 2026 21:42:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CE4532E141;
+	Thu, 15 Jan 2026 21:52:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fJcS5ZWk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W4lX239z"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF54786250
-	for <linux-btrfs@vger.kernel.org>; Thu, 15 Jan 2026 21:42:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B9A632D7EC
+	for <linux-btrfs@vger.kernel.org>; Thu, 15 Jan 2026 21:52:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768513321; cv=none; b=HDx90uAkNwwbTDx+miegLi1o6LPCpu1OV91f6ynNPoP4u50tQNkmR5sqWfqx/KNiUvS9mLz4FJez6ghXBIFzNRwWysVFDSFzWEI8jFKZtrmDd2eawCe0nE8rbl3fAYcFOl/m5Eqxizn4gbyhKzh+0IfKqXl+t5Ih7JzxbWzwdSI=
+	t=1768513933; cv=none; b=thoePYb7prO+MA6v0g9XZznMYvzTdwCvzSzG3f1f/oKLYEPYAzOJ17AyHgVAZWj7vx4O09ERTa0VdFat7XPSkkYG2LLNFL600CCps3gYxo/OzIo43jVXBgFqwcETErl2p3j5DwKI2MrECUXU+asjK8hKN33qSQahS3SYxikmqAg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768513321; c=relaxed/simple;
-	bh=PzUUqVtsdsEPFw5cBPS06x8E//BnlAjhnijFxvXY4Og=;
+	s=arc-20240116; t=1768513933; c=relaxed/simple;
+	bh=KToLOMao+NF0RCKMiJrHHxT37faRq/TyQND3y2GRKjE=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=A92MytP5QxJicfvmNCK05SNVnQBYg93puId7AyLsqhu9RMJSRn5zvtJ+k+/LAnWz1c3TiZPHM902ReYfQcg1MM7G5pvQEsQBWASYyQa/VYlN7l+YEcYiItcZsHnfD/2QvMbf5akq7lRs0TCGgRt0OFI51mkapnv2nzB330svrlE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fJcS5ZWk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20423C116D0
-	for <linux-btrfs@vger.kernel.org>; Thu, 15 Jan 2026 21:41:59 +0000 (UTC)
+	 MIME-Version; b=UUAOaS6CoGME1PLKdtp8Jay/EPPjPOwvyDI4+ujiXXMKza/6HeOt8/ZomBZUN9DfKneh7FQx764PHWxNNU1WzFBuXqp1oUhg0qE0j53EYsCy/8xkUgY/G7yxNvrMBV3MXYTMLlVi4VjdbBFPAmcfXjRIQCYcIYlO7ixQcrgHJ2w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W4lX239z; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81449C19422
+	for <linux-btrfs@vger.kernel.org>; Thu, 15 Jan 2026 21:52:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768513320;
-	bh=PzUUqVtsdsEPFw5cBPS06x8E//BnlAjhnijFxvXY4Og=;
+	s=k20201202; t=1768513929;
+	bh=KToLOMao+NF0RCKMiJrHHxT37faRq/TyQND3y2GRKjE=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=fJcS5ZWk22OGuStK2orG1qw+bh1uZj6JVS/nVfZ7mciA3Ue6GR+7oVzpX4pIiyOqT
-	 CIN1xiGe/swt9AKg7OIfvAJSeLZp6Mci1G70wyYhYtvZ6RXsd1RiO4Hv5piL6fGlgW
-	 m1JWdshugHW7Nxk1q6mMF45HuGzH2vrsmFfswfqxMxoFknDyXHSbLwvWIOvcAEKkuv
-	 ErPzdHpt3J5Oro9OPi/OFpBII/jj1bHEjkhmzVkH7xuwEhxmKKJouUeFREl6kglf7K
-	 UHQPe3FIJsjyyMyUzYdPDYGKre74PTvoq/3DnibaSR0fKUf22cfWopK0YKrEv7OuHE
-	 kKGagD9E48plA==
+	b=W4lX239zan222lscYvdPWX+t2UXSx5+PFNAmpUqn8ogs30hEq2AVokuoLkLHu6tgt
+	 SRKndRQwjhdz4kpufJ/l5/OFKWJ9SbxN8OLNYQ2poIexnccB5Mr9v3o3Ne+EjkgPoh
+	 E+B+4MQJVbqotgLWZYpr6wtGZbJoyZhrEsN2ZmRnRBEYMURSKKGO2nT9ho69iA2eeO
+	 653dQPqKXNNyFcAi/kxitoI4tgdQF31D4u8Bi4YoOvCFxAWEu5pE+eBverVhtWKONU
+	 IzxASL+qkzD6ff5G8GPlF0uwwW7e+Qr7oOethYLxhr1/t+8YoqsD8areYoYVt9KLvR
+	 AYVoAXN51CsCA==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
 Subject: [PATCH v2] btrfs: add and use helper to compute the free space for a block group
-Date: Thu, 15 Jan 2026 21:41:54 +0000
-Message-ID: <2ba3b023e186d4eec78b8515bb375f310b4b2390.1768513242.git.fdmanana@suse.com>
+Date: Thu, 15 Jan 2026 21:52:06 +0000
+Message-ID: <9f70166505b58147e580c51d0ea498b0e9f30ea2.1768513901.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <2ba3b023e186d4eec78b8515bb375f310b4b2390.1768512027.git.fdmanana@suse.com>
 References: <2ba3b023e186d4eec78b8515bb375f310b4b2390.1768512027.git.fdmanana@suse.com>
@@ -105,7 +105,7 @@ index a1119f06b6d1..d17fe777b727 100644
  	}
  	spin_unlock(&cache->lock);
 diff --git a/fs/btrfs/block-group.h b/fs/btrfs/block-group.h
-index 5f933455118c..17a987f7fff3 100644
+index 5f933455118c..6662e644199a 100644
 --- a/fs/btrfs/block-group.h
 +++ b/fs/btrfs/block-group.h
 @@ -295,6 +295,14 @@ static inline bool btrfs_is_block_group_data_only(const struct btrfs_block_group
@@ -117,7 +117,7 @@ index 5f933455118c..17a987f7fff3 100644
 +	lockdep_assert_held(&bg->lock);
 +
 +	return (bg->length - bg->used - bg->pinned - bg->reserved -
-+		bg->bytes->super - bg->unusable);
++		bg->bytes_super - bg->zone_unusable);
 +}
 +
  #ifdef CONFIG_BTRFS_DEBUG
