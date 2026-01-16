@@ -1,197 +1,329 @@
-Return-Path: <linux-btrfs+bounces-20629-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20630-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50AA9D2FE6A
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Jan 2026 11:52:28 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 234E5D300F2
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Jan 2026 12:05:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B15753114C15
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Jan 2026 10:48:15 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id CB672305BD26
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Jan 2026 11:03:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C324030F953;
-	Fri, 16 Jan 2026 10:48:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C82BE3644C8;
+	Fri, 16 Jan 2026 11:03:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="PbmhajUM";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="daVLxafa";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="PbmhajUM";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="daVLxafa"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ctUupbUT"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89D63362124
-	for <linux-btrfs@vger.kernel.org>; Fri, 16 Jan 2026 10:48:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DC90362147
+	for <linux-btrfs@vger.kernel.org>; Fri, 16 Jan 2026 11:03:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768560492; cv=none; b=Mgq/RpNW1NS9FBJaGMrR72QMKuAMunOOt/fw3aCP7dUfgGs4HeHwjlodaIJUth5cYDoHz6etwKXnHtCOGt6qKiJE1TJyLZfjiNDWqzUu9a5J/pglRROKvW3ryWnNQ3k6OrH2nKNapnPT5mKuhy6jaG8t1OStibajOvy426qkIkY=
+	t=1768561385; cv=none; b=lyrOoE8Y8ZPW8oIFifEzUdRAQUpNpRgoVBAwjglsnFpOB3E/38P8PS4EvllWj9El2cA2nFC8ibtxNz2yY91y7ZaY9vHDMI44bTgl0K/zKuuO+ix/6yTAwGyBNesPUrxITvG3TOdPgTT+x+6BIvsNOJIUTVCA+RBKi+/xfx43mLU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768560492; c=relaxed/simple;
-	bh=haUViWwPyCOhNjq9pJXOF3OYhQWaI/eRVxGnQ09rv44=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YFRd6mb3fFsI0cdI6Pa2WOvnPKkpYkrYk5apSFxu6IRNm1oIugcXNpbavZfV/91xWR8nmzcta6vF7xB0iRZdlRmtlW3lfD9PrO79OuDiyKOMsDh8RndtutvKkiNp981XmNJDjTQEJuc3Djc2tVAJF0aWnCdRztUhjIwhjuM5M4M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=PbmhajUM; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=daVLxafa; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=PbmhajUM; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=daVLxafa; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 7A86B336BB;
-	Fri, 16 Jan 2026 10:48:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1768560488; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=F1fxP8WDQyzhf1npSWxiq5MSReyQYyy5v76FcnijHMA=;
-	b=PbmhajUMmbJ8yRqKOVcww99WPrHziWw7DJMQxlzN0jGmHXvolDfWqMrMe7DmnKsFo8MwIx
-	YI1GJP6PN1rQu3cv+ABZlCU4JBshwzNdZywyZzYB1HQeePrkqHz7Tg+xZ/Ry58tIaNT7Tc
-	xATB6hj4wejZpWh6InyHFn4HPINO8r8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1768560488;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=F1fxP8WDQyzhf1npSWxiq5MSReyQYyy5v76FcnijHMA=;
-	b=daVLxafaELeJjfY/n1Wb6KYXPmr+VqfyON78bEDOVjmCPDiAImJK5TAGZlvPs0fY4icrbC
-	yyouaeQgwAqIPRBg==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1768560488; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=F1fxP8WDQyzhf1npSWxiq5MSReyQYyy5v76FcnijHMA=;
-	b=PbmhajUMmbJ8yRqKOVcww99WPrHziWw7DJMQxlzN0jGmHXvolDfWqMrMe7DmnKsFo8MwIx
-	YI1GJP6PN1rQu3cv+ABZlCU4JBshwzNdZywyZzYB1HQeePrkqHz7Tg+xZ/Ry58tIaNT7Tc
-	xATB6hj4wejZpWh6InyHFn4HPINO8r8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1768560488;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=F1fxP8WDQyzhf1npSWxiq5MSReyQYyy5v76FcnijHMA=;
-	b=daVLxafaELeJjfY/n1Wb6KYXPmr+VqfyON78bEDOVjmCPDiAImJK5TAGZlvPs0fY4icrbC
-	yyouaeQgwAqIPRBg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6C3E63EA63;
-	Fri, 16 Jan 2026 10:48:08 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id bQ9qGmgXamnVDAAAD6G6ig
-	(envelope-from <jack@suse.cz>); Fri, 16 Jan 2026 10:48:08 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 2EA03A091D; Fri, 16 Jan 2026 11:48:08 +0100 (CET)
-Date: Fri, 16 Jan 2026 11:48:08 +0100
-From: Jan Kara <jack@suse.cz>
-To: Jeff Layton <jlayton@kernel.org>
-Cc: Christian Brauner <brauner@kernel.org>, 
-	Alexander Viro <viro@zeniv.linux.org.uk>, Chuck Lever <chuck.lever@oracle.com>, 
-	NeilBrown <neil@brown.name>, Olga Kornievskaia <okorniev@redhat.com>, 
-	Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, Amir Goldstein <amir73il@gmail.com>, 
-	Hugh Dickins <hughd@google.com>, Baolin Wang <baolin.wang@linux.alibaba.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, Theodore Ts'o <tytso@mit.edu>, 
-	Andreas Dilger <adilger.kernel@dilger.ca>, Jan Kara <jack@suse.com>, Gao Xiang <xiang@kernel.org>, 
-	Chao Yu <chao@kernel.org>, Yue Hu <zbestahu@gmail.com>, 
-	Jeffle Xu <jefflexu@linux.alibaba.com>, Sandeep Dhavale <dhavale@google.com>, 
-	Hongbo Li <lihongbo22@huawei.com>, Chunhai Guo <guochunhai@vivo.com>, 
-	Carlos Maiolino <cem@kernel.org>, Ilya Dryomov <idryomov@gmail.com>, 
-	Alex Markuze <amarkuze@redhat.com>, Viacheslav Dubeyko <slava@dubeyko.com>, Chris Mason <clm@fb.com>, 
-	David Sterba <dsterba@suse.com>, Luis de Bethencourt <luisbg@kernel.org>, 
-	Salah Triki <salah.triki@gmail.com>, Phillip Lougher <phillip@squashfs.org.uk>, 
-	Steve French <sfrench@samba.org>, Paulo Alcantara <pc@manguebit.org>, 
-	Ronnie Sahlberg <ronniesahlberg@gmail.com>, Shyam Prasad N <sprasad@microsoft.com>, 
-	Bharath SM <bharathsm@microsoft.com>, Miklos Szeredi <miklos@szeredi.hu>, 
-	Mike Marshall <hubcap@omnibond.com>, Martin Brandenburg <martin@omnibond.com>, 
-	Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>, 
-	Joseph Qi <joseph.qi@linux.alibaba.com>, Konstantin Komarov <almaz.alexandrovich@paragon-software.com>, 
-	Ryusuke Konishi <konishi.ryusuke@gmail.com>, Trond Myklebust <trondmy@kernel.org>, 
-	Anna Schumaker <anna@kernel.org>, Dave Kleikamp <shaggy@kernel.org>, 
-	David Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>, Jan Kara <jack@suse.cz>, 
-	Andreas Gruenbacher <agruenba@redhat.com>, OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>, 
-	Jaegeuk Kim <jaegeuk@kernel.org>, Christoph Hellwig <hch@infradead.org>, linux-nfs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-ext4@vger.kernel.org, linux-erofs@lists.ozlabs.org, linux-xfs@vger.kernel.org, 
-	ceph-devel@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-cifs@vger.kernel.org, 
-	samba-technical@lists.samba.org, linux-unionfs@vger.kernel.org, devel@lists.orangefs.org, 
-	ocfs2-devel@lists.linux.dev, ntfs3@lists.linux.dev, linux-nilfs@vger.kernel.org, 
-	jfs-discussion@lists.sourceforge.net, linux-mtd@lists.infradead.org, gfs2@lists.linux.dev, 
-	linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [PATCH 24/29] isofs: add EXPORT_OP_STABLE_HANDLES flag to export
- operations
-Message-ID: <o7p2kfxnhexpjpdwuqexjepysef5xghk7pnft323zyzvligstd@mdauljykdl5i>
-References: <20260115-exportfs-nfsd-v1-0-8e80160e3c0c@kernel.org>
- <20260115-exportfs-nfsd-v1-24-8e80160e3c0c@kernel.org>
+	s=arc-20240116; t=1768561385; c=relaxed/simple;
+	bh=fVoBbzrYzgQiiyMpUagzKpXqUNRErzuLrgzJU8gkdkU=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=Zm1vpOHU3F2c9oND5ZGdjfTO24zSCotkdwuKmXIZpo+ROBtI8lykWU149OSIm0oEUxM1Mke1h9lRjGn5eXS7zUTutfHBVB16eW+6JYHCHrZUYNKwvNr0tX7Xd8L2RQDgLUv0iJmhqH1LA+wYpk/qe899Q9vPSJ5XLcG0loaCJt8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ctUupbUT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5767BC116C6
+	for <linux-btrfs@vger.kernel.org>; Fri, 16 Jan 2026 11:03:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1768561384;
+	bh=fVoBbzrYzgQiiyMpUagzKpXqUNRErzuLrgzJU8gkdkU=;
+	h=From:To:Subject:Date:From;
+	b=ctUupbUTnlJ2ZsDdM/lBbE7YnjHphjifJDkndLAiZXey040umbuamEyL/BdCvLvP6
+	 pYgOt3xBa60OOgVFL23x5vo7ygSU3a9+7p9YJ/TZwZU2C+zJod5UFT/CDGAFbkKcTV
+	 3sfwI36OSgaVj2nrhkYWGYHNr8hYMyX0T7HvO3E6ZBC2L2O79xbvP+D4ik7U/WFE/M
+	 yCmgqTUUyJ6YPf88p9+N6i1WImQ4XmyjBBEwlMav/E7SvxAghadgePU0WcpIApQEJl
+	 c4xle6tCYGwMIhyUzXqbctNTHtgqPkCZdBbNQ4L5fU2QmncrwTjKlRjgekxMWIc1Aj
+	 CDWIxQCIIhKcA==
+From: fdmanana@kernel.org
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: use the btrfs_extent_map_end() helper everywhere
+Date: Fri, 16 Jan 2026 11:03:02 +0000
+Message-ID: <69ddaceff63e94c5c1b94f12c52a83a798a9f037.1768561288.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.47.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260115-exportfs-nfsd-v1-24-8e80160e3c0c@kernel.org>
-X-Spam-Score: -2.30
-X-Spamd-Result: default: False [-2.30 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	TO_DN_SOME(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	MISSING_XM_UA(0.00)[];
-	TAGGED_RCPT(0.00)[];
-	FREEMAIL_CC(0.00)[kernel.org,zeniv.linux.org.uk,oracle.com,brown.name,redhat.com,talpey.com,gmail.com,google.com,linux.alibaba.com,linux-foundation.org,mit.edu,dilger.ca,suse.com,huawei.com,vivo.com,dubeyko.com,fb.com,squashfs.org.uk,samba.org,manguebit.org,microsoft.com,szeredi.hu,omnibond.com,fasheh.com,evilplan.org,paragon-software.com,infradead.org,nod.at,suse.cz,mail.parknet.co.jp,vger.kernel.org,kvack.org,lists.ozlabs.org,lists.samba.org,lists.orangefs.org,lists.linux.dev,lists.sourceforge.net,lists.infradead.org];
-	RCVD_COUNT_THREE(0.00)[3];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	R_RATELIMIT(0.00)[to_ip_from(RLmxrzn7aibrf6kzjcbnz1mr5c)];
-	TO_MATCH_ENVRCPT_SOME(0.00)[];
-	RCPT_COUNT_GT_50(0.00)[74];
-	RCVD_TLS_LAST(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.com:email,imap1.dmz-prg2.suse.org:helo]
-X-Spam-Level: 
-X-Spam-Flag: NO
+Content-Transfer-Encoding: 8bit
 
-On Thu 15-01-26 12:47:55, Jeff Layton wrote:
-> Add the EXPORT_OP_STABLE_HANDLES flag to isofs export operations to indicate
-> that this filesystem can be exported via NFS.
-> 
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+From: Filipe Manana <fdmanana@suse.com>
 
-Looks good. Feel free to add:
+We have a helper to calculate an extent map's exclusive end offset, but
+we only use it in some places. Update every site that open codes the
+calculation to use the helper.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/compression.c       |  2 +-
+ fs/btrfs/defrag.c            |  5 +++--
+ fs/btrfs/extent_io.c         |  2 +-
+ fs/btrfs/file.c              |  9 +++++----
+ fs/btrfs/inode.c             |  2 +-
+ fs/btrfs/tests/inode-tests.c | 32 ++++++++++++++++----------------
+ fs/btrfs/tree-log.c          |  2 +-
+ 7 files changed, 28 insertions(+), 26 deletions(-)
 
-								Honza
-
-> ---
->  fs/isofs/export.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/fs/isofs/export.c b/fs/isofs/export.c
-> index 421d247fae52301b778f0589b27fcf48f2372832..7c17eb4e030813d1d22456ccbfb005c6b6934500 100644
-> --- a/fs/isofs/export.c
-> +++ b/fs/isofs/export.c
-> @@ -190,4 +190,5 @@ const struct export_operations isofs_export_ops = {
->  	.fh_to_dentry	= isofs_fh_to_dentry,
->  	.fh_to_parent	= isofs_fh_to_parent,
->  	.get_parent     = isofs_export_get_parent,
-> +	.flags		= EXPORT_OP_STABLE_HANDLES,
->  };
-> 
-> -- 
-> 2.52.0
-> 
+diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+index 4323d4172c7b..4c6298cf01b2 100644
+--- a/fs/btrfs/compression.c
++++ b/fs/btrfs/compression.c
+@@ -519,7 +519,7 @@ static noinline int add_ra_bio_pages(struct inode *inode,
+ 			folio_put(folio);
+ 			break;
+ 		}
+-		add_size = min(em->start + em->len, page_end + 1) - cur;
++		add_size = min(btrfs_extent_map_end(em), page_end + 1) - cur;
+ 		btrfs_free_extent_map(em);
+ 		btrfs_unlock_extent(tree, cur, page_end, NULL);
+ 
+diff --git a/fs/btrfs/defrag.c b/fs/btrfs/defrag.c
+index bcc6656ad034..ecf05cd64696 100644
+--- a/fs/btrfs/defrag.c
++++ b/fs/btrfs/defrag.c
+@@ -792,10 +792,11 @@ static bool defrag_check_next_extent(struct inode *inode, struct extent_map *em,
+ {
+ 	struct btrfs_fs_info *fs_info = inode_to_fs_info(inode);
+ 	struct extent_map *next;
++	const u64 em_end = btrfs_extent_map_end(em);
+ 	bool ret = false;
+ 
+ 	/* This is the last extent */
+-	if (em->start + em->len >= i_size_read(inode))
++	if (em_end >= i_size_read(inode))
+ 		return false;
+ 
+ 	/*
+@@ -804,7 +805,7 @@ static bool defrag_check_next_extent(struct inode *inode, struct extent_map *em,
+ 	 * one will not be a target.
+ 	 * This will just cause extra IO without really reducing the fragments.
+ 	 */
+-	next = defrag_lookup_extent(inode, em->start + em->len, newer_than, locked);
++	next = defrag_lookup_extent(inode, em_end, newer_than, locked);
+ 	/* No more em or hole */
+ 	if (!next || next->disk_bytenr >= EXTENT_MAP_LAST_BYTE)
+ 		goto out;
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index bbc55873cb16..cd8c505d92f5 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -970,7 +970,7 @@ static void btrfs_readahead_expand(struct readahead_control *ractl,
+ {
+ 	const u64 ra_pos = readahead_pos(ractl);
+ 	const u64 ra_end = ra_pos + readahead_length(ractl);
+-	const u64 em_end = em->start + em->len;
++	const u64 em_end = btrfs_extent_map_end(em);
+ 
+ 	/* No expansion for holes and inline extents. */
+ 	if (em->disk_bytenr > EXTENT_MAP_LAST_BYTE)
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index 5d47cff5af42..1759776d2d57 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -2195,10 +2195,11 @@ static int find_first_non_hole(struct btrfs_inode *inode, u64 *start, u64 *len)
+ 
+ 	/* Hole or vacuum extent(only exists in no-hole mode) */
+ 	if (em->disk_bytenr == EXTENT_MAP_HOLE) {
++		const u64 em_end = btrfs_extent_map_end(em);
++
+ 		ret = 1;
+-		*len = em->start + em->len > *start + *len ?
+-		       0 : *start + *len - em->start - em->len;
+-		*start = em->start + em->len;
++		*len = (em_end > *start + *len) ? 0 : (*start + *len - em_end);
++		*start = em_end;
+ 	}
+ 	btrfs_free_extent_map(em);
+ 	return ret;
+@@ -2947,7 +2948,7 @@ static int btrfs_zero_range(struct inode *inode,
+ 	 * new prealloc extent, so that we get a larger contiguous disk extent.
+ 	 */
+ 	if (em->start <= alloc_start && (em->flags & EXTENT_FLAG_PREALLOC)) {
+-		const u64 em_end = em->start + em->len;
++		const u64 em_end = btrfs_extent_map_end(em);
+ 
+ 		if (em_end >= offset + len) {
+ 			/*
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index be47aa58e944..7a28b947f4a3 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -7161,7 +7161,7 @@ struct extent_map *btrfs_get_extent(struct btrfs_inode *inode,
+ 	read_unlock(&em_tree->lock);
+ 
+ 	if (em) {
+-		if (em->start > start || em->start + em->len <= start)
++		if (em->start > start || btrfs_extent_map_end(em) <= start)
+ 			btrfs_free_extent_map(em);
+ 		else if (em->disk_bytenr == EXTENT_MAP_INLINE && folio)
+ 			btrfs_free_extent_map(em);
+diff --git a/fs/btrfs/tests/inode-tests.c b/fs/btrfs/tests/inode-tests.c
+index a4c2b7748b95..6bd17d059ae6 100644
+--- a/fs/btrfs/tests/inode-tests.c
++++ b/fs/btrfs/tests/inode-tests.c
+@@ -313,7 +313,7 @@ static noinline int test_btrfs_get_extent(u32 sectorsize, u32 nodesize)
+ 	 * unless we have a page for it to write into.  Maybe we should change
+ 	 * this?
+ 	 */
+-	offset = em->start + em->len;
++	offset = btrfs_extent_map_end(em);
+ 	btrfs_free_extent_map(em);
+ 
+ 	em = btrfs_get_extent(BTRFS_I(inode), NULL, offset, sectorsize);
+@@ -335,7 +335,7 @@ static noinline int test_btrfs_get_extent(u32 sectorsize, u32 nodesize)
+ 		test_err("unexpected flags set, want 0 have %u", em->flags);
+ 		goto out;
+ 	}
+-	offset = em->start + em->len;
++	offset = btrfs_extent_map_end(em);
+ 	btrfs_free_extent_map(em);
+ 
+ 	/* Regular extent */
+@@ -362,7 +362,7 @@ static noinline int test_btrfs_get_extent(u32 sectorsize, u32 nodesize)
+ 		test_err("wrong offset, want 0, have %llu", em->offset);
+ 		goto out;
+ 	}
+-	offset = em->start + em->len;
++	offset = btrfs_extent_map_end(em);
+ 	btrfs_free_extent_map(em);
+ 
+ 	/* The next 3 are split extents */
+@@ -391,7 +391,7 @@ static noinline int test_btrfs_get_extent(u32 sectorsize, u32 nodesize)
+ 	}
+ 	disk_bytenr = btrfs_extent_map_block_start(em);
+ 	orig_start = em->start;
+-	offset = em->start + em->len;
++	offset = btrfs_extent_map_end(em);
+ 	btrfs_free_extent_map(em);
+ 
+ 	em = btrfs_get_extent(BTRFS_I(inode), NULL, offset, sectorsize);
+@@ -413,7 +413,7 @@ static noinline int test_btrfs_get_extent(u32 sectorsize, u32 nodesize)
+ 		test_err("unexpected flags set, want 0 have %u", em->flags);
+ 		goto out;
+ 	}
+-	offset = em->start + em->len;
++	offset = btrfs_extent_map_end(em);
+ 	btrfs_free_extent_map(em);
+ 
+ 	em = btrfs_get_extent(BTRFS_I(inode), NULL, offset, sectorsize);
+@@ -446,7 +446,7 @@ static noinline int test_btrfs_get_extent(u32 sectorsize, u32 nodesize)
+ 			 disk_bytenr, btrfs_extent_map_block_start(em));
+ 		goto out;
+ 	}
+-	offset = em->start + em->len;
++	offset = btrfs_extent_map_end(em);
+ 	btrfs_free_extent_map(em);
+ 
+ 	/* Prealloc extent */
+@@ -474,7 +474,7 @@ static noinline int test_btrfs_get_extent(u32 sectorsize, u32 nodesize)
+ 		test_err("wrong offset, want 0, have %llu", em->offset);
+ 		goto out;
+ 	}
+-	offset = em->start + em->len;
++	offset = btrfs_extent_map_end(em);
+ 	btrfs_free_extent_map(em);
+ 
+ 	/* The next 3 are a half written prealloc extent */
+@@ -504,7 +504,7 @@ static noinline int test_btrfs_get_extent(u32 sectorsize, u32 nodesize)
+ 	}
+ 	disk_bytenr = btrfs_extent_map_block_start(em);
+ 	orig_start = em->start;
+-	offset = em->start + em->len;
++	offset = btrfs_extent_map_end(em);
+ 	btrfs_free_extent_map(em);
+ 
+ 	em = btrfs_get_extent(BTRFS_I(inode), NULL, offset, sectorsize);
+@@ -536,7 +536,7 @@ static noinline int test_btrfs_get_extent(u32 sectorsize, u32 nodesize)
+ 			 disk_bytenr + em->offset, btrfs_extent_map_block_start(em));
+ 		goto out;
+ 	}
+-	offset = em->start + em->len;
++	offset = btrfs_extent_map_end(em);
+ 	btrfs_free_extent_map(em);
+ 
+ 	em = btrfs_get_extent(BTRFS_I(inode), NULL, offset, sectorsize);
+@@ -569,7 +569,7 @@ static noinline int test_btrfs_get_extent(u32 sectorsize, u32 nodesize)
+ 			 disk_bytenr + em->offset, btrfs_extent_map_block_start(em));
+ 		goto out;
+ 	}
+-	offset = em->start + em->len;
++	offset = btrfs_extent_map_end(em);
+ 	btrfs_free_extent_map(em);
+ 
+ 	/* Now for the compressed extent */
+@@ -602,7 +602,7 @@ static noinline int test_btrfs_get_extent(u32 sectorsize, u32 nodesize)
+ 			 BTRFS_COMPRESS_ZLIB, btrfs_extent_map_compression(em));
+ 		goto out;
+ 	}
+-	offset = em->start + em->len;
++	offset = btrfs_extent_map_end(em);
+ 	btrfs_free_extent_map(em);
+ 
+ 	/* Split compressed extent */
+@@ -637,7 +637,7 @@ static noinline int test_btrfs_get_extent(u32 sectorsize, u32 nodesize)
+ 	}
+ 	disk_bytenr = btrfs_extent_map_block_start(em);
+ 	orig_start = em->start;
+-	offset = em->start + em->len;
++	offset = btrfs_extent_map_end(em);
+ 	btrfs_free_extent_map(em);
+ 
+ 	em = btrfs_get_extent(BTRFS_I(inode), NULL, offset, sectorsize);
+@@ -663,7 +663,7 @@ static noinline int test_btrfs_get_extent(u32 sectorsize, u32 nodesize)
+ 		test_err("wrong offset, want 0, have %llu", em->offset);
+ 		goto out;
+ 	}
+-	offset = em->start + em->len;
++	offset = btrfs_extent_map_end(em);
+ 	btrfs_free_extent_map(em);
+ 
+ 	em = btrfs_get_extent(BTRFS_I(inode), NULL, offset, sectorsize);
+@@ -697,7 +697,7 @@ static noinline int test_btrfs_get_extent(u32 sectorsize, u32 nodesize)
+ 			 BTRFS_COMPRESS_ZLIB, btrfs_extent_map_compression(em));
+ 		goto out;
+ 	}
+-	offset = em->start + em->len;
++	offset = btrfs_extent_map_end(em);
+ 	btrfs_free_extent_map(em);
+ 
+ 	/* A hole between regular extents but no hole extent */
+@@ -724,7 +724,7 @@ static noinline int test_btrfs_get_extent(u32 sectorsize, u32 nodesize)
+ 		test_err("wrong offset, want 0, have %llu", em->offset);
+ 		goto out;
+ 	}
+-	offset = em->start + em->len;
++	offset = btrfs_extent_map_end(em);
+ 	btrfs_free_extent_map(em);
+ 
+ 	em = btrfs_get_extent(BTRFS_I(inode), NULL, offset, SZ_4M);
+@@ -756,7 +756,7 @@ static noinline int test_btrfs_get_extent(u32 sectorsize, u32 nodesize)
+ 		test_err("wrong offset, want 0, have %llu", em->offset);
+ 		goto out;
+ 	}
+-	offset = em->start + em->len;
++	offset = btrfs_extent_map_end(em);
+ 	btrfs_free_extent_map(em);
+ 
+ 	em = btrfs_get_extent(BTRFS_I(inode), NULL, offset, sectorsize);
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index 6cffcf0c3e7a..e1bd03ebfd98 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -5160,7 +5160,7 @@ static int log_one_extent(struct btrfs_trans_handle *trans,
+ 	if (ctx->logged_before) {
+ 		drop_args.path = path;
+ 		drop_args.start = em->start;
+-		drop_args.end = em->start + em->len;
++		drop_args.end = btrfs_extent_map_end(em);
+ 		drop_args.replace_extent = true;
+ 		drop_args.extent_item_size = sizeof(fi);
+ 		ret = btrfs_drop_extents(trans, log, inode, &drop_args);
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.47.2
+
 
