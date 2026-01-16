@@ -1,232 +1,187 @@
-Return-Path: <linux-btrfs+bounces-20619-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20621-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD6D4D2F28A
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Jan 2026 10:59:29 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08465D2F2DC
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Jan 2026 11:01:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 21CBE30BDB4C
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Jan 2026 09:58:06 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 928EA303BFC6
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Jan 2026 10:00:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0D5335CBCA;
-	Fri, 16 Jan 2026 09:58:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56E1935CBD5;
+	Fri, 16 Jan 2026 10:00:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="JO3U7nF9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ff4mcfXX"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from esa1.hgst.iphmx.com (esa1.hgst.iphmx.com [68.232.141.245])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73E7621B185
-	for <linux-btrfs@vger.kernel.org>; Fri, 16 Jan 2026 09:58:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.141.245
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 672C635F8AA
+	for <linux-btrfs@vger.kernel.org>; Fri, 16 Jan 2026 10:00:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768557484; cv=none; b=au0hgJ+IIbmByvAf8WkyAU2vHwxbsqgnPYfH3SpWMQrIYzlo961ri52Vth2jsjMsAZvxZSKtAH3x6//cNaMYnfEx1U+bpAxYTdQDRu/OMcSJQxKtm1BsHrZ+Mn2IsBKPjnFLfMtORWeIhNXg898iEBHklz16DfwGgQnaVSfkezs=
+	t=1768557615; cv=none; b=CoyQ23/LNPmiDanCOWxIHfPyvCAr+jPZs7CaDkhnh3ecjeJS0zAo++6rLI3gpdhdV+nRQ/1+bq1HEdv+snu3JmlwMOHZW1GNfgjbt+VF6X3Ca+PuIyP2f/QSFnrpYOiH4JEYxdj7wnrE/Fs4Tr0wPMaota6k0TDcE1A5rjAu4+w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768557484; c=relaxed/simple;
-	bh=TZXkp/YVQGjhtjNz8RIRfO7oHgoYZG2NBKBSt/C2sd0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Zn4DhURicXqCfSy4o0hAjgpihlAQz29S+/fpiuuZb0Vx5xVdIy4WmjS3F9HARs0wyVOU4mYeUHViJhTeqiAeMHsII0izBIXjv43gOQUbvriBa5dQDlDfAJCOYZEg2z8JYtXs4xvU6brvr5aYIbBQcMxdGOlIP6USgPE5CcuDVpo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=JO3U7nF9; arc=none smtp.client-ip=68.232.141.245
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1768557482; x=1800093482;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=TZXkp/YVQGjhtjNz8RIRfO7oHgoYZG2NBKBSt/C2sd0=;
-  b=JO3U7nF9Dfx2BieRNnZntbuDnIfiMZYckaUNBQ78OwxyQvLXFwJGCUxK
-   4pifPWykANmjEQ4X2lyEIiXObcZWKSJCrgKEcxaz0ZigrEv4Lmmy+vhT2
-   0MqvyU9oBjduVHp+cLfl1lq+Ok5in88il2egui0XgqAnpRE54VQ+8Fniq
-   ryfSJcF2rgqkLNnP4HYKvnKeEisXGViddPXhAtBYWlYDmOxjIp5w7Q0a8
-   7qgkV7/c0iPFRezPmornyKyEyjBNz78d/zBW7KjrFVdktRQSHuoTnhIpk
-   K5i3BvL9Rw4H/dvTN6baQSFlx2faWlefefn3OSbMEU46JGNIg6xROUfci
-   g==;
-X-CSE-ConnectionGUID: yUih2bAHS9yrDU7CtPta9g==
-X-CSE-MsgGUID: LveCC8SWR1K57PE+cKX+BA==
-X-IronPort-AV: E=Sophos;i="6.21,230,1763395200"; 
-   d="scan'208";a="138913534"
-Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep03.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 16 Jan 2026 17:58:01 +0800
-IronPort-SDR: 696a0ba9_p1Ku6KKg6EqWov9y8JhVzsIvk2khrRFMwrHtEocLy5oMI/p
- pmvk0fRIYC81PPZj70tDP99jx9nBEAPEJyC3Ekw==
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep03.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 16 Jan 2026 01:58:02 -0800
-WDCIronportException: Internal
-Received: from c02g55f6ml85.ad.shared (HELO neo.fritz.box) ([10.224.28.27])
-  by uls-op-cesaip02.wdc.com with ESMTP; 16 Jan 2026 01:57:59 -0800
-From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-To: linux-btrfs@vger.kernel.org
-Cc: Christoph Hellwig <hch@lst.de>,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Naohiro Aota <naohiro.aota@wdc.com>,
-	Hans Holmberg <Hans.Holmberg@wdc.com>,
-	David Sterba <dsterba@suse.com>,
-	Qu Wenruo <wqu@suse.com>,
-	Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH RFC 2/2] btrfs-progs: zoned: only allocate data off of sequential zones
-Date: Fri, 16 Jan 2026 10:57:39 +0100
-Message-ID: <20260116095739.44201-4-johannes.thumshirn@wdc.com>
-X-Mailer: git-send-email 2.52.0
-In-Reply-To: <20260116095739.44201-1-johannes.thumshirn@wdc.com>
-References: <20260116095739.44201-1-johannes.thumshirn@wdc.com>
+	s=arc-20240116; t=1768557615; c=relaxed/simple;
+	bh=4+AJQ8UytEJJUdicTICxfCNG7iLOlAie4L/6eKHSWv8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=B2jT2Ucq7kJYWbIlam9llrf7Dw3ovGMJbhheFP5sqeQ/4UNM7wk5iXTG/iqFhntMHikjZFSr2Cq4QhhVr4FpBtPUKkZYmMTeZ/kO8xeOHsvQ13QoXiBBwERNIJXNl0IQTtYwOOD4ya5rJl1mqMd8NDS6uJ433PU4IuC9AE/AUAA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ff4mcfXX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F327AC116C6
+	for <linux-btrfs@vger.kernel.org>; Fri, 16 Jan 2026 10:00:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1768557615;
+	bh=4+AJQ8UytEJJUdicTICxfCNG7iLOlAie4L/6eKHSWv8=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=Ff4mcfXXJjFNGZuv3KsIjCDPc3uwK/JJ8KyAo2ZXS7Y/Rk2Pbtkm2pBt6BrCfCrGC
+	 Dc4Jg+tYEEIQyvK0dTcGJgKVH9kr5uTTlYGM/9fQtQpjVWzP1LgLiGOw8ceeKGparM
+	 p6hh6Ul6fbfeFotVGtC2qtiqmRe5+QvjS9/G81HdVtiCdkqPczdMd5SLOlxveL2qlK
+	 ELv6AXWtR4OZXzx4rmlqy6KKHa0HgQJ8c6YDIxUwhKg6u141MBAtpKgXJao7yWY0Za
+	 8ylpxLU8vc9aJsmvbBJoixjifO+xJAkJYt9uIfgJEA2hhllhTy7BF4nMpIbsLrTxPS
+	 ejyPXU9MWbpUw==
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-b79f8f7ea43so440585066b.2
+        for <linux-btrfs@vger.kernel.org>; Fri, 16 Jan 2026 02:00:14 -0800 (PST)
+X-Gm-Message-State: AOJu0YzViqDZQJ2fOKRT54tNV7fP20VocIe6AMNmQc6KjRl5sFEMepdM
+	ZHhjxXJTmvg3qcltCOGTfTfq4Ea2kZvG48M8sPMK+0iwv69M6SNV5o3dyJpNWGLQdNvzB4uulq4
+	Irnn2DSkZgJTIxI9oljjCne21tLJMEtY=
+X-Received: by 2002:a17:906:730c:b0:b87:72f0:3baf with SMTP id
+ a640c23a62f3a-b8792e18ec7mr225381766b.22.1768557613548; Fri, 16 Jan 2026
+ 02:00:13 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <2ba3b023e186d4eec78b8515bb375f310b4b2390.1768512027.git.fdmanana@suse.com>
+ <9f70166505b58147e580c51d0ea498b0e9f30ea2.1768513901.git.fdmanana@suse.com> <20260115222309.GA2118372@zen.localdomain>
+In-Reply-To: <20260115222309.GA2118372@zen.localdomain>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Fri, 16 Jan 2026 09:59:36 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H4DvCTO=R78ZRumJ71on=M-RzLNftZdMJiQEbAOpAk4Zw@mail.gmail.com>
+X-Gm-Features: AZwV_QjW7r4M7_spqbxdYqcmLdl4OEtWTj4BjrDa7gxdx2WrVIBj7HKge-CwZEk
+Message-ID: <CAL3q7H4DvCTO=R78ZRumJ71on=M-RzLNftZdMJiQEbAOpAk4Zw@mail.gmail.com>
+Subject: Re: [PATCH v2] btrfs: add and use helper to compute the free space
+ for a block group
+To: Boris Burkov <boris@bur.io>
+Cc: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On a zoned filesystem allocatate data block-groups only off of sequential
-zones leaving conventional zones to metadata and system block-groups.
+On Thu, Jan 15, 2026 at 10:23=E2=80=AFPM Boris Burkov <boris@bur.io> wrote:
+>
+> On Thu, Jan 15, 2026 at 09:52:06PM +0000, fdmanana@kernel.org wrote:
+> > From: Filipe Manana <fdmanana@suse.com>
+> >
+> > We have currently three places that compute how much free space a block
+> > group has. Add a helper function for this and use it in those places.
+> >
+> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
+>
+> This is nice, thanks.
+>
+> FWIW, I personally kind of prefer a name involving "available", as I
+> think "free" is less descriptive of the zone_unusable aspect, for
+> example. And generally evokes some kind of correlation to the state of
+> the free space entries.
 
-TODO if the device doesn't implement conventional zones or does not have
-any empty conventional zones left, skip this step and allow metadata and
-system block-groups on sequential zones.
+I'll rename it to "btrfs_block_group_available_space()" before pushing
+to for-next, thanks.
 
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
- kernel-shared/volumes.c | 59 ++++++++++++++++++++++++++---------------
- 1 file changed, 38 insertions(+), 21 deletions(-)
-
-diff --git a/kernel-shared/volumes.c b/kernel-shared/volumes.c
-index f1baf5c30ce0..fcf6b40a2d4a 100644
---- a/kernel-shared/volumes.c
-+++ b/kernel-shared/volumes.c
-@@ -763,23 +763,39 @@ static u64 dev_extent_search_start(struct btrfs_device *device, u64 start)
- 	}
- }
- 
--static bool dev_extent_hole_check_zoned(struct btrfs_device *device,
-+static bool dev_extent_hole_check_zoned(struct btrfs_device *device, u64 type,
- 					u64 *hole_start, u64 *hole_size,
- 					u64 num_bytes)
- {
--	u64 pos;
-+	u64 zone_size = device->zone_info->zone_size;
-+	bool changed = false;
- 
- 	ASSERT(IS_ALIGNED(*hole_start, device->zone_info->zone_size));
- 
--	pos = btrfs_find_allocatable_zones(device, *hole_start,
--					   *hole_start + *hole_size, num_bytes);
--	if (pos != *hole_start) {
--		*hole_size = *hole_start + *hole_size - pos;
--		*hole_start = pos;
--		return true;
--	}
-+	while (*hole_size > 0) {
-+		bool sequential;
-+		u64 pos;
- 
--	return false;
-+		pos = btrfs_find_allocatable_zones(device, *hole_start,
-+				*hole_start + *hole_size, num_bytes);
-+		if (pos != *hole_start) {
-+			*hole_size = *hole_start + *hole_size - pos;
-+			*hole_start = pos;
-+			return true;
-+		}
-+
-+		sequential = btrfs_dev_is_sequential(device, pos);
-+		if (type & BTRFS_BLOCK_GROUP_DATA && sequential)
-+			return false;
-+
-+		if (!(type & BTRFS_BLOCK_GROUP_DATA) && !sequential)
-+			return false;
-+
-+		*hole_start += zone_size;
-+		*hole_size -= zone_size;
-+		changed = true;
-+	}
-+	return changed;
- }
- 
- /**
-@@ -794,15 +810,15 @@ static bool dev_extent_hole_check_zoned(struct btrfs_device *device,
-  * position for allocation. Returns true if hole position is updated, false
-  * otherwise.
-  */
--static bool dev_extent_hole_check(struct btrfs_device *device, u64 *hole_start,
--				  u64 *hole_size, u64 num_bytes)
-+static bool dev_extent_hole_check(struct btrfs_device *device, u64 type,
-+				  u64 *hole_start, u64 *hole_size, u64 num_bytes)
- {
- 	switch (device->fs_devices->chunk_alloc_policy) {
- 	case BTRFS_CHUNK_ALLOC_REGULAR:
- 		/* No check */
- 		break;
- 	case BTRFS_CHUNK_ALLOC_ZONED:
--		return dev_extent_hole_check_zoned(device, hole_start,
-+		return dev_extent_hole_check_zoned(device, type, hole_start,
- 						   hole_size, num_bytes);
- 	default:
- 		BUG();
-@@ -814,6 +830,7 @@ static bool dev_extent_hole_check(struct btrfs_device *device, u64 *hole_start,
- /*
-  * find_free_dev_extent - find free space in the specified device
-  * @device:	  the device which we search the free space in
-+ * @type:         the block_group type we want to allocate
-  * @num_bytes:	  the size of the free space that we need
-  * @start:	  store the start of the free space.
-  * @len:	  the size of the free space. that we find, or the size
-@@ -831,7 +848,7 @@ static bool dev_extent_hole_check(struct btrfs_device *device, u64 *hole_start,
-  * But if we don't find suitable free space, it is used to store the size of
-  * the max free space.
-  */
--static int find_free_dev_extent(struct btrfs_device *device,
-+static int find_free_dev_extent(struct btrfs_device *device, u64 type,
- 			        u64 num_bytes, u64 *start, u64 *len)
- {
- 	struct btrfs_key key;
-@@ -907,7 +924,7 @@ again:
- 
- 		if (key.offset > search_start) {
- 			hole_size = key.offset - search_start;
--			dev_extent_hole_check(device, &search_start, &hole_size,
-+			dev_extent_hole_check(device, type, &search_start, &hole_size,
- 					      num_bytes);
- 
- 			if (hole_size > max_hole_size) {
-@@ -947,8 +964,8 @@ next:
- 	 */
- 	if (search_end > search_start) {
- 		hole_size = search_end - search_start;
--		if (dev_extent_hole_check(device, &search_start, &hole_size,
--					  num_bytes)) {
-+		if (dev_extent_hole_check(device, type, &search_start,
-+					  &hole_size, num_bytes)) {
- 			btrfs_release_path(path);
- 			goto again;
- 		}
-@@ -1028,12 +1045,12 @@ err:
-  * Allocate one free dev extent and insert it into the fs.
-  */
- static int btrfs_alloc_dev_extent(struct btrfs_trans_handle *trans,
--				  struct btrfs_device *device,
-+				  struct btrfs_device *device, u64 type,
- 				  u64 chunk_offset, u64 num_bytes, u64 *start)
- {
- 	int ret;
- 
--	ret = find_free_dev_extent(device, num_bytes, start, NULL);
-+	ret = find_free_dev_extent(device, type, num_bytes, start, NULL);
- 	if (ret)
- 		return ret;
- 	return btrfs_insert_dev_extent(trans, device, chunk_offset, num_bytes,
-@@ -1598,8 +1615,8 @@ static int create_chunk(struct btrfs_trans_handle *trans,
- 			list_move(&device->dev_list, dev_list);
- 
- 		if (!ctl->dev_offset) {
--			ret = btrfs_alloc_dev_extent(trans, device, key.offset,
--					ctl->stripe_size, &dev_offset);
-+			ret = btrfs_alloc_dev_extent(trans, device, ctl->type,
-+					key.offset, ctl->stripe_size, &dev_offset);
- 			if (ret < 0)
- 				goto out_chunk_map;
- 		} else {
--- 
-2.52.0
-
+>
+> Reviewed-by: Boris Burkov <boris@bur.io>
+>
+> > ---
+> >
+> > V2: Fix typos leading to compilation failure.
+> >
+> >  fs/btrfs/block-group.c | 9 ++-------
+> >  fs/btrfs/block-group.h | 8 ++++++++
+> >  fs/btrfs/space-info.c  | 3 +--
+> >  3 files changed, 11 insertions(+), 9 deletions(-)
+> >
+> > diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+> > index a1119f06b6d1..d17fe777b727 100644
+> > --- a/fs/btrfs/block-group.c
+> > +++ b/fs/btrfs/block-group.c
+> > @@ -1376,8 +1376,7 @@ static int inc_block_group_ro(struct btrfs_block_=
+group *cache, bool force)
+> >               goto out;
+> >       }
+> >
+> > -     num_bytes =3D cache->length - cache->reserved - cache->pinned -
+> > -                 cache->bytes_super - cache->zone_unusable - cache->us=
+ed;
+> > +     num_bytes =3D btrfs_block_group_free_space(cache);
+> >
+> >       /*
+> >        * Data never overcommits, even in mixed mode, so do just the str=
+aight
+> > @@ -3089,7 +3088,6 @@ int btrfs_inc_block_group_ro(struct btrfs_block_g=
+roup *cache,
+> >  void btrfs_dec_block_group_ro(struct btrfs_block_group *cache)
+> >  {
+> >       struct btrfs_space_info *sinfo =3D cache->space_info;
+> > -     u64 num_bytes;
+> >
+> >       BUG_ON(!cache->ro);
+> >
+> > @@ -3105,10 +3103,7 @@ void btrfs_dec_block_group_ro(struct btrfs_block=
+_group *cache)
+> >                       btrfs_space_info_update_bytes_zone_unusable(sinfo=
+, cache->zone_unusable);
+> >                       sinfo->bytes_readonly -=3D cache->zone_unusable;
+> >               }
+> > -             num_bytes =3D cache->length - cache->reserved -
+> > -                         cache->pinned - cache->bytes_super -
+> > -                         cache->zone_unusable - cache->used;
+> > -             sinfo->bytes_readonly -=3D num_bytes;
+> > +             sinfo->bytes_readonly -=3D btrfs_block_group_free_space(c=
+ache);
+> >               list_del_init(&cache->ro_list);
+> >       }
+> >       spin_unlock(&cache->lock);
+> > diff --git a/fs/btrfs/block-group.h b/fs/btrfs/block-group.h
+> > index 5f933455118c..6662e644199a 100644
+> > --- a/fs/btrfs/block-group.h
+> > +++ b/fs/btrfs/block-group.h
+> > @@ -295,6 +295,14 @@ static inline bool btrfs_is_block_group_data_only(=
+const struct btrfs_block_group
+> >              !(block_group->flags & BTRFS_BLOCK_GROUP_METADATA);
+> >  }
+> >
+> > +static inline u64 btrfs_block_group_free_space(const struct btrfs_bloc=
+k_group *bg)
+> > +{
+> > +     lockdep_assert_held(&bg->lock);
+> > +
+> > +     return (bg->length - bg->used - bg->pinned - bg->reserved -
+> > +             bg->bytes_super - bg->zone_unusable);
+> > +}
+> > +
+> >  #ifdef CONFIG_BTRFS_DEBUG
+> >  int btrfs_should_fragment_free_space(const struct btrfs_block_group *b=
+lock_group);
+> >  #endif
+> > diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+> > index 857e4fd2c77e..a9fe6b66c5e1 100644
+> > --- a/fs/btrfs/space-info.c
+> > +++ b/fs/btrfs/space-info.c
+> > @@ -656,8 +656,7 @@ void btrfs_dump_space_info(struct btrfs_space_info =
+*info, u64 bytes,
+> >               u64 avail;
+> >
+> >               spin_lock(&cache->lock);
+> > -             avail =3D cache->length - cache->used - cache->pinned -
+> > -                     cache->reserved - cache->bytes_super - cache->zon=
+e_unusable;
+> > +             avail =3D btrfs_block_group_free_space(cache);
+> >               btrfs_info(fs_info,
+> >  "block group %llu has %llu bytes, %llu used %llu pinned %llu reserved =
+%llu delalloc %llu super %llu zone_unusable (%llu bytes available) %s",
+> >                          cache->start, cache->length, cache->used, cach=
+e->pinned,
+> > --
+> > 2.47.2
+> >
 
