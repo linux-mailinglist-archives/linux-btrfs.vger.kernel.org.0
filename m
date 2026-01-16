@@ -1,294 +1,216 @@
-Return-Path: <linux-btrfs+bounces-20640-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20641-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BAC0D33AF6
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Jan 2026 18:07:29 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EC47D33BD8
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Jan 2026 18:16:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 4393330B40DD
-	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Jan 2026 17:06:42 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 0A6BF302B8D2
+	for <lists+linux-btrfs@lfdr.de>; Fri, 16 Jan 2026 17:12:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCBB836B073;
-	Fri, 16 Jan 2026 17:06:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1E5333C19C;
+	Fri, 16 Jan 2026 17:12:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IhMSKtKa"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="je7NZDFN";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="ftX27wyy"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fout-b1-smtp.messagingengine.com (fout-b1-smtp.messagingengine.com [202.12.124.144])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BFF4327C05
-	for <linux-btrfs@vger.kernel.org>; Fri, 16 Jan 2026 17:06:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.218.47
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768583198; cv=pass; b=OZuL75F2xPF23TC+FNs6NHDgraM7mFnJqThTUtSapbi6jY6sCShUM9ylymMJ/h4EyvWSucgVCjMgxDq6sh7euJHruJi+ixEdK5ncvGNMjy0MvapnEr1WAZl7F9SFsIjBpL91Ei9bPpnFQdMZn5QpznY2jYNGC9P01q7XoqnXnuI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768583198; c=relaxed/simple;
-	bh=AutWS+ChfvnwZhvgwiJu9L8XUNWLOmuOdlQ8JOwu3aI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ILlImBmfa2NDh2I51ZiW+1E8RHhr94SX9YpCxIJtu3JFI6Dys08vtTZcPNs12dVXIUdOD92u0W2I7mjSES+z2AY9CivlnCW81Aanba6XzXcIP5+3t9P9Qwo54Kzwr/AGkuqSJJjTSX705VmxQBvGBYPIxZMPYxyY6rhMYWVRQlw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IhMSKtKa; arc=pass smtp.client-ip=209.85.218.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-b86ed375d37so296812566b.3
-        for <linux-btrfs@vger.kernel.org>; Fri, 16 Jan 2026 09:06:36 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1768583195; cv=none;
-        d=google.com; s=arc-20240605;
-        b=C3Hsn84HcsEcM5jsDVrWMDadSFZf0GtHhg9jyxk4MlWAfj/9Gd53v/ZLO69ye7Hotd
-         6etUUc9uS9lbrzHj55EIjVekVoeKmaPOfcjW296IOHITmRmZZwAk9SThm8UeTU0z7/e4
-         cpJSg2jiKHqFAurpQ8VAVFVkT9Fo11ZFDkZA8Q5a+SNxsn65a4xF7dXKN8wO5SGCmXVY
-         lWa0sAPQvSrS3Ij1SWv1eghedI8ayFgV2NYDV6FWdpn1W4NIM2fU5kmX+jA+CKZmfCkw
-         V2WYiNeS9JkB1VrUKKYYcR/FniKyBOvB7fBXTLINRGK/s2sRCuJRuUwMW5cwJNAlmHJl
-         x8Jw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=XItb6VFbJFsznrM8Z1kGxSYoWMyWGsT3kv3uyFtUZ1Y=;
-        fh=5hHtvTbzDp+buUsZcyTQniBRc2032OYFXXcJqe0tZaM=;
-        b=M4mLD8DKTZpMYyr8p01Afq/B0/OIf3LU7MkNDXvdVVwilbdVTlYbn9fpB0ZSz1uN5j
-         IpoEB6UyyCPzjGmNymF0SLpyyhdor8XFgtUSrgZYX6o7WiUdUwrhWmONb0crmnvv1Y/x
-         ul5ovIcq+7de4dKrAKmxZ8FoyRRjqTKz5QTXA+yrjruDRXMM51trd6UtB6SEdJjutmjh
-         zhN58CXIp4OkLqZpBDfNW09TwG8csIQW03yQkMGHTkxMk9VqKSzazEb8BByKw38KLbE7
-         IO1oJR1T3iCGzfkjhodNdvPyxWzygvxcW90MpVq0oBw4urXU9RM4YYvr451TpcVmrbkC
-         97rA==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768583195; x=1769187995; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XItb6VFbJFsznrM8Z1kGxSYoWMyWGsT3kv3uyFtUZ1Y=;
-        b=IhMSKtKaInAjrrAr5VM6ei28YAbFYHSe3d3k41G1Ruwu2yhJloJySjlPBPAMQDKx3p
-         EQ5CmjuREI5k/GUIw8K+fzaDX9QShVwycft/lqao/M18lDOhI0NJBa0RpkhiJ2pvt7K8
-         D/ERhK4E2MY3mZzLCc03/aTWKZ90WnhUj9Go5z7ivGLuW7wYtfn0Qeg0hzbW6hbNftgG
-         df8KlNPgCvp5qQHH6KttDWpApVbKvO0SH/1KLecIF0gfrc3pqoXs4rRyTgF42lJHW/yK
-         K2RoHQAms4bU8iXM3yKxjbrKs7rpkByiFEec9h2rVa66JWgAj7HIajNmoheECxLUGlH5
-         rwRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768583195; x=1769187995;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=XItb6VFbJFsznrM8Z1kGxSYoWMyWGsT3kv3uyFtUZ1Y=;
-        b=Thaky0GqrTPnNMQki/vrAk4+KqdrHpOlBBRMZcHdtMoU9ij7hlAAVinKHXK9QymYua
-         2m0Ko99xQkcbLapZkrZddmndfIbsG8ObXfKx11Rn1Oh4ZVBtbbD/RcofycgR65FaagLB
-         hCe5Liia0SepDOudC3Vl4t0o2sbkDIRC8yN3eMrffuTmQfDn7ILBAD0HKKXwON7fDCMB
-         5+/6NurxoPAvTX+ba7lOPuEGnOBZ2OnxHfTfk88lCUfacjLIudu7Mb66O0xpvjXxeABK
-         KlFaRVeWnJaJY+k8cb4tC/OG1cGfOjcxEqlhI70rUmRboIuVxOw2NeyfksLKv/4aaTq+
-         t1tg==
-X-Forwarded-Encrypted: i=1; AJvYcCUmbn2vCjnCJcd+QhC5Oq4tL7VCtt38CCjXTGWzotI0fy2Aj8sbHY+jeIIUSduMoq6nEthkcDPZ+Q6lwA==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy6lIEOz4zvzKa2I5+SPlhnvXCKpb0ORRqAXliasoW+njAFmDGe
-	RAMS4v+ggQFjLHyEs3kp5Ad9CcfgAgUI1S7YALLFWK94wCdY+ZxgClak6ZVGUpjApouGqZW6P8W
-	nGDFZ+zNOOAC88W6OSRgCj8sECZrvCu0=
-X-Gm-Gg: AY/fxX6sVgOG8Hya664JA0xOdI5mcA02zUnqI7OVy8ZaCIC5JpKIGS5c5JvRgjhVJmb
-	4rmMcME/f5IrmXFGja2MNQLM9/xgDPOkZLZFF8vvHQ02YsCryOzrjPkatL5EbKuZ5IV2rXr/Q1d
-	UBvihY+5vi8kceHGL5mQ4+4LidWo9iy+2cphGb4pRvIuqgpMvxKEE1J+DiYPMAyaqPMVbfmAWl3
-	CZ6MOUtdDQ2gpdnveg+pAEiGPeHjfBVqmlA0of2K+MDfYL0VzemXVEc3EiDU/lVaXvzKyZyNVQ3
-	IsDcAjPehDflfV0Xz5iY/U83Mo/3Sb124sCKFHMh
-X-Received: by 2002:a17:907:8692:b0:b87:63a8:8849 with SMTP id
- a640c23a62f3a-b8793035646mr264423966b.46.1768583194354; Fri, 16 Jan 2026
- 09:06:34 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88CF53090C6
+	for <linux-btrfs@vger.kernel.org>; Fri, 16 Jan 2026 17:12:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.144
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1768583564; cv=none; b=qquFNw5Q+6FhXvq8KB/OHyBn+zl0RlpRH5RbdjqeSP6dZ+yob/F5iaWr5ULkAKRJL6p0c/FTVqDRIwh3SyzsypWK9FItQW6DUcJA/h07Y/PZsqbvMR2Wrx7VnIdyDSLGWMsN4YV2Ts80HwPDqU9Fshi4c6EDwwCXdOkKjZTvAVY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1768583564; c=relaxed/simple;
+	bh=d2Mkvy20aPFF02u6uqdnlVk4uyRPuFwI3BpRH89diHw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SIN3WWmLcvqnnAduVj/oUfjDCfM4vAItyd8OvEsamBBQLpsKNtr+KhslohZp5C0bRgxprv0h4yewYO1JCxtq4yQfxg/SLqdfe1bRRU3BxY5kHgtazSHW3NBTbVuU/ctse2PAed06+BR1ZuzhGqwrOswsILBXErPFb+UMSbyRiSY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=je7NZDFN; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=ftX27wyy; arc=none smtp.client-ip=202.12.124.144
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
+Received: from phl-compute-05.internal (phl-compute-05.internal [10.202.2.45])
+	by mailfout.stl.internal (Postfix) with ESMTP id AD1C11D00077;
+	Fri, 16 Jan 2026 12:12:41 -0500 (EST)
+Received: from phl-frontend-04 ([10.202.2.163])
+  by phl-compute-05.internal (MEProxy); Fri, 16 Jan 2026 12:12:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+	:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1768583561; x=1768669961; bh=QOM4nCAvOd
+	3zJVnO7u0ppMm+ADAuGj1pfal7FS5AQh8=; b=je7NZDFN17PVv9tVvK5Qt7srVE
+	qqwrxVJEClOEZ9iDe3Qn11gcO9CEZavsk6/5r6ZDMY8stlJqdU5TWr1fRD2FKl/q
+	ErAeVrFxJNbwpFd2pE93YhA7aaiuMGE8jB8dVy8mBeVIly0+km05fHBaFfarAXqZ
+	5gRTJGQVDfn+AoxZXLGwe9kho0rCJ/g/sXlbAH1Db01UPREXc9N25Pp3QyLhwBKf
+	R0omZ0d3mcRx+JpwekfAY2cieukGR714CzMmayJuFyu7Zw/FBbTrfi9wRG0s2tj2
+	MZex1cCiuh10bRHd3cfjkha9BC7DvMs5w8+HynyTVz+aGarYNLF+cGRLoE9w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+	1768583561; x=1768669961; bh=QOM4nCAvOd3zJVnO7u0ppMm+ADAuGj1pfal
+	7FS5AQh8=; b=ftX27wyyZycKZYDlYolKR8BkMdv0v0M50t5ZEgERxwi/8H0BuTQ
+	3BZr06G7GA4L89cr1W53Rdl8aJz9YqgFk5Cj+nilZpde80pDqGd8LzQRt05Uxb+e
+	BvL6hH/MtIecK6fcI1sT9jHLzhQY1saOOyuSdtnpeFWf2pFxJjG3ABzhwBNgGT5A
+	nYrb3697Ux9AyG1mPimduZ+SV7+jZ4NeAQVwo1LU/7HKx+V+BYGCu7sLNiaPkRvY
+	+/8bXo+0zdVyKdRhh6tIy8rz/LxYYmTjlOcya8LxCJeOATv4PMlGESXRUiTpN0A7
+	pcrThAh27oH4Y0m8TIZ1l4I60pcwyLKHP9g==
+X-ME-Sender: <xms:iXFqaWTRFEdYxxdA_OZPe1i3rhC8m0O9EjfA79Bi7F39l49fp8pDPA>
+    <xme:iXFqaTP3_mmP_kVmZADW2nOVKHlXyHlGF8bte6VyuczlE7sXYHpSD8qN4YSenlo_X
+    BiKOp9oetwfKbM9T1u4ljSqnhJv9HU2NoVVxIU4H3wIlBsqH1QtFTU>
+X-ME-Received: <xmr:iXFqaRMbKYW5vg805MhwmgZf82b8LEvQl_ZOqL0j6pHHrTGo9wXqMebU1G8yZ3_hDvByWyqKyCFIJD0iM3eCJFt84h0>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdduvdelheduucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
+    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
+    gurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhishcu
+    uehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpeehtd
+    fhvefghfdtvefghfelhffgueeugedtveduieehieehteelgeehvdefgeefgeenucffohhm
+    rghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
+    hmpehmrghilhhfrhhomhepsghorhhishessghurhdrihhopdhnsggprhgtphhtthhopeef
+    pdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehjrggtkhesshhushgvrdgtiidprh
+    gtphhtthhopeifqhhusehsuhhsvgdrtghomhdprhgtphhtthhopehlihhnuhigqdgsthhr
+    fhhssehvghgvrhdrkhgvrhhnvghlrdhorhhg
+X-ME-Proxy: <xmx:iXFqabscIvnSipCIwo5osP0MoTpc_LBe8LxXWYPQFUwg0rBweoLVbw>
+    <xmx:iXFqaTW5G8plJZ7VKqHw8EcPdbu1dc5JNuvSDusBurx8NOLVSuglgw>
+    <xmx:iXFqabv6oLPW9BDoXKgLvGP-k9YJw3s2-q320UamK0wFaoBji4O3pA>
+    <xmx:iXFqaXXNBdlSFCXocjnQ9o85OG9eO_xtLmLnr-kxOjeBZB-HH_UiKA>
+    <xmx:iXFqadbuCR2xVvavnMG1Cqje3Cz3lW7GFSFnWoe_KAIAeEQTjbog5O6C>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 16 Jan 2026 12:12:40 -0500 (EST)
+Date: Fri, 16 Jan 2026 09:12:36 -0800
+From: Boris Burkov <boris@bur.io>
+To: Jan Kara <jack@suse.cz>
+Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: do not strictly require dirty metadata threshold
+ for metadata writepages
+Message-ID: <20260116171236.GA2507766@zen.localdomain>
+References: <ccfd051d2ae173d95f3f6e75b7466efbf4596620.1768452808.git.wqu@suse.com>
+ <20260115233007.GC2118372@zen.localdomain>
+ <sbfwmjgmc5o74mvhuk2qkcjd5kn7kawy6rxkuejffajvecblxu@7erdxsdn5crw>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260114-tonyk-get_disk_uuid-v1-0-e6a319e25d57@igalia.com>
- <20260114-tonyk-get_disk_uuid-v1-3-e6a319e25d57@igalia.com>
- <20260114062608.GB10805@lst.de> <5334ebc6-ceee-4262-b477-6b161c5ca704@igalia.com>
- <20260115062944.GA9590@lst.de> <633bb5f3-4582-416c-b8b9-fd1f3b3452ab@suse.com>
- <20260115072311.GA10352@lst.de> <22b16e24-d10e-43f6-bc2b-eeaa94310e3a@igalia.com>
- <CAOQ4uxhbz7=XT=C3R8XqL0K_o7KwLKsoNwgk=qJGuw2375MTJw@mail.gmail.com>
- <0241e2c4-bf11-4372-9eda-cccaba4a6d7d@igalia.com> <CAOQ4uxi988PutUi=Owm5zf6NaCm90PUCJLu7dw8firH8305w-A@mail.gmail.com>
- <33c1ccbd-abbe-4278-8ab1-d7d645c8b6e8@igalia.com>
-In-Reply-To: <33c1ccbd-abbe-4278-8ab1-d7d645c8b6e8@igalia.com>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Fri, 16 Jan 2026 18:06:22 +0100
-X-Gm-Features: AZwV_QiycpCXWte0-e38-ESYar7TKmRhifBZp2CxcdBlO9fcQ_xptdhi8v4o5sg
-Message-ID: <CAOQ4uxgCM=q29Vs+35y-2K9k7GP2A2NfPkuqCrUiMUHW+KhbWw@mail.gmail.com>
-Subject: Re: [PATCH 3/3] ovl: Use real disk UUID for origin file handles
-To: =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>
-Cc: Christoph Hellwig <hch@lst.de>, Chuck Lever <chuck.lever@oracle.com>, Jeff Layton <jlayton@kernel.org>, 
-	NeilBrown <neil@brown.name>, Olga Kornievskaia <okorniev@redhat.com>, Dai Ngo <Dai.Ngo@oracle.com>, 
-	Tom Talpey <tom@talpey.com>, Carlos Maiolino <cem@kernel.org>, Chris Mason <clm@fb.com>, 
-	David Sterba <dsterba@suse.com>, Miklos Szeredi <miklos@szeredi.hu>, 
-	Christian Brauner <brauner@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
-	linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org, linux-unionfs@vger.kernel.org, 
-	kernel-dev@igalia.com, vivek@collabora.com, 
-	Ludovico de Nittis <ludovico.denittis@collabora.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <sbfwmjgmc5o74mvhuk2qkcjd5kn7kawy6rxkuejffajvecblxu@7erdxsdn5crw>
 
-On Fri, Jan 16, 2026 at 2:28=E2=80=AFPM Andr=C3=A9 Almeida <andrealmeid@iga=
-lia.com> wrote:
->
-> [+CC SteamOS developers]
->
-> Em 16/01/2026 06:55, Amir Goldstein escreveu:
-> > On Thu, Jan 15, 2026 at 7:55=E2=80=AFPM Andr=C3=A9 Almeida <andrealmeid=
-@igalia.com> wrote:
-> >>
-> >> Em 15/01/2026 13:07, Amir Goldstein escreveu:
-> >>> On Thu, Jan 15, 2026 at 4:42=E2=80=AFPM Andr=C3=A9 Almeida <andrealme=
-id@igalia.com> wrote:
-> >>>>
-> >>>> Em 15/01/2026 04:23, Christoph Hellwig escreveu:
-> >>>>
-> >>>> [...]
-> >>>>
-> >>>>>
-> >>>>> I still wonder what the use case is here.  Looking at Andr=C3=A9's =
-original
-> >>>>> mail it states:
-> >>>>>
-> >>>>> "However, btrfs mounts may have volatiles UUIDs. When mounting the =
-exact same
-> >>>>> disk image with btrfs, a random UUID is assigned for the following =
-disks each
-> >>>>> time they are mounted, stored at temp_fsid and used across the kern=
-el as the
-> >>>>> disk UUID. `btrfs filesystem show` presents that. Calling statfs() =
-however
-> >>>>> shows the original (and duplicated) UUID for all disks."
-> >>>>>
-> >>>>> and this doesn't even talk about multiple mounts, but looking at
-> >>>>> device_list_add it seems to only set the temp_fsid flag when set
-> >>>>> same_fsid_diff_dev is set by find_fsid_by_device, which isn't docum=
-ented
-> >>>>> well, but does indeed seem to be done transparently when two file s=
-ystems
-> >>>>> with the same fsid are mounted.
-> >>>>>
-> >>>>> So Andr=C3=A9, can you confirm this what you're worried about?  And=
- btrfs
-> >>>>> developers, I think the main problem is indeed that btrfs simply al=
-lows
-> >>>>> mounting the same fsid twice.  Which is really fatal for anything u=
-sing
-> >>>>> the fsid/uuid, such NFS exports, mount by fs uuid or any sb->s_uuid=
- user.
-> >>>>>
-> >>>>
-> >>>> Yes, I'm would like to be able to mount two cloned btrfs images and =
-to
-> >>>> use overlayfs with them. This is useful for SteamOS A/B partition sc=
-heme.
-> >>>>
-> >>>>>> If so, I think it's time to revert the behavior before it's too la=
-te.
-> >>>>>> Currently the main usage of such duplicated fsids is for Steam dec=
-k to
-> >>>>>> maintain A/B partitions, I think they can accept a new compat_ro f=
-lag for
-> >>>>>> that.
-> >>>>>
-> >>>>> What's an A/B partition?  And how are these safely used at the same=
- time?
-> >>>>>
-> >>>>
-> >>>> The Steam Deck have two main partitions to install SteamOS updates
-> >>>> atomically. When you want to update the device, assuming that you ar=
-e
-> >>>> using partition A, the updater will write the new image in partition=
- B,
-> >>>> and vice versa. Then after the reboot, the system will mount the new
-> >>>> image on B.
-> >>>>
-> >>>
-> >>> And what do you expect to happen wrt overlayfs when switching from
-> >>> image A to B?
-> >>>
-> >>> What are the origin file handles recorded in overlayfs index from ima=
-ge A
-> >>> lower worth when the lower image is B?
-> >>>
-> >>> Is there any guarantee that file handles are relevant and point to th=
-e
-> >>> same objects?
-> >>>
-> >>> The whole point of the overlayfs index feature is that overlayfs inod=
-es
-> >>> can have a unique id across copy-up.
-> >>>
-> >>> Please explain in more details exactly which overlayfs setup you are
-> >>> trying to do with index feature.
-> >>>
-> >>
-> >> The problem happens _before_ switching from A to B, it happens when
-> >> trying to install the same image from A on B.
-> >>
-> >> During the image installation process, while running in A, the B image
-> >> will be mounted more than once for some setup steps, and overlayfs is
-> >> used for this. Because A have the same UUID, each time B is remouted
-> >> will get a new UUID and then the installation scripts fails mounting t=
-he
-> >> image.
-> >
-> > Please describe the exact overlayfs setup and specifically,
-> > is it multi lower or single lower layer setup?
-> > What reason do you need the overlayfs index for?
-> > Can you mount with index=3Doff which should relax the hard
-> > requirement for match with the original lower layer uuid.
-> >
->
-> The setup has a single lower layer. This is how the mount command looks
-> like:
->
-> mount -t overlay -o
-> "lowerdir=3D${DEV_DIR}/etc,upperdir=3D${DEV_DIR}/var/lib/overlays/etc/upp=
-er,workdir=3D${DEV_DIR}/var/lib/overlays/etc/work"
-> none "${DEV_DIR}/etc"
->
-> They would rather not disable index, to avoid mounting the wrong layers
-> and to avoid corner cases with hardlinks.
+On Fri, Jan 16, 2026 at 01:07:47PM +0100, Jan Kara wrote:
+> On Thu 15-01-26 15:30:07, Boris Burkov wrote:
+> > On Thu, Jan 15, 2026 at 03:23:44PM +1030, Qu Wenruo wrote:
+> > > [BUG]
+> > > There is an internal report that btrfs hits a hang at
+> > > balance_dirty_pages() for btree inode.
+> > > 
+> > > [CAUSE]
+> > > balance_dirty_pages() can be triggered by both internal calls like
+> > > btrfs_btree_balance_dirty() and external callers like mm or cgroup.
+> > > 
+> > > For internal calls, btrfs_btree_balance_dirty() calls
+> > > __btrfs_btree_balance_dirty() which will check if the current dirty
+> > > metadata reaches a certain threshold (32M), and if not we just skip the
+> > > workload.
+> > > 
+> > > For external calls they can directly call btree_writepages(), which
+> > 
+> > grammar nit: you don't need the "can".
+> > "External callers directly call btree_writepages()" or something is
+> > clearer.
+> > 
+> > > is doing a similar check against the threshold, and skip the writeback
+> > > again if it's not reaching the same 32M threshold.
+> > > 
+> > > But the threshold is only internal to btrfs, if cgroup or mm chose to
+> > > balance dirty pages for the metadata inode at a much lower threshold, in
+> > > this case the dirty pages count is around 28M, lower than btrfs'
+> > > internal threshold.
+> > 
+> > I think this is a good argument. Layering multiple different mechanisms
+> > for metering writeback doesn't make a ton of sense to me. With that
+> > said, it's not great for the write performance of the btrees if we
+> > writeback already cow-ed nodes, so allowing more frequent writeback
+> > might be harmful in practice.
+> > 
+> > I still think it's worth it to simplify things and "find out",
+> > especially if this existing behavior is buggy...
+> > 
+> > > 
+> > > This causes all writeback request to be ignored, and no dirty pages for
+> > > btrfs btree inode can be balanced, resulting hang for all
+> > > balance_dirty_pages() callers.
+> > 
+> > Does this happen determinstically if balance_dirty_pages() is called on
+> > the btrfs sb with <32M dirty eb pages? Or does it depend on the state of
+> > the dirty file pages too, like if those inodes get back some memory,
+> > it's OK? Just curious to understand better.
+> 
+> Let me explain here some details of dirty throttling which will hopefully
+> make things clearer. The system has so called dirty limit which limits
+> amount of dirty pages in the page cache. For each memory cgroup it also
+> translates into some limit on the number of dirty pages within that cgroup.
+> This cgroup dirty limit was what was actually playing the role here because
+> the cgroup had only a small amount of memory and so the dirty limit for it
+> was something like 16MB. Dirty throttling is responsible for enforcing that
+> nobody can dirty (significantly) more dirty memory than there's dirty
+> limit. Thus when a task is dirtying pages it periodically enters into
+> balance_dirty_pages() and we let it sleep there to slow down the dirtying.
+> The sleep time is computed based on estimated page writeback speed and how
+> far we are from reaching the dirty limit. When the system is over dirty
+> limit already (either globally or within a cgroup of the running task), we
+> will not let the task exit from balance_dirty_pages() until the number of
+> dirty pages drops below the limit. 
+> 
+> So in this particular case, as I already mentioned, there was a cgroup with
+> relatively small amount of memory and as a result with dirty limit set at
+> 16MB. A task from that cgroup has dirtied about 28MB worth of pages in btrfs
+> btree inode and these were practically the only dirty pages in that cgroup.
+> So the only option how to get the cgroup below the dirty limit is to
+> writeback those btree pages. But writeback for those pages was never
+> started because of the btrfs internal threshold for the btree inode. So
+> this was practially a deadlock (tasks stuck in balance_dirty_pages()
+> indefinitely) although if somebody called sync(2) or something similar that
+> would force writeback of those btree pages then the processes should get
+> unstuck.
 
-IIUC you have all the layers on the same fs ($DEV_DIR)?
+Thank you for the extra explanation on the stuck condition, that is
+helpful.
 
-See mount option uuid=3Doff, created for this exact use case:
+I am curious if you have seen this series I wrote last year:
+https://lore.kernel.org/linux-btrfs/20250829015247.GJ29826@twin.jikos.cz/
+(similar to something Qu had worked on in the past) which makes it so that
+btrfs btree inode pages are not accounted to a cgroup. With those patches,
+I think the likelihood that we would have a situation where the dirty
+pages are less than 32MB but we are over the balance_dirty_pages limit
+in a way that perma-throttled a task seems low, since you couldn't have
+a cgroup with a tiny limit full of btree inode pages. The btree inode
+pages would be associated with the global limit which I imagine would
+tend to be higher and correspond to a greater total amount (more than
+32MB) of btree inode pages, and more likely to also have data pages we
+can writeback. How likely is it that the global limit would be <32MB?
 
-Documentation/filesystems/overlayfs.rst:
-Note: the mount option uuid=3Doff can be used to replace UUID of the underl=
-ying
-filesystem in file handles with null, and effectively disable UUID checks. =
-This
-can be useful in case the underlying disk is copied and the UUID of this co=
-py
-is changed. This is only applicable if all lower/upper/work directories are=
- on
-the same filesystem, otherwise it will fallback to normal behaviour.
+With all that said, even if my suspicion is correct, I think I still
+support this patch since it simplifies things and I think we can
+generally trust that A) balance_dirty_pages is reasonably well tuned and
+B) if it somehow misbehaves we can just improve things more directly
+there, rather than put arbitrary logic in other layers like btrfs
+itself.
 
-commit 5830fb6b54f7167cc7c9d43612eb01c24312c7ca
-Author: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
-Date:   Tue Oct 13 17:59:54 2020 +0300
+So if the description of the totally stuck condition is added to the
+commit message, please add
 
-    ovl: introduce new "uuid=3Doff" option for inodes index feature
-
-    This replaces uuid with null in overlayfs file handles and thus relaxes
-    uuid checks for overlay index feature. It is only possible in case ther=
-e is
-    only one filesystem for all the work/upper/lower directories and bare f=
-ile
-    handles from this backing filesystem are unique. In other case when we =
-have
-    multiple filesystems lets just fallback to "uuid=3Don" which is and
-    equivalent of how it worked before with all uuid checks.
-
-    This is needed when overlayfs is/was mounted in a container with index
-    enabled ...
-
-    If you just change the uuid of the backing filesystem, overlay is not
-    mounting any more. In Virtuozzo we copy container disks (ploops) when
-    create the copy of container and we require fs uuid to be unique for a =
-new
-    container.
-
-TBH, I am trying to remember why we require upper/work to be on the
-same fs as lower for uuid=3Doff,index=3Don and I can't remember.
-If this is important I can look into it.
+Reviewed-by: Boris Burkov <boris@bur.io>
 
 Thanks,
-Amir.
+Boris
+
+> 
+> 								Honza
+> -- 
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
 
