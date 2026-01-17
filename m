@@ -1,267 +1,399 @@
-Return-Path: <linux-btrfs+bounces-20649-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20650-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 871B8D38C27
-	for <lists+linux-btrfs@lfdr.de>; Sat, 17 Jan 2026 05:24:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C7AED38C29
+	for <lists+linux-btrfs@lfdr.de>; Sat, 17 Jan 2026 05:29:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 6E1763032FD9
-	for <lists+linux-btrfs@lfdr.de>; Sat, 17 Jan 2026 04:24:39 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 7BD403031CCF
+	for <lists+linux-btrfs@lfdr.de>; Sat, 17 Jan 2026 04:29:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22CB82FE067;
-	Sat, 17 Jan 2026 04:24:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05A9B2D29B7;
+	Sat, 17 Jan 2026 04:29:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="O8xnILv8";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="bdMuThe8"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="gwJcyF7L"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-wm1-f66.google.com (mail-wm1-f66.google.com [209.85.128.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B94A7299944
-	for <linux-btrfs@vger.kernel.org>; Sat, 17 Jan 2026 04:24:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76D6923A9B0
+	for <linux-btrfs@vger.kernel.org>; Sat, 17 Jan 2026 04:29:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768623877; cv=none; b=YtfZCvE87E+dUJXIKW67YlKEHRV5jrhPSfaqz2ifxtWWFoQJDJGfozoakQs/V3NSn6SVT8Gkmw4TqlaFga6KvDacoIp/nO8M0cRWikTsL32JGE6d5V2uaA1T1wKVbpJAIvBiMnTGiwVZAnsq4mp7NOzTNm8777EgEbL80as9NV4=
+	t=1768624166; cv=none; b=X4ZhY14xNLtmOgMrABAH2Sl7a822E7dqyqj4/hKompmvH2UGMPnjwaxj2wx0P7y34NLsZfDZn850MVRvqU9DtlcfeX7Ee3tVy9hIcsgavBhLWXNMFox7cVjP5csYYNsoCl2C+iFjts0uV7Ezs81BfUxzbzTZ+1HJVjn5n+mqlTc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768623877; c=relaxed/simple;
-	bh=Q6ieHGb/57Kj41pNhS4FsBr/8TR9RUPq/EWNaXpWb+Q=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mRzHi8m5lJPg/nZ39rNi0TKc7072vGDQeavr8X2gqSQiCbUuqkHJNKUY0cVML9FqRtse9H+u3pMExTD1gvzdl82U8BMpb8VwKHFzKErM/FuXSpUD7lzJnXYjycp7fydd46jSoTFLxkflTrH98XeRnuhogP/MSi/73VLlf8jbdME=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=O8xnILv8; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=bdMuThe8; arc=none smtp.client-ip=195.135.223.131
+	s=arc-20240116; t=1768624166; c=relaxed/simple;
+	bh=5Rin5uoUUcLY/4cHrkHOgF9p0w0P/7JAONSj3ZotY8k=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=crQRnmymmzbQeNQ67bESZBkn5p+ZljVya+ijYr4k8cu3sXaO/4t9p0nzJDOiMSKNT90DpGd0eqNMmc8z6G3w1KPsPQRvRB5MlKltOFGiTkrkMHT+a98H5Bq3sMfmjTMeHPKF8zkLa2mxJwUMvFwGqYQe29uxaWeC4r7rbwAiiH0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=gwJcyF7L; arc=none smtp.client-ip=209.85.128.66
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id F29055BCC9;
-	Sat, 17 Jan 2026 04:24:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1768623874; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=qRcqozDCjZtL6k9/IJ1ZR8Qvtva2xuC8/1DNkNDwhVE=;
-	b=O8xnILv8Ni761p77ok6axk+nFuc3LzOLKkL20YSYyI/uH9y6s/HLUxK+ogcs1OqLdhvzIi
-	FMsF8WC+Q82C4/R3p9ZLtZ1P8hONqdiQEE6xAShfFlRqMUvxAlUVsi8mQKnlDRxE/sq6XB
-	kXFi79PvmxAZ++MV8UW9rfi+ASRo7gY=
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=bdMuThe8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1768623873; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=qRcqozDCjZtL6k9/IJ1ZR8Qvtva2xuC8/1DNkNDwhVE=;
-	b=bdMuThe8F06w+oCJa7IKvIZU8fcvdq58xzSuyM7y8yQcm5aYkc5JVVhlODqDY2cvOBzkHK
-	qPbiHWce8BDy8FQV4LltjGXhXnCptJfd8YtopXKkBiBDJwWvEogVAfRNu3A55lypvukUes
-	mzdN2iMFm+EXwGghn0bQ7UzgK8G/RGs=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D80FD3EA63;
-	Sat, 17 Jan 2026 04:24:30 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id aEhiIP4Oa2nLBwAAD6G6ig
-	(envelope-from <wqu@suse.com>); Sat, 17 Jan 2026 04:24:30 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Cc: stable@vger.kernel.org,
-	Jan Kara <jack@suse.cz>,
-	Boris Burkov <boris@bur.io>
-Subject: [PATCH v3] btrfs: do not strictly require dirty metadata threshold for metadata writepages
-Date: Sat, 17 Jan 2026 14:54:12 +1030
-Message-ID: <ada6a7cf8dbb1f4ee78343402c73b078c65a7ff7.1768623845.git.wqu@suse.com>
-X-Mailer: git-send-email 2.52.0
+Received: by mail-wm1-f66.google.com with SMTP id 5b1f17b1804b1-47ee2715254so12536485e9.3
+        for <linux-btrfs@vger.kernel.org>; Fri, 16 Jan 2026 20:29:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1768624163; x=1769228963; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=trTlaKBIHkSVhdkGuoEczNu8J6C52wOUMg6NhMi7MTQ=;
+        b=gwJcyF7LHEnGNGFLOg5tcRIngzpJo6VykTx4wXKlNhAXqpRNCSrdnPdfEfIJazGWvI
+         HrKw0adzI3261P1tObXhXktWCS5aFrD4nIt1YcL1u774Lr2qU1VdZC7e1itwa5RAkOOI
+         MH6W+lFKRPqSs+LkE9Oqu465s+CuQCgMKmnVGqoBaAGTKoU0wk8qw/bNBfN5u1stnrBE
+         17OlUF1dnActo9upeaudxECcCDTC2z85T/Zcx/zo6MAajNw8zHxXBng+BEM4SmAUVESP
+         x6/zw/bH3dwBDl/1yTjv7jv5E9CaHiYYJMtosMiiGOlsX98PujeuMZEn7uZyQd6w6cY4
+         O2PQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1768624163; x=1769228963;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=trTlaKBIHkSVhdkGuoEczNu8J6C52wOUMg6NhMi7MTQ=;
+        b=oL1qOpKkDPBhC6N2clNGzs4v6Iaj2ROB6+toE2RvQplcKQ5otXvaFhFCVzMBxUFtqu
+         lrzU2icMu8DYAkzeriz4H+i3tJJ9Ae13u0UbSnuvgHGvDXgmsP+NZDQ7KwnbtmNE0xaE
+         grsEl7wqZuIWZjG9QlKBMhdpezIBi1BGse4HW6556QMLkbakdlfTGjRRVYGs6JDat1Of
+         ekPhPQFdjH/ssTgD6KIsXQo3g2UZ/ko/qvT+byyH4q0Ti6HmAfAKmTrvad31NHnGpOWN
+         fgOkmt7yf0K0Lh2ud94QCbBD+aP+f4aVayNoOia49tFz96v1ohJjJs0YumZ4vMLV8Dpq
+         enEQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUe3Mfe7C4KSSu+dSu/LhzMHhcwg69YYeJU2j1B8vvGCZI6huuUdJnvJpgiLLyoQLqQsvrSqzc7F5PLKA==@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywii1iU56xWdt5odOlWFB5CshgGjDLxwDGow2edtISIwWSnIVW+
+	DjaYBOC55ZCFd1xIsMdHpGLsIrIdkgm5IADIvro2DdsatYyKH3aTbEhllUImkThkQbQWAse0Go4
+	di4QScd4=
+X-Gm-Gg: AY/fxX7wphZDMAV/INifJ80cYrQHmBSjmVKiKh/bnmntkSSO8fnE8IkvV74Y94x+Guk
+	ie3wUWdkACWBFm4rZ/JHrSqZYataBzotChlot6aedrma1fU+YIfSAr0ATTmQZOICHJbgT2IVOZq
+	UHyQK0wfhQPQSgONnx0c5w4EyKj3UQn71RtdzWzOemw4NHIswlH4xAJwlE+LQg1OF78q4biILMy
+	0TS+wgWCNC1XfUL6W+Y9s6GrGNhzzsw2J1Nd7V1eeSXiEoehmW9frWU4KIhsC9wQkvbIWpmg1Qg
+	vaTL83Ic+cK/Hpw7Vy3Vm5mzsXsqwxkE8UV2PnWEg9c//l/G4fSg/zBZsw+0Jx4JkeZRr7C+pDd
+	V846xOzuGZrNy1KyNDsIMrnx7fo59FGIvNmNYOBgPY1hPRxjoo1dWKAp+c0PjtGpkE2XqfTsleo
+	ck5gDZS+Lpll4JlyZAhleZTbFv6nBOl5rb55a03C8=
+X-Received: by 2002:a05:600c:3ba8:b0:477:9eb8:97d2 with SMTP id 5b1f17b1804b1-4801e2fddcbmr70767755e9.8.1768624162688;
+        Fri, 16 Jan 2026 20:29:22 -0800 (PST)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2a719412325sm33749625ad.86.2026.01.16.20.29.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Jan 2026 20:29:22 -0800 (PST)
+Message-ID: <ef997c75-868a-4099-8f68-06b8304b7113@suse.com>
+Date: Sat, 17 Jan 2026 14:59:17 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] btrfs: use the btrfs_extent_map_end() helper everywhere
+To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
+References: <69ddaceff63e94c5c1b94f12c52a83a798a9f037.1768561288.git.fdmanana@suse.com>
+Content-Language: en-US
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
+ Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
+ fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
+ 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
+ V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
+ rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
+ cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
+ qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
+ /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
+ o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
+ JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+In-Reply-To: <69ddaceff63e94c5c1b94f12c52a83a798a9f037.1768561288.git.fdmanana@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Score: -3.01
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,suse.com:mid,suse.com:email,bur.io:email,suse.cz:email];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	FROM_EQ_ENVFROM(0.00)[];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	RCVD_COUNT_TWO(0.00)[2];
-	RCVD_TLS_ALL(0.00)[];
-	RCPT_COUNT_THREE(0.00)[4];
-	DKIM_TRACE(0.00)[suse.com:+]
-X-Spam-Level: 
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: F29055BCC9
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
 
-[BUG]
-There is an internal report that over 1000 processes are
-waiting at the io_schedule_timeout() of balance_dirty_pages(), causing
-a system hang and triggered a kernel coredump.
 
-The kernel is v6.4 kernel based, but the root problem still applies to
-any upstream kernel before v6.18.
 
-[CAUSE]
-From Jan Kara for his wisdom on the dirty page balance behavior first.
+在 2026/1/16 21:33, fdmanana@kernel.org 写道:
+> From: Filipe Manana <fdmanana@suse.com>
+> 
+> We have a helper to calculate an extent map's exclusive end offset, but
+> we only use it in some places. Update every site that open codes the
+> calculation to use the helper.
+> 
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
- This cgroup dirty limit was what was actually playing the role here
- because the cgroup had only a small amount of memory and so the dirty
- limit for it was something like 16MB.
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
- Dirty throttling is responsible for enforcing that nobody can dirty
- (significantly) more dirty memory than there's dirty limit. Thus when
- a task is dirtying pages it periodically enters into balance_dirty_pages()
- and we let it sleep there to slow down the dirtying.
+Thanks,
+Qu
 
- When the system is over dirty limit already (either globally or within
- a cgroup of the running task), we will not let the task exit from
- balance_dirty_pages() until the number of dirty pages drops below the
- limit.
-
- So in this particular case, as I already mentioned, there was a cgroup
- with relatively small amount of memory and as a result with dirty limit
- set at 16MB. A task from that cgroup has dirtied about 28MB worth of
- pages in btrfs btree inode and these were practically the only dirty
- pages in that cgroup.
-
-So that means the only way to reduce the dirty pages of that cgroup is
-to writeback the dirty pages of btrfs btree inode, and only after that
-those processes can exit balance_dirty_pages().
-
-Now back to the btrfs part, btree_writepages() is responsible for
-writing back dirty btree inode pages.
-
-The problem here is, there is a btrfs internal threshold that if the
-btree inode's dirty bytes are below the 32M threshold, it will not
-do any writeback.
-
-This behavior is to batch as much metadata as possible so we won't write
-back those tree blocks and then later re-COW then again for another
-modification.
-
-This internal 32MiB is higher than the existing dirty page size (28MiB),
-meaning no writeback will happen, causing a deadlock between btrfs and
-cgroup:
-
-- Btrfs doesn't want to write back btree inode until more dirty pages
-
-- Cgroup/MM doesn't want more dirty pages for btrfs btree inode
-  Thus any process touching that btree inode is put into sleep until
-  the number of dirty pages is reduced.
-
-Thanks Jan Kara a lot for the analyze on the root cause.
-
-[ENHANCEMENT]
-Since kernel commit b55102826d7d ("btrfs: set AS_KERNEL_FILE on the
-btree_inode"), btrfs btree inode pages will only be charged to the root
-cgroup which should have a much larger limit than btrfs' 32MiB
-threshold.
-So it should not affect newer kernels.
-
-But for all current LTS kernels, they are all affected by this problem,
-and backporting the whole AS_KERNEL_FILE may not be a good idea.
-
-Even for newer kernels I still think it's a good idea to get
-rid of the internal threshold at btree_writepages(), since for most cases
-cgroup/MM has a better view of full system memory usage than btrfs' fixed
-threshold.
-
-For internal callers using btrfs_btree_balance_dirty() since that
-function is already doing internal threshold check, we don't need to
-bother them.
-
-But for external callers of btree_writepages(), just respect their
-requests and just write back whatever they want, ignoring the internal
-btrfs threshold to avoid such deadlock on btree inode dirty page
-balancing.
-
-Cc: stable@vger.kernel.org
-Cc: Jan Kara <jack@suse.cz>
-Reviewed-by: Boris Burkov <boris@bur.io>
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-Changelog:
-v3:
-- Update "[FIX]" section to "[ENHANCEMENT]"
-  I totally forgot that the btree-skip-cgroup patchset is already merged,
-  thus it's no longer possible to hit this problem on v6.18+ kernels.
-  Although there is still some value to simplify the btree writeback
-  behavior, the more important part is mostly for the LTS kernels.
-
-- Add Cc to the stable list
-
-v2:
-- Update the commit message to include more details about the
-  balance_dirty_pages() behavior
-
-- With that background knowledge explain the deadlock better
-  It's between cgroup where no more btree inode dirty pages are allowed
-  and all involved processes are put into sleep until dirty pages
-  drops, and btrfs where it won't write back any dirty pages until
-  there are more dirty pages.
----
- fs/btrfs/disk-io.c | 24 +-----------------------
- 1 file changed, 1 insertion(+), 23 deletions(-)
-
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 5e4b7933ab20..9add1f287635 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -485,28 +485,6 @@ static int btree_migrate_folio(struct address_space *mapping,
- #define btree_migrate_folio NULL
- #endif
- 
--static int btree_writepages(struct address_space *mapping,
--			    struct writeback_control *wbc)
--{
--	int ret;
--
--	if (wbc->sync_mode == WB_SYNC_NONE) {
--		struct btrfs_fs_info *fs_info;
--
--		if (wbc->for_kupdate)
--			return 0;
--
--		fs_info = inode_to_fs_info(mapping->host);
--		/* this is a bit racy, but that's ok */
--		ret = __percpu_counter_compare(&fs_info->dirty_metadata_bytes,
--					     BTRFS_DIRTY_METADATA_THRESH,
--					     fs_info->dirty_metadata_batch);
--		if (ret < 0)
--			return 0;
--	}
--	return btree_write_cache_pages(mapping, wbc);
--}
--
- static bool btree_release_folio(struct folio *folio, gfp_t gfp_flags)
- {
- 	if (folio_test_writeback(folio) || folio_test_dirty(folio))
-@@ -584,7 +562,7 @@ static bool btree_dirty_folio(struct address_space *mapping,
- #endif
- 
- static const struct address_space_operations btree_aops = {
--	.writepages	= btree_writepages,
-+	.writepages	= btree_write_cache_pages,
- 	.release_folio	= btree_release_folio,
- 	.invalidate_folio = btree_invalidate_folio,
- 	.migrate_folio	= btree_migrate_folio,
--- 
-2.52.0
+> ---
+>   fs/btrfs/compression.c       |  2 +-
+>   fs/btrfs/defrag.c            |  5 +++--
+>   fs/btrfs/extent_io.c         |  2 +-
+>   fs/btrfs/file.c              |  9 +++++----
+>   fs/btrfs/inode.c             |  2 +-
+>   fs/btrfs/tests/inode-tests.c | 32 ++++++++++++++++----------------
+>   fs/btrfs/tree-log.c          |  2 +-
+>   7 files changed, 28 insertions(+), 26 deletions(-)
+> 
+> diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
+> index 4323d4172c7b..4c6298cf01b2 100644
+> --- a/fs/btrfs/compression.c
+> +++ b/fs/btrfs/compression.c
+> @@ -519,7 +519,7 @@ static noinline int add_ra_bio_pages(struct inode *inode,
+>   			folio_put(folio);
+>   			break;
+>   		}
+> -		add_size = min(em->start + em->len, page_end + 1) - cur;
+> +		add_size = min(btrfs_extent_map_end(em), page_end + 1) - cur;
+>   		btrfs_free_extent_map(em);
+>   		btrfs_unlock_extent(tree, cur, page_end, NULL);
+>   
+> diff --git a/fs/btrfs/defrag.c b/fs/btrfs/defrag.c
+> index bcc6656ad034..ecf05cd64696 100644
+> --- a/fs/btrfs/defrag.c
+> +++ b/fs/btrfs/defrag.c
+> @@ -792,10 +792,11 @@ static bool defrag_check_next_extent(struct inode *inode, struct extent_map *em,
+>   {
+>   	struct btrfs_fs_info *fs_info = inode_to_fs_info(inode);
+>   	struct extent_map *next;
+> +	const u64 em_end = btrfs_extent_map_end(em);
+>   	bool ret = false;
+>   
+>   	/* This is the last extent */
+> -	if (em->start + em->len >= i_size_read(inode))
+> +	if (em_end >= i_size_read(inode))
+>   		return false;
+>   
+>   	/*
+> @@ -804,7 +805,7 @@ static bool defrag_check_next_extent(struct inode *inode, struct extent_map *em,
+>   	 * one will not be a target.
+>   	 * This will just cause extra IO without really reducing the fragments.
+>   	 */
+> -	next = defrag_lookup_extent(inode, em->start + em->len, newer_than, locked);
+> +	next = defrag_lookup_extent(inode, em_end, newer_than, locked);
+>   	/* No more em or hole */
+>   	if (!next || next->disk_bytenr >= EXTENT_MAP_LAST_BYTE)
+>   		goto out;
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index bbc55873cb16..cd8c505d92f5 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -970,7 +970,7 @@ static void btrfs_readahead_expand(struct readahead_control *ractl,
+>   {
+>   	const u64 ra_pos = readahead_pos(ractl);
+>   	const u64 ra_end = ra_pos + readahead_length(ractl);
+> -	const u64 em_end = em->start + em->len;
+> +	const u64 em_end = btrfs_extent_map_end(em);
+>   
+>   	/* No expansion for holes and inline extents. */
+>   	if (em->disk_bytenr > EXTENT_MAP_LAST_BYTE)
+> diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+> index 5d47cff5af42..1759776d2d57 100644
+> --- a/fs/btrfs/file.c
+> +++ b/fs/btrfs/file.c
+> @@ -2195,10 +2195,11 @@ static int find_first_non_hole(struct btrfs_inode *inode, u64 *start, u64 *len)
+>   
+>   	/* Hole or vacuum extent(only exists in no-hole mode) */
+>   	if (em->disk_bytenr == EXTENT_MAP_HOLE) {
+> +		const u64 em_end = btrfs_extent_map_end(em);
+> +
+>   		ret = 1;
+> -		*len = em->start + em->len > *start + *len ?
+> -		       0 : *start + *len - em->start - em->len;
+> -		*start = em->start + em->len;
+> +		*len = (em_end > *start + *len) ? 0 : (*start + *len - em_end);
+> +		*start = em_end;
+>   	}
+>   	btrfs_free_extent_map(em);
+>   	return ret;
+> @@ -2947,7 +2948,7 @@ static int btrfs_zero_range(struct inode *inode,
+>   	 * new prealloc extent, so that we get a larger contiguous disk extent.
+>   	 */
+>   	if (em->start <= alloc_start && (em->flags & EXTENT_FLAG_PREALLOC)) {
+> -		const u64 em_end = em->start + em->len;
+> +		const u64 em_end = btrfs_extent_map_end(em);
+>   
+>   		if (em_end >= offset + len) {
+>   			/*
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index be47aa58e944..7a28b947f4a3 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+> @@ -7161,7 +7161,7 @@ struct extent_map *btrfs_get_extent(struct btrfs_inode *inode,
+>   	read_unlock(&em_tree->lock);
+>   
+>   	if (em) {
+> -		if (em->start > start || em->start + em->len <= start)
+> +		if (em->start > start || btrfs_extent_map_end(em) <= start)
+>   			btrfs_free_extent_map(em);
+>   		else if (em->disk_bytenr == EXTENT_MAP_INLINE && folio)
+>   			btrfs_free_extent_map(em);
+> diff --git a/fs/btrfs/tests/inode-tests.c b/fs/btrfs/tests/inode-tests.c
+> index a4c2b7748b95..6bd17d059ae6 100644
+> --- a/fs/btrfs/tests/inode-tests.c
+> +++ b/fs/btrfs/tests/inode-tests.c
+> @@ -313,7 +313,7 @@ static noinline int test_btrfs_get_extent(u32 sectorsize, u32 nodesize)
+>   	 * unless we have a page for it to write into.  Maybe we should change
+>   	 * this?
+>   	 */
+> -	offset = em->start + em->len;
+> +	offset = btrfs_extent_map_end(em);
+>   	btrfs_free_extent_map(em);
+>   
+>   	em = btrfs_get_extent(BTRFS_I(inode), NULL, offset, sectorsize);
+> @@ -335,7 +335,7 @@ static noinline int test_btrfs_get_extent(u32 sectorsize, u32 nodesize)
+>   		test_err("unexpected flags set, want 0 have %u", em->flags);
+>   		goto out;
+>   	}
+> -	offset = em->start + em->len;
+> +	offset = btrfs_extent_map_end(em);
+>   	btrfs_free_extent_map(em);
+>   
+>   	/* Regular extent */
+> @@ -362,7 +362,7 @@ static noinline int test_btrfs_get_extent(u32 sectorsize, u32 nodesize)
+>   		test_err("wrong offset, want 0, have %llu", em->offset);
+>   		goto out;
+>   	}
+> -	offset = em->start + em->len;
+> +	offset = btrfs_extent_map_end(em);
+>   	btrfs_free_extent_map(em);
+>   
+>   	/* The next 3 are split extents */
+> @@ -391,7 +391,7 @@ static noinline int test_btrfs_get_extent(u32 sectorsize, u32 nodesize)
+>   	}
+>   	disk_bytenr = btrfs_extent_map_block_start(em);
+>   	orig_start = em->start;
+> -	offset = em->start + em->len;
+> +	offset = btrfs_extent_map_end(em);
+>   	btrfs_free_extent_map(em);
+>   
+>   	em = btrfs_get_extent(BTRFS_I(inode), NULL, offset, sectorsize);
+> @@ -413,7 +413,7 @@ static noinline int test_btrfs_get_extent(u32 sectorsize, u32 nodesize)
+>   		test_err("unexpected flags set, want 0 have %u", em->flags);
+>   		goto out;
+>   	}
+> -	offset = em->start + em->len;
+> +	offset = btrfs_extent_map_end(em);
+>   	btrfs_free_extent_map(em);
+>   
+>   	em = btrfs_get_extent(BTRFS_I(inode), NULL, offset, sectorsize);
+> @@ -446,7 +446,7 @@ static noinline int test_btrfs_get_extent(u32 sectorsize, u32 nodesize)
+>   			 disk_bytenr, btrfs_extent_map_block_start(em));
+>   		goto out;
+>   	}
+> -	offset = em->start + em->len;
+> +	offset = btrfs_extent_map_end(em);
+>   	btrfs_free_extent_map(em);
+>   
+>   	/* Prealloc extent */
+> @@ -474,7 +474,7 @@ static noinline int test_btrfs_get_extent(u32 sectorsize, u32 nodesize)
+>   		test_err("wrong offset, want 0, have %llu", em->offset);
+>   		goto out;
+>   	}
+> -	offset = em->start + em->len;
+> +	offset = btrfs_extent_map_end(em);
+>   	btrfs_free_extent_map(em);
+>   
+>   	/* The next 3 are a half written prealloc extent */
+> @@ -504,7 +504,7 @@ static noinline int test_btrfs_get_extent(u32 sectorsize, u32 nodesize)
+>   	}
+>   	disk_bytenr = btrfs_extent_map_block_start(em);
+>   	orig_start = em->start;
+> -	offset = em->start + em->len;
+> +	offset = btrfs_extent_map_end(em);
+>   	btrfs_free_extent_map(em);
+>   
+>   	em = btrfs_get_extent(BTRFS_I(inode), NULL, offset, sectorsize);
+> @@ -536,7 +536,7 @@ static noinline int test_btrfs_get_extent(u32 sectorsize, u32 nodesize)
+>   			 disk_bytenr + em->offset, btrfs_extent_map_block_start(em));
+>   		goto out;
+>   	}
+> -	offset = em->start + em->len;
+> +	offset = btrfs_extent_map_end(em);
+>   	btrfs_free_extent_map(em);
+>   
+>   	em = btrfs_get_extent(BTRFS_I(inode), NULL, offset, sectorsize);
+> @@ -569,7 +569,7 @@ static noinline int test_btrfs_get_extent(u32 sectorsize, u32 nodesize)
+>   			 disk_bytenr + em->offset, btrfs_extent_map_block_start(em));
+>   		goto out;
+>   	}
+> -	offset = em->start + em->len;
+> +	offset = btrfs_extent_map_end(em);
+>   	btrfs_free_extent_map(em);
+>   
+>   	/* Now for the compressed extent */
+> @@ -602,7 +602,7 @@ static noinline int test_btrfs_get_extent(u32 sectorsize, u32 nodesize)
+>   			 BTRFS_COMPRESS_ZLIB, btrfs_extent_map_compression(em));
+>   		goto out;
+>   	}
+> -	offset = em->start + em->len;
+> +	offset = btrfs_extent_map_end(em);
+>   	btrfs_free_extent_map(em);
+>   
+>   	/* Split compressed extent */
+> @@ -637,7 +637,7 @@ static noinline int test_btrfs_get_extent(u32 sectorsize, u32 nodesize)
+>   	}
+>   	disk_bytenr = btrfs_extent_map_block_start(em);
+>   	orig_start = em->start;
+> -	offset = em->start + em->len;
+> +	offset = btrfs_extent_map_end(em);
+>   	btrfs_free_extent_map(em);
+>   
+>   	em = btrfs_get_extent(BTRFS_I(inode), NULL, offset, sectorsize);
+> @@ -663,7 +663,7 @@ static noinline int test_btrfs_get_extent(u32 sectorsize, u32 nodesize)
+>   		test_err("wrong offset, want 0, have %llu", em->offset);
+>   		goto out;
+>   	}
+> -	offset = em->start + em->len;
+> +	offset = btrfs_extent_map_end(em);
+>   	btrfs_free_extent_map(em);
+>   
+>   	em = btrfs_get_extent(BTRFS_I(inode), NULL, offset, sectorsize);
+> @@ -697,7 +697,7 @@ static noinline int test_btrfs_get_extent(u32 sectorsize, u32 nodesize)
+>   			 BTRFS_COMPRESS_ZLIB, btrfs_extent_map_compression(em));
+>   		goto out;
+>   	}
+> -	offset = em->start + em->len;
+> +	offset = btrfs_extent_map_end(em);
+>   	btrfs_free_extent_map(em);
+>   
+>   	/* A hole between regular extents but no hole extent */
+> @@ -724,7 +724,7 @@ static noinline int test_btrfs_get_extent(u32 sectorsize, u32 nodesize)
+>   		test_err("wrong offset, want 0, have %llu", em->offset);
+>   		goto out;
+>   	}
+> -	offset = em->start + em->len;
+> +	offset = btrfs_extent_map_end(em);
+>   	btrfs_free_extent_map(em);
+>   
+>   	em = btrfs_get_extent(BTRFS_I(inode), NULL, offset, SZ_4M);
+> @@ -756,7 +756,7 @@ static noinline int test_btrfs_get_extent(u32 sectorsize, u32 nodesize)
+>   		test_err("wrong offset, want 0, have %llu", em->offset);
+>   		goto out;
+>   	}
+> -	offset = em->start + em->len;
+> +	offset = btrfs_extent_map_end(em);
+>   	btrfs_free_extent_map(em);
+>   
+>   	em = btrfs_get_extent(BTRFS_I(inode), NULL, offset, sectorsize);
+> diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+> index 6cffcf0c3e7a..e1bd03ebfd98 100644
+> --- a/fs/btrfs/tree-log.c
+> +++ b/fs/btrfs/tree-log.c
+> @@ -5160,7 +5160,7 @@ static int log_one_extent(struct btrfs_trans_handle *trans,
+>   	if (ctx->logged_before) {
+>   		drop_args.path = path;
+>   		drop_args.start = em->start;
+> -		drop_args.end = em->start + em->len;
+> +		drop_args.end = btrfs_extent_map_end(em);
+>   		drop_args.replace_extent = true;
+>   		drop_args.extent_item_size = sizeof(fi);
+>   		ret = btrfs_drop_extents(trans, log, inode, &drop_args);
 
 
