@@ -1,111 +1,76 @@
-Return-Path: <linux-btrfs+bounces-20697-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20698-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5617FD3A743
-	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Jan 2026 12:46:54 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CDAFD3A7FC
+	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Jan 2026 13:08:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 770F1300BFAF
-	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Jan 2026 11:46:46 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id C5EDC300CEED
+	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Jan 2026 12:06:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF613318BB4;
-	Mon, 19 Jan 2026 11:46:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=jakstys.lt header.i=@jakstys.lt header.b="E/yjlMVD"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E824B35B13B;
+	Mon, 19 Jan 2026 12:06:17 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F6C7317702
-	for <linux-btrfs@vger.kernel.org>; Mon, 19 Jan 2026 11:46:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5F593590DB;
+	Mon, 19 Jan 2026 12:06:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768823203; cv=none; b=lFQrx/1EcXlq/iIcdIDGiJw5p+FeUd50wf/1TmB+gljDWXs4Bg6N7ISz3vZ9+BeK4qCn47i2cKIE7BqOiHWNvRzOvsf/vsuRogpncpwOjWBi7E4qU8F8d57zORk1x02HzI64JIjE/wlUc+uormjeULSgf45jKO+bag0nWhMJayM=
+	t=1768824377; cv=none; b=Nvhjm9XDXt3Ca3fza2jvvnUdqNxag/A0cJGS/JxtnYv8LZma0g40s1L2aLNrJTIKkEWXB5iif7DgM4lFm0tCMZaugVQrE/u0ApsoD9CSJuBFrpODGXNEqmhZbYz7K2X9LXXCRMzb4i2lpULuSum7RN9WDekRLWVB7Apsy1C7fAc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768823203; c=relaxed/simple;
-	bh=W9tl5EGVQQ07JDbhxz9J9n5G9/s3ivfYD8n0emvwRYM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KLehELvxwscTaONJvBqdbOet/kM3Jtea+Bn6YonM1GrfQ3lW0k6tnniCJWaoFsyjH0++RE+73/QDQN06vJl1LBg1VIQQ5Chna1VAfJxIrtQzvZzC7F4bhWc1mA+qH2k0nyWg6Aca03uQ0G+1E1mTwYQH9bo6nEtk31KpzCzaWXM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=jakstys.lt; spf=pass smtp.mailfrom=jakstys.lt; dkim=pass (2048-bit key) header.d=jakstys.lt header.i=@jakstys.lt header.b=E/yjlMVD; arc=none smtp.client-ip=209.85.208.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=jakstys.lt
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jakstys.lt
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-64c893f3a94so9105259a12.0
-        for <linux-btrfs@vger.kernel.org>; Mon, 19 Jan 2026 03:46:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jakstys.lt; s=google; t=1768823199; x=1769427999; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=W9tl5EGVQQ07JDbhxz9J9n5G9/s3ivfYD8n0emvwRYM=;
-        b=E/yjlMVDmXUx+e77Rvjvj0Ti+rKdiQn6tAo3dlK3kpStIpSzRlrn1BFJEcr5RpWZx3
-         d3cjPHABz+k7bL+siAuiQU8Unygx0tHIIDEnWRj/rjWt/VeCzlLzFlkWdCFx+rRk5ooy
-         1R6S+FouZXqidTNP5D08ZwAaCz4KcsJeD/tgdc+D1jPJOQZSHl93oVKx7X5jhURgeWDQ
-         VEIBXzJMStTZxTNuLOGOj+uQutHP4rNIK34R+IRADeRZ6tbHNYFgroznOWKOjyVU9PZ+
-         CoYyNBcoHnTGl3gHn4HVDeXCbc6QMNgQw12D/K+OObpLxU/T/rDQcU0qEZFpO3Y7Zltq
-         1xqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768823199; x=1769427999;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=W9tl5EGVQQ07JDbhxz9J9n5G9/s3ivfYD8n0emvwRYM=;
-        b=B5ZvCNyPHIJ4HNIr2Mpxf6Gpomn8jtOj+PeF64Zd0Zo++pI1vuMevMW0vAdUaRBGfd
-         dKkPCnPRh3XAP5XbqE0JFnBn73pyko9O373XDgh+7w3GnQQZwuhTUSX4JffsIUtqL0T0
-         t85J0nFF4P0qj/VnCavO4nFxqHf2RBIlpoGOop+h1LGaiFe4bjKbq/LJVlXJ6Dz22qKl
-         9cImNcPaScludOobJLyomqLxRll3WfsXdvQ1ihZiLswLCPFJKvnrGr+8Jv9PrOTCRCwy
-         XBq/x/Sw4JDF4SLPLd8L8MKfZQQV4tVSLyiNKHFc0RiXYDNTJYumlk5zjJMyMntfxAtA
-         xuJg==
-X-Forwarded-Encrypted: i=1; AJvYcCUYXdkSURNhEjiG6o87OP9NcbMIMX92RldB7hIcC9w2Cna7ivaX0N1unyDBL7KrnYdMt+xOVycd0UWioQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxiyrassSm88QISwf5RIW24yz9iu5NBD6Zs8nHxbgxwTOjPf/lo
-	iv5YKAV9sx4yQe5HVBPB3e4DbbbcXuztMVdq15rIvxUMtN58DMrJZ1JNZOewhpkqXQ==
-X-Gm-Gg: AY/fxX5QazLeNtLcJfONOc9K75WM1/1CLOtAE5sysK7jsnvS2qPzQIbhjGn1yYRQ3/0
-	MJNbLiChNw8nZ26kitdkLZFLFP36Zq/4qpzNc0PfRlU8GOITMz/ylnrNVUIZ9WbRlYhSSzgdKV2
-	nLTuajf26xBNFgrx+0C0yz03x3B3PKPzHigx5RxSFZT0Lifo8qFLP/93iU3zj/dc5xbhzQ0Xlc/
-	iRlboXe4eLJE010E0ZZvkEk9vTIz181jnZytfCcbZK2yyZs7aPM2uXHNHm75hCllsTV6l/SnS8A
-	p1ynLHGwETUGN8LazSnmqVWavkghJ57KUc26A8jPtlESK1zPESfImpSynEHzSRNxTC/SjtiGF5b
-	q/NPAjt87JB8T8Q9KDG9feZZwKM8NC2IJPB81HAv6o26ehB9tojaSIov0hN6quq6s1rjqYa1/4H
-	qa7bDfCzCOm5lyXYMS9LGHFKLgyDYL+0lh5BnlBeC/89XTRhFLgYVilIi1Qv0NNAGIuZXzv/Rw7
-	27vDKn1IW3p57I5qLMQEqwsXsuY8M4=
-X-Received: by 2002:a17:907:9694:b0:b87:191f:4fab with SMTP id a640c23a62f3a-b8793a23490mr1008761666b.26.1768823198863;
-        Mon, 19 Jan 2026 03:46:38 -0800 (PST)
-Received: from localhost ([185.104.176.238])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b879e2c1be7sm999058266b.67.2026.01.19.03.46.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Jan 2026 03:46:38 -0800 (PST)
-From: =?UTF-8?q?Motiejus=20Jak=C5=A1tys?= <motiejus@jakstys.lt>
-To: sashal@kernel.org
-Cc: clm@fb.com,
-	dsterba@suse.com,
-	fdmanana@suse.com,
-	linux-btrfs@vger.kernel.org,
-	patches@lists.linux.dev,
-	robbieko@synology.com,
-	stable@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.18-5.10] btrfs: fix deadlock in wait_current_trans() due to ignored transaction type
-Date: Mon, 19 Jan 2026 13:46:26 +0200
-Message-ID: <20260119114626.1877729-1-motiejus@jakstys.lt>
-X-Mailer: git-send-email 2.51.2
-In-Reply-To: <20260112145840.724774-5-sashal@kernel.org>
-References: <20260112145840.724774-5-sashal@kernel.org>
+	s=arc-20240116; t=1768824377; c=relaxed/simple;
+	bh=Cr2GJL9XnBNnOtUICJ1ZUWD3ign/NX/f6uXN9QQy25I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fW7r+tdMcm7XQh8vf+M5FbB5XEmQOU4yT6jCGEGQtrN+8lmTErx7UnQ2+0N3+jvVT8E/5defuhC8OF48Oy1T4cMylhzvNc9AhPPq9adPbdNlvnyfvzc5C6yYFQ69cl+XoWWOZmfZT3OTIH7mWHPqvYay30coyxFZqWG/3li9k1I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id 9BBA6227A88; Mon, 19 Jan 2026 13:06:11 +0100 (CET)
+Date: Mon, 19 Jan 2026 13:06:11 +0100
+From: Christoph Hellwig <hch@lst.de>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Christoph Hellwig <hch@lst.de>, Eric Biggers <ebiggers@kernel.org>,
+	Al Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
+	David Sterba <dsterba@suse.com>, Theodore Ts'o <tytso@mit.edu>,
+	Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+	Andrey Albershteyn <aalbersh@redhat.com>,
+	linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+	fsverity@lists.linux.dev
+Subject: Re: [PATCH 3/6] fs,fsverity: handle fsverity in generic_file_open
+Message-ID: <20260119120611.GA23787@lst.de>
+References: <20260119062250.3998674-1-hch@lst.de> <20260119062250.3998674-4-hch@lst.de> <20260119-davon-krippenkind-78d683621491@brauner>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260119-davon-krippenkind-78d683621491@brauner>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 
-Dear stable maintainers,
+On Mon, Jan 19, 2026 at 11:02:37AM +0100, Christian Brauner wrote:
+> > +	if (IS_ENABLED(CONFIG_FS_VERITY) && IS_VERITY(inode)) {
+> > +		if (filp->f_mode & FMODE_WRITE)
+> > +			return -EPERM;
+> > +		return fsverity_file_open(inode, filp);
+> > +	}
+> 
+> This is the only one where I'm not happy about the location.
+> This hides the ordering requirement between fsverity and fscrypt. It's
+> easier to miss now. This also really saves very little compared to the
+> other changes. So I wonder whether it's really that big of a deal to
+> have the call located in the open routines of the filesystems.
 
-I was about to submit to stable@, but found this earlier email autosel.
-However, I don't see it in the queue. What's the right process to get it
-included to stable?
-
-This specific patch fixes a production issue: we saw this happening at
-least 3 times (across a few thousand servers over the past 4 months
-we've moved to btrfs); the last time I was able to capture a kernel
-stack trace, which was identical to the one in the patch.
-
-Thanks,
-Motiejus
+So my idea was to do a similar pass for fscrypt eventually, and enforce
+the ordering in one place, instead of relying on file systems to get it
+right.  I'd be fine with delaying this patch until then and give it
+another try.  The good thing is that unlike say the stat hook fsverity
+will simply not work without wiring this up, so it can't be easily
+forgotten.
 
