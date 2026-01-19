@@ -1,153 +1,221 @@
-Return-Path: <linux-btrfs+bounces-20683-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20684-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4262FD39F8B
-	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Jan 2026 08:18:17 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 662D7D39F9C
+	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Jan 2026 08:23:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id B4468301F026
-	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Jan 2026 07:18:03 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id AC2763003875
+	for <lists+linux-btrfs@lfdr.de>; Mon, 19 Jan 2026 07:23:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F28A62DC346;
-	Mon, 19 Jan 2026 07:18:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D7A52F1FFA;
+	Mon, 19 Jan 2026 07:23:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="T1u4N0cF"
+	dkim=pass (2048-bit key) header.d=ownmail.net header.i=@ownmail.net header.b="irDVjFha";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="K8ltski0"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from esa3.hgst.iphmx.com (esa3.hgst.iphmx.com [216.71.153.141])
+Received: from flow-b8-smtp.messagingengine.com (flow-b8-smtp.messagingengine.com [202.12.124.143])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6F4A283C89
-	for <linux-btrfs@vger.kernel.org>; Mon, 19 Jan 2026 07:18:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.71.153.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE8482EBDEB;
+	Mon, 19 Jan 2026 07:23:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.143
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768807082; cv=none; b=DSS0VM6UAfW5p2o9urBG6dBdVz+mcXDXpXWQ9sIVcWjLCqdgxwldNlDNlXJW1RJAAaOws/GytdDXoQmetn6xs3CgJ1ho31mzRDl2AFzzoJGens4V7Dnjk7otHmYVJDmYu51nFerzNV34egKd1ZQaU2VSocQMqCcmhQAEJoCSTdo=
+	t=1768807391; cv=none; b=XLSlo6YMZ4i3qO7X2lUXloV1iQFGZaWLIO69dkn6LfbzqLdROthEwTV8i68pRKpgzhFkZzb/rrew7vJfjRsC2Sym4VbgWPTB3yEjdfDDU1aBS3GUNsQIhqNl8rtdO8VpSCXXMUqFbbZKSFSUNE6lF+84zW07fAQAQ+HbAzkBtzo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768807082; c=relaxed/simple;
-	bh=sB/s/S3oaEyHZBaMAG5gA10cNuK5a5FGg/WuIPUwExo=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=SZ5g6cqfrzrT0MumN+bYMPv7IeqsmzdA+0PFzeTo/9BgH5qoX24xF22WkYnEjO9k7WrtzDRavcKhm1QvaQm8mGv5LGlvYqpza9+sYZmv2pF5tWvrcAnIrT06cyXKYaczkj1sNqWJQbh1dFd/wO4bXXG7lVN5aDZ8oj4k+sTUth0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=T1u4N0cF; arc=none smtp.client-ip=216.71.153.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1768807080; x=1800343080;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=sB/s/S3oaEyHZBaMAG5gA10cNuK5a5FGg/WuIPUwExo=;
-  b=T1u4N0cFvn1mNGzHcqe21f4Oyr1ONByfh1DqxQI/V6SLqD8BhtmvVIsd
-   dpLRBPtAnawWfPcroLHIUw4+1S9FUR1/HBXmxs4o7B+sR2zjHUee6UtW7
-   osYFJOnUDAp6B3BH2B8xqYJwejraTg2pXCX4K0dpGZV8/8LhJxs3CPl/N
-   rtgOBiGDn4gr21/dwiyIdg1TKYrpLFgw8efc9oRXQVtHGf4p2/AaEzU2n
-   JK/UO3dHaI7vOCWm8YX0W3i1K/HfG+XcK8BvM1ot/mzcFmXYi6L7EO7Qx
-   1w5Q9rb76OS2eOPK4ys14hA8vZWmpAcAYUmIdHPv0Csdgz8GdibLiH3gO
-   A==;
-X-CSE-ConnectionGUID: 2MZP4RTnTdCOUDBuAv5FKA==
-X-CSE-MsgGUID: 2dPJRFbkTkS/X+WKJgbiJw==
-X-IronPort-AV: E=Sophos;i="6.21,237,1763395200"; 
-   d="scan'208";a="139736384"
-Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep03.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 19 Jan 2026 15:17:54 +0800
-IronPort-SDR: 696ddaa2_8W9eN6kcbe7Ke1ZEXSINGynp9HNURvI6iHmT5haEpelLmBL
- FlFAk1k3mrV98Zn0KTMPLim5pAtDBb9rxxyxSKg==
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep03.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 18 Jan 2026 23:17:55 -0800
-WDCIronportException: Internal
-Received: from 5cg1443ryj.ad.shared (HELO neo.wdc.com) ([10.224.28.37])
-  by uls-op-cesaip01.wdc.com with ESMTP; 18 Jan 2026 23:17:53 -0800
-From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-To: linux-btrfs@vger.kernel.org
-Cc: Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-	Filipe Manana <fdmanana@suse.com>,
-	kernel test robot <lkp@intel.com>,
-	Dan Carpenter <dan.carpenter@linaro.org>
-Subject: [PATCH] btrfs: remove bogus NULL checks in __btrfs_write_out_cache
-Date: Mon, 19 Jan 2026 08:17:50 +0100
-Message-ID: <20260119071750.43226-1-johannes.thumshirn@wdc.com>
-X-Mailer: git-send-email 2.52.0
+	s=arc-20240116; t=1768807391; c=relaxed/simple;
+	bh=VayQ8LBQ8ITb7zXH2IltJZOWK/FYKB5M0T/fJMZxG+g=;
+	h=Content-Type:MIME-Version:From:To:Cc:Subject:In-reply-to:
+	 References:Date:Message-id; b=ZFwIAdTaD2X9aMDAwz8mGJdbkcYlnepbnI/qyQ2mGbM11ljQO/nioz6vbWjBhdst5YXZzdH3hi+cAYBIe4qWSMZn+Rp5uG3k0hLOfwH0Aamp1nuj5qAE8U/5l5PgPWsj4BkeZYQcL/RQGUhTflFON6r7H48VDLVb9DiYglVc6iU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ownmail.net; spf=pass smtp.mailfrom=ownmail.net; dkim=pass (2048-bit key) header.d=ownmail.net header.i=@ownmail.net header.b=irDVjFha; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=K8ltski0; arc=none smtp.client-ip=202.12.124.143
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ownmail.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ownmail.net
+Received: from phl-compute-02.internal (phl-compute-02.internal [10.202.2.42])
+	by mailflow.stl.internal (Postfix) with ESMTP id 3219E130103E;
+	Mon, 19 Jan 2026 02:23:06 -0500 (EST)
+Received: from phl-frontend-03 ([10.202.2.162])
+  by phl-compute-02.internal (MEProxy); Mon, 19 Jan 2026 02:23:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ownmail.net; h=
+	cc:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:reply-to:subject:subject:to:to; s=fm2; t=
+	1768807386; x=1768814586; bh=l0q9OiSiL57A1oXpVwou+Qazcwu9lF8/fKQ
+	yDTZuHuY=; b=irDVjFhaz/K8YtiXzQ31MDOgMGCo+Gz//EwM4OijAM0vOKynyB6
+	BpwYFZYCEe3o7Gx5L4V6M4FhbipwQNJV0ujCSLBSc5IHezW/FyB/LWZraYVlaMJu
+	YnnpUl4JgVLbrNIec+WcKPTR09keVUJuKuo5IR+gQesu/p0p7PhQm/pf+9OgvKR5
+	WdaCaILT5Zm8fqMcKW/PAdv1HxPiIM+Z3QX4jypg1fiENCArP/M8KaRMfJ7uYtgT
+	cBjjHOj9Mr9wPQirkQS2BYF8pjwZRelVojFvJtbhrJ5l9QZPmQNMkhdcWIaHKOt+
+	ltoa8OTg2UGC53H+WAMXgf82R3jVtEKBVww==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1768807386; x=
+	1768814586; bh=l0q9OiSiL57A1oXpVwou+Qazcwu9lF8/fKQyDTZuHuY=; b=K
+	8ltski0YBtBzy6uowaabbff8s5zuRDbtUFWXcDtg931MBwRc16+CKDMRYekaXZHk
+	LOnd7mQjODx3F7HVmyPZWvLOv8yjti4w+MIAbxpLRgNDP65uPFl9Gfl058RUJHH+
+	Fk6+cJVTq4wuDdMq1Z5W9k1ZuC7iRuYcXx1GwUdvxisFOcHq/jX6VpQCI2oyR0CU
+	ZM3JKGGiUVRS4Nbh4KzQMT/wi9djnt+fqIQkRVTwyAKauSyNTqZZcQHWI735MH16
+	4XBGsVULicKWqCSMDT9bs+x+/xy/Gu1Q6khze7NDCvAP+QvrXTWLwqj3Y9LKIzDB
+	XZKhCr7irnaORckcnoZBQ==
+X-ME-Sender: <xms:1tttaQEL1zY-cqjAi3LwisLLYig4vGmVFZGnEWqvFdfPu_1cBx4ryQ>
+    <xme:1tttadNPXJyKg4i6N7NiajEYCS_ixBqVWnODY0xDbeIYm-0ddIGPmXX4nPobqTrUH
+    FdEox9n77yL1V53kkmfQXZnVrRbAt8y41xmdzHA26xbb4UiNw>
+X-ME-Received: <xmr:1tttaX2pXmbQvkTPzq0NQg4Hf4lyVdk2Kt7K2P2YoY0rgkMkSP0qEY7AWJnIFHDorFcLBSqfoL6DkzzzXRH8ujZGIJqMnM5xQhHy1RkjUWf6>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddufeeileeiucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
+    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
+    gurheptgfgggfhvfevufgjfhffkfhrsehtjeertddttdejnecuhfhrohhmpefpvghilheu
+    rhhofihnuceonhgvihhlsgesohifnhhmrghilhdrnhgvtheqnecuggftrfgrthhtvghrnh
+    epudetfefhudevhedvfeeufedvffekveekgfdtfefggfekheejgefhteeihffggfelnecu
+    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepnhgvihhlsg
+    esohifnhhmrghilhdrnhgvthdpnhgspghrtghpthhtohepjedvpdhmohguvgepshhmthhp
+    ohhuthdprhgtphhtthhopehvihhrohesiigvnhhivhdrlhhinhhugidrohhrghdruhhkpd
+    hrtghpthhtohepghhuohgthhhunhhhrghisehvihhvohdrtghomhdprhgtphhtthhopehl
+    ihhnuhigqdigfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinh
+    hugidquhhnihhonhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehl
+    ihhnuhigqdhnihhlfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplh
+    hinhhugidqnhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhn
+    uhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlih
+    hnuhigqdhfshguvghvvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohep
+    lhhinhhugidqvgigthegsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+X-ME-Proxy: <xmx:1tttabHi5RQs76Xz74nOwWrYIZ47zQ7Zj71gIm-NgtkzokJPtBcMHA>
+    <xmx:1tttafzYjiWXRjDGlVz6_k-3h2GeOsbL3CzwIMyCt37eR3PuktBG4w>
+    <xmx:1tttaaofGHLgl2z91oIIPm_yXGWHUeCGCqWi64kkrnWVR5nBeLXySA>
+    <xmx:1tttaUlKdw4URdR2-6lB_1IM56jb7LL9_P5nu35Q0sPULNdt9mAF_A>
+    <xmx:2tttacnPYyzS2rQik0c4UgQtzVVe9-q502rX9-wmNn1taRjPmfmDMIhi>
+Feedback-ID: iab3e480c:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 19 Jan 2026 02:22:45 -0500 (EST)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From: NeilBrown <neilb@ownmail.net>
+To: "Christoph Hellwig" <hch@infradead.org>
+Cc: "Jeff Layton" <jlayton@kernel.org>,
+ "Amir Goldstein" <amir73il@gmail.com>,
+ "Christian Brauner" <brauner@kernel.org>,
+ "Alexander Viro" <viro@zeniv.linux.org.uk>,
+ "Chuck Lever" <chuck.lever@oracle.com>,
+ "Olga Kornievskaia" <okorniev@redhat.com>,
+ "Dai Ngo" <Dai.Ngo@oracle.com>, "Tom Talpey" <tom@talpey.com>,
+ "Hugh Dickins" <hughd@google.com>,
+ "Baolin Wang" <baolin.wang@linux.alibaba.com>,
+ "Andrew Morton" <akpm@linux-foundation.org>,
+ "Theodore Ts'o" <tytso@mit.edu>,
+ "Andreas Dilger" <adilger.kernel@dilger.ca>, "Jan Kara" <jack@suse.com>,
+ "Gao Xiang" <xiang@kernel.org>, "Chao Yu" <chao@kernel.org>,
+ "Yue Hu" <zbestahu@gmail.com>, "Jeffle Xu" <jefflexu@linux.alibaba.com>,
+ "Sandeep Dhavale" <dhavale@google.com>,
+ "Hongbo Li" <lihongbo22@huawei.com>, "Chunhai Guo" <guochunhai@vivo.com>,
+ "Carlos Maiolino" <cem@kernel.org>, "Ilya Dryomov" <idryomov@gmail.com>,
+ "Alex Markuze" <amarkuze@redhat.com>,
+ "Viacheslav Dubeyko" <slava@dubeyko.com>, "Chris Mason" <clm@fb.com>,
+ "David Sterba" <dsterba@suse.com>,
+ "Luis de Bethencourt" <luisbg@kernel.org>,
+ "Salah Triki" <salah.triki@gmail.com>,
+ "Phillip Lougher" <phillip@squashfs.org.uk>,
+ "Steve French" <sfrench@samba.org>, "Paulo Alcantara" <pc@manguebit.org>,
+ "Ronnie Sahlberg" <ronniesahlberg@gmail.com>,
+ "Shyam Prasad N" <sprasad@microsoft.com>,
+ "Bharath SM" <bharathsm@microsoft.com>,
+ "Miklos Szeredi" <miklos@szeredi.hu>,
+ "Mike Marshall" <hubcap@omnibond.com>,
+ "Martin Brandenburg" <martin@omnibond.com>,
+ "Mark Fasheh" <mark@fasheh.com>, "Joel Becker" <jlbec@evilplan.org>,
+ "Joseph Qi" <joseph.qi@linux.alibaba.com>,
+ "Konstantin Komarov" <almaz.alexandrovich@paragon-software.com>,
+ "Ryusuke Konishi" <konishi.ryusuke@gmail.com>,
+ "Trond Myklebust" <trondmy@kernel.org>,
+ "Anna Schumaker" <anna@kernel.org>, "Dave Kleikamp" <shaggy@kernel.org>,
+ "David Woodhouse" <dwmw2@infradead.org>,
+ "Richard Weinberger" <richard@nod.at>, "Jan Kara" <jack@suse.cz>,
+ "Andreas Gruenbacher" <agruenba@redhat.com>,
+ "OGAWA Hirofumi" <hirofumi@mail.parknet.co.jp>,
+ "Jaegeuk Kim" <jaegeuk@kernel.org>,
+ "Christoph Hellwig" <hch@infradead.org>, linux-nfs@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-mm@kvack.org, linux-ext4@vger.kernel.org,
+ linux-erofs@lists.ozlabs.org, linux-xfs@vger.kernel.org,
+ ceph-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ linux-cifs@vger.kernel.org, linux-unionfs@vger.kernel.org,
+ devel@lists.orangefs.org, ocfs2-devel@lists.linux.dev,
+ ntfs3@lists.linux.dev, linux-nilfs@vger.kernel.org,
+ jfs-discussion@lists.sourceforge.net, linux-mtd@lists.infradead.org,
+ gfs2@lists.linux.dev, linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [PATCH 00/29] fs: require filesystems to explicitly opt-in to
+ nfsd export support
+In-reply-to: <aW3SAKIr_QsnEE5Q@infradead.org>
+References: <20260115-exportfs-nfsd-v1-0-8e80160e3c0c@kernel.org>,
+ <CAOQ4uxjOJMwv_hRVTn3tJHDLMQHbeaCGsdLupiZYcwm7M2rm3g@mail.gmail.com>,
+ <9c99197dde2eafa55a1b55dce2f0d4d02c77340a.camel@kernel.org>,
+ <176877859306.16766.15009835437490907207@noble.neil.brown.name>,
+ <aW3SAKIr_QsnEE5Q@infradead.org>
+Date: Mon, 19 Jan 2026 18:22:42 +1100
+Message-id: <176880736225.16766.4203157325432990313@noble.neil.brown.name>
+Reply-To: NeilBrown <neil@brown.name>
 
-Dan reported a new smatch warning in free-space-cache.c:
+On Mon, 19 Jan 2026, Christoph Hellwig wrote:
+> On Mon, Jan 19, 2026 at 10:23:13AM +1100, NeilBrown wrote:
+> > > This was Chuck's suggested name. His point was that STABLE means that
+> > > the FH's don't change during the lifetime of the file.
+> > > 
+> > > I don't much care about the flag name, so if everyone likes PERSISTENT
+> > > better I'll roll with that.
+> > 
+> > I don't like PERSISTENT.
+> > I'd rather call a spade a spade.
+> > 
+> >   EXPORT_OP_SUPPORTS_NFS_EXPORT
+> > or
+> >   EXPORT_OP_NOT_NFS_COMPATIBLE
+> > 
+> > The issue here is NFS export and indirection doesn't bring any benefits.
+> 
+> No, it absolutely is not.  And the whole concept of calling something
+> after the initial or main use is a recipe for a mess.
 
-New smatch warnings:
-fs/btrfs/free-space-cache.c:1207 write_pinned_extent_entries() warn: variable dereferenced before check 'block_group' (see line 1203)
+We are calling it for it's only use.  If there was ever another use, we
+could change the name if that made sense.  It is not a public name, it
+is easy to change.
 
-But the check if the block_group pointer is NULL is bogus, because to
-get to this point block_group::io_ctl has already been dereferenced
-further up the call-chain when calling __btrfs_write_out_cache() from
-btrfs_write_out_cache().
+> 
+> Pick a name that conveys what the flag is about, and document those
+> semantics well.  This flag is about the fact that for a given file,
+> as long as that file exists in the file system the handle is stable.
+> Both stable and persistent are suitable for that, nfs is everything
+> but.
 
-Remove the bogus checks for block_group == NULL in
-__btrfs_write_out_cache() and it's siblings.
+My understanding is that kernfs would not get the flag.
+kernfs filehandles do not change as long as the file exist.
+But this is not sufficient for the files to be usefully exported.
 
-Cc: Filipe Manana <fdmanana@suse.com>
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-Closes: https://lore.kernel.org/r/202601170636.WsePMV5H-lkp@intel.com/
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
----
+I suspect kernfs does re-use filehandles relatively soon after the
+file/object has been destroyed.  Maybe that is the real problem here:
+filehandle reuse, not filehandle stability.
 
-Note: a full fstests run is still running at the time of submission. 
+Jeff: could you please give details (and preserve them in future cover
+letters) of which filesystems are known to have problems and what
+exactly those problems are?
 
- fs/btrfs/free-space-cache.c | 11 ++++-------
- 1 file changed, 4 insertions(+), 7 deletions(-)
+> 
+> Remember nfs also support volatile file handles, and other applications
+> might rely on this (I know of quite a few user space applications that
+> do, but they are kinda hardwired to xfs anyway).
 
-diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
-index f0f72850fab2..20aa9ebe8a6c 100644
---- a/fs/btrfs/free-space-cache.c
-+++ b/fs/btrfs/free-space-cache.c
-@@ -1079,7 +1079,7 @@ int write_cache_extent_entries(struct btrfs_io_ctl *io_ctl,
- 	struct btrfs_trim_range *trim_entry;
- 
- 	/* Get the cluster for this block_group if it exists */
--	if (block_group && !list_empty(&block_group->cluster_list)) {
-+	if (!list_empty(&block_group->cluster_list)) {
- 		cluster = list_first_entry(&block_group->cluster_list,
- 					   struct btrfs_free_cluster, block_group_list);
- 	}
-@@ -1203,9 +1203,6 @@ static noinline_for_stack int write_pinned_extent_entries(
- 	struct extent_io_tree *unpin = NULL;
- 	int ret;
- 
--	if (!block_group)
--		return 0;
--
- 	/*
- 	 * We want to add any pinned extents to our free space cache
- 	 * so we don't leak the space
-@@ -1393,7 +1390,7 @@ static int __btrfs_write_out_cache(struct inode *inode,
- 	if (ret)
- 		return ret;
- 
--	if (block_group && (block_group->flags & BTRFS_BLOCK_GROUP_DATA)) {
-+	if (block_group->flags & BTRFS_BLOCK_GROUP_DATA) {
- 		down_write(&block_group->data_rwsem);
- 		spin_lock(&block_group->lock);
- 		if (block_group->delalloc_bytes) {
-@@ -1465,7 +1462,7 @@ static int __btrfs_write_out_cache(struct inode *inode,
- 			goto out_nospc;
- 	}
- 
--	if (block_group && (block_group->flags & BTRFS_BLOCK_GROUP_DATA))
-+	if (block_group->flags & BTRFS_BLOCK_GROUP_DATA)
- 		up_write(&block_group->data_rwsem);
- 	/*
- 	 * Release the pages and unlock the extent, we will flush
-@@ -1500,7 +1497,7 @@ static int __btrfs_write_out_cache(struct inode *inode,
- 	cleanup_write_cache_enospc(inode, io_ctl, &cached_state);
- 
- out_unlock:
--	if (block_group && (block_group->flags & BTRFS_BLOCK_GROUP_DATA))
-+	if (block_group->flags & BTRFS_BLOCK_GROUP_DATA)
- 		up_write(&block_group->data_rwsem);
- 
- out:
--- 
-2.52.0
+The NFS protocol supports volatile file handles.  knfsd does not.
+So maybe
+  EXPORT_OP_NOT_NFSD_COMPATIBLE
+might be better.  or EXPORT_OP_NOT_LINUX_NFSD_COMPATIBLE.
+(I prefer opt-out rather than opt-in because nfsd export was the
+original purpose of export_operations, but it isn't something
+I would fight for)
 
+NeilBrown
 
