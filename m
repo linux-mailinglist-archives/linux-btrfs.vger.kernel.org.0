@@ -1,271 +1,482 @@
-Return-Path: <linux-btrfs+bounces-20775-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20776-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id APECNJOwb2nMKgAAu9opvQ
-	(envelope-from <linux-btrfs+bounces-20775-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Jan 2026 17:42:59 +0100
+	id eNk+OL+5b2kOMQAAu9opvQ
+	(envelope-from <linux-btrfs+bounces-20776-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Jan 2026 18:22:07 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7953447D51
-	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Jan 2026 17:42:59 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68D5F48787
+	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Jan 2026 18:22:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 475396CA04F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Jan 2026 14:45:49 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 0A36C9CB317
+	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Jan 2026 15:32:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7F89449ED9;
-	Tue, 20 Jan 2026 14:35:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0C6A47CC69;
+	Tue, 20 Jan 2026 15:12:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c0Yb6Fai"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Wf9H/ICM"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6AEF41760;
-	Tue, 20 Jan 2026 14:35:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768919757; cv=none; b=KWNo29C9PgCkXpJxVEbtUHgb+CDZGdA+v52sTnvNBDlCLbB3E6qELfY6rFmCWsoCOIupnly+sRL5AZZovAcQNGmDtOKY+DSGv427PswciCnbWcOXADwmDM3HpxAOwbEdLdyIjxcnB2DntZgOqBEx5CxX9t2c3KbI6ErHYj0vQho=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768919757; c=relaxed/simple;
-	bh=dpS+PxEHDbPvZHdk4rsi82HgYDznM+Ad7e2Y2GUOqM0=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=l3ROzX5hO9aVu9HYfQFvjpY+usvZpRiH73716KcAt19Wl1LROIOiP09lrpGHAvXMBmba40XMwQ3tcedHWV2Js8s7BjpOQTaLV/jVQPTEH6anyJ3srIWIupeCRMgX7tlzzVgtQpx8gDc2GFzzuGD5HOed0fuyQXG7/n2ydfeM8X8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c0Yb6Fai; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1E02C16AAE;
-	Tue, 20 Jan 2026 14:35:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768919756;
-	bh=dpS+PxEHDbPvZHdk4rsi82HgYDznM+Ad7e2Y2GUOqM0=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=c0Yb6FaiYwLqlqQz3OwDA/IDqUxyfXBp9KbKpjmBBfSeVXvxXUbg9q9NdfGgmZWgW
-	 LBb/OzfIa5D1/ur6fI8X1Vk7TdmXZKRMcEbjf9JlXnfEB9MYhrugESVBOALo3dfsJN
-	 c3kyXsUItLSCJTQSL1vvZL/3HJKK84XphEQiwTOn6YtKVhBnj9QBGOT4f0CwrcGO8u
-	 yGALNKq6Knah/9QOmKYxcHJkuuYwydE3ayRFjpzgUGf4tYVBIXe6uQ3AjWXvBoJsWL
-	 PgAgzCMENAMM68Vji4VPbqanPmS2G1JSuw16TDRDByd2ZHk+IW8jbpd/hMVDkrbbE8
-	 vt/1AfPD2XjbQ==
-Message-ID: <2ed97731c54ef130ea58861a91c80dacd785de9a.camel@kernel.org>
-Subject: Re: [PATCH v2 01/31] Documentation: document EXPORT_OP_NOLOCKS
-From: Jeff Layton <jlayton@kernel.org>
-To: Christoph Hellwig <hch@infradead.org>
-Cc: Christian Brauner <brauner@kernel.org>, Alexander Viro	
- <viro@zeniv.linux.org.uk>, Chuck Lever <chuck.lever@oracle.com>, NeilBrown	
- <neil@brown.name>, Olga Kornievskaia <okorniev@redhat.com>, Dai Ngo	
- <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, Amir Goldstein	
- <amir73il@gmail.com>, Hugh Dickins <hughd@google.com>, Baolin Wang	
- <baolin.wang@linux.alibaba.com>, Andrew Morton <akpm@linux-foundation.org>,
-  Theodore Ts'o	 <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>,
- Jan Kara	 <jack@suse.com>, Gao Xiang <xiang@kernel.org>, Chao Yu
- <chao@kernel.org>, Yue Hu	 <zbestahu@gmail.com>, Jeffle Xu
- <jefflexu@linux.alibaba.com>, Sandeep Dhavale	 <dhavale@google.com>, Hongbo
- Li <lihongbo22@huawei.com>, Chunhai Guo	 <guochunhai@vivo.com>, Carlos
- Maiolino <cem@kernel.org>, Ilya Dryomov	 <idryomov@gmail.com>, Alex Markuze
- <amarkuze@redhat.com>, Viacheslav Dubeyko	 <slava@dubeyko.com>, Chris Mason
- <clm@fb.com>, David Sterba <dsterba@suse.com>,  Luis de Bethencourt	
- <luisbg@kernel.org>, Salah Triki <salah.triki@gmail.com>, Phillip Lougher	
- <phillip@squashfs.org.uk>, Steve French <sfrench@samba.org>, Paulo
- Alcantara	 <pc@manguebit.org>, Ronnie Sahlberg <ronniesahlberg@gmail.com>,
- Shyam Prasad N	 <sprasad@microsoft.com>, Bharath SM
- <bharathsm@microsoft.com>, Miklos Szeredi	 <miklos@szeredi.hu>, Mike
- Marshall <hubcap@omnibond.com>, Martin Brandenburg	 <martin@omnibond.com>,
- Mark Fasheh <mark@fasheh.com>, Joel Becker	 <jlbec@evilplan.org>, Joseph Qi
- <joseph.qi@linux.alibaba.com>, Konstantin Komarov
- <almaz.alexandrovich@paragon-software.com>, Ryusuke Konishi
- <konishi.ryusuke@gmail.com>,  Trond Myklebust <trondmy@kernel.org>, Anna
- Schumaker <anna@kernel.org>, Dave Kleikamp <shaggy@kernel.org>, David
- Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>, Jan
- Kara <jack@suse.cz>,  Andreas Gruenbacher	 <agruenba@redhat.com>, OGAWA
- Hirofumi <hirofumi@mail.parknet.co.jp>, Jaegeuk Kim <jaegeuk@kernel.org>,
- Jonathan Corbet <corbet@lwn.net>, David Laight	
- <david.laight.linux@gmail.com>, Dave Chinner <david@fromorbit.com>, 
-	linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
- linux-ext4@vger.kernel.org, 	linux-erofs@lists.ozlabs.org,
- linux-xfs@vger.kernel.org, 	ceph-devel@vger.kernel.org,
- linux-btrfs@vger.kernel.org, 	linux-cifs@vger.kernel.org,
- samba-technical@lists.samba.org, 	linux-unionfs@vger.kernel.org,
- devel@lists.orangefs.org, 	ocfs2-devel@lists.linux.dev,
- ntfs3@lists.linux.dev, linux-nilfs@vger.kernel.org, 
-	jfs-discussion@lists.sourceforge.net, linux-mtd@lists.infradead.org, 
-	gfs2@lists.linux.dev, linux-f2fs-devel@lists.sourceforge.net, 
-	linux-doc@vger.kernel.org
-Date: Tue, 20 Jan 2026 09:35:48 -0500
-In-Reply-To: <707f08e114bf603caf7de020bb630d5477e86bca.camel@kernel.org>
-References: <20260119-exportfs-nfsd-v2-0-d93368f903bd@kernel.org>
-			 <20260119-exportfs-nfsd-v2-1-d93368f903bd@kernel.org>
-			 <aW8yV6v8ZDiynOUm@infradead.org>
-		 <9b64bed72e43d0bf24e9b1e3bc770c4a87082762.camel@kernel.org>
-	 <707f08e114bf603caf7de020bb630d5477e86bca.camel@kernel.org>
-Autocrypt: addr=jlayton@kernel.org; prefer-encrypt=mutual;
- keydata=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
- QZIQXVeAA+smfTT0tDrisj1U5x6ZB9b3nBg65kc=
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.58.2 (3.58.2-1.fc43) 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0CBC45107C
+	for <linux-btrfs@vger.kernel.org>; Tue, 20 Jan 2026 15:12:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.218.42
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1768921979; cv=pass; b=kq5Uy18vVHVHnxJY7lAwBBa7a7B++af6PvAMSsmOvNJ2j/5nGEulA7WtHXJxFckEtXBjia6ezpPdqZazE44KLytOiX/a6RIZKgF73pCvTP6N5OV19Vg9jrLLDrBsLEPiM5MU1ZAQU5HxS16QzgaU3ay5K5Ojdp3dvWkOpc3s3XQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1768921979; c=relaxed/simple;
+	bh=Xnjuhtir64eVTIEfdUmhiDcTr/ARUdXCTWH26MCgUOU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=kyNVaNtMwYDqfNDXdqe0PH5oXP3XI6aUTMiYkvg0Vpm8/CUUe83qWinvY6wK5wsQQgHHjJCf2xIUoV+zW2kzk2BzEDke2Scs4Qb/PhZzZ4WlYcBMxsDNVMS5eyiqvdLPPdosUk44HzbeA+osaaskdh5EsYAcgQhGzBTkS5ppkbk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Wf9H/ICM; arc=pass smtp.client-ip=209.85.218.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-b8707005183so937448966b.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 20 Jan 2026 07:12:56 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1768921975; cv=none;
+        d=google.com; s=arc-20240605;
+        b=FXDDcGb2mjR7xzaSaH8qBzukeoYQOV87hA3VKoB8pfNdxKtlNlZwcmoISppTTAfkvy
+         4YmOd6CnMZA2sMfdzIc6nF/bR6+xZXRaz8aTKok82QoGmmqIVJzWlhFoHcW7PIpti9xh
+         r7Ns8sFaxPNkvONddmmX6O/f0g508XM/jDfgV8V5Oh7diOKu+jCQMaMgLzND6CGWKfdb
+         6IbdfQoUlA7cKGkU9fqwrzpejy/N2elsjHHfDFCZ62z/m16sgX+ds6ItENkVwFcazyAT
+         g4kadPuYoHt8V6fEENkOVK/QXPAb0s9w35kmvMbP/g8exp9uF4N0PNle0uGrG9dXVCgY
+         sQ5g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature;
+        bh=rp3Cco0V7YWfsBRnrN7YWiXeWxd2p0Ss5nTS/91MVtk=;
+        fh=C/XIktnA4EFbrQqYxy/ZgbBJtWC5DoL8UonHnPDvl8k=;
+        b=D15OLO3EBDEBj+CzCnkukDe2vzpeKjX1w4RIjBzfBesQ7MceATVsRr2E3S5MturLE0
+         zg3wJfdCNWiC5p6v87czXQJePJg30yWSebdPSack6toa6I5+SEL7EFM96sIv4X7JubJ4
+         d0n+ogliQmzixYDXH9DCt3nJk+mNjF1szXKN3Ca2ovu3CJa3yy2WcEa4gpkh2inQNh2H
+         rt2sI1Cpuxwf6MFXyohg7vrpbObuEZ1JGrclwkLyI2rY2TF/F59kIs9rZlNDiCAhoX9v
+         oYmkXGXs7XwdsJj+k224Z4MalenOOgrfa8R1mK9sImTTpP/cZ/hDjoCH1coziz0wByDE
+         732g==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1768921975; x=1769526775; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=rp3Cco0V7YWfsBRnrN7YWiXeWxd2p0Ss5nTS/91MVtk=;
+        b=Wf9H/ICMG/H9XmWjFGBJVy+WoCGIsBR+YwbkyuZq8rtMe0BdUguFDH98FrE5iYUD9F
+         +F3KgChkA5F5EmGdD3RSSI/qh/z5wsNFxTK6gDkb09/dVJS7yJ/JT0g9KeQSJ3r9ayRd
+         2Dsk8Kmh2qrXd6ip//1wleiPePY2NPHxaW1LNS90/p/z2GqHJ5wQEj4GLpEQaomK+iSY
+         gOLCPfXwccmH4V5JGp2xXtpnJtmzoqCEyPJROemcc+Gmi1m+pJ0n4B3C8jdwTQkhSXEo
+         RyCChFmSgVzGIgzI6RFIiH88JzqB4VoD1/dRz32ysqBPyiPguE08hGHdNtfoHzDcDq2K
+         p9Jg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1768921975; x=1769526775;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rp3Cco0V7YWfsBRnrN7YWiXeWxd2p0Ss5nTS/91MVtk=;
+        b=jAS0832mHVOVpl75GD5j2dWYwYnpEIs1tfcKXK2lqfSG3JQTm9ZZ0P/2p6LTbpDZk7
+         YejGU8ZaXGFwSOqmvs0ubqNp6yJ6dQGYZ9p5fjggWO/SoQw9qUumMNmP9lc8guNF1VDG
+         jadVJBBs6qvlyPQSu/GcjIgwqgZZJVt0bCXYd38wxioFVC3sjA4RVUDjBe/pOx7QVouS
+         el09Aj9ihjComruE5+KbbUUvpYngJFli3/8yPlavCVaXs0sKcH1XFoycMspwBlONMKUf
+         f+vZzBaqEutZ+iBlH+fZpZEkDjZ41JyCx2p8JPqgVfi/3G/SFPJm3EyXO4VF4ijfIDff
+         SCGg==
+X-Forwarded-Encrypted: i=1; AJvYcCWY4Mk+GlNTsI+30iwvoRt2QifpE/zcfVczLusxMi3Mjg5VDZHMZ0T4VjiCMuku98HHrhFZZ+2FYqD97A==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwJB9AHW7eUl9OJiCaAkKZ6T+P1mVXgQPcpF7L3bYRlO3pRxlgp
+	GXBHX4ILr4MP4w8QRgh7TUfsJqhIKIJzRMnrtMISNSxiTJfK8dWY+9T7jhSuOYDXnwIISEPQ0FT
+	V9NauhLNjdf03kooyKJmy6yLdItuVKnY=
+X-Gm-Gg: AZuq6aLQt/pfsQiZgGoT2YViInKB9GI/mZT6vWR1gSzeYjN0anh9d9CrPE2jqZMTVq/
+	9O3YeelyBOOCiSohgMcTW9kh/Xo3J33Db0MDQMS8RvVY/G4Zbmr5b4nt0SbOQ4yGBu2RorJoGGl
+	gpQyGglfRsgaZHQX2TC8JUHWttCYSyIgne5P1XNInP4/5BaNWK4ALxz5NSzjJGHXnqz/OEQLhg2
+	+zCTOwFLdGCOScpLfJvXCMhJAAaCIFS0ObfNQ0c5OU/7Wp3UOJzZxFz1rPRWVnw7GVFbcHQCcvp
+	ecZbcbhPb9BHj7jqC48CLKqYSJEciQ==
+X-Received: by 2002:a17:907:7b9a:b0:b87:115:a724 with SMTP id
+ a640c23a62f3a-b879324398bmr1329515266b.34.1768921974511; Tue, 20 Jan 2026
+ 07:12:54 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-0.46 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+References: <20260114-tonyk-get_disk_uuid-v1-0-e6a319e25d57@igalia.com>
+ <20260114-tonyk-get_disk_uuid-v1-3-e6a319e25d57@igalia.com>
+ <20260114062608.GB10805@lst.de> <5334ebc6-ceee-4262-b477-6b161c5ca704@igalia.com>
+ <20260115062944.GA9590@lst.de> <633bb5f3-4582-416c-b8b9-fd1f3b3452ab@suse.com>
+ <20260115072311.GA10352@lst.de> <22b16e24-d10e-43f6-bc2b-eeaa94310e3a@igalia.com>
+ <CAOQ4uxhbz7=XT=C3R8XqL0K_o7KwLKsoNwgk=qJGuw2375MTJw@mail.gmail.com>
+ <0241e2c4-bf11-4372-9eda-cccaba4a6d7d@igalia.com> <CAOQ4uxi988PutUi=Owm5zf6NaCm90PUCJLu7dw8firH8305w-A@mail.gmail.com>
+ <33c1ccbd-abbe-4278-8ab1-d7d645c8b6e8@igalia.com> <CAOQ4uxgCM=q29Vs+35y-2K9k7GP2A2NfPkuqCrUiMUHW+KhbWw@mail.gmail.com>
+ <75a9247a-12f4-4066-9712-c70ab41c274f@igalia.com>
+In-Reply-To: <75a9247a-12f4-4066-9712-c70ab41c274f@igalia.com>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Tue, 20 Jan 2026 16:12:41 +0100
+X-Gm-Features: AZwV_QghbBNAoP8paOdiNoqpwmmKM3bWt4If2fMAFv5l9zx2CG_D1s9roNDQ-Gs
+Message-ID: <CAOQ4uxig==FAd=2hO0B_CVBDSuBwdqL-zaXkpf-QXn5iEL364g@mail.gmail.com>
+Subject: Re: [PATCH 3/3] ovl: Use real disk UUID for origin file handles
+To: =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>
+Cc: Christoph Hellwig <hch@lst.de>, Chuck Lever <chuck.lever@oracle.com>, Jeff Layton <jlayton@kernel.org>, 
+	NeilBrown <neil@brown.name>, Olga Kornievskaia <okorniev@redhat.com>, Dai Ngo <Dai.Ngo@oracle.com>, 
+	Tom Talpey <tom@talpey.com>, Carlos Maiolino <cem@kernel.org>, Chris Mason <clm@fb.com>, 
+	David Sterba <dsterba@suse.com>, Miklos Szeredi <miklos@szeredi.hu>, 
+	Christian Brauner <brauner@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
+	linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org, linux-unionfs@vger.kernel.org, 
+	kernel-dev@igalia.com, vivek@collabora.com, 
+	Ludovico de Nittis <ludovico.denittis@collabora.com>
+Content-Type: multipart/mixed; boundary="000000000000edabef0648d33d95"
+X-Spamd-Result: default: False [-0.86 / 15.00];
+	MIME_BASE64_TEXT_BOGUS(1.00)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
 	DMARC_POLICY_ALLOW_WITH_FAILURES(-0.50)[];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
 	MAILLIST(-0.15)[generic];
-	MIME_GOOD(-0.10)[text/plain];
+	MIME_GOOD(-0.10)[multipart/mixed,text/plain,text/x-patch];
+	MIME_BASE64_TEXT(0.10)[];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[kernel.org,zeniv.linux.org.uk,oracle.com,brown.name,redhat.com,talpey.com,gmail.com,google.com,linux.alibaba.com,linux-foundation.org,mit.edu,dilger.ca,suse.com,huawei.com,vivo.com,dubeyko.com,fb.com,squashfs.org.uk,samba.org,manguebit.org,microsoft.com,szeredi.hu,omnibond.com,fasheh.com,evilplan.org,paragon-software.com,infradead.org,nod.at,suse.cz,mail.parknet.co.jp,lwn.net,fromorbit.com,vger.kernel.org,kvack.org,lists.ozlabs.org,lists.samba.org,lists.orangefs.org,lists.linux.dev,lists.sourceforge.net,lists.infradead.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20775-lists,linux-btrfs=lfdr.de];
-	DMARC_POLICY_ALLOW(0.00)[kernel.org,quarantine];
 	RCVD_TLS_LAST(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
+	RCVD_COUNT_THREE(0.00)[4];
 	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	TAGGED_FROM(0.00)[bounces-20776-lists,linux-btrfs=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[25];
+	MIME_TRACE(0.00)[0:+,1:+,2:+];
+	DMARC_POLICY_ALLOW(0.00)[gmail.com,none];
+	HAS_ATTACHMENT(0.00)[];
 	TO_DN_SOME(0.00)[];
 	R_SPF_SOFTFAIL(0.00)[~all:c];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jlayton@kernel.org,linux-btrfs@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_GT_50(0.00)[77];
+	FROM_NEQ_ENVFROM(0.00)[amir73il@gmail.com,linux-btrfs@vger.kernel.org];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	MID_RHS_MATCH_FROMTLD(0.00)[];
+	ASN(0.00)[asn:7979, ipnet:142.0.200.0/24, country:US];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:7979, ipnet:213.196.21.0/24, country:US];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[ams.mirrors.kernel.org:rdns,ams.mirrors.kernel.org:helo]
-X-Rspamd-Queue-Id: 7953447D51
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,dfw.mirrors.kernel.org:rdns,dfw.mirrors.kernel.org:helo,igalia.com:email]
+X-Rspamd-Queue-Id: 68D5F48787
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Tue, 2026-01-20 at 09:12 -0500, Jeff Layton wrote:
-> On Tue, 2026-01-20 at 08:20 -0500, Jeff Layton wrote:
-> > On Mon, 2026-01-19 at 23:44 -0800, Christoph Hellwig wrote:
-> > > On Mon, Jan 19, 2026 at 11:26:18AM -0500, Jeff Layton wrote:
-> > > > +  EXPORT_OP_NOLOCKS - Disable file locking on this filesystem. Som=
+--000000000000edabef0648d33d95
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Jan 19, 2026 at 5:56=E2=80=AFPM Andr=C3=A9 Almeida <andrealmeid@iga=
+lia.com> wrote:
+>
+> Em 16/01/2026 14:06, Amir Goldstein escreveu:
+> > On Fri, Jan 16, 2026 at 2:28=E2=80=AFPM Andr=C3=A9 Almeida <andrealmeid=
+@igalia.com> wrote:
+> >>
+> >> [+CC SteamOS developers]
+> >>
+> >> Em 16/01/2026 06:55, Amir Goldstein escreveu:
+> >>> On Thu, Jan 15, 2026 at 7:55=E2=80=AFPM Andr=C3=A9 Almeida <andrealme=
+id@igalia.com> wrote:
+> >>>>
+> >>>> Em 15/01/2026 13:07, Amir Goldstein escreveu:
+> >>>>> On Thu, Jan 15, 2026 at 4:42=E2=80=AFPM Andr=C3=A9 Almeida <andreal=
+meid@igalia.com> wrote:
+> >>>>>>
+> >>>>>> Em 15/01/2026 04:23, Christoph Hellwig escreveu:
+> >>>>>>
+> >>>>>> [...]
+> >>>>>>
+> >>>>>>>
+> >>>>>>> I still wonder what the use case is here.  Looking at Andr=C3=A9'=
+s original
+> >>>>>>> mail it states:
+> >>>>>>>
+> >>>>>>> "However, btrfs mounts may have volatiles UUIDs. When mounting th=
+e exact same
+> >>>>>>> disk image with btrfs, a random UUID is assigned for the followin=
+g disks each
+> >>>>>>> time they are mounted, stored at temp_fsid and used across the ke=
+rnel as the
+> >>>>>>> disk UUID. `btrfs filesystem show` presents that. Calling statfs(=
+) however
+> >>>>>>> shows the original (and duplicated) UUID for all disks."
+> >>>>>>>
+> >>>>>>> and this doesn't even talk about multiple mounts, but looking at
+> >>>>>>> device_list_add it seems to only set the temp_fsid flag when set
+> >>>>>>> same_fsid_diff_dev is set by find_fsid_by_device, which isn't doc=
+umented
+> >>>>>>> well, but does indeed seem to be done transparently when two file=
+ systems
+> >>>>>>> with the same fsid are mounted.
+> >>>>>>>
+> >>>>>>> So Andr=C3=A9, can you confirm this what you're worried about?  A=
+nd btrfs
+> >>>>>>> developers, I think the main problem is indeed that btrfs simply =
+allows
+> >>>>>>> mounting the same fsid twice.  Which is really fatal for anything=
+ using
+> >>>>>>> the fsid/uuid, such NFS exports, mount by fs uuid or any sb->s_uu=
+id user.
+> >>>>>>>
+> >>>>>>
+> >>>>>> Yes, I'm would like to be able to mount two cloned btrfs images an=
+d to
+> >>>>>> use overlayfs with them. This is useful for SteamOS A/B partition =
+scheme.
+> >>>>>>
+> >>>>>>>> If so, I think it's time to revert the behavior before it's too =
+late.
+> >>>>>>>> Currently the main usage of such duplicated fsids is for Steam d=
+eck to
+> >>>>>>>> maintain A/B partitions, I think they can accept a new compat_ro=
+ flag for
+> >>>>>>>> that.
+> >>>>>>>
+> >>>>>>> What's an A/B partition?  And how are these safely used at the sa=
+me time?
+> >>>>>>>
+> >>>>>>
+> >>>>>> The Steam Deck have two main partitions to install SteamOS updates
+> >>>>>> atomically. When you want to update the device, assuming that you =
+are
+> >>>>>> using partition A, the updater will write the new image in partiti=
+on B,
+> >>>>>> and vice versa. Then after the reboot, the system will mount the n=
+ew
+> >>>>>> image on B.
+> >>>>>>
+> >>>>>
+> >>>>> And what do you expect to happen wrt overlayfs when switching from
+> >>>>> image A to B?
+> >>>>>
+> >>>>> What are the origin file handles recorded in overlayfs index from i=
+mage A
+> >>>>> lower worth when the lower image is B?
+> >>>>>
+> >>>>> Is there any guarantee that file handles are relevant and point to =
+the
+> >>>>> same objects?
+> >>>>>
+> >>>>> The whole point of the overlayfs index feature is that overlayfs in=
+odes
+> >>>>> can have a unique id across copy-up.
+> >>>>>
+> >>>>> Please explain in more details exactly which overlayfs setup you ar=
 e
-> > > > +    filesystems cannot properly support file locking as implemente=
-d by
-> > > > +    nfsd. A case in point is reexport of NFS itself, which can't b=
-e done
-> > > > +    safely without coordinating the grace period handling. Other c=
-lustered
-> > > > +    and networked filesystems can be problematic here as well.
-> > >=20
-> > > I'm not sure this is very useful.  It really needs to document what
-> > > locking semantics nfs expects, because otherwise no reader will know
-> > > if they set this or not.
-> >=20
-> > Fair point. I'll see if I can draft something better. Suggestions
-> > welcome.
->=20
-> How about this?
->=20
-> +  EXPORT_OP_NOLOCKS - Disable file locking on this filesystem. Filesyste=
-ms
-> +    that want to support locking over NFS must support POSIX file lockin=
-g
-> +    semantics and must handle lock recovery requests from clients after =
-a
-> +    reboot. Most local disk, RAM, or pseudo-filesystems use the generic =
-POSIX
-> +    locking support in the kernel and naturally provide this capability.=
- Network
-> +    or clustered filesystems usually need special handling to do this pr=
-operly.
+> >>>>> trying to do with index feature.
+> >>>>>
+> >>>>
+> >>>> The problem happens _before_ switching from A to B, it happens when
+> >>>> trying to install the same image from A on B.
+> >>>>
+> >>>> During the image installation process, while running in A, the B ima=
+ge
+> >>>> will be mounted more than once for some setup steps, and overlayfs i=
+s
+> >>>> used for this. Because A have the same UUID, each time B is remouted
+> >>>> will get a new UUID and then the installation scripts fails mounting=
+ the
+> >>>> image.
+> >>>
+> >>> Please describe the exact overlayfs setup and specifically,
+> >>> is it multi lower or single lower layer setup?
+> >>> What reason do you need the overlayfs index for?
+> >>> Can you mount with index=3Doff which should relax the hard
+> >>> requirement for match with the original lower layer uuid.
+> >>>
+> >>
+> >> The setup has a single lower layer. This is how the mount command look=
+s
+> >> like:
+> >>
+> >> mount -t overlay -o
+> >> "lowerdir=3D${DEV_DIR}/etc,upperdir=3D${DEV_DIR}/var/lib/overlays/etc/=
+upper,workdir=3D${DEV_DIR}/var/lib/overlays/etc/work"
+> >> none "${DEV_DIR}/etc"
+> >>
+> >> They would rather not disable index, to avoid mounting the wrong layer=
+s
+> >> and to avoid corner cases with hardlinks.
+> >
+> > IIUC you have all the layers on the same fs ($DEV_DIR)?
+> >
+> > See mount option uuid=3Doff, created for this exact use case:
+> >
+> > Documentation/filesystems/overlayfs.rst:
+> > Note: the mount option uuid=3Doff can be used to replace UUID of the un=
+derlying
+> > filesystem in file handles with null, and effectively disable UUID chec=
+ks. This
+> > can be useful in case the underlying disk is copied and the UUID of thi=
+s copy
+> > is changed. This is only applicable if all lower/upper/work directories=
+ are on
+> > the same filesystem, otherwise it will fallback to normal behaviour.
+> >
+> > commit 5830fb6b54f7167cc7c9d43612eb01c24312c7ca
+> > Author: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
+> > Date:   Tue Oct 13 17:59:54 2020 +0300
+> >
+> >      ovl: introduce new "uuid=3Doff" option for inodes index feature
+> >
+> >      This replaces uuid with null in overlayfs file handles and thus re=
+laxes
+> >      uuid checks for overlay index feature. It is only possible in case=
+ there is
+> >      only one filesystem for all the work/upper/lower directories and b=
+are file
+> >      handles from this backing filesystem are unique. In other case whe=
+n we have
+> >      multiple filesystems lets just fallback to "uuid=3Don" which is an=
+d
+> >      equivalent of how it worked before with all uuid checks.
+> >
+> >      This is needed when overlayfs is/was mounted in a container with i=
+ndex
+> >      enabled ...
+> >
+> >      If you just change the uuid of the backing filesystem, overlay is =
+not
+> >      mounting any more. In Virtuozzo we copy container disks (ploops) w=
+hen
+> >      create the copy of container and we require fs uuid to be unique f=
+or a new
+> >      container.
+> >
+> > TBH, I am trying to remember why we require upper/work to be on the
+> > same fs as lower for uuid=3Doff,index=3Don and I can't remember.
+> > If this is important I can look into it.
+> >
+>
+> Actually they are not in the same fs, upper and lower are coming from
+> different fs', so when trying to mount I get the fallback to
+> `uuid=3Dnull`. A quick hack circumventing this check makes the mount work=
+.
+>
+> If you think this is the best way to solve this issue (rather than
+> following the VFS helper path for instance),
 
-Even better, I think?
+That's up to you if you want to solve the "all lower layers on same fs"
+or want to also allow lower layers on different fs.
+The former could be solved by relaxing the ovl rules.
 
-+
-+  EXPORT_OP_NOLOCKS - Disable file locking on this filesystem. Filesystems
-+    that want to support locking over NFS must support POSIX file locking
-+    semantics. When the server reboots, the clients will issue requests to
-+    recover their locks, which nfsd will issue to the filesystem as new lo=
-ck
-+    requests. Those must succeed in order for lock recovery to work. Most
-+    local disk, RAM, or pseudo-filesystems use the generic POSIX locking
-+    support in the kernel and naturally provide this capability. Network o=
-r
-+    clustered filesystems usually need special handling to do this properl=
-y.
-+    Set this flag on filesystems that can't guarantee the proper semantics
-+    (e.g. reexported NFS).
+> please let me know how can
+> I safely lift this restriction, like maybe adding a new flag for this?
 
---=20
-Jeff Layton <jlayton@kernel.org>
+I think the attached patch should work for you and should not
+break anything.
+
+It's only sanity tested and will need to write tests to verify it.
+
+Thanks,
+Amir.
+
+--000000000000edabef0648d33d95
+Content-Type: text/x-patch; charset="US-ASCII"; 
+	name="0001-ovl-relax-requirement-for-uuid-off-index-on.patch"
+Content-Disposition: attachment; 
+	filename="0001-ovl-relax-requirement-for-uuid-off-index-on.patch"
+Content-Transfer-Encoding: base64
+Content-ID: <f_mkmqeux30>
+X-Attachment-Id: f_mkmqeux30
+
+RnJvbSAxNDdlODhkODhiNWRmYmNkZDIzYWZmNzM2ZTRkMzgxYThhZjQ0NmY2IE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBBbWlyIEdvbGRzdGVpbiA8YW1pcjczaWxAZ21haWwuY29tPgpE
+YXRlOiBUdWUsIDIwIEphbiAyMDI2IDE1OjU4OjMxICswMTAwClN1YmplY3Q6IFtQQVRDSF0gb3Zs
+OiByZWxheCByZXF1aXJlbWVudCBmb3IgdXVpZD1vZmYsaW5kZXg9b24KCnV1aWQ9b2ZmLGluZGV4
+PW9uIHJlcXVpcmVkIHRoYXQgYWxsIHVwcGVyL2xvd2VyIGRpcmVjdG9yaWVzIGFyZSBvbiB0aGUK
+c2FtZSBmaWxlc3lzdGVtLgoKUmVsYXggdGhlIHJlcXVpcmVtZW50IHNvIHRoYXQgb25seSBhbGwg
+dGhlIGxvd2VyIGRpcmVjdG9yaWVzIG5lZWQgdG8gYmUKb24gdGhlIHNhbWUgZmlsZXN5c3RlbS4K
+ClNpZ25lZC1vZmYtYnk6IEFtaXIgR29sZHN0ZWluIDxhbWlyNzNpbEBnbWFpbC5jb20+Ci0tLQog
+RG9jdW1lbnRhdGlvbi9maWxlc3lzdGVtcy9vdmVybGF5ZnMucnN0IHwgIDIgKy0KIGZzL292ZXJs
+YXlmcy9uYW1laS5jICAgICAgICAgICAgICAgICAgICB8IDIxICsrKysrKysrKysrKystLS0tLS0t
+LQogZnMvb3ZlcmxheWZzL292ZXJsYXlmcy5oICAgICAgICAgICAgICAgIHwgIDIgKysKIGZzL292
+ZXJsYXlmcy9zdXBlci5jICAgICAgICAgICAgICAgICAgICB8IDEzICsrKysrLS0tLS0tLS0KIDQg
+ZmlsZXMgY2hhbmdlZCwgMjEgaW5zZXJ0aW9ucygrKSwgMTcgZGVsZXRpb25zKC0pCgpkaWZmIC0t
+Z2l0IGEvRG9jdW1lbnRhdGlvbi9maWxlc3lzdGVtcy9vdmVybGF5ZnMucnN0IGIvRG9jdW1lbnRh
+dGlvbi9maWxlc3lzdGVtcy9vdmVybGF5ZnMucnN0CmluZGV4IGFiOTg5ODA3YTJjYjYuLmQ0MDIw
+ZWFlMWRlYmEgMTAwNjQ0Ci0tLSBhL0RvY3VtZW50YXRpb24vZmlsZXN5c3RlbXMvb3ZlcmxheWZz
+LnJzdAorKysgYi9Eb2N1bWVudGF0aW9uL2ZpbGVzeXN0ZW1zL292ZXJsYXlmcy5yc3QKQEAgLTc1
+NSw3ICs3NTUsNyBAQCByZWFkLXdyaXRlIG1vdW50IGFuZCB3aWxsIHJlc3VsdCBpbiBhbiBlcnJv
+ci4KIE5vdGU6IHRoZSBtb3VudCBvcHRpb24gdXVpZD1vZmYgY2FuIGJlIHVzZWQgdG8gcmVwbGFj
+ZSBVVUlEIG9mIHRoZSB1bmRlcmx5aW5nCiBmaWxlc3lzdGVtIGluIGZpbGUgaGFuZGxlcyB3aXRo
+IG51bGwsIGFuZCBlZmZlY3RpdmVseSBkaXNhYmxlIFVVSUQgY2hlY2tzLiBUaGlzCiBjYW4gYmUg
+dXNlZnVsIGluIGNhc2UgdGhlIHVuZGVybHlpbmcgZGlzayBpcyBjb3BpZWQgYW5kIHRoZSBVVUlE
+IG9mIHRoaXMgY29weQotaXMgY2hhbmdlZC4gVGhpcyBpcyBvbmx5IGFwcGxpY2FibGUgaWYgYWxs
+IGxvd2VyL3VwcGVyL3dvcmsgZGlyZWN0b3JpZXMgYXJlIG9uCitpcyBjaGFuZ2VkLiBUaGlzIGlz
+IG9ubHkgYXBwbGljYWJsZSBpZiBhbGwgbG93ZXIgZGlyZWN0b3JpZXMgYXJlIG9uCiB0aGUgc2Ft
+ZSBmaWxlc3lzdGVtLCBvdGhlcndpc2UgaXQgd2lsbCBmYWxsYmFjayB0byBub3JtYWwgYmVoYXZp
+b3VyLgogCiAKZGlmZiAtLWdpdCBhL2ZzL292ZXJsYXlmcy9uYW1laS5jIGIvZnMvb3ZlcmxheWZz
+L25hbWVpLmMKaW5kZXggZTlhNjljOTViZTkxOC4uNzRjNTE0NjAzYWMyMyAxMDA2NDQKLS0tIGEv
+ZnMvb3ZlcmxheWZzL25hbWVpLmMKKysrIGIvZnMvb3ZlcmxheWZzL25hbWVpLmMKQEAgLTE1OCw2
+ICsxNTgsMTggQEAgc3RhdGljIHN0cnVjdCBvdmxfZmggKm92bF9nZXRfZmgoc3RydWN0IG92bF9m
+cyAqb2ZzLCBzdHJ1Y3QgZGVudHJ5ICp1cHBlcmRlbnRyeSwKIAlnb3RvIG91dDsKIH0KIAorYm9v
+bCBvdmxfdXVpZF9tYXRjaChzdHJ1Y3Qgb3ZsX2ZzICpvZnMsIGNvbnN0IHN0cnVjdCBzdXBlcl9i
+bG9jayAqc2IsCisJCSAgICBjb25zdCB1dWlkX3QgKnV1aWQpCit7CisJLyoKKwkgKiBNYWtlIHN1
+cmUgdGhhdCB0aGUgc3RvcmVkIHV1aWQgbWF0Y2hlcyB0aGUgdXVpZCBvZiB0aGUgbG93ZXIKKwkg
+KiBsYXllciB3aGVyZSBmaWxlIGhhbmRsZSB3aWxsIGJlIGRlY29kZWQuCisJICogSW4gY2FzZSBv
+ZiB1dWlkPW9mZiBvcHRpb24ganVzdCBtYWtlIHN1cmUgdGhhdCBzdG9yZWQgdXVpZCBpcyBudWxs
+LgorCSAqLworCXJldHVybiBvdmxfb3JpZ2luX3V1aWQob2ZzKSA/IHV1aWRfZXF1YWwodXVpZCwg
+JnNiLT5zX3V1aWQpIDoKKwkJCQkgICAgICB1dWlkX2lzX251bGwodXVpZCk7Cit9CisKIHN0cnVj
+dCBkZW50cnkgKm92bF9kZWNvZGVfcmVhbF9maChzdHJ1Y3Qgb3ZsX2ZzICpvZnMsIHN0cnVjdCBv
+dmxfZmggKmZoLAogCQkJCSAgc3RydWN0IHZmc21vdW50ICptbnQsIGJvb2wgY29ubmVjdGVkKQog
+ewpAQCAtMTY3LDE0ICsxNzksNyBAQCBzdHJ1Y3QgZGVudHJ5ICpvdmxfZGVjb2RlX3JlYWxfZmgo
+c3RydWN0IG92bF9mcyAqb2ZzLCBzdHJ1Y3Qgb3ZsX2ZoICpmaCwKIAlpZiAoIWNhcGFibGUoQ0FQ
+X0RBQ19SRUFEX1NFQVJDSCkpCiAJCXJldHVybiBOVUxMOwogCi0JLyoKLQkgKiBNYWtlIHN1cmUg
+dGhhdCB0aGUgc3RvcmVkIHV1aWQgbWF0Y2hlcyB0aGUgdXVpZCBvZiB0aGUgbG93ZXIKLQkgKiBs
+YXllciB3aGVyZSBmaWxlIGhhbmRsZSB3aWxsIGJlIGRlY29kZWQuCi0JICogSW4gY2FzZSBvZiB1
+dWlkPW9mZiBvcHRpb24ganVzdCBtYWtlIHN1cmUgdGhhdCBzdG9yZWQgdXVpZCBpcyBudWxsLgot
+CSAqLwotCWlmIChvdmxfb3JpZ2luX3V1aWQob2ZzKSA/Ci0JICAgICF1dWlkX2VxdWFsKCZmaC0+
+ZmIudXVpZCwgJm1udC0+bW50X3NiLT5zX3V1aWQpIDoKLQkgICAgIXV1aWRfaXNfbnVsbCgmZmgt
+PmZiLnV1aWQpKQorCWlmICghb3ZsX3V1aWRfbWF0Y2gob2ZzLCBtbnQtPm1udF9zYiwgJmZoLT5m
+Yi51dWlkKSkKIAkJcmV0dXJuIE5VTEw7CiAKIAlieXRlcyA9IChmaC0+ZmIubGVuIC0gb2Zmc2V0
+b2Yoc3RydWN0IG92bF9mYiwgZmlkKSk7CmRpZmYgLS1naXQgYS9mcy9vdmVybGF5ZnMvb3Zlcmxh
+eWZzLmggYi9mcy9vdmVybGF5ZnMvb3ZlcmxheWZzLmgKaW5kZXggZjlhYzliZGRlODMwNS4uY2Yx
+MDY2MTUyMjEwNiAxMDA2NDQKLS0tIGEvZnMvb3ZlcmxheWZzL292ZXJsYXlmcy5oCisrKyBiL2Zz
+L292ZXJsYXlmcy9vdmVybGF5ZnMuaApAQCAtNzEwLDYgKzcxMCw4IEBAIHN0YXRpYyBpbmxpbmUg
+aW50IG92bF9jaGVja19maF9sZW4oc3RydWN0IG92bF9maCAqZmgsIGludCBmaF9sZW4pCiAJcmV0
+dXJuIG92bF9jaGVja19mYl9sZW4oJmZoLT5mYiwgZmhfbGVuIC0gT1ZMX0ZIX1dJUkVfT0ZGU0VU
+KTsKIH0KIAorYm9vbCBvdmxfdXVpZF9tYXRjaChzdHJ1Y3Qgb3ZsX2ZzICpvZnMsIGNvbnN0IHN0
+cnVjdCBzdXBlcl9ibG9jayAqc2IsCisJCSAgICBjb25zdCB1dWlkX3QgKnV1aWQpOwogc3RydWN0
+IGRlbnRyeSAqb3ZsX2RlY29kZV9yZWFsX2ZoKHN0cnVjdCBvdmxfZnMgKm9mcywgc3RydWN0IG92
+bF9maCAqZmgsCiAJCQkJICBzdHJ1Y3QgdmZzbW91bnQgKm1udCwgYm9vbCBjb25uZWN0ZWQpOwog
+aW50IG92bF9jaGVja19vcmlnaW5fZmgoc3RydWN0IG92bF9mcyAqb2ZzLCBzdHJ1Y3Qgb3ZsX2Zo
+ICpmaCwgYm9vbCBjb25uZWN0ZWQsCmRpZmYgLS1naXQgYS9mcy9vdmVybGF5ZnMvc3VwZXIuYyBi
+L2ZzL292ZXJsYXlmcy9zdXBlci5jCmluZGV4IGJhOTE0NmYyMmEyY2MuLjhmMGVjYjQ5MDVlOTMg
+MTAwNjQ0Ci0tLSBhL2ZzL292ZXJsYXlmcy9zdXBlci5jCisrKyBiL2ZzL292ZXJsYXlmcy9zdXBl
+ci5jCkBAIC05NDAsNyArOTQwLDcgQEAgc3RhdGljIGJvb2wgb3ZsX2xvd2VyX3V1aWRfb2soc3Ry
+dWN0IG92bF9mcyAqb2ZzLCBjb25zdCB1dWlkX3QgKnV1aWQpCiAJCSAqIGRpc2FibGUgbG93ZXIg
+ZmlsZSBoYW5kbGUgZGVjb2Rpbmcgb24gYWxsIG9mIHRoZW0uCiAJCSAqLwogCQlpZiAob2ZzLT5m
+c1tpXS5pc19sb3dlciAmJgotCQkgICAgdXVpZF9lcXVhbCgmb2ZzLT5mc1tpXS5zYi0+c191dWlk
+LCB1dWlkKSkgeworCQkgICAgb3ZsX3V1aWRfbWF0Y2gob2ZzLCBvZnMtPmZzW2ldLnNiLCB1dWlk
+KSkgewogCQkJb2ZzLT5mc1tpXS5iYWRfdXVpZCA9IHRydWU7CiAJCQlyZXR1cm4gZmFsc2U7CiAJ
+CX0KQEAgLTk1Miw2ICs5NTIsNyBAQCBzdGF0aWMgYm9vbCBvdmxfbG93ZXJfdXVpZF9vayhzdHJ1
+Y3Qgb3ZsX2ZzICpvZnMsIGNvbnN0IHV1aWRfdCAqdXVpZCkKIHN0YXRpYyBpbnQgb3ZsX2dldF9m
+c2lkKHN0cnVjdCBvdmxfZnMgKm9mcywgY29uc3Qgc3RydWN0IHBhdGggKnBhdGgpCiB7CiAJc3Ry
+dWN0IHN1cGVyX2Jsb2NrICpzYiA9IHBhdGgtPm1udC0+bW50X3NiOworCWNvbnN0IHV1aWRfdCAq
+dXVpZCA9IG92bF9vcmlnaW5fdXVpZChvZnMpID8gJnNiLT5zX3V1aWQgOiAmdXVpZF9udWxsOwog
+CXVuc2lnbmVkIGludCBpOwogCWRldl90IGRldjsKIAlpbnQgZXJyOwpAQCAtOTYzLDcgKzk2NCw3
+IEBAIHN0YXRpYyBpbnQgb3ZsX2dldF9mc2lkKHN0cnVjdCBvdmxfZnMgKm9mcywgY29uc3Qgc3Ry
+dWN0IHBhdGggKnBhdGgpCiAJCQlyZXR1cm4gaTsKIAl9CiAKLQlpZiAoIW92bF9sb3dlcl91dWlk
+X29rKG9mcywgJnNiLT5zX3V1aWQpKSB7CisJaWYgKCFvdmxfbG93ZXJfdXVpZF9vayhvZnMsIHV1
+aWQpKSB7CiAJCWJhZF91dWlkID0gdHJ1ZTsKIAkJaWYgKG9mcy0+Y29uZmlnLnhpbm8gPT0gT1ZM
+X1hJTk9fQVVUTykgewogCQkJb2ZzLT5jb25maWcueGlubyA9IE9WTF9YSU5PX09GRjsKQEAgLTk3
+Niw4ICs5NzcsNyBAQCBzdGF0aWMgaW50IG92bF9nZXRfZnNpZChzdHJ1Y3Qgb3ZsX2ZzICpvZnMs
+IGNvbnN0IHN0cnVjdCBwYXRoICpwYXRoKQogCQl9CiAJCWlmICh3YXJuKSB7CiAJCQlwcl93YXJu
+KCIlcyB1dWlkIGRldGVjdGVkIGluIGxvd2VyIGZzICclcGQyJywgZmFsbGluZyBiYWNrIHRvIHhp
+bm89JXMsaW5kZXg9b2ZmLG5mc19leHBvcnQ9b2ZmLlxuIiwKLQkJCQl1dWlkX2lzX251bGwoJnNi
+LT5zX3V1aWQpID8gIm51bGwiIDoKLQkJCQkJCQkgICAgImNvbmZsaWN0aW5nIiwKKwkJCQl1dWlk
+X2lzX251bGwodXVpZCkgPyAibnVsbCIgOiAiY29uZmxpY3RpbmciLAogCQkJCXBhdGgtPmRlbnRy
+eSwgb3ZsX3hpbm9fbW9kZSgmb2ZzLT5jb25maWcpKTsKIAkJfQogCX0KQEAgLTE0NjksMTAgKzE0
+NjksNyBAQCBzdGF0aWMgaW50IG92bF9maWxsX3N1cGVyX2NyZWRzKHN0cnVjdCBmc19jb250ZXh0
+ICpmYywgc3RydWN0IHN1cGVyX2Jsb2NrICpzYikKIAlpZiAoIW92bF91cHBlcl9tbnQob2ZzKSkK
+IAkJc2ItPnNfZmxhZ3MgfD0gU0JfUkRPTkxZOwogCi0JaWYgKCFvdmxfb3JpZ2luX3V1aWQob2Zz
+KSAmJiBvZnMtPm51bWZzID4gMSkgewotCQlwcl93YXJuKCJUaGUgdXVpZD1vZmYgcmVxdWlyZXMg
+YSBzaW5nbGUgZnMgZm9yIGxvd2VyIGFuZCB1cHBlciwgZmFsbGluZyBiYWNrIHRvIHV1aWQ9bnVs
+bC5cbiIpOwotCQlvZnMtPmNvbmZpZy51dWlkID0gT1ZMX1VVSURfTlVMTDsKLQl9IGVsc2UgaWYg
+KG92bF9oYXNfZnNpZChvZnMpICYmIG92bF91cHBlcl9tbnQob2ZzKSkgeworCWlmIChvdmxfaGFz
+X2ZzaWQob2ZzKSAmJiBvdmxfdXBwZXJfbW50KG9mcykpIHsKIAkJLyogVXNlIHBlciBpbnN0YW5j
+ZSBwZXJzaXN0ZW50IHV1aWQvZnNpZCAqLwogCQlvdmxfaW5pdF91dWlkX3hhdHRyKHNiLCBvZnMs
+ICZjdHgtPnVwcGVyKTsKIAl9Ci0tIAoyLjUyLjAKCg==
+--000000000000edabef0648d33d95--
 
