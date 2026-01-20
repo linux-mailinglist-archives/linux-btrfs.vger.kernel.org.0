@@ -1,248 +1,206 @@
-Return-Path: <linux-btrfs+bounces-20774-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20782-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id GD7XBMK5cGmWZQAAu9opvQ
-	(envelope-from <linux-btrfs+bounces-20774-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 12:34:26 +0100
+	id eACXCWH3b2m+UQAAu9opvQ
+	(envelope-from <linux-btrfs+bounces-20782-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Jan 2026 22:45:05 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7709A560EE
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 12:34:25 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3CE84C741
+	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Jan 2026 22:45:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id C519076BEF9
-	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Jan 2026 14:23:45 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id D7F9FAE255D
+	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Jan 2026 20:42:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C70DD44104A;
-	Tue, 20 Jan 2026 14:12:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 833F33B9601;
+	Tue, 20 Jan 2026 20:41:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fs1qjXLd"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="WNacecVo"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9F8D3D649F;
-	Tue, 20 Jan 2026 14:12:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C76E33F8D9
+	for <linux-btrfs@vger.kernel.org>; Tue, 20 Jan 2026 20:41:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768918352; cv=none; b=Ox+SMhnrG1vzGANfC5j6jLGHvCe3NEdvm5emiwNBWNnweOEqN5dGH6W9Zy1c8IMDYhqR9FqtVSa7+LWV8egkMc4uCmu9YjZ1UNcmtqRkfwlVP60tXr/+QWfkP69do1LdfYheyBXRA0ZKYtTJCqGQtSyg3WuzrK1oQ0zC6YntW/M=
+	t=1768941687; cv=none; b=pZZgFrJHhMyj3puh+4W5aJ3MBjbHa2587fkatsUVEjjUkf5UOAmUMoi6TPH4vuOimcjfV4fCHukQSeRTjs64hUBmH2+bCx3QY5M2LAkKZZYr97ZOZio9npeZe/AbG21DpTzDynAYUlycTI9OE0pwHbJataQfRk3QPznJPfk5iVM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768918352; c=relaxed/simple;
-	bh=L3E8HhvX87nmou45QKTRtBfQlfrNc6JUH9rmuLWAoZs=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=HuydjLXf4XpCOtO7kKWKze00c1SWp7s5pZV2Rkn1WHNrolLSSjuTsAmjlV8G52Qe5GwK1OfKSAKVqFNln2Mhled7OePJevqj1w7pXXR4pEGAKoaGtMYwJ9sj1Q88xuKMMix5nV8hKnOxGTKGTJGEg0a1QK8aq7acKjdIT3Il5TY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fs1qjXLd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8828BC19423;
-	Tue, 20 Jan 2026 14:12:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768918352;
-	bh=L3E8HhvX87nmou45QKTRtBfQlfrNc6JUH9rmuLWAoZs=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=fs1qjXLdXmYtCaveOISFME6KjBkKjb93SreqPvM/VXpZtTME7TbUDB7pUY5qsJkw5
-	 6fuwZGlF1NrNjUlEizRekYSqjMOnShYqpAOqWfJeliIvBrtsjTVxHaNyG+pZCZQ4e2
-	 PlodS/y5xq+O9DKI2i6VKaSJh8YCqvmmXitGD1ToLYIRPwjB1OGytE3TKa6A7LbuzD
-	 +5fhNRH0iB3jJX4TstKRcDUCIflQg2FmOVfqdnQaKtnh7Pj2nNfi+rahiAmH5n7j6Y
-	 Wc5bt8uWgo78VkXwAi0MoR7eV4eRdIq8Ss/wjOXSmrZlF1nZmPlWL1481755bZUcy3
-	 ytNjAkJhyTlvA==
-Message-ID: <707f08e114bf603caf7de020bb630d5477e86bca.camel@kernel.org>
-Subject: Re: [PATCH v2 01/31] Documentation: document EXPORT_OP_NOLOCKS
-From: Jeff Layton <jlayton@kernel.org>
-To: Christoph Hellwig <hch@infradead.org>
-Cc: Christian Brauner <brauner@kernel.org>, Alexander Viro	
- <viro@zeniv.linux.org.uk>, Chuck Lever <chuck.lever@oracle.com>, NeilBrown	
- <neil@brown.name>, Olga Kornievskaia <okorniev@redhat.com>, Dai Ngo	
- <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>, Amir Goldstein	
- <amir73il@gmail.com>, Hugh Dickins <hughd@google.com>, Baolin Wang	
- <baolin.wang@linux.alibaba.com>, Andrew Morton <akpm@linux-foundation.org>,
-  Theodore Ts'o	 <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>,
- Jan Kara	 <jack@suse.com>, Gao Xiang <xiang@kernel.org>, Chao Yu
- <chao@kernel.org>, Yue Hu	 <zbestahu@gmail.com>, Jeffle Xu
- <jefflexu@linux.alibaba.com>, Sandeep Dhavale	 <dhavale@google.com>, Hongbo
- Li <lihongbo22@huawei.com>, Chunhai Guo	 <guochunhai@vivo.com>, Carlos
- Maiolino <cem@kernel.org>, Ilya Dryomov	 <idryomov@gmail.com>, Alex Markuze
- <amarkuze@redhat.com>, Viacheslav Dubeyko	 <slava@dubeyko.com>, Chris Mason
- <clm@fb.com>, David Sterba <dsterba@suse.com>,  Luis de Bethencourt	
- <luisbg@kernel.org>, Salah Triki <salah.triki@gmail.com>, Phillip Lougher	
- <phillip@squashfs.org.uk>, Steve French <sfrench@samba.org>, Paulo
- Alcantara	 <pc@manguebit.org>, Ronnie Sahlberg <ronniesahlberg@gmail.com>,
- Shyam Prasad N	 <sprasad@microsoft.com>, Bharath SM
- <bharathsm@microsoft.com>, Miklos Szeredi	 <miklos@szeredi.hu>, Mike
- Marshall <hubcap@omnibond.com>, Martin Brandenburg	 <martin@omnibond.com>,
- Mark Fasheh <mark@fasheh.com>, Joel Becker	 <jlbec@evilplan.org>, Joseph Qi
- <joseph.qi@linux.alibaba.com>, Konstantin Komarov
- <almaz.alexandrovich@paragon-software.com>, Ryusuke Konishi
- <konishi.ryusuke@gmail.com>,  Trond Myklebust <trondmy@kernel.org>, Anna
- Schumaker <anna@kernel.org>, Dave Kleikamp <shaggy@kernel.org>, David
- Woodhouse <dwmw2@infradead.org>, Richard Weinberger <richard@nod.at>, Jan
- Kara <jack@suse.cz>,  Andreas Gruenbacher	 <agruenba@redhat.com>, OGAWA
- Hirofumi <hirofumi@mail.parknet.co.jp>, Jaegeuk Kim <jaegeuk@kernel.org>,
- Jonathan Corbet <corbet@lwn.net>, David Laight	
- <david.laight.linux@gmail.com>, Dave Chinner <david@fromorbit.com>, 
-	linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
- linux-ext4@vger.kernel.org, 	linux-erofs@lists.ozlabs.org,
- linux-xfs@vger.kernel.org, 	ceph-devel@vger.kernel.org,
- linux-btrfs@vger.kernel.org, 	linux-cifs@vger.kernel.org,
- samba-technical@lists.samba.org, 	linux-unionfs@vger.kernel.org,
- devel@lists.orangefs.org, 	ocfs2-devel@lists.linux.dev,
- ntfs3@lists.linux.dev, linux-nilfs@vger.kernel.org, 
-	jfs-discussion@lists.sourceforge.net, linux-mtd@lists.infradead.org, 
-	gfs2@lists.linux.dev, linux-f2fs-devel@lists.sourceforge.net, 
-	linux-doc@vger.kernel.org
-Date: Tue, 20 Jan 2026 09:12:24 -0500
-In-Reply-To: <9b64bed72e43d0bf24e9b1e3bc770c4a87082762.camel@kernel.org>
-References: <20260119-exportfs-nfsd-v2-0-d93368f903bd@kernel.org>
-		 <20260119-exportfs-nfsd-v2-1-d93368f903bd@kernel.org>
-		 <aW8yV6v8ZDiynOUm@infradead.org>
-	 <9b64bed72e43d0bf24e9b1e3bc770c4a87082762.camel@kernel.org>
-Autocrypt: addr=jlayton@kernel.org; prefer-encrypt=mutual;
- keydata=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
- QZIQXVeAA+smfTT0tDrisj1U5x6ZB9b3nBg65kc=
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.58.2 (3.58.2-1.fc43) 
+	s=arc-20240116; t=1768941687; c=relaxed/simple;
+	bh=n10RyeV++C0mtORvNytJYwQXEhAYHvMoaS2DXcl0MUg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=e8FEVWdgZ3xfPzwdfL7QQes6IaSbBEArwSos9UmpnzJrHMCiu/73s2+OKPoTEZG3wPe+vBcHON0o/5UYLsiroJJu6mT7aIOh9XFTMo/kq+J5iAleKqAPlKQrFwz57QEbz5O8+3fVmxBjmS0n9HavxlMCXJ8g6zND/YKwZx1JwT4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=WNacecVo; arc=none smtp.client-ip=209.85.128.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-4801c731d0aso35107295e9.1
+        for <linux-btrfs@vger.kernel.org>; Tue, 20 Jan 2026 12:41:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1768941683; x=1769546483; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=97J+J+Ded9/ugj5JxI6/IvoXzZvXaJySNpRhM+gV3VM=;
+        b=WNacecVoeIhMIaLbSZXPpeB7hfooO5NdupwhPRLgaRRFdFj9DwgMCLjzV++eelF9Id
+         f1sFRJa6mRJTPuLFFGNruvCLizcYDo8ddswrVbOTJi85epgQIPHG16fPZG+NrcAGPtFd
+         lKQl77/E1gsP0Crmen2ipg3b2ttdcw81SVEepbt2MEbBzpiBaKp1tk2WYFoar0bc5LRC
+         KWJE9Vtyp3pkwYOTsB7Du1KFJ0MLk6MpXbFmL0411EipBU75suZnU3jVJdkCGyIJu8EW
+         cXOF47P3464ZC6Rd02PmJmGnTGU9J1gtR3Fi3A5yRP7oayBq78PUXR96ME6Og7lmdBuu
+         Ibxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1768941683; x=1769546483;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=97J+J+Ded9/ugj5JxI6/IvoXzZvXaJySNpRhM+gV3VM=;
+        b=NJ/mloBiIULL3QMYi1Ky7Qh86ohaG6sQY0K3HCeG+Yxat5mpsJkcSSGhXTUKfOjvjq
+         ijGWVOJbAKsn9GRlgNMLmxmyyn0YR0SPnBYzKtIeJJ9488eabhnm+SSIH5iAeP+uCaQn
+         gYygseHR3LO/r52nFLE5ESxfUs73B7H8dYABRo+UmgYWwWO5MG0ktND4/TAMbehdnDOi
+         HiopznWXC1lnTNG/MVDCMDof7+aTEgG/Q0RJTscznxUFr665XdyLuBMdddAsXMYe6mqN
+         4l++joUhuMU3TDyJIkdGSMr4GQFY7Yc4ObaN91vNt7urlCBKwJgSR8SXTiAo6szYztgq
+         jQRw==
+X-Gm-Message-State: AOJu0YxRLW9zUZfekA1UMHiiljXTNR9OiiV+l/42NC/Je5vtrkvxfdNh
+	8HV4aU/igUTmlASeMJxFbiB1ZSp84QUj7n2vtW+gecUs0f5GJQVTcA//PAFrrO8klAhDU6Cei24
+	SXGjk
+X-Gm-Gg: AY/fxX6YkLrO0RX9C9AwbQxj/76+C6UjlQWrOVeltVtpR6auOP0qTcwgx2BTEvW5A/h
+	E1hHuLfEatdGSHS7wS0MXRE3qZVPFkTM7g9HOAMS9S+RNDRWj7/tSebLcKaci5Q8lkF1asoPi9c
+	udarA9ovr9S60R9ZL4LV9BJ+M8K2g1rgtuRhoY9L0ThhbT5l1XroxhC9M+wPd9jQ2wTe3R4TqTZ
+	fGo3jBw6RsJLUVYpMapiFIjeL8ZSCpmyWWUbSKftNe6L2Wh6+eR7TgxkWBxLWLeYIWolfJkoqgC
+	v8hH6kixdERKg9beumZKYIzs92KCuBwQFCnBzZ0GSRBK8hZbNuyrb/n/Fm3vytGhNz8NeYl2Zdg
+	cTdtcr7WKxHnNCZbwisRrUYY+5T69vT+Yl9eDBTc8XWBSHKUW/3XIvyqGyvGRbhx3gPwDld+06I
+	x1IpiXheaNWT+fgZqrNOLar8YJ7RhYj3HTkcU/ySc=
+X-Received: by 2002:a05:600c:5493:b0:480:3a71:92b2 with SMTP id 5b1f17b1804b1-4803a71968bmr87344715e9.26.1768941682553;
+        Tue, 20 Jan 2026 12:41:22 -0800 (PST)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2a7190ab921sm129838835ad.8.2026.01.20.12.41.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 20 Jan 2026 12:41:22 -0800 (PST)
+Message-ID: <62e58040-033d-42f3-b0b7-be50f2567310@suse.com>
+Date: Wed, 21 Jan 2026 07:11:18 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-0.46 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/3] btrfs: get rid of compressed_bio::compressed_folios[]
+ part 1
+To: dsterba@suse.cz
+Cc: linux-btrfs@vger.kernel.org
+References: <cover.1768866942.git.wqu@suse.com>
+ <20260120172942.GH26902@twin.jikos.cz>
+Content-Language: en-US
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
+ Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
+ fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
+ 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
+ V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
+ rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
+ cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
+ qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
+ /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
+ o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
+ JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+In-Reply-To: <20260120172942.GH26902@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-1.96 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW_WITH_FAILURES(-0.50)[];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[kernel.org,zeniv.linux.org.uk,oracle.com,brown.name,redhat.com,talpey.com,gmail.com,google.com,linux.alibaba.com,linux-foundation.org,mit.edu,dilger.ca,suse.com,huawei.com,vivo.com,dubeyko.com,fb.com,squashfs.org.uk,samba.org,manguebit.org,microsoft.com,szeredi.hu,omnibond.com,fasheh.com,evilplan.org,paragon-software.com,infradead.org,nod.at,suse.cz,mail.parknet.co.jp,lwn.net,fromorbit.com,vger.kernel.org,kvack.org,lists.ozlabs.org,lists.samba.org,lists.orangefs.org,lists.linux.dev,lists.sourceforge.net,lists.infradead.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20774-lists,linux-btrfs=lfdr.de];
-	DMARC_POLICY_ALLOW(0.00)[kernel.org,quarantine];
 	RCVD_TLS_LAST(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	R_SPF_SOFTFAIL(0.00)[~all];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jlayton@kernel.org,linux-btrfs@vger.kernel.org];
+	DKIM_TRACE(0.00)[suse.com:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_GT_50(0.00)[77];
-	TAGGED_RCPT(0.00)[linux-btrfs];
-	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:7979, ipnet:2605:f480::/32, country:US];
+	TAGGED_FROM(0.00)[bounces-20782-lists,linux-btrfs=lfdr.de];
+	DMARC_POLICY_ALLOW(0.00)[suse.com,quarantine];
+	RCPT_COUNT_TWO(0.00)[2];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	ASN(0.00)[asn:7979, ipnet:142.0.200.0/24, country:US];
+	FROM_HAS_DN(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[dfw.mirrors.kernel.org:rdns,dfw.mirrors.kernel.org:helo]
-X-Rspamd-Queue-Id: 7709A560EE
+	R_SPF_SOFTFAIL(0.00)[~all:c];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[wqu@suse.com,linux-btrfs@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_FIVE(0.00)[5];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TO_DN_NONE(0.00)[];
+	TAGGED_RCPT(0.00)[linux-btrfs];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[dfw.mirrors.kernel.org:rdns,dfw.mirrors.kernel.org:helo,suse.com:mid,suse.com:dkim]
+X-Rspamd-Queue-Id: C3CE84C741
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Tue, 2026-01-20 at 08:20 -0500, Jeff Layton wrote:
-> On Mon, 2026-01-19 at 23:44 -0800, Christoph Hellwig wrote:
-> > On Mon, Jan 19, 2026 at 11:26:18AM -0500, Jeff Layton wrote:
-> > > +  EXPORT_OP_NOLOCKS - Disable file locking on this filesystem. Some
-> > > +    filesystems cannot properly support file locking as implemented =
-by
-> > > +    nfsd. A case in point is reexport of NFS itself, which can't be =
-done
-> > > +    safely without coordinating the grace period handling. Other clu=
-stered
-> > > +    and networked filesystems can be problematic here as well.
-> >=20
-> > I'm not sure this is very useful.  It really needs to document what
-> > locking semantics nfs expects, because otherwise no reader will know
-> > if they set this or not.
->=20
-> Fair point. I'll see if I can draft something better. Suggestions
-> welcome.
 
-How about this?
 
-+  EXPORT_OP_NOLOCKS - Disable file locking on this filesystem. Filesystems
-+    that want to support locking over NFS must support POSIX file locking
-+    semantics and must handle lock recovery requests from clients after a
-+    reboot. Most local disk, RAM, or pseudo-filesystems use the generic PO=
-SIX
-+    locking support in the kernel and naturally provide this capability. N=
-etwork
-+    or clustered filesystems usually need special handling to do this prop=
-erly.
+在 2026/1/21 03:59, David Sterba 写道:
+> On Tue, Jan 20, 2026 at 10:30:07AM +1030, Qu Wenruo wrote:
+>> Currently we have compressed_bio::compressed_folios[] allowing us to do
+>> random access to any compressed folio, then we queue all folios in that
+>> array into a real btrfs_bio, and submit that btrfs_bio for read/write.
+>>
+>> However there is not really any need to do random access of that array.
+>>
+>> All compression/decompression is doing sequential folio access.
+>>
+>> The part 1 is some easy and safe conversion on decompression path.
+>>
+>> The part 2 will handle the compression part, but unfortunately that will
+>> require some changes all compression path, thus will need some extra
+>> work.
+>>
+>> And only after compression paths also got converted, we still need
+>> that compressed_folios[] array for now.
+>>
+>> Qu Wenruo (3):
+>>    btrfs: use folio_iter to handle lzo_decompress_bio()
+>>    btrfs: use folio_iter to handle zlib_decompress_bio()
+>>    btrfs: use folio_iter to handle zstd_decompress_bio()
+> 
+> The change makes sense, however there are some low level effects that
+> are not desirable in the compression callbacks as they're deep in the IO
+> path. Using the folio iterator on stack adds 40 bytes for lzo (144 -> 184),
+> and for zstd it's +24 (120 -> 144). This can be fixed by moving the
+> iterator to the workspace as we're not using the full slab bucket size
+> for either (lzo workspace is 40, zstd is 160).
 
---=20
-Jeff Layton <jlayton@kernel.org>
+Although we're never going to be that deep into the IO path.
+
+Since commit 4591c3ef751d ("btrfs: make sure all btrfs_bio::end_io are 
+called in task context"), all btrfs_bio::end_io() callback is called 
+inside a workqueue.
+
+So end_bbio_compressed_read() is now inside a workqueue, pretty shadow 
+stacks, thus the increase of the stacks should still be fine.
+
+Thanks,
+Qu
+
+> 
+> The code increases by ~2800 due to specialized cold versions of the
+> decompression callbacks but other than increasing the size it's
+> acceptable.
+
 
