@@ -1,80 +1,53 @@
-Return-Path: <linux-btrfs+bounces-20745-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20747-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CB7CD3BC3C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Jan 2026 01:01:02 +0100 (CET)
-Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id F05E23043A54
-	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Jan 2026 00:00:39 +0000 (UTC)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC97DD3BF88
+	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Jan 2026 07:48:01 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 23D543A4CEE
+	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Jan 2026 06:45:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89E3C1FC0EA;
-	Tue, 20 Jan 2026 00:00:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B69538F238;
+	Tue, 20 Jan 2026 06:43:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="OIlQuGyO";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="OIlQuGyO"
+	dkim=pass (1024-bit key) header.d=synology.com header.i=@synology.com header.b="AFQSVB2S"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.synology.com (mail.synology.com [211.23.38.101])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DC90199FB0
-	for <linux-btrfs@vger.kernel.org>; Tue, 20 Jan 2026 00:00:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A03038756E
+	for <linux-btrfs@vger.kernel.org>; Tue, 20 Jan 2026 06:43:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=211.23.38.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768867238; cv=none; b=OHRCkFdMAkSiK1ZlDH4kpTyed0jwSaMR/FgQ24K6VSlZ7gBxUN6HHLVD3DxfC1p/OZo1R6VO8lCU71kO9LEyGj421jBeq3qLeoZjQ+IPN6Rp3okGL1CxiteKOwk+hKPX6FiTet+0ez5G9H/6EAtFqk5KxvrL1u8ZtvpEnxWsFNw=
+	t=1768891411; cv=none; b=A56xdcBo7rs4M2Tjx3+i2jtA3nTuOnBl9qPmXuO0vqxUomgZatRAkTl4JmUKZFejy56hOxVlRMKp3xwwYUwgjqIJhEGxy5kmV/Sd/3dtwlrPuEm9lznaK64YqZa+Ad3OXEzyFzrYPgHl59u7JwHiPefRrVu7xtlb+ISBhUNnKCE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768867238; c=relaxed/simple;
-	bh=sPN/urd6wFdDYu/qRYrKCs4bcUfEoRsQH/36neIQReY=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=u8s4aJZe5Fo4f5XAVTRZnycRkz7m1JgH8X4oDsUlf/MS6fMDhbOh5CbKqMJL6MveKyxMFgUg6kMN2BsbbaPpkYXYcmcpjlrWgBRa8pM+TNf0l3gIm29hVIZ3vGFQdFaRQQU3aHilUbsU2pMLhtv8YVNNm4wXZyzasO/CLvfvS8Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=OIlQuGyO; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=OIlQuGyO; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id A6A285BCC5
-	for <linux-btrfs@vger.kernel.org>; Tue, 20 Jan 2026 00:00:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1768867234; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UqR4vPAjcconKHf1b5h2DiJjteKbc5RtBt3WsjJJ4Fg=;
-	b=OIlQuGyO9jJaqpehdiM7He7l+qKJekNbrlpJyT6JE3+qNQ2wl04qICZHA8Rufd22QMNeQm
-	GjNOnBgNs99U6Nobm+YoOJ15prIsflfcluGRHlgF9q6QAjvvlTqToF/yW0xjyrIEVWb/XS
-	UJEgZHu3zvBnt6OURUhp/g4OWpBoGxw=
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=OIlQuGyO
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1768867234; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UqR4vPAjcconKHf1b5h2DiJjteKbc5RtBt3WsjJJ4Fg=;
-	b=OIlQuGyO9jJaqpehdiM7He7l+qKJekNbrlpJyT6JE3+qNQ2wl04qICZHA8Rufd22QMNeQm
-	GjNOnBgNs99U6Nobm+YoOJ15prIsflfcluGRHlgF9q6QAjvvlTqToF/yW0xjyrIEVWb/XS
-	UJEgZHu3zvBnt6OURUhp/g4OWpBoGxw=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A99AD3EA63
-	for <linux-btrfs@vger.kernel.org>; Tue, 20 Jan 2026 00:00:33 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 6AciFqHFbmlsGwAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Tue, 20 Jan 2026 00:00:33 +0000
-From: Qu Wenruo <wqu@suse.com>
+	s=arc-20240116; t=1768891411; c=relaxed/simple;
+	bh=3/qG9jkP98RccEbYJ2y/zN2smeZD1I8r/nsINt0/Wrk=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=OWpx8hAdq8l6GGWwS+maQY3un/ypyWNOytz0t6w8OWQrazIgBFbnk1/5g8jGjPO+wlwCYMKTxEG4Z2piWzy6s+rpqh1NLLo4cjpr1uYaxUEAr2wsszxYVJGnunZLIp1j5/JRdv+yb3A1vVImcv68MAGvgRcdwcnRS6CTJCB8j8w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=synology.com; spf=pass smtp.mailfrom=synology.com; dkim=pass (1024-bit key) header.d=synology.com header.i=@synology.com header.b=AFQSVB2S; arc=none smtp.client-ip=211.23.38.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=synology.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=synology.com
+Received: from vbm-jinbaohong.. (unknown [10.17.211.178])
+	by mail.synology.com (Postfix) with ESMTPA id 4dwHpB6mWbzG3fkxX;
+	Tue, 20 Jan 2026 14:43:14 +0800 (CST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synology.com; s=123;
+	t=1768891395; bh=3/qG9jkP98RccEbYJ2y/zN2smeZD1I8r/nsINt0/Wrk=;
+	h=From:To:Cc:Subject:Date;
+	b=AFQSVB2SgE58Zyjc4C32kMgoKVHL30FMCj/gvoZ6y1YW5QwbZygv8e2XUvMRFI/zJ
+	 sydSH4eivUqhN9fUm1ThKjn4Y4SaIEHeAUhUwnmi8x30BX6SWrCdHA3ZZhyGA0PuF8
+	 A6nyaW3ePu9JYsEm/8ciSSp8clep9fPyW5YZMEKM=
+From: jinbaohong <jinbaohong@synology.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 3/3] btrfs: use folio_iter to handle zstd_decompress_bio()
-Date: Tue, 20 Jan 2026 10:30:10 +1030
-Message-ID: <f2968ddc9ea1cd53a03752308438672018228843.1768866942.git.wqu@suse.com>
-X-Mailer: git-send-email 2.52.0
-In-Reply-To: <cover.1768866942.git.wqu@suse.com>
-References: <cover.1768866942.git.wqu@suse.com>
+Cc: dsterba@suse.com,
+	jinbaohong@synology.com,
+	robbieko <robbieko@synology.com>
+Subject: [PATCH] btrfs: fix transaction commit blocking during trim of unallocated space
+Date: Tue, 20 Jan 2026 06:43:05 +0000
+Message-Id: <20260120064305.439036-1-jinbaohong@synology.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -82,89 +55,252 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Score: -3.01
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	FROM_EQ_ENVFROM(0.00)[];
-	ARC_NA(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	PREVIOUSLY_DELIVERED(0.00)[linux-btrfs@vger.kernel.org];
-	RCVD_TLS_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
-	DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	TO_DN_NONE(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[suse.com:+]
-X-Spam-Level: 
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: A6A285BCC5
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
+X-Synology-MCP-Status: no
+X-Synology-Spam-Status: score=0, required 6, WHITELIST_FROM_ADDRESS 0
+X-Synology-Spam-Flag: no
+X-Synology-Virus-Status: no
+Content-Type: text/plain
 
-Currently zstd_decompress_bio() is using
-compressed_bio->compressed_folios[] array to grab each compressed folio.
+When trimming unallocated space, btrfs_trim_fs() holds device_list_mutex
+for the entire duration while iterating through all devices. On large
+filesystems with significant unallocated space, this operation can take
+minutes to hours on large storage systems.
 
-However cb->compressed_folios[] is just a pointer to each folio of the
-compressed bio, meaning we can just replace the compressed_folios[]
-array by just grabbing the folio inside the compressed bio.
+This causes a problem because btrfs_run_dev_stats(), which is called
+during transaction commit, also requires device_list_mutex:
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
+  btrfs_trim_fs()
+    mutex_lock(&fs_devices->device_list_mutex)
+    list_for_each_entry(device, ...)
+      btrfs_trim_free_extents(device)
+    mutex_unlock(&fs_devices->device_list_mutex)
+
+  commit_transaction()
+    btrfs_run_dev_stats()
+      mutex_lock(&fs_devices->device_list_mutex)  // blocked!
+      ...
+
+While trim is running, all transaction commits are blocked waiting for
+the mutex.
+
+Fix this by refactoring btrfs_trim_free_extents() to process devices in
+bounded chunks (up to 2GB per iteration) and release device_list_mutex
+between chunks.
+
+Signed-off-by: robbieko <robbieko@synology.com>
+Signed-off-by: jinbaohong <jinbaohong@synology.com>
 ---
- fs/btrfs/zstd.c | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
+ fs/btrfs/extent-tree.c | 145 ++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 127 insertions(+), 18 deletions(-)
 
-diff --git a/fs/btrfs/zstd.c b/fs/btrfs/zstd.c
-index c9cddcfa337b..737bc49652b0 100644
---- a/fs/btrfs/zstd.c
-+++ b/fs/btrfs/zstd.c
-@@ -589,7 +589,7 @@ int zstd_decompress_bio(struct list_head *ws, struct compressed_bio *cb)
+diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+index 89495e6f8269..7b4708212be6 100644
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -6400,10 +6400,13 @@ void btrfs_error_unpin_extent_range(struct btrfs_fs_info *fs_info, u64 start, u6
+  * it while performing the free space search since we have already
+  * held back allocations.
+  */
+-static int btrfs_trim_free_extents(struct btrfs_device *device, u64 *trimmed)
++static int btrfs_trim_free_extents_throttle(struct btrfs_device *device,
++		u64 *trimmed, u64 pos, u64 maxlen, u64 *ret_next_pos)
  {
- 	struct btrfs_fs_info *fs_info = cb_to_fs_info(cb);
- 	struct workspace *workspace = list_entry(ws, struct workspace, list);
--	struct folio **folios_in = cb->compressed_folios;
-+	struct folio_iter fi;
- 	size_t srclen = cb->compressed_len;
- 	zstd_dstream *stream;
- 	int ret = 0;
-@@ -612,7 +612,11 @@ int zstd_decompress_bio(struct list_head *ws, struct compressed_bio *cb)
- 		goto done;
- 	}
+-	u64 start = BTRFS_DEVICE_RANGE_RESERVED, len = 0, end = 0;
++	u64 start = pos, len = 0, end = 0;
+ 	int ret;
++	u64 cur_start;
++	u64 trim_len = 0;
  
--	workspace->in_buf.src = kmap_local_folio(folios_in[folio_in_index], 0);
-+	bio_first_folio(&fi, &cb->bbio.bio, 0);
-+	ASSERT(fi.folio);
-+	ASSERT(folio_size(fi.folio) == blocksize);
+ 	*trimmed = 0;
+ 
+@@ -6429,9 +6432,11 @@ static int btrfs_trim_free_extents(struct btrfs_device *device, u64 *trimmed)
+ 		if (ret)
+ 			break;
+ 
++		cur_start = start;
+ 		btrfs_find_first_clear_extent_bit(&device->alloc_state, start,
+ 						  &start, &end,
+ 						  CHUNK_TRIMMED | CHUNK_ALLOCATED);
++		start = max(start, cur_start);
+ 
+ 		/* Check if there are any CHUNK_* bits left */
+ 		if (start > device->total_bytes) {
+@@ -6457,6 +6462,7 @@ static int btrfs_trim_free_extents(struct btrfs_device *device, u64 *trimmed)
+ 		end = min(end, device->total_bytes - 1);
+ 
+ 		len = end - start + 1;
++		len = min(len, maxlen);
+ 
+ 		/* We didn't find any extents */
+ 		if (!len) {
+@@ -6477,6 +6483,12 @@ static int btrfs_trim_free_extents(struct btrfs_device *device, u64 *trimmed)
+ 
+ 		start += len;
+ 		*trimmed += bytes;
++		trim_len += len;
++		if (trim_len >= maxlen) {
++			*ret_next_pos = start;
++			ret = -EAGAIN;
++			break;
++		}
+ 
+ 		if (btrfs_trim_interrupted()) {
+ 			ret = -ERESTARTSYS;
+@@ -6489,6 +6501,114 @@ static int btrfs_trim_free_extents(struct btrfs_device *device, u64 *trimmed)
+ 	return ret;
+ }
+ 
 +
-+	workspace->in_buf.src = kmap_local_folio(fi.folio, 0);
- 	workspace->in_buf.pos = 0;
- 	workspace->in_buf.size = min_t(size_t, srclen, min_folio_size);
++static int btrfs_trim_free_extents(struct btrfs_fs_info *fs_info, u64 *trimmed)
++{
++	int ret;
++	struct btrfs_device *dev;
++	struct btrfs_device *working_dev = NULL;
++	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
++	u8 uuid[BTRFS_UUID_SIZE];
++	u64 start = BTRFS_DEVICE_RANGE_RESERVED;
++	u64 maxlen = SZ_2G;
++	u64 next_pos = 0;
++	u64 group_trimmed;
++
++	*trimmed = 0;
++
++	mutex_lock(&fs_devices->device_list_mutex);
++	list_for_each_entry(dev, &fs_devices->devices, dev_list) {
++		if (test_bit(BTRFS_DEV_STATE_MISSING, &dev->dev_state))
++			continue;
++		if (!working_dev ||
++			memcmp(dev->uuid, working_dev->uuid, BTRFS_UUID_SIZE) < 0)
++			working_dev = dev;
++	}
++	if (working_dev)
++		memcpy(uuid, working_dev->uuid, BTRFS_UUID_SIZE);
++	mutex_unlock(&fs_devices->device_list_mutex);
++	if (!working_dev) {
++		ret = 0;
++		goto out;
++	}
++
++	while (1) {
++		mutex_lock(&fs_devices->device_list_mutex);
++		ret = 0;
++
++		group_trimmed = 0;
++		list_for_each_entry(dev, &fs_devices->devices, dev_list) {
++			if (test_bit(BTRFS_DEV_STATE_MISSING, &dev->dev_state))
++				continue;
++			if (dev == working_dev) {
++				ret = btrfs_trim_free_extents_throttle(working_dev,
++					&group_trimmed, start, maxlen, &next_pos);
++				break;
++			}
++		}
++		*trimmed += group_trimmed;
++
++		if (!ret) {
++			/*
++			 * Device completed, go next device.
++			 * Find a device which has the smallest uuid but larger than
++			 * current one.
++			 * Note: Devices added during trim with UUID smaller than the
++			 * current device will be skipped.
++			 */
++			working_dev = NULL;
++			list_for_each_entry(dev, &fs_devices->devices, dev_list) {
++				if (test_bit(BTRFS_DEV_STATE_MISSING, &dev->dev_state))
++					continue;
++
++				/* must larger than current uuid */
++				if (memcmp(dev->uuid, uuid, BTRFS_UUID_SIZE) <= 0)
++					continue;
++
++				/* find the smallest */
++				if (!working_dev ||
++					memcmp(dev->uuid, working_dev->uuid, BTRFS_UUID_SIZE) < 0)
++					working_dev = dev;
++			}
++			if (working_dev)
++				memcpy(uuid, working_dev->uuid, BTRFS_UUID_SIZE);
++			start = BTRFS_DEVICE_RANGE_RESERVED;
++		}
++		mutex_unlock(&fs_devices->device_list_mutex);
++
++		if (ret == -EAGAIN) {
++			/*
++			 * Ensure next_pos actually progressed beyond start.
++			 * If not, we're stuck and must break to avoid infinite loop.
++			 */
++			if (next_pos <= start) {
++				btrfs_warn(fs_info,
++				   "trim throttle: no progress, start=%llu next_pos=%llu, aborting",
++				   start, next_pos);
++				goto out;
++			}
++			start = next_pos;
++			ret = 0;
++		}
++
++		if (ret)
++			goto out;
++
++		if (!working_dev) /* error or no more device */
++			break;
++
++		if (btrfs_trim_interrupted()) {
++			ret = -ERESTARTSYS;
++			goto out;
++		}
++		cond_resched();
++	}
++
++	ret = 0;
++out:
++	return ret;
++}
++
+ /*
+  * Trim the whole filesystem by:
+  * 1) trimming the free space in each block group
+@@ -6500,9 +6620,7 @@ static int btrfs_trim_free_extents(struct btrfs_device *device, u64 *trimmed)
+  */
+ int btrfs_trim_fs(struct btrfs_fs_info *fs_info, struct fstrim_range *range)
+ {
+-	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
+ 	struct btrfs_block_group *cache = NULL;
+-	struct btrfs_device *device;
+ 	u64 group_trimmed;
+ 	u64 range_end = U64_MAX;
+ 	u64 start;
+@@ -6564,21 +6682,12 @@ int btrfs_trim_fs(struct btrfs_fs_info *fs_info, struct fstrim_range *range)
+ 			"failed to trim %llu block group(s), last error %d",
+ 			bg_failed, bg_ret);
  
-@@ -660,8 +664,9 @@ int zstd_decompress_bio(struct list_head *ws, struct compressed_bio *cb)
- 				goto done;
- 			}
- 			srclen -= min_folio_size;
--			workspace->in_buf.src =
--				kmap_local_folio(folios_in[folio_in_index], 0);
-+			bio_next_folio(&fi, &cb->bbio.bio);
-+			ASSERT(fi.folio);
-+			workspace->in_buf.src = kmap_local_folio(fi.folio, 0);
- 			workspace->in_buf.pos = 0;
- 			workspace->in_buf.size = min_t(size_t, srclen, min_folio_size);
- 		}
+-	mutex_lock(&fs_devices->device_list_mutex);
+-	list_for_each_entry(device, &fs_devices->devices, dev_list) {
+-		if (test_bit(BTRFS_DEV_STATE_MISSING, &device->dev_state))
+-			continue;
+-
+-		ret = btrfs_trim_free_extents(device, &group_trimmed);
+-
+-		trimmed += group_trimmed;
+-		if (ret) {
+-			dev_failed++;
+-			dev_ret = ret;
+-			break;
+-		}
++	ret = btrfs_trim_free_extents(fs_info, &group_trimmed);
++	trimmed += group_trimmed;
++	if (ret) {
++		dev_failed++;
++		dev_ret = ret;
+ 	}
+-	mutex_unlock(&fs_devices->device_list_mutex);
+ 
+ 	if (dev_failed)
+ 		btrfs_warn(fs_info,
 -- 
-2.52.0
+2.34.1
 
+
+Disclaimer: The contents of this e-mail message and any attachments are confidential and are intended solely for addressee. The information may also be legally privileged. This transmission is sent in trust, for the sole purpose of delivery to the intended recipient. If you have received this transmission in error, any use, reproduction or dissemination of this transmission is strictly prohibited. If you are not the intended recipient, please immediately notify the sender by reply e-mail or phone and delete this message and its attachments, if any.
 
