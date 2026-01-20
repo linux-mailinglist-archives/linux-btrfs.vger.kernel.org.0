@@ -1,144 +1,114 @@
-Return-Path: <linux-btrfs+bounces-20751-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20752-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-btrfs@lfdr.de
 Delivered-To: lists+linux-btrfs@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FD27D3C0F0
-	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Jan 2026 08:52:33 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 270F6D3C2C5
+	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Jan 2026 10:00:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 8AC2A427C72
-	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Jan 2026 07:51:06 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 2686A6066C6
+	for <lists+linux-btrfs@lfdr.de>; Tue, 20 Jan 2026 08:28:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8EC23B52EB;
-	Tue, 20 Jan 2026 07:50:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95CA93D7D84;
+	Tue, 20 Jan 2026 08:20:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="N18Lfx2l"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="RpXBTUqY"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from esa5.hgst.iphmx.com (esa5.hgst.iphmx.com [216.71.153.144])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70933258EE0;
-	Tue, 20 Jan 2026 07:50:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F357D3D669F
+	for <linux-btrfs@vger.kernel.org>; Tue, 20 Jan 2026 08:19:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.71.153.144
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768895436; cv=none; b=JN9fi4Z9dRo86XGXqKcR0pVCu3HFI1MgtxZUFZ/oubUAFLIt5X1eVeKyEenlfEwBMtZIJxozmcm38US6p+GFnDna1namsbUshSvkF1bNTzXVI3t32oTT5HG5kX6CtU74DTn+XTUFAfNkNmuYXiS19Rd9433R3dKnNUUCdcv9cLg=
+	t=1768897200; cv=none; b=ies0vPP+YlpOVHNsF1Z4UaKWj7rgNhk0oTBijV7d3iLw6+E2uEreNqAJGJVNS7RrVNF+2tbV7si780PQwvjhLHBiYrXVAOLum9mFaQ26r32uFDanTgS3alqzzZAekWaVBqQR4KONKAn+DczxYfghGhhpkEaXSng7JqE9NwZpt04=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768895436; c=relaxed/simple;
-	bh=bWq6qnIFRw5rJinRpotPeIzOeZbQKqCHjbmSaH0uDbQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jPKU7Ec+ahxKUtMSqEAf4LcwSdrOWlJfy45mJ4xSTUgycZV5tjbRZb3LlaBSWJnu5J6VJtuaqK394TAsndJxb/JEl5L4s5ftugQMaDP+HfkjA6KMaMJG3O5Bp30IvcMMt0UuFZZSqfxl5brL/B0phincG0yrO96fPGKRKgB4CV0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=N18Lfx2l; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=haSfZvoEvPhBBZDnUW3y3BhJEQ36mgFSvpNiOqhvJvI=; b=N18Lfx2l0cTzfa3HEHbSStwRPv
-	iyXHar7+IL8UusFL6sjIudxhuirPKAhJMeBNA+7JTaSgRPwHzsN72C9/ED13gd4R3bzZoK6cN15el
-	2OOL3ox9rvwKCy+jqAl20MM1KOQeI06m0Nqc7qZlyinWokSDH6OADy7uwk70GRUXw1dKPRbjqr1Mx
-	G0x+S1U8gEmAS0uHHMxQqMK+KDGwlJXyI4/nRqaD3y/MPBEQbIe1RJKnMGnpCsJCrYQkezP6l13YD
-	Bk/y5So46wc2umpZT0PCIQ7tT9Ms4VQ/Y3zVPPZ8bLDLhE9SURfv9f85/RpFqttM9TA+n04nUeD09
-	UJSC4XRw==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vi6VB-00000003NIK-3jXc;
-	Tue, 20 Jan 2026 07:50:15 +0000
-Date: Mon, 19 Jan 2026 23:50:13 -0800
-From: Christoph Hellwig <hch@infradead.org>
-To: Jeff Layton <jlayton@kernel.org>
-Cc: Christian Brauner <brauner@kernel.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Chuck Lever <chuck.lever@oracle.com>, NeilBrown <neil@brown.name>,
-	Olga Kornievskaia <okorniev@redhat.com>,
-	Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
-	Amir Goldstein <amir73il@gmail.com>,
-	Hugh Dickins <hughd@google.com>,
-	Baolin Wang <baolin.wang@linux.alibaba.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Theodore Ts'o <tytso@mit.edu>,
-	Andreas Dilger <adilger.kernel@dilger.ca>, Jan Kara <jack@suse.com>,
-	Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>,
-	Yue Hu <zbestahu@gmail.com>, Jeffle Xu <jefflexu@linux.alibaba.com>,
-	Sandeep Dhavale <dhavale@google.com>,
-	Hongbo Li <lihongbo22@huawei.com>,
-	Chunhai Guo <guochunhai@vivo.com>, Carlos Maiolino <cem@kernel.org>,
-	Ilya Dryomov <idryomov@gmail.com>,
-	Alex Markuze <amarkuze@redhat.com>,
-	Viacheslav Dubeyko <slava@dubeyko.com>, Chris Mason <clm@fb.com>,
-	David Sterba <dsterba@suse.com>,
-	Luis de Bethencourt <luisbg@kernel.org>,
-	Salah Triki <salah.triki@gmail.com>,
-	Phillip Lougher <phillip@squashfs.org.uk>,
-	Steve French <sfrench@samba.org>,
-	Paulo Alcantara <pc@manguebit.org>,
-	Ronnie Sahlberg <ronniesahlberg@gmail.com>,
-	Shyam Prasad N <sprasad@microsoft.com>,
-	Bharath SM <bharathsm@microsoft.com>,
-	Miklos Szeredi <miklos@szeredi.hu>,
-	Mike Marshall <hubcap@omnibond.com>,
-	Martin Brandenburg <martin@omnibond.com>,
-	Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>,
-	Joseph Qi <joseph.qi@linux.alibaba.com>,
-	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-	Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-	Trond Myklebust <trondmy@kernel.org>,
-	Anna Schumaker <anna@kernel.org>, Dave Kleikamp <shaggy@kernel.org>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Richard Weinberger <richard@nod.at>, Jan Kara <jack@suse.cz>,
-	Andreas Gruenbacher <agruenba@redhat.com>,
-	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-	Jaegeuk Kim <jaegeuk@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-	David Laight <david.laight.linux@gmail.com>,
-	Dave Chinner <david@fromorbit.com>,
-	Christoph Hellwig <hch@infradead.org>, linux-nfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-mm@kvack.org, linux-ext4@vger.kernel.org,
-	linux-erofs@lists.ozlabs.org, linux-xfs@vger.kernel.org,
-	ceph-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-	linux-unionfs@vger.kernel.org, devel@lists.orangefs.org,
-	ocfs2-devel@lists.linux.dev, ntfs3@lists.linux.dev,
-	linux-nilfs@vger.kernel.org, jfs-discussion@lists.sourceforge.net,
-	linux-mtd@lists.infradead.org, gfs2@lists.linux.dev,
-	linux-f2fs-devel@lists.sourceforge.net, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v2 02/31] exportfs: add new EXPORT_OP_STABLE_HANDLES flag
-Message-ID: <aW8ztQ-RbhxwzMk7@infradead.org>
-References: <20260119-exportfs-nfsd-v2-0-d93368f903bd@kernel.org>
- <20260119-exportfs-nfsd-v2-2-d93368f903bd@kernel.org>
+	s=arc-20240116; t=1768897200; c=relaxed/simple;
+	bh=XklmxPoUnZ9qstU8faF/rgo4gJotmAau+QidqGnyWvg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=gsixxEBz5/K/uT/V8MbXjS15UpreCX00jP0oADtr6dxgAcO7wcU9EvadlXGWIwmjjsP97nMh1Ey0L4hoB7VgM8OV94BY/tbI9oAwpFiEcnm11Effdm3E6vzrK0ub+sLnt3kMvE7jvOvQG9zRKQgoTEJyoAR6QrYC4zEYxS4EU7Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=RpXBTUqY; arc=none smtp.client-ip=216.71.153.144
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1768897198; x=1800433198;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=XklmxPoUnZ9qstU8faF/rgo4gJotmAau+QidqGnyWvg=;
+  b=RpXBTUqYsrstqCux3Sl+1AqTpSwgalw39Oay9SCuxbsJBtvl0KCyBzCd
+   Nill6MABKwJCbDBLYNRZ1tiFmy2cVQs50NZ4HNeJ8hcxCtX93vuPIEIMN
+   LtdLfANJUbzt4YU0xDOclbeskQ6LpzqVvngC0A34mYvm5Ikfs2sxxG11U
+   3o0ntlP5pMXiI/76QlUZeVlnP77T6p8UW0vcE46CKlLh55Dp1LpZWABkC
+   YZoI/s4C1Pp/SsmC3UjucZSNXLoYDhEhiR0fdnC2sIUFe1ntniAqarO3G
+   pmknC+deZ7DsoYEehq8lmAdvYVhYVGy8F5U6ZuIJIJQCi1LIobhcc3rRe
+   w==;
+X-CSE-ConnectionGUID: jnHDwx1fS4+gu93uv2KAmw==
+X-CSE-MsgGUID: VUHQBau0SjCHWyMOnJFAkw==
+X-IronPort-AV: E=Sophos;i="6.21,240,1763395200"; 
+   d="scan'208";a="138866207"
+Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep03.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 20 Jan 2026 16:19:51 +0800
+IronPort-SDR: 696f3aa8_wfnGJisAJ/GoMlxBLobr/FpLxrzbDv1Mrmtpo1ZDxzchKor
+ RmA1SQbMw43wJg1yiVyOFCCZsq4F9r0V7FKrJTg==
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep03.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 20 Jan 2026 00:19:53 -0800
+WDCIronportException: Internal
+Received: from wdap-ospyco2xgl.ad.shared (HELO neo.fritz.box) ([10.224.28.46])
+  by uls-op-cesaip01.wdc.com with ESMTP; 20 Jan 2026 00:19:51 -0800
+From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+To: linux-btrfs@vger.kernel.org
+Cc: Filipe Manana <fdmanana@suse.com>,
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH] btrfs: don't pass io_ctl to __btrfs_write_out_cache
+Date: Tue, 20 Jan 2026 09:19:46 +0100
+Message-ID: <20260120081946.139598-1-johannes.thumshirn@wdc.com>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260119-exportfs-nfsd-v2-2-d93368f903bd@kernel.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
 
-On Mon, Jan 19, 2026 at 11:26:19AM -0500, Jeff Layton wrote:
-> +  EXPORT_OP_STABLE_HANDLES - This filesystem provides filehandles that are
-> +    stable across the lifetime of a file. This is a hard requirement for export
-> +    via nfsd. Any filesystem that is eligible to be exported via nfsd must
-> +    indicate this guarantee by setting this flag. Most disk-based filesystems
-> +    can do this naturally. Pseudofilesystems that are for local reporting and
-> +    control (e.g. kernfs, pidfs, nsfs) usually can't support this.
+There's no need to pass both the block_group and block_group::io_ctl to
+__btrfs_write_out_cache().
 
-Suggested rewording, taking some of the ideas from Dave Chinners earlier
-comments into account:
+Remove passing io_ctl to __btrfs_write_out_cache() and dereference it
+inside __btrfs_write_out_cache().
 
-  EXPORT_OP_STABLE_HANDLES - This filesystem provides filehandles that are
-    stable across the lifetime of a file.  A file in this context is an
-    instantiated inode reachable by one or more file names, or still open after
-    the last name has been unlinked.  Reuses of the same on-disk inode structure
-    are considered new files and must provide different file handles from the
-    previous incarnation.  Most file systems designed to store user data
-    naturally provide this capability.  Pseudofilesystems that are for local
-    reporting and control (e.g. kernfs, pidfs, nsfs) usually can't support this.
+Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+---
+ fs/btrfs/free-space-cache.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-    This flags is a hard requirement for export via nfsd. Any filesystem that
-    is eligible to be exported via nfsd must indicate this guarantee by
-    setting this flag.
+diff --git a/fs/btrfs/free-space-cache.c b/fs/btrfs/free-space-cache.c
+index 20aa9ebe8a6c..adb972c6c728 100644
+--- a/fs/btrfs/free-space-cache.c
++++ b/fs/btrfs/free-space-cache.c
+@@ -1371,9 +1371,9 @@ int btrfs_wait_cache_io(struct btrfs_trans_handle *trans,
+ static int __btrfs_write_out_cache(struct inode *inode,
+ 				   struct btrfs_free_space_ctl *ctl,
+ 				   struct btrfs_block_group *block_group,
+-				   struct btrfs_io_ctl *io_ctl,
+ 				   struct btrfs_trans_handle *trans)
+ {
++	struct btrfs_io_ctl *io_ctl = &block_group->io_ctl;
+ 	struct extent_state *cached_state = NULL;
+ 	LIST_HEAD(bitmap_list);
+ 	int entries = 0;
+@@ -1533,8 +1533,7 @@ int btrfs_write_out_cache(struct btrfs_trans_handle *trans,
+ 	if (IS_ERR(inode))
+ 		return 0;
+ 
+-	ret = __btrfs_write_out_cache(inode, ctl, block_group,
+-				      &block_group->io_ctl, trans);
++	ret = __btrfs_write_out_cache(inode, ctl, block_group, trans);
+ 	if (ret) {
+ 		btrfs_debug(fs_info,
+ 	  "failed to write free space cache for block group %llu error %d",
+-- 
+2.52.0
 
 
