@@ -1,165 +1,199 @@
-Return-Path: <linux-btrfs+bounces-20799-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20800-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id sMVOMcebcGlyYgAAu9opvQ
-	(envelope-from <linux-btrfs+bounces-20799-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 10:26:31 +0100
+	id 0NADLgWhcGlyYgAAu9opvQ
+	(envelope-from <linux-btrfs+bounces-20800-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 10:48:53 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EDF35456B
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 10:26:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4476C54AA2
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 10:48:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id AFB0B84A6E5
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 09:19:43 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 242AF886337
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 09:31:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1269947AF78;
-	Wed, 21 Jan 2026 09:18:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B31A347B424;
+	Wed, 21 Jan 2026 09:29:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="24wzxAEw"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="EappCBZK"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D4FF478857;
-	Wed, 21 Jan 2026 09:17:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11F9F47A0D4;
+	Wed, 21 Jan 2026 09:29:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768987080; cv=none; b=K+kpS15l0Y4RE0Vb4vhyR49pO7S6YHhSNAavFyTkhSR0UXawQO+jhw4wR/DkwnxwnN/f7RXBL+YBiy4mdo+s7dZyAAmzm6OeTTDaB7rBs68FMq5YV/u+fhipaqfXMMwBCHVT5oGNAymbwjorltrNkRxu4WkwqDFCqCAnBERynK0=
+	t=1768987746; cv=none; b=aQ9q5vjEknVmyh4JZWnAm09P8p4pulFGBAU9706wo7Bc4iWkhMpDbvdLLpKQIE4OKguCvwpZ5UWdcFYpsZo/YeVcOrBvrf48huNTN1kmWV5X+4nRts0Q+9aoSrZMVed7ptXEDiHrbPdMXqjMcpOzwm8exgfrLZkV81mxZhM/jck=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768987080; c=relaxed/simple;
-	bh=pO5cDfr4usmkTORPaRFpCQPiJkEaTR8DriiJ39ztdjg=;
+	s=arc-20240116; t=1768987746; c=relaxed/simple;
+	bh=KXRDFrhifchE6Z4/dNEi0wZRpEZee/z/YcyAhBs6tX0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fVq0TamuJOU7rce4CsQMNqUghFKOjIJqCk30EkPnRzEaX0Bt/rt35nO278ZsD0Zy4vBzkd0/q6aJgOR6+Wq2vvMxiKFaAk7S6ptd/g2CyMOrE3Q9M07fG2z5WbIJT9nsoHJaEDu/szFlEE+yv47PPWLCXXz2tTnY9v/wtDaI4Hg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=24wzxAEw; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=pO5cDfr4usmkTORPaRFpCQPiJkEaTR8DriiJ39ztdjg=; b=24wzxAEwPXJTolgvO6OimnOF/e
-	PCCP7ApFllcFgYK9BV6IZuc8L0kvbBATJY98kG3HNuTveRZoEzUleITitYeQ1sEnQgip/caZsU5xv
-	dJdwK+gChgUqQEbAxiKEXxp911m3G5JIHc4fo/9rWfbz2jLa0Cow1fhStf81u9dw3U+A3E/fWl28t
-	IuElfVoUimZYZqST6urDi+5jYot79IklyhhyH0P0aFel75wmUkQR3e1/AQ/ca6YocY6w0qefM0tUe
-	5G43HMgvqejRLyJPnuAu6NAaUiRuEcAm8fydlJcGpgj1S49T83E8l9dWUEwKUQtDLp4AvWyrlvm1Z
-	9pGZFeLQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1viULN-00000005Aph-3NRp;
-	Wed, 21 Jan 2026 09:17:41 +0000
-Date: Wed, 21 Jan 2026 01:17:41 -0800
-From: Christoph Hellwig <hch@infradead.org>
-To: Jeff Layton <jlayton@kernel.org>
-Cc: Christoph Hellwig <hch@infradead.org>,
-	Christian Brauner <brauner@kernel.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Chuck Lever <chuck.lever@oracle.com>, NeilBrown <neil@brown.name>,
-	Olga Kornievskaia <okorniev@redhat.com>,
-	Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
-	Amir Goldstein <amir73il@gmail.com>,
-	Hugh Dickins <hughd@google.com>,
-	Baolin Wang <baolin.wang@linux.alibaba.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Theodore Ts'o <tytso@mit.edu>,
-	Andreas Dilger <adilger.kernel@dilger.ca>, Jan Kara <jack@suse.com>,
-	Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>,
-	Yue Hu <zbestahu@gmail.com>, Jeffle Xu <jefflexu@linux.alibaba.com>,
-	Sandeep Dhavale <dhavale@google.com>,
-	Hongbo Li <lihongbo22@huawei.com>,
-	Chunhai Guo <guochunhai@vivo.com>, Carlos Maiolino <cem@kernel.org>,
-	Ilya Dryomov <idryomov@gmail.com>,
-	Alex Markuze <amarkuze@redhat.com>,
-	Viacheslav Dubeyko <slava@dubeyko.com>, Chris Mason <clm@fb.com>,
-	David Sterba <dsterba@suse.com>,
-	Luis de Bethencourt <luisbg@kernel.org>,
-	Salah Triki <salah.triki@gmail.com>,
-	Phillip Lougher <phillip@squashfs.org.uk>,
-	Steve French <sfrench@samba.org>,
-	Paulo Alcantara <pc@manguebit.org>,
-	Ronnie Sahlberg <ronniesahlberg@gmail.com>,
-	Shyam Prasad N <sprasad@microsoft.com>,
-	Bharath SM <bharathsm@microsoft.com>,
-	Miklos Szeredi <miklos@szeredi.hu>,
-	Mike Marshall <hubcap@omnibond.com>,
-	Martin Brandenburg <martin@omnibond.com>,
-	Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>,
-	Joseph Qi <joseph.qi@linux.alibaba.com>,
-	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
-	Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-	Trond Myklebust <trondmy@kernel.org>,
-	Anna Schumaker <anna@kernel.org>, Dave Kleikamp <shaggy@kernel.org>,
-	David Woodhouse <dwmw2@infradead.org>,
-	Richard Weinberger <richard@nod.at>, Jan Kara <jack@suse.cz>,
-	Andreas Gruenbacher <agruenba@redhat.com>,
-	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-	Jaegeuk Kim <jaegeuk@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-	David Laight <david.laight.linux@gmail.com>,
-	Dave Chinner <david@fromorbit.com>, linux-nfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-mm@kvack.org, linux-ext4@vger.kernel.org,
-	linux-erofs@lists.ozlabs.org, linux-xfs@vger.kernel.org,
-	ceph-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-	linux-unionfs@vger.kernel.org, devel@lists.orangefs.org,
-	ocfs2-devel@lists.linux.dev, ntfs3@lists.linux.dev,
-	linux-nilfs@vger.kernel.org, jfs-discussion@lists.sourceforge.net,
-	linux-mtd@lists.infradead.org, gfs2@lists.linux.dev,
-	linux-f2fs-devel@lists.sourceforge.net, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v2 01/31] Documentation: document EXPORT_OP_NOLOCKS
-Message-ID: <aXCZtS2_A_GCvcQ6@infradead.org>
-References: <20260119-exportfs-nfsd-v2-0-d93368f903bd@kernel.org>
- <20260119-exportfs-nfsd-v2-1-d93368f903bd@kernel.org>
- <aW8yV6v8ZDiynOUm@infradead.org>
- <9b64bed72e43d0bf24e9b1e3bc770c4a87082762.camel@kernel.org>
- <707f08e114bf603caf7de020bb630d5477e86bca.camel@kernel.org>
- <2ed97731c54ef130ea58861a91c80dacd785de9a.camel@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=I6AvunYaqMjHt7xAVlfF1wsZDrDxh23lXTbfZxphvxaLAVWvj3Bh7COTn0RF2ZIl7iWSjQFYH7K6c2QXX8pwHg4DCmb8kt8nQvzairgkPUHPQyFCAlR3Hc0Hqts2lgSet5P754E9ptLehH9WLol083y0ogV58Sg/B1VNCpCNBZk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=EappCBZK; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 60KNc5Ec006591;
+	Wed, 21 Jan 2026 09:29:03 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=iL45H+
+	LgO5PNbSzILUwyu5iQO7gomKom1P1XNGuf3Bo=; b=EappCBZKt6KzbMrxNFylJe
+	eNEC6c2Qg7vdpxyCqkdzHhGWVYcQbOiz9kvat6p0nL2waZtIY8IVZvdErD/zqkWa
+	9YIuj3A8NTtRekv0p4ecHKyDxk+oqMGKDMdPZHYvldb/hFSzXvl5R7kbrnqbr9k7
+	Uj5y5CQpXrzWCOUzRtA28K7Or/WxUffMvuQh2Ai5qfrKhHwSPvKABK5jBhfFoiO6
+	UGpDKTK9F+Xth+HO6gvExE7xREyIACgWBHFx+jInSmyJxdl/B2MeefpARPAt6JS7
+	RALn0/RW/88hwaKpLWYsxmVDTIpg2AEmPcj08xTLsFdU6EsV6xjemeQq0/CY3aIQ
+	==
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4br23s3cwb-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 21 Jan 2026 09:29:03 +0000 (GMT)
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 60L7YqRF009253;
+	Wed, 21 Jan 2026 09:29:01 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4brp8kax84-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 21 Jan 2026 09:29:01 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 60L9SxRP16318882
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 21 Jan 2026 09:28:59 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id BF54020043;
+	Wed, 21 Jan 2026 09:28:59 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id A729820040;
+	Wed, 21 Jan 2026 09:28:59 +0000 (GMT)
+Received: from osiris (unknown [9.52.214.206])
+	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Wed, 21 Jan 2026 09:28:59 +0000 (GMT)
+Date: Wed, 21 Jan 2026 10:28:57 +0100
+From: Heiko Carstens <hca@linux.ibm.com>
+To: Qu Wenruo <wqu@suse.com>, Mikhail Zaslonko <zaslonko@linux.ibm.com>
+Cc: linux-btrfs@vger.kernel.org, linux-s390@vger.kernel.org
+Subject: Re: [PATCH] btrfs: fix the folio leak on S390 hardware acceleration
+Message-ID: <20260121092857.9719A1f-hca@linux.ibm.com>
+References: <bcf36edfb7ac3caf3373174e741bb29c0feb268b.1768802004.git.wqu@suse.com>
+ <1218d786-ad7a-4971-9cd5-273232f62d79@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <2ed97731c54ef130ea58861a91c80dacd785de9a.camel@kernel.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Spamd-Result: default: False [-0.46 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1218d786-ad7a-4971-9cd5-273232f62d79@suse.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: zhTrp4GCD4KtV-i2yJ6dTUictxC5ibhs
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMTIxMDA3MyBTYWx0ZWRfXxU6EtkDJkJUU
+ ChuFYnL6sBzHpXQRbiL4EweXDj6UaGfQ/bozg6lWGhg8G0JMLhtmmaA+k/92+PZC6j4VYOOAgwc
+ LHPdy4SswKcBjidg0bkPCtzoZaLSevDMizkv+iZt1IkrcCwlrJXNqDPcFvdZMd8iLULQmC4fl/v
+ lQqB0lDE9oXnm4PN74MC05I04UDB4rlN3EO2ARJCKcGbn3NBYeajdGW27Xid8aXLplg6CJHptrQ
+ JHkn4jf0m2JvZipkum7xUhu/zs7VrVHxz6+VECN0wauxxP6bVk5dG18FXMx3ygn9inDgZmv1tBs
+ fscacmc2Kb2J2OJmmBIQuJ27U73gppFwLrROU7WRF0QNOo5pgVPsXwq2+U6mWyAevwcBN2c5XhM
+ M5L42n1xX51TIATzkjvp+xQ+vC3Y+muMGd5i32C1zKDf5XXZz+Yh2TLAFs125zHrzF3vPXxt/k0
+ lXLEEC4YdIvfvCVfvFQ==
+X-Authority-Analysis: v=2.4 cv=J9SnLQnS c=1 sm=1 tr=0 ts=69709c5f cx=c_pps
+ a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17
+ a=IkcTkHD0fZMA:10 a=vUbySO9Y5rIA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=iox4zFpeAAAA:8 a=6iE85x-LiswBhNdmk-sA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
+ a=WzC6qhA0u3u7Ye7llzcV:22
+X-Proofpoint-ORIG-GUID: zhTrp4GCD4KtV-i2yJ6dTUictxC5ibhs
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.20,FMLib:17.12.100.49
+ definitions=2026-01-21_01,2026-01-20_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ priorityscore=1501 impostorscore=0 adultscore=0 suspectscore=0 spamscore=0
+ lowpriorityscore=0 malwarescore=0 clxscore=1011 bulkscore=0 phishscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.19.0-2601150000 definitions=main-2601210073
+X-Spamd-Result: default: False [-0.96 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW_WITH_FAILURES(-0.50)[];
-	R_DKIM_ALLOW(-0.20)[infradead.org:s=bombadil.20210309];
+	R_DKIM_ALLOW(-0.20)[ibm.com:s=pp1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[infradead.org,kernel.org,zeniv.linux.org.uk,oracle.com,brown.name,redhat.com,talpey.com,gmail.com,google.com,linux.alibaba.com,linux-foundation.org,mit.edu,dilger.ca,suse.com,huawei.com,vivo.com,dubeyko.com,fb.com,squashfs.org.uk,samba.org,manguebit.org,microsoft.com,szeredi.hu,omnibond.com,fasheh.com,evilplan.org,paragon-software.com,nod.at,suse.cz,mail.parknet.co.jp,lwn.net,fromorbit.com,vger.kernel.org,kvack.org,lists.ozlabs.org,lists.samba.org,lists.orangefs.org,lists.linux.dev,lists.sourceforge.net,lists.infradead.org];
+	RCPT_COUNT_THREE(0.00)[4];
+	DMARC_POLICY_ALLOW(0.00)[ibm.com,none];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20799-lists,linux-btrfs=lfdr.de];
-	DMARC_POLICY_ALLOW(0.00)[infradead.org,none];
 	RCVD_TLS_LAST(0.00)[];
-	DKIM_TRACE(0.00)[infradead.org:+];
-	FROM_HAS_DN(0.00)[];
+	TAGGED_FROM(0.00)[bounces-20800-lists,linux-btrfs=lfdr.de];
+	DKIM_TRACE(0.00)[ibm.com:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[dfw.mirrors.kernel.org:rdns,dfw.mirrors.kernel.org:helo,linux.ibm.com:mid,suse.com:email];
 	TO_DN_SOME(0.00)[];
-	R_SPF_SOFTFAIL(0.00)[~all:c];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[hch@infradead.org,linux-btrfs@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[hca@linux.ibm.com,linux-btrfs@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_GT_50(0.00)[78];
-	TAGGED_RCPT(0.00)[linux-btrfs];
-	MID_RHS_MATCH_FROM(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	R_SPF_SOFTFAIL(0.00)[~all:c];
 	ASN(0.00)[asn:7979, ipnet:142.0.200.0/24, country:US];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[infradead.org:mid,infradead.org:dkim,dfw.mirrors.kernel.org:rdns,dfw.mirrors.kernel.org:helo]
-X-Rspamd-Queue-Id: 3EDF35456B
+	TAGGED_RCPT(0.00)[linux-btrfs];
+	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_SEVEN(0.00)[11]
+X-Rspamd-Queue-Id: 4476C54AA2
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Tue, Jan 20, 2026 at 09:35:48AM -0500, Jeff Layton wrote:
-> Even better, I think?
+On Wed, Jan 21, 2026 at 09:22:47AM +1030, Qu Wenruo wrote:
+> Adding S390 to the mailing list, I got the incorrect address in the initial
+> patch.
+> 
+> Much appreciated if S390 people can give it a test.
+> 
+> Thanks,
+> Qu
+> 
+> 在 2026/1/19 16:24, Qu Wenruo 写道:
+> > [BUG]
+> > After commit aa60fe12b4f4 ("btrfs: zlib: refactor S390x HW acceleration
+> > buffer preparation"), we no longer release the folio of the page cache
+> > of folio returned by btrfs_compress_filemap_get_folio() for S390
+> > hardware accerlation path.
+> > 
+> > [CAUSE]
+> > Before that commit, we call kumap_local() and folio_put() after handling
+> > each folio.
+> > 
+> > Although the timing is not ideal (it release previous folio at the
+> > beginning of the loop, and rely on some extra cleanup out of the loop),
+> > it at least handles the folio release correctly.
+> > 
+> > Meanwhile the refactored code is easier to read, it lacks the call to
+> > release the filemap folio.
+> > 
+> > [FIX]
+> > Add the missing folio_put() for copy_data_into_buffer().
+> > 
+> > Cc: linux-s390@vger.kernel.orgaa60fe12b4f49f49fc73e5023f8675e2df1f7805
+> > Fixes: aa60fe12b4f4 ("btrfs: zlib: refactor S390x HW acceleration buffer preparation")
+> > Signed-off-by: Qu Wenruo <wqu@suse.com>
+> > ---
+> >   fs/btrfs/zlib.c | 1 +
+> >   1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/fs/btrfs/zlib.c b/fs/btrfs/zlib.c
+> > index 6caba8be7c84..10ed48d4a846 100644
+> > --- a/fs/btrfs/zlib.c
+> > +++ b/fs/btrfs/zlib.c
+> > @@ -139,6 +139,7 @@ static int copy_data_into_buffer(struct address_space *mapping,
+> >   		data_in = kmap_local_folio(folio, offset);
+> >   		memcpy(workspace->buf + cur - filepos, data_in, copy_length);
+> >   		kunmap_local(data_in);
+> > +		folio_put(folio);
+> >   		cur += copy_length;
+> >   	}
+> >   	return 0;
 
-This sounds great, thanks!
-
+Mikhail, can you have a look at this, please?
 
