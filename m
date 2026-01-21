@@ -1,155 +1,179 @@
-Return-Path: <linux-btrfs+bounces-20874-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20875-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id mIrsDgNMcWn2fgAAu9opvQ
-	(envelope-from <linux-btrfs+bounces-20874-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 22:58:27 +0100
+	id UNfXKIlNcWkahAAAu9opvQ
+	(envelope-from <linux-btrfs+bounces-20875-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 23:04:57 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
 Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id BAE045E646
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 22:58:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 401E85E764
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 23:04:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 54E893ECE75
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 21:44:09 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 1AC9180E4FF
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 21:58:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AF4343D513;
-	Wed, 21 Jan 2026 21:43:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A5E1425CEC;
+	Wed, 21 Jan 2026 21:58:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="G/YJ7zOw";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="MGlabDn9"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="kkGvzDAE";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="26SIvrX+";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="JJMQU/Jg";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="fg/A/yYO"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fhigh-a1-smtp.messagingengine.com (fhigh-a1-smtp.messagingengine.com [103.168.172.152])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D30443D4F7
-	for <linux-btrfs@vger.kernel.org>; Wed, 21 Jan 2026 21:42:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.152
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19A5C3F0750
+	for <linux-btrfs@vger.kernel.org>; Wed, 21 Jan 2026 21:58:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769031779; cv=none; b=KbxNKL3Sy/9qvct1Bv1vv14NKnwK6n4THHHIlT9IkMgNLaBppyXZagiRtWm88Bpn2fsxSTb7OlCZvapi2oeFET+R2YSFCk8EyVyo8AGvZfFhEASPYvE4l3kSvwdm4UUMfIJyTV8XOvGJUzC2rDTC31Sb6HOQGz3FDyzvdN/S3ic=
+	t=1769032712; cv=none; b=jVztAfniO1/GFjscxCzPu8bMqQqfpJTl5XRkpU1EvCTqhAnBvOCV6Vp3QcHudz64M2vOWTHZbjxnV6ACR7mjB0QnPjz2LucZylpIX4nmxiCo0oit10QhgUaEV/x8glj7W7Kpche03R4zjOaVUpJJs1GsxeNTWHd1t93SyER6J8g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769031779; c=relaxed/simple;
-	bh=bcyJsGL4GK/xsddf0/qhrySUAREzA9ZjNs2TL15PN44=;
+	s=arc-20240116; t=1769032712; c=relaxed/simple;
+	bh=UZV5otWlgIhZ/IACW6yPdtToh4qCNIOavqiMiL+GHJI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=a0zOG/PFN8cf4XQ925+/k2c7Bfq9UsBZVd5lw5tTufiZUkuMjO/Og7Ih9LiACQNj9+wbK/F4INzr5D4uRUWAcfdFJnavc/WagxFis059Y8QRbF4tdfxDsc6uL79yM0kE/Lqk4M9dY+ZuphiJ7uzbceXN8i5890VQ/SpflLJMB5o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=G/YJ7zOw; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=MGlabDn9; arc=none smtp.client-ip=103.168.172.152
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-01.internal (phl-compute-01.internal [10.202.2.41])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id AB3B31400081;
-	Wed, 21 Jan 2026 16:42:55 -0500 (EST)
-Received: from phl-frontend-03 ([10.202.2.162])
-  by phl-compute-01.internal (MEProxy); Wed, 21 Jan 2026 16:42:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1769031775; x=1769118175; bh=bN6QM7YDe8
-	OPtKcBnkCbJxnLqAhhKAbLnLEpLMrhHOs=; b=G/YJ7zOwdnuOzxglAnHAzONGTo
-	goXGrahKzl9SeCVuSNTPPOX7K+sxpdW3DGIkv/XRMKEA6/oh5WB3GSpw4nzzgbG+
-	B7+UZyFQgq72zgAF73hwBZyKErVGnpGo/9nuHYScu9UzmoqWmUQkLhtPjrqvYDsY
-	EH03AffZM9wKUn1Ja6a44sL/HrxFKLPKAVfKatPlHNudmCQLK/wbjFy/V237Yx+/
-	e8b0SzNeyiexc1AHU2nU4WVAwXWJsFMZN0erl43ay3tlFpwoa9oglymKU7TYKwsG
-	JmilxEhcxWfNJjazkS3hdKew6bPz7IcnSNNMHlTuA7TFSPGoSHjofcDxzPCw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-	1769031775; x=1769118175; bh=bN6QM7YDe8OPtKcBnkCbJxnLqAhhKAbLnLE
-	pLMrhHOs=; b=MGlabDn9voe8IPL22lrtV71aHIjB6cgtS6PP6TGikEJR2EC1Bro
-	pAbVFuJzawR4I4QlDOygIyNdjCxZ03wzPLuoaekjavdJqgWVN/mw6KK95mUGacn1
-	dwkxr2gnMnrzwfUhbuMt96Q6B+qg9VGNjbJj1ME1KM/tJTeSYfcRcPw0pxmuw9JL
-	MBeQTerq/9eFCUkBIm2QoD/JXka3JrhNAjNZpt6ruKCY32kDZSMmiQ964DxKzqWu
-	nLVABrW44UQ1Y2lkTF5Nn/MTfnZlys5nHFvoCX+vRJESSF20U4J76PV3rZ39zocc
-	ysDKhP8ZoU6Y0GxJQg7TdYI6I0jfpAdNPEA==
-X-ME-Sender: <xms:X0hxaTm48WmtpxdB6hSLmtxhIOmUiS5e2jb8EGDV2i7cx2ryVLLbxg>
-    <xme:X0hxac1FjmLvsxDF5bdBCc2SwVkgJV1IcVuXzPJLkuSwf2eHeykqZg0iBRw1OodGG
-    HdhrI5Rd0ZhDAF3ha1a5i5N8t4fsNjyr8E08S1oJsRtDYtX1R61rQ>
-X-ME-Received: <xmr:X0hxaXTcjhwJVOmdKb8g9w4GHs9rCZUsReHKMDH51cYD0PiPGBP-2BUs2XymGSDchTTKGi50xIMj-FPq8aoYAdPoY0g>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddugeegfeelucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucenucfjughrpeffhffvvefukfhfgggtuggjsehttdertd
-    dttddvnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhi
-    oheqnecuggftrfgrthhtvghrnhepkedvkeffjeellefhveehvdejudfhjedthfdvveeiie
-    eiudfguefgtdejgfefleejnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehm
-    rghilhhfrhhomhepsghorhhishessghurhdrihhopdhnsggprhgtphhtthhopedvpdhmoh
-    guvgepshhmthhpohhuthdprhgtphhtthhopehfughmrghnrghnrgeskhgvrhhnvghlrdho
-    rhhgpdhrtghpthhtoheplhhinhhugidqsghtrhhfshesvhhgvghrrdhkvghrnhgvlhdroh
-    hrgh
-X-ME-Proxy: <xmx:X0hxaWtern0graKJGQvp6oyOSxCZWnDXbKCl93kkm5PR8aAW4c0uLw>
-    <xmx:X0hxaUbTfOofJeehVpjJ207Fj6YWmgnczm7vbnrq5Zvh1JQmMUn24Q>
-    <xmx:X0hxaTvEFhN1sE5vC_Wzrqzg0OVeQi-LgQIPccIqgb6FAMK9eq8T6w>
-    <xmx:X0hxaeFB94Bqe4NhmuXR3xsGuDpbHxift1RSnf3mD_mByvdb0Vws7Q>
-    <xmx:X0hxaX4zCPd3zzWPPzkoa6XKXXoIUMgS-9vAOq-EVGW-GCfhuiV_eZ3T>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 21 Jan 2026 16:42:55 -0500 (EST)
-Date: Wed, 21 Jan 2026 13:42:41 -0800
-From: Boris Burkov <boris@bur.io>
-To: fdmanana@kernel.org
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/2] btrfs: cleanup and fix
- sample_block_group_extent_item()
-Message-ID: <20260121214241.GC1432482@zen.localdomain>
-References: <cover.1769028677.git.fdmanana@suse.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=RJH2lhAMyVlqe8qScD69iwaSDFc9nAEEES7lSGoSUXYIr9DrT2ShQ7LBdzpkqClJMZAKelAzOZkqptobOpV+2CdLxUyVpx/Ky1BCTBezFkkVqhCMLun2dvrFuX9A7esZfCixGO+cODxljXBo2WNRbyUBJus0rarZhbmOLNYWzhQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=kkGvzDAE; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=26SIvrX+; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=JJMQU/Jg; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=fg/A/yYO; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id E8CD75BD30;
+	Wed, 21 Jan 2026 21:58:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1769032709;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Xxp1bj64TLdx5BIEqsYnan0805ZjECWnJt0mUgdqqZQ=;
+	b=kkGvzDAE1LZLuAcHFx6IIjHN6i4Z1Ll+7zCvmz9jPr6cprcuptMkYEg9j2qQYMDDf/JaWi
+	yYDQ4BuQm4lHLUhlk+opmS6DBqGKnLDpZ5YCbwnBVORcOWGowc3wA4VdSLsdx8nCHkI9Yf
+	s6ShgkICtjL7wEtt9OcfzHIzZye2Q0M=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1769032709;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Xxp1bj64TLdx5BIEqsYnan0805ZjECWnJt0mUgdqqZQ=;
+	b=26SIvrX+C+OSW9euhIoAiv9oVkgQOFRqXl1FXLvlaOYevACGmzX+u1uB0i0VU+WkCqPyW0
+	556hPsSB2vRnBWCQ==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1769032708;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Xxp1bj64TLdx5BIEqsYnan0805ZjECWnJt0mUgdqqZQ=;
+	b=JJMQU/JgaMzujgCbTuvl7yBOAhrNW2vcAQKHJq/kABvyr6f5gcsR03MJR6zu0NpWR4Ho75
+	KLH47uo9UlERJ8sfodPWigVUWa24xdDKuYwZGlGLATGc2Z5Sr08XOZfF2fa45lqKiyGTwU
+	MjcGJXIKCGrSDYuStJVyC/k2mbzFRQs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1769032708;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Xxp1bj64TLdx5BIEqsYnan0805ZjECWnJt0mUgdqqZQ=;
+	b=fg/A/yYOPb+ilt7HnmWtYQOvauhXJtthuHwTlEC+YMBPJFB+Vn+DN98GHujzc5mcmGnfDa
+	GTyOpdYXjkzzCGCg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CB8573EA63;
+	Wed, 21 Jan 2026 21:58:28 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id L585MQRMcWlvHQAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Wed, 21 Jan 2026 21:58:28 +0000
+Date: Wed, 21 Jan 2026 22:58:27 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Filipe Manana <fdmanana@kernel.org>
+Cc: Qu Wenruo <quwenruo.btrfs@gmx.com>, dsterba@suse.cz,
+	linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH 2/4] btrfs: allocate path in load_block_group_size_class()
+Message-ID: <20260121215827.GQ26902@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <cover.1768911827.git.fdmanana@suse.com>
+ <05452a804b036b205a791be1c1c5e09d0279812d.1768911827.git.fdmanana@suse.com>
+ <3a5d1472-7ff0-447f-9d02-f75a60161ead@gmx.com>
+ <20260121042455.GO26902@twin.jikos.cz>
+ <b1f7072a-57de-4df5-abcf-a9e975e5c58f@gmx.com>
+ <CAL3q7H5NRKqd4drKJfsLfcG8TB+tVo4p+KQyz2M6p7CnYg_b6A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <cover.1769028677.git.fdmanana@suse.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAL3q7H5NRKqd4drKJfsLfcG8TB+tVo4p+KQyz2M6p7CnYg_b6A@mail.gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Score: -4.00
+X-Spam-Level: 
+X-Spam-Flag: NO
 X-Spamd-Result: default: False [-1.46 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_DKIM_ALLOW(-0.20)[bur.io:s=fm3,messagingengine.com:s=fm2];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20874-lists,linux-btrfs=lfdr.de];
-	DKIM_TRACE(0.00)[bur.io:+,messagingengine.com:+];
-	RCPT_COUNT_TWO(0.00)[2];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DMARC_NA(0.00)[bur.io];
-	MISSING_XM_UA(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-20875-lists,linux-btrfs=lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	DMARC_NA(0.00)[suse.cz];
+	TO_DN_SOME(0.00)[];
+	FREEMAIL_CC(0.00)[gmx.com,suse.cz,vger.kernel.org];
 	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	RCPT_COUNT_THREE(0.00)[4];
+	HAS_REPLYTO(0.00)[dsterba@suse.cz];
 	R_SPF_SOFTFAIL(0.00)[~all:c];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[boris@bur.io,linux-btrfs@vger.kernel.org];
-	ASN(0.00)[asn:7979, ipnet:2a01:60a::/32, country:US];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[dsterba@suse.cz,linux-btrfs@vger.kernel.org];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[6];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	TO_DN_NONE(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	ASN(0.00)[asn:7979, ipnet:2a01:60a::/32, country:US];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[bur.io:email,bur.io:dkim,ams.mirrors.kernel.org:rdns,ams.mirrors.kernel.org:helo,zen.localdomain:mid,suse.com:email,messagingengine.com:dkim]
-X-Rspamd-Queue-Id: BAE045E646
+	DBL_BLOCKED_OPENRESOLVER(0.00)[ams.mirrors.kernel.org:rdns,ams.mirrors.kernel.org:helo,suse.cz:replyto,suse.cz:dkim,gmx.com:email,twin.jikos.cz:mid]
+X-Rspamd-Queue-Id: 401E85E764
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Wed, Jan 21, 2026 at 08:52:36PM +0000, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
+On Wed, Jan 21, 2026 at 10:42:23AM +0000, Filipe Manana wrote:
+> On Wed, Jan 21, 2026 at 4:40 AM Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
+> > > how exactly to do it, maybe something is in the task_struct.
+> > >
+> >
+> > I was looking into that during async csum development. But I didn't find
+> > a good way to determine if we're in workqueue.
 > 
-> Trivial changes, details in the change logs.
+> We can do this and it works:
+> 
+> /*
+> * Since we run in workqueue context, we allocate the path on stack to
+> * avoid memory allocation failure, as the stack in a work queue task
+> * is not deep.
+> */
+> ASSERT(current_work() == &caching_ctl->work.normal_work);
 
-LGTM, thanks.
-
-Reviewed-by: Boris Burkov <boris@bur.io>
-
-> 
-> Filipe Manana (2):
->   btrfs: remove bogus root search condition in sample_block_group_extent_item()
->   btrfs: deal with missing root in sample_block_group_extent_item()
-> 
->  fs/btrfs/block-group.c | 9 +++++++--
->  1 file changed, 7 insertions(+), 2 deletions(-)
-> 
-> -- 
-> 2.47.2
-> 
+Great, thanks. I was hoping for something less verbose that we can wrap
+into eg. ASSERT_WORKQUEUE(...), and for different types we could use
+_Generic.  But we can rethink it once we have more instances and see a
+pattern.
 
