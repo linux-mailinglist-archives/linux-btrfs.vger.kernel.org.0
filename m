@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-20853-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20850-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id QAAYKrEpcWniewAAu9opvQ
-	(envelope-from <linux-btrfs+bounces-20853-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 20:32:01 +0100
+	id gNQsM6IZcWmodQAAu9opvQ
+	(envelope-from <linux-btrfs+bounces-20850-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 19:23:30 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
 Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6813A5C38D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 20:32:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 98F595B378
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 19:23:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id BB715807021
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 16:42:18 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id E510E78DA9B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 16:42:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A50F4963C6;
-	Wed, 21 Jan 2026 16:31:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50EF34963C7;
+	Wed, 21 Jan 2026 16:31:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o3LGZhMu"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t0aPtn5r"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD3394963D5
-	for <linux-btrfs@vger.kernel.org>; Wed, 21 Jan 2026 16:30:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 944F24218A8
+	for <linux-btrfs@vger.kernel.org>; Wed, 21 Jan 2026 16:31:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769013061; cv=none; b=So1xQGqxjlJi4H60InZ/682rCWPbSeCJ2TGQHdnJTPNLJqa6o/wyy5/bjZR+XfAF8QRyUqayOoCjtxqLTuTuZDv7d+jXhGJbR0qps0/LmUiPzMgdGQNU8Mzs8x5hDVgvoNeJaQ07WS54xOfF1CdR24d/vWMUmEDZ7V+tV612/pE=
+	t=1769013060; cv=none; b=kmf5ZM+erxap39ZCiYCrB6n1OhRm9asQ6ogibwNa3fhE6KvUcEWwL4Rc5M5kqsnXrDWFo7hpUEB9MmyLuemrjUaX+h3cYY0g0OmkE5vkQ1AWWdwHnT7Ab+G87HLC+0UYTMxA1/OEcxlTiHPwk51Xt8DO0+lRGssU7Zg039PxihM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769013061; c=relaxed/simple;
-	bh=nMOl2T0KpAO5544eEo+6Ur6v6RMtVI5rPfV6t8dCNhU=;
+	s=arc-20240116; t=1769013060; c=relaxed/simple;
+	bh=fqg+D9PceXDTkAQibhXYCBJxcdCyKQdtYF8gTEoVwMc=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=OP7MveWMPY39ARoU70lZKPg8LmIdtHPwScROtDJ9zor12pyVeo5SwiJKOyB8VrX17t+9SwDKOlnbwZKdaBsaK0sV8xvLgRKudDQ4hiasQZAOQSBfjD+l5/p1Vh7EOU0t+ixBOygY0bPz4e6g1Yll89pVLthS4RyN3W2AjJQdYw4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o3LGZhMu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22F50C116D0
-	for <linux-btrfs@vger.kernel.org>; Wed, 21 Jan 2026 16:30:58 +0000 (UTC)
+	 MIME-Version; b=koKgVsx34fnTkEla88uRtxNfffio/TM0hOvOOOOMUlwNsSIWyETurWsssd/8HUma3+Q07UR+tR/OB08YKa8g4dN7OqGQM+ZjEZ4sXUJW34XlYmEcC8ZJ77LjqA7nCVQnhSGe8ihEGjlRHyoXwMfNOZAN7Ame7A4oqbnF0ysBAsk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=t0aPtn5r; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04C98C4CEF1
+	for <linux-btrfs@vger.kernel.org>; Wed, 21 Jan 2026 16:30:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1769013059;
-	bh=nMOl2T0KpAO5544eEo+6Ur6v6RMtVI5rPfV6t8dCNhU=;
+	s=k20201202; t=1769013060;
+	bh=fqg+D9PceXDTkAQibhXYCBJxcdCyKQdtYF8gTEoVwMc=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=o3LGZhMuUql/3fd3dujv0nCdoOk8OoOtHaw9mvMzgUCSTcqQZbJvXjOYpbFjFnwF7
-	 xFXTBp7J2GUbj0Ks4py5hnaFHgL/e/0s5he2HghFh/AMru1Q5uHu0hJWbxqR7jcjzU
-	 cxavuK7gP9EbU5B9O+4EWDW3PWzju8cjxL08Fbl6kgk9MuNZxD+eApmyEm905HJ3vK
-	 CIxNzMP78I+F011twjx/dZ/fQg9y6qNKEvrKI4ZrlQ16wN1+AM+TRltjMoBG41XISn
-	 CVenmpTviHUSpkq2ICMNbiecoKYHpsX2GRbvLKO8oqaZcp+YNU3DdfuJKUcONHGhWl
-	 2FOryQiN2rBug==
+	b=t0aPtn5rZXUZ3WMOZRZGUrhztL1S7pioVQUV+CzqUAQHrgdnsnFci+wMw35xnvWbZ
+	 0wghikiKNZlk5UTHtjkA0YdfiXw+icLWnFQM9ZOU2kVn3iV+5GXmdCgs67pAvpFj6D
+	 w4fdIhvmjtnY/gEB0c7/ZJW+e4ieIRCq+Rl2fBN93LhTpcwlXtr8sgheCVzkGtyHCP
+	 httfBqChHXY6qrQyFjlaXk06FZ5eP116wVzIWgPAezhv0lrlhAr7DN+INe6Z4PMAvY
+	 O3CnQEaRaURmeQ14Vb0nUkFdrCkPxy2x6G0yJ7ZNiTn4N48v/CWHJQnDF1UYpECRb3
+	 GgUS0SbuWl/hw==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 12/19] btrfs: remove out label in btrfs_csum_file_blocks()
-Date: Wed, 21 Jan 2026 16:30:38 +0000
-Message-ID: <536e51884d418e33532cba83f42375e600cf1a32.1769012877.git.fdmanana@suse.com>
+Subject: [PATCH v2 13/19] btrfs: remove out label in btrfs_mark_extent_written()
+Date: Wed, 21 Jan 2026 16:30:39 +0000
+Message-ID: <caf261a36800f9d85008208c9ebab7470a759904.1769012877.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <cover.1769012876.git.fdmanana@suse.com>
 References: <cover.1769012876.git.fdmanana@suse.com>
@@ -72,7 +72,7 @@ X-Spamd-Result: default: False [-1.46 / 15.00];
 	DMARC_POLICY_ALLOW(0.00)[kernel.org,quarantine];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-20853-lists,linux-btrfs=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-20850-lists,linux-btrfs=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	RCPT_COUNT_ONE(0.00)[1];
@@ -86,8 +86,8 @@ X-Spamd-Result: default: False [-1.46 / 15.00];
 	TAGGED_RCPT(0.00)[linux-btrfs];
 	TO_DN_NONE(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[ams.mirrors.kernel.org:rdns,ams.mirrors.kernel.org:helo,suse.com:email,suse.com:mid]
-X-Rspamd-Queue-Id: 6813A5C38D
+	DBL_BLOCKED_OPENRESOLVER(0.00)[ams.mirrors.kernel.org:rdns,ams.mirrors.kernel.org:helo]
+X-Rspamd-Queue-Id: 98F595B378
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
@@ -99,69 +99,125 @@ and remove the label.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/file-item.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ fs/btrfs/file.c | 30 +++++++++++++++---------------
+ 1 file changed, 15 insertions(+), 15 deletions(-)
 
-diff --git a/fs/btrfs/file-item.c b/fs/btrfs/file-item.c
-index 568f0e0ebdf6..7bd715442f3e 100644
---- a/fs/btrfs/file-item.c
-+++ b/fs/btrfs/file-item.c
-@@ -1134,7 +1134,7 @@ int btrfs_csum_file_blocks(struct btrfs_trans_handle *trans,
- 	}
- 	ret = PTR_ERR(item);
- 	if (ret != -EFBIG && ret != -ENOENT)
+diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
+index 1759776d2d57..56ece1109832 100644
+--- a/fs/btrfs/file.c
++++ b/fs/btrfs/file.c
+@@ -565,7 +565,7 @@ int btrfs_mark_extent_written(struct btrfs_trans_handle *trans,
+ 	int del_nr = 0;
+ 	int del_slot = 0;
+ 	int recow;
+-	int ret = 0;
++	int ret;
+ 	u64 ino = btrfs_ino(inode);
+ 
+ 	path = btrfs_alloc_path();
+@@ -580,7 +580,7 @@ int btrfs_mark_extent_written(struct btrfs_trans_handle *trans,
+ 
+ 	ret = btrfs_search_slot(trans, root, &key, path, -1, 1);
+ 	if (ret < 0)
 -		goto out;
 +		return ret;
+ 	if (ret > 0 && path->slots[0] > 0)
+ 		path->slots[0]--;
  
- 	if (ret == -EFBIG) {
- 		u32 item_size;
-@@ -1150,7 +1150,7 @@ int btrfs_csum_file_blocks(struct btrfs_trans_handle *trans,
- 		/* We didn't find a csum item, insert one. */
- 		ret = find_next_csum_offset(root, path, &next_offset);
- 		if (ret < 0)
+@@ -589,20 +589,20 @@ int btrfs_mark_extent_written(struct btrfs_trans_handle *trans,
+ 	if (unlikely(key.objectid != ino || key.type != BTRFS_EXTENT_DATA_KEY)) {
+ 		ret = -EINVAL;
+ 		btrfs_abort_transaction(trans, ret);
+-		goto out;
++		return ret;
+ 	}
+ 	fi = btrfs_item_ptr(leaf, path->slots[0],
+ 			    struct btrfs_file_extent_item);
+ 	if (unlikely(btrfs_file_extent_type(leaf, fi) != BTRFS_FILE_EXTENT_PREALLOC)) {
+ 		ret = -EINVAL;
+ 		btrfs_abort_transaction(trans, ret);
+-		goto out;
++		return ret;
+ 	}
+ 	extent_end = key.offset + btrfs_file_extent_num_bytes(leaf, fi);
+ 	if (unlikely(key.offset > start || extent_end < end)) {
+ 		ret = -EINVAL;
+ 		btrfs_abort_transaction(trans, ret);
+-		goto out;
++		return ret;
+ 	}
+ 
+ 	bytenr = btrfs_file_extent_disk_bytenr(leaf, fi);
+@@ -632,7 +632,7 @@ int btrfs_mark_extent_written(struct btrfs_trans_handle *trans,
+ 							 trans->transid);
+ 			btrfs_set_file_extent_num_bytes(leaf, fi,
+ 							end - other_start);
+-			goto out;
++			return 0;
+ 		}
+ 	}
+ 
+@@ -660,7 +660,7 @@ int btrfs_mark_extent_written(struct btrfs_trans_handle *trans,
+ 							other_end - start);
+ 			btrfs_set_file_extent_offset(leaf, fi,
+ 						     start - orig_offset);
+-			goto out;
++			return 0;
+ 		}
+ 	}
+ 
+@@ -676,7 +676,7 @@ int btrfs_mark_extent_written(struct btrfs_trans_handle *trans,
+ 		}
+ 		if (unlikely(ret < 0)) {
+ 			btrfs_abort_transaction(trans, ret);
 -			goto out;
 +			return ret;
- 		found_next = 1;
- 		goto insert;
- 	}
-@@ -1178,7 +1178,7 @@ int btrfs_csum_file_blocks(struct btrfs_trans_handle *trans,
- 				csum_size, 1);
- 	path->search_for_extension = false;
- 	if (ret < 0)
--		goto out;
-+		return ret;
+ 		}
  
- 	if (ret > 0) {
- 		if (path->slots[0] == 0)
-@@ -1234,14 +1234,14 @@ int btrfs_csum_file_blocks(struct btrfs_trans_handle *trans,
- 			    btrfs_header_nritems(path->nodes[0])) {
- 				ret = find_next_csum_offset(root, path, &next_offset);
- 				if (ret < 0)
--					goto out;
-+					return ret;
- 				found_next = 1;
- 				goto insert;
- 			}
+ 		leaf = path->nodes[0];
+@@ -704,7 +704,7 @@ int btrfs_mark_extent_written(struct btrfs_trans_handle *trans,
+ 		ret = btrfs_inc_extent_ref(trans, &ref);
+ 		if (unlikely(ret)) {
+ 			btrfs_abort_transaction(trans, ret);
+-			goto out;
++			return ret;
+ 		}
  
- 			ret = find_next_csum_offset(root, path, &next_offset);
- 			if (ret < 0)
+ 		if (split == start) {
+@@ -713,7 +713,7 @@ int btrfs_mark_extent_written(struct btrfs_trans_handle *trans,
+ 			if (unlikely(start != key.offset)) {
+ 				ret = -EINVAL;
+ 				btrfs_abort_transaction(trans, ret);
 -				goto out;
 +				return ret;
- 
- 			tmp = (next_offset - bytenr) >> fs_info->sectorsize_bits;
- 			if (tmp <= INT_MAX)
-@@ -1282,7 +1282,7 @@ int btrfs_csum_file_blocks(struct btrfs_trans_handle *trans,
- 	ret = btrfs_insert_empty_item(trans, root, path, &file_key,
- 				      ins_size);
- 	if (ret < 0)
--		goto out;
-+		return ret;
- 	leaf = path->nodes[0];
- csum:
- 	item = btrfs_item_ptr(leaf, path->slots[0], struct btrfs_csum_item);
-@@ -1307,8 +1307,8 @@ int btrfs_csum_file_blocks(struct btrfs_trans_handle *trans,
- 		cond_resched();
- 		goto again;
+ 			}
+ 			path->slots[0]--;
+ 			extent_end = end;
+@@ -744,7 +744,7 @@ int btrfs_mark_extent_written(struct btrfs_trans_handle *trans,
+ 		ret = btrfs_free_extent(trans, &ref);
+ 		if (unlikely(ret)) {
+ 			btrfs_abort_transaction(trans, ret);
+-			goto out;
++			return ret;
+ 		}
+ 	}
+ 	other_start = 0;
+@@ -762,7 +762,7 @@ int btrfs_mark_extent_written(struct btrfs_trans_handle *trans,
+ 		ret = btrfs_free_extent(trans, &ref);
+ 		if (unlikely(ret)) {
+ 			btrfs_abort_transaction(trans, ret);
+-			goto out;
++			return ret;
+ 		}
+ 	}
+ 	if (del_nr == 0) {
+@@ -783,11 +783,11 @@ int btrfs_mark_extent_written(struct btrfs_trans_handle *trans,
+ 		ret = btrfs_del_items(trans, root, path, del_slot, del_nr);
+ 		if (unlikely(ret < 0)) {
+ 			btrfs_abort_transaction(trans, ret);
+-			goto out;
++			return ret;
+ 		}
  	}
 -out:
 -	return ret;
@@ -169,7 +225,7 @@ index 568f0e0ebdf6..7bd715442f3e 100644
 +	return 0;
  }
  
- void btrfs_extent_item_to_extent_map(struct btrfs_inode *inode,
+ /*
 -- 
 2.47.2
 
