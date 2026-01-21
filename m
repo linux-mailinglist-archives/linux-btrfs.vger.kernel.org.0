@@ -1,199 +1,237 @@
-Return-Path: <linux-btrfs+bounces-20800-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20801-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 0NADLgWhcGlyYgAAu9opvQ
-	(envelope-from <linux-btrfs+bounces-20800-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 10:48:53 +0100
+	id ADTwHHSjcGlyYgAAu9opvQ
+	(envelope-from <linux-btrfs+bounces-20801-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 10:59:16 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4476C54AA2
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 10:48:53 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE0E054CC4
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 10:59:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 242AF886337
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 09:31:33 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id CC1908477C6
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 09:51:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B31A347B424;
-	Wed, 21 Jan 2026 09:29:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2F17481230;
+	Wed, 21 Jan 2026 09:49:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="EappCBZK"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="nZgTFNzu"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11F9F47A0D4;
-	Wed, 21 Jan 2026 09:29:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96B64480DE3;
+	Wed, 21 Jan 2026 09:48:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768987746; cv=none; b=aQ9q5vjEknVmyh4JZWnAm09P8p4pulFGBAU9706wo7Bc4iWkhMpDbvdLLpKQIE4OKguCvwpZ5UWdcFYpsZo/YeVcOrBvrf48huNTN1kmWV5X+4nRts0Q+9aoSrZMVed7ptXEDiHrbPdMXqjMcpOzwm8exgfrLZkV81mxZhM/jck=
+	t=1768988941; cv=none; b=kKcJsOB8aLJDqrwPQj3DG34i9q8iOCz3y0T0aKgQKcpbviVSwKg4MFUO3noKmFDP2VsaeYl6VjPEYb0XVpZAURTEU2cID6AV0cpSSMK2QMXE3Ox8KkHCVRBiz6YneNulQmf3IFkmRQl+3GAnnP7Hc0v4Lqs2gHMu0fN9yfrGc30=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768987746; c=relaxed/simple;
-	bh=KXRDFrhifchE6Z4/dNEi0wZRpEZee/z/YcyAhBs6tX0=;
+	s=arc-20240116; t=1768988941; c=relaxed/simple;
+	bh=2txRYPj1zjlXuHZLLc6Ds/5qBjyYqZpQlWvGoUs8Ids=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=I6AvunYaqMjHt7xAVlfF1wsZDrDxh23lXTbfZxphvxaLAVWvj3Bh7COTn0RF2ZIl7iWSjQFYH7K6c2QXX8pwHg4DCmb8kt8nQvzairgkPUHPQyFCAlR3Hc0Hqts2lgSet5P754E9ptLehH9WLol083y0ogV58Sg/B1VNCpCNBZk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=EappCBZK; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 60KNc5Ec006591;
-	Wed, 21 Jan 2026 09:29:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=iL45H+
-	LgO5PNbSzILUwyu5iQO7gomKom1P1XNGuf3Bo=; b=EappCBZKt6KzbMrxNFylJe
-	eNEC6c2Qg7vdpxyCqkdzHhGWVYcQbOiz9kvat6p0nL2waZtIY8IVZvdErD/zqkWa
-	9YIuj3A8NTtRekv0p4ecHKyDxk+oqMGKDMdPZHYvldb/hFSzXvl5R7kbrnqbr9k7
-	Uj5y5CQpXrzWCOUzRtA28K7Or/WxUffMvuQh2Ai5qfrKhHwSPvKABK5jBhfFoiO6
-	UGpDKTK9F+Xth+HO6gvExE7xREyIACgWBHFx+jInSmyJxdl/B2MeefpARPAt6JS7
-	RALn0/RW/88hwaKpLWYsxmVDTIpg2AEmPcj08xTLsFdU6EsV6xjemeQq0/CY3aIQ
-	==
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4br23s3cwb-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 21 Jan 2026 09:29:03 +0000 (GMT)
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 60L7YqRF009253;
-	Wed, 21 Jan 2026 09:29:01 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4brp8kax84-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 21 Jan 2026 09:29:01 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 60L9SxRP16318882
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 21 Jan 2026 09:28:59 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id BF54020043;
-	Wed, 21 Jan 2026 09:28:59 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id A729820040;
-	Wed, 21 Jan 2026 09:28:59 +0000 (GMT)
-Received: from osiris (unknown [9.52.214.206])
-	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Wed, 21 Jan 2026 09:28:59 +0000 (GMT)
-Date: Wed, 21 Jan 2026 10:28:57 +0100
-From: Heiko Carstens <hca@linux.ibm.com>
-To: Qu Wenruo <wqu@suse.com>, Mikhail Zaslonko <zaslonko@linux.ibm.com>
-Cc: linux-btrfs@vger.kernel.org, linux-s390@vger.kernel.org
-Subject: Re: [PATCH] btrfs: fix the folio leak on S390 hardware acceleration
-Message-ID: <20260121092857.9719A1f-hca@linux.ibm.com>
-References: <bcf36edfb7ac3caf3373174e741bb29c0feb268b.1768802004.git.wqu@suse.com>
- <1218d786-ad7a-4971-9cd5-273232f62d79@suse.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=IU2Mg/G5LgzZF6wS51pSZ2fyL4A94MhZH5t0lRX/SrWZDHuVAQGM2IMErNPNVdfbQ+zLKaKVjuPYjP2/IYmADvdBF4S1/KfxK6UDf0MquNgcS4k9mKdNrjk1qXGimYAtcjpWvPnXVnRENzbMmSyu7vSVPKj+1FK21WbkF2F0HEQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=nZgTFNzu; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=RwuG4Zh8xzi3XsfiX+hfl4eOhPi+sTrKAwirdvzvU78=; b=nZgTFNzu14yUnMagBymm1SVNaE
+	0iI2+v0tg8mrJftjxuiLasZhfk9iatzt6SV3zcWbej4U221rInInSi+IHEz/gS/qBm9sRHcJyamaY
+	2iVgOPW0H3w/vq4ErMxFUpMgqMdpr99bvrrbEx1zBJxf6Oqd1tds0vHyOzdQuLPKc5V+mIOIAqEl1
+	w6H+15/ZlqHoAqJ9oz6poJ5+1SXpK3oiRj9woVMFWFqnIBi9cp3UcnQlhY2ZC1n18yBMINnNb27r3
+	TUQ/4lNxikcW3bhV7aDAFg1yrx2W+1KDhA9xNOfeEs+KGiyy3rKt15Wi5bHrUF/HESTAyVVaZu416
+	HhHRjLFA==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1viUpM-00000005D5S-1Xs6;
+	Wed, 21 Jan 2026 09:48:40 +0000
+Date: Wed, 21 Jan 2026 01:48:40 -0800
+From: Christoph Hellwig <hch@infradead.org>
+To: NeilBrown <neil@brown.name>
+Cc: Christoph Hellwig <hch@infradead.org>,
+	Christian Brauner <brauner@kernel.org>,
+	Jeff Layton <jlayton@kernel.org>,
+	Amir Goldstein <amir73il@gmail.com>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Chuck Lever <chuck.lever@oracle.com>,
+	Olga Kornievskaia <okorniev@redhat.com>,
+	Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
+	Hugh Dickins <hughd@google.com>,
+	Baolin Wang <baolin.wang@linux.alibaba.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Theodore Ts'o <tytso@mit.edu>,
+	Andreas Dilger <adilger.kernel@dilger.ca>, Jan Kara <jack@suse.com>,
+	Gao Xiang <xiang@kernel.org>, Chao Yu <chao@kernel.org>,
+	Yue Hu <zbestahu@gmail.com>, Jeffle Xu <jefflexu@linux.alibaba.com>,
+	Sandeep Dhavale <dhavale@google.com>,
+	Hongbo Li <lihongbo22@huawei.com>,
+	Chunhai Guo <guochunhai@vivo.com>, Carlos Maiolino <cem@kernel.org>,
+	Ilya Dryomov <idryomov@gmail.com>,
+	Alex Markuze <amarkuze@redhat.com>,
+	Viacheslav Dubeyko <slava@dubeyko.com>, Chris Mason <clm@fb.com>,
+	David Sterba <dsterba@suse.com>,
+	Luis de Bethencourt <luisbg@kernel.org>,
+	Salah Triki <salah.triki@gmail.com>,
+	Phillip Lougher <phillip@squashfs.org.uk>,
+	Steve French <sfrench@samba.org>,
+	Paulo Alcantara <pc@manguebit.org>,
+	Ronnie Sahlberg <ronniesahlberg@gmail.com>,
+	Shyam Prasad N <sprasad@microsoft.com>,
+	Bharath SM <bharathsm@microsoft.com>,
+	Miklos Szeredi <miklos@szeredi.hu>,
+	Mike Marshall <hubcap@omnibond.com>,
+	Martin Brandenburg <martin@omnibond.com>,
+	Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>,
+	Joseph Qi <joseph.qi@linux.alibaba.com>,
+	Konstantin Komarov <almaz.alexandrovich@paragon-software.com>,
+	Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+	Trond Myklebust <trondmy@kernel.org>,
+	Anna Schumaker <anna@kernel.org>, Dave Kleikamp <shaggy@kernel.org>,
+	David Woodhouse <dwmw2@infradead.org>,
+	Richard Weinberger <richard@nod.at>, Jan Kara <jack@suse.cz>,
+	Andreas Gruenbacher <agruenba@redhat.com>,
+	OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+	Jaegeuk Kim <jaegeuk@kernel.org>, linux-nfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org, linux-ext4@vger.kernel.org,
+	linux-erofs@lists.ozlabs.org, linux-xfs@vger.kernel.org,
+	ceph-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-cifs@vger.kernel.org, linux-unionfs@vger.kernel.org,
+	devel@lists.orangefs.org, ocfs2-devel@lists.linux.dev,
+	ntfs3@lists.linux.dev, linux-nilfs@vger.kernel.org,
+	jfs-discussion@lists.sourceforge.net, linux-mtd@lists.infradead.org,
+	gfs2@lists.linux.dev, linux-f2fs-devel@lists.sourceforge.net
+Subject: Re: [PATCH 00/29] fs: require filesystems to explicitly opt-in to
+ nfsd export support
+Message-ID: <aXCg-MqXH0E6IuwS@infradead.org>
+References: <20260115-exportfs-nfsd-v1-0-8e80160e3c0c@kernel.org>
+ <CAOQ4uxjOJMwv_hRVTn3tJHDLMQHbeaCGsdLupiZYcwm7M2rm3g@mail.gmail.com>
+ <9c99197dde2eafa55a1b55dce2f0d4d02c77340a.camel@kernel.org>
+ <176877859306.16766.15009835437490907207@noble.neil.brown.name>
+ <aW3SAKIr_QsnEE5Q@infradead.org>
+ <176880736225.16766.4203157325432990313@noble.neil.brown.name>
+ <20260119-kanufahren-meerjungfrau-775048806544@brauner>
+ <176885553525.16766.291581709413217562@noble.neil.brown.name>
+ <aW8w2SRyFnmA2uqk@infradead.org>
+ <176890126683.16766.5241619788613840985@noble.neil.brown.name>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1218d786-ad7a-4971-9cd5-273232f62d79@suse.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: zhTrp4GCD4KtV-i2yJ6dTUictxC5ibhs
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMTIxMDA3MyBTYWx0ZWRfXxU6EtkDJkJUU
- ChuFYnL6sBzHpXQRbiL4EweXDj6UaGfQ/bozg6lWGhg8G0JMLhtmmaA+k/92+PZC6j4VYOOAgwc
- LHPdy4SswKcBjidg0bkPCtzoZaLSevDMizkv+iZt1IkrcCwlrJXNqDPcFvdZMd8iLULQmC4fl/v
- lQqB0lDE9oXnm4PN74MC05I04UDB4rlN3EO2ARJCKcGbn3NBYeajdGW27Xid8aXLplg6CJHptrQ
- JHkn4jf0m2JvZipkum7xUhu/zs7VrVHxz6+VECN0wauxxP6bVk5dG18FXMx3ygn9inDgZmv1tBs
- fscacmc2Kb2J2OJmmBIQuJ27U73gppFwLrROU7WRF0QNOo5pgVPsXwq2+U6mWyAevwcBN2c5XhM
- M5L42n1xX51TIATzkjvp+xQ+vC3Y+muMGd5i32C1zKDf5XXZz+Yh2TLAFs125zHrzF3vPXxt/k0
- lXLEEC4YdIvfvCVfvFQ==
-X-Authority-Analysis: v=2.4 cv=J9SnLQnS c=1 sm=1 tr=0 ts=69709c5f cx=c_pps
- a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17
- a=IkcTkHD0fZMA:10 a=vUbySO9Y5rIA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=iox4zFpeAAAA:8 a=6iE85x-LiswBhNdmk-sA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
- a=WzC6qhA0u3u7Ye7llzcV:22
-X-Proofpoint-ORIG-GUID: zhTrp4GCD4KtV-i2yJ6dTUictxC5ibhs
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.20,FMLib:17.12.100.49
- definitions=2026-01-21_01,2026-01-20_01,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- priorityscore=1501 impostorscore=0 adultscore=0 suspectscore=0 spamscore=0
- lowpriorityscore=0 malwarescore=0 clxscore=1011 bulkscore=0 phishscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.19.0-2601150000 definitions=main-2601210073
-X-Spamd-Result: default: False [-0.96 / 15.00];
+In-Reply-To: <176890126683.16766.5241619788613840985@noble.neil.brown.name>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Spamd-Result: default: False [-0.46 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW_WITH_FAILURES(-0.50)[];
-	R_DKIM_ALLOW(-0.20)[ibm.com:s=pp1];
+	R_DKIM_ALLOW(-0.20)[infradead.org:s=bombadil.20210309];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_THREE(0.00)[4];
-	DMARC_POLICY_ALLOW(0.00)[ibm.com,none];
+	FREEMAIL_CC(0.00)[infradead.org,kernel.org,gmail.com,zeniv.linux.org.uk,oracle.com,redhat.com,talpey.com,google.com,linux.alibaba.com,linux-foundation.org,mit.edu,dilger.ca,suse.com,huawei.com,vivo.com,dubeyko.com,fb.com,squashfs.org.uk,samba.org,manguebit.org,microsoft.com,szeredi.hu,omnibond.com,fasheh.com,evilplan.org,paragon-software.com,nod.at,suse.cz,mail.parknet.co.jp,vger.kernel.org,kvack.org,lists.ozlabs.org,lists.orangefs.org,lists.linux.dev,lists.sourceforge.net,lists.infradead.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-20801-lists,linux-btrfs=lfdr.de];
+	DMARC_POLICY_ALLOW(0.00)[infradead.org,none];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20800-lists,linux-btrfs=lfdr.de];
-	DKIM_TRACE(0.00)[ibm.com:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[dfw.mirrors.kernel.org:rdns,dfw.mirrors.kernel.org:helo,linux.ibm.com:mid,suse.com:email];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[hca@linux.ibm.com,linux-btrfs@vger.kernel.org];
+	DKIM_TRACE(0.00)[infradead.org:+];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
 	R_SPF_SOFTFAIL(0.00)[~all:c];
-	ASN(0.00)[asn:7979, ipnet:142.0.200.0/24, country:US];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[hch@infradead.org,linux-btrfs@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_GT_50(0.00)[73];
 	TAGGED_RCPT(0.00)[linux-btrfs];
+	MID_RHS_MATCH_FROM(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_SEVEN(0.00)[11]
-X-Rspamd-Queue-Id: 4476C54AA2
+	ASN(0.00)[asn:7979, ipnet:2605:f480::/32, country:US];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[dfw.mirrors.kernel.org:rdns,dfw.mirrors.kernel.org:helo,infradead.org:mid,infradead.org:dkim]
+X-Rspamd-Queue-Id: EE0E054CC4
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Wed, Jan 21, 2026 at 09:22:47AM +1030, Qu Wenruo wrote:
-> Adding S390 to the mailing list, I got the incorrect address in the initial
-> patch.
+On Tue, Jan 20, 2026 at 08:27:46PM +1100, NeilBrown wrote:
+> > If you think NFS actually explains the semantics pretty well, please
+> > explain that too, especially in forms that can be put into
+> > documentation, including for the user ABI.
 > 
-> Much appreciated if S390 people can give it a test.
+> There are multiple issues here:
 > 
-> Thanks,
-> Qu
-> 
-> 在 2026/1/19 16:24, Qu Wenruo 写道:
-> > [BUG]
-> > After commit aa60fe12b4f4 ("btrfs: zlib: refactor S390x HW acceleration
-> > buffer preparation"), we no longer release the folio of the page cache
-> > of folio returned by btrfs_compress_filemap_get_folio() for S390
-> > hardware accerlation path.
-> > 
-> > [CAUSE]
-> > Before that commit, we call kumap_local() and folio_put() after handling
-> > each folio.
-> > 
-> > Although the timing is not ideal (it release previous folio at the
-> > beginning of the loop, and rely on some extra cleanup out of the loop),
-> > it at least handles the folio release correctly.
-> > 
-> > Meanwhile the refactored code is easier to read, it lacks the call to
-> > release the filemap folio.
-> > 
-> > [FIX]
-> > Add the missing folio_put() for copy_data_into_buffer().
-> > 
-> > Cc: linux-s390@vger.kernel.orgaa60fe12b4f49f49fc73e5023f8675e2df1f7805
-> > Fixes: aa60fe12b4f4 ("btrfs: zlib: refactor S390x HW acceleration buffer preparation")
-> > Signed-off-by: Qu Wenruo <wqu@suse.com>
-> > ---
-> >   fs/btrfs/zlib.c | 1 +
-> >   1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/fs/btrfs/zlib.c b/fs/btrfs/zlib.c
-> > index 6caba8be7c84..10ed48d4a846 100644
-> > --- a/fs/btrfs/zlib.c
-> > +++ b/fs/btrfs/zlib.c
-> > @@ -139,6 +139,7 @@ static int copy_data_into_buffer(struct address_space *mapping,
-> >   		data_in = kmap_local_folio(folio, offset);
-> >   		memcpy(workspace->buf + cur - filepos, data_in, copy_length);
-> >   		kunmap_local(data_in);
-> > +		folio_put(folio);
-> >   		cur += copy_length;
-> >   	}
-> >   	return 0;
+>  - filehandle stability.  As far as I know all filesystems provide
+>    stable filehandles when the "subtree_check" export option is not used.
 
-Mikhail, can you have a look at this, please?
+That is news to me, but certainly interesting.  Does this include not
+reusing the file handle for a new incarnation of the same thing?
+
+>    Certainly cgroupfs does.  So having an EXPORT_OP_STABLE_HANDLES
+>    flag would mean it was set for every filesystem - unless there is
+>    something else I'm not aware of.  That is certainly possible and I
+>    hope someone will let me know if I'm missing something.
+
+Well, if does not provide stable file handles with the subtree_check
+export option, or more importantly with the CONNECTABLE flag passed
+to encode_fh, which is the level we're operating on, it can't set the
+flag.
+
+>  - filehandle uniqueness.  This is somewhat important and if a
+>    filesystem doesn't provide it, that should be considered a bug.  In a
+>    different thread Christian has observed that there would be benefit
+>    if pidfs and nsfs provided uniqueness across reboots.  It is quite
+>    easy for a virtual filesystem to generate a 64 bit random number when
+>    the fs is initialised, and include that in file handles.  Having a
+>    EXPORT_OP_REUSES_HANDLES flag could mark filesystems that are still
+>    buggy if that is thought to be useful.
+
+Yes.
+
+>  - GETATTR always reporting file size of 0.  This is the only concrete
+>    symptom that Jeff has reported (that I have seen).  This  makes it
+>    impossible to read files over NFS even if they have content.
+>    Would EXPORT_OP_INACCURATE_SIZE be useful?
+
+i_size = 0 for a regular file sounds like a genuine bug to me.  I'm
+actually surprised anything works with that.
+
+>  - maintainer feature choice.  A maintainer may choose not to support
+>    export over NFS because they feel that there is no value and the
+>    possible support burden would not be worth it.
+
+The maintainer has no way to disallow exporting through nfs.  They can
+at best disallow exporting using the kernel nfs daemon if we provide
+that facility.  But as I've argued multiple times, making arbitrary,
+selective and very narrow choices about use cases without technical
+backing for them (which then would be expressable as a flag like those
+listed by you above) is really bad software development practice, and
+not something that we usually do in the Linux kernel.
+
+>    There may be locking
+>    / lease / etc issues that further complicate things.  So it might be
+>    reasonable for a maintainer to choose to forbid NFS export while
+>    allowing local fhandle access. EXPORT_OP_NO_NFS_EXPORT.
+
+We already have a EXPORT_OP_NOLOCKS flag to deal with this.
+
+> 
+> It took me a while to sift through the code/patches/comments and come to
+> this understanding and I apologise if I wasn't as clear earlier.  But
+> my intuition was always that file handle stability was never the real
+> issue, and maintainer choice was.  Hence my rejection of the
+> "STABLE_HANDLES" name.
+
+Why do you keep ignoring the fat that the stable handles are really
+important for anyone wanting to actually use them for their original
+storage purpose, be that for knfsd, a userland nfs damon, or other
+storage applications in userspace despite explaining this countless
+times?
+
 
