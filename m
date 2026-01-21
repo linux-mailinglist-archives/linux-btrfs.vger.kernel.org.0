@@ -1,73 +1,74 @@
-Return-Path: <linux-btrfs+bounces-20861-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20862-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id eH7hDpoZcWmodQAAu9opvQ
-	(envelope-from <linux-btrfs+bounces-20861-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 19:23:22 +0100
+	id OLlUI1MacWmodQAAu9opvQ
+	(envelope-from <linux-btrfs+bounces-20862-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 19:26:27 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id D8BC95B362
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 19:23:21 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FF535B3DB
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 19:26:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id BE5C2843B97
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 17:35:57 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 01755A681FB
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 17:37:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 456BB425CCB;
-	Wed, 21 Jan 2026 17:09:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47AAF2C0F7A;
+	Wed, 21 Jan 2026 17:13:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bX6cMFOB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L9AOcmC0"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B809364055
-	for <linux-btrfs@vger.kernel.org>; Wed, 21 Jan 2026 17:09:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C4E732D45E
+	for <linux-btrfs@vger.kernel.org>; Wed, 21 Jan 2026 17:13:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769015381; cv=none; b=I/qG2E/bPCdctDdGY8RSyn/iMysDgsebzBzABK8mLMKskRbhUgdkkSfWevRNkhGvUi1DtzYEVRy1jgI/mU7TzDhiqBxDpkJd8YW19D2dNJZrPOXAIWWZgUvGa6W3+SJYuQaQhOTNyUdh1IpQv3itZqRp6nT6BscdnFtJNt7yGKk=
+	t=1769015595; cv=none; b=Gtk1c+O8qMYhZ8MWL6h/wb7wycic7fL0CWrWiIu02MFtT12GnlBIs2eEj5LnNlqmyQ4eeqOahWYljreD19OWoD6XSBQe/d/O9VgPDLfXUKERWXyYwoyZYJdvjRYg6tLT7CayVqGXwC8cAZP411Mpa46Hwxeyo+Ey5AltAnGgSuY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769015381; c=relaxed/simple;
-	bh=bjLqqqFAbq1ou/TGgfdoOkuLotg3q/3aXz6e6O2yr3o=;
+	s=arc-20240116; t=1769015595; c=relaxed/simple;
+	bh=fAMn+RfVvCvRlc6aieFsWDqBoR00zx/ahI6yAXmaiC0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GZKaKlE/57UW93DyIU3lBFbZxCu1SJTytRCG5xnQdNHVj618hxUI/sYFLKeUMl9aflHfYnuuxXgI5QRtBr6wIIm3zAnI5yh3DpjjeRwMoyy6w3ZaEANTVXCqR0EOIIsethpmyyE81rRO2YKAHUpE21qT60Qlbn+wXW/5Lq01GYw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bX6cMFOB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87FF8C16AAE
-	for <linux-btrfs@vger.kernel.org>; Wed, 21 Jan 2026 17:09:40 +0000 (UTC)
+	 To:Cc:Content-Type; b=l75tmor5LUS6V0kYPIaU0HL0HtGjvjQAkd7DORh1iH+PDoli+opacZeipKr7KJe7ZHtBet6FrDE6XAZ2TyWwc0TAZ8hZF01Y3di+0lK0eZXd0jPk0a8AEGXN/vPBAVG0B7RTBhkghAiZ5IetGMb0uYp0AGPOhZY9pk14PXn3x+g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L9AOcmC0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0684FC4CEF1
+	for <linux-btrfs@vger.kernel.org>; Wed, 21 Jan 2026 17:13:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1769015380;
-	bh=bjLqqqFAbq1ou/TGgfdoOkuLotg3q/3aXz6e6O2yr3o=;
+	s=k20201202; t=1769015595;
+	bh=fAMn+RfVvCvRlc6aieFsWDqBoR00zx/ahI6yAXmaiC0=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=bX6cMFOBTRP2l52e8hb2cGv34AJOqfL/cpcCwgiS/wVoBSGCkEmaGm+cBOuazR85t
-	 7e90VtLVs7mupevImLjW3vRO2SP9z2I/EPWKkXczyIb0G3j50lBVWDnGmzJf9bjXBI
-	 2j/nUWaIjE4GtibhYBx7A/EUcjTc4tHDuCDef6d45pFFKPtAVG+aTDcisRIRmi3JR5
-	 5xNQlDjGnqw6rGSzUiGQSSPgt7NsERq4ZkesV41O0Rrv8L5BA47my9OiYxXWjBdZtr
-	 hID3wV8+GjUBy37BNj+9/29zJEJdv3bc/ANsKbeHcxqeps6m5blZxvwFH4Vj0rzdlg
-	 Akp/tO96BhBcw==
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-b86f81d8051so4601966b.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 21 Jan 2026 09:09:40 -0800 (PST)
-X-Gm-Message-State: AOJu0Yw4t0XZNueYcnND6ZnwjffzKXxAGjoVOlwlGHz57JpCVH0Q25xt
-	PxD6pZs6KH6l699MIsCZK18sx7uKNggGISMuFgGJH0btjC7mkylJrXGFs6NCrK/Uz0v0P4fv/50
-	U410ItwTtxRo6m0fPyGGDneMGISfGEWM=
-X-Received: by 2002:a17:907:a089:b0:b80:456d:bd99 with SMTP id
- a640c23a62f3a-b8831b8e715mr9461466b.19.1769015378988; Wed, 21 Jan 2026
- 09:09:38 -0800 (PST)
+	b=L9AOcmC0YrPzKZDNM/QvBTIpN8pNz+RfOqBvoAtftMyDap0kDhBShUmDSOlW/E9Q5
+	 9sJU2xbJzARyELT6VAhH1c4fsN18yoSdEGcrgZs+cKfgmIzoHxSvJi1e6ODt1/DqJp
+	 ju+x5n1h/S527F9M3TxFx5i+F63nRnZ7t/qJ12GSSiyBDDtSDAJOAWqyfSt9gsSg/8
+	 btGIwYHMkVNdK0+zVbwsIW01q1dIKfBWNDOVIfB8/BAJ5mbl3Px1fPmdnnv6gOv0WC
+	 qxTJRaQMsfoeD6PhcrLwC4Zm8kcFZcZ9JolcziigyIZotX9Nkjrpe+QOeMNmlnK2bu
+	 YpgmT5aYx4M/A==
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-b8825463733so1801866b.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 21 Jan 2026 09:13:14 -0800 (PST)
+X-Gm-Message-State: AOJu0YyR+Z733bR4vv5inPpvIQbteb6KPXIC+Vtog2UO/4e98btGBmlt
+	aYVq/1ZmDDkhOgBOUZklO7rkrLXvDgoOs1bj9CUpXSYoqo0u7gtF8kSHlxNIYPPagAdrzPznPQi
+	XieRMR4Jys2W7k9Hzk8gMqXUj+cABo3Y=
+X-Received: by 2002:a17:907:97c8:b0:b87:40fd:c913 with SMTP id
+ a640c23a62f3a-b87968b6b22mr1587188866b.2.1769015593604; Wed, 21 Jan 2026
+ 09:13:13 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1768714131.git.wqu@suse.com> <86b8394ca75b3e8ac35b08e8ee8b4617d5f44331.1768714131.git.wqu@suse.com>
-In-Reply-To: <86b8394ca75b3e8ac35b08e8ee8b4617d5f44331.1768714131.git.wqu@suse.com>
+References: <cover.1768714131.git.wqu@suse.com> <81ea002b4dd0a522b41fd9f9fd2bec5ef97d515c.1768714131.git.wqu@suse.com>
+In-Reply-To: <81ea002b4dd0a522b41fd9f9fd2bec5ef97d515c.1768714131.git.wqu@suse.com>
 From: Filipe Manana <fdmanana@kernel.org>
-Date: Wed, 21 Jan 2026 17:09:02 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H6dBONyBSO08RjH_K3fWHOLFwQ7aRQrGMUTh9xebn_eZw@mail.gmail.com>
-X-Gm-Features: AZwV_QjFzyW4spJT7Qtq-om2Onuocu6TKaApp2DZhuplFv1XwlJ8pDvqrZjCjJA
-Message-ID: <CAL3q7H6dBONyBSO08RjH_K3fWHOLFwQ7aRQrGMUTh9xebn_eZw@mail.gmail.com>
-Subject: Re: [PATCH 1/3] btrfs: tests: remove invalid file extent map tests
+Date: Wed, 21 Jan 2026 17:12:36 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H7edbz+gA2+5vkoCK1O4JkjrAPz-is44DVyUqujHq0Gkg@mail.gmail.com>
+X-Gm-Features: AZwV_QjflOm2LQp70940LW18Xu_1idP13rWx3ITbRV-jb6h_5V9KJ-yMT57ltYQ
+Message-ID: <CAL3q7H7edbz+gA2+5vkoCK1O4JkjrAPz-is44DVyUqujHq0Gkg@mail.gmail.com>
+Subject: Re: [PATCH 2/3] btrfs: tests: prepare extent map tests for strict
+ alignment checks
 To: Qu Wenruo <wqu@suse.com>
 Cc: linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
@@ -81,7 +82,7 @@ X-Spamd-Result: default: False [-1.96 / 15.00];
 	HAS_LIST_UNSUB(-0.01)[];
 	DMARC_POLICY_ALLOW(0.00)[kernel.org,quarantine];
 	DKIM_TRACE(0.00)[kernel.org:+];
-	TAGGED_FROM(0.00)[bounces-20861-lists,linux-btrfs=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-20862-lists,linux-btrfs=lfdr.de];
 	FROM_HAS_DN(0.00)[];
 	RCPT_COUNT_TWO(0.00)[2];
 	RCVD_TLS_LAST(0.00)[];
@@ -89,7 +90,7 @@ X-Spamd-Result: default: False [-1.96 / 15.00];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:7979, ipnet:2a01:60a::/32, country:US];
+	ASN(0.00)[asn:7979, ipnet:2605:f480::/32, country:US];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[fdmanana@kernel.org,linux-btrfs@vger.kernel.org];
 	TO_DN_SOME(0.00)[];
@@ -97,393 +98,103 @@ X-Spamd-Result: default: False [-1.96 / 15.00];
 	TAGGED_RCPT(0.00)[linux-btrfs];
 	RCVD_COUNT_FIVE(0.00)[5];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[ams.mirrors.kernel.org:rdns,ams.mirrors.kernel.org:helo,mail.gmail.com:mid]
-X-Rspamd-Queue-Id: D8BC95B362
+	DBL_BLOCKED_OPENRESOLVER(0.00)[dfw.mirrors.kernel.org:rdns,dfw.mirrors.kernel.org:helo,mail.gmail.com:mid]
+X-Rspamd-Queue-Id: 1FF535B3DB
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
 On Sun, Jan 18, 2026 at 5:30=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
 >
-> In the inode self tests, there are several problems:
+> Currently the extent map self tests have the following points that will
+> cause false alerts for the incoming strict extent map alignment checks:
 >
-> - Several invalid cases that will be rejected by tree-checkers
+> - Inlined extents have their sized smaller than block size
 
-by tree-checkers -> by the tree-checker
+sized -> size
 
-Also missing punctuation at the end of the sentence, and this is a
-pattern in every first sentence below too.
+As usual, there is a lack of punctuation in the first sentence everywhere.
 
->   E.g. hole range [4K, 4K + 4) is completely invalid.
+>   Which is not following what the kernel is doing for inlined extents,
+>   as btrfs_extent_item_to_extent_map() always uses the fs block size as
+>   the length, not the ram_bytes.
 >
->   Only inlined extent maps can have an unaligned ram_bytes, and even for
->   that case, the generaeted extent map will use sectorsize as em->len.
+>   Fix it by using SZ_4K as extent map's length.
+>
+> - btrfs_fs_info::sectorsize is not properly initialized
+>   As we always use PAGE_SIZE, which can be values larger than 4K.
+>   And all the immediate numbers used in the test case is based on 4K
 
-generaeted -> generated
+is based -> are based
 
->
-> - Manually inserted hole after an inlined extent map
->   The kernel never does this by itself, the current btrfs_get_extent()
->   will only return a single inlined extent map that covers the first
->   block.
->
-> - Completely incorrect numbers in the comment
->   E.g. 12291 no matter if you add or dec 1, is not aligned to 4K.
->   The properly number for 12K is 12288, I don't know why there is even a
->   diff of 3, and this completely doesn't match the extent map we
->   inserted later.
->
-> - Super hard to modify sequence in setup_file_extents()
->   If some unfortunate person, just like me, needs to modify
->   setup_file_extents(), good luck not screwing up the file offset.
->
-> Fix them by:
->
-> - Remove invalid unaligned extent maps
->   This mostly means remove the [4K, 4K + 4) hole case.
->   The remaining ones are already properly aligned.
->
->   This slightly changes the on-disk data extent allocation, with that
->   removed, the regular extents at [4K, 8K) and [8K , 12K) can be merged.
->
->   So also add a 4K gap between those two data extents to prevent em
->   merge.
->
-> - Remove the manual insert of the implied hole after an inlined extent
->   Just like what the kernel is doning for inlined extents in the real
+Otherwise it looks good, thanks.
 
-doning -> doing
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
->   world.
+>   fs block size.
 >
-> - Update the commit using proper numbers with Kilo suffix
->   Since there is no unaligned range except the first inlined one, we can
->   always use numbers with 'K' suffix, which is way more easier to read,
->   and will always be aligned to 1024 at least.
->
-> - Add extra ASSERT()s and comments in setup_file_extents()
->   The ASSERT()s are used to indicate the current file offset.
->   The extra comments are for the basic info of the file extent.
+>   Fix it by using fixed SZ_4K fs block size when allocating the dummy
+>   btrfs_fs_info.
 >
 > Signed-off-by: Qu Wenruo <wqu@suse.com>
 > ---
->  fs/btrfs/tests/inode-tests.c | 111 ++++++++++++++++++++---------------
->  1 file changed, 64 insertions(+), 47 deletions(-)
+>  fs/btrfs/tests/extent-map-tests.c | 16 +++++++++++-----
+>  1 file changed, 11 insertions(+), 5 deletions(-)
 >
-> diff --git a/fs/btrfs/tests/inode-tests.c b/fs/btrfs/tests/inode-tests.c
-> index a4c2b7748b95..58b75bdfed9e 100644
-> --- a/fs/btrfs/tests/inode-tests.c
-> +++ b/fs/btrfs/tests/inode-tests.c
-> @@ -81,17 +81,20 @@ static void insert_inode_item_key(struct btrfs_root *=
-root)
->   * diagram of how the extents will look though this may not be possible =
-we still
->   * want to make sure everything acts normally (the last number is not in=
-clusive)
->   *
-> - * [0  - 6][     6 - 4096     ][ 4096 - 4100][4100 - 8195][8195  -  1229=
-1]
-> - * [inline][hole but no extent][    hole    ][   regular ][regular1 spli=
-t]
-> + * The numbers are using 4K fs block size as an example, the real test w=
-ill scale
-> + * all the extent maps (except the inlined one) according to the block s=
-ize.
->   *
-> - * [12291 - 16387][16387 - 24579][24579 - 28675][ 28675 - 32771][32771 -=
- 36867 ]
-> - * [    hole    ][regular1 split][   prealloc ][   prealloc1  ][prealloc=
-1 written]
-> + * [ 0  - 6 ][ 6 - 4K       ][ 4K - 8K ][ 8K -  12K      ]
-> + * [ inline ][ implied hole ][ regular ][ regular1 split ]
->   *
-> - * [36867 - 45059][45059 - 53251][53251 - 57347][57347 - 61443][61443- 6=
-9635]
-> - * [  prealloc1  ][ compressed  ][ compressed1 ][    regular  ][ compres=
-sed1]
-> + * [ 12K - 16K ][ 16K - 24K      ][ 24K - 28K ][ 28K - 32K ][ 32K - 36K =
-        ]
-> + * [ hole      ][ regular1 split ][ prealloc  ][ prealloc1 ][ prealloc1 =
-written ]
->   *
-> - * [69635-73731][   73731 - 86019   ][86019-90115]
-> - * [  regular  ][ hole but no extent][  regular  ]
-> + * [ 36K - 44K ][ 44K - 52K  ][ 52K - 56K   ][ 56K - 60K ][ 60K - 68 K  =
-]
-> + * [ prealloc1 ][ compressed ][ compressed1 ][ regular   ][ compressed1 =
-]
-> + *
-> + * [ 68K - 72K ][ 72K - 84K          ][ 84K - 88K ]
-> + * [  regular  ][ hole but no extent ][ regular   ]
->   */
->  static void setup_file_extents(struct btrfs_root *root, u32 sectorsize)
->  {
-> @@ -100,40 +103,49 @@ static void setup_file_extents(struct btrfs_root *r=
-oot, u32 sectorsize)
->         u64 offset =3D 0;
+> diff --git a/fs/btrfs/tests/extent-map-tests.c b/fs/btrfs/tests/extent-ma=
+p-tests.c
+> index aabf825e8d7b..811f36d41101 100644
+> --- a/fs/btrfs/tests/extent-map-tests.c
+> +++ b/fs/btrfs/tests/extent-map-tests.c
+> @@ -173,9 +173,12 @@ static int test_case_2(struct btrfs_fs_info *fs_info=
+, struct btrfs_inode *inode)
+>                 return -ENOMEM;
+>         }
 >
->         /*
-> +        * Start 0, length 6, inlined.
-> +        *
->          * Tree-checker has strict limits on inline extents that they can=
- only
->          * exist at file offset 0, thus we can only have one inline file =
-extent
->          * at most.
->          */
-> +       ASSERT(offset =3D=3D 0);
-
-Err, what's the point? We have just assigned 0 to offset right above.
-
->         insert_extent(root, offset, 6, 6, 0, 0, 0, BTRFS_FILE_EXTENT_INLI=
-NE, 0,
->                       slot);
->         slot++;
->         offset =3D sectorsize;
->
-> -       /* Now another hole */
-> -       insert_extent(root, offset, 4, 4, 0, 0, 0, BTRFS_FILE_EXTENT_REG,=
- 0,
-> -                     slot);
-> +       /* Start 1 * blocksize, length 1 * blocksize, regular */
-
-End sentence with punctuation (done in most other comments below).
-
-> +       ASSERT(offset =3D=3D 1 * sectorsize);
-
-Same here, we just assigned sectorsize to offset right above.
-
-> +       insert_extent(root, offset, sectorsize, sectorsize, 0,
-> +                     disk_bytenr, sectorsize, BTRFS_FILE_EXTENT_REG, 0, =
-slot);
->         slot++;
-> -       offset +=3D 4;
->
-> -       /* Now for a regular extent */
-> -       insert_extent(root, offset, sectorsize - 1, sectorsize - 1, 0,
-> -                     disk_bytenr, sectorsize - 1, BTRFS_FILE_EXTENT_REG,=
- 0, slot);
-> -       slot++;
-> -       disk_bytenr +=3D sectorsize;
-> -       offset +=3D sectorsize - 1;
-> +       /* We don't want the regular em got merged with the next one. */
-
-Remove "got".
-
-> +       disk_bytenr +=3D 2 * sectorsize;
-> +       offset +=3D sectorsize;
->
->         /*
-> +        * Start 2 * blocksize, length 1 * blocksize, regular.
-> +        *
->          * Now for 3 extents that were split from a hole punch so we test
->          * offsets properly.
->          */
-> +       ASSERT(offset =3D=3D 2 * sectorsize);
-
-Same here, we have just incremented offset by sectorsize.
-
->         insert_extent(root, offset, sectorsize, 4 * sectorsize, 0, disk_b=
-ytenr,
->                       4 * sectorsize, BTRFS_FILE_EXTENT_REG, 0, slot);
->         slot++;
->         offset +=3D sectorsize;
-> +
-> +       /* Start 3 * blocksize, length 1 * blocksize, regular, explicit h=
-ole. */
-> +       ASSERT(offset =3D=3D 3 * sectorsize);
-
-Same.
-
->         insert_extent(root, offset, sectorsize, sectorsize, 0, 0, 0,
->                       BTRFS_FILE_EXTENT_REG, 0, slot);
->         slot++;
->         offset +=3D sectorsize;
-> +
-> +       /* Start 4 * blocksize, length 2 * blocksize, regular. */
-> +       ASSERT(offset =3D=3D 4 * sectorsize);
-
-Same.
-
->         insert_extent(root, offset, 2 * sectorsize, 4 * sectorsize,
->                       2 * sectorsize, disk_bytenr, 4 * sectorsize,
->                       BTRFS_FILE_EXTENT_REG, 0, slot);
-> @@ -141,7 +153,8 @@ static void setup_file_extents(struct btrfs_root *roo=
-t, u32 sectorsize)
->         offset +=3D 2 * sectorsize;
->         disk_bytenr +=3D 4 * sectorsize;
->
-> -       /* Now for a unwritten prealloc extent */
-> +       /* Start 6 * blocksize, length 1 * blocksize, preallocated. */
-> +       ASSERT(offset =3D=3D 6 * sectorsize);
-
-Same here, and every ASSERT below.
-We have the comments to guide us at which offset we are too, so one
-less reason to have the ASSERT, not to mention the tests will fail if
-they get screwed up.
-
->         insert_extent(root, offset, sectorsize, sectorsize, 0, disk_byten=
-r,
->                 sectorsize, BTRFS_FILE_EXTENT_PREALLOC, 0, slot);
->         slot++;
-> @@ -154,19 +167,28 @@ static void setup_file_extents(struct btrfs_root *r=
-oot, u32 sectorsize)
->         disk_bytenr +=3D 2 * sectorsize;
->
->         /*
-> +        * Start 7 * blocksize, length 1 * blocksize, prealloc.
-> +        *
->          * Now for a partially written prealloc extent, basically the sam=
-e as
->          * the hole punch example above.  Ram_bytes never changes when yo=
-u mark
->          * extents written btw.
->          */
-> +       ASSERT(offset =3D=3D 7 * sectorsize);
->         insert_extent(root, offset, sectorsize, 4 * sectorsize, 0, disk_b=
-ytenr,
->                       4 * sectorsize, BTRFS_FILE_EXTENT_PREALLOC, 0, slot=
-);
->         slot++;
->         offset +=3D sectorsize;
-> +
-> +       /* Start 8 * blocksize, length 1 * blocksize, regular. */
-> +       ASSERT(offset =3D=3D 8 * sectorsize);
->         insert_extent(root, offset, sectorsize, 4 * sectorsize, sectorsiz=
-e,
->                       disk_bytenr, 4 * sectorsize, BTRFS_FILE_EXTENT_REG,=
- 0,
->                       slot);
->         slot++;
->         offset +=3D sectorsize;
-> +
-> +       /* Start 9 * blocksize, length 2 * blocksize, prealloc. */
-> +       ASSERT(offset =3D=3D 9 * sectorsize);
->         insert_extent(root, offset, 2 * sectorsize, 4 * sectorsize,
->                       2 * sectorsize, disk_bytenr, 4 * sectorsize,
->                       BTRFS_FILE_EXTENT_PREALLOC, 0, slot);
-> @@ -174,7 +196,8 @@ static void setup_file_extents(struct btrfs_root *roo=
-t, u32 sectorsize)
->         offset +=3D 2 * sectorsize;
->         disk_bytenr +=3D 4 * sectorsize;
->
-> -       /* Now a normal compressed extent */
-> +       /* Start 11 * blocksize, length 2 * blocksize, regular . */
-
-Space before the punctuation.
-
-Otherwise it looks fine, thanks.
-
-> +       ASSERT(offset =3D=3D 11 * sectorsize);
->         insert_extent(root, offset, 2 * sectorsize, 2 * sectorsize, 0,
->                       disk_bytenr, sectorsize, BTRFS_FILE_EXTENT_REG,
->                       BTRFS_COMPRESS_ZLIB, slot);
-> @@ -183,17 +206,24 @@ static void setup_file_extents(struct btrfs_root *r=
-oot, u32 sectorsize)
->         /* No merges */
->         disk_bytenr +=3D 2 * sectorsize;
->
-> -       /* Now a split compressed extent */
-> +       /* Start 13 * blocksize, length 1 * blocksize, regular. */
-> +       ASSERT(offset =3D=3D 13 * sectorsize);
->         insert_extent(root, offset, sectorsize, 4 * sectorsize, 0, disk_b=
-ytenr,
->                       sectorsize, BTRFS_FILE_EXTENT_REG,
->                       BTRFS_COMPRESS_ZLIB, slot);
->         slot++;
->         offset +=3D sectorsize;
-> +
-> +       /* Start 14 * blocksize, length 1 * blocksize, regular. */
-> +       ASSERT(offset =3D=3D 14 * sectorsize);
->         insert_extent(root, offset, sectorsize, sectorsize, 0,
->                       disk_bytenr + sectorsize, sectorsize,
->                       BTRFS_FILE_EXTENT_REG, 0, slot);
->         slot++;
->         offset +=3D sectorsize;
-> +
-> +       /* Start 15 * blocksize, length 2 * blocksize, regular. */
-> +       ASSERT(offset =3D=3D 15 * sectorsize);
->         insert_extent(root, offset, 2 * sectorsize, 4 * sectorsize,
->                       2 * sectorsize, disk_bytenr, sectorsize,
->                       BTRFS_FILE_EXTENT_REG, BTRFS_COMPRESS_ZLIB, slot);
-> @@ -201,12 +231,21 @@ static void setup_file_extents(struct btrfs_root *r=
-oot, u32 sectorsize)
->         offset +=3D 2 * sectorsize;
->         disk_bytenr +=3D 2 * sectorsize;
->
-> -       /* Now extents that have a hole but no hole extent */
-> +       /* Start 17 * blocksize, length 1 * blocksize, regular. */
-> +       ASSERT(offset =3D=3D 17 * sectorsize);
->         insert_extent(root, offset, sectorsize, sectorsize, 0, disk_byten=
-r,
->                       sectorsize, BTRFS_FILE_EXTENT_REG, 0, slot);
->         slot++;
->         offset +=3D 4 * sectorsize;
->         disk_bytenr +=3D sectorsize;
-> +
+> -       /* Add [0, 1K) */
 > +       /*
-> +        * Start 18 * blocksize, length 3 * blocksize, implied hole (aka =
-no
-> +        * file extent item).
-> +        *
-> +        * Start 21 * blocksize, length 1 * blocksize, regular.
+> +        * Add [0, 1K) which is inlined. And the extent map length must
+> +        * be one block.
 > +        */
-> +       ASSERT(offset =3D=3D 21 * sectorsize);
->         insert_extent(root, offset, sectorsize, sectorsize, 0, disk_byten=
-r,
->                       sectorsize, BTRFS_FILE_EXTENT_REG, 0, slot);
->  }
-> @@ -316,28 +355,6 @@ static noinline int test_btrfs_get_extent(u32 sector=
-size, u32 nodesize)
->         offset =3D em->start + em->len;
->         btrfs_free_extent_map(em);
+>         em->start =3D 0;
+> -       em->len =3D SZ_1K;
+> +       em->len =3D SZ_4K;
+>         em->disk_bytenr =3D EXTENT_MAP_INLINE;
+>         em->disk_num_bytes =3D 0;
+>         em->ram_bytes =3D SZ_1K;
+> @@ -219,7 +222,7 @@ static int test_case_2(struct btrfs_fs_info *fs_info,=
+ struct btrfs_inode *inode)
 >
-> -       em =3D btrfs_get_extent(BTRFS_I(inode), NULL, offset, sectorsize)=
-;
-> -       if (IS_ERR(em)) {
-> -               test_err("got an error when we shouldn't have");
-> -               goto out;
-> -       }
-> -       if (em->disk_bytenr !=3D EXTENT_MAP_HOLE) {
-> -               test_err("expected a hole, got %llu", em->disk_bytenr);
-> -               goto out;
-> -       }
-> -       if (em->start !=3D offset || em->len !=3D 4) {
-> -               test_err(
-> -       "unexpected extent wanted start %llu len 4, got start %llu len %l=
-lu",
-> -                       offset, em->start, em->len);
-> -               goto out;
-> -       }
-> -       if (em->flags !=3D 0) {
-> -               test_err("unexpected flags set, want 0 have %u", em->flag=
-s);
-> -               goto out;
-> -       }
-> -       offset =3D em->start + em->len;
-> -       btrfs_free_extent_map(em);
-> -
->         /* Regular extent */
->         em =3D btrfs_get_extent(BTRFS_I(inode), NULL, offset, sectorsize)=
-;
->         if (IS_ERR(em)) {
-> @@ -348,10 +365,10 @@ static noinline int test_btrfs_get_extent(u32 secto=
-rsize, u32 nodesize)
->                 test_err("expected a real extent, got %llu", em->disk_byt=
-enr);
+>         /* Add [0, 1K) */
+>         em->start =3D 0;
+> -       em->len =3D SZ_1K;
+> +       em->len =3D SZ_4K;
+>         em->disk_bytenr =3D EXTENT_MAP_INLINE;
+>         em->disk_num_bytes =3D 0;
+>         em->ram_bytes =3D SZ_1K;
+> @@ -235,7 +238,7 @@ static int test_case_2(struct btrfs_fs_info *fs_info,=
+ struct btrfs_inode *inode)
+>                 ret =3D -ENOENT;
 >                 goto out;
 >         }
-> -       if (em->start !=3D offset || em->len !=3D sectorsize - 1) {
-> +       if (em->start !=3D offset || em->len !=3D sectorsize) {
+> -       if (em->start !=3D 0 || btrfs_extent_map_end(em) !=3D SZ_1K ||
+> +       if (em->start !=3D 0 || btrfs_extent_map_end(em) !=3D SZ_4K ||
+>             em->disk_bytenr !=3D EXTENT_MAP_INLINE) {
 >                 test_err(
-> -       "unexpected extent wanted start %llu len 4095, got start %llu len=
+>  "case2 [0 1K]: ret %d return a wrong em (start %llu len %llu disk_bytenr=
  %llu",
-> -                       offset, em->start, em->len);
-> +       "unexpected extent wanted start %llu len %u, got start %llu len %=
-llu",
-> +                       offset, sectorsize, em->start, em->len);
->                 goto out;
->         }
->         if (em->flags !=3D 0) {
+> @@ -1131,8 +1134,11 @@ int btrfs_test_extent_map(void)
+>         /*
+>          * Note: the fs_info is not set up completely, we only need
+>          * fs_info::fsid for the tracepoint.
+> +        *
+> +        * And all the immediate numbers are based on 4K blocksize,
+> +        * thus we have to use 4K as sectorsize no matter the page size.
+>          */
+> -       fs_info =3D btrfs_alloc_dummy_fs_info(PAGE_SIZE, PAGE_SIZE);
+> +       fs_info =3D btrfs_alloc_dummy_fs_info(SZ_4K, SZ_4K);
+>         if (!fs_info) {
+>                 test_std_err(TEST_ALLOC_FS_INFO);
+>                 return -ENOMEM;
 > --
 > 2.52.0
 >
