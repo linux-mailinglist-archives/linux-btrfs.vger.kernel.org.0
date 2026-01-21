@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-20824-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20825-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id YCFGLkm3cGndZAAAu9opvQ
-	(envelope-from <linux-btrfs+bounces-20824-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 12:23:53 +0100
+	id 6IVfMu+2cGndZAAAu9opvQ
+	(envelope-from <linux-btrfs+bounces-20825-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 12:22:23 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
 Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CF2D55F1C
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 12:23:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 694CA55EC6
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 12:22:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 800516883E4
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 11:16:43 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 3B05F6886AF
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 11:16:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7D4C477E31;
-	Wed, 21 Jan 2026 11:14:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B89348123D;
+	Wed, 21 Jan 2026 11:14:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V7DHPRdY"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G1ka718S"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E53D1481224
-	for <linux-btrfs@vger.kernel.org>; Wed, 21 Jan 2026 11:14:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8219D478E4A
+	for <linux-btrfs@vger.kernel.org>; Wed, 21 Jan 2026 11:14:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768994050; cv=none; b=eAMbMDE51zkEV0vhrJjtwAlsgHUc3QtFYkWQnVhk+yh+ugrkRfdxBfG0AYwvg3mXD4KjPl58A/pQb/fPSO/X3ojyLWXRuPCK1KciDNSywB3SPFHDmTkR/8APP4wVXPhpQJyThAmDjIfIzG4fenvF7lCQHJOBhe+cdRX3AjTMdIw=
+	t=1768994050; cv=none; b=ADdR44uUziHP/J6LsIMWhvrcVJqKA3q3SKawrojmT4ZgRzY24uAHyjbiTNtXX+TkS511XIleou4AlIz/xHGEa0wl4a4AScwS/j7VmaxniIj0kkl99W0IAoIfHquCdLpM9OAZcFlPHiPEC5TMN9b6CSk76VF+TmMCUtBZ/uyEsvQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1768994050; c=relaxed/simple;
-	bh=RvwV6Za786E1ozrQb+JPPJvA0E7DivWDEDVY1xGUA1g=;
+	bh=/2XI71i5MY7w1+/nv3NFX7/Htn87znLbmabywJC8h5o=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=st1w3a4zYiaETIW7ZOMK4FzHz94b5L/HDQHG58uYLVIfWrmXw36taqqSt0nUkBPJdbG8dybOWUYWKXEBiYvKvbdGZbSLUVHqwrTgsWf6NQY57CSKdw9g3/tM1kwxkP60/hGXRu8kDkWp0hq76GmgsAUZ06Y1A5vIamejk6GrcXs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V7DHPRdY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F17DCC19424
-	for <linux-btrfs@vger.kernel.org>; Wed, 21 Jan 2026 11:14:08 +0000 (UTC)
+	 MIME-Version; b=HXc6qq59Z4XeEYvqEoVETnGFzzOuqacrj9IqveujMWkT6ABUYg3nel43CJAKmboDnTR+DWTVA9kzrcZM4VtAdpkl1Xu8AY/i8veCPz9KyXlxPPIG9rI7G4s15fB7oM/yCQvJZ7+tp8oCa2jGmgop9cyW+nrNhJegEO3+6EAK8YQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G1ka718S; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF757C116D0
+	for <linux-btrfs@vger.kernel.org>; Wed, 21 Jan 2026 11:14:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768994049;
-	bh=RvwV6Za786E1ozrQb+JPPJvA0E7DivWDEDVY1xGUA1g=;
+	s=k20201202; t=1768994050;
+	bh=/2XI71i5MY7w1+/nv3NFX7/Htn87znLbmabywJC8h5o=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=V7DHPRdYVtfQnQ1MTDb6zOxdUByHuieTufsDQVvt4Qm/oS6El1b+Gr/aQUE2Z9KPK
-	 oxB44D4mRNrigjVpZCYD/M+lORmCplS+EWvqSkBLLxFuxESZ7QmoXeZNnF9aa/XeRM
-	 3cXks/xz3JGHbOsZKG0jj0R+0p9BjkLGPmfJ3gunjbmeMaxts+wfSXLEnMo3s8tWlC
-	 23iWZoH3H94MfdkCmzLrbI0wFbkQFAzcc4OYnG3isHDn8NRwAMKwJ4XKhA7cKqpVup
-	 kRWzck39JXVG+iXWVNRrCtbpxg9JvwZIyMyHKZB1CzFrmSvazR8JilD1h9WFjOllWs
-	 t1ZgpE6R/acpQ==
+	b=G1ka718Snnrunhj5Gi6iDSeAupp1w2a1xoUBpDQcfVW/M/4MVUsm829MMloW/YhkQ
+	 pM/GoJZ6VdIWa4m1KkqKASYgU86MMsmG87Dh9ZGc9O5mJwnRemZMtGQX5Vft3ntOcH
+	 /dc27XsxcSkjA8PG13CW8JmFFuN1hauJx+unyuMCZvHTwBIFMbvhN3ln62PFYM4PUG
+	 Jc9QeTkhJITOFevTNniZdB1WklFUP3mzH7PAqu26Dh1OYIEzLBGRokwWtaTTF9KRoD
+	 K9iKGGsQZYLVkjLf81gBjZLaB5E7sn3y5eFPdHPwn3zQm6EwZtJFHyDf7WzEvlkh24
+	 fJHpYs0Ky7bnA==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 14/19] btrfs: remove out label in lzo_decompress()
-Date: Wed, 21 Jan 2026 11:13:48 +0000
-Message-ID: <6a11cbe85585c51f7c133914e35fa37e2816834e.1768993725.git.fdmanana@suse.com>
+Subject: [PATCH 15/19] btrfs: remove out label in scrub_find_fill_first_stripe()
+Date: Wed, 21 Jan 2026 11:13:49 +0000
+Message-ID: <796454a8e46fc0ab08932e40ebb9fbf54195258a.1768993725.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <cover.1768993725.git.fdmanana@suse.com>
 References: <cover.1768993725.git.fdmanana@suse.com>
@@ -72,7 +72,7 @@ X-Spamd-Result: default: False [-1.46 / 15.00];
 	DMARC_POLICY_ALLOW(0.00)[kernel.org,quarantine];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-20824-lists,linux-btrfs=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-20825-lists,linux-btrfs=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	RCPT_COUNT_ONE(0.00)[1];
@@ -87,7 +87,7 @@ X-Spamd-Result: default: False [-1.46 / 15.00];
 	TO_DN_NONE(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[ams.mirrors.kernel.org:rdns,ams.mirrors.kernel.org:helo,suse.com:email,suse.com:mid]
-X-Rspamd-Queue-Id: 7CF2D55F1C
+X-Rspamd-Queue-Id: 694CA55EC6
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
@@ -99,56 +99,49 @@ and remove the label.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/lzo.c | 15 ++++++---------
- 1 file changed, 6 insertions(+), 9 deletions(-)
+ fs/btrfs/scrub.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/fs/btrfs/lzo.c b/fs/btrfs/lzo.c
-index 83c106ca1c14..2c6deed55811 100644
---- a/fs/btrfs/lzo.c
-+++ b/fs/btrfs/lzo.c
-@@ -486,7 +486,7 @@ int lzo_decompress(struct list_head *ws, const u8 *data_in,
- 	size_t in_len;
- 	size_t out_len;
- 	size_t max_segment_len = workspace_buf_length(fs_info);
--	int ret = 0;
-+	int ret;
- 
- 	if (unlikely(srclen < LZO_LEN || srclen > max_segment_len + LZO_LEN * 2))
- 		return -EUCLEAN;
-@@ -497,10 +497,8 @@ int lzo_decompress(struct list_head *ws, const u8 *data_in,
- 	data_in += LZO_LEN;
- 
- 	in_len = read_compress_length(data_in);
--	if (unlikely(in_len != srclen - LZO_LEN * 2)) {
--		ret = -EUCLEAN;
+diff --git a/fs/btrfs/scrub.c b/fs/btrfs/scrub.c
+index 0bd4aebe1687..2a64e2d50ced 100644
+--- a/fs/btrfs/scrub.c
++++ b/fs/btrfs/scrub.c
+@@ -1696,7 +1696,7 @@ static int scrub_find_fill_first_stripe(struct btrfs_block_group *bg,
+ 				     logical_len);
+ 	/* Either error or not found. */
+ 	if (ret)
 -		goto out;
--	}
-+	if (unlikely(in_len != srclen - LZO_LEN * 2))
-+		return -EUCLEAN;
- 	data_in += LZO_LEN;
++		return ret;
+ 	get_extent_info(extent_path, &extent_start, &extent_len, &extent_flags,
+ 			&extent_gen);
+ 	if (extent_flags & BTRFS_EXTENT_FLAG_TREE_BLOCK)
+@@ -1729,7 +1729,7 @@ static int scrub_find_fill_first_stripe(struct btrfs_block_group *bg,
+ 		ret = find_first_extent_item(extent_root, extent_path, cur_logical,
+ 					     stripe_end - cur_logical + 1);
+ 		if (ret < 0)
+-			goto out;
++			return ret;
+ 		if (ret > 0) {
+ 			ret = 0;
+ 			break;
+@@ -1763,7 +1763,7 @@ static int scrub_find_fill_first_stripe(struct btrfs_block_group *bg,
+ 						stripe->logical, stripe_end,
+ 						stripe->csums, &csum_bitmap);
+ 		if (ret < 0)
+-			goto out;
++			return ret;
+ 		if (ret > 0)
+ 			ret = 0;
  
- 	out_len = sectorsize;
-@@ -512,8 +510,7 @@ int lzo_decompress(struct list_head *ws, const u8 *data_in,
- 		"lzo decompression failed, error %d root %llu inode %llu offset %llu",
- 			  ret, btrfs_root_id(inode->root), btrfs_ino(inode),
- 			  folio_pos(dest_folio));
--		ret = -EIO;
--		goto out;
-+		return -EIO;
+@@ -1773,7 +1773,7 @@ static int scrub_find_fill_first_stripe(struct btrfs_block_group *bg,
+ 		}
  	}
- 
- 	ASSERT(out_len <= sectorsize);
-@@ -523,8 +520,8 @@ int lzo_decompress(struct list_head *ws, const u8 *data_in,
- 		ret = -EIO;
- 		folio_zero_range(dest_folio, dest_pgoff + out_len, destlen - out_len);
- 	}
+ 	set_bit(SCRUB_STRIPE_FLAG_INITIALIZED, &stripe->state);
 -out:
--	return ret;
 +
-+	return 0;
+ 	return ret;
  }
  
- const struct btrfs_compress_levels  btrfs_lzo_compress = {
 -- 
 2.47.2
 
