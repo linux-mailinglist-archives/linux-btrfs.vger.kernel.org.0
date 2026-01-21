@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-20842-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20843-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id +PQGKiYOcWlEcgAAu9opvQ
-	(envelope-from <linux-btrfs+bounces-20842-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 18:34:30 +0100
+	id KNUdEvUMcWmPcQAAu9opvQ
+	(envelope-from <linux-btrfs+bounces-20843-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 18:29:25 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50C765A9A6
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 18:34:30 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8CE45A8A6
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 18:29:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 2DEE04ED143
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 16:41:09 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 1D7EA82F9D1
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 16:41:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D592C40FDAE;
-	Wed, 21 Jan 2026 16:30:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8A6D495521;
+	Wed, 21 Jan 2026 16:30:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JdhWVZFp"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UBiZFi54"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D19F48A2D2
-	for <linux-btrfs@vger.kernel.org>; Wed, 21 Jan 2026 16:30:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18C2A3EF0D6
+	for <linux-btrfs@vger.kernel.org>; Wed, 21 Jan 2026 16:30:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769013052; cv=none; b=qiJsSxBllwdDEb7x/FukFjbHB/vfoA9cP1Tadde6OSuAzEoEeCmGGY+IfT1D8mg526/K1MK/BRtaVbeLXSPW117DB6Wtm3Bhg+DHuisFbagRxrcflE/0OyZAqVrkHOhzhWKEPZMWmcrfiDJwKX4zwuEL++w0KMXTqp7Ps6eBQo4=
+	t=1769013053; cv=none; b=vAbiTr29vHlG7GUpOySJhEQbyf0FzcyeJji6y8lug2dhVFsH7OGw2Ghx3kqi+uWHwjarhnHjo1iTYqbA1ie9PZpBxUxSeoTMQyi4I2GTeaixK7OrBc1WV7UVy926PtR4hfcqXKCoDBwjv4LZkelcFoivtc4CbfRc4Cv6QZlcwg8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769013052; c=relaxed/simple;
-	bh=Tk8fDjQp2qQEyrBiwVHQzTMtPc1ZNT3NOhgmxHRyRTM=;
+	s=arc-20240116; t=1769013053; c=relaxed/simple;
+	bh=t1R4imCWtWPWVUIA1c7hMOEoa2mJNnKuCNmacLSn6Eo=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=h5K+Uu6qZas1vxTeVejEIccUETubyeJ7yQQNwQGEbvNb+uMyJalMLtCzYdvSfVWJwyhzUfypf83gPQ/Fh1FryEAHirqygXPy9vXqO5PL6yK5FwANIjfYYV7Htuj4+T2axKdMkI2NL+B60jkzWTX+vwia84mrfF1K1FtbOU/e624=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JdhWVZFp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4864BC4CEF1
-	for <linux-btrfs@vger.kernel.org>; Wed, 21 Jan 2026 16:30:51 +0000 (UTC)
+	 MIME-Version; b=q22/OlrZ8mUp7vYDFzH/084rPU1N4wYQ3PUydqt/y3s5BHtKtYi5c8RxXYHMigZKN1FTsl5yD4m7RNXApMf8Yud1BQYO21IAVta0Sxh/Hmym4GeCA2ssFrJBz4wNyPyxewVU2B9ACcHmIa8KPWWYAkfKf66kCk6Hx5Adh2K8ENQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UBiZFi54; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28BA8C19421
+	for <linux-btrfs@vger.kernel.org>; Wed, 21 Jan 2026 16:30:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1769013051;
-	bh=Tk8fDjQp2qQEyrBiwVHQzTMtPc1ZNT3NOhgmxHRyRTM=;
+	s=k20201202; t=1769013052;
+	bh=t1R4imCWtWPWVUIA1c7hMOEoa2mJNnKuCNmacLSn6Eo=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=JdhWVZFpIsRWgJ5Te8Bffnam4B6C8ybMqRZX6Uyf7OYnOXX+qEsagQwNmTQ2ZuLTu
-	 Tpfg9zFdubvP6BUUKrcA192nRB9Ixsx8Yvmm4/OeUotxfj1t9/+48NA6v7PJXDFH8G
-	 UBrC7JS4eRNdESmRvxskR70e4gqrU/oCCZhP0TbuwULTyrN6PGhQ3MMXtrd/ZBjrGB
-	 i+bg4VDKf5bwyLa71Jtb/y9CA3cLxO6L6YfA+PK0PgKQRZe5D2DEsiGDXzOQMvxvc3
-	 AfUVjyn8ltwx4De3gkMx9N1ct9Lov6eNFsT6KrZf3H/TJcPCVGvOmrPMgfdgA3G7/5
-	 c95xaho7eBI6A==
+	b=UBiZFi54K/51qmQt+Vq8cLi6cHwXEpowaX3sEv9+VexhM76sxFwGIHsu78+iJ8Bpk
+	 h894p71yVYgASwaAguqFfW3x5lbV/BUp3e1KniGXwCAgpUs/lFZFd0wpdYA2LkSiJ6
+	 mE29FvI1soiRq6yzG1xzONsqTXdN4UN6h5/HFn+AAHxpoSoBomYIioS46thsFU9eIY
+	 IL+lZdJW3nY2uGn+76xwkwH5hGMy7Vto/v+G5TXn4TjeuzvhqxgObesLG3z16GJWEN
+	 mGpqqNCzcuBh9RcyKqtgRNbwrQ7Rrp+A8nePdypnwSAFUqOCiUA4ACRjFKCtDwJ5PU
+	 VyZADnZmliFsw==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 03/19] btrfs: remove pointless out labels from send.c
-Date: Wed, 21 Jan 2026 16:30:29 +0000
-Message-ID: <e389041b1fee8dcbad5aef03c6da877cfecb093f.1769012877.git.fdmanana@suse.com>
+Subject: [PATCH v2 04/19] btrfs: remove pointless out labels from qgroup.c
+Date: Wed, 21 Jan 2026 16:30:30 +0000
+Message-ID: <dbc3101d81e185daff432bd8c7f0b3e7f05cd6d2.1769012877.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <cover.1769012876.git.fdmanana@suse.com>
 References: <cover.1769012876.git.fdmanana@suse.com>
@@ -72,13 +72,13 @@ X-Spamd-Result: default: False [-1.46 / 15.00];
 	DMARC_POLICY_ALLOW(0.00)[kernel.org,quarantine];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-20842-lists,linux-btrfs=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-20843-lists,linux-btrfs=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	RCPT_COUNT_ONE(0.00)[1];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FROM_NO_DN(0.00)[];
-	ASN(0.00)[asn:7979, ipnet:2a01:60a::/32, country:US];
+	ASN(0.00)[asn:7979, ipnet:2605:f480::/32, country:US];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[fdmanana@kernel.org,linux-btrfs@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
@@ -86,243 +86,88 @@ X-Spamd-Result: default: False [-1.46 / 15.00];
 	TAGGED_RCPT(0.00)[linux-btrfs];
 	TO_DN_NONE(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[ams.mirrors.kernel.org:rdns,ams.mirrors.kernel.org:helo,suse.com:email,suse.com:mid]
-X-Rspamd-Queue-Id: 50C765A9A6
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid,dfw.mirrors.kernel.org:rdns,dfw.mirrors.kernel.org:helo]
+X-Rspamd-Queue-Id: D8CE45A8A6
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
 From: Filipe Manana <fdmanana@suse.com>
 
-Some functions (process_extent(), process_recorded_refs_if_needed(),
-changed_inode(), compare_refs() and changed_cb()) have an 'out' label that
-does nothing but return, making it pointless. Simplify this by removing
-the label and returning instead of gotos plus setting the 'ret' variable.
+Some functions (__del_qgroup_relation() and
+qgroup_trace_new_subtree_blocks()) have an 'out' label that does nothing
+but return, making it pointless. Simplify this by removing the label and
+returning instead of gotos plus setting the 'ret' variable.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/send.c | 76 +++++++++++++++++++++----------------------------
- 1 file changed, 33 insertions(+), 43 deletions(-)
+ fs/btrfs/qgroup.c | 26 ++++++++++----------------
+ 1 file changed, 10 insertions(+), 16 deletions(-)
 
-diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index d8127a7120c2..3dcfdba018b5 100644
---- a/fs/btrfs/send.c
-+++ b/fs/btrfs/send.c
-@@ -6449,11 +6449,9 @@ static int process_extent(struct send_ctx *sctx,
- 	if (sctx->parent_root && !sctx->cur_inode_new) {
- 		ret = is_extent_unchanged(sctx, path, key);
- 		if (ret < 0)
+diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
+index c03bb96d3a34..f53c313ab6e4 100644
+--- a/fs/btrfs/qgroup.c
++++ b/fs/btrfs/qgroup.c
+@@ -1613,10 +1613,8 @@ static int __del_qgroup_relation(struct btrfs_trans_handle *trans, u64 src,
+ 	int ret = 0;
+ 	int ret2;
+ 
+-	if (!fs_info->quota_root) {
+-		ret = -ENOTCONN;
+-		goto out;
+-	}
++	if (!fs_info->quota_root)
++		return -ENOTCONN;
+ 
+ 	member = find_qgroup_rb(fs_info, src);
+ 	parent = find_qgroup_rb(fs_info, dst);
+@@ -1638,12 +1636,10 @@ static int __del_qgroup_relation(struct btrfs_trans_handle *trans, u64 src,
+ delete_item:
+ 	ret = del_qgroup_relation_item(trans, src, dst);
+ 	if (ret < 0 && ret != -ENOENT)
+-		goto out;
++		return ret;
+ 	ret2 = del_qgroup_relation_item(trans, dst, src);
+-	if (ret2 < 0 && ret2 != -ENOENT) {
+-		ret = ret2;
+-		goto out;
+-	}
++	if (ret2 < 0 && ret2 != -ENOENT)
++		return ret2;
+ 
+ 	/* At least one deletion succeeded, return 0 */
+ 	if (!ret || !ret2)
+@@ -1657,7 +1653,7 @@ static int __del_qgroup_relation(struct btrfs_trans_handle *trans, u64 src,
+ 		squota_check_parent_usage(fs_info, parent);
+ 		spin_unlock(&fs_info->qgroup_lock);
+ 	}
+-out:
++
+ 	return ret;
+ }
+ 
+@@ -2490,13 +2486,11 @@ static int qgroup_trace_new_subtree_blocks(struct btrfs_trans_handle* trans,
+ 
+ 		/* This node is old, no need to trace */
+ 		if (child_gen < last_snapshot)
 -			goto out;
--		if (ret) {
--			ret = 0;
 +			return ret;
-+		if (ret)
- 			goto out_hole;
+ 
+ 		eb = btrfs_read_node_slot(eb, parent_slot);
+-		if (IS_ERR(eb)) {
+-			ret = PTR_ERR(eb);
+-			goto out;
 -		}
- 	} else {
- 		struct btrfs_file_extent_item *ei;
- 		u8 type;
-@@ -6469,31 +6467,25 @@ static int process_extent(struct send_ctx *sctx,
- 			 * we have enough commands queued up to justify rev'ing
- 			 * the send spec.
- 			 */
--			if (type == BTRFS_FILE_EXTENT_PREALLOC) {
--				ret = 0;
--				goto out;
--			}
-+			if (type == BTRFS_FILE_EXTENT_PREALLOC)
-+				return 0;
++		if (IS_ERR(eb))
++			return PTR_ERR(eb);
  
- 			/* Have a hole, just skip it. */
--			if (btrfs_file_extent_disk_bytenr(path->nodes[0], ei) == 0) {
--				ret = 0;
--				goto out;
--			}
-+			if (btrfs_file_extent_disk_bytenr(path->nodes[0], ei) == 0)
-+				return 0;
- 		}
+ 		dst_path->nodes[cur_level] = eb;
+ 		dst_path->slots[cur_level] = 0;
+@@ -2541,7 +2535,7 @@ static int qgroup_trace_new_subtree_blocks(struct btrfs_trans_handle* trans,
+ 		dst_path->slots[cur_level] = 0;
+ 		dst_path->locks[cur_level] = 0;
  	}
- 
- 	ret = find_extent_clone(sctx, path, key->objectid, key->offset,
- 			sctx->cur_inode_size, &found_clone);
- 	if (ret != -ENOENT && ret < 0)
--		goto out;
-+		return ret;
- 
- 	ret = send_write_or_clone(sctx, path, key, found_clone);
- 	if (ret)
--		goto out;
-+		return ret;
- out_hole:
--	ret = maybe_send_hole(sctx, path, key);
 -out:
--	return ret;
-+	return maybe_send_hole(sctx, path, key);
- }
- 
- static int process_all_extents(struct send_ctx *sctx)
-@@ -6535,23 +6527,24 @@ static int process_recorded_refs_if_needed(struct send_ctx *sctx, bool at_end,
- 					   int *pending_move,
- 					   int *refs_processed)
- {
--	int ret = 0;
-+	int ret;
- 
- 	if (sctx->cur_ino == 0)
--		goto out;
-+		return 0;
 +
- 	if (!at_end && sctx->cur_ino == sctx->cmp_key->objectid &&
- 	    sctx->cmp_key->type <= BTRFS_INODE_EXTREF_KEY)
--		goto out;
-+		return 0;
-+
- 	if (list_empty(&sctx->new_refs) && list_empty(&sctx->deleted_refs))
--		goto out;
-+		return 0;
- 
- 	ret = process_recorded_refs(sctx, pending_move);
- 	if (ret < 0)
--		goto out;
-+		return ret;
- 
- 	*refs_processed = 1;
--out:
--	return ret;
-+	return 0;
- }
- 
- static int finish_inode_if_needed(struct send_ctx *sctx, bool at_end)
-@@ -6768,7 +6761,7 @@ static void close_current_inode(struct send_ctx *sctx)
- static int changed_inode(struct send_ctx *sctx,
- 			 enum btrfs_compare_tree_result result)
- {
--	int ret = 0;
-+	int ret;
- 	struct btrfs_key *key = sctx->cmp_key;
- 	struct btrfs_inode_item *left_ii = NULL;
- 	struct btrfs_inode_item *right_ii = NULL;
-@@ -6860,7 +6853,7 @@ static int changed_inode(struct send_ctx *sctx,
- 	if (result == BTRFS_COMPARE_TREE_NEW) {
- 		if (btrfs_inode_nlink(sctx->left_path->nodes[0], left_ii) == 0) {
- 			sctx->ignore_cur_inode = true;
--			goto out;
-+			return 0;
- 		}
- 		sctx->cur_inode_gen = left_gen;
- 		sctx->cur_inode_new = true;
-@@ -6888,7 +6881,7 @@ static int changed_inode(struct send_ctx *sctx,
- 		old_nlinks = btrfs_inode_nlink(sctx->right_path->nodes[0], right_ii);
- 		if (new_nlinks == 0 && old_nlinks == 0) {
- 			sctx->ignore_cur_inode = true;
--			goto out;
-+			return 0;
- 		} else if (new_nlinks == 0 || old_nlinks == 0) {
- 			sctx->cur_inode_new_gen = 1;
- 		}
-@@ -6914,7 +6907,7 @@ static int changed_inode(struct send_ctx *sctx,
- 				ret = process_all_refs(sctx,
- 						BTRFS_COMPARE_TREE_DELETED);
- 				if (ret < 0)
--					goto out;
-+					return ret;
- 			}
- 
- 			/*
-@@ -6935,11 +6928,11 @@ static int changed_inode(struct send_ctx *sctx,
- 						left_ii);
- 				ret = send_create_inode_if_needed(sctx);
- 				if (ret < 0)
--					goto out;
-+					return ret;
- 
- 				ret = process_all_refs(sctx, BTRFS_COMPARE_TREE_NEW);
- 				if (ret < 0)
--					goto out;
-+					return ret;
- 				/*
- 				 * Advance send_progress now as we did not get
- 				 * into process_recorded_refs_if_needed in the
-@@ -6953,10 +6946,10 @@ static int changed_inode(struct send_ctx *sctx,
- 				 */
- 				ret = process_all_extents(sctx);
- 				if (ret < 0)
--					goto out;
-+					return ret;
- 				ret = process_all_new_xattrs(sctx);
- 				if (ret < 0)
--					goto out;
-+					return ret;
- 			}
- 		} else {
- 			sctx->cur_inode_gen = left_gen;
-@@ -6970,8 +6963,7 @@ static int changed_inode(struct send_ctx *sctx,
- 		}
- 	}
- 
--out:
--	return ret;
-+	return 0;
- }
- 
- /*
-@@ -7104,20 +7096,20 @@ static int compare_refs(struct send_ctx *sctx, struct btrfs_path *path,
- 	u32 item_size;
- 	u32 cur_offset = 0;
- 	int ref_name_len;
--	int ret = 0;
- 
- 	/* Easy case, just check this one dirid */
- 	if (key->type == BTRFS_INODE_REF_KEY) {
- 		dirid = key->offset;
- 
--		ret = dir_changed(sctx, dirid);
--		goto out;
-+		return dir_changed(sctx, dirid);
- 	}
- 
- 	leaf = path->nodes[0];
- 	item_size = btrfs_item_size(leaf, path->slots[0]);
- 	ptr = btrfs_item_ptr_offset(leaf, path->slots[0]);
- 	while (cur_offset < item_size) {
-+		int ret;
-+
- 		extref = (struct btrfs_inode_extref *)(ptr +
- 						       cur_offset);
- 		dirid = btrfs_inode_extref_parent(leaf, extref);
-@@ -7127,11 +7119,10 @@ static int compare_refs(struct send_ctx *sctx, struct btrfs_path *path,
- 			continue;
- 		ret = dir_changed(sctx, dirid);
- 		if (ret)
--			break;
-+			return ret;
- 		last_dirid = dirid;
- 	}
--out:
--	return ret;
-+	return 0;
- }
- 
- /*
-@@ -7212,12 +7203,12 @@ static int changed_cb(struct btrfs_path *left_path,
- 
- 	ret = finish_inode_if_needed(sctx, 0);
- 	if (ret < 0)
--		goto out;
-+		return ret;
- 
- 	/* Ignore non-FS objects */
- 	if (key->objectid == BTRFS_FREE_INO_OBJECTID ||
- 	    key->objectid == BTRFS_FREE_SPACE_OBJECTID)
--		goto out;
-+		return 0;
- 
- 	if (key->type == BTRFS_INODE_ITEM_KEY) {
- 		ret = changed_inode(sctx, result);
-@@ -7234,7 +7225,6 @@ static int changed_cb(struct btrfs_path *left_path,
- 			ret = changed_verity(sctx, result);
- 	}
- 
--out:
  	return ret;
  }
  
