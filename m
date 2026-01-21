@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-20812-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20814-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 0Hm8HLK2cGndZAAAu9opvQ
-	(envelope-from <linux-btrfs+bounces-20812-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 12:21:22 +0100
+	id GPIqB2y7cGmWZQAAu9opvQ
+	(envelope-from <linux-btrfs+bounces-20814-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 12:41:32 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C42855EAF
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 12:21:22 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EE7B56274
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 12:41:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id DD37C6861C7
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 11:15:30 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 453C99401F2
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 11:15:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C6033E9F72;
-	Wed, 21 Jan 2026 11:14:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13409480321;
+	Wed, 21 Jan 2026 11:14:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="D4iV9igi"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Qst8dNM+"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D98D4418F2
-	for <linux-btrfs@vger.kernel.org>; Wed, 21 Jan 2026 11:13:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5625D4657FC
+	for <linux-btrfs@vger.kernel.org>; Wed, 21 Jan 2026 11:14:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768994039; cv=none; b=WMXRtfSumTXOvr0e56bn3dAJK9cHA+XSTqQyed1oPoHdndO3eIxJPp8yht2dmh57tSWgpHi2mH15ksZ3pi/JO/P3yDkLB/CAcIZDI4Rwc1BhLZlSQAQFB6QBZq7YADbnaMv7JuvULnagm7Y6LOePykZjxwVKcsgr28MPG85uTLs=
+	t=1768994041; cv=none; b=CT168PYm8bZYwn0AnDaGTjbTsy15QDe0hbBWg3yLcLUq4R8H/yoTDfywJ6PLMfTGFkOgutduXLPH/s6Hdt9PNwN1OeBrt8zNYg5TXEqTMI5vNn90X3g5UIWcgqxh3OFGTu4pfktnB2J7QgUIMR6Uiv+cbafcUgJWoPPkyFYi4Mw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768994039; c=relaxed/simple;
-	bh=9JTeTSJtdzIJ47imf5sRR02hc8SDhqRN8pHfgVpkjiE=;
+	s=arc-20240116; t=1768994041; c=relaxed/simple;
+	bh=AsmOV4maTG+jWOsDDkDbnBzjH7GwC397xYIf8vPLQ8M=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=b/Lz5KL0IfINZ/VbEesBPPo9noksKLaChWb94/U4cHiXPv4aeuNYycigt0YBpnm/5KQ6s2VbzVV1t4WSlKTpRre+m5UJFV7LVDXaMVykWilMWJiIjHnfTG+5enaIUacEGqJwUKrg+9dDzbhDyZ3I4P5yJ2v5KvzsVX/ocBj8DaA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=D4iV9igi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9CE7BC19424
-	for <linux-btrfs@vger.kernel.org>; Wed, 21 Jan 2026 11:13:58 +0000 (UTC)
+	 MIME-Version; b=Ab75pwlu8TbU+jy99W5xiuv8B5ZyIBxsqsz90FGGldkNbBSAXZeaW64BDg023dsZ3SAoFEg0eT3HJiCb+6cfyxstbvMfmHB8JuH8Gl9TOOZwQX9KgQYfq16UJXKvLCeRQ+BHf/VTioPOROKrwOcCdaLGBH9fpBN4bOf7q0suBNg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Qst8dNM+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B3DEC19422
+	for <linux-btrfs@vger.kernel.org>; Wed, 21 Jan 2026 11:13:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1768994039;
-	bh=9JTeTSJtdzIJ47imf5sRR02hc8SDhqRN8pHfgVpkjiE=;
+	bh=AsmOV4maTG+jWOsDDkDbnBzjH7GwC397xYIf8vPLQ8M=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=D4iV9igi3OvQXF5VzZLQ+fn2XkE5exMSAfxU4Cztcjrx3wRbK8BhLsKA3DbwTlAuC
-	 CPxYY0nbFtOpB3tsUscNgCwP+p5xkW9+FUoEt5ULd4nEMsd3e9WbvLh3NKRE8kPU/e
-	 W8G+IQ+k9IRhkULhirhQ8mcNwsBm/hEvXGTetiBoIINC7cetKX0UTWiPIO6nZUjmzP
-	 HCIWOg9v/g6LDrlKfhXIGnWW7ftZZ39GMkHCyXgT5Bz2rjNzt7uvKIJrUDA2ubGFqY
-	 /84753RhEeUl+UziGX0zLkIpJKbbA6YgL2ym8cDzQG9F9tZMqcOI3Cs3RwMh7cmTaA
-	 VYvzPMRrDCiLg==
+	b=Qst8dNM+4NQdw/2FLlpnCR7j8tEusBPaMwArIKGbNHRUDlpIMuoOhUSQSWWa3o64H
+	 kCisgPtPo0LUj5xWIJHdeLol8mWiroWNpGAI9hTMGAG619MpljJDKc9R8U2wTkHli1
+	 EdgBSB+OPc/ZwXb85FZgeWKRnjjZDpwK3IOuptqqT2j7pecUNjVDcVCpnUwzIxGyfx
+	 ZeFTy0UyKGA/5Pe8MIg0iDoRDzmvvKH81Wn4E+VKq2u3J9Wp6t5M6C0+mCASiAKale
+	 sv4t8J/iWs0Xbjfaj1Blk9I+0NKvl5LtTP5GuYxK34kEIdIVJKm4tYr55bt1gQ+xrL
+	 bas93mJ10yDdw==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 02/19] btrfs: remove pointless out labels from ioctl.c
-Date: Wed, 21 Jan 2026 11:13:36 +0000
-Message-ID: <7853a4dc504d052dc921343eab8a8ea747e61256.1768993725.git.fdmanana@suse.com>
+Subject: [PATCH 03/19] btrfs: remove pointless out labels from send.c
+Date: Wed, 21 Jan 2026 11:13:37 +0000
+Message-ID: <9684a687dd031bdc506fd15472be9356369a163c.1768993725.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <cover.1768993725.git.fdmanana@suse.com>
 References: <cover.1768993725.git.fdmanana@suse.com>
@@ -72,13 +72,13 @@ X-Spamd-Result: default: False [-1.46 / 15.00];
 	DMARC_POLICY_ALLOW(0.00)[kernel.org,quarantine];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-20812-lists,linux-btrfs=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-20814-lists,linux-btrfs=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	RCPT_COUNT_ONE(0.00)[1];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FROM_NO_DN(0.00)[];
-	ASN(0.00)[asn:7979, ipnet:2a01:60a::/32, country:US];
+	ASN(0.00)[asn:7979, ipnet:142.0.200.0/24, country:US];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[fdmanana@kernel.org,linux-btrfs@vger.kernel.org];
 	FORGED_SENDER_MAILLIST(0.00)[];
@@ -86,138 +86,235 @@ X-Spamd-Result: default: False [-1.46 / 15.00];
 	TAGGED_RCPT(0.00)[linux-btrfs];
 	TO_DN_NONE(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[ams.mirrors.kernel.org:rdns,ams.mirrors.kernel.org:helo,suse.com:email,suse.com:mid]
-X-Rspamd-Queue-Id: 1C42855EAF
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid,dfw.mirrors.kernel.org:rdns,dfw.mirrors.kernel.org:helo]
+X-Rspamd-Queue-Id: 9EE7B56274
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
 From: Filipe Manana <fdmanana@suse.com>
 
-Some functions (__btrfs_ioctl_snap_create(), btrfs_ioctl_subvol_setflags()
-and copy_to_sk()) have an 'out' label that does nothing but return, making
-it pointless. Simplify this by removing the label and returning instead of
-gotos plus setting up the 'ret' variable.
+Some functions (process_extent(), process_recorded_refs_if_needed(),
+changed_inode(), compare_refs() and changed_cb()) have an 'out' label that
+does nothing but return, making it pointless. Simplify this by removing
+the label and returning instead of gotos plus setting the 'ret' variable.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/ioctl.c | 40 +++++++++++++++-------------------------
- 1 file changed, 15 insertions(+), 25 deletions(-)
+ fs/btrfs/send.c | 67 +++++++++++++++++++++----------------------------
+ 1 file changed, 29 insertions(+), 38 deletions(-)
 
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index d9e7dd317670..6fea06685a51 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -1184,7 +1184,7 @@ static noinline int __btrfs_ioctl_snap_create(struct file *file,
- 
- 	ret = mnt_want_write_file(file);
- 	if (ret)
--		goto out;
-+		return ret;
- 
- 	if (strchr(name, '/')) {
- 		ret = -EINVAL;
-@@ -1236,7 +1236,6 @@ static noinline int __btrfs_ioctl_snap_create(struct file *file,
- 	}
- out_drop_write:
- 	mnt_drop_write_file(file);
--out:
- 	return ret;
- }
- 
-@@ -1359,7 +1358,7 @@ static noinline int btrfs_ioctl_subvol_setflags(struct file *file,
- 
- 	ret = mnt_want_write_file(file);
- 	if (ret)
--		goto out;
-+		return ret;
- 
- 	if (btrfs_ino(BTRFS_I(inode)) != BTRFS_FIRST_FREE_OBJECTID) {
- 		ret = -EINVAL;
-@@ -1428,7 +1427,6 @@ static noinline int btrfs_ioctl_subvol_setflags(struct file *file,
- 	up_write(&fs_info->subvol_sem);
- out_drop_write:
- 	mnt_drop_write_file(file);
--out:
- 	return ret;
- }
- 
-@@ -1494,10 +1492,8 @@ static noinline int copy_to_sk(struct btrfs_path *path,
- 			continue;
- 
- 		if (sizeof(sh) + item_len > *buf_size) {
--			if (*num_found) {
--				ret = 1;
+diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+index d8127a7120c2..f536b2679bcd 100644
+--- a/fs/btrfs/send.c
++++ b/fs/btrfs/send.c
+@@ -6449,7 +6449,7 @@ static int process_extent(struct send_ctx *sctx,
+ 	if (sctx->parent_root && !sctx->cur_inode_new) {
+ 		ret = is_extent_unchanged(sctx, path, key);
+ 		if (ret < 0)
+-			goto out;
++			return ret;
+ 		if (ret) {
+ 			ret = 0;
+ 			goto out_hole;
+@@ -6469,30 +6469,25 @@ static int process_extent(struct send_ctx *sctx,
+ 			 * we have enough commands queued up to justify rev'ing
+ 			 * the send spec.
+ 			 */
+-			if (type == BTRFS_FILE_EXTENT_PREALLOC) {
+-				ret = 0;
 -				goto out;
 -			}
-+			if (*num_found)
-+				return 1;
- 
- 			/*
- 			 * return one empty item back for v1, which does not
-@@ -1509,10 +1505,8 @@ static noinline int copy_to_sk(struct btrfs_path *path,
- 			ret = -EOVERFLOW;
- 		}
- 
--		if (sizeof(sh) + item_len + *sk_offset > *buf_size) {
--			ret = 1;
--			goto out;
--		}
-+		if (sizeof(sh) + item_len + *sk_offset > *buf_size)
-+			return 1;
- 
- 		sh.objectid = key->objectid;
- 		sh.type = key->type;
-@@ -1526,10 +1520,8 @@ static noinline int copy_to_sk(struct btrfs_path *path,
- 		 * problem. Otherwise we'll fault and then copy the buffer in
- 		 * properly this next time through
- 		 */
--		if (copy_to_user_nofault(ubuf + *sk_offset, &sh, sizeof(sh))) {
--			ret = 0;
--			goto out;
--		}
-+		if (copy_to_user_nofault(ubuf + *sk_offset, &sh, sizeof(sh)))
-+			return 0;
- 
- 		*sk_offset += sizeof(sh);
- 
-@@ -1541,22 +1533,20 @@ static noinline int copy_to_sk(struct btrfs_path *path,
- 			 */
- 			if (read_extent_buffer_to_user_nofault(leaf, up,
- 						item_off, item_len)) {
--				ret = 0;
- 				*sk_offset -= sizeof(sh);
--				goto out;
++			if (type == BTRFS_FILE_EXTENT_PREALLOC)
 +				return 0;
+ 
+ 			/* Have a hole, just skip it. */
+-			if (btrfs_file_extent_disk_bytenr(path->nodes[0], ei) == 0) {
+-				ret = 0;
+-				goto out;
+-			}
++			if (btrfs_file_extent_disk_bytenr(path->nodes[0], ei) == 0)
++				return 0;
+ 		}
+ 	}
+ 
+ 	ret = find_extent_clone(sctx, path, key->objectid, key->offset,
+ 			sctx->cur_inode_size, &found_clone);
+ 	if (ret != -ENOENT && ret < 0)
+-		goto out;
++		return ret;
+ 
+ 	ret = send_write_or_clone(sctx, path, key, found_clone);
+ 	if (ret)
+-		goto out;
++		return ret;
+ out_hole:
+ 	ret = maybe_send_hole(sctx, path, key);
+-out:
+ 	return ret;
+ }
+ 
+@@ -6535,23 +6530,22 @@ static int process_recorded_refs_if_needed(struct send_ctx *sctx, bool at_end,
+ 					   int *pending_move,
+ 					   int *refs_processed)
+ {
+-	int ret = 0;
++	int ret;
+ 
+ 	if (sctx->cur_ino == 0)
+-		goto out;
++		return 0;
+ 	if (!at_end && sctx->cur_ino == sctx->cmp_key->objectid &&
+ 	    sctx->cmp_key->type <= BTRFS_INODE_EXTREF_KEY)
+-		goto out;
++		return 0;
+ 	if (list_empty(&sctx->new_refs) && list_empty(&sctx->deleted_refs))
+-		goto out;
++		return 0;
+ 
+ 	ret = process_recorded_refs(sctx, pending_move);
+ 	if (ret < 0)
+-		goto out;
++		return ret;
+ 
+ 	*refs_processed = 1;
+-out:
+-	return ret;
++	return 0;
+ }
+ 
+ static int finish_inode_if_needed(struct send_ctx *sctx, bool at_end)
+@@ -6768,7 +6762,7 @@ static void close_current_inode(struct send_ctx *sctx)
+ static int changed_inode(struct send_ctx *sctx,
+ 			 enum btrfs_compare_tree_result result)
+ {
+-	int ret = 0;
++	int ret;
+ 	struct btrfs_key *key = sctx->cmp_key;
+ 	struct btrfs_inode_item *left_ii = NULL;
+ 	struct btrfs_inode_item *right_ii = NULL;
+@@ -6860,7 +6854,7 @@ static int changed_inode(struct send_ctx *sctx,
+ 	if (result == BTRFS_COMPARE_TREE_NEW) {
+ 		if (btrfs_inode_nlink(sctx->left_path->nodes[0], left_ii) == 0) {
+ 			sctx->ignore_cur_inode = true;
+-			goto out;
++			return 0;
+ 		}
+ 		sctx->cur_inode_gen = left_gen;
+ 		sctx->cur_inode_new = true;
+@@ -6888,7 +6882,7 @@ static int changed_inode(struct send_ctx *sctx,
+ 		old_nlinks = btrfs_inode_nlink(sctx->right_path->nodes[0], right_ii);
+ 		if (new_nlinks == 0 && old_nlinks == 0) {
+ 			sctx->ignore_cur_inode = true;
+-			goto out;
++			return 0;
+ 		} else if (new_nlinks == 0 || old_nlinks == 0) {
+ 			sctx->cur_inode_new_gen = 1;
+ 		}
+@@ -6914,7 +6908,7 @@ static int changed_inode(struct send_ctx *sctx,
+ 				ret = process_all_refs(sctx,
+ 						BTRFS_COMPARE_TREE_DELETED);
+ 				if (ret < 0)
+-					goto out;
++					return ret;
  			}
  
- 			*sk_offset += item_len;
+ 			/*
+@@ -6935,11 +6929,11 @@ static int changed_inode(struct send_ctx *sctx,
+ 						left_ii);
+ 				ret = send_create_inode_if_needed(sctx);
+ 				if (ret < 0)
+-					goto out;
++					return ret;
+ 
+ 				ret = process_all_refs(sctx, BTRFS_COMPARE_TREE_NEW);
+ 				if (ret < 0)
+-					goto out;
++					return ret;
+ 				/*
+ 				 * Advance send_progress now as we did not get
+ 				 * into process_recorded_refs_if_needed in the
+@@ -6953,10 +6947,10 @@ static int changed_inode(struct send_ctx *sctx,
+ 				 */
+ 				ret = process_all_extents(sctx);
+ 				if (ret < 0)
+-					goto out;
++					return ret;
+ 				ret = process_all_new_xattrs(sctx);
+ 				if (ret < 0)
+-					goto out;
++					return ret;
+ 			}
+ 		} else {
+ 			sctx->cur_inode_gen = left_gen;
+@@ -6970,8 +6964,7 @@ static int changed_inode(struct send_ctx *sctx,
  		}
- 		(*num_found)++;
- 
--		if (ret) /* -EOVERFLOW from above */
--			goto out;
-+		/* -EOVERFLOW from above. */
-+		if (ret)
-+			return ret;
- 
--		if (*num_found >= sk->nr_items) {
--			ret = 1;
--			goto out;
--		}
-+		if (*num_found >= sk->nr_items)
-+			return 1;
  	}
- advance_key:
- 	ret = 0;
-@@ -1576,7 +1566,7 @@ static noinline int copy_to_sk(struct btrfs_path *path,
- 		key->objectid++;
- 	} else
- 		ret = 1;
+ 
 -out:
+-	return ret;
++	return 0;
+ }
+ 
+ /*
+@@ -7104,20 +7097,20 @@ static int compare_refs(struct send_ctx *sctx, struct btrfs_path *path,
+ 	u32 item_size;
+ 	u32 cur_offset = 0;
+ 	int ref_name_len;
+-	int ret = 0;
+ 
+ 	/* Easy case, just check this one dirid */
+ 	if (key->type == BTRFS_INODE_REF_KEY) {
+ 		dirid = key->offset;
+ 
+-		ret = dir_changed(sctx, dirid);
+-		goto out;
++		return dir_changed(sctx, dirid);
+ 	}
+ 
+ 	leaf = path->nodes[0];
+ 	item_size = btrfs_item_size(leaf, path->slots[0]);
+ 	ptr = btrfs_item_ptr_offset(leaf, path->slots[0]);
+ 	while (cur_offset < item_size) {
++		int ret;
 +
- 	/*
- 	 *  0: all items from this leaf copied, continue with next
- 	 *  1: * more items can be copied, but unused buffer is too small
+ 		extref = (struct btrfs_inode_extref *)(ptr +
+ 						       cur_offset);
+ 		dirid = btrfs_inode_extref_parent(leaf, extref);
+@@ -7130,8 +7123,7 @@ static int compare_refs(struct send_ctx *sctx, struct btrfs_path *path,
+ 			break;
+ 		last_dirid = dirid;
+ 	}
+-out:
+-	return ret;
++	return 0;
+ }
+ 
+ /*
+@@ -7212,12 +7204,12 @@ static int changed_cb(struct btrfs_path *left_path,
+ 
+ 	ret = finish_inode_if_needed(sctx, 0);
+ 	if (ret < 0)
+-		goto out;
++		return ret;
+ 
+ 	/* Ignore non-FS objects */
+ 	if (key->objectid == BTRFS_FREE_INO_OBJECTID ||
+ 	    key->objectid == BTRFS_FREE_SPACE_OBJECTID)
+-		goto out;
++		return 0;
+ 
+ 	if (key->type == BTRFS_INODE_ITEM_KEY) {
+ 		ret = changed_inode(sctx, result);
+@@ -7234,8 +7226,7 @@ static int changed_cb(struct btrfs_path *left_path,
+ 			ret = changed_verity(sctx, result);
+ 	}
+ 
+-out:
+-	return ret;
++	return 0;
+ }
+ 
+ static int search_key_again(const struct send_ctx *sctx,
 -- 
 2.47.2
 
