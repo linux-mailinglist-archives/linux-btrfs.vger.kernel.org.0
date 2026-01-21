@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-20820-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20821-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id ACfFJ9G5cGmWZQAAu9opvQ
-	(envelope-from <linux-btrfs+bounces-20820-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 12:34:41 +0100
+	id 6IoOLqu7cGkRZgAAu9opvQ
+	(envelope-from <linux-btrfs+bounces-20821-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 12:42:35 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15236560FC
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 12:34:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CBCD56299
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 12:42:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 9ABCC968499
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 11:16:19 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 5FFDB9456C7
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 11:16:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53828480DDC;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 538BC480DDD;
 	Wed, 21 Jan 2026 11:14:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JZRX3mzw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JaArpAAQ"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 660C1477E31
-	for <linux-btrfs@vger.kernel.org>; Wed, 21 Jan 2026 11:14:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 661B7480960
+	for <linux-btrfs@vger.kernel.org>; Wed, 21 Jan 2026 11:14:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768994047; cv=none; b=TVF0tPq1EbsqR5v+gQF9U9DWtARGOYkWN9bfcsXASO3mkRyw7GjleR40zjWSMUjbbhf3vHW5I8rebHCM7U3fz6acEVkbYo9JP1csloJch43iOPjhRbFGv+aGAE2HsM5iB/NSuBDvnEe1nYZwPNL8A1ubNwPTN3QMiSW/WPH2y+o=
+	t=1768994047; cv=none; b=ggVn1Lr0TpiIvFn2GnCLt0dFG31qkdHeRHZ5hGymYODiYDhGXhY62u4tdfwV8hq2imSNN6QbYb/tYlAy+60QoAQBl9dPlWOgtkJUsmb0yIVvmJeJsuvpXwcBfpDtWxKgndRmBDCeVFNuoVNC0ndV2UUaab1WtO9DH80BIgFV4hE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1768994047; c=relaxed/simple;
-	bh=q2hvkFBhP7AmKX0S92ESGr1rszSpnfNzy8O2zYP7hQo=;
+	bh=AFX21W9vR8YpM42S6GNoRm6OKklQMMJbuHfdq6MEIbU=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Z4tHk+2gOsNWgu7eTkRMQXEbdl3ij8Vf4UjSCZtnhLZEjT9PZQFqyKVxZ36x0Abt3KZU7BaNzi+oHmWj2KumDpjHRFiRESIdI9wizmVemkJ4u6MsV/dVgycdm2VnhOFzoK9HOJThFIhiZAoD8T3lpWG7TU7XyWOIwIiWffoheP0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JZRX3mzw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82370C116D0
-	for <linux-btrfs@vger.kernel.org>; Wed, 21 Jan 2026 11:14:05 +0000 (UTC)
+	 MIME-Version; b=egHc1uKNjF5f9lVg8/vHbAWvHadR0y6Hs042QZigERnT6aLMpWD2K5Wjt3PiocHxB2Pxwi3Iw85HnA8y6z23EXrny4f13caoXI8ShRRg/fm+cPv5Zdn2hMslwCLAT9x9BDoZIBS7IOG/eid7ntpfMk2YpriUU70YU48O8dKn3mA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JaArpAAQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61310C19424
+	for <linux-btrfs@vger.kernel.org>; Wed, 21 Jan 2026 11:14:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1768994046;
-	bh=q2hvkFBhP7AmKX0S92ESGr1rszSpnfNzy8O2zYP7hQo=;
+	bh=AFX21W9vR8YpM42S6GNoRm6OKklQMMJbuHfdq6MEIbU=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=JZRX3mzwkEqPuuvIPM4bm16EX1E8O2blQ4mhrnfmq8abQWlpGWXVDt4H0JGyRfIl8
-	 zQBhPlHzJyrfGiOIaq9BlXb1861THFIoqZPb/cctKT3tPSvmb9+IxYJKWchWbiOWSr
-	 qinLNiznj1yS3dOcjJjc1fsNOTh1n18iVMD7IL8aLhCqx8ayQeyozcjkQbZeg3OvZH
-	 SzoA4tZYtDwMv418KnV+oJldOTwZJcX9kMEBwrc80oyVHr0/kYeVYM3cTC7272Cc5/
-	 9uRet4PVivmDIv9iVJUA/CzXU8mB7/t5Mou6YYr7d89zUJVXJiunurxx3RXaOu9GY+
-	 E/y0UpfH8GYEA==
+	b=JaArpAAQukxgMKxFlmoNZByliSwEoZ8IySHGlq5q6mfScorR0Se/BiF4yAzCFajvu
+	 cCifGdb3FI3k1bMYCJKUtb+AgFkjzqcNNs15BVbX+KcoZ7S5kUTf2H6na0aEEBzdsi
+	 MvHwQtJuFB6hEB0f+dAU6ks8ieSpBIfCbupcyPEPWQ3P74ZXAVj7LBEfDngMxy7v3D
+	 R0vOEW5pClEB3AiyNyBHd4JOExaePhTEDKUzTu3RIFzKvZE2pp6GMseTZEher1xSSA
+	 bAZB8c3O5CEM0tUc/xuQQxLfN9J+5K212d85ito90Xk94Mxrjx2rWUKGLF/WXnk7rA
+	 jNXSyinjro5ZA==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 10/19] btrfs: remove out label in load_extent_tree_free()
-Date: Wed, 21 Jan 2026 11:13:44 +0000
-Message-ID: <375f8ccde170674a4524747789896de4188ec02c.1768993725.git.fdmanana@suse.com>
+Subject: [PATCH 11/19] btrfs: remove out_failed label in find_lock_delalloc_range()
+Date: Wed, 21 Jan 2026 11:13:45 +0000
+Message-ID: <7d2ac3cba9f38bc61dc3a629551b2d2416734e7d.1768993725.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <cover.1768993725.git.fdmanana@suse.com>
 References: <cover.1768993725.git.fdmanana@suse.com>
@@ -72,7 +72,7 @@ X-Spamd-Result: default: False [-1.46 / 15.00];
 	DMARC_POLICY_ALLOW(0.00)[kernel.org,quarantine];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-20820-lists,linux-btrfs=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-20821-lists,linux-btrfs=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	RCPT_COUNT_ONE(0.00)[1];
@@ -86,64 +86,45 @@ X-Spamd-Result: default: False [-1.46 / 15.00];
 	TAGGED_RCPT(0.00)[linux-btrfs];
 	TO_DN_NONE(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[dfw.mirrors.kernel.org:rdns,dfw.mirrors.kernel.org:helo,suse.com:email,suse.com:mid]
-X-Rspamd-Queue-Id: 15236560FC
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid,dfw.mirrors.kernel.org:rdns,dfw.mirrors.kernel.org:helo]
+X-Rspamd-Queue-Id: 2CBCD56299
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
 From: Filipe Manana <fdmanana@suse.com>
 
 There is no point in having the label since all it does is return the
-value in the 'ret' variable. Instead make every goto return directly
+value in the 'found' variable. Instead make every goto return directly
 and remove the label.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/block-group.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ fs/btrfs/extent_io.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 746b259124bf..6eddfde805ef 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -760,7 +760,7 @@ static int load_extent_tree_free(struct btrfs_caching_control *caching_ctl)
- next:
- 	ret = btrfs_search_slot(NULL, extent_root, &key, path, 0, 0);
- 	if (ret < 0)
--		goto out;
-+		return ret;
- 
- 	leaf = path->nodes[0];
- 	nritems = btrfs_header_nritems(leaf);
-@@ -791,7 +791,7 @@ static int load_extent_tree_free(struct btrfs_caching_control *caching_ctl)
- 
- 			ret = btrfs_next_leaf(extent_root, path);
- 			if (ret < 0)
--				goto out;
-+				return ret;
- 			if (ret)
- 				break;
- 			leaf = path->nodes[0];
-@@ -822,7 +822,7 @@ static int load_extent_tree_free(struct btrfs_caching_control *caching_ctl)
- 			ret = btrfs_add_new_free_space(block_group, last,
- 						       key.objectid, &space_added);
- 			if (ret)
--				goto out;
-+				return ret;
- 			total_found += space_added;
- 			if (key.type == BTRFS_METADATA_ITEM_KEY)
- 				last = key.objectid +
-@@ -841,9 +841,7 @@ static int load_extent_tree_free(struct btrfs_caching_control *caching_ctl)
- 		path->slots[0]++;
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index dfc17c292217..3df399dc8856 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -440,8 +440,7 @@ noinline_for_stack bool find_lock_delalloc_range(struct inode *inode,
+ 			loops = 1;
+ 			goto again;
+ 		} else {
+-			found = false;
+-			goto out_failed;
++			return false;
+ 		}
  	}
  
--	ret = btrfs_add_new_free_space(block_group, last, block_group_end, NULL);
--out:
--	return ret;
-+	return btrfs_add_new_free_space(block_group, last, block_group_end, NULL);
+@@ -461,7 +460,7 @@ noinline_for_stack bool find_lock_delalloc_range(struct inode *inode,
+ 	}
+ 	*start = delalloc_start;
+ 	*end = delalloc_end;
+-out_failed:
++
+ 	return found;
  }
  
- static inline void btrfs_free_excluded_extents(const struct btrfs_block_group *bg)
 -- 
 2.47.2
 
