@@ -1,78 +1,77 @@
-Return-Path: <linux-btrfs+bounces-20808-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20809-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id KGxOLDi2cGndZAAAu9opvQ
-	(envelope-from <linux-btrfs+bounces-20808-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 12:19:20 +0100
+	id sNQVBo21cGndZAAAu9opvQ
+	(envelope-from <linux-btrfs+bounces-20809-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 12:16:29 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E46F55E4F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 12:19:20 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD6D155DB0
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 12:16:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 4F2A95EC351
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 10:43:46 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 353E768571E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 11:08:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4592F33CEA1;
-	Wed, 21 Jan 2026 10:43:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F41393ECBFF;
+	Wed, 21 Jan 2026 11:07:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YChsGjRl"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CDJTKq13"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 697E93B5306
-	for <linux-btrfs@vger.kernel.org>; Wed, 21 Jan 2026 10:43:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A075326D65
+	for <linux-btrfs@vger.kernel.org>; Wed, 21 Jan 2026 11:07:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768992184; cv=none; b=Z22fzItXweYDJ6EuSGOuZasZ6mKTLLc2DtJbQuTubBIdADbvCfrqW2+gajFQ/1Ml6mEU3pTHFDZjB4oI2+ETYUZbDWvTwV6Y3kpkdEr2alVpxKASRJGGixcmG7edvzgReocFX0u6yegdYqImaOrJlWbFuFOhSdv2GQPPWLQkfBI=
+	t=1768993629; cv=none; b=B5VWfHL4/KX/63WW4T7+NLY5uo7zW1cMyR94YvqsqZknG/ZRRJDlj7dXGkrKBCRYm8fUiVECnKxaumYYSzY2Q7sztJRvnXTYdfK6GJQa+jvz/Vj2DtnyUTpEFbcemjxojVWNQeLcu12SmELhrk5GJCKmoUTck8TqwAsoUEG4QXQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768992184; c=relaxed/simple;
-	bh=RGeL/xScXSiZmEzjKzZtigLupwl9cFB8OrHjXURQ4a8=;
+	s=arc-20240116; t=1768993629; c=relaxed/simple;
+	bh=VSFz1mtZAI7LVWJasVFxxYCmZEcOB5UIumVyp282rWo=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=C9kKspSazEJStdlCfqtgPTmNeXTRcZmu9mnHkdyeOfIZgn9NFQxbLOspYHaxm90sJ/R21DJe2l/PFO39qgRUotquXB5lu7vS4Dt2jG8VKQbUHf6am9mk7pFqBBcCNToM388As/uds7TS7ExGmOPqZFVuYL8Cj6lABr/XVhnUF4w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YChsGjRl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB7F1C16AAE
-	for <linux-btrfs@vger.kernel.org>; Wed, 21 Jan 2026 10:43:01 +0000 (UTC)
+	 To:Cc:Content-Type; b=BjEdjHDTe+27OmFslCQECH2/N1BgOeiJf5RQBiySXLTUoEnNl5AamdZMIcwiJjKUhzVy3dZyzoM98ssdDPpDTC9MKU7Jm1Mr4buCLElKqgaRP4dt4dtYMq6hzc361OVRi0GEbZuZcbudoEs+3ejVyR6cur+Zc2tlgAdvGxWb1vE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CDJTKq13; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86846C116D0
+	for <linux-btrfs@vger.kernel.org>; Wed, 21 Jan 2026 11:07:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768992182;
-	bh=RGeL/xScXSiZmEzjKzZtigLupwl9cFB8OrHjXURQ4a8=;
+	s=k20201202; t=1768993627;
+	bh=VSFz1mtZAI7LVWJasVFxxYCmZEcOB5UIumVyp282rWo=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=YChsGjRlLC4JX8007g4ja8BqS7yjxwDOrxbBzLymcuynn8IzkJxIb4ipiOCyPQZju
-	 yivOwU1LwmwbyKg1iAY4Er/1SCNVaCWxcVa62add7gljrOMe3HlSGaoS3DO9i0HSt7
-	 NSErmqW+7TooC3854QeW60VcwW9gcrp7kU2U4Mo+//S2FT0s83ZZUrX4AJ9wI1PsXd
-	 +ExRZ6T5FFZYKOMcI+yh3R04DTnEBDhXeP3C/UUFEmIlGnc8h2eFyzYw8QOL6F/3vc
-	 Gt9t/joqMXbULxzlXcUXVm5fwNXR3UNHO1tbqpHzccZVAbJWlmA96z2C31/5M/GRLb
-	 KtR8f0E8vfPSw==
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-b874c00a39fso131742466b.0
-        for <linux-btrfs@vger.kernel.org>; Wed, 21 Jan 2026 02:43:01 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCV1wIB+POh/8agTeVH6ztwWRU8o9X1pHGYnZgwbQs2a7EIK7gRfza2iVW7nf8EgfwWCT15xh/HairivoQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw23JzzqLb7fM8XJv+60bXtaVvZjBMUsXNbnZ2t4yCsfaYKDG/a
-	tTBZrVjGWK04rFKB0y7KVtrqBJwsS+cIihjkjcX/CTylHd3JhrTj8Ndr6oXGKhWrEddNYgaMLxB
-	qgWohet5gA2JBQIhx8MHktut13M9yvnY=
-X-Received: by 2002:a17:906:3091:b0:b87:23b4:11f4 with SMTP id
- a640c23a62f3a-b8777a0b1admr1475580966b.2.1768992180538; Wed, 21 Jan 2026
- 02:43:00 -0800 (PST)
+	b=CDJTKq134wZxPzlnR5Redt6DJHGkj7M/k8Anf3iw3l3feYlRJ281UhmWDRbgD2Lfz
+	 unA4bogcu1sqGldoFip2qy4cegLq5/eH9hVwv0S6ap3s6mwHPEwUrgFjMXHqpcW/vD
+	 oFFh33tBGzP5RKx4vL70Zbm3c3SeBqTgSugYOPTlECE6Fuszps+7WfAkJCBzpH62Pb
+	 lQY5BzEPTP8DHeLkj6v6r5qX6LNVPhazJpN14uRdPcz/V7OpR4SQ6ViFzcI3FC8hWL
+	 0KB6YR+XCsZYebFbUTh1Rz98BvYuHr0aZhp/odHyrfIwMusT8J6LOCU64Zkg6x1OFr
+	 UIUx18hcwBoEw==
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-65807298140so2473819a12.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 21 Jan 2026 03:07:07 -0800 (PST)
+X-Gm-Message-State: AOJu0Yx4sh4UqFzItdKBb31fI1nRb5Jb9PRxLAIMQntSXe3KJ4q5kmdn
+	hrjX3WsAgb05rIeh+3jiinVm3d9KchCRxbRxxPF9upONga61ICz/NQ5CaQ4SZ3J6uFHK1n/bgJH
+	0RIbS+qyGwHuZsm9m1vIqur916omugLk=
+X-Received: by 2002:a17:907:9688:b0:b87:3809:6982 with SMTP id
+ a640c23a62f3a-b88003ad9a9mr453547666b.57.1768993626099; Wed, 21 Jan 2026
+ 03:07:06 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1768911827.git.fdmanana@suse.com> <05452a804b036b205a791be1c1c5e09d0279812d.1768911827.git.fdmanana@suse.com>
- <3a5d1472-7ff0-447f-9d02-f75a60161ead@gmx.com> <20260121042455.GO26902@twin.jikos.cz>
- <b1f7072a-57de-4df5-abcf-a9e975e5c58f@gmx.com>
-In-Reply-To: <b1f7072a-57de-4df5-abcf-a9e975e5c58f@gmx.com>
+References: <20260120064305.439036-1-jinbaohong@synology.com>
+In-Reply-To: <20260120064305.439036-1-jinbaohong@synology.com>
 From: Filipe Manana <fdmanana@kernel.org>
-Date: Wed, 21 Jan 2026 10:42:23 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H5NRKqd4drKJfsLfcG8TB+tVo4p+KQyz2M6p7CnYg_b6A@mail.gmail.com>
-X-Gm-Features: AZwV_QhtcuvhgLzOq4LA0qJut94weTJsSqdk-J1HWkDqZuRcHUL0PykjT5h3hsQ
-Message-ID: <CAL3q7H5NRKqd4drKJfsLfcG8TB+tVo4p+KQyz2M6p7CnYg_b6A@mail.gmail.com>
-Subject: Re: [PATCH 2/4] btrfs: allocate path in load_block_group_size_class()
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: dsterba@suse.cz, linux-btrfs@vger.kernel.org
+Date: Wed, 21 Jan 2026 11:06:29 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H4NnuPgTfGs7+=Hf11k61V+1XJ_AXrjv5mhCDrvStVk5A@mail.gmail.com>
+X-Gm-Features: AZwV_Qjrczbt-CXyte73Sd0hQaCtMK6xUxRL4DYqfEYRUR0SyqpPYzABnfa89ws
+Message-ID: <CAL3q7H4NnuPgTfGs7+=Hf11k61V+1XJ_AXrjv5mhCDrvStVk5A@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: fix transaction commit blocking during trim of
+ unallocated space
+To: jinbaohong <jinbaohong@synology.com>
+Cc: linux-btrfs@vger.kernel.org, dsterba@suse.com, 
+	robbieko <robbieko@synology.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spamd-Result: default: False [-1.96 / 15.00];
@@ -82,166 +81,361 @@ X-Spamd-Result: default: False [-1.96 / 15.00];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	DMARC_POLICY_ALLOW(0.00)[kernel.org,quarantine];
-	TAGGED_FROM(0.00)[bounces-20808-lists,linux-btrfs=lfdr.de];
+	RCPT_COUNT_THREE(0.00)[4];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	FROM_HAS_DN(0.00)[];
-	FREEMAIL_TO(0.00)[gmx.com];
 	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-20809-lists,linux-btrfs=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	R_SPF_SOFTFAIL(0.00)[~all:c];
+	ASN(0.00)[asn:7979, ipnet:213.196.21.0/24, country:US];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[fdmanana@kernel.org,linux-btrfs@vger.kernel.org];
-	RCPT_COUNT_THREE(0.00)[3];
+	TO_DN_SOME(0.00)[];
+	R_SPF_SOFTFAIL(0.00)[~all:c];
+	TAGGED_RCPT(0.00)[linux-btrfs];
 	RCVD_COUNT_FIVE(0.00)[5];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-btrfs];
-	ASN(0.00)[asn:7979, ipnet:2605:f480::/32, country:US];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[dfw.mirrors.kernel.org:rdns,dfw.mirrors.kernel.org:helo,mail.gmail.com:mid,suse.com:email]
-X-Rspamd-Queue-Id: 1E46F55E4F
+	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,ams.mirrors.kernel.org:rdns,ams.mirrors.kernel.org:helo,synology.com:email]
+X-Rspamd-Queue-Id: CD6D155DB0
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Wed, Jan 21, 2026 at 4:40=E2=80=AFAM Qu Wenruo <quwenruo.btrfs@gmx.com> =
-wrote:
+On Wed, Jan 21, 2026 at 6:59=E2=80=AFAM jinbaohong <jinbaohong@synology.com=
+> wrote:
 >
+> When trimming unallocated space, btrfs_trim_fs() holds device_list_mutex
+> for the entire duration while iterating through all devices. On large
+> filesystems with significant unallocated space, this operation can take
+> minutes to hours on large storage systems.
 >
+> This causes a problem because btrfs_run_dev_stats(), which is called
+> during transaction commit, also requires device_list_mutex:
 >
-> =E5=9C=A8 2026/1/21 14:54, David Sterba =E5=86=99=E9=81=93:
-> > On Wed, Jan 21, 2026 at 07:16:06AM +1030, Qu Wenruo wrote:
-> >> =E5=9C=A8 2026/1/20 22:55, fdmanana@kernel.org =E5=86=99=E9=81=93:
-> >>> From: Filipe Manana <fdmanana@suse.com>
-> >>>
-> >>> Instead of allocating and freeing a path in every iteration of
-> >>> load_block_group_size_class(), through its helper function
-> >>> sample_block_group_extent_item(), allocate the path in the former and
-> >>> pass it to the later.
-> >>>
-> >>> Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> >>> ---
-> >>>    fs/btrfs/block-group.c | 32 +++++++++++++++++---------------
-> >>>    1 file changed, 17 insertions(+), 15 deletions(-)
-> >>>
-> >>> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-> >>> index 343c29344484..a7828673be39 100644
-> >>> --- a/fs/btrfs/block-group.c
-> >>> +++ b/fs/btrfs/block-group.c
-> >>> @@ -579,24 +579,24 @@ int btrfs_add_new_free_space(struct btrfs_block=
-_group *block_group, u64 start,
-> >>>     * @index:        the integral step through the block group to gra=
-b from
-> >>>     * @max_index:    the granularity of the sampling
-> >>>     * @key:          return value parameter for the item we find
-> >>> + * @path:         path to use for searching in the extent tree
-> >>>     *
-> >>>     * Pre-conditions on indices:
-> >>>     * 0 <=3D index <=3D max_index
-> >>>     * 0 < max_index
-> >>>     *
-> >>> - * Returns: 0 on success, 1 if the search didn't yield a useful item=
-, negative
-> >>> - * error code on error.
-> >>> + * Returns: 0 on success, 1 if the search didn't yield a useful item=
-.
-> >>>     */
-> >>>    static int sample_block_group_extent_item(struct btrfs_caching_con=
-trol *caching_ctl,
-> >>>                                       struct btrfs_block_group *block=
-_group,
-> >>>                                       int index, int max_index,
-> >>> -                                     struct btrfs_key *found_key)
-> >>> +                                     struct btrfs_key *found_key,
-> >>> +                                     struct btrfs_path *path)
-> >>>    {
-> >>>     struct btrfs_fs_info *fs_info =3D block_group->fs_info;
-> >>>     struct btrfs_root *extent_root;
-> >>>     u64 search_offset;
-> >>>     const u64 search_end =3D btrfs_block_group_end(block_group);
-> >>> -   BTRFS_PATH_AUTO_FREE(path);
-> >>>     struct btrfs_key search_key;
-> >>>     int ret =3D 0;
-> >>>
-> >>> @@ -606,17 +606,9 @@ static int sample_block_group_extent_item(struct=
- btrfs_caching_control *caching_
-> >>>     lockdep_assert_held(&caching_ctl->mutex);
-> >>>     lockdep_assert_held_read(&fs_info->commit_root_sem);
-> >>>
-> >>> -   path =3D btrfs_alloc_path();
-> >>> -   if (!path)
-> >>> -           return -ENOMEM;
-> >>> -
-> >>>     extent_root =3D btrfs_extent_root(fs_info, max_t(u64, block_group=
-->start,
-> >>>                                                    BTRFS_SUPER_INFO_O=
-FFSET));
-> >>>
-> >>> -   path->skip_locking =3D true;
-> >>> -   path->search_commit_root =3D true;
-> >>> -   path->reada =3D READA_FORWARD;
-> >>> -
-> >>>     search_offset =3D index * div_u64(block_group->length, max_index)=
-;
-> >>>     search_key.objectid =3D block_group->start + search_offset;
-> >>>     search_key.type =3D BTRFS_EXTENT_ITEM_KEY;
-> >>> @@ -679,6 +671,7 @@ static int sample_block_group_extent_item(struct =
-btrfs_caching_control *caching_
-> >>>    static void load_block_group_size_class(struct btrfs_caching_contr=
-ol *caching_ctl,
-> >>>                                     struct btrfs_block_group *block_g=
-roup)
-> >>>    {
-> >>> +   BTRFS_PATH_AUTO_FREE(path);
-> >>>     struct btrfs_fs_info *fs_info =3D block_group->fs_info;
-> >>>     struct btrfs_key key;
-> >>>     int i;
-> >>> @@ -688,14 +681,23 @@ static void load_block_group_size_class(struct =
-btrfs_caching_control *caching_ct
-> >>>     if (!btrfs_block_group_should_use_size_class(block_group))
-> >>>             return;
-> >>>
-> >>> +   path =3D btrfs_alloc_path();
-> >>> +   if (!path)
-> >>> +           return;
-> >>
-> >> Considering the function is only called inside a workqueue, we can avo=
-id
-> >> a memory allocation by using on-stack path, which also reduces one err=
-or
-> >> path.
-> >
-> > As a generic pattern we could switch to on-stack variables for the
-> > functions called from workqueues but it may not be obvious that it's OK
-> > to do that (unlike eg. the compression functions).
-> >
-> > But I'd like to have an assertion or a debug warning for that, not sure
-> > how exactly to do it, maybe something is in the task_struct.
-> >
+>   btrfs_trim_fs()
+>     mutex_lock(&fs_devices->device_list_mutex)
+>     list_for_each_entry(device, ...)
+>       btrfs_trim_free_extents(device)
+>     mutex_unlock(&fs_devices->device_list_mutex)
 >
-> I was looking into that during async csum development. But I didn't find
-> a good way to determine if we're in workqueue.
+>   commit_transaction()
+>     btrfs_run_dev_stats()
+>       mutex_lock(&fs_devices->device_list_mutex)  // blocked!
+>       ...
+>
+> While trim is running, all transaction commits are blocked waiting for
+> the mutex.
+>
+> Fix this by refactoring btrfs_trim_free_extents() to process devices in
+> bounded chunks (up to 2GB per iteration) and release device_list_mutex
+> between chunks.
+>
+> Signed-off-by: robbieko <robbieko@synology.com>
+> Signed-off-by: jinbaohong <jinbaohong@synology.com>
+> ---
+>  fs/btrfs/extent-tree.c | 145 ++++++++++++++++++++++++++++++++++++-----
+>  1 file changed, 127 insertions(+), 18 deletions(-)
+>
+> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+> index 89495e6f8269..7b4708212be6 100644
+> --- a/fs/btrfs/extent-tree.c
+> +++ b/fs/btrfs/extent-tree.c
+> @@ -6400,10 +6400,13 @@ void btrfs_error_unpin_extent_range(struct btrfs_=
+fs_info *fs_info, u64 start, u6
+>   * it while performing the free space search since we have already
+>   * held back allocations.
+>   */
+> -static int btrfs_trim_free_extents(struct btrfs_device *device, u64 *tri=
+mmed)
+> +static int btrfs_trim_free_extents_throttle(struct btrfs_device *device,
+> +               u64 *trimmed, u64 pos, u64 maxlen, u64 *ret_next_pos)
 
-We can do this and it works:
+Since maxlen never changes, please make it a #define and stop passing
+it as a parameter and defining it as a local variable in the stack of
+the caller function.
 
-/*
-* Since we run in workqueue context, we allocate the path on stack to
-* avoid memory allocation failure, as the stack in a work queue task
-* is not deep.
-*/
-ASSERT(current_work() =3D=3D &caching_ctl->work.normal_work);
-
-I'm adding that to the patch and will push into for-next soon.
-
-> The closest one I found is in_task(), which can not distinguish
-> workqueue and regular userspace falling into kernel situations.
+>  {
+> -       u64 start =3D BTRFS_DEVICE_RANGE_RESERVED, len =3D 0, end =3D 0;
+> +       u64 start =3D pos, len =3D 0, end =3D 0;
+>         int ret;
+> +       u64 cur_start;
+> +       u64 trim_len =3D 0;
 >
-> Maybe there are some way to poking into the current task structure, but
-> I didn't find a straightforward helper.
+>         *trimmed =3D 0;
 >
-> Thanks,
-> Qu
+> @@ -6429,9 +6432,11 @@ static int btrfs_trim_free_extents(struct btrfs_de=
+vice *device, u64 *trimmed)
+>                 if (ret)
+>                         break;
+>
+> +               cur_start =3D start;
+>                 btrfs_find_first_clear_extent_bit(&device->alloc_state, s=
+tart,
+>                                                   &start, &end,
+>                                                   CHUNK_TRIMMED | CHUNK_A=
+LLOCATED);
+> +               start =3D max(start, cur_start);
+>
+>                 /* Check if there are any CHUNK_* bits left */
+>                 if (start > device->total_bytes) {
+> @@ -6457,6 +6462,7 @@ static int btrfs_trim_free_extents(struct btrfs_dev=
+ice *device, u64 *trimmed)
+>                 end =3D min(end, device->total_bytes - 1);
+>
+>                 len =3D end - start + 1;
+> +               len =3D min(len, maxlen);
+>
+>                 /* We didn't find any extents */
+>                 if (!len) {
+> @@ -6477,6 +6483,12 @@ static int btrfs_trim_free_extents(struct btrfs_de=
+vice *device, u64 *trimmed)
+>
+>                 start +=3D len;
+>                 *trimmed +=3D bytes;
+> +               trim_len +=3D len;
+> +               if (trim_len >=3D maxlen) {
+> +                       *ret_next_pos =3D start;
+> +                       ret =3D -EAGAIN;
+> +                       break;
+> +               }
+>
+>                 if (btrfs_trim_interrupted()) {
+>                         ret =3D -ERESTARTSYS;
+> @@ -6489,6 +6501,114 @@ static int btrfs_trim_free_extents(struct btrfs_d=
+evice *device, u64 *trimmed)
+>         return ret;
+>  }
+>
+> +
+> +static int btrfs_trim_free_extents(struct btrfs_fs_info *fs_info, u64 *t=
+rimmed)
+> +{
+> +       int ret;
+> +       struct btrfs_device *dev;
+> +       struct btrfs_device *working_dev =3D NULL;
+> +       struct btrfs_fs_devices *fs_devices =3D fs_info->fs_devices;
+> +       u8 uuid[BTRFS_UUID_SIZE];
+> +       u64 start =3D BTRFS_DEVICE_RANGE_RESERVED;
+> +       u64 maxlen =3D SZ_2G;
+
+As said above, make it a define like for example:
+
+#define BTRFS_MAX_TRIM_LENGHT SZ_2G
+
+> +       u64 next_pos =3D 0;
+> +       u64 group_trimmed;
+
+Also any variables that are used only inside the loop below, declare
+them in the loop's scope.
+
+> +
+> +       *trimmed =3D 0;
+> +
+> +       mutex_lock(&fs_devices->device_list_mutex);
+> +       list_for_each_entry(dev, &fs_devices->devices, dev_list) {
+> +               if (test_bit(BTRFS_DEV_STATE_MISSING, &dev->dev_state))
+> +                       continue;
+> +               if (!working_dev ||
+> +                       memcmp(dev->uuid, working_dev->uuid, BTRFS_UUID_S=
+IZE) < 0)
+
+This indentation is odd and confusing because it's indented to the
+line below, i.e, the code that is part of the if statement.
+Indent to the opening parentheses.
+
+> +                       working_dev =3D dev;
+> +       }
+> +       if (working_dev)
+> +               memcpy(uuid, working_dev->uuid, BTRFS_UUID_SIZE);
+> +       mutex_unlock(&fs_devices->device_list_mutex);
+> +       if (!working_dev) {
+> +               ret =3D 0;
+> +               goto out;
+> +       }
+> +
+> +       while (1) {
+> +               mutex_lock(&fs_devices->device_list_mutex);
+> +               ret =3D 0;
+> +
+> +               group_trimmed =3D 0;
+
+These variables can be initialized before taking the mutex.
+Anything that can be done outside the critical section should be done
+outside it.
+
+> +               list_for_each_entry(dev, &fs_devices->devices, dev_list) =
+{
+> +                       if (test_bit(BTRFS_DEV_STATE_MISSING, &dev->dev_s=
+tate))
+> +                               continue;
+> +                       if (dev =3D=3D working_dev) {
+> +                               ret =3D btrfs_trim_free_extents_throttle(=
+working_dev,
+> +                                       &group_trimmed, start, maxlen, &n=
+ext_pos);
+> +                               break;
+> +                       }
+> +               }
+> +               *trimmed +=3D group_trimmed;
+> +
+> +               if (!ret) {
+> +                       /*
+> +                        * Device completed, go next device.
+> +                        * Find a device which has the smallest uuid but =
+larger than
+> +                        * current one.
+> +                        * Note: Devices added during trim with UUID smal=
+ler than the
+> +                        * current device will be skipped.
+> +                        */
+> +                       working_dev =3D NULL;
+> +                       list_for_each_entry(dev, &fs_devices->devices, de=
+v_list) {
+> +                               if (test_bit(BTRFS_DEV_STATE_MISSING, &de=
+v->dev_state))
+> +                                       continue;
+> +
+> +                               /* must larger than current uuid */
+
+Please always capitalize the first word in a comment and end the
+sentence with punctation.
+
+> +                               if (memcmp(dev->uuid, uuid, BTRFS_UUID_SI=
+ZE) <=3D 0)
+> +                                       continue;
+> +
+> +                               /* find the smallest */
+
+Same here.
+
+> +                               if (!working_dev ||
+> +                                       memcmp(dev->uuid, working_dev->uu=
+id, BTRFS_UUID_SIZE) < 0)
+
+Same here about the confusing indentation.
+
+> +                                       working_dev =3D dev;
+> +                       }
+> +                       if (working_dev)
+> +                               memcpy(uuid, working_dev->uuid, BTRFS_UUI=
+D_SIZE);
+> +                       start =3D BTRFS_DEVICE_RANGE_RESERVED;
+> +               }
+> +               mutex_unlock(&fs_devices->device_list_mutex);
+> +
+> +               if (ret =3D=3D -EAGAIN) {
+> +                       /*
+> +                        * Ensure next_pos actually progressed beyond sta=
+rt.
+> +                        * If not, we're stuck and must break to avoid in=
+finite loop.
+> +                        */
+> +                       if (next_pos <=3D start) {
+> +                               btrfs_warn(fs_info,
+> +                                  "trim throttle: no progress, start=3D%=
+llu next_pos=3D%llu, aborting",
+> +                                  start, next_pos);
+> +                               goto out;
+> +                       }
+> +                       start =3D next_pos;
+> +                       ret =3D 0;
+> +               }
+> +
+> +               if (ret)
+> +                       goto out;
+> +
+> +               if (!working_dev) /* error or no more device */
+
+Same here about the comment and place it above the line with the if stateme=
+nt.
+
+
+> +                       break;
+> +
+> +               if (btrfs_trim_interrupted()) {
+> +                       ret =3D -ERESTARTSYS;
+> +                       goto out;
+> +               }
+> +               cond_resched();
+> +       }
+> +
+> +       ret =3D 0;
+> +out:
+> +       return ret;
+
+Please don't do this. This is a pointless label that makes the code
+unnecessarily harder to read.
+Just remove the label and make every goto do a "return ret" - much
+more straightforward and makes the code shorter too.
+
+And then here do a return 0 instead of
+
+ret =3D 0;
+return ret;
+
+Thanks.
+
+> +}
+> +
+>  /*
+>   * Trim the whole filesystem by:
+>   * 1) trimming the free space in each block group
+> @@ -6500,9 +6620,7 @@ static int btrfs_trim_free_extents(struct btrfs_dev=
+ice *device, u64 *trimmed)
+>   */
+>  int btrfs_trim_fs(struct btrfs_fs_info *fs_info, struct fstrim_range *ra=
+nge)
+>  {
+> -       struct btrfs_fs_devices *fs_devices =3D fs_info->fs_devices;
+>         struct btrfs_block_group *cache =3D NULL;
+> -       struct btrfs_device *device;
+>         u64 group_trimmed;
+>         u64 range_end =3D U64_MAX;
+>         u64 start;
+> @@ -6564,21 +6682,12 @@ int btrfs_trim_fs(struct btrfs_fs_info *fs_info, =
+struct fstrim_range *range)
+>                         "failed to trim %llu block group(s), last error %=
+d",
+>                         bg_failed, bg_ret);
+>
+> -       mutex_lock(&fs_devices->device_list_mutex);
+> -       list_for_each_entry(device, &fs_devices->devices, dev_list) {
+> -               if (test_bit(BTRFS_DEV_STATE_MISSING, &device->dev_state)=
+)
+> -                       continue;
+> -
+> -               ret =3D btrfs_trim_free_extents(device, &group_trimmed);
+> -
+> -               trimmed +=3D group_trimmed;
+> -               if (ret) {
+> -                       dev_failed++;
+> -                       dev_ret =3D ret;
+> -                       break;
+> -               }
+> +       ret =3D btrfs_trim_free_extents(fs_info, &group_trimmed);
+> +       trimmed +=3D group_trimmed;
+> +       if (ret) {
+> +               dev_failed++;
+> +               dev_ret =3D ret;
+>         }
+> -       mutex_unlock(&fs_devices->device_list_mutex);
+>
+>         if (dev_failed)
+>                 btrfs_warn(fs_info,
+> --
+> 2.34.1
+>
+>
+> Disclaimer: The contents of this e-mail message and any attachments are c=
+onfidential and are intended solely for addressee. The information may also=
+ be legally privileged. This transmission is sent in trust, for the sole pu=
+rpose of delivery to the intended recipient. If you have received this tran=
+smission in error, any use, reproduction or dissemination of this transmiss=
+ion is strictly prohibited. If you are not the intended recipient, please i=
+mmediately notify the sender by reply e-mail or phone and delete this messa=
+ge and its attachments, if any.
 >
 
