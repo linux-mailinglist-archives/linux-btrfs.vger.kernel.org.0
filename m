@@ -1,151 +1,148 @@
-Return-Path: <linux-btrfs+bounces-20838-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20839-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id cDnPIkwMcWmPcQAAu9opvQ
-	(envelope-from <linux-btrfs+bounces-20838-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 18:26:36 +0100
+	id CPxgDhoKcWmPcQAAu9opvQ
+	(envelope-from <linux-btrfs+bounces-20839-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 18:17:14 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 334F55A814
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 18:26:36 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7EA45A67F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 18:17:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 995F368BB5D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 15:39:19 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id AC75FB2DB76
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 16:40:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3D4B4A5B08;
-	Wed, 21 Jan 2026 15:24:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B295313535;
+	Wed, 21 Jan 2026 16:30:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="btasUmg7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RM2eTkOi"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8A333AE6E9
-	for <linux-btrfs@vger.kernel.org>; Wed, 21 Jan 2026 15:24:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49ED2410D0A
+	for <linux-btrfs@vger.kernel.org>; Wed, 21 Jan 2026 16:30:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769009056; cv=none; b=gxBFSFRn4SYOi54Ija/7LZm5tObadx7y2UPCRbjglEPVnDiThFqIPk7cm12g/xFyg8owCwnkq84RjltDcsWMhK4uA8A6LVz5X1zDZEMwI98IGzDQwFhmiXdXr2Vkqu1SXvcGQFhVccW0YJOkHuUnWaWixIT1sA1/4dmDmzOBL/4=
+	t=1769013049; cv=none; b=ZganlYohFV7AI9nKQCVHC0gdnASwsMKnQUC+616qf2MMLvp3O3s6WBslZq5VhKlNY0raMzaymHjSKYQn1I2chsIXHQXGiMlvl+jCp70dV/8WYicKXt4powwIXMOMZnyaOus314++NPf+2BabjV649pK0/lzhVTchpYHEdGb3VDQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769009056; c=relaxed/simple;
-	bh=lo5LFecirdREP+HDNbkI2hHsGF/+TwYasdb5p00LvEQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=cmrJ5/+xN/0oLmMUoPxm5Ac8MrKcPwgx5GTdEDJZyhdb4Nod4CQRFqOCZUwubGrh8LlxnJAICg4Zx5iQBRruYvhpsTDTYISj390YkJ+bWxKR6xHpU4Zmvmsk4YsPB4rB4INeYeZv/QKPmYSu1+KwoHg3gI+SQIOFP0b2fmSkuEw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=btasUmg7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6D529C116D0
-	for <linux-btrfs@vger.kernel.org>; Wed, 21 Jan 2026 15:24:16 +0000 (UTC)
+	s=arc-20240116; t=1769013049; c=relaxed/simple;
+	bh=r9xAAN5np1FGSpQDA8K6s931LpKMlnN2r7qzlmyEafg=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=X/llJYV458QXq/E9Gt9YZfA5s5N76cTEQ3moXqUR3dc0zevvMG9/wPbwKXGu1C33tRqJ1j8iApAdSeC1NMxgY6Zra8EoV1MuYlgKTUJjA1fI4qOdrwBhwkleTgVJuUVT0LQyVZ6aKWekS8ODTtFoa0bCz0zO9yuzMKuwWP4uLac=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RM2eTkOi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5888C4CEF1
+	for <linux-btrfs@vger.kernel.org>; Wed, 21 Jan 2026 16:30:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1769009056;
-	bh=lo5LFecirdREP+HDNbkI2hHsGF/+TwYasdb5p00LvEQ=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=btasUmg7yZWP8bBv+xn9yIh49BQSwODOdm2jx3rNC4AAIMAtX2jFbygqz5J0aA3sH
-	 s+rGAGMuH5C9/yC0JDk11greHGGn+xId+sBzVBDqf5BpXOx0ASU2RJ2ApuWu62Tdgz
-	 SGbtV4UgBeUTA+B7vgJ7MSBp6RDXkw985XZC/2AELt5z/IBel8GbHZTmJX0UXdR09c
-	 NAAuPVx2gb8w4lHKlbJCxdRSBU82y2Wl+MhDuDkVoCK4sJbG1n6tAnwHpcMuXTelIF
-	 2FImTydeA2zvPb+l5l2SylYY2ZTnGsdQe7RY+ali7mkOLwsSio5hnOXRegYkbPTvCJ
-	 LUxGBrEAy7YBQ==
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-b87f00ec06aso474578366b.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 21 Jan 2026 07:24:16 -0800 (PST)
-X-Gm-Message-State: AOJu0YyN1x16zfxN2ePiDQGuUbDqPuopMDBlV2b3Z+JKfyeTQoZVHeHD
-	RVpQK+SllZLoW9zI6lMmH4cLqQggvtWnZPzdjYBYCdr2QAeo9qf6hqzEp1Dqj7GouUuRpsd+65O
-	QA4ES9JBwUAMtqtSbkpg9K4mkOJbXudM=
-X-Received: by 2002:a17:907:1c89:b0:b83:32b7:21b0 with SMTP id
- a640c23a62f3a-b8800260ffemr369665266b.17.1769009054826; Wed, 21 Jan 2026
- 07:24:14 -0800 (PST)
+	s=k20201202; t=1769013049;
+	bh=r9xAAN5np1FGSpQDA8K6s931LpKMlnN2r7qzlmyEafg=;
+	h=From:To:Subject:Date:In-Reply-To:References:From;
+	b=RM2eTkOi0+wuaION6lw7+vtK48HZVSZ1VAbSwz4LQ9a8Cizk+wKLkxsiPFlDnRXyH
+	 rE5Oy+Ip6LwR1TPylUJRRTgA19kyuduvHRbhB4iMSXzT1Lu+9USzUvbfArsxA6Al4l
+	 f9kTQ4EXmKp51ExQwfldnfOpFf327g/xTFNiadBPqFp09OKUc/Cs8ahCoaNGgXCMnU
+	 vJ6XI+fjOAJ0IfVt5h0q3BDp5oS2HAGGkbXx/q1aAaEy3qUbfPp1lju+879v+8401t
+	 AuUUx0njC39xQAUvTw9KPYRcW1gxQJEL6n7nRsl2VPM9KIs2aAuPENEaFszhXdSLmp
+	 Udr9KwC+v7z6w==
+From: fdmanana@kernel.org
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH v2 00/19] btrfs: fix a return value and remove pointless labels and gotos
+Date: Wed, 21 Jan 2026 16:30:26 +0000
+Message-ID: <cover.1769012876.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.47.2
+In-Reply-To: <cover.1768993725.git.fdmanana@suse.com>
+References: <cover.1768993725.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1768993725.git.fdmanana@suse.com> <9684a687dd031bdc506fd15472be9356369a163c.1768993725.git.fdmanana@suse.com>
- <82b91a4e-095d-4a3e-bb66-a046f3d332f5@wdc.com>
-In-Reply-To: <82b91a4e-095d-4a3e-bb66-a046f3d332f5@wdc.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Wed, 21 Jan 2026 15:23:37 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H4fvdyKJbwN-FWM-2FHYKNFsUkX9dBdvLV2fJ_USTePrg@mail.gmail.com>
-X-Gm-Features: AZwV_QjMbe234QlhN7bSbkKsWbUinkc4Zt4tctlXxoPR3IfpY8iSsQoBqXQYfGU
-Message-ID: <CAL3q7H4fvdyKJbwN-FWM-2FHYKNFsUkX9dBdvLV2fJ_USTePrg@mail.gmail.com>
-Subject: Re: [PATCH 03/19] btrfs: remove pointless out labels from send.c
-To: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-Cc: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spamd-Result: default: False [-1.96 / 15.00];
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-1.46 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW_WITH_FAILURES(-0.50)[];
+	R_MISSING_CHARSET(0.50)[];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-20838-lists,linux-btrfs=lfdr.de];
 	DMARC_POLICY_ALLOW(0.00)[kernel.org,quarantine];
-	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	RCPT_COUNT_TWO(0.00)[2];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
 	DKIM_TRACE(0.00)[kernel.org:+];
-	MISSING_XM_UA(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	R_SPF_SOFTFAIL(0.00)[~all:c];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-20839-lists,linux-btrfs=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	RCPT_COUNT_ONE(0.00)[1];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_NO_DN(0.00)[];
+	ASN(0.00)[asn:7979, ipnet:2605:f480::/32, country:US];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[fdmanana@kernel.org,linux-btrfs@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	R_SPF_SOFTFAIL(0.00)[~all:c];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	ASN(0.00)[asn:7979, ipnet:213.196.21.0/24, country:US];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[ams.mirrors.kernel.org:rdns,ams.mirrors.kernel.org:helo,wdc.com:email,mail.gmail.com:mid]
-X-Rspamd-Queue-Id: 334F55A814
+	TO_DN_NONE(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:mid,dfw.mirrors.kernel.org:rdns,dfw.mirrors.kernel.org:helo]
+X-Rspamd-Queue-Id: D7EA45A67F
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Wed, Jan 21, 2026 at 3:04=E2=80=AFPM Johannes Thumshirn
-<Johannes.Thumshirn@wdc.com> wrote:
->
-> On 1/21/26 12:28 PM, fdmanana@kernel.org wrote:
-> >       while (cur_offset < item_size) {
-> > +             int ret;
-> > +
-> >               extref =3D (struct btrfs_inode_extref *)(ptr +
-> >                                                      cur_offset);
-> >               dirid =3D btrfs_inode_extref_parent(leaf, extref);
-> > @@ -7130,8 +7123,7 @@ static int compare_refs(struct send_ctx *sctx, st=
-ruct btrfs_path *path,
-> >                       break;
-> >               last_dirid =3D dirid;
-> >       }
-> > -out:
-> > -     return ret;
-> > +     return 0;
->
->
-> Doesn't this omit the return from dir_changed?
->
->      while (cur_offset < item_size) {
->          extref =3D (struct btrfs_inode_extref *)(ptr +
->                                 cur_offset);
->          dirid =3D btrfs_inode_extref_parent(leaf, extref);
->          ref_name_len =3D btrfs_inode_extref_name_len(leaf, extref);
->          cur_offset +=3D ref_name_len + sizeof(*extref);
->          if (dirid =3D=3D last_dirid)
->              continue;
->          ret =3D dir_changed(sctx, dirid);
->          if (ret)
->              break;
->          last_dirid =3D dirid;
->      }
-> out:
->      return ret;
->
-> IIUIC we need to keep 'return ret' here.
+From: Filipe Manana <fdmanana@suse.com>
 
-The intention was really to return 0 and instead of break do return
-ret, but I forgot that last part. Will fix in second version.
+Remove pointless labels and gotos that can be replaced with a single
+"return ret" or "return -SOMEERROR", making the code shorter and more
+straighforward to follow and to not leave such examples for people to
+copy and keep repeating it. The first patch fixes a bug in an error
+path where we can end up returning success (0) instead of an error.
 
->
+V2: Fix a couple wrong return values in send.c and lzo.c.
+
+Filipe Manana (19):
+  btrfs: qgroup: return correct error when deleting qgroup relation item
+  btrfs: remove pointless out labels from ioctl.c
+  btrfs: remove pointless out labels from send.c
+  btrfs: remove pointless out labels from qgroup.c
+  btrfs: remove pointless out labels from disk-io.c
+  btrfs: remove pointless out labels from extent-tree.c
+  btrfs: remove pointless out labels from free-space-cache.c
+  btrfs: remove pointless out labels from inode.c
+  btrfs: remove pointless out labels from uuid-tree.c
+  btrfs: remove out label in load_extent_tree_free()
+  btrfs: remove out_failed label in find_lock_delalloc_range()
+  btrfs: remove out label in btrfs_csum_file_blocks()
+  btrfs: remove out label in btrfs_mark_extent_written()
+  btrfs: remove out label in lzo_decompress()
+  btrfs: remove out label in scrub_find_fill_first_stripe()
+  btrfs: remove out label in finish_verity()
+  btrfs: remove out label in btrfs_check_rw_degradable()
+  btrfs: remove out label in btrfs_init_space_info()
+  btrfs: remove out label in btrfs_wait_for_commit()
+
+ fs/btrfs/block-group.c      | 10 ++---
+ fs/btrfs/disk-io.c          | 54 +++++++++++---------------
+ fs/btrfs/extent-tree.c      | 24 +++++-------
+ fs/btrfs/extent_io.c        |  5 +--
+ fs/btrfs/file-item.c        | 16 ++++----
+ fs/btrfs/file.c             | 30 +++++++--------
+ fs/btrfs/free-space-cache.c | 28 ++++++--------
+ fs/btrfs/inode.c            | 21 +++++-----
+ fs/btrfs/ioctl.c            | 44 +++++++++------------
+ fs/btrfs/lzo.c              | 17 ++++-----
+ fs/btrfs/qgroup.c           | 22 +++++------
+ fs/btrfs/scrub.c            |  8 ++--
+ fs/btrfs/send.c             | 76 ++++++++++++++++---------------------
+ fs/btrfs/space-info.c       | 13 +++----
+ fs/btrfs/transaction.c      |  9 +++--
+ fs/btrfs/uuid-tree.c        | 16 +++-----
+ fs/btrfs/verity.c           | 13 +++----
+ fs/btrfs/volumes.c          | 12 +++---
+ 18 files changed, 179 insertions(+), 239 deletions(-)
+
+-- 
+2.47.2
+
 
