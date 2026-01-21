@@ -1,56 +1,56 @@
-Return-Path: <linux-btrfs+bounces-20856-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20858-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id eESLF2UhcWl8eQAAu9opvQ
-	(envelope-from <linux-btrfs+bounces-20856-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 19:56:37 +0100
+	id 0LBuJGEdcWmodQAAu9opvQ
+	(envelope-from <linux-btrfs+bounces-20858-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 19:39:29 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id E307B5BA0F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 19:56:36 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08D1B5B63A
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 19:39:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id D1A38807766
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 16:42:39 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 00869AE8B73
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 16:42:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4123F41B361;
-	Wed, 21 Jan 2026 16:31:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 816CB4A1393;
+	Wed, 21 Jan 2026 16:31:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZDNuBvF+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZeFNtG9l"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28AC14963C2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6377149690D
 	for <linux-btrfs@vger.kernel.org>; Wed, 21 Jan 2026 16:31:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769013064; cv=none; b=kTptVIu6ZpWXC0kpnw+0iRqX7/lH6TLbmOTChq/YYTHfFIIDS1xljgr8vCA4Bn/MAC6w5W5/a/JQA8twnuj4aWIVy3/fDrURnAWM93cRGPKns93spsUAM3FaZ6d2xmND5xn5BlxtuGsb5peSalMs3dcru8Go4BRippIykRORdTQ=
+	t=1769013067; cv=none; b=ihhV3l4Wl2+fiHV95uUNtADH+FsvBOO8VB5WQFERB+8rPWRdAx6Yi5WpNxUv3Y6FJCxHhaPbJmQmQgO9JZArxNOJOHRAdwtz1r0vh49Gt8GOD35z8wA5GqPbqLD3/6p88H4p6WJxjdVWedvBn1PtVYdamUhgdqDYI2C0Bye957k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769013064; c=relaxed/simple;
-	bh=4M+9R5CziadNALs948lx2cTnTC0LKbQM7m4OnXn1Qe4=;
+	s=arc-20240116; t=1769013067; c=relaxed/simple;
+	bh=NtxTR3SHeF0mIrhtIWbmEdq7ssO+8t6gRyozx7zivOI=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=YMexYZQ3a18O1lQnnftbbyT/izGDguSBQoyKgvPwgXUq1miBPHnF1YYAXixhTn6NhH7bb3CLki3ixGsPrHNbFkQ6gziVcbHBPmksM4zyXuY4xhQ6OA+XDP3KQPbDG1rjqP0bq1x2uZ3xu0t/zFcQMHB3KOncDeoEdSEuPYqYg2U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZDNuBvF+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D4E7C116D0
-	for <linux-btrfs@vger.kernel.org>; Wed, 21 Jan 2026 16:31:03 +0000 (UTC)
+	 MIME-Version; b=Er4SKIY7Be8il/rDodaZ5mPm72hz83eqfzQT59livZ7MaKKRZ3Xgf2V3Iwi4vcMnkRawmuwiJk4+S7byb3bWp1mxMnh8aCQVpL4MOeqTrmaKKiyArUgOUdsTp3BwkpyTTO2BsVIsgiXNCT6Sy3zbkfeXf5fi8Ge65qcqwv9Q/Q8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZeFNtG9l; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5E9C0C4CEF1
+	for <linux-btrfs@vger.kernel.org>; Wed, 21 Jan 2026 16:31:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1769013064;
-	bh=4M+9R5CziadNALs948lx2cTnTC0LKbQM7m4OnXn1Qe4=;
+	bh=NtxTR3SHeF0mIrhtIWbmEdq7ssO+8t6gRyozx7zivOI=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=ZDNuBvF+mTn8+mkxbEKVwvFjMfibzazzks5DNz5gRks+jWumnyWLSplS1SybzdyY6
-	 Qh0xHPJnvFKJzhOPkL4euyAba1Ci+MBSzCvd2aYPRBkoJgImMxMPWYLD+o/hC19qs6
-	 YYgdelWFdCbAZlA19KLkpqO+956IBRfmwe5Fe7sB9Aow75BaNGcREyNZWGWFzkz+Dp
-	 TmZVu14hhhP2gl6o9vG/KKatOyvlxd98UZJ1lsiaGvoGYgxekQLVnooxohilBpn7+r
-	 eWqQOaj8Oz5ke803L+h+YW/u26cOyWhqLlXK5/50HiBfOsH5L5SoMWK8RejbHnbM7R
-	 VyrlhdpY0lLeA==
+	b=ZeFNtG9lk4FE6l8RLA+kEwLEzKjG4bE6XD2rwt+GqUPsSNeq+/P/RLDQqBJhc0Z26
+	 FJaW5kWC/t6WMwVyJTg72sYrJwad/n0ZjImUOSCwG+8wCfh5gEH26FtrdbDhYUFdbx
+	 SnCrPCxpUoOPfogPytHK4x3h+8E4rI870kSvPBcyCO8BbpSu5brrIFsjXWIPF9aeIY
+	 NsqwJBnGEEkQmzWyX7zof/yEp/56+uyxqL8QSbdfUzi8JLVsUtUAB5Ked6AJU+rrsu
+	 Y6pPjkT9tj+lShe0GI5MT8hKZT740uxS7YEGaWcOKxRzpkq10d0NDbI1MLwLBkswtH
+	 VQNuu/qj0C7GQ==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 17/19] btrfs: remove out label in btrfs_check_rw_degradable()
-Date: Wed, 21 Jan 2026 16:30:43 +0000
-Message-ID: <7bb366396aabb116d58ed9809e7f6943aaa0ee3c.1769012877.git.fdmanana@suse.com>
+Subject: [PATCH v2 18/19] btrfs: remove out label in btrfs_init_space_info()
+Date: Wed, 21 Jan 2026 16:30:44 +0000
+Message-ID: <f546fc1d82415821315229c84ddd63573f7b5aba.1769012877.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <cover.1769012876.git.fdmanana@suse.com>
 References: <cover.1769012876.git.fdmanana@suse.com>
@@ -63,30 +63,31 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spamd-Result: default: False [-1.46 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW_WITH_FAILURES(-0.50)[];
+	R_MISSING_CHARSET(0.50)[];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-20856-lists,linux-btrfs=lfdr.de];
 	DMARC_POLICY_ALLOW(0.00)[kernel.org,quarantine];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-20858-lists,linux-btrfs=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	FROM_NO_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	R_SPF_SOFTFAIL(0.00)[~all];
-	PRECEDENCE_BULK(0.00)[];
+	RCPT_COUNT_ONE(0.00)[1];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_NO_DN(0.00)[];
+	ASN(0.00)[asn:7979, ipnet:142.0.200.0/24, country:US];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[fdmanana@kernel.org,linux-btrfs@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	R_SPF_SOFTFAIL(0.00)[~all:c];
+	TAGGED_RCPT(0.00)[linux-btrfs];
 	TO_DN_NONE(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-btrfs];
-	ASN(0.00)[asn:7979, ipnet:213.196.21.0/24, country:US];
-	FROM_NEQ_ENVFROM(0.00)[fdmanana@kernel.org,linux-btrfs@vger.kernel.org]
-X-Rspamd-Queue-Id: E307B5BA0F
+	DBL_BLOCKED_OPENRESOLVER(0.00)[dfw.mirrors.kernel.org:rdns,dfw.mirrors.kernel.org:helo,suse.com:email,suse.com:mid]
+X-Rspamd-Queue-Id: 08D1B5B63A
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
@@ -98,42 +99,61 @@ and remove the label.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/volumes.c | 12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+ fs/btrfs/space-info.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index af0197b242a7..cff2412bc879 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -7576,10 +7576,9 @@ bool btrfs_check_rw_degradable(struct btrfs_fs_info *fs_info,
+diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+index bc493243f777..bb5aac7ee9d2 100644
+--- a/fs/btrfs/space-info.c
++++ b/fs/btrfs/space-info.c
+@@ -329,7 +329,7 @@ int btrfs_init_space_info(struct btrfs_fs_info *fs_info)
+ 	struct btrfs_super_block *disk_super;
+ 	u64 features;
+ 	u64 flags;
+-	int mixed = 0;
++	bool mixed = false;
+ 	int ret;
  
- 	map = btrfs_find_chunk_map(fs_info, 0, U64_MAX);
- 	/* No chunk at all? Return false anyway */
--	if (!map) {
--		ret = false;
+ 	disk_super = fs_info->super_copy;
+@@ -338,28 +338,28 @@ int btrfs_init_space_info(struct btrfs_fs_info *fs_info)
+ 
+ 	features = btrfs_super_incompat_flags(disk_super);
+ 	if (features & BTRFS_FEATURE_INCOMPAT_MIXED_GROUPS)
+-		mixed = 1;
++		mixed = true;
+ 
+ 	flags = BTRFS_BLOCK_GROUP_SYSTEM;
+ 	ret = create_space_info(fs_info, flags);
+ 	if (ret)
 -		goto out;
--	}
-+	if (!map)
-+		return false;
-+
- 	while (map) {
- 		int missing = 0;
- 		int max_tolerated;
-@@ -7604,15 +7603,14 @@ bool btrfs_check_rw_degradable(struct btrfs_fs_info *fs_info,
- 	"chunk %llu missing %d devices, max tolerance is %d for writable mount",
- 				   map->start, missing, max_tolerated);
- 			btrfs_free_chunk_map(map);
--			ret = false;
--			goto out;
-+			return false;
- 		}
- 		next_start = map->start + map->chunk_len;
- 		btrfs_free_chunk_map(map);
++		return ret;
  
- 		map = btrfs_find_chunk_map(fs_info, next_start, U64_MAX - next_start);
+ 	if (mixed) {
+ 		flags = BTRFS_BLOCK_GROUP_METADATA | BTRFS_BLOCK_GROUP_DATA;
+ 		ret = create_space_info(fs_info, flags);
+ 		if (ret)
+-			goto out;
++			return ret;
+ 	} else {
+ 		flags = BTRFS_BLOCK_GROUP_METADATA;
+ 		ret = create_space_info(fs_info, flags);
+ 		if (ret)
+-			goto out;
++			return ret;
+ 
+ 		flags = BTRFS_BLOCK_GROUP_DATA;
+ 		ret = create_space_info(fs_info, flags);
+ 		if (ret)
+-			goto out;
++			return ret;
  	}
+ 
+ 	if (features & BTRFS_FEATURE_INCOMPAT_REMAP_TREE) {
+@@ -367,7 +367,6 @@ int btrfs_init_space_info(struct btrfs_fs_info *fs_info)
+ 		ret = create_space_info(fs_info, flags);
+ 	}
+ 
 -out:
-+
  	return ret;
  }
  
