@@ -1,349 +1,247 @@
-Return-Path: <linux-btrfs+bounces-20807-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20808-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id wLdVGY6ucGmKZAAAu9opvQ
-	(envelope-from <linux-btrfs+bounces-20807-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 11:46:38 +0100
+	id KGxOLDi2cGndZAAAu9opvQ
+	(envelope-from <linux-btrfs+bounces-20808-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 12:19:20 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0673955740
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 11:46:37 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E46F55E4F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 12:19:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 9A2C9667AA5
-	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 10:35:25 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 4F2A95EC351
+	for <lists+linux-btrfs@lfdr.de>; Wed, 21 Jan 2026 10:43:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CFC0466B7E;
-	Wed, 21 Jan 2026 10:34:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4592F33CEA1;
+	Wed, 21 Jan 2026 10:43:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ownmail.net header.i=@ownmail.net header.b="kv5lmdgw";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="o4LwLi0F"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YChsGjRl"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from flow-b6-smtp.messagingengine.com (flow-b6-smtp.messagingengine.com [202.12.124.141])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60095389DE8;
-	Wed, 21 Jan 2026 10:34:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 697E93B5306
+	for <linux-btrfs@vger.kernel.org>; Wed, 21 Jan 2026 10:43:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768991684; cv=none; b=EyXHTR8PEW6TNW7D1iHrpTSgYngJnDsvJvLD7v4p0cHAmYJvT1Cdphm5uSV+VTARDKi/yBb0N8fHcqFHq/SMItzoxYeCiXYMTDSYLc2tzwvkxJ/BVcklVUmlD3YPXfkbEi5Y8kMDGliX29u9II6+IkMdl5PNneuTTZYBGKIz2KU=
+	t=1768992184; cv=none; b=Z22fzItXweYDJ6EuSGOuZasZ6mKTLLc2DtJbQuTubBIdADbvCfrqW2+gajFQ/1Ml6mEU3pTHFDZjB4oI2+ETYUZbDWvTwV6Y3kpkdEr2alVpxKASRJGGixcmG7edvzgReocFX0u6yegdYqImaOrJlWbFuFOhSdv2GQPPWLQkfBI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768991684; c=relaxed/simple;
-	bh=OpxePorkT1HNnxC5gOEOzsWXRMG94APImSoi26gHNmM=;
-	h=Content-Type:MIME-Version:From:To:Cc:Subject:In-reply-to:
-	 References:Date:Message-id; b=bhTDpL/pkogLc2CU6Goz7o/yg2MTCRSnWinI0jTwfEP0kap8c1P8WUc76oB5i8tpUAE0BasSG3mAKO7Bc6Fn02HYA5h3E/oe9KY5CUb0SQruf6kobR27YtuAMpc+mho+YorM/sE3pUzHNebpVTu+e9CkgDhWH+KRZEz5iigM+dU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ownmail.net; spf=pass smtp.mailfrom=ownmail.net; dkim=pass (2048-bit key) header.d=ownmail.net header.i=@ownmail.net header.b=kv5lmdgw; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=o4LwLi0F; arc=none smtp.client-ip=202.12.124.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ownmail.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ownmail.net
-Received: from phl-compute-09.internal (phl-compute-09.internal [10.202.2.49])
-	by mailflow.stl.internal (Postfix) with ESMTP id 14B671300419;
-	Wed, 21 Jan 2026 05:34:30 -0500 (EST)
-Received: from phl-frontend-04 ([10.202.2.163])
-  by phl-compute-09.internal (MEProxy); Wed, 21 Jan 2026 05:34:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ownmail.net; h=
-	cc:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:reply-to:subject:subject:to:to; s=fm2; t=
-	1768991669; x=1768998869; bh=K9j3jhKpFIpiUQJzHWR2x3eEHOIQSB6ye1v
-	rprKdmzg=; b=kv5lmdgwptpNtolMex40wHyYDtu1zR3kROgUgHa9dV4DF424TII
-	xz8dxcyqZv5vn+C5E7je63p/kUX6FA6DJv49ZG4TEvmE9CmQROcNdltD80UCq70F
-	67OKAnNM8oyAk8/zKVARKWIUXc/0rwj0A3HsU66MhxNwBVK6BifqALpBS3KNgyjp
-	P0XbAYs6phH+mnFqRoXC1mh9pnuNQ+fFEwhXXc1sSnndee26t3rwwjTbJtTESJ9H
-	fxgBNTVTQMWx/Tnp/sidQDM5zxfwLw4V6i5O5idHrafun9SF76YRjqhEkQ+5kNcK
-	HcmbYYUHLFntzBcrv0lywLVtTimlIcl+nQw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1768991669; x=
-	1768998869; bh=K9j3jhKpFIpiUQJzHWR2x3eEHOIQSB6ye1vrprKdmzg=; b=o
-	4LwLi0FQ1jEf8fskqm7+L10I5i+E4UcJvDl06S22E2N6MVzowyCMRqm/bH1M2J1a
-	JDwioi/R98Kd4aywyn9uZLSOM7z8MArbO4E7czObG95qdFlOtvQuQeCk3G1ZaKic
-	Tehtuqj1UGP3Eb7Ucl15f9362hASG+CEClGzitcQtKQLQ9R6sDLQi76cFZsvhiXR
-	ga+keMqdKP1sZXq4AW8N7RVWcf1Wq1jiHpO0YXPueFkCr92lRvi0sx0LsAgnwX8p
-	AKZCnY9vD6dcgSVBcblBk6RRY3JRRT1CNgtvJrCkNeFsfbLaIXO8m2mpKZ7xfZXV
-	VHjPUcyIoRUMrrAPKWG+w==
-X-ME-Sender: <xms:sqtwaejzMMYRFV89Y0xjhbUY2Ux7NPR7lm9XvAv8w1i7kASo3nK0Zw>
-    <xme:sqtwacbJbsKb0ZWVMi2Ld61rpE_gwOTUmZUOuIFkObP6qtSchisKdfJNZxw0XqFd2
-    dpJMMfqKKl9ncf8qF50uKZThAPLp5_pMzEv9z25paWGdt3g-rQ>
-X-ME-Received: <xmr:sqtwabSH-RRobwNx5gak-6jfqjdFsk_YBqmqf4AohoRb2sCX2uoyp4QOYu7NMlajZX_Q1etTmNQaSqmVM8w660ms4W7YiwL8iGuB03vkYszh>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddugeeftdehucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurheptgfgggfhvfevufgjfhffkfhrsehtjeertddttdejnecuhfhrohhmpefpvghilheu
-    rhhofihnuceonhgvihhlsgesohifnhhmrghilhdrnhgvtheqnecuggftrfgrthhtvghrnh
-    epudetfefhudevhedvfeeufedvffekveekgfdtfefggfekheejgefhteeihffggfelnecu
-    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepnhgvihhlsg
-    esohifnhhmrghilhdrnhgvthdpnhgspghrtghpthhtohepjedvpdhmohguvgepshhmthhp
-    ohhuthdprhgtphhtthhopehvihhrohesiigvnhhivhdrlhhinhhugidrohhrghdruhhkpd
-    hrtghpthhtohepghhuohgthhhunhhhrghisehvihhvohdrtghomhdprhgtphhtthhopehl
-    ihhnuhigqdigfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinh
-    hugidquhhnihhonhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehl
-    ihhnuhigqdhnihhlfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplh
-    hinhhugidqnhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhn
-    uhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlih
-    hnuhigqdhfshguvghvvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohep
-    lhhinhhugidqvgigthegsehvghgvrhdrkhgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:sqtwaUqa76K57jmkll9tnYEPNFtkwAFRAIOxkmOCTcJg3wPstOKebw>
-    <xmx:sqtwafqX8Nkd7EHiHXFk0lbznDX828ETkTyNFowHaBS8I4Kgjb_iRQ>
-    <xmx:sqtwaRGfSRcbTn7ju_6NXus6mwh9CX54E07yQqtkZf6nvJqjRrtQ3A>
-    <xmx:sqtwaZtU8f1xqg3JxB6L05BW89l7H_7-dfzynjFDw6dcCKuLsBgwHQ>
-    <xmx:tatwaYpYIXr04Y4VvYfBrbHTBHEkDGuPdYscX8VKwQ1WEKpEcFWHhm0u>
-Feedback-ID: iab3e480c:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 21 Jan 2026 05:34:08 -0500 (EST)
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+	s=arc-20240116; t=1768992184; c=relaxed/simple;
+	bh=RGeL/xScXSiZmEzjKzZtigLupwl9cFB8OrHjXURQ4a8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=C9kKspSazEJStdlCfqtgPTmNeXTRcZmu9mnHkdyeOfIZgn9NFQxbLOspYHaxm90sJ/R21DJe2l/PFO39qgRUotquXB5lu7vS4Dt2jG8VKQbUHf6am9mk7pFqBBcCNToM388As/uds7TS7ExGmOPqZFVuYL8Cj6lABr/XVhnUF4w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YChsGjRl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB7F1C16AAE
+	for <linux-btrfs@vger.kernel.org>; Wed, 21 Jan 2026 10:43:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1768992182;
+	bh=RGeL/xScXSiZmEzjKzZtigLupwl9cFB8OrHjXURQ4a8=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=YChsGjRlLC4JX8007g4ja8BqS7yjxwDOrxbBzLymcuynn8IzkJxIb4ipiOCyPQZju
+	 yivOwU1LwmwbyKg1iAY4Er/1SCNVaCWxcVa62add7gljrOMe3HlSGaoS3DO9i0HSt7
+	 NSErmqW+7TooC3854QeW60VcwW9gcrp7kU2U4Mo+//S2FT0s83ZZUrX4AJ9wI1PsXd
+	 +ExRZ6T5FFZYKOMcI+yh3R04DTnEBDhXeP3C/UUFEmIlGnc8h2eFyzYw8QOL6F/3vc
+	 Gt9t/joqMXbULxzlXcUXVm5fwNXR3UNHO1tbqpHzccZVAbJWlmA96z2C31/5M/GRLb
+	 KtR8f0E8vfPSw==
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-b874c00a39fso131742466b.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 21 Jan 2026 02:43:01 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCV1wIB+POh/8agTeVH6ztwWRU8o9X1pHGYnZgwbQs2a7EIK7gRfza2iVW7nf8EgfwWCT15xh/HairivoQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw23JzzqLb7fM8XJv+60bXtaVvZjBMUsXNbnZ2t4yCsfaYKDG/a
+	tTBZrVjGWK04rFKB0y7KVtrqBJwsS+cIihjkjcX/CTylHd3JhrTj8Ndr6oXGKhWrEddNYgaMLxB
+	qgWohet5gA2JBQIhx8MHktut13M9yvnY=
+X-Received: by 2002:a17:906:3091:b0:b87:23b4:11f4 with SMTP id
+ a640c23a62f3a-b8777a0b1admr1475580966b.2.1768992180538; Wed, 21 Jan 2026
+ 02:43:00 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: NeilBrown <neilb@ownmail.net>
-To: "Christoph Hellwig" <hch@infradead.org>
-Cc: "Christoph Hellwig" <hch@infradead.org>,
- "Christian Brauner" <brauner@kernel.org>,
- "Jeff Layton" <jlayton@kernel.org>,
- "Amir Goldstein" <amir73il@gmail.com>,
- "Alexander Viro" <viro@zeniv.linux.org.uk>,
- "Chuck Lever" <chuck.lever@oracle.com>,
- "Olga Kornievskaia" <okorniev@redhat.com>,
- "Dai Ngo" <Dai.Ngo@oracle.com>, "Tom Talpey" <tom@talpey.com>,
- "Hugh Dickins" <hughd@google.com>,
- "Baolin Wang" <baolin.wang@linux.alibaba.com>,
- "Andrew Morton" <akpm@linux-foundation.org>,
- "Theodore Ts'o" <tytso@mit.edu>,
- "Andreas Dilger" <adilger.kernel@dilger.ca>, "Jan Kara" <jack@suse.com>,
- "Gao Xiang" <xiang@kernel.org>, "Chao Yu" <chao@kernel.org>,
- "Yue Hu" <zbestahu@gmail.com>, "Jeffle Xu" <jefflexu@linux.alibaba.com>,
- "Sandeep Dhavale" <dhavale@google.com>,
- "Hongbo Li" <lihongbo22@huawei.com>, "Chunhai Guo" <guochunhai@vivo.com>,
- "Carlos Maiolino" <cem@kernel.org>, "Ilya Dryomov" <idryomov@gmail.com>,
- "Alex Markuze" <amarkuze@redhat.com>,
- "Viacheslav Dubeyko" <slava@dubeyko.com>, "Chris Mason" <clm@fb.com>,
- "David Sterba" <dsterba@suse.com>,
- "Luis de Bethencourt" <luisbg@kernel.org>,
- "Salah Triki" <salah.triki@gmail.com>,
- "Phillip Lougher" <phillip@squashfs.org.uk>,
- "Steve French" <sfrench@samba.org>, "Paulo Alcantara" <pc@manguebit.org>,
- "Ronnie Sahlberg" <ronniesahlberg@gmail.com>,
- "Shyam Prasad N" <sprasad@microsoft.com>,
- "Bharath SM" <bharathsm@microsoft.com>,
- "Miklos Szeredi" <miklos@szeredi.hu>,
- "Mike Marshall" <hubcap@omnibond.com>,
- "Martin Brandenburg" <martin@omnibond.com>,
- "Mark Fasheh" <mark@fasheh.com>, "Joel Becker" <jlbec@evilplan.org>,
- "Joseph Qi" <joseph.qi@linux.alibaba.com>,
- "Konstantin Komarov" <almaz.alexandrovich@paragon-software.com>,
- "Ryusuke Konishi" <konishi.ryusuke@gmail.com>,
- "Trond Myklebust" <trondmy@kernel.org>,
- "Anna Schumaker" <anna@kernel.org>, "Dave Kleikamp" <shaggy@kernel.org>,
- "David Woodhouse" <dwmw2@infradead.org>,
- "Richard Weinberger" <richard@nod.at>, "Jan Kara" <jack@suse.cz>,
- "Andreas Gruenbacher" <agruenba@redhat.com>,
- "OGAWA Hirofumi" <hirofumi@mail.parknet.co.jp>,
- "Jaegeuk Kim" <jaegeuk@kernel.org>, linux-nfs@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-mm@kvack.org, linux-ext4@vger.kernel.org,
- linux-erofs@lists.ozlabs.org, linux-xfs@vger.kernel.org,
- ceph-devel@vger.kernel.org, linux-btrfs@vger.kernel.org,
- linux-cifs@vger.kernel.org, linux-unionfs@vger.kernel.org,
- devel@lists.orangefs.org, ocfs2-devel@lists.linux.dev,
- ntfs3@lists.linux.dev, linux-nilfs@vger.kernel.org,
- jfs-discussion@lists.sourceforge.net, linux-mtd@lists.infradead.org,
- gfs2@lists.linux.dev, linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [PATCH 00/29] fs: require filesystems to explicitly opt-in to
- nfsd export support
-In-reply-to: <aXCg-MqXH0E6IuwS@infradead.org>
-References: <20260115-exportfs-nfsd-v1-0-8e80160e3c0c@kernel.org>,
- <CAOQ4uxjOJMwv_hRVTn3tJHDLMQHbeaCGsdLupiZYcwm7M2rm3g@mail.gmail.com>,
- <9c99197dde2eafa55a1b55dce2f0d4d02c77340a.camel@kernel.org>,
- <176877859306.16766.15009835437490907207@noble.neil.brown.name>,
- <aW3SAKIr_QsnEE5Q@infradead.org>,
- <176880736225.16766.4203157325432990313@noble.neil.brown.name>,
- <20260119-kanufahren-meerjungfrau-775048806544@brauner>,
- <176885553525.16766.291581709413217562@noble.neil.brown.name>,
- <aW8w2SRyFnmA2uqk@infradead.org>,
- <176890126683.16766.5241619788613840985@noble.neil.brown.name>,
- <aXCg-MqXH0E6IuwS@infradead.org>
-Date: Wed, 21 Jan 2026 21:34:04 +1100
-Message-id: <176899164457.16766.16099772451425825775@noble.neil.brown.name>
-Reply-To: NeilBrown <neil@brown.name>
-X-Spamd-Result: default: False [-0.46 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+References: <cover.1768911827.git.fdmanana@suse.com> <05452a804b036b205a791be1c1c5e09d0279812d.1768911827.git.fdmanana@suse.com>
+ <3a5d1472-7ff0-447f-9d02-f75a60161ead@gmx.com> <20260121042455.GO26902@twin.jikos.cz>
+ <b1f7072a-57de-4df5-abcf-a9e975e5c58f@gmx.com>
+In-Reply-To: <b1f7072a-57de-4df5-abcf-a9e975e5c58f@gmx.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Wed, 21 Jan 2026 10:42:23 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H5NRKqd4drKJfsLfcG8TB+tVo4p+KQyz2M6p7CnYg_b6A@mail.gmail.com>
+X-Gm-Features: AZwV_QhtcuvhgLzOq4LA0qJut94weTJsSqdk-J1HWkDqZuRcHUL0PykjT5h3hsQ
+Message-ID: <CAL3q7H5NRKqd4drKJfsLfcG8TB+tVo4p+KQyz2M6p7CnYg_b6A@mail.gmail.com>
+Subject: Re: [PATCH 2/4] btrfs: allocate path in load_block_group_size_class()
+To: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Cc: dsterba@suse.cz, linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spamd-Result: default: False [-1.96 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW_WITH_FAILURES(-0.50)[];
-	R_DKIM_ALLOW(-0.20)[ownmail.net:s=fm2,messagingengine.com:s=fm2];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	REPLYTO_DN_EQ_FROM_DN(0.00)[];
-	DMARC_POLICY_ALLOW(0.00)[ownmail.net,none];
-	TAGGED_FROM(0.00)[bounces-20807-lists,linux-btrfs=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[infradead.org,kernel.org,gmail.com,zeniv.linux.org.uk,oracle.com,redhat.com,talpey.com,google.com,linux.alibaba.com,linux-foundation.org,mit.edu,dilger.ca,suse.com,huawei.com,vivo.com,dubeyko.com,fb.com,squashfs.org.uk,samba.org,manguebit.org,microsoft.com,szeredi.hu,omnibond.com,fasheh.com,evilplan.org,paragon-software.com,nod.at,suse.cz,mail.parknet.co.jp,vger.kernel.org,kvack.org,lists.ozlabs.org,lists.orangefs.org,lists.linux.dev,lists.sourceforge.net,lists.infradead.org];
-	FREEMAIL_FROM(0.00)[ownmail.net];
-	RCVD_TLS_LAST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	REPLYTO_DOM_NEQ_FROM_DOM(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	R_SPF_SOFTFAIL(0.00)[~all:c];
-	RCVD_COUNT_FIVE(0.00)[6];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[neilb@ownmail.net,linux-btrfs@vger.kernel.org];
-	DKIM_TRACE(0.00)[ownmail.net:+,messagingengine.com:+];
-	RCPT_COUNT_GT_50(0.00)[73];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	HAS_REPLYTO(0.00)[neil@brown.name];
-	TAGGED_RCPT(0.00)[linux-btrfs];
+	DMARC_POLICY_ALLOW(0.00)[kernel.org,quarantine];
+	TAGGED_FROM(0.00)[bounces-20808-lists,linux-btrfs=lfdr.de];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_TO(0.00)[gmx.com];
+	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:7979, ipnet:213.196.21.0/24, country:US];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[brown.name:replyto,ownmail.net:dkim,noble.neil.brown.name:mid,messagingengine.com:dkim,ams.mirrors.kernel.org:rdns,ams.mirrors.kernel.org:helo]
-X-Rspamd-Queue-Id: 0673955740
+	TO_DN_SOME(0.00)[];
+	R_SPF_SOFTFAIL(0.00)[~all:c];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[fdmanana@kernel.org,linux-btrfs@vger.kernel.org];
+	RCPT_COUNT_THREE(0.00)[3];
+	RCVD_COUNT_FIVE(0.00)[5];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-btrfs];
+	ASN(0.00)[asn:7979, ipnet:2605:f480::/32, country:US];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[dfw.mirrors.kernel.org:rdns,dfw.mirrors.kernel.org:helo,mail.gmail.com:mid,suse.com:email]
+X-Rspamd-Queue-Id: 1E46F55E4F
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Wed, 21 Jan 2026, Christoph Hellwig wrote:
-> On Tue, Jan 20, 2026 at 08:27:46PM +1100, NeilBrown wrote:
-> > > If you think NFS actually explains the semantics pretty well, please
-> > > explain that too, especially in forms that can be put into
-> > > documentation, including for the user ABI.
-> > 
-> > There are multiple issues here:
-> > 
-> >  - filehandle stability.  As far as I know all filesystems provide
-> >    stable filehandles when the "subtree_check" export option is not used.
-> 
-> That is news to me, but certainly interesting.  Does this include not
-> reusing the file handle for a new incarnation of the same thing?
+On Wed, Jan 21, 2026 at 4:40=E2=80=AFAM Qu Wenruo <quwenruo.btrfs@gmx.com> =
+wrote:
+>
+>
+>
+> =E5=9C=A8 2026/1/21 14:54, David Sterba =E5=86=99=E9=81=93:
+> > On Wed, Jan 21, 2026 at 07:16:06AM +1030, Qu Wenruo wrote:
+> >> =E5=9C=A8 2026/1/20 22:55, fdmanana@kernel.org =E5=86=99=E9=81=93:
+> >>> From: Filipe Manana <fdmanana@suse.com>
+> >>>
+> >>> Instead of allocating and freeing a path in every iteration of
+> >>> load_block_group_size_class(), through its helper function
+> >>> sample_block_group_extent_item(), allocate the path in the former and
+> >>> pass it to the later.
+> >>>
+> >>> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> >>> ---
+> >>>    fs/btrfs/block-group.c | 32 +++++++++++++++++---------------
+> >>>    1 file changed, 17 insertions(+), 15 deletions(-)
+> >>>
+> >>> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+> >>> index 343c29344484..a7828673be39 100644
+> >>> --- a/fs/btrfs/block-group.c
+> >>> +++ b/fs/btrfs/block-group.c
+> >>> @@ -579,24 +579,24 @@ int btrfs_add_new_free_space(struct btrfs_block=
+_group *block_group, u64 start,
+> >>>     * @index:        the integral step through the block group to gra=
+b from
+> >>>     * @max_index:    the granularity of the sampling
+> >>>     * @key:          return value parameter for the item we find
+> >>> + * @path:         path to use for searching in the extent tree
+> >>>     *
+> >>>     * Pre-conditions on indices:
+> >>>     * 0 <=3D index <=3D max_index
+> >>>     * 0 < max_index
+> >>>     *
+> >>> - * Returns: 0 on success, 1 if the search didn't yield a useful item=
+, negative
+> >>> - * error code on error.
+> >>> + * Returns: 0 on success, 1 if the search didn't yield a useful item=
+.
+> >>>     */
+> >>>    static int sample_block_group_extent_item(struct btrfs_caching_con=
+trol *caching_ctl,
+> >>>                                       struct btrfs_block_group *block=
+_group,
+> >>>                                       int index, int max_index,
+> >>> -                                     struct btrfs_key *found_key)
+> >>> +                                     struct btrfs_key *found_key,
+> >>> +                                     struct btrfs_path *path)
+> >>>    {
+> >>>     struct btrfs_fs_info *fs_info =3D block_group->fs_info;
+> >>>     struct btrfs_root *extent_root;
+> >>>     u64 search_offset;
+> >>>     const u64 search_end =3D btrfs_block_group_end(block_group);
+> >>> -   BTRFS_PATH_AUTO_FREE(path);
+> >>>     struct btrfs_key search_key;
+> >>>     int ret =3D 0;
+> >>>
+> >>> @@ -606,17 +606,9 @@ static int sample_block_group_extent_item(struct=
+ btrfs_caching_control *caching_
+> >>>     lockdep_assert_held(&caching_ctl->mutex);
+> >>>     lockdep_assert_held_read(&fs_info->commit_root_sem);
+> >>>
+> >>> -   path =3D btrfs_alloc_path();
+> >>> -   if (!path)
+> >>> -           return -ENOMEM;
+> >>> -
+> >>>     extent_root =3D btrfs_extent_root(fs_info, max_t(u64, block_group=
+->start,
+> >>>                                                    BTRFS_SUPER_INFO_O=
+FFSET));
+> >>>
+> >>> -   path->skip_locking =3D true;
+> >>> -   path->search_commit_root =3D true;
+> >>> -   path->reada =3D READA_FORWARD;
+> >>> -
+> >>>     search_offset =3D index * div_u64(block_group->length, max_index)=
+;
+> >>>     search_key.objectid =3D block_group->start + search_offset;
+> >>>     search_key.type =3D BTRFS_EXTENT_ITEM_KEY;
+> >>> @@ -679,6 +671,7 @@ static int sample_block_group_extent_item(struct =
+btrfs_caching_control *caching_
+> >>>    static void load_block_group_size_class(struct btrfs_caching_contr=
+ol *caching_ctl,
+> >>>                                     struct btrfs_block_group *block_g=
+roup)
+> >>>    {
+> >>> +   BTRFS_PATH_AUTO_FREE(path);
+> >>>     struct btrfs_fs_info *fs_info =3D block_group->fs_info;
+> >>>     struct btrfs_key key;
+> >>>     int i;
+> >>> @@ -688,14 +681,23 @@ static void load_block_group_size_class(struct =
+btrfs_caching_control *caching_ct
+> >>>     if (!btrfs_block_group_should_use_size_class(block_group))
+> >>>             return;
+> >>>
+> >>> +   path =3D btrfs_alloc_path();
+> >>> +   if (!path)
+> >>> +           return;
+> >>
+> >> Considering the function is only called inside a workqueue, we can avo=
+id
+> >> a memory allocation by using on-stack path, which also reduces one err=
+or
+> >> path.
+> >
+> > As a generic pattern we could switch to on-stack variables for the
+> > functions called from workqueues but it may not be obvious that it's OK
+> > to do that (unlike eg. the compression functions).
+> >
+> > But I'd like to have an assertion or a debug warning for that, not sure
+> > how exactly to do it, maybe something is in the task_struct.
+> >
+>
+> I was looking into that during async csum development. But I didn't find
+> a good way to determine if we're in workqueue.
 
-"stable" and "reuse" are quite distinct concepts in my mind.
-"a new incarnation of the same thing" is in my experience a new thing.
-  rmdir foo: mkdir foo
-on an empty directory will create a new incarnation of the same thing.
-But it will appear to be different in various ways.
+We can do this and it works:
 
-Names, not file handles, are generally used for new incarnations of the
-same thing (again - in my experience).
+/*
+* Since we run in workqueue context, we allocate the path on stack to
+* avoid memory allocation failure, as the stack in a work queue task
+* is not deep.
+*/
+ASSERT(current_work() =3D=3D &caching_ctl->work.normal_work);
 
-I cannot 100% guarantee that all fs's provide filehandle stability, but
-I am not aware of any, and none have been presented in this discussion.
+I'm adding that to the patch and will push into for-next soon.
 
-It is true that the NFSv4 spec claims to allow them but I find the
-details provided insufficient.
-They might be able to work reliably if the server provided a delegation, but
-without it I don't think they can be used reliably.  I'm certainly not
-aware of any attempt to support them in Linux client or server.
-(I know Trond doesn't like "connectable" file handles).
-
-> 
-> >    Certainly cgroupfs does.  So having an EXPORT_OP_STABLE_HANDLES
-> >    flag would mean it was set for every filesystem - unless there is
-> >    something else I'm not aware of.  That is certainly possible and I
-> >    hope someone will let me know if I'm missing something.
-> 
-> Well, if does not provide stable file handles with the subtree_check
-> export option, or more importantly with the CONNECTABLE flag passed
-> to encode_fh, which is the level we're operating on, it can't set the
-> flag.
-> 
-
-Hmmm...  I didn't know that open_by_handle_at() supported CONNECTABLE
-requests. That seems relatively recent.
-
-If CONNECTABLE is requested, then only directories get stable
-filehandles.
-If CONNECTABLE is not requested, then all filehandles should be stable.
-
-
-
-> >  - filehandle uniqueness.  This is somewhat important and if a
-> >    filesystem doesn't provide it, that should be considered a bug.  In a
-> >    different thread Christian has observed that there would be benefit
-> >    if pidfs and nsfs provided uniqueness across reboots.  It is quite
-> >    easy for a virtual filesystem to generate a 64 bit random number when
-> >    the fs is initialised, and include that in file handles.  Having a
-> >    EXPORT_OP_REUSES_HANDLES flag could mark filesystems that are still
-> >    buggy if that is thought to be useful.
-> 
-> Yes.
-> 
-> >  - GETATTR always reporting file size of 0.  This is the only concrete
-> >    symptom that Jeff has reported (that I have seen).  This  makes it
-> >    impossible to read files over NFS even if they have content.
-> >    Would EXPORT_OP_INACCURATE_SIZE be useful?
-> 
-> i_size = 0 for a regular file sounds like a genuine bug to me.  I'm
-> actually surprised anything works with that.
-
-Files in /proc are all size zero.
-Files in /sys seem to be all 4096 (or maybe PAGE_SIZE).
-Files in /sys/kernel/security are all size zero
-Files in /sys/fs/cgroup are all zero
-
-I agree it is weird, but it seems to work ...  though I do have a vague
-memory of something not working because it used a library function to
-read a file, and it needed to be fixed.  No details come to mind except
-that it was probably md related.
-
-As some of these virtual files can be different every time they are
-read, there is TOCTOU issue with trying to make the i_size accurately
-reflect the result of a subsequent read.  I think the cost of setting an
-accurate i_size even when it is possible is not seen as worth while.
-
-> 
-> >  - maintainer feature choice.  A maintainer may choose not to support
-> >    export over NFS because they feel that there is no value and the
-> >    possible support burden would not be worth it.
-> 
-> The maintainer has no way to disallow exporting through nfs.  They can
-> at best disallow exporting using the kernel nfs daemon if we provide
-> that facility.  But as I've argued multiple times, making arbitrary,
-> selective and very narrow choices about use cases without technical
-> backing for them (which then would be expressable as a flag like those
-> listed by you above) is really bad software development practice, and
-> not something that we usually do in the Linux kernel.
-
-True: once you make files available to people you cannot control what
-people will do with them.
-So maybe you are saying "what is so special about knfsd that it gets
-information that no-one else can get".  I cannot argue against that.
-
-> 
-> >    There may be locking
-> >    / lease / etc issues that further complicate things.  So it might be
-> >    reasonable for a maintainer to choose to forbid NFS export while
-> >    allowing local fhandle access. EXPORT_OP_NO_NFS_EXPORT.
-> 
-> We already have a EXPORT_OP_NOLOCKS flag to deal with this.
-> 
-> > 
-> > It took me a while to sift through the code/patches/comments and come to
-> > this understanding and I apologise if I wasn't as clear earlier.  But
-> > my intuition was always that file handle stability was never the real
-> > issue, and maintainer choice was.  Hence my rejection of the
-> > "STABLE_HANDLES" name.
-> 
-> Why do you keep ignoring the fat that the stable handles are really
-> important for anyone wanting to actually use them for their original
-> storage purpose, be that for knfsd, a userland nfs damon, or other
-> storage applications in userspace despite explaining this countless
-> times?
-> 
-
-It isn't that I don't think they are important.  It is that I think they
-are universally provided (when not connectable).
-If we add an EXPORT_OP_STABLE_FILEHANDLES flag, I believe we would need to
-set it on every export_operations structure.  So what would be the
-point?
-
-Thanks,
-NeilBrown
+> The closest one I found is in_task(), which can not distinguish
+> workqueue and regular userspace falling into kernel situations.
+>
+> Maybe there are some way to poking into the current task structure, but
+> I didn't find a straightforward helper.
+>
+> Thanks,
+> Qu
+>
 
