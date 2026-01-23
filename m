@@ -1,858 +1,170 @@
-Return-Path: <linux-btrfs+bounces-20966-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20967-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id oKFoN/5wc2lNvwAAu9opvQ
-	(envelope-from <linux-btrfs+bounces-20966-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Jan 2026 14:00:46 +0100
+	id ECD4BNh2c2kEwAAAu9opvQ
+	(envelope-from <linux-btrfs+bounces-20967-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Jan 2026 14:25:44 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C6947616E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Jan 2026 14:00:46 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6504763A0
+	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Jan 2026 14:25:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 0841F303932D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Jan 2026 13:00:07 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 81D0E301C6C6
+	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Jan 2026 13:25:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 870522F28EA;
-	Fri, 23 Jan 2026 13:00:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3464F303A37;
+	Fri, 23 Jan 2026 13:25:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="C9COF0ib"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="F0TG+4Df"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from esa6.hgst.iphmx.com (esa6.hgst.iphmx.com [216.71.154.45])
+Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE02A2F39DD
-	for <linux-btrfs@vger.kernel.org>; Fri, 23 Jan 2026 12:59:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.71.154.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD53A2E6CAB;
+	Fri, 23 Jan 2026 13:25:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769173200; cv=none; b=ldUg6xKBIgd0s+k8BQ2s5B1CVDWivHrqB2axjbUKGCCepe1zkBx4kdsN3dpFsE2nOqWZ6/DX7GUxVvF6kkfaRPrrqXX8oyK+ammsc9onhds4iATPkHftSRhfCw46maLXPGUhJC+cMnsIeBFWUuxw+BHrPec8PvodsHyIHwUaazM=
+	t=1769174728; cv=none; b=ftvxTXbTwW5IdsGfIHmOu2fDm6LO2SqxCSCtC7bVLtocmWMP2juOfFHzikspdYC+iXFPZUUeShCivc8mPRLYZfCGHgfckWEH+et56ZPyUVdrhWJ/0shK8AqqsckF+jhbdsUkgA6QGFrd2ymJv7y/1r2t0tpAU1laGtNUlNOrOK8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769173200; c=relaxed/simple;
-	bh=EA9WlrAUJq8tiez4Re2m33e+BFMgmIQAz7WbGmAiKQA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=eGNB65/d1g0oo14XHgV+kJw35US7vlgvp1aMiu/TGLfVutW0yj+8gS4scM4ufLUkQRwn0MVSYixTO2heIBzwA7cpP2Xrkd9IfHfdA0Z7cY/MXnfr2hBu19rjIPorRYZDAru+KULzk7+aIiZsgjYFm3zn64THmo44R5cMAi9OuOM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=C9COF0ib; arc=none smtp.client-ip=216.71.154.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1769173197; x=1800709197;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=EA9WlrAUJq8tiez4Re2m33e+BFMgmIQAz7WbGmAiKQA=;
-  b=C9COF0ib71HB1K+pV9nnYVBl0pnlforyvmhpiXCOjj51GzFdrya8e7ed
-   SiRE6JJmAPOovjlUHI+atgBx1sakVyFf4tu/4sfpYBhQdtHY8S9n9NaV8
-   2wqTS2LauJM1um4rQ9DlYCMtmynKfzqWvaDsI0NLO/o5RWlPY5sI5JU2Z
-   necBn/bnK9zzum63h8D+QYkQzdv1MO8fllZyFw0NXN6eNbQ23J9ahleNL
-   kUweV48GXDhYYy6AgzgWfkYNg2uR2S1TOMd009GZUY3KV9EQZ7pvMOTl1
-   k0sLo/XXmgLLZe1AffhbLVJRISu1RViSsChW21gfaMwhAAIOie1BQhmP0
-   g==;
-X-CSE-ConnectionGUID: 9k1kBvb3Tn2mfv2epzx7RQ==
-X-CSE-MsgGUID: 1xu/8vjoQ1iKm6A765QFMg==
-X-IronPort-AV: E=Sophos;i="6.21,248,1763395200"; 
-   d="scan'208";a="138590781"
-Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 23 Jan 2026 20:59:50 +0800
-IronPort-SDR: 697370c8_P8i4urcaQ0RDuqfgLFj29JO2LqLF3ZZh2lP0//LbSlYVeNA
- L5pvvi2VCmg7VZvCKk4iaSGjBL1mG4sQ8FtnB+A==
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 23 Jan 2026 04:59:52 -0800
-WDCIronportException: Internal
-Received: from 5cg2075g8f.ad.shared (HELO naota-xeon) ([10.224.105.93])
-  by uls-op-cesaip01.wdc.com with ESMTP; 23 Jan 2026 04:59:52 -0800
-From: Naohiro Aota <naohiro.aota@wdc.com>
-To: linux-btrfs@vger.kernel.org
-Cc: Naohiro Aota <naohiro.aota@wdc.com>
-Subject: [PATCH 4/4] btrfs: tests: zoned: add selftest for zoned code
-Date: Fri, 23 Jan 2026 21:59:20 +0900
-Message-ID: <20260123125920.4129581-5-naohiro.aota@wdc.com>
-X-Mailer: git-send-email 2.52.0
-In-Reply-To: <20260123125920.4129581-1-naohiro.aota@wdc.com>
-References: <20260123125920.4129581-1-naohiro.aota@wdc.com>
+	s=arc-20240116; t=1769174728; c=relaxed/simple;
+	bh=COI1Vn0YHKV3OVPLgMROQ8SgPobrtuTwkqABWHq9GFY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hVUwPOelcaLY6q2esZKgoBRU2kTVKu26gAU6VCClG2hwzdy+6ePM4q71O4XaY0pfASXCF97c9QmL8g9QKuWATf08XsEM6+TXEiySgtrrgixPNIxP2wxaRfAWa6Ej0HFuIuF/kJqBEW5TSMLFNXKtN/TiF0ysatKJYB3oGG6la2Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=F0TG+4Df; arc=none smtp.client-ip=213.97.179.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+	s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=NkmcwHGTXfF74rwBRnsbltvXcHCGT5Xzk4r/Sa5CsWE=; b=F0TG+4DfKYqxbC9mBgnQPVdnqb
+	SZ9Dc0np9ZEglfchr7h44jnjx+M9hFgLwhavB3Lz7ZlEKpl384mNcXOUSCu/24DIYNtLoMIC4xKc2
+	2p6/dSQBF/g6NEdKb32Ql5ZLv925WgIVF1iVGSp9+Yjd3CwyEfhu4nZc4jgchJSEC3KPxz8lhTDZB
+	te2x3kgzGQJyaxuECraVFbEzOcAJ9s4Hxe+1v+xsqk1xc7y1tUgaFFqYCVUuiA45ld4ZDSvQ4H8Sr
+	ugdw6NYOtwP6YrzD9rY1US4CssTN/SBYbSu8DqbX63lqEi5/PwsaSmQxqdLIkztNuYkTpvGUzBych
+	lUXKTx+g==;
+Received: from [179.98.220.182] (helo=[192.168.15.100])
+	by fanzine2.igalia.com with esmtpsa 
+	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
+	id 1vjH9m-008tyb-VC; Fri, 23 Jan 2026 14:24:59 +0100
+Message-ID: <ee38734b-c4c3-4b96-8ff2-b4ce5730b57c@igalia.com>
+Date: Fri, 23 Jan 2026 10:24:50 -0300
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/3] ovl: Use real disk UUID for origin file handles
+To: Amir Goldstein <amir73il@gmail.com>
+Cc: Christoph Hellwig <hch@lst.de>, Chuck Lever <chuck.lever@oracle.com>,
+ Jeff Layton <jlayton@kernel.org>, NeilBrown <neil@brown.name>,
+ Olga Kornievskaia <okorniev@redhat.com>, Dai Ngo <Dai.Ngo@oracle.com>,
+ Tom Talpey <tom@talpey.com>, Carlos Maiolino <cem@kernel.org>,
+ Chris Mason <clm@fb.com>, David Sterba <dsterba@suse.com>,
+ Miklos Szeredi <miklos@szeredi.hu>, Christian Brauner <brauner@kernel.org>,
+ Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
+ linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
+ linux-unionfs@vger.kernel.org, kernel-dev@igalia.com, vivek@collabora.com,
+ Ludovico de Nittis <ludovico.denittis@collabora.com>
+References: <20260114-tonyk-get_disk_uuid-v1-0-e6a319e25d57@igalia.com>
+ <20260114-tonyk-get_disk_uuid-v1-3-e6a319e25d57@igalia.com>
+ <20260114062608.GB10805@lst.de>
+ <5334ebc6-ceee-4262-b477-6b161c5ca704@igalia.com>
+ <20260115062944.GA9590@lst.de>
+ <633bb5f3-4582-416c-b8b9-fd1f3b3452ab@suse.com>
+ <20260115072311.GA10352@lst.de>
+ <22b16e24-d10e-43f6-bc2b-eeaa94310e3a@igalia.com>
+ <CAOQ4uxhbz7=XT=C3R8XqL0K_o7KwLKsoNwgk=qJGuw2375MTJw@mail.gmail.com>
+ <0241e2c4-bf11-4372-9eda-cccaba4a6d7d@igalia.com>
+ <CAOQ4uxi988PutUi=Owm5zf6NaCm90PUCJLu7dw8firH8305w-A@mail.gmail.com>
+ <33c1ccbd-abbe-4278-8ab1-d7d645c8b6e8@igalia.com>
+ <CAOQ4uxgCM=q29Vs+35y-2K9k7GP2A2NfPkuqCrUiMUHW+KhbWw@mail.gmail.com>
+ <75a9247a-12f4-4066-9712-c70ab41c274f@igalia.com>
+ <CAOQ4uxig==FAd=2hO0B_CVBDSuBwdqL-zaXkpf-QXn5iEL364g@mail.gmail.com>
+ <CAOQ4uxg6dKr4XB3yAkfGd_ehZkBMcoNHiF5CeB9=3aca44yHRg@mail.gmail.com>
+Content-Language: en-US
+From: =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>
+In-Reply-To: <CAOQ4uxg6dKr4XB3yAkfGd_ehZkBMcoNHiF5CeB9=3aca44yHRg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [-0.36 / 15.00];
+	R_DKIM_REJECT(1.00)[igalia.com:s=20170329];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[wdc.com,quarantine];
-	R_DKIM_ALLOW(-0.20)[wdc.com:s=dkim.wdc.com];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
+	DMARC_POLICY_SOFTFAIL(0.10)[igalia.com : SPF not aligned (relaxed),none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWO(0.00)[2];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20966-lists,linux-btrfs=lfdr.de];
-	DKIM_TRACE(0.00)[wdc.com:+];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	TO_DN_SOME(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[naohiro.aota@wdc.com,linux-btrfs@vger.kernel.org];
+	RCVD_COUNT_THREE(0.00)[4];
+	FREEMAIL_TO(0.00)[gmail.com];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-20967-lists,linux-btrfs=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[25];
+	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-0.993];
+	FROM_NEQ_ENVFROM(0.00)[andrealmeid@igalia.com,linux-btrfs@vger.kernel.org];
 	PRECEDENCE_BULK(0.00)[];
-	NEURAL_HAM(-0.00)[-0.992];
-	RCVD_COUNT_FIVE(0.00)[6];
+	DKIM_TRACE(0.00)[igalia.com:-];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[wdc.com:email,wdc.com:dkim,wdc.com:mid]
-X-Rspamd-Queue-Id: 9C6947616E
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: C6504763A0
 X-Rspamd-Action: no action
 
-Add a test function for the zoned code, for now it tests
-btrfs_load_block_group_by_raid_type() with various test cases. The
-load_zone_info_tests[] array defines the test cases.
 
-Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
----
- fs/btrfs/Makefile            |   2 +-
- fs/btrfs/tests/btrfs-tests.c |   3 +
- fs/btrfs/tests/btrfs-tests.h |   1 +
- fs/btrfs/tests/zoned-tests.c | 676 +++++++++++++++++++++++++++++++++++
- fs/btrfs/zoned.c             |   3 +
- 5 files changed, 684 insertions(+), 1 deletion(-)
- create mode 100644 fs/btrfs/tests/zoned-tests.c
+Em 22/01/2026 17:07, Amir Goldstein escreveu:
+> On Tue, Jan 20, 2026 at 4:12 PM Amir Goldstein <amir73il@gmail.com> wrote:
+>>
+>> On Mon, Jan 19, 2026 at 5:56 PM André Almeida <andrealmeid@igalia.com> wrote:
+>>>
+> ...
+>>> Actually they are not in the same fs, upper and lower are coming from
+>>> different fs', so when trying to mount I get the fallback to
+>>> `uuid=null`. A quick hack circumventing this check makes the mount work.
+>>>
+>>> If you think this is the best way to solve this issue (rather than
+>>> following the VFS helper path for instance),
+>>
+>> That's up to you if you want to solve the "all lower layers on same fs"
+>> or want to also allow lower layers on different fs.
+>> The former could be solved by relaxing the ovl rules.
+>>
+>>> please let me know how can
+>>> I safely lift this restriction, like maybe adding a new flag for this?
+>>
+>> I think the attached patch should work for you and should not
+>> break anything.
+>>
+>> It's only sanity tested and will need to write tests to verify it.
+>>
+> 
+> Andre,
+> 
+> I tested the patch and it looks good on my side.
+> If you want me to queue this patch for 7.0,
+> please let me know if it addresses your use case.
+> 
 
-diff --git a/fs/btrfs/Makefile b/fs/btrfs/Makefile
-index 743d7677b175..b3a12f558c2f 100644
---- a/fs/btrfs/Makefile
-+++ b/fs/btrfs/Makefile
-@@ -44,4 +44,4 @@ btrfs-$(CONFIG_BTRFS_FS_RUN_SANITY_TESTS) += tests/free-space-tests.o \
- 	tests/extent-buffer-tests.o tests/btrfs-tests.o \
- 	tests/extent-io-tests.o tests/inode-tests.o tests/qgroup-tests.o \
- 	tests/free-space-tree-tests.o tests/extent-map-tests.o \
--	tests/raid-stripe-tree-tests.o tests/delayed-refs-tests.o
-+	tests/raid-stripe-tree-tests.o tests/delayed-refs-tests.o tests/zoned-tests.o
-diff --git a/fs/btrfs/tests/btrfs-tests.c b/fs/btrfs/tests/btrfs-tests.c
-index b576897d71cc..2933b487bd25 100644
---- a/fs/btrfs/tests/btrfs-tests.c
-+++ b/fs/btrfs/tests/btrfs-tests.c
-@@ -304,6 +304,9 @@ int btrfs_run_sanity_tests(void)
- 		}
- 	}
- 	ret = btrfs_test_extent_map();
-+	if (ret)
-+		goto out;
-+	ret = btrfs_test_zoned();
- 
- out:
- 	btrfs_destroy_test_fs();
-diff --git a/fs/btrfs/tests/btrfs-tests.h b/fs/btrfs/tests/btrfs-tests.h
-index b61dbf93e9ed..479753777f26 100644
---- a/fs/btrfs/tests/btrfs-tests.h
-+++ b/fs/btrfs/tests/btrfs-tests.h
-@@ -47,6 +47,7 @@ int btrfs_test_free_space_tree(u32 sectorsize, u32 nodesize);
- int btrfs_test_raid_stripe_tree(u32 sectorsize, u32 nodesize);
- int btrfs_test_extent_map(void);
- int btrfs_test_delayed_refs(u32 sectorsize, u32 nodesize);
-+int btrfs_test_zoned(void);
- struct inode *btrfs_new_test_inode(void);
- struct btrfs_fs_info *btrfs_alloc_dummy_fs_info(u32 nodesize, u32 sectorsize);
- void btrfs_free_dummy_fs_info(struct btrfs_fs_info *fs_info);
-diff --git a/fs/btrfs/tests/zoned-tests.c b/fs/btrfs/tests/zoned-tests.c
-new file mode 100644
-index 000000000000..b3454c7122bf
---- /dev/null
-+++ b/fs/btrfs/tests/zoned-tests.c
-@@ -0,0 +1,676 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2015 Facebook.  All rights reserved.
-+ */
-+
-+#include <linux/cleanup.h>
-+#include <linux/sizes.h>
-+
-+#include "btrfs-tests.h"
-+#include "../space-info.h"
-+#include "../volumes.h"
-+#include "../zoned.h"
-+
-+#define WP_MISSING_DEV ((u64)-1)
-+#define WP_CONVENTIONAL ((u64)-2)
-+#define ZONE_SIZE SZ_256M
-+
-+#define HALF_STRIPE_LEN (BTRFS_STRIPE_LEN >> 1)
-+
-+struct load_zone_info_test_vector {
-+	u64 raid_type;
-+	u64 num_stripes;
-+	u64 alloc_offsets[8];
-+	u64 last_alloc;
-+	u64 bg_length;
-+	bool degraded;
-+
-+	int expected_result;
-+	u64 expected_alloc_offset;
-+
-+	const char *description;
-+};
-+
-+struct zone_info {
-+	u64 physical;
-+	u64 capacity;
-+	u64 alloc_offset;
-+};
-+
-+static int test_load_zone_info(struct btrfs_fs_info *fs_info,
-+			       struct load_zone_info_test_vector *test)
-+{
-+	struct btrfs_block_group *bg __free(btrfs_free_dummy_block_group) = NULL;
-+	struct btrfs_chunk_map *map __free(btrfs_free_chunk_map) = NULL;
-+	struct zone_info AUTO_KFREE(zone_info);
-+	unsigned long AUTO_KFREE(active);
-+	int i, ret;
-+
-+	bg = btrfs_alloc_dummy_block_group(fs_info, test->bg_length);
-+	if (!bg) {
-+		test_std_err(TEST_ALLOC_BLOCK_GROUP);
-+		return -ENOMEM;
-+	}
-+
-+	map = btrfs_alloc_chunk_map(test->num_stripes, GFP_KERNEL);
-+	if (!map) {
-+		test_std_err(TEST_ALLOC_EXTENT_MAP);
-+		return -ENOMEM;
-+	}
-+
-+	zone_info = kcalloc(test->num_stripes, sizeof(*zone_info), GFP_KERNEL);
-+	if (!zone_info) {
-+		test_err("cannot allocate zone info");
-+		return -ENOMEM;
-+	}
-+
-+	active = bitmap_zalloc(test->num_stripes, GFP_KERNEL);
-+	if (!zone_info) {
-+		test_err("cannot allocate active bitmap");
-+		return -ENOMEM;
-+	}
-+
-+	map->type = test->raid_type;
-+	map->num_stripes = test->num_stripes;
-+	if (test->raid_type == BTRFS_BLOCK_GROUP_RAID10)
-+		map->sub_stripes = 2;
-+	for (i = 0; i < test->num_stripes; i++) {
-+		zone_info[i].physical = 0;
-+		zone_info[i].alloc_offset = test->alloc_offsets[i];
-+		zone_info[i].capacity = ZONE_SIZE;
-+		if (zone_info[i].alloc_offset && zone_info[i].alloc_offset < ZONE_SIZE)
-+			__set_bit(i, active);
-+	}
-+	if (test->degraded)
-+		btrfs_set_opt(fs_info->mount_opt, DEGRADED);
-+	else
-+		btrfs_clear_opt(fs_info->mount_opt, DEGRADED);
-+
-+	ret = btrfs_load_block_group_by_raid_type(bg, map, zone_info, active,
-+						  test->last_alloc);
-+
-+	if (ret != test->expected_result) {
-+		test_err("unexpected return value: ret %d expected %d", ret,
-+			 test->expected_result);
-+		return -EINVAL;
-+	}
-+
-+	if (!ret && bg->alloc_offset != test->expected_alloc_offset) {
-+		test_err("unexpected alloc_offset: alloc_offset %llu expected %llu",
-+			 bg->alloc_offset, test->expected_alloc_offset);
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+struct load_zone_info_test_vector load_zone_info_tests[] = {
-+	/* SINGLE */
-+	{
-+		.description = "SINGLE: load write pointer from sequential zone",
-+		.raid_type = 0,
-+		.num_stripes = 1,
-+		.alloc_offsets = {
-+			SZ_1M,
-+		},
-+		.expected_alloc_offset = SZ_1M,
-+	},
-+	/*
-+	 * SINGLE block group on a conventional zone sets last_alloc outside of
-+	 * btrfs_load_block_group_*(). Do not test that case.
-+	 */
-+
-+	/* DUP */
-+	/* Normal case */
-+	{
-+		.description = "DUP: having matching write pointers",
-+		.raid_type = BTRFS_BLOCK_GROUP_DUP,
-+		.num_stripes = 2,
-+		.alloc_offsets = {
-+			SZ_1M, SZ_1M,
-+		},
-+		.expected_alloc_offset = SZ_1M,
-+	},
-+	/*
-+	 * One sequential zone and one conventional zone, having matching
-+	 * last_alloc.
-+	 */
-+	{
-+		.description = "DUP: seq zone and conv zone, matching last_alloc",
-+		.raid_type = BTRFS_BLOCK_GROUP_DUP,
-+		.num_stripes = 2,
-+		.alloc_offsets = {
-+			SZ_1M, WP_CONVENTIONAL,
-+		},
-+		.last_alloc = SZ_1M,
-+		.expected_alloc_offset = SZ_1M,
-+	},
-+	/*
-+	 * One sequential and one conventional zone, but having smaller
-+	 * last_alloc than write pointer.
-+	 */
-+	{
-+		.description = "DUP: seq zone and conv zone, smaller last_alloc",
-+		.raid_type = BTRFS_BLOCK_GROUP_DUP,
-+		.num_stripes = 2,
-+		.alloc_offsets = {
-+			SZ_1M, WP_CONVENTIONAL,
-+		},
-+		.last_alloc = 0,
-+		.expected_alloc_offset = SZ_1M,
-+	},
-+	/* Error case: having different write pointers. */
-+	{
-+		.description = "DUP: fail: different write pointers",
-+		.raid_type = BTRFS_BLOCK_GROUP_DUP,
-+		.num_stripes = 2,
-+		.alloc_offsets = {
-+			SZ_1M, SZ_2M,
-+		},
-+		.expected_result = -EIO,
-+	},
-+	/* Error case: partial missing device should not happen on DUP. */
-+	{
-+		.description = "DUP: fail: missing device",
-+		.raid_type = BTRFS_BLOCK_GROUP_DUP,
-+		.num_stripes = 2,
-+		.alloc_offsets = {
-+			SZ_1M, WP_MISSING_DEV,
-+		},
-+		.expected_result = -EIO,
-+	},
-+	/*
-+	 * Error case: one sequential and one conventional zone, but having larger
-+	 * last_alloc than write pointer.
-+	 */
-+	{
-+		.description = "DUP: fail: seq zone and conv zone, larger last_alloc",
-+		.raid_type = BTRFS_BLOCK_GROUP_DUP,
-+		.num_stripes = 2,
-+		.alloc_offsets = {
-+			SZ_1M, WP_CONVENTIONAL,
-+		},
-+		.last_alloc = SZ_2M,
-+		.expected_result = -EIO,
-+	},
-+
-+	/* RAID1 */
-+	/* Normal case */
-+	{
-+		.description = "RAID1: having matching write pointers",
-+		.raid_type = BTRFS_BLOCK_GROUP_RAID1,
-+		.num_stripes = 2,
-+		.alloc_offsets = {
-+			SZ_1M, SZ_1M,
-+		},
-+		.expected_alloc_offset = SZ_1M,
-+	},
-+	/*
-+	 * One sequential zone and one conventional zone, having matching
-+	 * last_alloc.
-+	 */
-+	{
-+		.description = "RAID1: seq zone and conv zone, matching last_alloc",
-+		.raid_type = BTRFS_BLOCK_GROUP_RAID1,
-+		.num_stripes = 2,
-+		.alloc_offsets = {
-+			SZ_1M, WP_CONVENTIONAL,
-+		},
-+		.last_alloc = SZ_1M,
-+		.expected_alloc_offset = SZ_1M,
-+	},
-+	/*
-+	 * One sequential and one conventional zone, but having smaller
-+	 * last_alloc than write pointer.
-+	 */
-+	{
-+		.description = "RAID1: seq zone and conv zone, smaller last_alloc",
-+		.raid_type = BTRFS_BLOCK_GROUP_RAID1,
-+		.num_stripes = 2,
-+		.alloc_offsets = {
-+			SZ_1M, WP_CONVENTIONAL,
-+		},
-+		.last_alloc = 0,
-+		.expected_alloc_offset = SZ_1M,
-+	},
-+	/* Partial missing device should be recovered on DEGRADED mount */
-+	{
-+		.description = "RAID1: fail: missing device on DEGRADED",
-+		.raid_type = BTRFS_BLOCK_GROUP_RAID1,
-+		.num_stripes = 2,
-+		.alloc_offsets = {
-+			SZ_1M, WP_MISSING_DEV,
-+		},
-+		.degraded = true,
-+		.expected_alloc_offset = SZ_1M,
-+	},
-+	/* Error case: having different write pointers. */
-+	{
-+		.description = "RAID1: fail: different write pointers",
-+		.raid_type = BTRFS_BLOCK_GROUP_RAID1,
-+		.num_stripes = 2,
-+		.alloc_offsets = {
-+			SZ_1M, SZ_2M,
-+		},
-+		.expected_result = -EIO,
-+	},
-+	/*
-+	 * Partial missing device is not allowed on non-DEGRADED mount never happen
-+	 * as it is rejected beforehand.
-+	 */
-+	/*
-+	 * Error case: one sequential and one conventional zone, but having larger
-+	 * last_alloc than write pointer.
-+	 */
-+	{
-+		.description = "RAID1: fail: seq zone and conv zone, larger last_alloc",
-+		.raid_type = BTRFS_BLOCK_GROUP_RAID1,
-+		.num_stripes = 2,
-+		.alloc_offsets = {
-+			SZ_1M, WP_CONVENTIONAL,
-+		},
-+		.last_alloc = SZ_2M,
-+		.expected_result = -EIO,
-+	},
-+
-+	/* RAID0 */
-+	/* Normal case */
-+	{
-+		.description = "RAID0: initial partial write",
-+		.raid_type = BTRFS_BLOCK_GROUP_RAID0,
-+		.num_stripes = 4,
-+		.alloc_offsets = {
-+			HALF_STRIPE_LEN, 0, 0, 0,
-+		},
-+		.expected_alloc_offset = HALF_STRIPE_LEN,
-+	},
-+	{
-+		.description = "RAID0: while in second stripe",
-+		.raid_type = BTRFS_BLOCK_GROUP_RAID0,
-+		.num_stripes = 4,
-+		.alloc_offsets = {
-+			BTRFS_STRIPE_LEN * 2, BTRFS_STRIPE_LEN + HALF_STRIPE_LEN,
-+			BTRFS_STRIPE_LEN, BTRFS_STRIPE_LEN,
-+		},
-+		.expected_alloc_offset = BTRFS_STRIPE_LEN * 5 + HALF_STRIPE_LEN,
-+	},
-+	{
-+		.description = "RAID0: one stripe advanced",
-+		.raid_type = BTRFS_BLOCK_GROUP_RAID0,
-+		.num_stripes = 2,
-+		.alloc_offsets = {
-+			SZ_1M + BTRFS_STRIPE_LEN, SZ_1M,
-+		},
-+		.expected_alloc_offset = SZ_2M + BTRFS_STRIPE_LEN,
-+	},
-+	/* Error case: having different write pointers. */
-+	{
-+		.description = "RAID0: fail: disordered stripes",
-+		.raid_type = BTRFS_BLOCK_GROUP_RAID0,
-+		.num_stripes = 4,
-+		.alloc_offsets = {
-+			BTRFS_STRIPE_LEN, BTRFS_STRIPE_LEN * 2,
-+			BTRFS_STRIPE_LEN, BTRFS_STRIPE_LEN,
-+		},
-+		.expected_result = -EIO,
-+	},
-+	{
-+		.description = "RAID0: fail: far distance",
-+		.raid_type = BTRFS_BLOCK_GROUP_RAID0,
-+		.num_stripes = 4,
-+		.alloc_offsets = {
-+			BTRFS_STRIPE_LEN * 3, BTRFS_STRIPE_LEN,
-+			BTRFS_STRIPE_LEN, BTRFS_STRIPE_LEN,
-+		},
-+		.expected_result = -EIO,
-+	},
-+	{
-+		.description = "RAID0: fail: too many partial write",
-+		.raid_type = BTRFS_BLOCK_GROUP_RAID0,
-+		.num_stripes = 4,
-+		.alloc_offsets = {
-+			HALF_STRIPE_LEN, HALF_STRIPE_LEN, 0, 0,
-+		},
-+		.expected_result = -EIO,
-+	},
-+	/*
-+	 * Error case: Partial missing device is not allowed even on non-DEGRADED
-+	 * mount.
-+	 */
-+	{
-+		.description = "RAID0: fail: missing device on DEGRADED",
-+		.raid_type = BTRFS_BLOCK_GROUP_RAID0,
-+		.num_stripes = 2,
-+		.alloc_offsets = {
-+			SZ_1M, WP_MISSING_DEV,
-+		},
-+		.degraded = true,
-+		.expected_result = -EIO,
-+	},
-+
-+	/*
-+	 * One sequential zone and one conventional zone, having matching
-+	 * last_alloc.
-+	 */
-+	{
-+		.description = "RAID0: seq zone and conv zone, partially written stripe",
-+		.raid_type = BTRFS_BLOCK_GROUP_RAID0,
-+		.num_stripes = 2,
-+		.alloc_offsets = {
-+			SZ_1M, WP_CONVENTIONAL,
-+		},
-+		.last_alloc = SZ_2M - SZ_4K,
-+		.expected_alloc_offset = SZ_2M - SZ_4K,
-+	},
-+	{
-+		.description = "RAID0: conv zone and seq zone, partially written stripe",
-+		.raid_type = BTRFS_BLOCK_GROUP_RAID0,
-+		.num_stripes = 2,
-+		.alloc_offsets = {
-+			WP_CONVENTIONAL, SZ_1M,
-+		},
-+		.last_alloc = SZ_2M + SZ_4K,
-+		.expected_alloc_offset = SZ_2M + SZ_4K,
-+	},
-+	/*
-+	 * Error case: one sequential and one conventional zone, but having larger
-+	 * last_alloc than write pointer.
-+	 */
-+	{
-+		.description = "RAID0: fail: seq zone and conv zone, larger last_alloc",
-+		.raid_type = BTRFS_BLOCK_GROUP_RAID0,
-+		.num_stripes = 2,
-+		.alloc_offsets = {
-+			SZ_1M, WP_CONVENTIONAL,
-+		},
-+		.last_alloc = SZ_2M + BTRFS_STRIPE_LEN * 2,
-+		.expected_result = -EIO,
-+	},
-+
-+	/* RAID0, 4 stripes with seq zones and conv zones. */
-+	{
-+		.description = "RAID0: stripes [2, 2, ?, ?] last_alloc = 6",
-+		.raid_type = BTRFS_BLOCK_GROUP_RAID0,
-+		.num_stripes = 4,
-+		.alloc_offsets = {
-+			BTRFS_STRIPE_LEN * 2, BTRFS_STRIPE_LEN * 2,
-+			WP_CONVENTIONAL, WP_CONVENTIONAL,
-+		},
-+		.last_alloc = BTRFS_STRIPE_LEN * 6,
-+		.expected_alloc_offset = BTRFS_STRIPE_LEN * 6,
-+	},
-+	{
-+		.description = "RAID0: stripes [2, 2, ?, ?] last_alloc = 7.5",
-+		.raid_type = BTRFS_BLOCK_GROUP_RAID0,
-+		.num_stripes = 4,
-+		.alloc_offsets = {
-+			BTRFS_STRIPE_LEN * 2, BTRFS_STRIPE_LEN * 2,
-+			WP_CONVENTIONAL, WP_CONVENTIONAL,
-+		},
-+		.last_alloc = BTRFS_STRIPE_LEN * 7 + HALF_STRIPE_LEN,
-+		.expected_alloc_offset = BTRFS_STRIPE_LEN * 7 + HALF_STRIPE_LEN,
-+	},
-+	{
-+		.description = "RAID0: stripes [3, ?, ?, ?] last_alloc = 1",
-+		.raid_type = BTRFS_BLOCK_GROUP_RAID0,
-+		.num_stripes = 4,
-+		.alloc_offsets = {
-+			BTRFS_STRIPE_LEN * 3, WP_CONVENTIONAL,
-+			WP_CONVENTIONAL, WP_CONVENTIONAL,
-+		},
-+		.last_alloc = BTRFS_STRIPE_LEN,
-+		.expected_alloc_offset = BTRFS_STRIPE_LEN * 9,
-+	},
-+	{
-+		.description = "RAID0: stripes [2, ?, 1, ?] last_alloc = 5",
-+		.raid_type = BTRFS_BLOCK_GROUP_RAID0,
-+		.num_stripes = 4,
-+		.alloc_offsets = {
-+			BTRFS_STRIPE_LEN * 2, WP_CONVENTIONAL,
-+			BTRFS_STRIPE_LEN, WP_CONVENTIONAL,
-+		},
-+		.last_alloc = BTRFS_STRIPE_LEN * 5,
-+		.expected_alloc_offset = BTRFS_STRIPE_LEN * 5,
-+	},
-+	{
-+		.description = "RAID0: fail: stripes [2, ?, 1, ?] last_alloc = 7",
-+		.raid_type = BTRFS_BLOCK_GROUP_RAID0,
-+		.num_stripes = 4,
-+		.alloc_offsets = {
-+			BTRFS_STRIPE_LEN * 2, WP_CONVENTIONAL,
-+			BTRFS_STRIPE_LEN, WP_CONVENTIONAL,
-+		},
-+		.last_alloc = BTRFS_STRIPE_LEN * 7,
-+		.expected_result = -EIO,
-+	},
-+
-+	/* RAID10 */
-+	/* Normal case */
-+	{
-+		.description = "RAID10: initial partial write",
-+		.raid_type = BTRFS_BLOCK_GROUP_RAID10,
-+		.num_stripes = 4,
-+		.alloc_offsets = {
-+			HALF_STRIPE_LEN, HALF_STRIPE_LEN, 0, 0,
-+		},
-+		.expected_alloc_offset = HALF_STRIPE_LEN,
-+	},
-+	{
-+		.description = "RAID10: while in second stripe",
-+		.raid_type = BTRFS_BLOCK_GROUP_RAID10,
-+		.num_stripes = 8,
-+		.alloc_offsets = {
-+			BTRFS_STRIPE_LEN * 2, BTRFS_STRIPE_LEN * 2,
-+			BTRFS_STRIPE_LEN + HALF_STRIPE_LEN,
-+			BTRFS_STRIPE_LEN + HALF_STRIPE_LEN,
-+			BTRFS_STRIPE_LEN, BTRFS_STRIPE_LEN,
-+			BTRFS_STRIPE_LEN, BTRFS_STRIPE_LEN,
-+		},
-+		.expected_alloc_offset = BTRFS_STRIPE_LEN * 5 + HALF_STRIPE_LEN,
-+	},
-+	{
-+		.description = "RAID10: one stripe advanced",
-+		.raid_type = BTRFS_BLOCK_GROUP_RAID10,
-+		.num_stripes = 4,
-+		.alloc_offsets = {
-+			SZ_1M + BTRFS_STRIPE_LEN, SZ_1M + BTRFS_STRIPE_LEN,
-+			SZ_1M, SZ_1M,
-+		},
-+		.expected_alloc_offset = SZ_2M + BTRFS_STRIPE_LEN,
-+	},
-+	{
-+		.description = "RAID10: one stripe advanced, with conventional zone",
-+		.raid_type = BTRFS_BLOCK_GROUP_RAID10,
-+		.num_stripes = 4,
-+		.alloc_offsets = {
-+			SZ_1M + BTRFS_STRIPE_LEN, WP_CONVENTIONAL,
-+			WP_CONVENTIONAL, SZ_1M,
-+		},
-+		.expected_alloc_offset = SZ_2M + BTRFS_STRIPE_LEN,
-+	},
-+	/* Error case: having different write pointers. */
-+	{
-+		.description = "RAID10: fail: disordered stripes",
-+		.raid_type = BTRFS_BLOCK_GROUP_RAID10,
-+		.num_stripes = 8,
-+		.alloc_offsets = {
-+			BTRFS_STRIPE_LEN, BTRFS_STRIPE_LEN,
-+			BTRFS_STRIPE_LEN * 2, BTRFS_STRIPE_LEN * 2,
-+			BTRFS_STRIPE_LEN, BTRFS_STRIPE_LEN,
-+			BTRFS_STRIPE_LEN, BTRFS_STRIPE_LEN,
-+		},
-+		.expected_result = -EIO,
-+	},
-+	{
-+		.description = "RAID10: fail: far distance",
-+		.raid_type = BTRFS_BLOCK_GROUP_RAID10,
-+		.num_stripes = 8,
-+		.alloc_offsets = {
-+			BTRFS_STRIPE_LEN * 3, BTRFS_STRIPE_LEN * 3,
-+			BTRFS_STRIPE_LEN, BTRFS_STRIPE_LEN,
-+			BTRFS_STRIPE_LEN, BTRFS_STRIPE_LEN,
-+			BTRFS_STRIPE_LEN, BTRFS_STRIPE_LEN,
-+		},
-+		.expected_result = -EIO,
-+	},
-+	{
-+		.description = "RAID10: fail: too many partial write",
-+		.raid_type = BTRFS_BLOCK_GROUP_RAID10,
-+		.num_stripes = 8,
-+		.alloc_offsets = {
-+			HALF_STRIPE_LEN, HALF_STRIPE_LEN,
-+			HALF_STRIPE_LEN, HALF_STRIPE_LEN,
-+			0, 0, 0, 0,
-+		},
-+		.expected_result = -EIO,
-+	},
-+	/*
-+	 * Error case: Partial missing device in RAID0 level is not allowed even on
-+	 * non-DEGRADED mount.
-+	 */
-+	{
-+		.description = "RAID10: fail: missing device on DEGRADED",
-+		.raid_type = BTRFS_BLOCK_GROUP_RAID10,
-+		.num_stripes = 4,
-+		.alloc_offsets = {
-+			SZ_1M, SZ_1M,
-+			WP_MISSING_DEV, WP_MISSING_DEV,
-+		},
-+		.degraded = true,
-+		.expected_result = -EIO,
-+	},
-+
-+	/*
-+	 * One sequential zone and one conventional zone, having matching
-+	 * last_alloc.
-+	 */
-+	{
-+		.description = "RAID10: seq zone and conv zone, partially written stripe",
-+		.raid_type = BTRFS_BLOCK_GROUP_RAID10,
-+		.num_stripes = 4,
-+		.alloc_offsets = {
-+			SZ_1M, SZ_1M,
-+			WP_CONVENTIONAL, WP_CONVENTIONAL,
-+		},
-+		.last_alloc = SZ_2M - SZ_4K,
-+		.expected_alloc_offset = SZ_2M - SZ_4K,
-+	},
-+	{
-+		.description = "RAID10: conv zone and seq zone, partially written stripe",
-+		.raid_type = BTRFS_BLOCK_GROUP_RAID10,
-+		.num_stripes = 4,
-+		.alloc_offsets = {
-+			WP_CONVENTIONAL, WP_CONVENTIONAL,
-+			SZ_1M, SZ_1M,
-+		},
-+		.last_alloc = SZ_2M + SZ_4K,
-+		.expected_alloc_offset = SZ_2M + SZ_4K,
-+	},
-+	/*
-+	 * Error case: one sequential and one conventional zone, but having larger
-+	 * last_alloc than write pointer.
-+	 */
-+	{
-+		.description = "RAID10: fail: seq zone and conv zone, larger last_alloc",
-+		.raid_type = BTRFS_BLOCK_GROUP_RAID10,
-+		.num_stripes = 4,
-+		.alloc_offsets = {
-+			SZ_1M, SZ_1M,
-+			WP_CONVENTIONAL, WP_CONVENTIONAL,
-+		},
-+		.last_alloc = SZ_2M + BTRFS_STRIPE_LEN * 2,
-+		.expected_result = -EIO,
-+	},
-+
-+	/* RAID10, 4 stripes with seq zones and conv zones. */
-+	{
-+		.description = "RAID10: stripes [2, 2, ?, ?] last_alloc = 6",
-+		.raid_type = BTRFS_BLOCK_GROUP_RAID10,
-+		.num_stripes = 8,
-+		.alloc_offsets = {
-+			BTRFS_STRIPE_LEN * 2, BTRFS_STRIPE_LEN * 2,
-+			BTRFS_STRIPE_LEN * 2, BTRFS_STRIPE_LEN * 2,
-+			WP_CONVENTIONAL, WP_CONVENTIONAL,
-+			WP_CONVENTIONAL, WP_CONVENTIONAL,
-+		},
-+		.last_alloc = BTRFS_STRIPE_LEN * 6,
-+		.expected_alloc_offset = BTRFS_STRIPE_LEN * 6,
-+	},
-+	{
-+		.description = "RAID10: stripes [2, 2, ?, ?] last_alloc = 7.5",
-+		.raid_type = BTRFS_BLOCK_GROUP_RAID10,
-+		.num_stripes = 8,
-+		.alloc_offsets = {
-+			BTRFS_STRIPE_LEN * 2, BTRFS_STRIPE_LEN * 2,
-+			BTRFS_STRIPE_LEN * 2, BTRFS_STRIPE_LEN * 2,
-+			WP_CONVENTIONAL, WP_CONVENTIONAL,
-+			WP_CONVENTIONAL, WP_CONVENTIONAL,
-+		},
-+		.last_alloc = BTRFS_STRIPE_LEN * 7 + HALF_STRIPE_LEN,
-+		.expected_alloc_offset = BTRFS_STRIPE_LEN * 7 + HALF_STRIPE_LEN,
-+	},
-+	{
-+		.description = "RAID10: stripes [3, ?, ?, ?] last_alloc = 1",
-+		.raid_type = BTRFS_BLOCK_GROUP_RAID10,
-+		.num_stripes = 8,
-+		.alloc_offsets = {
-+			BTRFS_STRIPE_LEN * 3, BTRFS_STRIPE_LEN * 3,
-+			WP_CONVENTIONAL, WP_CONVENTIONAL,
-+			WP_CONVENTIONAL, WP_CONVENTIONAL,
-+			WP_CONVENTIONAL, WP_CONVENTIONAL,
-+		},
-+		.last_alloc = BTRFS_STRIPE_LEN,
-+		.expected_alloc_offset = BTRFS_STRIPE_LEN * 9,
-+	},
-+	{
-+		.description = "RAID10: stripes [2, ?, 1, ?] last_alloc = 5",
-+		.raid_type = BTRFS_BLOCK_GROUP_RAID10,
-+		.num_stripes = 8,
-+		.alloc_offsets = {
-+			BTRFS_STRIPE_LEN * 2, BTRFS_STRIPE_LEN * 2,
-+			WP_CONVENTIONAL, WP_CONVENTIONAL,
-+			BTRFS_STRIPE_LEN, BTRFS_STRIPE_LEN,
-+			WP_CONVENTIONAL, WP_CONVENTIONAL,
-+		},
-+		.last_alloc = BTRFS_STRIPE_LEN * 5,
-+		.expected_alloc_offset = BTRFS_STRIPE_LEN * 5,
-+	},
-+	{
-+		.description = "RAID10: fail: stripes [2, ?, 1, ?] last_alloc = 7",
-+		.raid_type = BTRFS_BLOCK_GROUP_RAID10,
-+		.num_stripes = 8,
-+		.alloc_offsets = {
-+			BTRFS_STRIPE_LEN * 2, BTRFS_STRIPE_LEN * 2,
-+			WP_CONVENTIONAL, WP_CONVENTIONAL,
-+			BTRFS_STRIPE_LEN, BTRFS_STRIPE_LEN,
-+			WP_CONVENTIONAL, WP_CONVENTIONAL,
-+		},
-+		.last_alloc = BTRFS_STRIPE_LEN * 7,
-+		.expected_result = -EIO,
-+	},
-+};
-+
-+int btrfs_test_zoned(void)
-+{
-+	struct btrfs_fs_info *fs_info __free(btrfs_free_dummy_fs_info) = NULL;
-+	int ret;
-+
-+	test_msg("running zoned tests. error messages are expected.");
-+
-+	fs_info = btrfs_alloc_dummy_fs_info(PAGE_SIZE, PAGE_SIZE);
-+	if (!fs_info) {
-+		test_std_err(TEST_ALLOC_FS_INFO);
-+		return -ENOMEM;
-+	}
-+
-+	for (int i = 0; i < ARRAY_SIZE(load_zone_info_tests); i++) {
-+		ret = test_load_zone_info(fs_info, &load_zone_info_tests[i]);
-+		if (ret) {
-+			test_err("test case \"%s\" failed",
-+				 load_zone_info_tests[i].description);
-+			return ret;
-+		}
-+	}
-+
-+	return 0;
-+}
-diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-index 052d6988ab8c..75351234eb36 100644
---- a/fs/btrfs/zoned.c
-+++ b/fs/btrfs/zoned.c
-@@ -2370,6 +2370,9 @@ bool btrfs_zone_activate(struct btrfs_block_group *block_group)
- 	if (!btrfs_is_zoned(block_group->fs_info))
- 		return true;
- 
-+	if (unlikely(btrfs_is_testing(fs_info)))
-+		return true;
-+
- 	map = block_group->physical_map;
- 
- 	spin_lock(&fs_info->zone_active_bgs_lock);
--- 
-2.52.0
+Hi Amir,
+
+I'm still testing it to make sure it works my case, I will return to you 
+ASAP. Thanks for the help!
+
+> Thanks,
+> Amir.
 
 
