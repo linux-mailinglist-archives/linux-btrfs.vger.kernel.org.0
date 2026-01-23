@@ -1,680 +1,538 @@
-Return-Path: <linux-btrfs+bounces-20931-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20932-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id OG+VNuy+cmljpAAAu9opvQ
-	(envelope-from <linux-btrfs+bounces-20931-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Jan 2026 01:21:00 +0100
+	id GCNyIJvQcmnKpgAAu9opvQ
+	(envelope-from <linux-btrfs+bounces-20932-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Jan 2026 02:36:27 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3505B6EBFA
-	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Jan 2026 01:21:00 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83C766F272
+	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Jan 2026 02:36:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 751BA3013695
-	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Jan 2026 00:20:53 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 693A230251F6
+	for <lists+linux-btrfs@lfdr.de>; Fri, 23 Jan 2026 01:31:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70272316195;
-	Fri, 23 Jan 2026 00:20:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67DDF37BE69;
+	Fri, 23 Jan 2026 01:31:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="LHSNEumF";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="kktPM+Xs"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="StufZ+h5"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fout-b7-smtp.messagingengine.com (fout-b7-smtp.messagingengine.com [202.12.124.150])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A13A62E8DE3
-	for <linux-btrfs@vger.kernel.org>; Fri, 23 Jan 2026 00:20:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.150
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E2BC33B6F3
+	for <linux-btrfs@vger.kernel.org>; Fri, 23 Jan 2026 01:31:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769127644; cv=none; b=kVGk6Dqvlw3OZeX2H+q0zB0NwGv974nDmyW/l/uLed/NCYSPxAMlLhKTOXyX88bozx4xufvnNBEavdkjCUZLlkg+xEUdRO7WtcBtrsYj9x9JMQkWpuo/IJaM7k78gg5l2JY0wJklErBXCoRy0uxNyoPWF9OmD67Fz3Hd5KFGNko=
+	t=1769131886; cv=none; b=sUE6OS5w1BW+e7M/HOsoHvWxJnFiAHTDu5i0criuyjx2ud3d8Sm0rreATItlDYaBR3m3gUSdZKMArHbKNUjkCdi+ncWPW+l6r3tbOHpfJPv5A2Pzchh/3Jd2SNQxOydAMpE4VqL+ygapodzmmF8Y1Rg7beXXzf2r6lnzbjDSCIY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769127644; c=relaxed/simple;
-	bh=JQIBjNKF4IbbjAfnqcAXpIPnu2DJuh4zFUOGGBWZliw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ILpPx2WzrzIUtPbHPkf2mbKkDP5uh7tPPhxY+KVl1MqQ9NUZ5wqypvwn/9VB2SHoicjokCIZwAayrFFdpKy4oq9JtceWzfxJVPXzrcnfg0OOe+M9I/FNA17cto/8lgJJ9VbTB1NGh6HFpEKu+uyzawc3GRlKgjawYhpUCxZbhoo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=LHSNEumF; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=kktPM+Xs; arc=none smtp.client-ip=202.12.124.150
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-01.internal (phl-compute-01.internal [10.202.2.41])
-	by mailfout.stl.internal (Postfix) with ESMTP id 4182E1D01055;
-	Thu, 22 Jan 2026 19:20:28 -0500 (EST)
-Received: from phl-frontend-04 ([10.202.2.163])
-  by phl-compute-01.internal (MEProxy); Thu, 22 Jan 2026 19:20:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-transfer-encoding:content-type:content-type:date:date
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1769127628;
-	 x=1769214028; bh=GvgznEcrPzFgJ8uUBBOvUYtWjSVHraS7bme5MUlqBIk=; b=
-	LHSNEumFdetKr4RhysGBS6/J9BRB+E37JPMJBttAuwxqskeMWhlUgmfKkrE7mizq
-	lUXsoaBDEm9W/wuwxIBjNOj/9oD4wSVjODLp6e5GlQEixT+AWiIjmtSGtgsbYPZv
-	1txXwj8iHaYoJK9/ciPtwmeceNlH7vXIeQquZ9WYACb/WLODje3ZkZ1nrFU+D78S
-	j85nFR4CwBC0exWqvTCCBSaE9B9Q/rcvyZiKfHbHBDKMSk7/KiAfrZ457YyhIa7H
-	b3I9jxxt1YCm5c5I5T+V73qBdB2Pln1SyIcnnhJvQpjmxZQKFwWzxaKqzXg1sHUQ
-	MYBu0YTij7SQ8GaC8HEaOg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1769127628; x=
-	1769214028; bh=GvgznEcrPzFgJ8uUBBOvUYtWjSVHraS7bme5MUlqBIk=; b=k
-	ktPM+XsHw8QQ97JprZ2qh1SWhNEK9msudCnqZNR/wJbAKPnskQK3y8Wv7kDEwH5+
-	nFHah5M2twxsVTdskUVy11DiMKUe/dUY8MDTiKeDPdC6nXRiY5OYRUxMz1botFmp
-	3fdV8bSsa8WVr93JGQ6aWPMeKgZpyuUySe37OMb2/e4/OdT6+Qyx9AfDpP1yj0KR
-	4PpwiipoiYZF6mBJ4oegD9taUc7xhb26IjKPav9fOZgHGuq4Ctq7kVix901+JGb2
-	mrD1CrYmUX2M4eMpQw8BI9GvjFwp210X5tZzbCtnw56n2bz699LTGWN5hOJi0Ix7
-	7Z9v9iCEIx3jytSKPtGyA==
-X-ME-Sender: <xms:y75yaUZbsjfoihsYeP7s3q4qCdNDtFiPx6QFWhIS56cgEaSk9O7nww>
-    <xme:y75yaW24S38Vs2-ZklMzW1oS_Kw67SaHcgGHHMqzeCbHm0-FKP7hREE0VFfAt6HkS
-    4TJOtTN1eigpHf_TcxZ8GpxFUQKR5FeoJ0sCKOR64tk0vr4Q42y1c8>
-X-ME-Received: <xmr:y75yacV86fk_00vA6zErz59ym8yxXlPorONnITRLF__26kSwLTgn49mIzbZEn-sY-HKjb4xeqd8xlGnzSqOM5qvrAaU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddugeejheekucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepfffhvfevuffkfhggtggugfgjsehtkeertddttdejnecuhfhrohhmpeeuohhrihhs
-    uceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhephe
-    fhudehgfekhedufedvtefgteelueeigfefhfefgeejkeefhefhgfekjefhvdehnecuffho
-    mhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrh
-    grmhepmhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhiohdpnhgspghrtghpthhtohep
-    fedpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepfihquhesshhushgvrdgtohhmpd
-    hrtghpthhtoheplhhinhhugidqsghtrhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrghdp
-    rhgtphhtthhopehkvghrnhgvlhdqthgvrghmsehfsgdrtghomh
-X-ME-Proxy: <xmx:y75yaYWh6fIgZhcQdJ0cGsS8dYyzfPkFZJvgdyOuzg3HmvQIXfEWEQ>
-    <xmx:y75yaTe_lPtpJzE5_tt5OlpxXnoD-uuItv5W3lNdncfbcRcJFPmOOw>
-    <xmx:y75yaZVVZsWDt9ErvnC0cS46DNYI9XGqQ_fPhYpmvz7nq3iPGPcVew>
-    <xmx:y75yaUdYpYaDOAaMKaPxB974N9lSi30FJ-X2fMEf92bs5C7q-CFQ_Q>
-    <xmx:zL5yaZ-C6hodLb5k6ST8HGT0KQsVUgXBTBMSWvQCDqa-ZnewX9tJVg6r>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 22 Jan 2026 19:20:27 -0500 (EST)
-Date: Thu, 22 Jan 2026 16:20:11 -0800
-From: Boris Burkov <boris@bur.io>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH] btrfs: fix EEXIST abort due to non-consecutive gaps in
- chunk allocation
-Message-ID: <20260123002011.GA832741@zen.localdomain>
-References: <ce8537968dd7228cc7cbde394b854fde6bb78e3c.1769119556.git.boris@bur.io>
- <424c4694-c89d-43bd-a78e-910b6d0db3ba@suse.com>
+	s=arc-20240116; t=1769131886; c=relaxed/simple;
+	bh=f6TeI0WhEDqMyBm19XYLqR+c+k/4U6Hdn/198r8jk9k=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ZeqQWsQdY04nNHBnRuxzjyVB2Ce5FhsHBp4avTFpXH1RA3npBtPFvoN0w41dlxnFM374N6H319dUSEsOb/6H8EFK7RMew7u6BByWfUa/DOEsI5sovbuPEbYKU6Mf3+8fJx1DIPacr+yuQwnK/gPCYqo8LtgB1WENImaTiciaVKw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=StufZ+h5; arc=none smtp.client-ip=212.227.17.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1769131861; x=1769736661; i=quwenruo.btrfs@gmx.com;
+	bh=HIdjIu/4wevIwt/uDZwP/eqmflg9zybD32K/tu/+tUI=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=StufZ+h50QN095wYMXzqh+lb+kRPkO2OZheTrGZOAXqvVKe2CQJ0J0p2ea3Oh/KU
+	 k2jQfPVApoc1jNDaf+RmKHsbycWj2WnU0moQrvTzMcpo6pdiwTP6e098zcaDmTd55
+	 JdJEk3P/Tz0YeEAMF5Jfcgy4VtcsCIK+jvaSvMUoEK4n2kkNcWxtIAsAZD/sASJdU
+	 12Vge3DPpM3v/P5DItTsCnj8L3SlOus3gKSHVE+LipSBQH2w8wEgny1NPbLdJ6ysd
+	 x4hdQtVkKE98ouI4x1HubyZwvYjXhIvATJCyCpWSdQ9TbBPKoU+XdCoiFRNlizrpF
+	 HXOT+nVponiLD4AZFA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MmULx-1w9fL33GhF-00kFXq; Fri, 23
+ Jan 2026 02:31:01 +0100
+Message-ID: <33e83be1-111c-4420-8b09-ed46959d1b84@gmx.com>
+Date: Fri, 23 Jan 2026 12:00:57 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <424c4694-c89d-43bd-a78e-910b6d0db3ba@suse.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] btrfs: fix EEXIST abort due to non-consecutive gaps in
+ chunk allocation
+To: Boris Burkov <boris@bur.io>, Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
+References: <ce8537968dd7228cc7cbde394b854fde6bb78e3c.1769119556.git.boris@bur.io>
+ <424c4694-c89d-43bd-a78e-910b6d0db3ba@suse.com>
+ <20260123002011.GA832741@zen.localdomain>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
+ sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
+ xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
+ naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
+ tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
+ 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
+ VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
+ CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
+ B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
+ Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
+ +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
+ HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
+In-Reply-To: <20260123002011.GA832741@zen.localdomain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:cqaTGWQNOg7H0dAdjLDVNLzm+GHul0zLDEphtDBNd310AuOnYNU
+ SVijmSMM5D1q+bNcVDSxInAL6YjGxpajss/o3vKutLqMi4HTAjubkSDkX5VvtWMd4Ky65Sg
+ wBZVSB50imn2SiUzE6qO3BNtmNOxjsaTzUSezR5ZIX7TIQQtK6KmKdAa5uPPVZt8cbZMBFP
+ U2vPxgEakFR87WiPvfvBQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:qX8DwTA2WnI=;3oSLGIDoevzi//l2trTSze1s/OH
+ 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
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_DKIM_ALLOW(-0.20)[bur.io:s=fm3,messagingengine.com:s=fm2];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	DMARC_POLICY_ALLOW(-0.50)[gmx.com,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_DKIM_ALLOW(-0.20)[gmx.com:s=s31663417];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DKIM_TRACE(0.00)[bur.io:+,messagingengine.com:+];
-	TAGGED_FROM(0.00)[bounces-20931-lists,linux-btrfs=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DMARC_NA(0.00)[bur.io];
-	RCPT_COUNT_THREE(0.00)[3];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-20932-lists,linux-btrfs=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	RCPT_COUNT_THREE(0.00)[4];
+	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[boris@bur.io,linux-btrfs@vger.kernel.org];
-	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	TAGGED_RCPT(0.00)[linux-btrfs];
-	NEURAL_HAM(-0.00)[-0.995];
+	FROM_NEQ_ENVFROM(0.00)[quwenruo.btrfs@gmx.com,linux-btrfs@vger.kernel.org];
+	DKIM_TRACE(0.00)[gmx.com:+];
+	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,messagingengine.com:dkim]
-X-Rspamd-Queue-Id: 3505B6EBFA
+	TAGGED_RCPT(0.00)[linux-btrfs];
+	FREEMAIL_FROM(0.00)[gmx.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[gmx.com:mid,gmx.com:dkim,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 83C766F272
 X-Rspamd-Action: no action
 
-On Fri, Jan 23, 2026 at 10:18:55AM +1030, Qu Wenruo wrote:
-> 
-> 
-> 在 2026/1/23 08:37, Boris Burkov 写道:
-> > I have been observing a number of systems aborting at
-> > insert_dev_extents() in btrfs_create_pending_block_groups(). The
-> > following is a sample stack trace of such an abort coming form forced
-> > chunk allocation (typically behind CONFIG_BTRFS_EXPERIMENTAL) but this
-> > can theoretically happen to any DUP chunk allocation.
-> > 
-> > [   81.801251] ------------[ cut here ]------------
-> > [   81.801587] BTRFS: Transaction aborted (error -17)
-> > [   81.801924] WARNING: fs/btrfs/block-group.c:2876 at btrfs_create_pending_block_groups+0x721/0x770 [btrfs], CPU#1: bash/319
-> > [   81.802764] Modules linked in: virtio_net btrfs xor zstd_compress raid6_pq null_blk
-> > [   81.803310] CPU: 1 UID: 0 PID: 319 Comm: bash Kdump: loaded Not tainted 6.19.0-rc6+ #319 NONE
-> > [   81.803916] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Arch Linux 1.17.0-2-2 04/01/2014
-> > [   81.804552] RIP: 0010:btrfs_create_pending_block_groups+0x723/0x770 [btrfs]
-> > [   81.805074] Code: 0b 00 00 4c 89 ff 4c 89 54 24 10 48 c7 c6 00 30 6a c0 e8 c0 14 02 00 4c 8b 54 24 10 e9 4c fa ff ff 48 8d 3d ef c6 08 00 89 ee <67> 48 0f b9 3a 4c 8b 54 24 10 41 b8 01 00 00 00 e9 f4 5e 03 00 48
-> > [   81.806305] RSP: 0018:ffffa36241a6bce8 EFLAGS: 00010282
-> > [   81.806673] RAX: 000000000000000d RBX: ffff8e699921e400 RCX: 0000000000000000
-> > [   81.807154] RDX: 0000000002040001 RSI: 00000000ffffffef RDI: ffffffffc0608bf0
-> > [   81.807658] RBP: 00000000ffffffef R08: ffff8e69830f6000 R09: 0000000000000007
-> > [   81.808145] R10: ffff8e699921e5e8 R11: 0000000000000000 R12: ffff8e6999228000
-> > [   81.808676] R13: ffff8e6984d82000 R14: ffff8e69966a69c0 R15: ffff8e69aa47b000
-> > [   81.809162] FS:  00007fec6bdd9740(0000) GS:ffff8e6b1b379000(0000) knlGS:0000000000000000
-> > [   81.809725] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [   81.810114] CR2: 00005604833670f0 CR3: 0000000116679000 CR4: 00000000000006f0
-> > [   81.810631] Call Trace:
-> > [   81.810821]  <TASK>
-> > [   81.810978]  __btrfs_end_transaction+0x3e/0x2b0 [btrfs]
-> > [   81.811368]  btrfs_force_chunk_alloc_store+0xcd/0x140 [btrfs]
-> > [   81.811823]  kernfs_fop_write_iter+0x15f/0x240
-> > [   81.812128]  vfs_write+0x264/0x500
-> > [   81.812365]  ksys_write+0x6c/0xe0
-> > [   81.812640]  do_syscall_64+0x66/0x770
-> > [   81.812909]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
-> > [   81.813246] RIP: 0033:0x7fec6be66197
-> > [   81.813521] Code: 48 89 fa 4c 89 df e8 98 af 00 00 8b 93 08 03 00 00 59 5e 48 83 f8 fc 74 1a 5b c3 0f 1f 84 00 00 00 00 00 48 8b 44 24 10 0f 05 <5b> c3 0f 1f 80 00 00 00 00 83 e2 39 83 fa 08 75 de e8 23 ff ff ff
-> > [   81.814798] RSP: 002b:00007fffb159dd30 EFLAGS: 00000202 ORIG_RAX: 0000000000000001
-> > [   81.815292] RAX: ffffffffffffffda RBX: 00007fec6bdd9740 RCX: 00007fec6be66197
-> > [   81.815822] RDX: 0000000000000002 RSI: 0000560483374f80 RDI: 0000000000000001
-> > [   81.816289] RBP: 0000560483374f80 R08: 0000000000000000 R09: 0000000000000000
-> > [   81.816861] R10: 0000000000000000 R11: 0000000000000202 R12: 0000000000000002
-> > [   81.817327] R13: 00007fec6bfb85c0 R14: 00007fec6bfb5ee0 R15: 00005604833729c0
-> > [   81.817837]  </TASK>
-> > [   81.817993] irq event stamp: 20039
-> > [   81.818224] hardirqs last  enabled at (20047): [<ffffffff99a68302>] __up_console_sem+0x52/0x60
-> > [   81.818815] hardirqs last disabled at (20056): [<ffffffff99a682e7>] __up_console_sem+0x37/0x60
-> > [   81.819375] softirqs last  enabled at (19470): [<ffffffff999d2b46>] __irq_exit_rcu+0x96/0xc0
-> > [   81.819990] softirqs last disabled at (19463): [<ffffffff999d2b46>] __irq_exit_rcu+0x96/0xc0
-> > [   81.820611] ---[ end trace 0000000000000000 ]---
-> > [   81.820949] BTRFS: error (device dm-7 state A) in btrfs_create_pending_block_groups:2876: errno=-17 Object already exists
-> > 
-> > Inspecting these aborts with drgn, I observed a pattern of overlapping
-> > chunk_maps. Note how stripe 1 of the first chunk overlaps in physical
-> > address with stripe 0 of the second chunk.
-> > 
-> > Physical Start     Physical End       Length       Logical            Type                 Stripe
-> > ----------------------------------------------------------------------------------------------------
-> > 0x0000000102500000 0x0000000142500000 1.0G         0x0000000641d00000 META|DUP             0/2
-> > 0x0000000142500000 0x0000000182500000 1.0G         0x0000000641d00000 META|DUP             1/2
-> > 0x0000000142500000 0x0000000182500000 1.0G         0x0000000601d00000 META|DUP             0/2
-> > 0x0000000182500000 0x00000001c2500000 1.0G         0x0000000601d00000 META|DUP             1/2
-> > 
-> > Now how could this possibly happen? All chunk allocation is protected by
-> > the chunk_mutex so racing allocations should see a consistent view of
-> > the CHUNK_ALLOCATED bit in the chunk allocation extent-io-tree
-> > (device->alloc_state as set by chunk_map_device_set_bits()) The tree
-> > itself is protected by a spin lock, and clearing/setting the bits is
-> > always protected by fs_info->mapping_tree_lock, so no race is apparent.
-> > 
-> > It turns out that there is a subtle bug in the logic regarding chunk
-> > allocations that have happened in the current transaction, known as
-> > "pending extents". The chunk allocation as defined in
-> > find_free_dev_extent() is a loop which searches the commit root of the
-> > dev_root and looks for gaps between DEV_EXTENT items. For those gaps, it
-> > then checks alloc_state bitmap for any pending extents and adjusts the
-> > hole that it finds accordingly. However, the logic in that adjustment
-> > assumes that the first pending extent is the only one in that range.
-> > 
-> > e.g., given a layout with two non-consecutive pending extents in a hole
-> > passed to dev_extent_hole_check() via *hole_start and *hole_size:
-> > 
-> >    |----pending A----|    real hole     |----pending B----|
-> >             |           candidate hole        |
-> >        *hole_start                         *hole_start + *hole_size
-> > 
-> > the code incorrectly returns a "hole" from the end of pending extent A
-> > until the passed in hole end, failing to account for pending B.
-> > 
-> > However, it is not entirely obvious that it is actually possible to
-> > produce such a layout. I was able to reproduce it, but with some
-> > contortions: I continued to use the force chunk allocation sysfs file
-> > and I introduced a long delay (10 seconds) into the start of the cleaner
-> > thread. I also prevented the unused bgs cleaning logic from ever
-> > deleting metadata bgs. These help make it easier to deterministically
-> > produce the condition but shouldn't really matter if you imagine the
-> > conditions happening by race/luck. Allocations/frees can happen
-> > concurrently with the cleaner thread preparing to process an unused
-> > extent and both create some used chunks with an unused chunk
-> > interleaved, all during one transaction. Then btrfs_delete_unused_bgs()
-> > sees the unused one and clears it, leaving a range with several pending
-> > chunk allocations and a gap in the middle.
-> > 
-> > The basic idea is that the unused_bgs cleanup work happens on a worker
-> > so if we allocate 3 block groups in one transaction, then the cleaner
-> > work kicked off by the previous transaction comes through and deletes
-> > the middle one of the 3, then the commit root shows no dev extents and
-> > we have the bad pattern in the extent-io-tree.
-> 
-> I'm wondering, can we just stop the unused bg cleaner if there is any
-> pending bgs.
-> 
 
-I think it's a valid idea, but it's not totally obvious to me how to do this.
 
-We would have to do something like:
+=E5=9C=A8 2026/1/23 10:50, Boris Burkov =E5=86=99=E9=81=93:
+> On Fri, Jan 23, 2026 at 10:18:55AM +1030, Qu Wenruo wrote:
+[...]
+>> I'm wondering, can we just stop the unused bg cleaner if there is any
+>> pending bgs.
+>>
+>=20
+> I think it's a valid idea, but it's not totally obvious to me how to do =
+this.
+>=20
+> We would have to do something like:
+>=20
+> - set some global bit that there are pending bgs (already exists on txn =
+but
+> maybe not fs_info IIRC?)
+> - on each loop of delete_unused_bgs check the bit and blow out if not,
+>    but also hold a lock that is exclusive with the code paths that set
+>    the bit for the duration, to guarantee a new one doesn't sneak in
+>    after we check the bit?
 
-- set some global bit that there are pending bgs (already exists on txn but
-maybe not fs_info IIRC?)
-- on each loop of delete_unused_bgs check the bit and blow out if not,
-  but also hold a lock that is exclusive with the code paths that set
-  the bit for the duration, to guarantee a new one doesn't sneak in
-  after we check the bit?
+You're right, we need something new to exclude new pending bgs, and that=
+=20
+will definitely delay any new bg allocations.
 
-Would that be sufficient? We also need to worry about relocation. I
-haven't considered it as carefully since balance has to persist balance
-state and stuff so it makes more txns, but I think reclaim_bgs is likely
-to have roughly the same risks.
+>=20
+> Would that be sufficient? We also need to worry about relocation. I
+> haven't considered it as carefully since balance has to persist balance
+> state and stuff so it makes more txns, but I think reclaim_bgs is likely
+> to have roughly the same risks.
 
-And furthermore we have to document and ensure forever that we only ever
-see sequential pending extents with no gaps in the bitmap.
+Relocation is fine, as we already have exclusive operations checks in=20
+btrfs_reclaim_bgs_work().
 
-It feels worthwhile to harden the bitmap processing, if we are going to
-have the bitmap at all.
+>=20
+> And furthermore we have to document and ensure forever that we only ever
+> see sequential pending extents with no gaps in the bitmap.
+>=20
+> It feels worthwhile to harden the bitmap processing, if we are going to
+> have the bitmap at all.
 
-> The priority should be pretty obvious, correctness of dev-extent/bg/chunks
-> are way higher than unused bgs cleanup.
+Right, even if we block the reclaim to avoid gaps for now, it's not as=20
+future proof as better bitmap handling.
 
-Agreed.
+After more readings about the current fix, it is not as scary as I=20
+originally thought, thus there isn't too much need to go for a simpler=20
+but less future-proof solution.
 
-> 
-> And unused bg cleanups is always triggered from cleaner kthread, which is
-> done periodically, so even if we skipped one or two runs, we still have a
-> lot of chances to do the cleanup.
+[...]
+>=20
+>>
+>>
+>> Another thing is, I'm not sure if it's really that important/useful to =
+delay
+>> dev-extent tree update.
+>> Considering new pending block groups will be created at commit transact=
+ion
+>> time, I'm wondering why not just updating dev-extent tree, so that the
+>> current dev-extent tree will always reflect the real usage, without the=
+ need
+>> to bother the bitmap.
+>>
+>> And even if a power loss happened, we will only see the old dev-extent =
+tree,
+>> no mismatch between chunk/bg trees.
+>>
+>> Of course it will slow down chunk allocation, but should also be less
+>> complex.
+>=20
+> This is interesting too. I would be worried about introducing novel
+> inconsistencies between the various trees and items. Like right now the
+> bitmap is sort of a major synchronization point and we'd have to make
+> sure we don't mess up removing it.
+>=20
+> I do probably prefer this approach to "just block concurrent deletions"
+> which feels more fragile and less future proof to me. Maybe I just feel
+> that way because I bothered to debug this :)
+>=20
+> I'm curious what you and others think about the best way forward. But I
+> can start looking into this option if the bitmap fix is too complex.
 
-Agreed.
+The current bitmap fix looks good to me.
 
-> 
-> Sure there will be some corner cases when there is very limited available
-> space left and the data/metadata is very unbalanced, but transaction
-> aborting is a much bigger concern now.
+I was a little concerned about the amount of new code, but it's mostly=20
+helpful comments.
 
-Yeah, maybe some dumb workload that constantly allocates and frees would
-run afoul of this by not letting enough get freed. (assuming my proposed
-implementation above)
-
-> 
-> 
-> Another thing is, I'm not sure if it's really that important/useful to delay
-> dev-extent tree update.
-> Considering new pending block groups will be created at commit transaction
-> time, I'm wondering why not just updating dev-extent tree, so that the
-> current dev-extent tree will always reflect the real usage, without the need
-> to bother the bitmap.
-> 
-> And even if a power loss happened, we will only see the old dev-extent tree,
-> no mismatch between chunk/bg trees.
-> 
-> Of course it will slow down chunk allocation, but should also be less
-> complex.
-
-This is interesting too. I would be worried about introducing novel
-inconsistencies between the various trees and items. Like right now the
-bitmap is sort of a major synchronization point and we'd have to make
-sure we don't mess up removing it.
-
-I do probably prefer this approach to "just block concurrent deletions"
-which feels more fragile and less future proof to me. Maybe I just feel
-that way because I bothered to debug this :)
-
-I'm curious what you and others think about the best way forward. But I
-can start looking into this option if the bitmap fix is too complex.
-
-I can also try harder to make a small hacky bitmap fix that just adds
-more checks/looping to find_free_dev_extent. That will likely have to
-have bugs that miss available space (if the hole starts with a hole but
-contains a pending extent), but it can probably avoid EEXIST aborts.
-
-> 
-> Thanks,
-> Qu
-> 
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
 Thanks,
-Boris
+Qu
 
-> > One final consideration
-> > is that the code happens to loop to the next hole if there are no more
-> > extents at all, so we need one more dev extent way past the area we are
-> > working in. Something like the following demonstrates the technique:
-> > 
-> >   # push the BG frontier out to 20G
-> >   fallocate -l 20G $mnt/foo
-> >   # allocate one more that will prevent the "no more dev extents" luck
-> >   fallocate -l 1G $mnt/sticky
-> >   # sync
-> >   sync
-> >   # clear out the allocation area
-> >   rm $mnt/foo
-> >   sync
-> >   _cleaner
-> >   # let everything quiesce
-> >   sleep 20
-> >   sync
-> > 
-> >   # dev tree should have one bg 20G out and the rest at the beginning..
-> >   # sort of like an empty FS but with a random sticky chunk.
-> > 
-> >   # kick off the cleaner in the background, remember it will sleep 10s
-> >   # before doing interesting work
-> >   _cleaner &
-> > 
-> >   sleep 3
-> > 
-> >   # create 3 trivial block groups, all empty, all immediately marked as unused.
-> >   echo 1 > "$(_btrfs_sysfs_space_info $dev metadata)/force_chunk_alloc"
-> >   echo 1 > "$(_btrfs_sysfs_space_info $dev data)/force_chunk_alloc"
-> >   echo 1 > "$(_btrfs_sysfs_space_info $dev metadata)/force_chunk_alloc"
-> > 
-> >   # let the cleaner thread definitely finish, it will remove the data bg
-> >   sleep 10
-> > 
-> >   # this allocation sees the non-consecutive pending metadata chunks with
-> >   # data chunk gap of 1G and allocates a 2G extent in that hole. ENOSPC!
-> >   echo 1 > "$(_btrfs_sysfs_space_info $dev metadata)/force_chunk_alloc"
-> > 
-> > As for the fix, it is not that obvious. I could not see a trivial way to
-> > do it even by adding backup loops into find_free_dev_extent(), so I
-> > opted to change the semantics of dev_extent_hole_check() to not stop
-> > looping until it finds a sufficiently big hole. For clarity, this also
-> > required changing the helper function contains_pending_extent() into two
-> > new helpers which find the first pending extent and the first suitable
-> > hole in a range.
-> > 
-> > I attempted to clean up the documentation and range calculations to be
-> > as consistent and clear as possible for the future.
-> > 
-> > I also looked at the zoned case and concluded that the loop there is
-> > different and not to be unified with this one. As far as I can tell, the
-> > zoned check will only further constrain the hole so looping back to find
-> > more holes is acceptable. Though given that zoned really only appends, I
-> > find it highly unlikely that it is susceptible to this bug.
-> > 
-> > Fixes: 1b9845081633 ("Btrfs: fix find_free_dev_extent() malfunction in case device tree has hole")
-> > Reported-by: Dimitrios Apostolou <jimis@gmx.net>
-> > Closes: https://lore.kernel.org/linux-btrfs/q7760374-q1p4-029o-5149-26p28421s468@tzk.arg/
-> > Signed-off-by: Boris Burkov <boris@bur.io>
-> > ---
-> >   fs/btrfs/volumes.c | 221 ++++++++++++++++++++++++++++++++-------------
-> >   1 file changed, 160 insertions(+), 61 deletions(-)
-> > 
-> > diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> > index af0197b242a7..e2d41e9cd84f 100644
-> > --- a/fs/btrfs/volumes.c
-> > +++ b/fs/btrfs/volumes.c
-> > @@ -1509,30 +1509,139 @@ struct btrfs_device *btrfs_scan_one_device(const char *path,
-> >   }
-> >   /*
-> > - * Try to find a chunk that intersects [start, start + len] range and when one
-> > - * such is found, record the end of it in *start
-> > + * Find the first pending extent intersecting a range.
-> > + *
-> > + * @device: the device to search
-> > + * @start: start of the range to check
-> > + * @len: length of the range to check
-> > + * @pending_start: output pointer for the start of the found pending extent
-> > + * @pending_end: output pointer for the end of the found pending extent (inclusive)
-> > + *
-> > + * Search for a pending chunk allocation that intersects the half-open range
-> > + * [start, start + len).
-> > + *
-> > + * Return: true if a pending extent was found, false otherwise.
-> > + * If the return value is true, store the first pending extent in
-> > + * [*pending_start, *pending_end]. Otherwise, the two output variables
-> > + * may still be modified, to something outside the range and should not
-> > + * be used.
-> >    */
-> > -static bool contains_pending_extent(struct btrfs_device *device, u64 *start,
-> > -				    u64 len)
-> > +static bool first_pending_extent(struct btrfs_device *device, u64 start, u64 len,
-> > +				 u64 *pending_start, u64 *pending_end)
-> >   {
-> > -	u64 physical_start, physical_end;
-> > -
-> >   	lockdep_assert_held(&device->fs_info->chunk_mutex);
-> > -	if (btrfs_find_first_extent_bit(&device->alloc_state, *start,
-> > -					&physical_start, &physical_end,
-> > +	if (btrfs_find_first_extent_bit(&device->alloc_state, start,
-> > +					pending_start, pending_end,
-> >   					CHUNK_ALLOCATED, NULL)) {
-> > -		if (in_range(physical_start, *start, len) ||
-> > -		    in_range(*start, physical_start,
-> > -			     physical_end + 1 - physical_start)) {
-> > -			*start = physical_end + 1;
-> > +		if (in_range(*pending_start, start, len) ||
-> > +		    in_range(start, *pending_start,
-> > +			     *pending_end + 1 - *pending_start)) {
-> >   			return true;
-> >   		}
-> >   	}
-> >   	return false;
-> >   }
-> > +/*
-> > + * Find the first real hole accounting for pending extents.
-> > + *
-> > + * @device: the device containing the candidate hole
-> > + * @start: input/output pointer for the hole start position
-> > + * @len: input/output pointer for the hole length
-> > + * @min_hole_size: the size of hole we are looking for
-> > + *
-> > + * Given a potential hole specified by [*start, *start + *len), check for pending
-> > + * chunk allocations within that range. If pending extents are found, the hole is
-> > + * adjusted to represent the first true free space that is large enough when
-> > + * accounting for pending chunks.
-> > + *
-> > + * Note that this function must handle various cases involving non
-> > + * consecutive pending extents.
-> > + *
-> > + * Returns: true if a suitable hole was found, false otherwise.
-> > + * If the return value is true, then *start and *len are set to represent the hole.
-> > + * If the return value is false, then *start is set to the end of the range and
-> > + * *len is set to 0.
-> > + */
-> > +static bool find_hole_in_pending_extents(struct btrfs_device *device, u64 *start, u64 *len,
-> > +					 u64 min_hole_size)
-> > +{
-> > +	u64 pending_start, pending_end;
-> > +	u64 end;
-> > +	bool success = false;
-> > +
-> > +	lockdep_assert_held(&device->fs_info->chunk_mutex);
-> > +
-> > +	if (*len == 0)
-> > +		return false;
-> > +
-> > +	end = *start + *len - 1;
-> > +
-> > +	while (true) {
-> > +		if (first_pending_extent(device, *start, *len, &pending_start, &pending_end)) {
-> > +			/*
-> > +			 * Case 1: the pending extent overlaps the start of
-> > +			 * candidate hole. That means the true hole is after the
-> > +			 * pending extent, but we need to find the next pending
-> > +			 * extent to properly size the hole. In the next loop,
-> > +			 * we will reduce to case 2 or 3.
-> > +			 * e.g.,
-> > +			 *   |----pending A----|    real hole     |----pending B----|
-> > +			 *            |           candidate hole        |
-> > +			 *         *start                              end
-> > +			 */
-> > +			if (pending_start <= *start) {
-> > +				*start = pending_end + 1;
-> > +				goto next;
-> > +			}
-> > +			/*
-> > +			 * Case 2: The pending extent starts after *start (and overlaps
-> > +			 * [*start, end), so the first hole just goes up to the start
-> > +			 * of the pending extent.
-> > +			 * e.g.,
-> > +			 *   |    real hole    |----pending A----|
-> > +			 *   |       candidate hole     |
-> > +			 * *start                      end
-> > +			 *
-> > +			 */
-> > +			*len = pending_start - *start;
-> > +			if (*len >= min_hole_size) {
-> > +				success = true;
-> > +				break;
-> > +			}
-> > +			/*
-> > +			 * If the hole wasn't big enough, then we advance past
-> > +			 * the pending extent and keep looking.
-> > +			 */
-> > +			*start = pending_end + 1;
-> > +			goto next;
-> > +		} else {
-> > +			/*
-> > +			 * Case 3: There is no pending extent overlapping the
-> > +			 * range [*start, *start + *len - 1], so the only remaining
-> > +			 * hole is the remaining range.
-> > +			 * e.g.,
-> > +			 *   |       candidate hole           |
-> > +			 *   |          real hole             |
-> > +			 * *start                            end
-> > +			 */
-> > +			if (*len >= min_hole_size)
-> > +				success = true;
-> > +			break;
-> > +		}
-> > +next:
-> > +		if (*start > end) {
-> > +			*start = end + 1;
-> > +			*len = 0;
-> > +			return false;
-> > +		}
-> > +		*len = end - *start + 1;
-> > +	}
-> > +	return success;
-> > +}
-> > +
-> >   static u64 dev_extent_search_start(struct btrfs_device *device)
-> >   {
-> >   	switch (device->fs_devices->chunk_alloc_policy) {
-> > @@ -1597,59 +1706,51 @@ static bool dev_extent_hole_check_zoned(struct btrfs_device *device,
-> >   }
-> >   /*
-> > - * Check if specified hole is suitable for allocation.
-> > + * Validate and adjust a hole for chunk allocation
-> >    *
-> > - * @device:	the device which we have the hole
-> > - * @hole_start: starting position of the hole
-> > - * @hole_size:	the size of the hole
-> > - * @num_bytes:	the size of the free space that we need
-> > + * @device: the device containing the candidate hole
-> > + * @hole_start: input/output pointer for the hole start position
-> > + * @hole_size: input/output pointer for the hole size
-> > + * @num_bytes: minimum allocation size required
-> >    *
-> > - * This function may modify @hole_start and @hole_size to reflect the suitable
-> > - * position for allocation. Returns 1 if hole position is updated, 0 otherwise.
-> > + * Check if the specified hole is suitable for allocation and adjust it if
-> > + * necessary. The hole may be modified to skip over pending chunk allocations
-> > + * and to satisfy stricter zoned requirements on zoned fs-es.
-> > + *
-> > + * For regular (non-zoned) allocation, if the hole after adjustment is smaller
-> > + * than @num_bytes, the search continues past additional pending extents until
-> > + * either a sufficiently large hole is found or no more pending extents exist.
-> > + *
-> > + * Return: true if a suitable hole was found and false otherwise.
-> >    */
-> >   static bool dev_extent_hole_check(struct btrfs_device *device, u64 *hole_start,
-> >   				  u64 *hole_size, u64 num_bytes)
-> >   {
-> > -	bool changed = false;
-> > -	u64 hole_end = *hole_start + *hole_size;
-> > +	bool found = false;
-> > +	u64 hole_end = *hole_start + *hole_size - 1;
-> > -	for (;;) {
-> > -		/*
-> > -		 * Check before we set max_hole_start, otherwise we could end up
-> > -		 * sending back this offset anyway.
-> > -		 */
-> > -		if (contains_pending_extent(device, hole_start, *hole_size)) {
-> > -			if (hole_end >= *hole_start)
-> > -				*hole_size = hole_end - *hole_start;
-> > -			else
-> > -				*hole_size = 0;
-> > -			changed = true;
-> > -		}
-> > +	ASSERT(*hole_size > 0);
-> > -		switch (device->fs_devices->chunk_alloc_policy) {
-> > -		default:
-> > -			btrfs_warn_unknown_chunk_allocation(device->fs_devices->chunk_alloc_policy);
-> > -			fallthrough;
-> > -		case BTRFS_CHUNK_ALLOC_REGULAR:
-> > -			/* No extra check */
-> > -			break;
-> > -		case BTRFS_CHUNK_ALLOC_ZONED:
-> > -			if (dev_extent_hole_check_zoned(device, hole_start,
-> > -							hole_size, num_bytes)) {
-> > -				changed = true;
-> > -				/*
-> > -				 * The changed hole can contain pending extent.
-> > -				 * Loop again to check that.
-> > -				 */
-> > -				continue;
-> > -			}
-> > -			break;
-> > -		}
-> > +again:
-> > +	*hole_size = hole_end - *hole_start + 1;
-> > +	found = find_hole_in_pending_extents(device, hole_start, hole_size, num_bytes);
-> > +	if (!found)
-> > +		return found;
-> > -		break;
-> > +	switch (device->fs_devices->chunk_alloc_policy) {
-> > +	default:
-> > +		btrfs_warn_unknown_chunk_allocation(device->fs_devices->chunk_alloc_policy);
-> > +		fallthrough;
-> > +	case BTRFS_CHUNK_ALLOC_REGULAR:
-> > +		return found;
-> > +	case BTRFS_CHUNK_ALLOC_ZONED:
-> > +		if (dev_extent_hole_check_zoned(device, hole_start,
-> > +						hole_size, num_bytes)) {
-> > +			goto again;
-> > +		}
-> >   	}
-> > -	return changed;
-> > +	return found;
-> >   }
-> >   /*
-> > @@ -1708,7 +1809,7 @@ static int find_free_dev_extent(struct btrfs_device *device, u64 num_bytes,
-> >   		ret = -ENOMEM;
-> >   		goto out;
-> >   	}
-> > -again:
-> > +
-> >   	if (search_start >= search_end ||
-> >   		test_bit(BTRFS_DEV_STATE_REPLACE_TGT, &device->dev_state)) {
-> >   		ret = -ENOSPC;
-> > @@ -1795,11 +1896,7 @@ static int find_free_dev_extent(struct btrfs_device *device, u64 num_bytes,
-> >   	 */
-> >   	if (search_end > search_start) {
-> >   		hole_size = search_end - search_start;
-> > -		if (dev_extent_hole_check(device, &search_start, &hole_size,
-> > -					  num_bytes)) {
-> > -			btrfs_release_path(path);
-> > -			goto again;
-> > -		}
-> > +		dev_extent_hole_check(device, &search_start, &hole_size, num_bytes);
-> >   		if (hole_size > max_hole_size) {
-> >   			max_hole_start = search_start;
-> > @@ -5023,6 +5120,7 @@ int btrfs_shrink_device(struct btrfs_device *device, u64 new_size)
-> >   	u64 diff;
-> >   	u64 start;
-> >   	u64 free_diff = 0;
-> > +	u64 pending_start, pending_end;
-> >   	new_size = round_down(new_size, fs_info->sectorsize);
-> >   	start = new_size;
-> > @@ -5068,7 +5166,8 @@ int btrfs_shrink_device(struct btrfs_device *device, u64 new_size)
-> >   	 * in-memory chunks are synced to disk so that the loop below sees them
-> >   	 * and relocates them accordingly.
-> >   	 */
-> > -	if (contains_pending_extent(device, &start, diff)) {
-> > +	if (first_pending_extent(device, start, diff,
-> > +				 &pending_start, &pending_end)) {
-> >   		mutex_unlock(&fs_info->chunk_mutex);
-> >   		ret = btrfs_commit_transaction(trans);
-> >   		if (ret)
-> 
+>=20
+> I can also try harder to make a small hacky bitmap fix that just adds
+> more checks/looping to find_free_dev_extent. That will likely have to
+> have bugs that miss available space (if the hole starts with a hole but
+> contains a pending extent), but it can probably avoid EEXIST aborts.
+>=20
+>>
+>> Thanks,
+>> Qu
+>>
+>=20
+> Thanks,
+> Boris
+>=20
+[...]
+>>> +	lockdep_assert_held(&device->fs_info->chunk_mutex);
+>>> +
+>>> +	if (*len =3D=3D 0)
+>>> +		return false;
+>>> +
+>>> +	end =3D *start + *len - 1;
+>>> +
+>>> +	while (true) {
+>>> +		if (first_pending_extent(device, *start, *len, &pending_start, &pen=
+ding_end)) {
+>>> +			/*
+>>> +			 * Case 1: the pending extent overlaps the start of
+>>> +			 * candidate hole. That means the true hole is after the
+>>> +			 * pending extent, but we need to find the next pending
+>>> +			 * extent to properly size the hole. In the next loop,
+>>> +			 * we will reduce to case 2 or 3.
+>>> +			 * e.g.,
+>>> +			 *   |----pending A----|    real hole     |----pending B----|
+>>> +			 *            |           candidate hole        |
+>>> +			 *         *start                              end
+>>> +			 */
+>>> +			if (pending_start <=3D *start) {
+>>> +				*start =3D pending_end + 1;
+>>> +				goto next;
+>>> +			}
+>>> +			/*
+>>> +			 * Case 2: The pending extent starts after *start (and overlaps
+>>> +			 * [*start, end), so the first hole just goes up to the start
+>>> +			 * of the pending extent.
+>>> +			 * e.g.,
+>>> +			 *   |    real hole    |----pending A----|
+>>> +			 *   |       candidate hole     |
+>>> +			 * *start                      end
+>>> +			 *
+>>> +			 */
+>>> +			*len =3D pending_start - *start;
+>>> +			if (*len >=3D min_hole_size) {
+>>> +				success =3D true;
+>>> +				break;
+>>> +			}
+>>> +			/*
+>>> +			 * If the hole wasn't big enough, then we advance past
+>>> +			 * the pending extent and keep looking.
+>>> +			 */
+>>> +			*start =3D pending_end + 1;
+>>> +			goto next;
+>>> +		} else {
+>>> +			/*
+>>> +			 * Case 3: There is no pending extent overlapping the
+>>> +			 * range [*start, *start + *len - 1], so the only remaining
+>>> +			 * hole is the remaining range.
+>>> +			 * e.g.,
+>>> +			 *   |       candidate hole           |
+>>> +			 *   |          real hole             |
+>>> +			 * *start                            end
+>>> +			 */
+>>> +			if (*len >=3D min_hole_size)
+>>> +				success =3D true;
+>>> +			break;
+>>> +		}
+>>> +next:
+>>> +		if (*start > end) {
+>>> +			*start =3D end + 1;
+>>> +			*len =3D 0;
+>>> +			return false;
+>>> +		}
+>>> +		*len =3D end - *start + 1;
+>>> +	}
+>>> +	return success;
+>>> +}
+>>> +
+>>>    static u64 dev_extent_search_start(struct btrfs_device *device)
+>>>    {
+>>>    	switch (device->fs_devices->chunk_alloc_policy) {
+>>> @@ -1597,59 +1706,51 @@ static bool dev_extent_hole_check_zoned(struct=
+ btrfs_device *device,
+>>>    }
+>>>    /*
+>>> - * Check if specified hole is suitable for allocation.
+>>> + * Validate and adjust a hole for chunk allocation
+>>>     *
+>>> - * @device:	the device which we have the hole
+>>> - * @hole_start: starting position of the hole
+>>> - * @hole_size:	the size of the hole
+>>> - * @num_bytes:	the size of the free space that we need
+>>> + * @device: the device containing the candidate hole
+>>> + * @hole_start: input/output pointer for the hole start position
+>>> + * @hole_size: input/output pointer for the hole size
+>>> + * @num_bytes: minimum allocation size required
+>>>     *
+>>> - * This function may modify @hole_start and @hole_size to reflect the=
+ suitable
+>>> - * position for allocation. Returns 1 if hole position is updated, 0 =
+otherwise.
+>>> + * Check if the specified hole is suitable for allocation and adjust =
+it if
+>>> + * necessary. The hole may be modified to skip over pending chunk all=
+ocations
+>>> + * and to satisfy stricter zoned requirements on zoned fs-es.
+>>> + *
+>>> + * For regular (non-zoned) allocation, if the hole after adjustment i=
+s smaller
+>>> + * than @num_bytes, the search continues past additional pending exte=
+nts until
+>>> + * either a sufficiently large hole is found or no more pending exten=
+ts exist.
+>>> + *
+>>> + * Return: true if a suitable hole was found and false otherwise.
+>>>     */
+>>>    static bool dev_extent_hole_check(struct btrfs_device *device, u64 =
+*hole_start,
+>>>    				  u64 *hole_size, u64 num_bytes)
+>>>    {
+>>> -	bool changed =3D false;
+>>> -	u64 hole_end =3D *hole_start + *hole_size;
+>>> +	bool found =3D false;
+>>> +	u64 hole_end =3D *hole_start + *hole_size - 1;
+>>> -	for (;;) {
+>>> -		/*
+>>> -		 * Check before we set max_hole_start, otherwise we could end up
+>>> -		 * sending back this offset anyway.
+>>> -		 */
+>>> -		if (contains_pending_extent(device, hole_start, *hole_size)) {
+>>> -			if (hole_end >=3D *hole_start)
+>>> -				*hole_size =3D hole_end - *hole_start;
+>>> -			else
+>>> -				*hole_size =3D 0;
+>>> -			changed =3D true;
+>>> -		}
+>>> +	ASSERT(*hole_size > 0);
+>>> -		switch (device->fs_devices->chunk_alloc_policy) {
+>>> -		default:
+>>> -			btrfs_warn_unknown_chunk_allocation(device->fs_devices->chunk_allo=
+c_policy);
+>>> -			fallthrough;
+>>> -		case BTRFS_CHUNK_ALLOC_REGULAR:
+>>> -			/* No extra check */
+>>> -			break;
+>>> -		case BTRFS_CHUNK_ALLOC_ZONED:
+>>> -			if (dev_extent_hole_check_zoned(device, hole_start,
+>>> -							hole_size, num_bytes)) {
+>>> -				changed =3D true;
+>>> -				/*
+>>> -				 * The changed hole can contain pending extent.
+>>> -				 * Loop again to check that.
+>>> -				 */
+>>> -				continue;
+>>> -			}
+>>> -			break;
+>>> -		}
+>>> +again:
+>>> +	*hole_size =3D hole_end - *hole_start + 1;
+>>> +	found =3D find_hole_in_pending_extents(device, hole_start, hole_size=
+, num_bytes);
+>>> +	if (!found)
+>>> +		return found;
+>>> -		break;
+>>> +	switch (device->fs_devices->chunk_alloc_policy) {
+>>> +	default:
+>>> +		btrfs_warn_unknown_chunk_allocation(device->fs_devices->chunk_alloc=
+_policy);
+>>> +		fallthrough;
+>>> +	case BTRFS_CHUNK_ALLOC_REGULAR:
+>>> +		return found;
+>>> +	case BTRFS_CHUNK_ALLOC_ZONED:
+>>> +		if (dev_extent_hole_check_zoned(device, hole_start,
+>>> +						hole_size, num_bytes)) {
+>>> +			goto again;
+>>> +		}
+>>>    	}
+>>> -	return changed;
+>>> +	return found;
+>>>    }
+>>>    /*
+>>> @@ -1708,7 +1809,7 @@ static int find_free_dev_extent(struct btrfs_dev=
+ice *device, u64 num_bytes,
+>>>    		ret =3D -ENOMEM;
+>>>    		goto out;
+>>>    	}
+>>> -again:
+>>> +
+>>>    	if (search_start >=3D search_end ||
+>>>    		test_bit(BTRFS_DEV_STATE_REPLACE_TGT, &device->dev_state)) {
+>>>    		ret =3D -ENOSPC;
+>>> @@ -1795,11 +1896,7 @@ static int find_free_dev_extent(struct btrfs_de=
+vice *device, u64 num_bytes,
+>>>    	 */
+>>>    	if (search_end > search_start) {
+>>>    		hole_size =3D search_end - search_start;
+>>> -		if (dev_extent_hole_check(device, &search_start, &hole_size,
+>>> -					  num_bytes)) {
+>>> -			btrfs_release_path(path);
+>>> -			goto again;
+>>> -		}
+>>> +		dev_extent_hole_check(device, &search_start, &hole_size, num_bytes)=
+;
+>>>    		if (hole_size > max_hole_size) {
+>>>    			max_hole_start =3D search_start;
+>>> @@ -5023,6 +5120,7 @@ int btrfs_shrink_device(struct btrfs_device *dev=
+ice, u64 new_size)
+>>>    	u64 diff;
+>>>    	u64 start;
+>>>    	u64 free_diff =3D 0;
+>>> +	u64 pending_start, pending_end;
+>>>    	new_size =3D round_down(new_size, fs_info->sectorsize);
+>>>    	start =3D new_size;
+>>> @@ -5068,7 +5166,8 @@ int btrfs_shrink_device(struct btrfs_device *dev=
+ice, u64 new_size)
+>>>    	 * in-memory chunks are synced to disk so that the loop below sees=
+ them
+>>>    	 * and relocates them accordingly.
+>>>    	 */
+>>> -	if (contains_pending_extent(device, &start, diff)) {
+>>> +	if (first_pending_extent(device, start, diff,
+>>> +				 &pending_start, &pending_end)) {
+>>>    		mutex_unlock(&fs_info->chunk_mutex);
+>>>    		ret =3D btrfs_commit_transaction(trans);
+>>>    		if (ret)
+>>
+>=20
+
 
