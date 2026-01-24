@@ -1,96 +1,95 @@
-Return-Path: <linux-btrfs+bounces-20984-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20985-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id iNDiHjY9dWmbCgEAu9opvQ
-	(envelope-from <linux-btrfs+bounces-20984-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Sat, 24 Jan 2026 22:44:22 +0100
+	id yKnJMis9dWmbCgEAu9opvQ
+	(envelope-from <linux-btrfs+bounces-20985-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Sat, 24 Jan 2026 22:44:11 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id F21F07F16B
-	for <lists+linux-btrfs@lfdr.de>; Sat, 24 Jan 2026 22:44:21 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FA797F15C
+	for <lists+linux-btrfs@lfdr.de>; Sat, 24 Jan 2026 22:44:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 6B17C30137AA
-	for <lists+linux-btrfs@lfdr.de>; Sat, 24 Jan 2026 21:44:04 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 6B6F73002D2C
+	for <lists+linux-btrfs@lfdr.de>; Sat, 24 Jan 2026 21:44:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19D7128000F;
-	Sat, 24 Jan 2026 21:44:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F164E27A927;
+	Sat, 24 Jan 2026 21:44:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="OjqSojAM";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="P1MWxFd3"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="GM27uw/x";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="HfijgxYd"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from fout-a2-smtp.messagingengine.com (fout-a2-smtp.messagingengine.com [103.168.172.145])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41C6224503C
-	for <linux-btrfs@vger.kernel.org>; Sat, 24 Jan 2026 21:44:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24F0D280308
+	for <linux-btrfs@vger.kernel.org>; Sat, 24 Jan 2026 21:44:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.145
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769291043; cv=none; b=bsPubTKvS2v3zX2heMAeqJtxqd06+40zEGqseL2xVIMsWOIjf9KxvwlFWqvjUvvlSmov6Pr9ZTNZSaX7+eRjypE10nfc4RaWD2eYXzXJYLPXcJAUc6a9FlYTj75/i/x+n24EKnTLKTxbeX7TQP/OT5rtf6qdEc/kzgf+mdgLlm0=
+	t=1769291045; cv=none; b=AA20Wl1CJDWN5ggLHs4mkCuIIeppVR/Q0CzRq7gqEZQhnTi1WHythFvqElv3rZex5SJ90P9dZKNz1bmW7H/bIUhNlvrpvCRY1MQKGGtURPfXUoc3kz0jscTbNQWCc4st7Bg7oPcyqLlfVFGLuxYeudBBMarkyNE/3AQYAs/IO5c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769291043; c=relaxed/simple;
-	bh=X7+E1Y7Ij8suAcZCFP+P6+44FMPr7W1AghMHQIQJZGY=;
+	s=arc-20240116; t=1769291045; c=relaxed/simple;
+	bh=i00D/Dm/aivOcS3UEfDuY/jFkerQDYlkW/6zcLkUyCs=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=RPq04j3cFJDxJCqNA53xAmRRTkSTSO+qQaezVYlCR2CaQj7V+xZea1UZlMcouODY4giOfZG31FcjMIXQo+iKCvpqwRAq8ja80wT05DvQJvMUoDcKSZrZfmP8l0VrGlLoz5qMX7S8iYu4sJCpMD2DMen6gO8P/4RRbbeaFly+3Bc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=OjqSojAM; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=P1MWxFd3; arc=none smtp.client-ip=103.168.172.145
+	 MIME-Version; b=TjvYFUbW8K2RwLah6U3GxSE7jr7U6r8EMgAoSRtw4aL17EFor1DmkK1mVSrVMNVruDvdZjw+N6Ox7MGeQouyiUC/g93AvKGubsbPsuEl6rVbpd5U+68zyajAHN8WD5vkcuOX8d2eV+ut1QqBcaVmKkSux32hl3wB7wr5Pu1VU9M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=GM27uw/x; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=HfijgxYd; arc=none smtp.client-ip=103.168.172.145
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
 Received: from phl-compute-05.internal (phl-compute-05.internal [10.202.2.45])
-	by mailfout.phl.internal (Postfix) with ESMTP id 7C08BEC009E;
-	Sat, 24 Jan 2026 16:44:00 -0500 (EST)
-Received: from phl-frontend-03 ([10.202.2.162])
-  by phl-compute-05.internal (MEProxy); Sat, 24 Jan 2026 16:44:00 -0500
+	by mailfout.phl.internal (Postfix) with ESMTP id 5A3F2EC00A7;
+	Sat, 24 Jan 2026 16:44:02 -0500 (EST)
+Received: from phl-frontend-04 ([10.202.2.163])
+  by phl-compute-05.internal (MEProxy); Sat, 24 Jan 2026 16:44:02 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
 	:content-transfer-encoding:content-type:date:date:from:from
 	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm3; t=1769291040; x=
-	1769377440; bh=jT1nEaAFrDel776yfifqhQrMNDq3JZpWmwQ+++8c5S8=; b=O
-	jqSojAMcgn3X7pqNtMbY0S1H7DgYwYZubnouUQYmmIgEN/NUJe+0AVHnjJhDw0OG
-	zdlpahWnz3ab8UIYW/m3uy6upQDKWGu3vm1QmBO4GZpej3/oOZthj9CSAqMUz5w9
-	X3rWzA8mAw2lDeWwWoL8Zuvj3hxRPyrmuRaY3g8/M1kv6Fwx36NFRUMwtiuRmwUm
-	wgoYu5CqQ3ah51HtM51QDq4rL55r+Gzid6Q691CCvVvQgVeARGMmi8Irae2HtqDQ
-	K0s0SalbUjMoEoIwqo8qqxbn+VLWmbK98uWbydciRU07cL3/nFpAcd7NufD7Y7V2
-	VwOEHtxE4hIi1erisVlfQ==
+	:reply-to:subject:subject:to:to; s=fm3; t=1769291042; x=
+	1769377442; bh=cLdoF+gitBpnh90RLQtfGugifXuKxwCYs8QpxrKHfl4=; b=G
+	M27uw/xX4XJ5YnkkXraunpwgtzDZGAHQWOvRNcRPWK7dGtmAxL0da/Tf0TeTVIIL
+	MAFWK998P+jmloxcapqGHLT1drxHIGPsjpGm/3DTDGcrHE8hCQUtrmW8XFuaA8+7
+	Vs8a9eeGZ7+vGshxvYTTiFKZc6DKiICcuFDJjtcas8Fqt9TI3779MyPN8fMBYs9T
+	VnwcbS14BGq6hmr6VHEPyK6xBjuZoZDvst6beleEGZYJ27yCxEsu9BZ61TJ2G9Zz
+	R/bMdo/6fQbdR1CC8L+yVGMA2/yItWpCrppTKGGQiT/5MH32acTnQQTMPk+qJOQk
+	9/SLb3Df2mDUjxoMk7qNQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:content-transfer-encoding:content-type
 	:date:date:feedback-id:feedback-id:from:from:in-reply-to
 	:in-reply-to:message-id:mime-version:references:reply-to:subject
 	:subject:to:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1769291040; x=1769377440; bh=jT1nEaAFrDel776yfifqhQrMNDq3
-	JZpWmwQ+++8c5S8=; b=P1MWxFd3AjqTftHG1t6I7xJmz0hKwJtSWa4H4wIs7iNK
-	RZ4BSIRASgcxv6QIV9Ql005kxLz7iX2g+P8kPP9VRhqxgfGfpX55U91pJt6M0Oor
-	nKP7DLvoiMJayh9iVc6tqb789du+C9SdnJIRM2wItl6N/xbi+tjCYECy9Btp0nvW
-	HtuXw9RvwK/ZBWYoYN9rvYOlxu52teoqnT27JGoWvFWKkQANoJy3rCEYxCk4SK7y
-	fj0yY+eUMyQIjBZANjT2Gb37eSI2y+a8T3Pm5YaIbCxDXZuCH+C2khftvO9MKmIp
-	8JUBYkltaw2iDDBgNGVS+NZjt7Rd5Q7I4jBcP/V99A==
-X-ME-Sender: <xms:ID11aXsE17zKZRF4eRAq-o0LXeAxJAx6KkduibeTKAfHchcxZ65phA>
-    <xme:ID11aecJizmwDlvucKV5yJOTFMpKLEQubt9rMPoDjqqPUFp0HqXVjpvTaASHtopQ9
-    JcnA4out8rEIL5_JRIEWicO6maIor_uikYsEelHXCflpr5SFKMskvM>
-X-ME-Received: <xmr:ID11aYa3VRKEDx9xLuMVP7NjpLSY6YMcBoeCg8ggfDTF6W3oNy2br7DbKTQPQiNgiz5NA37UMx0laRNxQF1-EVp02Rg>
+	fm2; t=1769291042; x=1769377442; bh=cLdoF+gitBpnh90RLQtfGugifXuK
+	xwCYs8QpxrKHfl4=; b=HfijgxYdHx8IdlVCBNKZXOES1CTXPhPBmh3ub1SJ/vts
+	R8K0RiW/lPRpcSpJwMv7/jfKc5s9jYFaNAp8jowdzw0ALxUi3PMcpSYVEya5fZSw
+	B0TZxOTsxWm5GtVNuVnup9PLpSKA7B8EmWws4eRsdKLKrnKwd3HZdbHf76Gq+4v5
+	0MMJD+Wni95pyu3vAIK2F+EFocP79w+7w1jvfbqAihmDvT4DP4cdoXj5p10LIl2T
+	PV01bWUcL/fT5SqAIzCUqhJgnwKpGm1zySEpkOeUcebLD0LOuo8pdXlpeIhby0MU
+	U1Iqdo1GOT0IE+NfDeqje+K7smKOOkvGbNIoY8jekQ==
+X-ME-Sender: <xms:Ij11aVRmPnfePEwKZoI4TojXbC_W9e0xKBx1Lu6wV_R49pSLA0hdmQ>
+    <xme:Ij11aUyphNuhP6Xh3CMwle295I8wNsUOtuHWYEYXJsYtdI3v6wZz7haVveYgdn7Ej
+    ASZRH4yofckLxaJS93LU5MyxwN2Db1GK-TURwRwZTH99boMEuALYQ>
+X-ME-Received: <xmr:Ij11aYdT79VcJcY7owiB-hu4iIKXnXD1NH9hlLKFdJayFeMM5fjEOThBlabGn8Cz1id_LX08g74dFcHzwJs_ayWPDy0>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdduheeftdefucetufdoteggodetrf
     dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
     rghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhgggfestdekredtre
     dttdenucfhrhhomhepuehorhhishcuuehurhhkohhvuceosghorhhishessghurhdrihho
-    qeenucggtffrrghtthgvrhhnpeffgffgkeekveevgeduffeuvdevtdekvedtledvfedule
-    elgeevteelkedvhfeikeenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhs
-    thgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessghurh
-    drihhopdhnsggprhgtphhtthhopedvpdhmohguvgepshhmthhpohhuthdprhgtphhtthho
-    pehlihhnuhigqdgsthhrfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoh
-    epkhgvrhhnvghlqdhtvggrmhesfhgsrdgtohhm
-X-ME-Proxy: <xmx:ID11aRXRw1zhpp9MyTQYzQvm95g95RiaHhaEsB7ITlY5lZDVh23pVw>
-    <xmx:ID11aahhW0y5apYElkvtFxEAo_yh5PICUZ_9_Qcr7vLS0gJTvFdRTg>
-    <xmx:ID11afVvHfEgEAu67MOH_D1IuTk-2cQuG8e73yXgqo44OX6NL27FWw>
-    <xmx:ID11aRN8j6McT7kw6nGJSq8G7DKtlH1E3LlED2dHfTkPAoUrr3tENw>
-    <xmx:ID11afSdS7ey_I08gnDzKpR6Bw2yhMRhTjI2gwdq6VIqeLQRHWbZzOhM>
+    qeenucggtffrrghtthgvrhhnpeeiueffuedvieeujefhheeigfekvedujeejjeffvedvhe
+    dtudefiefhkeegueehleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgr
+    ihhlfhhrohhmpegsohhrihhssegsuhhrrdhiohdpnhgspghrtghpthhtohepvddpmhhoug
+    gvpehsmhhtphhouhhtpdhrtghpthhtoheplhhinhhugidqsghtrhhfshesvhhgvghrrdhk
+    vghrnhgvlhdrohhrghdprhgtphhtthhopehkvghrnhgvlhdqthgvrghmsehfsgdrtghomh
+X-ME-Proxy: <xmx:Ij11aYIjQFaCryYNvyEXxCNL3bOCx1DT-HTWZCuDev0uY_cBshlmBg>
+    <xmx:Ij11aRFo1Lpep_oNBJtQ-id9UGC-LdiOWQyLRTTvcjsehouh_M-ZGQ>
+    <xmx:Ij11aaqAM62BUWMuivCoJRh8e1kaGPeK3LY66yGwKGqFcHW5h6-g0A>
+    <xmx:Ij11aSQ30-jhDKjcwihde0O0AWmNSOfU-SWpBJbtp-FxgqndJ-l5mA>
+    <xmx:Ij11aTIDcoh1mkOSIswNEm0oiCVkNLrcvmYCwV0LWfnzJUEvYY8sXJFR>
 Feedback-ID: i083147f8:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 24 Jan 2026 16:43:59 -0500 (EST)
+ 24 Jan 2026 16:44:01 -0500 (EST)
 From: Boris Burkov <boris@bur.io>
 To: linux-btrfs@vger.kernel.org,
 	kernel-team@fb.com
-Subject: [PATCH v2 1/3] btrfs: fix EEXIST abort due to non-consecutive gaps in chunk allocation
-Date: Sat, 24 Jan 2026 13:43:33 -0800
-Message-ID: <8139d137b56ae6b66cfca818b75e5bc30353ff17.1769290938.git.boris@bur.io>
+Subject: [PATCH v2 2/3] btrfs: unit tests for pending extent walking functions
+Date: Sat, 24 Jan 2026 13:43:34 -0800
+Message-ID: <efc4b5a3fbcbc7473afc228badd3e1306298bf33.1769290938.git.boris@bur.io>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <cover.1769290938.git.boris@bur.io>
 References: <cover.1769290938.git.boris@bur.io>
@@ -106,7 +105,7 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	R_DKIM_ALLOW(-0.20)[bur.io:s=fm3,messagingengine.com:s=fm2];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -116,507 +115,640 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	RCVD_TLS_LAST(0.00)[];
 	DMARC_NA(0.00)[bur.io];
 	RCPT_COUNT_TWO(0.00)[2];
-	TAGGED_FROM(0.00)[bounces-20984-lists,linux-btrfs=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-20985-lists,linux-btrfs=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	PRECEDENCE_BULK(0.00)[];
+	TAGGED_RCPT(0.00)[linux-btrfs];
 	FROM_NEQ_ENVFROM(0.00)[boris@bur.io,linux-btrfs@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	MIME_TRACE(0.00)[0:+];
+	PRECEDENCE_BULK(0.00)[];
+	TO_DN_NONE(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[6];
 	NEURAL_HAM(-0.00)[-1.000];
-	TO_DN_NONE(0.00)[];
-	TAGGED_RCPT(0.00)[linux-btrfs];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,messagingengine.com:dkim,bur.io:email,bur.io:dkim,bur.io:mid,suse.com:email]
-X-Rspamd-Queue-Id: F21F07F16B
+	DBL_BLOCKED_OPENRESOLVER(0.00)[messagingengine.com:dkim,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,bur.io:email,bur.io:dkim,bur.io:mid]
+X-Rspamd-Queue-Id: 1FA797F15C
 X-Rspamd-Action: no action
 
-I have been observing a number of systems aborting at
-insert_dev_extents() in btrfs_create_pending_block_groups(). The
-following is a sample stack trace of such an abort coming from forced
-chunk allocation (typically behind CONFIG_BTRFS_EXPERIMENTAL) but this
-can theoretically happen to any DUP chunk allocation.
+I ran into another sort of trivial bug in v1 of the patch and concluded
+that these functions really ought to be unit tested.
 
-[   81.801251] ------------[ cut here ]------------
-[   81.801587] BTRFS: Transaction aborted (error -17)
-[   81.801924] WARNING: fs/btrfs/block-group.c:2876 at btrfs_create_pending_block_groups+0x721/0x770 [btrfs], CPU#1: bash/319
-[   81.802764] Modules linked in: virtio_net btrfs xor zstd_compress raid6_pq null_blk
-[   81.803310] CPU: 1 UID: 0 PID: 319 Comm: bash Kdump: loaded Not tainted 6.19.0-rc6+ #319 NONE
-[   81.803916] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS Arch Linux 1.17.0-2-2 04/01/2014
-[   81.804552] RIP: 0010:btrfs_create_pending_block_groups+0x723/0x770 [btrfs]
-[   81.805074] Code: 0b 00 00 4c 89 ff 4c 89 54 24 10 48 c7 c6 00 30 6a c0 e8 c0 14 02 00 4c 8b 54 24 10 e9 4c fa ff ff 48 8d 3d ef c6 08 00 89 ee <67> 48 0f b9 3a 4c 8b 54 24 10 41 b8 01 00 00 00 e9 f4 5e 03 00 48
-[   81.806305] RSP: 0018:ffffa36241a6bce8 EFLAGS: 00010282
-[   81.806673] RAX: 000000000000000d RBX: ffff8e699921e400 RCX: 0000000000000000
-[   81.807154] RDX: 0000000002040001 RSI: 00000000ffffffef RDI: ffffffffc0608bf0
-[   81.807658] RBP: 00000000ffffffef R08: ffff8e69830f6000 R09: 0000000000000007
-[   81.808145] R10: ffff8e699921e5e8 R11: 0000000000000000 R12: ffff8e6999228000
-[   81.808676] R13: ffff8e6984d82000 R14: ffff8e69966a69c0 R15: ffff8e69aa47b000
-[   81.809162] FS:  00007fec6bdd9740(0000) GS:ffff8e6b1b379000(0000) knlGS:0000000000000000
-[   81.809725] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   81.810114] CR2: 00005604833670f0 CR3: 0000000116679000 CR4: 00000000000006f0
-[   81.810631] Call Trace:
-[   81.810821]  <TASK>
-[   81.810978]  __btrfs_end_transaction+0x3e/0x2b0 [btrfs]
-[   81.811368]  btrfs_force_chunk_alloc_store+0xcd/0x140 [btrfs]
-[   81.811823]  kernfs_fop_write_iter+0x15f/0x240
-[   81.812128]  vfs_write+0x264/0x500
-[   81.812365]  ksys_write+0x6c/0xe0
-[   81.812640]  do_syscall_64+0x66/0x770
-[   81.812909]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
-[   81.813246] RIP: 0033:0x7fec6be66197
-[   81.813521] Code: 48 89 fa 4c 89 df e8 98 af 00 00 8b 93 08 03 00 00 59 5e 48 83 f8 fc 74 1a 5b c3 0f 1f 84 00 00 00 00 00 48 8b 44 24 10 0f 05 <5b> c3 0f 1f 80 00 00 00 00 83 e2 39 83 fa 08 75 de e8 23 ff ff ff
-[   81.814798] RSP: 002b:00007fffb159dd30 EFLAGS: 00000202 ORIG_RAX: 0000000000000001
-[   81.815292] RAX: ffffffffffffffda RBX: 00007fec6bdd9740 RCX: 00007fec6be66197
-[   81.815822] RDX: 0000000000000002 RSI: 0000560483374f80 RDI: 0000000000000001
-[   81.816289] RBP: 0000560483374f80 R08: 0000000000000000 R09: 0000000000000000
-[   81.816861] R10: 0000000000000000 R11: 0000000000000202 R12: 0000000000000002
-[   81.817327] R13: 00007fec6bfb85c0 R14: 00007fec6bfb5ee0 R15: 00005604833729c0
-[   81.817837]  </TASK>
-[   81.817993] irq event stamp: 20039
-[   81.818224] hardirqs last  enabled at (20047): [<ffffffff99a68302>] __up_console_sem+0x52/0x60
-[   81.818815] hardirqs last disabled at (20056): [<ffffffff99a682e7>] __up_console_sem+0x37/0x60
-[   81.819375] softirqs last  enabled at (19470): [<ffffffff999d2b46>] __irq_exit_rcu+0x96/0xc0
-[   81.819990] softirqs last disabled at (19463): [<ffffffff999d2b46>] __irq_exit_rcu+0x96/0xc0
-[   81.820611] ---[ end trace 0000000000000000 ]---
-[   81.820949] BTRFS: error (device dm-7 state A) in btrfs_create_pending_block_groups:2876: errno=-17 Object already exists
+These two functions form the core of searching the chunk allocation pending
+extent bitmap and have relatively easily definable semantics, so unit
+testing them can help ensure the correctness of chunk allocation.
 
-Inspecting these aborts with drgn, I observed a pattern of overlapping
-chunk_maps. Note how stripe 1 of the first chunk overlaps in physical
-address with stripe 0 of the second chunk.
+Note: I used claude code running claude opus 4.5 to stamp out the test
+case definitions and do some code mods around the sizes and positions of
+the holes. I added the Assisted-by: tag to indicate that, as I saw that
+used on some other recent kernel commits. But if some other notation
+(or throwing this out...) is preferable, I wanted to be as open about
+it as possible. I did carefully check each case to make sure they were
+what was expected.
 
-Physical Start     Physical End       Length       Logical            Type                 Stripe
-----------------------------------------------------------------------------------------------------
-0x0000000102500000 0x0000000142500000 1.0G         0x0000000641d00000 META|DUP             0/2
-0x0000000142500000 0x0000000182500000 1.0G         0x0000000641d00000 META|DUP             1/2
-0x0000000142500000 0x0000000182500000 1.0G         0x0000000601d00000 META|DUP             0/2
-0x0000000182500000 0x00000001c2500000 1.0G         0x0000000601d00000 META|DUP             1/2
-
-Now how could this possibly happen? All chunk allocation is protected by
-the chunk_mutex so racing allocations should see a consistent view of
-the CHUNK_ALLOCATED bit in the chunk allocation extent-io-tree
-(device->alloc_state as set by chunk_map_device_set_bits()) The tree
-itself is protected by a spin lock, and clearing/setting the bits is
-always protected by fs_info->mapping_tree_lock, so no race is apparent.
-
-It turns out that there is a subtle bug in the logic regarding chunk
-allocations that have happened in the current transaction, known as
-"pending extents". The chunk allocation as defined in
-find_free_dev_extent() is a loop which searches the commit root of the
-dev_root and looks for gaps between DEV_EXTENT items. For those gaps, it
-then checks alloc_state bitmap for any pending extents and adjusts the
-hole that it finds accordingly. However, the logic in that adjustment
-assumes that the first pending extent is the only one in that range.
-
-e.g., given a layout with two non-consecutive pending extents in a hole
-passed to dev_extent_hole_check() via *hole_start and *hole_size:
-
-  |----pending A----|    real hole     |----pending B----|
-           |           candidate hole        |
-      *hole_start                         *hole_start + *hole_size
-
-the code incorrectly returns a "hole" from the end of pending extent A
-until the passed in hole end, failing to account for pending B.
-
-However, it is not entirely obvious that it is actually possible to
-produce such a layout. I was able to reproduce it, but with some
-contortions: I continued to use the force chunk allocation sysfs file
-and I introduced a long delay (10 seconds) into the start of the cleaner
-thread. I also prevented the unused bgs cleaning logic from ever
-deleting metadata bgs. These help make it easier to deterministically
-produce the condition but shouldn't really matter if you imagine the
-conditions happening by race/luck. Allocations/frees can happen
-concurrently with the cleaner thread preparing to process an unused
-extent and both create some used chunks with an unused chunk
-interleaved, all during one transaction. Then btrfs_delete_unused_bgs()
-sees the unused one and clears it, leaving a range with several pending
-chunk allocations and a gap in the middle.
-
-The basic idea is that the unused_bgs cleanup work happens on a worker
-so if we allocate 3 block groups in one transaction, then the cleaner
-work kicked off by the previous transaction comes through and deletes
-the middle one of the 3, then the commit root shows no dev extents and
-we have the bad pattern in the extent-io-tree. One final consideration
-is that the code happens to loop to the next hole if there are no more
-extents at all, so we need one more dev extent way past the area we are
-working in. Something like the following demonstrates the technique:
-
- # push the BG frontier out to 20G
- fallocate -l 20G $mnt/foo
- # allocate one more that will prevent the "no more dev extents" luck
- fallocate -l 1G $mnt/sticky
- # sync
- sync
- # clear out the allocation area
- rm $mnt/foo
- sync
- _cleaner
- # let everything quiesce
- sleep 20
- sync
-
- # dev tree should have one bg 20G out and the rest at the beginning..
- # sort of like an empty FS but with a random sticky chunk.
-
- # kick off the cleaner in the background, remember it will sleep 10s
- # before doing interesting work
- _cleaner &
-
- sleep 3
-
- # create 3 trivial block groups, all empty, all immediately marked as unused.
- echo 1 > "$(_btrfs_sysfs_space_info $dev metadata)/force_chunk_alloc"
- echo 1 > "$(_btrfs_sysfs_space_info $dev data)/force_chunk_alloc"
- echo 1 > "$(_btrfs_sysfs_space_info $dev metadata)/force_chunk_alloc"
-
- # let the cleaner thread definitely finish, it will remove the data bg
- sleep 10
-
- # this allocation sees the non-consecutive pending metadata chunks with
- # data chunk gap of 1G and allocates a 2G extent in that hole. ENOSPC!
- echo 1 > "$(_btrfs_sysfs_space_info $dev metadata)/force_chunk_alloc"
-
-As for the fix, it is not that obvious. I could not see a trivial way to
-do it even by adding backup loops into find_free_dev_extent(), so I
-opted to change the semantics of dev_extent_hole_check() to not stop
-looping until it finds a sufficiently big hole. For clarity, this also
-required changing the helper function contains_pending_extent() into two
-new helpers which find the first pending extent and the first suitable
-hole in a range.
-
-I attempted to clean up the documentation and range calculations to be
-as consistent and clear as possible for the future.
-
-I also looked at the zoned case and concluded that the loop there is
-different and not to be unified with this one. As far as I can tell, the
-zoned check will only further constrain the hole so looping back to find
-more holes is acceptable. Though given that zoned really only appends, I
-find it highly unlikely that it is susceptible to this bug.
-
-Fixes: 1b9845081633 ("Btrfs: fix find_free_dev_extent() malfunction in case device tree has hole")
-Reported-by: Dimitrios Apostolou <jimis@gmx.net>
-Closes: https://lore.kernel.org/linux-btrfs/q7760374-q1p4-029o-5149-26p28421s468@tzk.arg/
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+Assisted-by: claude-opus-4-5
 Signed-off-by: Boris Burkov <boris@bur.io>
 ---
- fs/btrfs/volumes.c | 246 ++++++++++++++++++++++++++++++++++-----------
- 1 file changed, 185 insertions(+), 61 deletions(-)
+ fs/btrfs/Makefile                       |   3 +-
+ fs/btrfs/tests/btrfs-tests.c            |   3 +
+ fs/btrfs/tests/btrfs-tests.h            |   1 +
+ fs/btrfs/tests/chunk-allocation-tests.c | 481 ++++++++++++++++++++++++
+ fs/btrfs/volumes.c                      |  14 +-
+ fs/btrfs/volumes.h                      |   4 +
+ 6 files changed, 498 insertions(+), 8 deletions(-)
+ create mode 100644 fs/btrfs/tests/chunk-allocation-tests.c
 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index cff2412bc879..2b632d238d4a 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -1509,30 +1509,157 @@ struct btrfs_device *btrfs_scan_one_device(const char *path,
- }
- 
- /*
-- * Try to find a chunk that intersects [start, start + len] range and when one
-- * such is found, record the end of it in *start
-+ * Find the first pending extent intersecting a range.
-+ *
-+ * @device: the device to search
-+ * @start: start of the range to check
-+ * @len: length of the range to check
-+ * @pending_start: output pointer for the start of the found pending extent
-+ * @pending_end: output pointer for the end of the found pending extent (inclusive)
-+ *
-+ * Search for a pending chunk allocation that intersects the half-open range
-+ * [start, start + len).
-+ *
-+ * Return: true if a pending extent was found, false otherwise.
-+ * If the return value is true, store the first pending extent in
-+ * [*pending_start, *pending_end]. Otherwise, the two output variables
-+ * may still be modified, to something outside the range and should not
-+ * be used.
-  */
--static bool contains_pending_extent(struct btrfs_device *device, u64 *start,
--				    u64 len)
-+static bool first_pending_extent(struct btrfs_device *device, u64 start, u64 len,
-+				 u64 *pending_start, u64 *pending_end)
- {
--	u64 physical_start, physical_end;
--
- 	lockdep_assert_held(&device->fs_info->chunk_mutex);
- 
--	if (btrfs_find_first_extent_bit(&device->alloc_state, *start,
--					&physical_start, &physical_end,
-+	if (btrfs_find_first_extent_bit(&device->alloc_state, start,
-+					pending_start, pending_end,
- 					CHUNK_ALLOCATED, NULL)) {
- 
--		if (in_range(physical_start, *start, len) ||
--		    in_range(*start, physical_start,
--			     physical_end + 1 - physical_start)) {
--			*start = physical_end + 1;
-+		if (in_range(*pending_start, start, len) ||
-+		    in_range(start, *pending_start,
-+			     *pending_end + 1 - *pending_start)) {
- 			return true;
+diff --git a/fs/btrfs/Makefile b/fs/btrfs/Makefile
+index 743d7677b175..975104b74486 100644
+--- a/fs/btrfs/Makefile
++++ b/fs/btrfs/Makefile
+@@ -44,4 +44,5 @@ btrfs-$(CONFIG_BTRFS_FS_RUN_SANITY_TESTS) += tests/free-space-tests.o \
+ 	tests/extent-buffer-tests.o tests/btrfs-tests.o \
+ 	tests/extent-io-tests.o tests/inode-tests.o tests/qgroup-tests.o \
+ 	tests/free-space-tree-tests.o tests/extent-map-tests.o \
+-	tests/raid-stripe-tree-tests.o tests/delayed-refs-tests.o
++	tests/raid-stripe-tree-tests.o tests/delayed-refs-tests.o \
++	tests/chunk-allocation-tests.o
+diff --git a/fs/btrfs/tests/btrfs-tests.c b/fs/btrfs/tests/btrfs-tests.c
+index b576897d71cc..7f13c05d3736 100644
+--- a/fs/btrfs/tests/btrfs-tests.c
++++ b/fs/btrfs/tests/btrfs-tests.c
+@@ -301,6 +301,9 @@ int btrfs_run_sanity_tests(void)
+ 			ret = btrfs_test_delayed_refs(sectorsize, nodesize);
+ 			if (ret)
+ 				goto out;
++			ret = btrfs_test_chunk_allocation(sectorsize, nodesize);
++			if (ret)
++				goto out;
  		}
  	}
- 	return false;
- }
- 
+ 	ret = btrfs_test_extent_map();
+diff --git a/fs/btrfs/tests/btrfs-tests.h b/fs/btrfs/tests/btrfs-tests.h
+index 4307bdaa6749..b0e4b98bdc3d 100644
+--- a/fs/btrfs/tests/btrfs-tests.h
++++ b/fs/btrfs/tests/btrfs-tests.h
+@@ -45,6 +45,7 @@ int btrfs_test_free_space_tree(u32 sectorsize, u32 nodesize);
+ int btrfs_test_raid_stripe_tree(u32 sectorsize, u32 nodesize);
+ int btrfs_test_extent_map(void);
+ int btrfs_test_delayed_refs(u32 sectorsize, u32 nodesize);
++int btrfs_test_chunk_allocation(u32 sectorsize, u32 nodesize);
+ struct inode *btrfs_new_test_inode(void);
+ struct btrfs_fs_info *btrfs_alloc_dummy_fs_info(u32 nodesize, u32 sectorsize);
+ void btrfs_free_dummy_fs_info(struct btrfs_fs_info *fs_info);
+diff --git a/fs/btrfs/tests/chunk-allocation-tests.c b/fs/btrfs/tests/chunk-allocation-tests.c
+new file mode 100644
+index 000000000000..6c8054684cd5
+--- /dev/null
++++ b/fs/btrfs/tests/chunk-allocation-tests.c
+@@ -0,0 +1,481 @@
++// SPDX-License-Identifier: GPL-2.0
 +/*
-+ * Find the first real hole accounting for pending extents.
-+ *
-+ * @device: the device containing the candidate hole
-+ * @start: input/output pointer for the hole start position
-+ * @len: input/output pointer for the hole length
-+ * @min_hole_size: the size of hole we are looking for
-+ *
-+ * Given a potential hole specified by [*start, *start + *len), check for pending
-+ * chunk allocations within that range. If pending extents are found, the hole is
-+ * adjusted to represent the first true free space that is large enough when
-+ * accounting for pending chunks.
-+ *
-+ * Note that this function must handle various cases involving non
-+ * consecutive pending extents.
-+ *
-+ * Returns: true if a suitable hole was found and false otherwise.
-+ * If the return value is true, then *start and *len are set to represent the hole.
-+ * If the return value is false, then *start is set to the largest hole we
-+ * found and *len is set to its length.
-+ * If there are no holes at all, then *start is set to the end of the range and
-+ * *len is set to 0.
++ * Copyright (C) 2026 Meta.  All rights reserved.
 + */
-+static bool find_hole_in_pending_extents(struct btrfs_device *device, u64 *start, u64 *len,
-+					 u64 min_hole_size)
-+{
-+	u64 pending_start, pending_end;
-+	u64 end;
-+	u64 max_hole_start = 0;
-+	u64 max_hole_len = 0;
 +
-+	lockdep_assert_held(&device->fs_info->chunk_mutex);
++#include <linux/sizes.h>
++#include "btrfs-tests.h"
++#include "../volumes.h"
++#include "../disk-io.h"
++#include "../extent-io-tree.h"
 +
-+	if (*len == 0)
-+		return false;
++/*
++ * Tests for chunk allocator pending extent internals.
++ * These two functions form the core of searching the chunk allocation pending
++ * extent bitmap and have relatively easily definable semantics, so unit
++ * testing them can help ensure the correctness of chunk allocation.
++ */
 +
-+	end = *start + *len - 1;
-+
++/*
++ * Describes the inputs to the system and expected results
++ * when testing btrfs_find_hole_in_pending_extents().
++ */
++struct pending_extent_test_case {
++	const char *name;
++	/* Input range to search */
++	u64 hole_start;
++	u64 hole_len;
++	/* The size of hole we are searching for */
++	u64 min_hole_size;
 +	/*
-+	 * Loop until we either see a large enough hole or check every pending
-+	 * extent overlapping the candidate hole.
-+	 * At every hole that we observe, record it if it is the new max.
-+	 * At the end of the iteration, set the output variables to the max hole.
++	 * Pending extents to set up (up to 2 for up to 3 holes)
++	 * If len == 0, then it is skipped.
 +	 */
-+	while (true) {
-+		if (first_pending_extent(device, *start, *len, &pending_start, &pending_end)) {
-+			/*
-+			 * Case 1: the pending extent overlaps the start of
-+			 * candidate hole. That means the true hole is after the
-+			 * pending extent, but we need to find the next pending
-+			 * extent to properly size the hole. In the next loop,
-+			 * we will reduce to case 2 or 3.
-+			 * e.g.,
-+			 *   |----pending A----|    real hole     |----pending B----|
-+			 *            |           candidate hole        |
-+			 *         *start                              end
-+			 */
-+			if (pending_start <= *start) {
-+				*start = pending_end + 1;
-+				goto next;
-+			}
-+			/*
-+			 * Case 2: The pending extent starts after *start (and overlaps
-+			 * [*start, end), so the first hole just goes up to the start
-+			 * of the pending extent.
-+			 * e.g.,
-+			 *   |    real hole    |----pending A----|
-+			 *   |       candidate hole     |
-+			 * *start                      end
-+			 *
-+			 */
-+			*len = pending_start - *start;
-+			if (*len > max_hole_len) {
-+				max_hole_start = *start;
-+				max_hole_len = *len;
-+			}
-+			if (*len >= min_hole_size)
-+				break;
-+			/*
-+			 * If the hole wasn't big enough, then we advance past
-+			 * the pending extent and keep looking.
-+			 */
-+			*start = pending_end + 1;
-+			goto next;
-+		} else {
-+			/*
-+			 * Case 3: There is no pending extent overlapping the
-+			 * range [*start, *start + *len - 1], so the only remaining
-+			 * hole is the remaining range.
-+			 * e.g.,
-+			 *   |       candidate hole           |
-+			 *   |          real hole             |
-+			 * *start                            end
-+			 */
++	struct {
++		u64 start;
++		u64 len;
++	} pending_extents[2];
++	/* Expected outputs */
++	bool expected_found;
++	u64 expected_start;
++	u64 expected_len;
++};
 +
-+			if (*len > max_hole_len) {
-+				max_hole_start = *start;
-+				max_hole_len = *len;
-+			}
-+			break;
++static const struct pending_extent_test_case find_hole_tests[] = {
++	{
++		.name = "no pending extents",
++		.hole_start = 0,
++		.hole_len = 10ULL * SZ_1G,
++		.min_hole_size = SZ_1G,
++		.pending_extents = {},
++		.expected_found = true,
++		.expected_start = 0,
++		.expected_len = 10ULL * SZ_1G,
++	},
++	{
++		.name = "pending extent at start of range",
++		.hole_start = 0,
++		.hole_len = 10ULL * SZ_1G,
++		.min_hole_size = SZ_1G,
++		.pending_extents = {
++			{ .start = 0, .len = SZ_1G },
++		},
++		.expected_found = true,
++		.expected_start = SZ_1G,
++		.expected_len = 9ULL * SZ_1G,
++	},
++	{
++		.name = "pending extent overlapping start of range",
++		.hole_start = SZ_1G,
++		.hole_len = 9ULL * SZ_1G,
++		.min_hole_size = SZ_1G,
++		.pending_extents = {
++			{ .start = 0, .len = SZ_2G },
++		},
++		.expected_found = true,
++		.expected_start = SZ_2G,
++		.expected_len = 8ULL * SZ_1G,
++	},
++	{
++		.name = "two holes; first hole is exactly big enough",
++		.hole_start = 0,
++		.hole_len = 10ULL * SZ_1G,
++		.min_hole_size = SZ_1G,
++		.pending_extents = {
++			{ .start = SZ_1G, .len = SZ_1G },
++		},
++		.expected_found = true,
++		.expected_start = 0,
++		.expected_len = SZ_1G,
++	},
++	{
++		.name = "two holes; first hole is big enough",
++		.hole_start = 0,
++		.hole_len = 10ULL * SZ_1G,
++		.min_hole_size = SZ_1G,
++		.pending_extents = {
++			{ .start = SZ_2G, .len = SZ_1G },
++		},
++		.expected_found = true,
++		.expected_start = 0,
++		.expected_len = SZ_2G,
++	},
++	{
++		.name = "two holes; second hole is big enough",
++		.hole_start = 0,
++		.hole_len = 10ULL * SZ_1G,
++		.min_hole_size = SZ_2G,
++		.pending_extents = {
++			{ .start = SZ_1G, .len = SZ_1G },
++		},
++		.expected_found = true,
++		.expected_start = SZ_2G,
++		.expected_len = 8ULL * SZ_1G,
++	},
++	{
++		.name = "three holes; first hole big enough",
++		.hole_start = 0,
++		.hole_len = 10ULL * SZ_1G,
++		.min_hole_size = SZ_2G,
++		.pending_extents = {
++			{ .start = SZ_2G, .len = SZ_1G },
++			{ .start = 4ULL * SZ_1G, .len = SZ_1G },
++		},
++		.expected_found = true,
++		.expected_start = 0,
++		.expected_len = SZ_2G,
++	},
++	{
++		.name = "three holes; second hole big enough",
++		.hole_start = 0,
++		.hole_len = 10ULL * SZ_1G,
++		.min_hole_size = SZ_2G,
++		.pending_extents = {
++			{ .start = SZ_1G, .len = SZ_1G },
++			{ .start = 5ULL * SZ_1G, .len = SZ_1G },
++		},
++		.expected_found = true,
++		.expected_start = SZ_2G,
++		.expected_len = 3ULL * SZ_1G,
++	},
++	{
++		.name = "three holes; third hole big enough",
++		.hole_start = 0,
++		.hole_len = 10ULL * SZ_1G,
++		.min_hole_size = SZ_2G,
++		.pending_extents = {
++			{ .start = SZ_1G, .len = SZ_1G },
++			{ .start = 3ULL * SZ_1G, .len = 5ULL * SZ_1G },
++		},
++		.expected_found = true,
++		.expected_start = 8ULL * SZ_1G,
++		.expected_len = SZ_2G,
++	},
++	{
++		.name = "three holes; all holes too small",
++		.hole_start = 0,
++		.hole_len = 10ULL * SZ_1G,
++		.min_hole_size = SZ_2G,
++		.pending_extents = {
++			{ .start = SZ_1G, .len = SZ_1G },
++			{ .start = 3ULL * SZ_1G, .len = 6ULL * SZ_1G },
++		},
++		.expected_found = false,
++		.expected_start = 0,
++		.expected_len = SZ_1G,
++	},
++	{
++		.name = "three holes; all holes too small; first biggest",
++		.hole_start = 0,
++		.hole_len = 10ULL * SZ_1G,
++		.min_hole_size = 3ULL * SZ_1G,
++		.pending_extents = {
++			{ .start = SZ_2G, .len = SZ_1G },
++			{ .start = 4ULL * SZ_1G, .len = 5ULL * SZ_1G },
++		},
++		.expected_found = false,
++		.expected_start = 0,
++		.expected_len = SZ_2G,
++	},
++	{
++		.name = "three holes; all holes too small; second biggest",
++		.hole_start = 0,
++		.hole_len = 10ULL * SZ_1G,
++		.min_hole_size = 3ULL * SZ_1G,
++		.pending_extents = {
++			{ .start = SZ_1G, .len = SZ_1G },
++			{ .start = 4ULL * SZ_1G, .len = 5ULL * SZ_1G },
++		},
++		.expected_found = false,
++		.expected_start = SZ_2G,
++		.expected_len = SZ_2G,
++	},
++	{
++		.name = "three holes; all holes too small; third biggest",
++		.hole_start = 0,
++		.hole_len = 10ULL * SZ_1G,
++		.min_hole_size = 3ULL * SZ_1G,
++		.pending_extents = {
++			{ .start = SZ_1G, .len = SZ_1G },
++			{ .start = 3ULL * SZ_1G, .len = 5ULL * SZ_1G },
++		},
++		.expected_found = false,
++		.expected_start = 8ULL * SZ_1G,
++		.expected_len = SZ_2G,
++	},
++	{
++		.name = "hole entirely allocated by pending",
++		.hole_start = 0,
++		.hole_len = 10ULL * SZ_1G,
++		.min_hole_size = SZ_1G,
++		.pending_extents = {
++			{ .start = 0, .len = 10ULL * SZ_1G },
++		},
++		.expected_found = false,
++		.expected_start = 10ULL * SZ_1G,
++		.expected_len = 0,
++	},
++	{
++		.name = "pending extent at end of range",
++		.hole_start = 0,
++		.hole_len = 10ULL * SZ_1G,
++		.min_hole_size = SZ_1G,
++		.pending_extents = {
++			{ .start = 9ULL * SZ_1G, .len = SZ_2G },
++		},
++		.expected_found = true,
++		.expected_start = 0,
++		.expected_len = 9ULL * SZ_1G,
++	},
++	{
++		.name = "zero length input",
++		.hole_start = SZ_1G,
++		.hole_len = 0,
++		.min_hole_size = SZ_1G,
++		.pending_extents = {},
++		.expected_found = false,
++		.expected_start = SZ_1G,
++		.expected_len = 0,
++	},
++};
++
++static int test_find_hole_in_pending(u32 sectorsize, u32 nodesize)
++{
++	struct btrfs_fs_info *fs_info;
++	struct btrfs_device *device;
++	int ret = 0;
++	int i, j;
++
++	test_msg("running find_hole_in_pending_extents tests");
++
++	fs_info = btrfs_alloc_dummy_fs_info(nodesize, sectorsize);
++	if (!fs_info) {
++		test_std_err(TEST_ALLOC_FS_INFO);
++		return -ENOMEM;
++	}
++
++	device = btrfs_alloc_dummy_device(fs_info);
++	if (IS_ERR(device)) {
++		test_err("failed to allocate dummy device");
++		ret = PTR_ERR(device);
++		goto out_free_fs_info;
++	}
++
++	/* Device must have fs_info set for lockdep_assert_held check */
++	device->fs_info = fs_info;
++
++	for (i = 0; i < ARRAY_SIZE(find_hole_tests); i++) {
++		const struct pending_extent_test_case *test_case = &find_hole_tests[i];
++		u64 hole_start = test_case->hole_start;
++		u64 hole_len = test_case->hole_len;
++		bool found;
++
++		/* Set up pending extents */
++		for (j = 0; j < ARRAY_SIZE(test_case->pending_extents); j++) {
++			u64 start = test_case->pending_extents[j].start;
++			u64 len = test_case->pending_extents[j].len;
++
++			if (!len)
++				continue;
++			btrfs_set_extent_bit(&device->alloc_state,
++					     start, start + len - 1,
++					     CHUNK_ALLOCATED, NULL);
 +		}
-+next:
-+		if (*start > end)
++
++		/* Take the chunk_mutex to satisfy lockdep */
++		mutex_lock(&fs_info->chunk_mutex);
++		found = btrfs_find_hole_in_pending_extents(device, &hole_start, &hole_len,
++							   test_case->min_hole_size);
++		mutex_unlock(&fs_info->chunk_mutex);
++
++		/* Verify results */
++		if (found != test_case->expected_found) {
++			test_err("%s: expected found=%d, got found=%d",
++				 test_case->name, test_case->expected_found, found);
++			ret = -EINVAL;
++			goto out_clear_pending_extents;
++		}
++		if (hole_start != test_case->expected_start ||
++		    hole_len != test_case->expected_len) {
++			test_err("%s: expected [%llu, %llu), got [%llu, %llu)",
++				 test_case->name, test_case->expected_start,
++				 test_case->expected_start +
++					 test_case->expected_len,
++				 hole_start, hole_start + hole_len);
++			ret = -EINVAL;
++			goto out_clear_pending_extents;
++		}
++out_clear_pending_extents:
++		btrfs_clear_extent_bit(&device->alloc_state, 0, (u64)-1,
++				       CHUNK_ALLOCATED, NULL);
++		if (ret)
 +			break;
-+		*len = end - *start + 1;
 +	}
-+	if (max_hole_len) {
-+		*start = max_hole_start;
-+		*len = max_hole_len;
-+	} else {
-+		*start = end + 1;
-+		*len = 0;
-+	}
-+	return max_hole_len >= min_hole_size;
++
++out_free_fs_info:
++	btrfs_free_dummy_fs_info(fs_info);
++	return ret;
 +}
 +
- static u64 dev_extent_search_start(struct btrfs_device *device)
- {
- 	switch (device->fs_devices->chunk_alloc_policy) {
-@@ -1597,59 +1724,58 @@ static bool dev_extent_hole_check_zoned(struct btrfs_device *device,
- }
- 
- /*
-- * Check if specified hole is suitable for allocation.
-+ * Validate and adjust a hole for chunk allocation
-+ *
-+ * @device: the device containing the candidate hole
-+ * @hole_start: input/output pointer for the hole start position
-+ * @hole_size: input/output pointer for the hole size
-+ * @num_bytes: minimum allocation size required
-  *
-- * @device:	the device which we have the hole
-- * @hole_start: starting position of the hole
-- * @hole_size:	the size of the hole
-- * @num_bytes:	the size of the free space that we need
-+ * Check if the specified hole is suitable for allocation and adjust it if
-+ * necessary. The hole may be modified to skip over pending chunk allocations
-+ * and to satisfy stricter zoned requirements on zoned fs-es.
-  *
-- * This function may modify @hole_start and @hole_size to reflect the suitable
-- * position for allocation. Returns 1 if hole position is updated, 0 otherwise.
-+ * For regular (non-zoned) allocation, if the hole after adjustment is smaller
-+ * than @num_bytes, the search continues past additional pending extents until
-+ * either a sufficiently large hole is found or no more pending extents exist.
-+ *
-+ * Return: true if a suitable hole was found and false otherwise.
-+ * If the return value is true, then *hole_start and *hole_size are set to
-+ * represent the hole we found.
-+ * If the return value is false, then *hole_start is set to the largest
-+ * hole we found and *hole_size is set to its length.
-+ * If there are no holes at all, then *hole_start is set to the end of the range
-+ * and *hole_size is set to 0.
-  */
- static bool dev_extent_hole_check(struct btrfs_device *device, u64 *hole_start,
- 				  u64 *hole_size, u64 num_bytes)
- {
--	bool changed = false;
--	u64 hole_end = *hole_start + *hole_size;
-+	bool found = false;
-+	u64 hole_end = *hole_start + *hole_size - 1;
- 
--	for (;;) {
--		/*
--		 * Check before we set max_hole_start, otherwise we could end up
--		 * sending back this offset anyway.
--		 */
--		if (contains_pending_extent(device, hole_start, *hole_size)) {
--			if (hole_end >= *hole_start)
--				*hole_size = hole_end - *hole_start;
--			else
--				*hole_size = 0;
--			changed = true;
--		}
-+	ASSERT(*hole_size > 0);
- 
--		switch (device->fs_devices->chunk_alloc_policy) {
--		default:
--			btrfs_warn_unknown_chunk_allocation(device->fs_devices->chunk_alloc_policy);
--			fallthrough;
--		case BTRFS_CHUNK_ALLOC_REGULAR:
--			/* No extra check */
--			break;
--		case BTRFS_CHUNK_ALLOC_ZONED:
--			if (dev_extent_hole_check_zoned(device, hole_start,
--							hole_size, num_bytes)) {
--				changed = true;
--				/*
--				 * The changed hole can contain pending extent.
--				 * Loop again to check that.
--				 */
--				continue;
--			}
--			break;
--		}
-+again:
-+	*hole_size = hole_end - *hole_start + 1;
-+	found = find_hole_in_pending_extents(device, hole_start, hole_size, num_bytes);
-+	if (!found)
-+		return found;
-+	ASSERT(*hole_size >= num_bytes);
- 
--		break;
-+	switch (device->fs_devices->chunk_alloc_policy) {
-+	default:
-+		btrfs_warn_unknown_chunk_allocation(device->fs_devices->chunk_alloc_policy);
-+		fallthrough;
-+	case BTRFS_CHUNK_ALLOC_REGULAR:
-+		return found;
-+	case BTRFS_CHUNK_ALLOC_ZONED:
-+		if (dev_extent_hole_check_zoned(device, hole_start,
-+						hole_size, num_bytes)) {
-+			goto again;
-+		}
- 	}
- 
--	return changed;
-+	return found;
- }
- 
- /*
-@@ -1708,7 +1834,7 @@ static int find_free_dev_extent(struct btrfs_device *device, u64 num_bytes,
- 		ret = -ENOMEM;
- 		goto out;
- 	}
--again:
++/*
++ * Describes the inputs to the system and expected results
++ * when testing btrfs_first_pending_extent().
++ */
++struct first_pending_test_case {
++	const char *name;
++	u64 hole_start;
++	u64 hole_len;
++	struct {
++		u64 start;
++		u64 len;
++	} pending_extent;
++	bool expected_found;
++	u64 expected_pending_start;
++	u64 expected_pending_end;
++};
 +
- 	if (search_start >= search_end ||
- 		test_bit(BTRFS_DEV_STATE_REPLACE_TGT, &device->dev_state)) {
- 		ret = -ENOSPC;
-@@ -1795,11 +1921,7 @@ static int find_free_dev_extent(struct btrfs_device *device, u64 num_bytes,
++static const struct first_pending_test_case first_pending_tests[] = {
++	{
++		.name = "no pending extent",
++		.hole_start = 0,
++		.hole_len = 10ULL * SZ_1G,
++		.pending_extent = { 0, 0 },
++		.expected_found = false,
++	},
++	{
++		.name = "pending extent at search start",
++		.hole_start = SZ_1G,
++		.hole_len = 9ULL * SZ_1G,
++		.pending_extent = { SZ_1G, SZ_1G },
++		.expected_found = true,
++		.expected_pending_start = SZ_1G,
++		.expected_pending_end = SZ_2G - 1,
++	},
++	{
++		.name = "pending extent overlapping search start",
++		.hole_start = SZ_1G,
++		.hole_len = 9ULL * SZ_1G,
++		.pending_extent = { 0, SZ_2G },
++		.expected_found = true,
++		.expected_pending_start = 0,
++		.expected_pending_end = SZ_2G - 1,
++	},
++	{
++		.name = "pending extent inside search range",
++		.hole_start = 0,
++		.hole_len = 10ULL * SZ_1G,
++		.pending_extent = { SZ_2G, SZ_1G },
++		.expected_found = true,
++		.expected_pending_start = SZ_2G,
++		.expected_pending_end = 3ULL * SZ_1G - 1,
++	},
++	{
++		.name = "pending extent outside search range",
++		.hole_start = 0,
++		.hole_len = SZ_1G,
++		.pending_extent = { SZ_2G, SZ_1G },
++		.expected_found = false,
++	},
++	{
++		.name = "pending extent overlapping end of search range",
++		.hole_start = 0,
++		.hole_len = SZ_2G,
++		.pending_extent = { SZ_1G, SZ_2G },
++		.expected_found = true,
++		.expected_pending_start = SZ_1G,
++		.expected_pending_end = 3ULL * SZ_1G - 1,
++	},
++};
++
++static int test_first_pending_extent(u32 sectorsize, u32 nodesize)
++{
++	struct btrfs_fs_info *fs_info;
++	struct btrfs_device *device;
++	int ret = 0;
++	int i;
++
++	test_msg("running first_pending_extent tests");
++
++	fs_info = btrfs_alloc_dummy_fs_info(nodesize, sectorsize);
++	if (!fs_info) {
++		test_std_err(TEST_ALLOC_FS_INFO);
++		return -ENOMEM;
++	}
++
++	device = btrfs_alloc_dummy_device(fs_info);
++	if (IS_ERR(device)) {
++		test_err("failed to allocate dummy device");
++		ret = PTR_ERR(device);
++		goto out_free_fs_info;
++	}
++
++	device->fs_info = fs_info;
++
++	for (i = 0; i < ARRAY_SIZE(first_pending_tests); i++) {
++		const typeof(first_pending_tests[0]) *test_case = &first_pending_tests[i];
++		u64 start = test_case->pending_extent.start;
++		u64 len = test_case->pending_extent.len;
++		u64 pending_start, pending_end;
++		bool found;
++
++		/* Set up pending extent if specified */
++		if (len) {
++			btrfs_set_extent_bit(&device->alloc_state,
++					     start, start + len - 1,
++					     CHUNK_ALLOCATED, NULL);
++		}
++
++		mutex_lock(&fs_info->chunk_mutex);
++		found = btrfs_first_pending_extent(device, test_case->hole_start,
++						   test_case->hole_len,
++						   &pending_start, &pending_end);
++		mutex_unlock(&fs_info->chunk_mutex);
++
++		if (found != test_case->expected_found) {
++			test_err("%s: expected found=%d, got found=%d",
++				 test_case->name, test_case->expected_found, found);
++			ret = -EINVAL;
++			goto out_clear_pending_extents;
++		}
++		if (!found)
++			goto out_clear_pending_extents;
++
++		if (pending_start != test_case->expected_pending_start ||
++			pending_end != test_case->expected_pending_end) {
++			test_err("%s: expected pending [%llu, %llu], got [%llu, %llu]",
++					test_case->name,
++					test_case->expected_pending_start,
++					test_case->expected_pending_end,
++					pending_start, pending_end);
++			ret = -EINVAL;
++			goto out_clear_pending_extents;
++		}
++
++out_clear_pending_extents:
++		btrfs_clear_extent_bit(&device->alloc_state, 0, (u64)-1,
++				       CHUNK_ALLOCATED, NULL);
++		if (ret)
++			break;
++	}
++
++out_free_fs_info:
++	btrfs_free_dummy_fs_info(fs_info);
++	return ret;
++}
++
++int btrfs_test_chunk_allocation(u32 sectorsize, u32 nodesize)
++{
++	int ret;
++
++	test_msg("running chunk allocation tests");
++
++	ret = test_first_pending_extent(sectorsize, nodesize);
++	if (ret)
++		return ret;
++
++	ret = test_find_hole_in_pending(sectorsize, nodesize);
++	if (ret)
++		return ret;
++
++	return 0;
++}
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 2b632d238d4a..55a7b3801e9d 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -1526,8 +1526,8 @@ struct btrfs_device *btrfs_scan_one_device(const char *path,
+  * may still be modified, to something outside the range and should not
+  * be used.
+  */
+-static bool first_pending_extent(struct btrfs_device *device, u64 start, u64 len,
+-				 u64 *pending_start, u64 *pending_end)
++bool btrfs_first_pending_extent(struct btrfs_device *device, u64 start, u64 len,
++				u64 *pending_start, u64 *pending_end)
+ {
+ 	lockdep_assert_held(&device->fs_info->chunk_mutex);
+ 
+@@ -1567,8 +1567,8 @@ static bool first_pending_extent(struct btrfs_device *device, u64 start, u64 len
+  * If there are no holes at all, then *start is set to the end of the range and
+  * *len is set to 0.
+  */
+-static bool find_hole_in_pending_extents(struct btrfs_device *device, u64 *start, u64 *len,
+-					 u64 min_hole_size)
++bool btrfs_find_hole_in_pending_extents(struct btrfs_device *device, u64 *start, u64 *len,
++					u64 min_hole_size)
+ {
+ 	u64 pending_start, pending_end;
+ 	u64 end;
+@@ -1589,7 +1589,7 @@ static bool find_hole_in_pending_extents(struct btrfs_device *device, u64 *start
+ 	 * At the end of the iteration, set the output variables to the max hole.
  	 */
- 	if (search_end > search_start) {
- 		hole_size = search_end - search_start;
--		if (dev_extent_hole_check(device, &search_start, &hole_size,
--					  num_bytes)) {
--			btrfs_release_path(path);
--			goto again;
--		}
-+		dev_extent_hole_check(device, &search_start, &hole_size, num_bytes);
+ 	while (true) {
+-		if (first_pending_extent(device, *start, *len, &pending_start, &pending_end)) {
++		if (btrfs_first_pending_extent(device, *start, *len, &pending_start, &pending_end)) {
+ 			/*
+ 			 * Case 1: the pending extent overlaps the start of
+ 			 * candidate hole. That means the true hole is after the
+@@ -1757,7 +1757,7 @@ static bool dev_extent_hole_check(struct btrfs_device *device, u64 *hole_start,
  
- 		if (hole_size > max_hole_size) {
- 			max_hole_start = search_start;
-@@ -5023,6 +5145,7 @@ int btrfs_shrink_device(struct btrfs_device *device, u64 new_size)
- 	u64 diff;
- 	u64 start;
- 	u64 free_diff = 0;
-+	u64 pending_start, pending_end;
- 
- 	new_size = round_down(new_size, fs_info->sectorsize);
- 	start = new_size;
-@@ -5068,7 +5191,8 @@ int btrfs_shrink_device(struct btrfs_device *device, u64 new_size)
+ again:
+ 	*hole_size = hole_end - *hole_start + 1;
+-	found = find_hole_in_pending_extents(device, hole_start, hole_size, num_bytes);
++	found = btrfs_find_hole_in_pending_extents(device, hole_start, hole_size, num_bytes);
+ 	if (!found)
+ 		return found;
+ 	ASSERT(*hole_size >= num_bytes);
+@@ -5191,7 +5191,7 @@ int btrfs_shrink_device(struct btrfs_device *device, u64 new_size)
  	 * in-memory chunks are synced to disk so that the loop below sees them
  	 * and relocates them accordingly.
  	 */
--	if (contains_pending_extent(device, &start, diff)) {
-+	if (first_pending_extent(device, start, diff,
-+				 &pending_start, &pending_end)) {
+-	if (first_pending_extent(device, start, diff,
++	if (btrfs_first_pending_extent(device, start, diff,
+ 				 &pending_start, &pending_end)) {
  		mutex_unlock(&fs_info->chunk_mutex);
  		ret = btrfs_commit_transaction(trans);
- 		if (ret)
+diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
+index e4644352314a..48d82a1903a7 100644
+--- a/fs/btrfs/volumes.h
++++ b/fs/btrfs/volumes.h
+@@ -895,6 +895,10 @@ void btrfs_chunk_map_device_clear_bits(struct btrfs_chunk_map *map, unsigned int
+ #ifdef CONFIG_BTRFS_FS_RUN_SANITY_TESTS
+ struct btrfs_io_context *alloc_btrfs_io_context(struct btrfs_fs_info *fs_info,
+ 						u64 logical, u16 total_stripes);
++bool btrfs_first_pending_extent(struct btrfs_device *device, u64 start, u64 len,
++				u64 *pending_start, u64 *pending_end);
++bool btrfs_find_hole_in_pending_extents(struct btrfs_device *device,
++					u64 *start, u64 *len, u64 min_hole_size);
+ #endif
+ 
+ #endif
 -- 
 2.52.0
 
