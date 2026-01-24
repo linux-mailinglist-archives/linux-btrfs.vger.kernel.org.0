@@ -1,160 +1,207 @@
-Return-Path: <linux-btrfs+bounces-20986-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20987-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MNL+HC49dWmbCgEAu9opvQ
-	(envelope-from <linux-btrfs+bounces-20986-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Sat, 24 Jan 2026 22:44:14 +0100
+	id +NE+LzE+dWnXCgEAu9opvQ
+	(envelope-from <linux-btrfs+bounces-20987-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Sat, 24 Jan 2026 22:48:33 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C74697F163
-	for <lists+linux-btrfs@lfdr.de>; Sat, 24 Jan 2026 22:44:13 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C90E7F17E
+	for <lists+linux-btrfs@lfdr.de>; Sat, 24 Jan 2026 22:48:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 4D49D3006001
-	for <lists+linux-btrfs@lfdr.de>; Sat, 24 Jan 2026 21:44:07 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id B4DB5300B87F
+	for <lists+linux-btrfs@lfdr.de>; Sat, 24 Jan 2026 21:48:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2B53273D9A;
-	Sat, 24 Jan 2026 21:44:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA72D22A4E1;
+	Sat, 24 Jan 2026 21:48:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="qsPSyGsh";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="jAwgHjUu"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="YEM7RF2X"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fhigh-a7-smtp.messagingengine.com (fhigh-a7-smtp.messagingengine.com [103.168.172.158])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE9CA27FD71
-	for <linux-btrfs@vger.kernel.org>; Sat, 24 Jan 2026 21:44:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.158
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 918003EBF0C
+	for <linux-btrfs@vger.kernel.org>; Sat, 24 Jan 2026 21:48:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769291046; cv=none; b=SXkgiH6ijNbRDdU0Q8/KMHs63g8T1iCmTUPcoI7H3GLLDVh0/gVSL14p3iJFK1SqKglDq85gMOHN1gI6PopMyPR+ig8C3YrB/nzsRLMrjiDbNApwlTfBJaVRnpcmLXkucpaGew2Um+V1TbB8K5AvDasp5ueuLxwyNkYqjpt5xxI=
+	t=1769291310; cv=none; b=OJG8yB0aOXd1KGsFXRQZagYbFPBI9lclOfMrRbv5ILtRLon2i2J0Ou6YsVCEeTjQqE+vMDqlGBC1P7tugT+nb9ICN/WubvVDFb8f5CfjY1g26ySjSDvPm6FiYYEAs8+aknHvvVc+dKwL5fQ1gb/QjWIfY5W3zLAcU9WTfEPf7NA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769291046; c=relaxed/simple;
-	bh=zF+Jj724D1u067gQJz5zwOwLd2ukj81Z7DumjE+DvsQ=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=MxITUUM76U0eDQ4x9HqFrb1vGhuJp9fnh1CCfgfJQWUrytHKjvcz0p9NhAfqX6TpvQonueTL4F9jgCB4dcrX9g3MBBkJdCAJfYAcK3ijlGCSfSvo6wBfsBueGfUU9BvPxBZsZImNIHBKDRCMr2mETGXZEVp0sQkzJ/g1g2tFdyg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=qsPSyGsh; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=jAwgHjUu; arc=none smtp.client-ip=103.168.172.158
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id EEC5B1400035;
-	Sat, 24 Jan 2026 16:44:03 -0500 (EST)
-Received: from phl-frontend-03 ([10.202.2.162])
-  by phl-compute-04.internal (MEProxy); Sat, 24 Jan 2026 16:44:03 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
-	:content-transfer-encoding:content-type:content-type:date:date
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1769291043;
-	 x=1769377443; bh=YiK1uQGtpiPkWrskbQ4ZtK2ZNuwazLEU7S8TWxJyMyE=; b=
-	qsPSyGshMjiYRn58gMNB1pKlm8TSFMYTpCqm2pJz3EdfjS7ZLHBY3t8Exev4VdEh
-	Oz3770GCi7cA7L0OqCqC8nGWrQJ+XVDjkTan95X5Mq4BryVuA/x33Jcj//8gFtXm
-	U+K968JLQRMF17I5syKDzTUByMLFBR4rg4/cg7vSy/ehrdBancicXfPqBvTjNbkN
-	4rigM1ssCGyCSPXsZJE4ImMBHWdIaxV84JpbSl7srWSmHur7jqYs4U541aHuSnJW
-	0moEebHYI+4jNTl0Oysi6B8vnmhgX9Nc0B6sR95p2R6HaYC7LCMCLn/IWZH6L9l6
-	4yOg6hM8o/wP4B0rRXcW9g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:content-transfer-encoding:content-type
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to:x-me-proxy:x-me-sender
-	:x-me-sender:x-sasl-enc; s=fm2; t=1769291043; x=1769377443; bh=Y
-	iK1uQGtpiPkWrskbQ4ZtK2ZNuwazLEU7S8TWxJyMyE=; b=jAwgHjUujq1OwEMf6
-	PmW2MQinhiv4r5EjQCHK447oBHJkTySdYS8v2o3aKPLz3hk5K3xpTsuBzuvk4g/r
-	EwoQB8TNOOZjz2vGDq/tScaVqN3Uu780rUSXsQuU504/OhpsGhHhA0ogGadjfSF5
-	8Yemi/Sc3IGljzh9s7iPV8Bncu5YSOdVIMiWei8ypX6c8sJBNJPdxQfqagDGKIiy
-	OnFGRE4ZBQc+8VN1XEfHRlWQHIxQEB7U3U4kzSAPM8EMqq0l+d2V7/2fIKSGxofJ
-	MEWiVWKmlECRo6GL3xC1N0/iB8eji3tlAAC3yDsXKlHl9omLC3/LenyVxtIkSbhR
-	GxVBg==
-X-ME-Sender: <xms:Iz11aTTXed8B35qCYXjdTc2MYqKubUMeX3HLVRgyXOc6EMSUpzJz2w>
-    <xme:Iz11aaz4vPJQKn2mSa2oqzCZim3EGfS_pIgcSUUm4WRZqV5YG3HUJRXwHLnsgLHQc
-    onCCYQFdDbVO0Q7yHOqN5B9gmwaVt4NaGX80WA1_sGYNYflS2VN9Q>
-X-ME-Received: <xmr:Iz11aWdfubw_IbNZh8IsDni8Ev8tyMQmfqdog_kmjJW19gkvUrCoyjR_DY-5WhGHmOWjeWpaNjnsdF5PXhVz11JEYZc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdduheeftdefucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgjfhggtgfgsehtkeertd
-    ertdejnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhi
-    oheqnecuggftrfgrthhtvghrnhephfevtdeuffetleegfedvleeggeefkeffgeejgfffff
-    eltdduleelgfehveeuteetnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehm
-    rghilhhfrhhomhepsghorhhishessghurhdrihhopdhnsggprhgtphhtthhopedvpdhmoh
-    guvgepshhmthhpohhuthdprhgtphhtthhopehlihhnuhigqdgsthhrfhhssehvghgvrhdr
-    khgvrhhnvghlrdhorhhgpdhrtghpthhtohepkhgvrhhnvghlqdhtvggrmhesfhgsrdgtoh
-    hm
-X-ME-Proxy: <xmx:Iz11aeJxclPu6QcFlQ7TmDF7zibcJ4sfVPkubCo3JpM7SlUpRwnssw>
-    <xmx:Iz11afEGKjxoreZxiPgXnectqlzcW99UN6eytKAKK8AGn95-6tf9iw>
-    <xmx:Iz11aQpm5WGAFwJflfcVky7Pi12PWeaCNlEHPk4cX1b7Oxyg-wnNhA>
-    <xmx:Iz11aQQhJmEQz--kpzve76iCpmhfuy47gAoFS8OvrBm54OPl8nc61Q>
-    <xmx:Iz11ab2b61H-Q_HgD89d8HGYzTOCRWMKXZWboP5dyF4J1pXzvXrkyhzw>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 24 Jan 2026 16:44:03 -0500 (EST)
-From: Boris Burkov <boris@bur.io>
-To: linux-btrfs@vger.kernel.org,
-	kernel-team@fb.com
-Subject: [PATCH v2 3/3] btrfs: forward declare btrfs_fs_info in volumes.h
-Date: Sat, 24 Jan 2026 13:43:35 -0800
-Message-ID: <07e957f64db404a0dade65259846412be9eea0d9.1769290938.git.boris@bur.io>
-X-Mailer: git-send-email 2.52.0
-In-Reply-To: <cover.1769290938.git.boris@bur.io>
-References: <cover.1769290938.git.boris@bur.io>
+	s=arc-20240116; t=1769291310; c=relaxed/simple;
+	bh=fR/6SyFiJxtJYS3gVQrRdZVYrUvM33oC0SJBILYyKSU=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
+	 In-Reply-To:Content-Type; b=Gnyr2Rfm/JF6g3nhk7HWXhth62stytXMs+iUChexUsJObXny1dDOluvMt1ufI8eyQR6yqslth+XWtKCLQFIZyIJcWU/jMZgFDMO7QgGk3HZuvygNbyXbo+ZnxBhumASAJvZd+KC+z5eYOm7+bbi4xy+LEFaohe6tmzo8blthwk8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=YEM7RF2X; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-4801bc32725so25816165e9.0
+        for <linux-btrfs@vger.kernel.org>; Sat, 24 Jan 2026 13:48:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1769291307; x=1769896107; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :references:to:from:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=QU0cZEGXIAJVy+DG98cxvnB6IRjjC9I9ubBv7pWUP+s=;
+        b=YEM7RF2XJ4DWMjukw3/0TVCecVyELi+50n+tIJqotcpSmCaNrxNWE0xuD/j3Z/oCoS
+         tMBhtjTQfBGxDrFfqlKXwiI0H2uEK6yj2EOf0tFhCcHbbyJg9XnYnlZYDZOCcF0AMPHl
+         kpYC5sdd94/F7RRYhmL93q3x54bSFWVsuMUC2pLq6hSz0SBZq8SQY7cc1mk6Gb+WtSNr
+         +u7ay8Fan8tYVeW5aLXFt6gPUUnY8wO3kyhHICrLil+cER+jpT/go8uKB1Dg9Yu8T6s0
+         2OVFNzhuLQlwowtQORBZAVVE1UmKw05CkeZwiiXPgS5f2yQT7M0LcTpDKiUMduHmGds4
+         FgmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1769291307; x=1769896107;
+        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
+         :references:to:from:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QU0cZEGXIAJVy+DG98cxvnB6IRjjC9I9ubBv7pWUP+s=;
+        b=Pry1bFROf6M1AN1NTZ5/QKgtv+ReIN+wD9TdhrDOYYPNGCf7l+TrdHY92vls5oiIoR
+         Lm8mBnUv4fKs6Kbd/Ke7cs3b7fBZsrhl2v40/nom9f2uVzTZcI8STsVFKhgoBq3/5hL9
+         RqvZPbNCZc/3sECP8xgx6Y9slZr1D8lcUzgbQuA9+ZKvLCgciFVXtzYNVcNxfFaeczHS
+         1J/oXdSXBQM0HX76dJ4Tt5XlUgz4BXWI9qK+22B1IgKFvAk4ukJobH1vl4+/qHcuOzA4
+         DQ08i+zUG1bg/tAJVmjhXpIHI3+deuFDzHtKTDTeSez0ntQWtABKJwmZcDi8v4qjtEsg
+         xSlg==
+X-Gm-Message-State: AOJu0Yy4dv2vHmZUm+Wng7nlib6rTtPTas0eO5PJJ337jkVvHADOVhkc
+	YSanGBdlsV5WJIydYitLg+kQMQUO4Pqzya+Y6YUr9oFoQSQmew4ZLNxUJZYDd1nzexz9FoS/SOw
+	s7A7q
+X-Gm-Gg: AZuq6aJDer1ZK/xN6/xj2pQ4vZcO5nr0P9arfm9hVg/hoOtytKcbi8zmR11UO6EYfN0
+	aTyf1IdpfjGQU97ejj8N52PBUDvXDUC1XXo68UymdUhDMcrQAqasFagP+E5UNrcD7IgYN/6TtKz
+	hkyN3ucCNpmxd756TciSPmwbl9WEpIhlWaN39kk6j+qZcxHjKBLRL0l4vvSOQHNktaQBMRvsOYd
+	wprPPpdqBQltzByHDRmjeaG/30JOmRoOX8hFRrtVX8w74KIdNTHcubJ/x/iuiaMOQoYaaQCMFU0
+	UQ5KCb7xiHzBebOWcqP4CcLxHbAYyL9PQ8ScqWBLzRWGdN/bc3MMaGyum5d6y6avkKbFajOo3ko
+	zAK0TT40cuaz4d+4Nn5eXM7lupCJpARg34Cuc3YmHkVkXAMzEot17RARRG3Ok4ssLeUV69wBlFf
+	3mZAxGf5a8U8CS3M8CsGlSJRw+oJ9f5uureLd75rQR9/wZ28zXwg==
+X-Received: by 2002:a05:600c:34c7:b0:477:a978:3a7b with SMTP id 5b1f17b1804b1-4805cf5ec2cmr119225e9.22.1769291306907;
+        Sat, 24 Jan 2026 13:48:26 -0800 (PST)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-c635a42a626sm4885099a12.31.2026.01.24.13.48.25
+        for <linux-btrfs@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 24 Jan 2026 13:48:26 -0800 (PST)
+Message-ID: <8872e902-3ecb-4d6a-8bea-c79552db6f28@suse.com>
+Date: Sun, 25 Jan 2026 08:18:23 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/3] btrfs: get rid of compressed_bio::compressed_folios[]
+ part 1
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+References: <cover.1768866942.git.wqu@suse.com>
+Content-Language: en-US
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
+ Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
+ fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
+ 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
+ V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
+ rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
+ cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
+ qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
+ /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
+ o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
+ JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+In-Reply-To: <cover.1768866942.git.wqu@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_DKIM_ALLOW(-0.20)[bur.io:s=fm3,messagingengine.com:s=fm2];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-20986-lists,linux-btrfs=lfdr.de];
+	DKIM_TRACE(0.00)[suse.com:+];
+	RCPT_COUNT_ONE(0.00)[1];
+	TAGGED_FROM(0.00)[bounces-20987-lists,linux-btrfs=lfdr.de];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	DMARC_NA(0.00)[bur.io];
-	RCPT_COUNT_TWO(0.00)[2];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[bur.io:+,messagingengine.com:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[boris@bur.io,linux-btrfs@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	NEURAL_HAM(-0.00)[-1.000];
+	FROM_NEQ_ENVFROM(0.00)[wqu@suse.com,linux-btrfs@vger.kernel.org];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TO_DN_NONE(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[messagingengine.com:dkim,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,bur.io:email,bur.io:dkim,bur.io:mid]
-X-Rspamd-Queue-Id: C74697F163
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,suse.com:mid,suse.com:dkim]
+X-Rspamd-Queue-Id: 1C90E7F17E
 X-Rspamd-Action: no action
 
-Fix the build warning:
-In file included from fs/btrfs/tests/chunk-allocation-tests.c:8:
-fs/btrfs/tests/../volumes.h:721:53: warning: ‘struct btrfs_space_info’ declared inside parameter list will not be visible outside of this definition or declaration
-  721 |                                              struct btrfs_space_info *space_info,
 
-Signed-off-by: Boris Burkov <boris@bur.io>
----
- fs/btrfs/volumes.h | 1 +
- 1 file changed, 1 insertion(+)
 
-diff --git a/fs/btrfs/volumes.h b/fs/btrfs/volumes.h
-index 48d82a1903a7..acd9b232b124 100644
---- a/fs/btrfs/volumes.h
-+++ b/fs/btrfs/volumes.h
-@@ -30,6 +30,7 @@ struct btrfs_block_group;
- struct btrfs_trans_handle;
- struct btrfs_transaction;
- struct btrfs_zoned_device_info;
-+struct btrfs_space_info;
- 
- #define BTRFS_MAX_DATA_CHUNK_SIZE	(10ULL * SZ_1G)
- 
--- 
-2.52.0
+在 2026/1/20 10:30, Qu Wenruo 写道:
+> Currently we have compressed_bio::compressed_folios[] allowing us to do
+> random access to any compressed folio, then we queue all folios in that
+> array into a real btrfs_bio, and submit that btrfs_bio for read/write.
+> 
+> However there is not really any need to do random access of that array.
+> 
+> All compression/decompression is doing sequential folio access.
+
+Minor update in the for-next branch.
+
+Replace the following pattern:
+
+	bio_first_folio(fi, bio, 0);
+	ASSERT(fi.folio);
+
+With
+	bio_first_folio(fi, bio, 0);
+	if (unlikely(!fi.folio))
+		return -EINVAL;
+
+And for the zstd one, move the bio_first_folio() call and the check to 
+the beginning of the function.
+
+
+This is to avoid compiler warning about uninitialized access to 
+folio_iter members, as if the bio is empty bio_first_folio() only 
+initialize fi.folio to NULL without touching the remaining members.
+
+Thanks,
+Qu
+
+> 
+> The part 1 is some easy and safe conversion on decompression path.
+> 
+> The part 2 will handle the compression part, but unfortunately that will
+> require some changes all compression path, thus will need some extra
+> work.
+> 
+> And only after compression paths also got converted, we still need
+> that compressed_folios[] array for now.
+> 
+> Qu Wenruo (3):
+>    btrfs: use folio_iter to handle lzo_decompress_bio()
+>    btrfs: use folio_iter to handle zlib_decompress_bio()
+>    btrfs: use folio_iter to handle zstd_decompress_bio()
+> 
+>   fs/btrfs/lzo.c  | 48 +++++++++++++++++++++++++++++++++++++++---------
+>   fs/btrfs/zlib.c | 19 ++++++++++++-------
+>   fs/btrfs/zstd.c | 13 +++++++++----
+>   3 files changed, 60 insertions(+), 20 deletions(-)
+> 
 
 
