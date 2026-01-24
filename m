@@ -1,167 +1,160 @@
-Return-Path: <linux-btrfs+bounces-20982-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20983-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id QJnMJ5s3dWkqCQEAu9opvQ
-	(envelope-from <linux-btrfs+bounces-20982-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Sat, 24 Jan 2026 22:20:27 +0100
+	id FFryECU9dWmbCgEAu9opvQ
+	(envelope-from <linux-btrfs+bounces-20983-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Sat, 24 Jan 2026 22:44:05 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F99F7F068
-	for <lists+linux-btrfs@lfdr.de>; Sat, 24 Jan 2026 22:20:27 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 923837F155
+	for <lists+linux-btrfs@lfdr.de>; Sat, 24 Jan 2026 22:44:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B33A23014965
-	for <lists+linux-btrfs@lfdr.de>; Sat, 24 Jan 2026 21:20:07 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id A40743002321
+	for <lists+linux-btrfs@lfdr.de>; Sat, 24 Jan 2026 21:44:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 875F8281356;
-	Sat, 24 Jan 2026 21:20:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7562C27CB04;
+	Sat, 24 Jan 2026 21:44:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tx3PHjVF"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="HH5+rlz5";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="QUKh+r+H"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from fout-a2-smtp.messagingengine.com (fout-a2-smtp.messagingengine.com [103.168.172.145])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFCB610F1;
-	Sat, 24 Jan 2026 21:20:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF1B41D5174
+	for <linux-btrfs@vger.kernel.org>; Sat, 24 Jan 2026 21:43:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.145
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769289604; cv=none; b=Vmml/LxuUCHmUS7mQQLiCJMiwKevvSc8EEtn4SGFa+cg/v0VVkWMsTSCn7LURpz/3LYm8l3FB9eUkhw1B0F6UGLIE7vPZ9OYmWd+c8UwB3+e1RgBPi17H2DhUgbs8OIEL5bDTHTC2ke43wYGDxsUHSgPDib9ok2DHiLy8WGXOg8=
+	t=1769291041; cv=none; b=tfWuLr2skj9lvbFjmIqDOliFQU6rSKyQQlTZ+lq5LmIgOo+tCxo2klvF+iYFGbusgM9gYIfZj56qG+77MuSYgsgkGQ/X2KKv5kCZavafFMVkr4OnYfd5GXQBDfciM0Al299z3sBJ4wJnETnXlVYQS1uIjd9tvRiNdIwlCaIwcIA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769289604; c=relaxed/simple;
-	bh=oI+uA3O35prux956Vzu7Z1UUlwDa0yJcLaD0R2S8IsY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HBYDBN1cAHrUsw9qR1LS9tfdG32XF2WfaQUQV5TUe1EUlO3mKd4xhmlfKoGi5mxSVPuBAzW+L9X+zqEyjVerZvOGwhgQOfzy3Rbq+SGK4xkP4P8CBBJcDyMhsxxYSvI2MfVg9XrKCaNHn0FAvYHnBaxlDLlyo4rBMSJr5adXnjE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tx3PHjVF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE05BC116D0;
-	Sat, 24 Jan 2026 21:20:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1769289604;
-	bh=oI+uA3O35prux956Vzu7Z1UUlwDa0yJcLaD0R2S8IsY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=tx3PHjVFa71TMA8P2jVrrQzZkrnzrpZqil3kd3DaCVTplbq9iK6DlJ8qsql1thPAv
-	 UNjuW1nfiRVWAbZf+LRjOeoUGh4XP+zmVrTNSc8g7amTOCb4vyFpcPWGiqIIenq2dB
-	 vft8MwRjbFKObQYd0ghcaHYdAZbM58IwoBylA9FvOa/jgLOmx9LjHJvNd36n4Pcm2R
-	 L8QHWrN4AT/1gM+82FP1MC53CTF2OW1OSsDNz1AatHjk7o4UTRUS+VrtUNfKt2GK58
-	 xob/cAfD4zqAwb+w2F7IClIn40cu37XDMKbfm3FWH+cSbAYgtbkiZuLzAG63322rOw
-	 Mk5sbTrl4k/7w==
-Date: Sat, 24 Jan 2026 13:19:56 -0800
-From: Eric Biggers <ebiggers@kernel.org>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Al Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
-	David Sterba <dsterba@suse.com>, Theodore Ts'o <tytso@mit.edu>,
-	Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-	Andrey Albershteyn <aalbersh@redhat.com>,
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-	fsverity@lists.linux.dev
-Subject: Re: [PATCH 06/11] fsverity: push out fsverity_info lookup
-Message-ID: <20260124211956.GF2762@quark>
-References: <20260122082214.452153-1-hch@lst.de>
- <20260122082214.452153-7-hch@lst.de>
+	s=arc-20240116; t=1769291041; c=relaxed/simple;
+	bh=8FFi1OhGf4fQEPvDcmGOIpBVC9e9r7lSfkE/PMxRVp0=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Z9n2hDGB3h+MO5wYtCHSPhhDEup2QxSmdNo6MNfGElEV1BUyUsXoKoowXpnV1HLXNeFrV6B6yymJavHfa6nzTH2aKmYpx3NwXWeHDyi8oglKYcOcaZg/wDfBdrBCmiETvrLywY5fUxgQpKcmSSmHcMS2M38DI2tnIvxP1tY7AN8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=HH5+rlz5; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=QUKh+r+H; arc=none smtp.client-ip=103.168.172.145
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
+Received: from phl-compute-03.internal (phl-compute-03.internal [10.202.2.43])
+	by mailfout.phl.internal (Postfix) with ESMTP id C4F5BEC00A7;
+	Sat, 24 Jan 2026 16:43:58 -0500 (EST)
+Received: from phl-frontend-03 ([10.202.2.162])
+  by phl-compute-03.internal (MEProxy); Sat, 24 Jan 2026 16:43:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc
+	:content-transfer-encoding:content-type:content-type:date:date
+	:from:from:in-reply-to:message-id:mime-version:reply-to:subject
+	:subject:to:to; s=fm3; t=1769291038; x=1769377438; bh=btSlU+EqIr
+	VZXvNs6Y3lq73kCcXqpZ40i8LCHbr4Xnw=; b=HH5+rlz5+IFbRdZSXEtN3DY4ru
+	dEQpYkHQ3akp9cp4F3va97ATYRW2k6y8lQDswS5K/cOwwtFneLe09WCTP5XWaUJX
+	NLFehSo5ebDEKQjxNgZw0/+IhfbpcVg6D5aIsLXMOH+7lQCJh2PX0JkIMPLixvRP
+	Fkjpya6VkoZ/kQTKFjIsD2lFYsvDza0rFjP5mtIcujcZdeuE/IJNjftYXAWWg8Ur
+	1jcR9rh3MlbVYiL6XGACACx2oGKEuOGJRo4dOZcng5BuPXvDA/XeuxkhX31CNAeT
+	uYxbqg8LnnDPKIyV/OdpTaYB9Wo4WOwFMYk8rbXdptMn22lpRLBAQIidU11w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-transfer-encoding:content-type
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+	1769291038; x=1769377438; bh=btSlU+EqIrVZXvNs6Y3lq73kCcXqpZ40i8L
+	CHbr4Xnw=; b=QUKh+r+HJ2dj1ysn6rEpboVbQNb1Cd/bQ2US9u72renK+7UCjei
+	Bw1KtMGZZp21MvC32h+vVN7XhfgZEh5TVKdiQPwaIC+VJHY8zV0PMrnB32kEFXBR
+	Ir0V56MQRxUmhCdIcTxnzOdYzq5ln1rwQQs/CKwtpX4eiIkFNr49y2viZT65zm8z
+	8HPVJyhMRghG2rZHcERToZAPIXKIooWN+hlHNwHxDBUaU4K8PFgS4mtD3jFuJvL/
+	1RrqB6Hop4jK7JLcKQvVA8m+ixhRflunVaW1JzoWFBP+QjJLlkni5Rngie+YhlX3
+	tAdMB1RddL2bVTM0ati6Cxu/KhuyoHYCFbw==
+X-ME-Sender: <xms:Hj11abOES5qwXZEfNEX2dmevqzeZeuUjzjVsHBm0xjKeNrr5bISdBA>
+    <xme:Hj11ab_x9_Jy6OhZjmJrjzqlYZ_oIRwauwOsvYmfCb5RVhKA5FW5VHKM7Csf67JVE
+    BsYd46sc0hMyccFjOpRrnDmLsRpiPoR2fOrCFs2lqIGDCjJHgi6NkI>
+X-ME-Received: <xmr:Hj11aX5-IOk79iFSbdT7SOPrPKMo2Tr4D5hoEs8aaAN_LH-rZlRhlhuyXBXzt4053YQpErsLNrImOR0AcZX91-WlMBw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdduheeftdefucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
+    rghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofggtgfgsehtkeertdertd
+    ejnecuhfhrohhmpeeuohhrihhsuceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheq
+    necuggftrfgrthhtvghrnheptdfgkeeufeehvdetvdekuddvudffvdegveeifedtvdekhf
+    ehkeevleekleeuvefgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghi
+    lhhfrhhomhepsghorhhishessghurhdrihhopdhnsggprhgtphhtthhopedvpdhmohguvg
+    epshhmthhpohhuthdprhgtphhtthhopehlihhnuhigqdgsthhrfhhssehvghgvrhdrkhgv
+    rhhnvghlrdhorhhgpdhrtghpthhtohepkhgvrhhnvghlqdhtvggrmhesfhgsrdgtohhm
+X-ME-Proxy: <xmx:Hj11aa1YfXyiu4iTeUYTYj6-IMzg-UB1vRYx8LshPromOOtWqIFoLw>
+    <xmx:Hj11aWCtTE70959PBIPA3W9BPVkBF-xKL3xJsoNQi0_1hfWkg5826A>
+    <xmx:Hj11aU39gewmnPG8qHaoxVpvh-om2uBLROjrBV_AbttWhcmOgwZSKA>
+    <xmx:Hj11aYu6fKF3MQ_tjAOKECEAQQFSe2WhRI0WrRxh1HS0Az-nIpQbrw>
+    <xmx:Hj11aawlJdUY9-J6EGo78LCZho7QoaHd9Fee2DHy5K111CfkQ90AdN-F>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 24 Jan 2026 16:43:58 -0500 (EST)
+From: Boris Burkov <boris@bur.io>
+To: linux-btrfs@vger.kernel.org,
+	kernel-team@fb.com
+Subject: [PATCH v2 0/3] pending chunk allocation EEXIST fix
+Date: Sat, 24 Jan 2026 13:43:32 -0800
+Message-ID: <cover.1769290938.git.boris@bur.io>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260122082214.452153-7-hch@lst.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	MID_CONTAINS_FROM(1.00)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_DKIM_ALLOW(-0.20)[bur.io:s=fm3,messagingengine.com:s=fm2];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
+	DMARC_NA(0.00)[bur.io];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20982-lists,linux-btrfs=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[15];
-	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	DKIM_TRACE(0.00)[bur.io:+,messagingengine.com:+];
+	TAGGED_FROM(0.00)[bounces-20983-lists,linux-btrfs=lfdr.de];
+	RCPT_COUNT_TWO(0.00)[2];
+	RCVD_TLS_LAST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-btrfs@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
+	FROM_NEQ_ENVFROM(0.00)[boris@bur.io,linux-btrfs@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	TO_DN_NONE(0.00)[];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	NEURAL_HAM(-0.00)[-1.000];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[lst.de:email]
-X-Rspamd-Queue-Id: 3F99F7F068
+	DBL_BLOCKED_OPENRESOLVER(0.00)[messagingengine.com:dkim,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,bur.io:mid,bur.io:dkim]
+X-Rspamd-Queue-Id: 923837F155
 X-Rspamd-Action: no action
 
-On Thu, Jan 22, 2026 at 09:22:02AM +0100, Christoph Hellwig wrote:
-> Pass a struct fsverity_info to the verification and readahead helpers,
-> and push the lookup into the callers.  Right now this is a very
-> dumb almost mechanic move that open codes a lot of fsverity_info_addr()
-> calls int the file systems.  The subsequent patches will clean this up.
-> 
-> This prepares for reducing the number of fsverity_info lookups, which
-> will allow to amortize them better when using a more expensive lookup
-> method.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  fs/btrfs/extent_io.c     |  4 +++-
->  fs/buffer.c              |  4 +++-
->  fs/ext4/readpage.c       | 11 ++++++++---
->  fs/f2fs/compress.c       |  4 +++-
->  fs/f2fs/data.c           | 15 +++++++++++----
->  fs/verity/verify.c       | 26 ++++++++++++++------------
->  include/linux/fsverity.h | 24 +++++++++++++++---------
->  7 files changed, 57 insertions(+), 31 deletions(-)
+Fix a somewhat convoluted bug in chunk allocation with non consecutive
+pending extents. Also, add unit tests covering the new search functions
+and fix a build warning
 
-This patch introduces another bisection hazard by adding calls to
-fsverity_info_addr() when CONFIG_FS_VERITY=n.  fsverity_info_addr() has
-a definition only when CONFIG_FS_VERITY=y.
+Changelog:
+v2:
+- change the semantics of btrfs_find_hole_in_pending_extents to return
+  the largest hole on failure. A different bug in the implementation of
+  the incorrect v1 semantics was hiding this.
+- add the unit tests
+- add the build warning fix
 
-Maybe temporarily add a CONFIG_FS_VERITY=n stub for fsverity_info_addr()
-that returns NULL, and also ensure that it's dereferenced only when it's
-known that fsverity verification is needed.  Most of the call sites look
-okay, but the second one in ext4_mpage_readpages() needs to be fixed.
+Boris Burkov (3):
+  btrfs: fix EEXIST abort due to non-consecutive gaps in chunk
+    allocation
+  btrfs: unit tests for pending extent walking functions
+  btrfs: forward declare btrfs_fs_info in volumes.h
 
-> @@ -430,6 +431,7 @@ EXPORT_SYMBOL_GPL(fsverity_verify_blocks);
->  #ifdef CONFIG_BLOCK
->  /**
->   * fsverity_verify_bio() - verify a 'read' bio that has just completed
-> + * @vi: fsverity_info for the inode to be read
->   * @bio: the bio to verify
->   *
->   * Verify the bio's data against the file's Merkle tree.  All bio data segments
-> @@ -442,13 +444,13 @@ EXPORT_SYMBOL_GPL(fsverity_verify_blocks);
->   * filesystems) must instead call fsverity_verify_page() directly on each page.
->   * All filesystems must also call fsverity_verify_page() on holes.
->   */
-> -void fsverity_verify_bio(struct bio *bio)
-> +void fsverity_verify_bio(struct fsverity_info *vi, struct bio *bio)
->  {
->  	struct inode *inode = bio_first_folio_all(bio)->mapping->host;
->  	struct fsverity_verification_context ctx;
->  	struct folio_iter fi;
->  
-> -	fsverity_init_verification_context(&ctx, inode);
-> +	fsverity_init_verification_context(&ctx, inode, vi);
+ fs/btrfs/Makefile                       |   3 +-
+ fs/btrfs/tests/btrfs-tests.c            |   3 +
+ fs/btrfs/tests/btrfs-tests.h            |   1 +
+ fs/btrfs/tests/chunk-allocation-tests.c | 481 ++++++++++++++++++++++++
+ fs/btrfs/volumes.c                      | 246 +++++++++---
+ fs/btrfs/volumes.h                      |   5 +
+ 6 files changed, 677 insertions(+), 62 deletions(-)
+ create mode 100644 fs/btrfs/tests/chunk-allocation-tests.c
 
-Note that fsverity_info has a back-pointer to the inode.  So,
-fsverity_init_verification_context() could just take the vi and set
-ctx->inode to vi->inode.
+-- 
+2.52.0
 
-Then it wouldn't be necessary to get the inode from
-bio_first_folio_all(bio)->mapping->host (in fsverity_verify_bio()) or
-folio->mapping->host (in fsverity_verify_blocks()).
-Similarly in fsverity_readahead() too.
-
-(It might make sense to handle this part as a separate patch.)
-
-- Eric
 
