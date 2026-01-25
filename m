@@ -1,69 +1,69 @@
-Return-Path: <linux-btrfs+bounces-20994-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20995-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id Nlg3KyQPdmmBLAEAu9opvQ
-	(envelope-from <linux-btrfs+bounces-20994-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Sun, 25 Jan 2026 13:40:04 +0100
+	id kCwqGfYRdmldLQEAu9opvQ
+	(envelope-from <linux-btrfs+bounces-20995-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Sun, 25 Jan 2026 13:52:06 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF427808C4
-	for <lists+linux-btrfs@lfdr.de>; Sun, 25 Jan 2026 13:40:03 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id D524C808FE
+	for <lists+linux-btrfs@lfdr.de>; Sun, 25 Jan 2026 13:52:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 95EC0300BDB8
-	for <lists+linux-btrfs@lfdr.de>; Sun, 25 Jan 2026 12:39:57 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 017CB300B9E4
+	for <lists+linux-btrfs@lfdr.de>; Sun, 25 Jan 2026 12:51:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69515318EFF;
-	Sun, 25 Jan 2026 12:39:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C906F318EFF;
+	Sun, 25 Jan 2026 12:51:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="N63nRCgA"
+	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="mSN+SxCj"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mx0a-00082601.pphosted.com (mx0a-00082601.pphosted.com [67.231.145.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B1371DDF3
-	for <linux-btrfs@vger.kernel.org>; Sun, 25 Jan 2026 12:39:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC7C415746E
+	for <linux-btrfs@vger.kernel.org>; Sun, 25 Jan 2026 12:51:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.145.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769344795; cv=none; b=YKrrw4AHebpWrA0/xZsS+XoKLUVF8gzeTjHmOGSC35xOJOCrHkm+72XFakX1+Qglgle//f67SX2KH9isPmFFSU+btKKjACbLpZ+WRTCv761/wOW5WiZdKwgTyeymVxHci/xu2R06xJ9mbmInM69rke6OuMBZS9TSFxVfUv0/X0M=
+	t=1769345515; cv=none; b=jcFXKSME76zni4URZratSJ7yh8JFQXJt9MK8SZzmCFtKda81wpVcRin+ZH7Ihl8U24OOJjpUU90Z+GsucpCv3nG8XsRjFpCdESmtYtm535sOHonDD+4RsoTD6akwAAuy3W5PxhItYstIGT9kYdCdREmRvyOBNIKZ8kEvdEGk8R0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769344795; c=relaxed/simple;
-	bh=YGGtJ+X6IqBH6b9KvMIUTQDXoVR3zgB4weQLsodUss0=;
+	s=arc-20240116; t=1769345515; c=relaxed/simple;
+	bh=HlOCgTH1fOfGbVm5LDi32/GANFYOiWyAfa5bkEAXV84=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=V0G/z/K2AE9MzkJX36sN3++6XufRVS3t0gyX8LNapQsGBF9+/mARHGq0s5tW0si6iH8/RoHdlDWR7t5Ib4nw0XreTopdckfFdq9bNi2UMzJruQdS87kD5JnOaROjXZ71H11KzIL0LKV//xjN98U48Ky0b99YXNZ+UVOOq1WtQWk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=N63nRCgA; arc=none smtp.client-ip=67.231.145.42
+	 MIME-Version:Content-Type; b=pmPftKEZO8M5GW6r2UO4mI2NrTqyEsLCab9d1rWT/vXerwgdliWRtFiZlQG/JTqXUSXCPM2+D2UvK1Rgv2nDjzhtCw0vzHAU1XZqD82AlMD97zju1zggNhhgF6y+EPtNZo+fvDNloT2lcvkYanozzxR/0c7OFUQvTLFr3ZVJtBU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=mSN+SxCj; arc=none smtp.client-ip=67.231.145.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 60P6YWnF1628392;
-	Sun, 25 Jan 2026 04:39:48 -0800
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 60P7hcbr2190778;
+	Sun, 25 Jan 2026 04:51:49 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=cc
 	:content-transfer-encoding:content-type:date:from:in-reply-to
 	:message-id:mime-version:references:subject:to; s=s2048-2025-q2;
-	 bh=8TuSuEeYCXTXuMxl62vOaTMfWCWLPl5eU+ykEnxgN58=; b=N63nRCgArdYJ
-	07zWXD4sfP/C4d05q21OBgQIC9REtv/lUeQMHV26kF2ogl15WuQ8tSb3bcqNDkDN
-	k/i6ZwK3mgAggwK97sNjntw1G/aY88wxWYOJkeD+SVubUW7BszvMvioU3aMAn+HE
-	CTlBEkh7j4WKcRSdjxFPxMPiE084wZXskSTXxGWMHeJ+P4RiEV4DZY73N1zkubtQ
-	P1ZhrocAcr5Wjl9/RS1yfixqUGSmdVEN7LuwoEmUU0B2ypnq+nbzkM4qO7OlQwHK
-	4KWDFF6LB5ooP6clHcDcDlMZKJddWXktY+sGgHtJGCPHX7lksBnBkZVk8Z4F8opT
-	DDApABlV7g==
-Received: from mail.thefacebook.com ([163.114.134.16])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 4bvu01x6te-1
+	 bh=USk3PrSZpAy7Y5NKVv8r3qTbtMqzTP1loFlBYMBxOfI=; b=mSN+SxCjU2t4
+	kYbf9wVyHNGYK5t3gSN+4za1t0XSwSQBlOxO9uEPkCrN+G6XPMpIJSEPfDT6QhW3
+	6E5IdQ519JoY0YR8KlHC5YMrmHca8DajQs4MsqvzFiwZv7LImz2ZQ11GruBT7tVT
+	kTIlQeM43Qq510+qAzTryfiSH9ZI3KBcV8wrjodUrcunax3PEw/ZZXp4O8RcRoxU
+	OliyKZgHpXoE7SgQh3cuPBYxyQiTSwyHSfxbeLiOFwNMCZa/N8lnMpiHiGAq0oMz
+	UXna6ziYKUR+9l+KENYoh7HBH+bAU8cVHr2UoGKjFvDE50shd217P7PN9LgQ6IcL
+	HCLFk6eMkA==
+Received: from maileast.thefacebook.com ([163.114.135.16])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 4bvvn1nu56-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-	Sun, 25 Jan 2026 04:39:48 -0800 (PST)
-Received: from devbig003.atn7.facebook.com (2620:10d:c085:108::4) by
- mail.thefacebook.com (2620:10d:c08b:78::2ac9) with Microsoft SMTP Server
+	Sun, 25 Jan 2026 04:51:49 -0800 (PST)
+Received: from devbig003.atn7.facebook.com (2620:10d:c0a8:1b::8e35) by
+ mail.thefacebook.com (2620:10d:c0a9:6f::8fd4) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.2562.29; Sun, 25 Jan 2026 12:39:35 +0000
+ 15.2.2562.29; Sun, 25 Jan 2026 12:51:47 +0000
 From: Chris Mason <clm@meta.com>
 To: Mark Harmstone <mark@harmstone.com>
 CC: <linux-btrfs@vger.kernel.org>, Boris Burkov <boris@bur.io>
-Subject: Re: [PATCH v8 12/17] btrfs: move existing remaps before relocating block group
-Date: Sun, 25 Jan 2026 04:38:06 -0800
-Message-ID: <20260125123908.2096548-1-clm@meta.com>
+Subject: Re: [PATCH v8 10/17] btrfs: handle deletions from remapped block group
+Date: Sun, 25 Jan 2026 04:49:36 -0800
+Message-ID: <20260125125129.2245240-1-clm@meta.com>
 X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20260107141015.25819-13-mark@harmstone.com>
-References: <20260107141015.25819-1-mark@harmstone.com> <20260107141015.25819-13-mark@harmstone.com>
+In-Reply-To: <20260107141015.25819-11-mark@harmstone.com>
+References: <20260107141015.25819-1-mark@harmstone.com> <20260107141015.25819-11-mark@harmstone.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -72,71 +72,81 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Authority-Analysis: v=2.4 cv=UaVciaSN c=1 sm=1 tr=0 ts=69760f14 cx=c_pps
- a=CB4LiSf2rd0gKozIdrpkBw==:117 a=CB4LiSf2rd0gKozIdrpkBw==:17
+X-Authority-Analysis: v=2.4 cv=X8df6WTe c=1 sm=1 tr=0 ts=697611e5 cx=c_pps
+ a=MfjaFnPeirRr97d5FC5oHw==:117 a=MfjaFnPeirRr97d5FC5oHw==:17
  a=vUbySO9Y5rIA:10 a=VkNPw1HP01LnGYTKEx00:22 a=LWDUg-46AAAA:8
- a=tbFFEX0_jrYaF2LSth4A:9 a=0m5oFGktkVSl59jdpf0v:22
-X-Proofpoint-GUID: 29DdiQYgvWL0mLlb1ZZvFgkPmsXBlcF-
-X-Proofpoint-ORIG-GUID: 29DdiQYgvWL0mLlb1ZZvFgkPmsXBlcF-
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMTI1MDEwNCBTYWx0ZWRfX8tL5lWLiT9n6
- VUd6F+X+Vhxy0Bq2qHZJ3jcFraszU8DGggTzwbvTi4yy0AuQQyp6COQ/nlmRuHcz2GbczI8URex
- mhoLXuraCoESlXA4qLe9sf6Olbu65N3z7kenV3RHuFLk4Urr4/5yIrmdDuz0PG7eUekIooliA+0
- LzgrtPxNCG5QOpPfehWBGgxvqrAYldWzNSa/fOodZi4UdQGmDy3KufgicAskSQ8N23ka1znwu8R
- WVYU0ELQmYdyz8M5mxLIsZTtQIER3gFf+KNxCA4BFx0iIVwYU/8uDOz7ivhIVhlobeb3q241GtC
- 1nUKNO6OA84Ferf+bdgPgQ9vsZzixi4KCQl0JaWhzzuTYjytq0uzBLdIhlaVJNVrEw0w98XYf9h
- BKNUmJIGqnZ3Acx5gNFBLB6zdm4sqgWqnj0HO/XU9LJSyva0LmMMHXkGuVZtL1kRKFCI2jr3CSi
- DWV0uqEtfgs/tuimd4Q==
+ a=ZEBlm8uLOMWBT5bI-sYA:9 a=0m5oFGktkVSl59jdpf0v:22
+X-Proofpoint-ORIG-GUID: 70AuqlZM3EB6C5zh8PDwsfAmJrtGzhlb
+X-Proofpoint-GUID: 70AuqlZM3EB6C5zh8PDwsfAmJrtGzhlb
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMTI1MDEwNyBTYWx0ZWRfX4ElcBJFunBOm
+ 9lo3dsfCPrHaaB7ni/mXLC9RuEp/c8WRund71OGvMLH6tSs+OB7kY0imhwdyYs3Olztxz99pvj3
+ YjiLAgAwc8Cm7sYAMNI0kPencoiT4A3i4PQRffRyRLPWxGUnnGH074Lg84kiAWvmbCyjfWJuIGP
+ JzlnPq65gAEsBlhYX+nNMD2Ufip0gXhp+xx0C+xAfG50QO1jvhpqbxu596qXGdoRCKnGxgofBqO
+ WhGoXgZynQ2pKVvptuImFylXpvT9mSR5Qko0fBKXQL+5DYXtnDKGg9RZ1BrCDFIjIIpZw9ziB3b
+ 60UFyNkg2VuMeJQAUxwJ8qKEJx8TaHF4c6KL5JRMkESETqNxUwTo7uWSbMNSL9IIX75GZTprNGF
+ FllzkGQ61A6WUb9hZ7aajDvnarIG7g1m0hyX0o//Ltln/0VmG99We3oSQWux9/6HQknUKD3SrCD
+ 0LdQcMF1CQa+VQaar9g==
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.20,FMLib:17.12.100.49
- definitions=2026-01-25_02,2026-01-22_02,2025-10-01_01
+ definitions=2026-01-25_03,2026-01-22_02,2025-10-01_01
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[meta.com,reject];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_MISSING_CHARSET(0.50)[];
 	R_DKIM_ALLOW(-0.20)[meta.com:s=s2048-2025-q2];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DKIM_TRACE(0.00)[meta.com:+];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20994-lists,linux-btrfs=lfdr.de];
-	RCPT_COUNT_THREE(0.00)[3];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	TO_DN_SOME(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[clm@meta.com,linux-btrfs@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-20995-lists,linux-btrfs=lfdr.de];
+	RCVD_COUNT_FIVE(0.00)[6];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[clm@meta.com,linux-btrfs@vger.kernel.org];
+	RCPT_COUNT_THREE(0.00)[3];
 	PRECEDENCE_BULK(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_COUNT_FIVE(0.00)[6];
+	DKIM_TRACE(0.00)[meta.com:+];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: EF427808C4
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[harmstone.com:email,meta.com:mid,meta.com:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: D524C808FE
 X-Rspamd-Action: no action
 
 Mark Harmstone <mark@harmstone.com> wrote:
-> If when relocating a block group we find that `remap_bytes` > 0 in its
-> block group item, that means that it has been the destination block
-> group for another that has been remapped.
+> Handle the case where we free an extent from a block group that has the
+> REMAPPED flag set. Because the remap tree is orthogonal to the extent
+> tree, for data this may be within any number of identity remaps or
+> actual remaps. If we're freeing a metadata node, this will be wholly
+> inside one or the other.
 > 
-> We need to seach the remap tree for any remap backrefs within this
-> range, and move the data to a third block group. This is because
-> otherwise btrfs_translate_remap() could end up following an unbounded
-> chain of remaps, which would only get worse over time.
+> btrfs_remove_extent_from_remap_tree() searches the remap tree for the
+> remaps that cover the range in question, then calls
+> remove_range_from_remap_tree() for each one, to punch a hole in the
+> remap and adjust the free-space tree.
 > 
-> We only relocate one block group at a time, so `remap_bytes` will only
-> ever go down while we are doing this. Once we're finished we set the
-> REMAPPED flag on the block group, which will permanently prevent any
-> other data from being moved to within it.
+> For an identity remap, remove_range_from_remap_tree() will adjust the
+> block group's `identity_remap_count` if this changes. If it reaches
+> zero we mark the block group as fully remapped.
+> 
+> For an identity remap, remove_range_from_remap_tree() will adjust the
+> block group's `identity_remap_count` if this changes. If it reaches
+> zero we mark the block group as fully remapped.
+> 
+> Fully remapped block groups have their chunk stripes removed and their
+> device extents freed, which makes the disk space available again to the
+> chunk allocator. This happens asynchronously: in the cleaner thread for
+> sync discard and nodiscard, and (in a later patch) in the discard worker
+> for async discard.
 
 Hi everyone,
 
-One more AI review from linux-next, this looks valid to me:
+Another AI review from my recent linux-next run:
 
 > diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
 > --- a/fs/btrfs/relocation.c
@@ -144,105 +154,121 @@ One more AI review from linux-next, this looks valid to me:
 
 [ ... ]
 
-> +static int move_existing_remap(struct btrfs_fs_info *fs_info,
-> +			       struct btrfs_path *path,
-> +			       struct btrfs_block_group *bg, u64 new_addr,
-> +			       u64 length, u64 old_addr)
+> +int btrfs_last_identity_remap_gone(struct btrfs_chunk_map *chunk_map,
+> +				   struct btrfs_block_group *bg)
+> +{
+> +	struct btrfs_fs_info *fs_info = bg->fs_info;
+> +	struct btrfs_trans_handle *trans;
+> +	int ret;
+> +	unsigned int num_items;
+> +	BTRFS_PATH_AUTO_FREE(path);
+> +
+> +	path = btrfs_alloc_path();
+> +	if (!path)
+> +		return -ENOMEM;
+> +
+> +	/*
+> +	 * One item for each entry we're removing in the dev extents tree, and
+> +	 * another for each device. DUP chunks are all on one device,
+> +	 * everything else has one device per stripe.
+> +	 */
+> +	if (bg->flags & BTRFS_BLOCK_GROUP_DUP)
+> +		num_items = chunk_map->num_stripes + 1;
+> +	else
+> +		num_items = 2 * chunk_map->num_stripes;
+> +
+> +	trans = btrfs_start_transaction_fallback_global_rsv(fs_info->tree_root, num_items);
+> +	if (IS_ERR(trans))
+> +		return PTR_ERR(trans);
+> +
+> +	ret = btrfs_remove_dev_extents(trans, chunk_map);
+> +	if (unlikely(ret)) {
+> +		btrfs_abort_transaction(trans, ret);
+> +		return ret;
+> +	}
+
+Can this leak the transaction handle? btrfs_abort_transaction() marks
+the transaction as aborted but does not end it. __btrfs_abort_transaction()
+has a comment explaining cleanup happens in btrfs_end_transaction().
+
+> +
+> +	mutex_lock(&trans->fs_info->chunk_mutex);
+> +	for (unsigned int i = 0; i < chunk_map->num_stripes; i++) {
+> +		ret = btrfs_update_device(trans, chunk_map->stripes[i].dev);
+> +		if (unlikely(ret)) {
+> +			mutex_unlock(&trans->fs_info->chunk_mutex);
+> +			btrfs_abort_transaction(trans, ret);
+> +			return ret;
+> +		}
+
+Same question here about leaking the transaction handle.
+
+> +	}
+> +	mutex_unlock(&trans->fs_info->chunk_mutex);
+> +
+> +	write_lock(&trans->fs_info->mapping_tree_lock);
+> +	btrfs_chunk_map_device_clear_bits(chunk_map, CHUNK_ALLOCATED);
+> +	write_unlock(&trans->fs_info->mapping_tree_lock);
+> +
+> +	btrfs_remove_bg_from_sinfo(bg);
+> +
+> +	ret = remove_chunk_stripes(trans, chunk_map, path);
+> +	if (unlikely(ret)) {
+> +		btrfs_abort_transaction(trans, ret);
+> +		return ret;
+> +	}
+
+And here as well - does this return path need btrfs_end_transaction()?
+
+> +
+> +	ret = btrfs_commit_transaction(trans);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return 0;
+> +}
+
+[ ... ]
+
+> +static int remove_range_from_remap_tree(struct btrfs_trans_handle *trans,
+> +					struct btrfs_path *path,
+> +					struct btrfs_block_group *bg,
+> +					u64 hole_start, u64 hole_length)
 > +{
 
 [ ... ]
 
-> +	dest_bg = btrfs_lookup_block_group(fs_info, dest_addr);
+> +	if (!is_identity_remap) {
+> +		struct btrfs_block_group *dest_bg;
 > +
-> +	adjust_block_group_remap_bytes(trans, dest_bg, dest_length);
-> +
-> +	mutex_lock(&dest_bg->free_space_lock);
-> +	bg_needs_free_space = test_bit(BLOCK_GROUP_FLAG_NEEDS_FREE_SPACE,
-> +				       &dest_bg->runtime_flags);
-> +	mutex_unlock(&dest_bg->free_space_lock);
-> +	btrfs_put_block_group(dest_bg);
-> +
-> +	if (bg_needs_free_space) {
-> +		ret = btrfs_add_block_group_free_space(trans, dest_bg);
-                                                         ^^^^^^^
+> +		dest_bg = btrfs_lookup_block_group(fs_info, new_addr);
+> +		adjust_block_group_remap_bytes(trans, dest_bg, -overlap_length);
+> +		btrfs_put_block_group(dest_bg);
 
-Is there a use-after-free here? btrfs_put_block_group() is called above,
-which can free the block group if the refcount drops to zero. Then
-btrfs_add_block_group_free_space() dereferences dest_bg by calling
-mutex_lock(&block_group->free_space_lock).
+btrfs_lookup_block_group() can return NULL if no block group is found
+for the address. Every other caller checks for NULL before using the
+result. Is a NULL check needed here before passing dest_bg to
+adjust_block_group_remap_bytes()? That function does spin_lock(&bg->lock)
+which would crash on a NULL pointer.
 
-Perhaps the btrfs_put_block_group() call should be moved after the
-conditional block that uses dest_bg?
-
-> +		if (unlikely(ret))
-> +			goto end;
+> +		ret = btrfs_add_to_free_space_tree(trans,
+> +						   hole_start - remap_start + new_addr,
+> +						   overlap_length);
+> +		if (ret)
+> +			return ret;
 > +	}
 
 [ ... ]
 
-> +static int move_existing_remaps(struct btrfs_fs_info *fs_info,
-> +				struct btrfs_block_group *bg,
-> +				struct btrfs_path *path)
-> +{
-> +	int ret;
-> +	struct btrfs_key key;
-> +	struct extent_buffer *leaf;
-> +	struct btrfs_remap_item *remap;
-> +	u64 old_addr;
-> +
-> +	/* Look for backrefs in remap tree. */
-> +	while (bg->remap_bytes > 0) {
-> +		key.objectid = bg->start;
-> +		key.type = BTRFS_REMAP_BACKREF_KEY;
-> +		key.offset = 0;
-> +
-> +		ret = btrfs_search_slot(NULL, fs_info->remap_root, &key, path, 0, 0);
-> +		if (ret < 0)
-> +			return ret;
-> +
-> +		leaf = path->nodes[0];
-> +
-> +		if (path->slots[0] >= btrfs_header_nritems(leaf)) {
-> +			ret = btrfs_next_leaf(fs_info->remap_root, path);
+This is not a bug, but the commit message appears to have a duplicated
+paragraph about identity remaps:
 
-[ ... ]
+    For an identity remap, remove_range_from_remap_tree() will adjust the
+    block group's `identity_remap_count` if this changes. If it reaches
+    zero we mark the block group as fully remapped.
 
-> +			leaf = path->nodes[0];
-> +		}
-> +
-> +		btrfs_item_key_to_cpu(leaf, &key, path->slots[0]);
-> +
-> +		if (key.type != BTRFS_REMAP_BACKREF_KEY) {
-> +			path->slots[0]++;
-
-When the slot is incremented here because the key type does not match,
-should the key be re-read from the new slot? The code below reads
-the remap item from path->slots[0] (the incremented slot), but then
-passes key.objectid and key.offset (from the old slot) to
-move_existing_remap().
-
-If the key at the new slot has different objectid/offset values than
-the previous slot, this would pass mismatched address and length values
-to move_existing_remap().
-
-> +
-> +			if (path->slots[0] >= btrfs_header_nritems(leaf)) {
-> +				ret = btrfs_next_leaf(fs_info->remap_root, path);
-
-[ ... ]
-
-> +				leaf = path->nodes[0];
-> +			}
-> +		}
-> +
-> +		remap = btrfs_item_ptr(leaf, path->slots[0], struct btrfs_remap_item);
-> +		old_addr = btrfs_remap_address(leaf, remap);
-> +
-> +		btrfs_release_path(path);
-> +
-> +		ret = move_existing_remap(fs_info, path, bg, key.objectid,
-> +					  key.offset, old_addr);
-
-[ ... ]
+    For an identity remap, remove_range_from_remap_tree() will adjust the
+    block group's `identity_remap_count` if this changes. If it reaches
+    zero we mark the block group as fully remapped.
 
 
