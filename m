@@ -1,78 +1,78 @@
-Return-Path: <linux-btrfs+bounces-20989-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-20990-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id aH5nAm2XdWlUGgEAu9opvQ
-	(envelope-from <linux-btrfs+bounces-20989-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Sun, 25 Jan 2026 05:09:17 +0100
+	id hDW8EkyrdWmHHQEAu9opvQ
+	(envelope-from <linux-btrfs+bounces-20990-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Sun, 25 Jan 2026 06:34:04 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id A25857FBCD
-	for <lists+linux-btrfs@lfdr.de>; Sun, 25 Jan 2026 05:09:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6553F7FCD5
+	for <lists+linux-btrfs@lfdr.de>; Sun, 25 Jan 2026 06:34:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E0F5E300B9F2
-	for <lists+linux-btrfs@lfdr.de>; Sun, 25 Jan 2026 04:09:09 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C3913300C028
+	for <lists+linux-btrfs@lfdr.de>; Sun, 25 Jan 2026 05:33:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C90821FF25;
-	Sun, 25 Jan 2026 04:09:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D599C2417C3;
+	Sun, 25 Jan 2026 05:33:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nbwETNl8"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lwive3X6"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A64A321B192
-	for <linux-btrfs@vger.kernel.org>; Sun, 25 Jan 2026 04:09:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 796DC38D
+	for <linux-btrfs@vger.kernel.org>; Sun, 25 Jan 2026 05:33:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769314147; cv=none; b=Ll6OtKtrhMolWuhqCiqusC4dIM53ePdTSUKCaupvauE34l3eagceNy2i8B7u3ekDT6DXC/1lI0mJ/VLj023o5DcwnFQZ+Fjc2fLx5XsISRKIJrpUTwl4NBzCV4vsSGCPote5YfW4HnMsF3k+oUf6ZWV/mA5vB8zgknvEerbnTFU=
+	t=1769319234; cv=none; b=l+7uOtE0YAa/uBoHTi2QlwEpxcpQpt2OocMJtAo1Jg6SD0Am4sOAh1x38huv4l45R/Y0hqgpg/1V0xeXKinqSduQwFL50XptYAdIY3LG67ow5lncLQ6XjU3oH4BWgnt4cIfmdmXbJdjMgbaTVZtZAS3YfS5iP90qXfjlSQ6Q/II=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769314147; c=relaxed/simple;
-	bh=fHPwrW2QiJpnwN03qZ9B0U0Ko7eRg61S0x8v28Zdy8c=;
+	s=arc-20240116; t=1769319234; c=relaxed/simple;
+	bh=ovXDEU9/VsqeJA6/h7V4uqSC7RlHcXVktPfOyHGTaY8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pjXvKL8dZxM0zyvRFLwMRqzI+LmfEnHEsU7UPWMHM2Ps7/j2pEyt4TsBu78XnujJLF3XuN/Mj6zspx/6N+U1/7SJR/eXVksrun9qRkMd/UAstGXZUqxqPPTkWFmRycpmxnSwWnyV/iGHYa54knbOoYQ2wSbYvVZHo250iwLv46Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nbwETNl8; arc=none smtp.client-ip=192.198.163.14
+	 Content-Type:Content-Disposition:In-Reply-To; b=Kj7cFvm3vt/SEJdvDt+PDkP6MDUWbjQT+YjN/SYmB5C52g+6IoCqJTm0znLG7/SMhD/Cwdwluz0hA0DT0fqjzuPPcCi8hDarP+al+vBq6jlxvcNRFgq+ghgkxVk47YOleumEw+EWNpxzUfZDoo4cCjfzoVJnQiVbIfbwPYNPHC8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lwive3X6; arc=none smtp.client-ip=192.198.163.17
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1769314145; x=1800850145;
+  t=1769319232; x=1800855232;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=fHPwrW2QiJpnwN03qZ9B0U0Ko7eRg61S0x8v28Zdy8c=;
-  b=nbwETNl8Z6fuLAURhXAbJ+KoVAwzhaKO2Od/2PWAf97IU7O8HnJXlT0w
-   10gP5mwbnnrQptIsHNSNxnt61/bXr0NojcHGFTiyeEHhYLEEyCcDtJSjO
-   HSzi0q/LEsVqVX8DHVsAQIvHeDHyuynbNbRPY0fe2GpSzd75doeNJukyr
-   y7ZNmxJaGYweUIKcBN4E8FzSricKwdzcev2uXvt/QkGEJ2gACC4N6o11O
-   7Fav1E/JpIymPyskUiALlgMzmDN9we0zOPZWQkKH76LglIDxH2Tnv4wLX
-   RP31ujh3BnNUi5+lL4I+DIqvyF58CMwfhGj0zf8ZL6Fqe3hZW3t6HSEPf
-   w==;
-X-CSE-ConnectionGUID: lS7Q0zy6QTOajNGRqQvHXg==
-X-CSE-MsgGUID: l3K/zAHGRk+VFGBOFZFSHg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11681"; a="70577118"
+  bh=ovXDEU9/VsqeJA6/h7V4uqSC7RlHcXVktPfOyHGTaY8=;
+  b=lwive3X6qbNCu5cNyOmTp3wy4svf6fo+Rwf80M8kR5G2LZY6ojeATyXI
+   Kv/USYW106Qjv/VmSlDhVqJRGEuLVh4yoMBoxIJDyEKuSZlm9OFNmWtCx
+   YQB7ud5VaYvnsbxN7SeCJetHX9dD8SAphPazYg+BLm0V5xun9/wpyxO9S
+   KjtDYzkxAHom2p4+l4b+KC2WVltsWS79L2igp+U/qLPZok6iD+rSd8LOi
+   x6N1HOaiTt5u3Gpg12yn+eTsHf4D9tl81xmYt5ws50ad7qZFP3pJ7XgWW
+   fWansGhpZ73//66ob6KbKHAV0Sa7q1tBmPPgbL/OWhIT/UW6zBw992Cbz
+   A==;
+X-CSE-ConnectionGUID: zdk4FryXSlSialzUSua1qg==
+X-CSE-MsgGUID: bDOfECAQSNOUloczBBtwcA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11681"; a="70422706"
 X-IronPort-AV: E=Sophos;i="6.21,252,1763452800"; 
-   d="scan'208";a="70577118"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2026 20:09:05 -0800
-X-CSE-ConnectionGUID: rrgrtQcCSUij3s7UEaHZNg==
-X-CSE-MsgGUID: EP8F7CK/TAmeNCm2J01HwQ==
+   d="scan'208";a="70422706"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Jan 2026 21:33:52 -0800
+X-CSE-ConnectionGUID: TcMCVCqtQhGpnQp+rXzViQ==
+X-CSE-MsgGUID: a9CrbLBmTMuncvim8a4hgg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.21,252,1763452800"; 
-   d="scan'208";a="238026807"
-Received: from igk-lkp-server01.igk.intel.com (HELO afc5bfd7f602) ([10.211.93.152])
-  by orviesa002.jf.intel.com with ESMTP; 24 Jan 2026 20:09:04 -0800
-Received: from kbuild by afc5bfd7f602 with local (Exim 4.98.2)
+   d="scan'208";a="211495762"
+Received: from lkp-server01.sh.intel.com (HELO 765f4a05e27f) ([10.239.97.150])
+  by orviesa003.jf.intel.com with ESMTP; 24 Jan 2026 21:33:51 -0800
+Received: from kbuild by 765f4a05e27f with local (Exim 4.98.2)
 	(envelope-from <lkp@intel.com>)
-	id 1vjrQr-0000000018P-0P3g;
-	Sun, 25 Jan 2026 04:09:01 +0000
-Date: Sun, 25 Jan 2026 05:09:00 +0100
+	id 1vjskt-00000000Vnm-2gTR;
+	Sun, 25 Jan 2026 05:33:47 +0000
+Date: Sun, 25 Jan 2026 13:33:42 +0800
 From: kernel test robot <lkp@intel.com>
 To: Boris Burkov <boris@bur.io>, linux-btrfs@vger.kernel.org,
 	kernel-team@fb.com
 Cc: oe-kbuild-all@lists.linux.dev
 Subject: Re: [PATCH v2 2/3] btrfs: unit tests for pending extent walking
  functions
-Message-ID: <202601250531.9OgkvDk1-lkp@intel.com>
+Message-ID: <202601251339.6tsr05Tx-lkp@intel.com>
 References: <efc4b5a3fbcbc7473afc228badd3e1306298bf33.1769290938.git.boris@bur.io>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -88,17 +88,17 @@ X-Spamd-Result: default: False [-1.16 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
-	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
 	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[intel.com:+];
+	TAGGED_FROM(0.00)[bounces-20990-lists,linux-btrfs=lfdr.de];
+	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-20989-lists,linux-btrfs=lfdr.de];
-	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[intel.com:+];
 	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
@@ -108,8 +108,8 @@ X-Spamd-Result: default: False [-1.16 / 15.00];
 	TAGGED_RCPT(0.00)[linux-btrfs];
 	NEURAL_HAM(-0.00)[-1.000];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[01.org:url,intel.com:email,intel.com:dkim,intel.com:mid,git-scm.com:url,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: A25857FBCD
+	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:email,intel.com:dkim,intel.com:mid]
+X-Rspamd-Queue-Id: 6553F7FCD5
 X-Rspamd-Action: no action
 
 Hi Boris,
@@ -126,14 +126,14 @@ url:    https://github.com/intel-lab-lkp/linux/commits/Boris-Burkov/btrfs-fix-EE
 base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
 patch link:    https://lore.kernel.org/r/efc4b5a3fbcbc7473afc228badd3e1306298bf33.1769290938.git.boris%40bur.io
 patch subject: [PATCH v2 2/3] btrfs: unit tests for pending extent walking functions
-config: x86_64-rhel-9.4-ltp (https://download.01.org/0day-ci/archive/20260125/202601250531.9OgkvDk1-lkp@intel.com/config)
+config: i386-buildonly-randconfig-002-20260125 (https://download.01.org/0day-ci/archive/20260125/202601251339.6tsr05Tx-lkp@intel.com/config)
 compiler: gcc-14 (Debian 14.2.0-19) 14.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260125/202601250531.9OgkvDk1-lkp@intel.com/reproduce)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260125/202601251339.6tsr05Tx-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202601250531.9OgkvDk1-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202601251339.6tsr05Tx-lkp@intel.com/
 
 All warnings (new ones prefixed by >>):
 
