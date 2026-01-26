@@ -1,282 +1,230 @@
-Return-Path: <linux-btrfs+bounces-21062-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21063-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 0DMEDEtfd2n8eQEAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21062-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Jan 2026 13:34:19 +0100
+	id gNFBOrqJd2m9hgEAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21063-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Jan 2026 16:35:22 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 838AC88507
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Jan 2026 13:34:18 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57CF08A330
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Jan 2026 16:35:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 0B2DF304CA5E
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Jan 2026 12:28:02 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 41AE6301BA64
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Jan 2026 15:35:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA203219319;
-	Mon, 26 Jan 2026 12:27:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B08D833F364;
+	Mon, 26 Jan 2026 15:35:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="i5G3Hzbt";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="YwzjLdLh";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="i5G3Hzbt";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="YwzjLdLh"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gs0wm8jC"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D48A334695
-	for <linux-btrfs@vger.kernel.org>; Mon, 26 Jan 2026 12:27:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DF51625
+	for <linux-btrfs@vger.kernel.org>; Mon, 26 Jan 2026 15:35:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769430478; cv=none; b=s4TXCNn9HIzljJFYEfpbAQW4OSr4+Zhk4ue1nVmTT7FuhFcN1xkL+6tH7ZvUWzas+JCAY4PvCTbUo5XHtveGyUIHgapTluVVkgfdXmWneXL4kzeb/XYgY1JzMg045011eP9FCOOl9YkW/A5tpxXMb+rdtf0JZWUY5QSuwesSR0E=
+	t=1769441713; cv=none; b=SBuTsFNR4HzhDC8xYVCuuGXuY6cB39t8DhpZhmR5f9FnrLfmj2sLFv3Fqh4cSAr5OyANMAHYdYCbkBw+Xm9gOV2EOi5Ac/dRiEklZyiib2ddh6jDyGipKxW9dVbHXyyAHiC2Ip6Ja9xcX8wJA1aYCoQJPon0d0e/UVKlSJrlmlc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769430478; c=relaxed/simple;
-	bh=ZSIwd6IeqXZ1NDMpYSipBBPq9IoNyjtJiAJIq6lHCTs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=t2LExrhy1DKs/r/aAl8Eh0i4wul8PeAB66jdrUuuxzx2koOSeCdNlVMfRyLZAkR+AFnLgem3aJzj7oR/8TjYaAH0w+sLmUjPDHEWxHe0AAB4pgtYUL3J1nYx5pUee4fPftf1k6oThB/eT3TdNizKexje4IXx2P2XucLSpsm+2NY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=i5G3Hzbt; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=YwzjLdLh; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=i5G3Hzbt; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=YwzjLdLh; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id BCDCA5BCD8;
-	Mon, 26 Jan 2026 12:27:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1769430474; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nmiHd+5RUBK6BHC4KTf3cjFvTsHEqXoxu6buhScg8xc=;
-	b=i5G3Hzbt22ByqMm2UldLc/SFNkK0O0odDVZevDLIPdpU5RmVDd4uAcFy+PPSW3PVkdZ2L+
-	opGNMhT4cz1g2WlYNsVyh9Rpb+r3gIkRi6e5DsnSN8vgh54snCBsS39GaslbpIRDggfQjT
-	etl3IIFQD6v/ey7ibS1vfLlTtSX2eVw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1769430474;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nmiHd+5RUBK6BHC4KTf3cjFvTsHEqXoxu6buhScg8xc=;
-	b=YwzjLdLh3SCQ4Qef4Dv4wOdMMZSF/1P4p3mgxilGKo1rN8/xzN0nTLPKmVI3NVsX4wSU1N
-	25YeIYiB5lB57eBw==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=i5G3Hzbt;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=YwzjLdLh
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1769430474; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nmiHd+5RUBK6BHC4KTf3cjFvTsHEqXoxu6buhScg8xc=;
-	b=i5G3Hzbt22ByqMm2UldLc/SFNkK0O0odDVZevDLIPdpU5RmVDd4uAcFy+PPSW3PVkdZ2L+
-	opGNMhT4cz1g2WlYNsVyh9Rpb+r3gIkRi6e5DsnSN8vgh54snCBsS39GaslbpIRDggfQjT
-	etl3IIFQD6v/ey7ibS1vfLlTtSX2eVw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1769430474;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nmiHd+5RUBK6BHC4KTf3cjFvTsHEqXoxu6buhScg8xc=;
-	b=YwzjLdLh3SCQ4Qef4Dv4wOdMMZSF/1P4p3mgxilGKo1rN8/xzN0nTLPKmVI3NVsX4wSU1N
-	25YeIYiB5lB57eBw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A1460139F0;
-	Mon, 26 Jan 2026 12:27:54 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id gPxbJ8pdd2kmEwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Mon, 26 Jan 2026 12:27:54 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 555A1A0A4F; Mon, 26 Jan 2026 13:27:54 +0100 (CET)
-Date: Mon, 26 Jan 2026 13:27:54 +0100
-From: Jan Kara <jack@suse.cz>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Eric Biggers <ebiggers@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, 
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, David Sterba <dsterba@suse.com>, 
-	Theodore Ts'o <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>, 
-	Andrey Albershteyn <aalbersh@redhat.com>, Matthew Wilcox <willy@infradead.org>, 
-	linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org, 
-	linux-f2fs-devel@lists.sourceforge.net, fsverity@lists.linux.dev, "Darrick J. Wong" <djwong@kernel.org>
-Subject: Re: [PATCH 13/16] ext4: consolidate fsverity_info lookup
-Message-ID: <nfaojijyqteu4756ji3irwodtuxhk3fvgqzbbam2h37xnvj6qk@a67fhgid5ysu>
-References: <20260126045212.1381843-1-hch@lst.de>
- <20260126045212.1381843-14-hch@lst.de>
+	s=arc-20240116; t=1769441713; c=relaxed/simple;
+	bh=5pTuL0v9Slf8/w/bTMFiaZFYMlLZhdAqeVhOAn6Z1fE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KOuFJ4zHvX5LGrhvhOGa+La6y5mr+Jx9P2ZBXWiq173RoNAItEyFjb5doqyYBvOCYhpOFXIzJIL9AHjr3UDJZJNKcfQtsJXpnW+wH5xyEQUcjTut8y3i4sVt+kNQxhhuzNHvPMO0bKZBkhf7j2TCGGkV6eOMraJsCGQYb7f7vBI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gs0wm8jC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E7A4C4AF0B
+	for <linux-btrfs@vger.kernel.org>; Mon, 26 Jan 2026 15:35:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1769441712;
+	bh=5pTuL0v9Slf8/w/bTMFiaZFYMlLZhdAqeVhOAn6Z1fE=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=gs0wm8jCw6c9or/hrrW258yKu+yBWW5dCINMww0n+qPTgQNMHvKW2pQoFJRgd6ny+
+	 pq4CR21gxj1BmhK87MpW/tuz9vgirFxGUplcLCucrxs3IkuoAF9t8Tv0Jg9r6QrDCA
+	 USIfYPFxgTgqsf8G89fZFeYKHtuh3Rc4FtW+UNTQNHZOQxs0Cn/sfPZ+qjsl4VvFRv
+	 IpuyE8P7OVTbdohs9Y2pa+q1479KesCoRtBrNep5iC5arRyKAw++wyjEPoMRk7Ue9M
+	 ejjgakKHgeGLFYHSQnOi828Vqhhpw2Tdc8DanQ43h2ocGt5aWLjxHhBV0Ps5ozouBw
+	 nhchrpPmD2G8g==
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-b7cf4a975d2so670754066b.2
+        for <linux-btrfs@vger.kernel.org>; Mon, 26 Jan 2026 07:35:12 -0800 (PST)
+X-Gm-Message-State: AOJu0YxYYExoA10TO7s0pfWHsIYlnLxk9a+kkhRY1A2gCdA8jzLe70op
+	tVDe5cJTKx+werUEGFHtbgsLQFpo91iz5Gv1YQQeZ9CVdzOttBn36NEACq5oTQFVE46/x4ZB4Vf
+	Ua/KB9nr/hHOUzGMpuzqD7HPtTr6Gi6U=
+X-Received: by 2002:a17:907:3da3:b0:b8a:f225:ede1 with SMTP id
+ a640c23a62f3a-b8d2e85bff4mr330231666b.41.1769441711117; Mon, 26 Jan 2026
+ 07:35:11 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260126045212.1381843-14-hch@lst.de>
-X-Spam-Score: -4.01
-X-Spam-Level: 
-X-Spam-Flag: NO
+References: <20260126083639.602258-1-jinbaohong@synology.com> <20260126083639.602258-2-jinbaohong@synology.com>
+In-Reply-To: <20260126083639.602258-2-jinbaohong@synology.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Mon, 26 Jan 2026 15:34:32 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H6a60hDYih4_2kuf02_V24sUsZTv9+GF1xzdQV_MPVD5A@mail.gmail.com>
+X-Gm-Features: AZwV_QjxyautZRpYr6j73_cOJIzkolyFWrrUVC2bUFCdDckcATNEAlTixYQEqVk
+Message-ID: <CAL3q7H6a60hDYih4_2kuf02_V24sUsZTv9+GF1xzdQV_MPVD5A@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] btrfs: continue trimming remaining devices on failure
+To: jinbaohong <jinbaohong@synology.com>
+Cc: linux-btrfs@vger.kernel.org, dsterba@suse.com, 
+	Robbie Ko <robbieko@synology.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.16 / 15.00];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,suse.com:email,lst.de:email];
-	DMARC_NA(0.00)[suse.cz];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21062-lists,linux-btrfs=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[17];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	MISSING_XM_UA(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jack@suse.cz,linux-btrfs@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21063-lists,linux-btrfs=lfdr.de];
+	RCPT_COUNT_THREE(0.00)[4];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[fdmanana@kernel.org,linux-btrfs@vger.kernel.org];
+	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	TAGGED_RCPT(0.00)[linux-btrfs];
 	NEURAL_HAM(-0.00)[-1.000];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-btrfs];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_SEVEN(0.00)[7]
-X-Rspamd-Queue-Id: 838AC88507
+	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,synology.com:email]
+X-Rspamd-Queue-Id: 57CF08A330
 X-Rspamd-Action: no action
 
-On Mon 26-01-26 05:50:59, Christoph Hellwig wrote:
-> Look up the fsverity_info once in ext4_mpage_readpages, and then use it
-> for the readahead, local verification of holes and pass it along to the
-> I/O completion workqueue in struct bio_post_read_ctx.
-> 
-> This amortizes the lookup better once it becomes less efficient.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> Reviewed-by: "Darrick J. Wong" <djwong@kernel.org>
-
-Looks good to me. Feel free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
+On Mon, Jan 26, 2026 at 8:36=E2=80=AFAM jinbaohong <jinbaohong@synology.com=
+> wrote:
+>
+> Commit 93bba24d4b5a ("btrfs: Enhance btrfs_trim_fs function to handle
+> error better") intended to make device trimming continue even if one
+> device fails, tracking failures and reporting them at the end. However,
+> it used 'break' instead of 'continue', causing the loop to exit on the
+> first device failure.
+>
+> Additionally, user interrupts (-ERESTARTSYS) were incorrectly counted
+> as device failures. Interrupts should stop the operation immediately
+> without being reported as device errors.
+>
+> Fix this by:
+> 1. Replacing 'break' with 'continue'.
+> 2. Stopping immediately on user interrupt without counting it as a
+>    device failure, but still setting dev_ret to -ERESTARTSYS so
+>    the error is properly returned to the caller
+> 3. Converting -EINTR from mutex_lock_interruptible() to -ERESTARTSYS
+>    for consistent interrupt handling
+>
+> Fixes: 93bba24d4b5a ("btrfs: Enhance btrfs_trim_fs function to handle err=
+or better")
+> Signed-off-by: Robbie Ko <robbieko@synology.com>
+> Signed-off-by: jinbaohong <jinbaohong@synology.com>
 > ---
->  fs/ext4/readpage.c | 32 ++++++++++++++------------------
->  1 file changed, 14 insertions(+), 18 deletions(-)
-> 
-> diff --git a/fs/ext4/readpage.c b/fs/ext4/readpage.c
-> index bf65562da9c2..17920f14e2c2 100644
-> --- a/fs/ext4/readpage.c
-> +++ b/fs/ext4/readpage.c
-> @@ -61,6 +61,7 @@ enum bio_post_read_step {
->  
->  struct bio_post_read_ctx {
->  	struct bio *bio;
-> +	struct fsverity_info *vi;
->  	struct work_struct work;
->  	unsigned int cur_step;
->  	unsigned int enabled_steps;
-> @@ -96,7 +97,7 @@ static void verity_work(struct work_struct *work)
->  	struct bio_post_read_ctx *ctx =
->  		container_of(work, struct bio_post_read_ctx, work);
->  	struct bio *bio = ctx->bio;
-> -	struct inode *inode = bio_first_folio_all(bio)->mapping->host;
-> +	struct fsverity_info *vi = ctx->vi;
->  
->  	/*
->  	 * fsverity_verify_bio() may call readahead() again, and although verity
-> @@ -109,7 +110,7 @@ static void verity_work(struct work_struct *work)
->  	mempool_free(ctx, bio_post_read_ctx_pool);
->  	bio->bi_private = NULL;
->  
-> -	fsverity_verify_bio(*fsverity_info_addr(inode), bio);
-> +	fsverity_verify_bio(vi, bio);
->  
->  	__read_end_io(bio);
->  }
-> @@ -173,22 +174,16 @@ static void mpage_end_io(struct bio *bio)
->  	__read_end_io(bio);
->  }
->  
-> -static inline bool ext4_need_verity(const struct inode *inode, pgoff_t idx)
-> -{
-> -	return fsverity_active(inode) &&
-> -	       idx < DIV_ROUND_UP(inode->i_size, PAGE_SIZE);
-> -}
-> -
->  static void ext4_set_bio_post_read_ctx(struct bio *bio,
->  				       const struct inode *inode,
-> -				       pgoff_t first_idx)
-> +				       struct fsverity_info *vi)
->  {
->  	unsigned int post_read_steps = 0;
->  
->  	if (fscrypt_inode_uses_fs_layer_crypto(inode))
->  		post_read_steps |= 1 << STEP_DECRYPT;
->  
-> -	if (ext4_need_verity(inode, first_idx))
-> +	if (vi)
->  		post_read_steps |= 1 << STEP_VERITY;
->  
->  	if (post_read_steps) {
-> @@ -197,6 +192,7 @@ static void ext4_set_bio_post_read_ctx(struct bio *bio,
->  			mempool_alloc(bio_post_read_ctx_pool, GFP_NOFS);
->  
->  		ctx->bio = bio;
-> +		ctx->vi = vi;
->  		ctx->enabled_steps = post_read_steps;
->  		bio->bi_private = ctx;
->  	}
-> @@ -224,6 +220,7 @@ int ext4_mpage_readpages(struct inode *inode,
->  	sector_t first_block;
->  	unsigned page_block;
->  	struct block_device *bdev = inode->i_sb->s_bdev;
-> +	struct fsverity_info *vi = NULL;
->  	int length;
->  	unsigned relative_block = 0;
->  	struct ext4_map_blocks map;
-> @@ -245,9 +242,11 @@ int ext4_mpage_readpages(struct inode *inode,
->  			folio = readahead_folio(rac);
->  
->  		if (first_folio) {
-> -			if (ext4_need_verity(inode, folio->index))
-> -				fsverity_readahead(*fsverity_info_addr(inode),
-> -						folio, nr_pages);
-> +			if (folio->index <
-> +			    DIV_ROUND_UP(inode->i_size, PAGE_SIZE))
-> +				vi = fsverity_get_info(inode);
-> +			if (vi)
-> +				fsverity_readahead(vi, folio, nr_pages);
->  			first_folio = false;
->  		}
->  
-> @@ -338,10 +337,7 @@ int ext4_mpage_readpages(struct inode *inode,
->  			folio_zero_segment(folio, first_hole << blkbits,
->  					  folio_size(folio));
->  			if (first_hole == 0) {
-> -				if (ext4_need_verity(inode, folio->index) &&
-> -				    !fsverity_verify_folio(
-> -						*fsverity_info_addr(inode),
-> -						folio))
-> +				if (vi && !fsverity_verify_folio(vi, folio))
->  					goto set_error_page;
->  				folio_end_read(folio, true);
->  				continue;
-> @@ -369,7 +365,7 @@ int ext4_mpage_readpages(struct inode *inode,
->  					REQ_OP_READ, GFP_KERNEL);
->  			fscrypt_set_bio_crypt_ctx(bio, inode, next_block,
->  						  GFP_KERNEL);
-> -			ext4_set_bio_post_read_ctx(bio, inode, folio->index);
-> +			ext4_set_bio_post_read_ctx(bio, inode, vi);
->  			bio->bi_iter.bi_sector = first_block << (blkbits - 9);
->  			bio->bi_end_io = mpage_end_io;
->  			if (rac)
-> -- 
-> 2.47.3
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+>  fs/btrfs/extent-tree.c | 10 ++++++++--
+>  1 file changed, 8 insertions(+), 2 deletions(-)
+>
+> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+> index 0ce2a7def0f3..b299e369649b 100644
+> --- a/fs/btrfs/extent-tree.c
+> +++ b/fs/btrfs/extent-tree.c
+> @@ -6539,8 +6539,10 @@ static int btrfs_trim_free_extents(struct btrfs_de=
+vice *device, u64 *trimmed)
+>                 u64 bytes;
+>
+>                 ret =3D mutex_lock_interruptible(&fs_info->chunk_mutex);
+> -               if (ret)
+> +               if (ret) {
+> +                       ret =3D -ERESTARTSYS;
+
+So here we should return what mutex_lock_interruptible() returns,
+which is -EINTR.
+
+If you look at the comments in include/linux/errno.h, where
+ERESTARTSYS is defined, you can read:
+
+/*
+ * These should never be seen by user programs.  To return one of ERESTART*
+ * codes, signal_pending() MUST be set.  Note that ptrace can observe these
+ * at syscall exit tracing, but they will never be left for the debugged us=
+er
+ * process to see.
+ */
+
+There are several kernel places that convert an internal ERESTARTSYS
+to EINTR to return to user space, so that confirms it.
+
+Example, in fs/open.c:
+
+SYSCALL_DEFINE1(close, unsigned int, fd)
+{
+   (...)
+   /* can't restart close syscall because file table entry was cleared */
+   if (retval =3D=3D -ERESTARTSYS ||
+       retval =3D=3D -ERESTARTNOINTR ||
+       retval =3D=3D -ERESTARTNOHAND ||
+       retval =3D=3D -ERESTART_RESTARTBLOCK)
+   retval =3D -EINTR;
+
+   return retval;
+}
+
+Or in fs/xfs/scrub/common.c:
+
+int
+xchk_perag_drain_and_lock(
+   struct xfs_scrub *sc)
+{
+(...)
+   error =3D xfs_group_intent_drain(pag_group(sa->pag));
+   if (error =3D=3D -ERESTARTSYS)
+      error =3D -EINTR;
+(...)
+
+
+>                         break;
+> +               }
+>
+>                 btrfs_find_first_clear_extent_bit(&device->alloc_state, s=
+tart,
+>                                                   &start, &end,
+> @@ -6685,10 +6687,14 @@ int btrfs_trim_fs(struct btrfs_fs_info *fs_info, =
+struct fstrim_range *range)
+>                 ret =3D btrfs_trim_free_extents(device, &group_trimmed);
+>
+>                 trimmed +=3D group_trimmed;
+> +               if (ret =3D=3D -ERESTARTSYS) {
+> +                       dev_ret =3D -ERESTARTSYS;
+
+And either replace it with -EINTR.
+
+Otherwise it looks fine, thanks.
+
+> +                       break;
+> +               }
+>                 if (ret) {
+>                         dev_failed++;
+>                         dev_ret =3D ret;
+> -                       break;
+> +                       continue;
+>                 }
+>         }
+>         mutex_unlock(&fs_devices->device_list_mutex);
+> --
+> 2.34.1
+>
+>
+> Disclaimer: The contents of this e-mail message and any attachments are c=
+onfidential and are intended solely for addressee. The information may also=
+ be legally privileged. This transmission is sent in trust, for the sole pu=
+rpose of delivery to the intended recipient. If you have received this tran=
+smission in error, any use, reproduction or dissemination of this transmiss=
+ion is strictly prohibited. If you are not the intended recipient, please i=
+mmediately notify the sender by reply e-mail or phone and delete this messa=
+ge and its attachments, if any.
 
