@@ -1,82 +1,82 @@
-Return-Path: <linux-btrfs+bounces-21019-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21018-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id oN1mDEbfdmmhYAEAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21019-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Jan 2026 04:28:06 +0100
+	id oN1SOTzfdmmhYAEAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21018-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Jan 2026 04:27:56 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90DA383ACB
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Jan 2026 04:28:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 43FE283AC4
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Jan 2026 04:27:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id CD003303FA99
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Jan 2026 03:25:04 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 0DA903018287
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Jan 2026 03:25:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BA0D1A317D;
-	Mon, 26 Jan 2026 03:25:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0191B2459C5;
+	Mon, 26 Jan 2026 03:25:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="WOwERcOw";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="WOwERcOw"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="s5W6+uMB";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="s5W6+uMB"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71B7028726D
-	for <linux-btrfs@vger.kernel.org>; Mon, 26 Jan 2026 03:25:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FF2A28726D
+	for <linux-btrfs@vger.kernel.org>; Mon, 26 Jan 2026 03:24:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769397903; cv=none; b=O3EhRz+111XieVGaOcXCjIMwAgKOJvmdiy6zgJli1+yMaaeov2S2Fvifwo1SvUgIxwKpb6Ray2yIAKG4Hh1zbaRKn/byrSN8ZwEbJqEgHJTeq2NnMc2bjU4CpugDFcEUU12Imqz6oqKgQ97OxYeXhZVKxzjEDvb5qZ3FTk8quF4=
+	t=1769397900; cv=none; b=UuVRyz7d7BShXCK7EJm9O+Qt+FtBcaY5qKw2aFrUBm+jXebNI4P4zfTcbQgY7W+0iETafuafPeuo+F8DHhAAgNJqwJrMMIZ9CZJZO5mbhR/72wSWpC1W/sb20VFKtP5t1JCfyPHBT9VsafR3g1ic1m+XtHXeMd0qPxH3tA++An8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769397903; c=relaxed/simple;
-	bh=ABTEcvRsKnOg6dVC+nldTA1dhbAl3gzedmRjSJ+OQ94=;
+	s=arc-20240116; t=1769397900; c=relaxed/simple;
+	bh=Y+G0tjTnfNhdUFXuCiKdr/z5vDkTh/yw1enChvnkCB4=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=pUhUDZ6TOQEIzKhZTFB8C4iY49GOanL6zqgptOgEAXV39fIc6cMilTSzsUE7IAbTh2VEi6svf74utrB0dHGm40nzbHt7cw44z678uFasgSXdTN4z/mme3QXyou7u9GaucrOzLNDo9TJ1L9yOL9IH/wBnFLBf74DErEwEXF7Fnyw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=WOwERcOw; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=WOwERcOw; arc=none smtp.client-ip=195.135.223.130
+	 MIME-Version; b=epVweGea2i+pGgZ1fL5Xszhu+pzYNHGdGLYz/+A5Ju+no7fZupTiFVDXsKBB5puxivY162wmvbgEGUxadQPw8ur2u8s/sXF15BzeUfAp0LQuG0pDbdwFqn6GYtrYDXYMSn9XHNMJrp0yNXImULNhA2HL5K/N0WWyv8OYLLtq0Aw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=s5W6+uMB; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=s5W6+uMB; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 3C25F33687
-	for <linux-btrfs@vger.kernel.org>; Mon, 26 Jan 2026 03:24:48 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 2C4835BCC9
+	for <linux-btrfs@vger.kernel.org>; Mon, 26 Jan 2026 03:24:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1769397888; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1769397890; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ycLoIO7M8FANdgqw4MJo3j6ew0a7/1ZOGwZ4tkM4k8Q=;
-	b=WOwERcOwcGNqzeLvcg7c/yHoh5acDJ6F7he8CN/pNQTiL63w8gsj1rg9chuHaA8U7YA299
-	qdGsUAktXLp/KqkV4YTblFayE2ZeNM5MR9oOAM3qe2VukUNcVY9ahPjkk6clf/LAcUgbjV
-	BHio5smBPiw6R6sOyomyb92vPEKbL9c=
-Authentication-Results: smtp-out1.suse.de;
-	none
+	bh=v/Q4YkDRjwkwOlb6z0+bmT8vkhhnlvZkl1uN4Bv/z3Y=;
+	b=s5W6+uMB0BG5Z9c2OBIs2avyRLQgPo7Tyi8gnHiPPQMB83BZApjBsaU0Mc2vfU/SJkgodd
+	FzJMx4a1XrWoK1x4OKyXhYBHYAKpcS6mXeRwtKG7+6AzuAZ7G7GHWFP5wz95XBN046D2hA
+	K1maE95WmkRlMEwwXa+SF5rG8hi9jPE=
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=s5W6+uMB
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1769397888; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1769397890; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ycLoIO7M8FANdgqw4MJo3j6ew0a7/1ZOGwZ4tkM4k8Q=;
-	b=WOwERcOwcGNqzeLvcg7c/yHoh5acDJ6F7he8CN/pNQTiL63w8gsj1rg9chuHaA8U7YA299
-	qdGsUAktXLp/KqkV4YTblFayE2ZeNM5MR9oOAM3qe2VukUNcVY9ahPjkk6clf/LAcUgbjV
-	BHio5smBPiw6R6sOyomyb92vPEKbL9c=
+	bh=v/Q4YkDRjwkwOlb6z0+bmT8vkhhnlvZkl1uN4Bv/z3Y=;
+	b=s5W6+uMB0BG5Z9c2OBIs2avyRLQgPo7Tyi8gnHiPPQMB83BZApjBsaU0Mc2vfU/SJkgodd
+	FzJMx4a1XrWoK1x4OKyXhYBHYAKpcS6mXeRwtKG7+6AzuAZ7G7GHWFP5wz95XBN046D2hA
+	K1maE95WmkRlMEwwXa+SF5rG8hi9jPE=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 34A0E139E9
-	for <linux-btrfs@vger.kernel.org>; Mon, 26 Jan 2026 03:24:46 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CBDF4139E9
+	for <linux-btrfs@vger.kernel.org>; Mon, 26 Jan 2026 03:24:48 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id GLsuNX7edmneXgAAD6G6ig
+	id EFOSHoDedmneXgAAD6G6ig
 	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Mon, 26 Jan 2026 03:24:46 +0000
+	for <linux-btrfs@vger.kernel.org>; Mon, 26 Jan 2026 03:24:48 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 5/9] btrfs: switch to btrfs_compress_bio() interface for compressed writes
-Date: Mon, 26 Jan 2026 13:54:12 +1030
-Message-ID: <b0f37049e90c5cfb54943f5f35b8877df115c5c2.1769397502.git.wqu@suse.com>
+Subject: [PATCH 6/9] btrfs: remove the old btrfs_compress_folios() infrastructures
+Date: Mon, 26 Jan 2026 13:54:13 +1030
+Message-ID: <8eeb12df42081de6222571f5b1ec05ec9dd73b48.1769397502.git.wqu@suse.com>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <cover.1769397502.git.wqu@suse.com>
 References: <cover.1769397502.git.wqu@suse.com>
@@ -87,9 +87,9 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Score: -2.80
-X-Spam-Level: 
 X-Spam-Flag: NO
+X-Spam-Score: -3.01
+X-Spam-Level: 
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
@@ -102,7 +102,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	DKIM_TRACE(0.00)[suse.com:+];
-	TAGGED_FROM(0.00)[bounces-21019-lists,linux-btrfs=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-21018-lists,linux-btrfs=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
 	RCPT_COUNT_ONE(0.00)[1];
@@ -118,447 +118,773 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	TO_DN_NONE(0.00)[];
 	TAGGED_RCPT(0.00)[linux-btrfs];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,suse.com:email,suse.com:dkim,suse.com:mid]
-X-Rspamd-Queue-Id: 90DA383ACB
+X-Rspamd-Queue-Id: 43FE283AC4
 X-Rspamd-Action: no action
 
-This switch has the following benefits:
-
-- A single structure to handle all compression
-
-  No more extra members like compressed_folios[] nor compress_type, all
-  those members.
-
-  This means the structure of async_extent is much smaller.
-
-- Simpler error handling
-
-  A single cleanup_compressed_bio() will handle everything, no extra
-  compressed_folios[] array to bother.
-
-Some special notes:
-
-- Compressed folios releasing
-
-  Now we go bio_for_each_folio_all() loop to release the folios of the
-  bio. This will work for both the old compressed_folios[] array and the
-  new pure bio method.
-
-  For old compressed_folios[], all folios of that array is queued into
-  the bio, thus releasing the folios from the bio is the same as
-  releasing each folio of that array. We jut need to be sure no double
-  releasing from the array and bio.
-
-  For the new pure bio method, that array is NULL, just usual folio
-  releasing of the bio.
-
-- Rounding up the bio to block size
-
-  We can not simply increase bi_size, as that will not increase the
-  length of the last bvec.
-
-  Thus we have to properly add the last part into the bio.
-  This will be done by the helper, round_up_last_block().
+Since it's replaced by btrfs_compress_bio(), remove all involved
+functions.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/compression.c |  17 ++---
- fs/btrfs/inode.c       | 161 +++++++++++++++++++----------------------
- 2 files changed, 84 insertions(+), 94 deletions(-)
+ fs/btrfs/compression.c |  70 ---------------
+ fs/btrfs/compression.h |  12 ---
+ fs/btrfs/inode.c       |   2 +-
+ fs/btrfs/lzo.c         | 188 ----------------------------------------
+ fs/btrfs/zlib.c        | 189 -----------------------------------------
+ fs/btrfs/zstd.c        | 189 -----------------------------------------
+ 6 files changed, 1 insertion(+), 649 deletions(-)
 
 diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-index 56f8a3f31fbd..daa45e4791d6 100644
+index daa45e4791d6..83253803e2c9 100644
 --- a/fs/btrfs/compression.c
 +++ b/fs/btrfs/compression.c
-@@ -155,13 +155,6 @@ static int compression_decompress(int type, struct list_head *ws,
- 	}
+@@ -86,37 +86,6 @@ bool btrfs_compress_is_valid_type(const char *str, size_t len)
+ 	return false;
  }
  
--static void btrfs_free_compressed_folios(struct compressed_bio *cb)
+-static int compression_compress_pages(int type, struct list_head *ws,
+-				      struct btrfs_inode *inode, u64 start,
+-				      struct folio **folios, unsigned long *out_folios,
+-				      unsigned long *total_in, unsigned long *total_out)
 -{
--	for (unsigned int i = 0; i < cb->nr_folios; i++)
--		btrfs_free_compr_folio(cb->compressed_folios[i]);
--	kfree(cb->compressed_folios);
+-	switch (type) {
+-	case BTRFS_COMPRESS_ZLIB:
+-		return zlib_compress_folios(ws, inode, start, folios,
+-					    out_folios, total_in, total_out);
+-	case BTRFS_COMPRESS_LZO:
+-		return lzo_compress_folios(ws, inode, start, folios,
+-					   out_folios, total_in, total_out);
+-	case BTRFS_COMPRESS_ZSTD:
+-		return zstd_compress_folios(ws, inode, start, folios,
+-					    out_folios, total_in, total_out);
+-	case BTRFS_COMPRESS_NONE:
+-	default:
+-		/*
+-		 * This can happen when compression races with remount setting
+-		 * it to 'no compress', while caller doesn't call
+-		 * inode_need_compress() to check if we really need to
+-		 * compress.
+-		 *
+-		 * Not a big deal, just need to inform caller that we
+-		 * haven't allocated any pages yet.
+-		 */
+-		*out_folios = 0;
+-		return -E2BIG;
+-	}
 -}
 -
- static int btrfs_decompress_bio(struct compressed_bio *cb);
- 
- /*
-@@ -270,12 +263,15 @@ static void end_bbio_compressed_read(struct btrfs_bio *bbio)
+ static int compression_decompress_bio(struct list_head *ws,
+ 				      struct compressed_bio *cb)
  {
- 	struct compressed_bio *cb = to_compressed_bio(bbio);
- 	blk_status_t status = bbio->bio.bi_status;
-+	struct folio_iter fi;
- 
- 	if (!status)
- 		status = errno_to_blk_status(btrfs_decompress_bio(cb));
- 
--	btrfs_free_compressed_folios(cb);
- 	btrfs_bio_end_io(cb->orig_bbio, status);
-+	bio_for_each_folio_all(fi, &bbio->bio)
-+		btrfs_free_compr_folio(fi.folio);
-+	kfree(cb->compressed_folios);
- 	bio_put(&bbio->bio);
- }
- 
-@@ -326,6 +322,7 @@ static noinline void end_compressed_writeback(const struct compressed_bio *cb)
- static void end_bbio_compressed_write(struct btrfs_bio *bbio)
- {
- 	struct compressed_bio *cb = to_compressed_bio(bbio);
-+	struct folio_iter fi;
- 
- 	btrfs_finish_ordered_extent(cb->bbio.ordered, NULL, cb->start, cb->len,
- 				    cb->bbio.bio.bi_status == BLK_STS_OK);
-@@ -333,7 +330,9 @@ static void end_bbio_compressed_write(struct btrfs_bio *bbio)
- 	if (cb->writeback)
- 		end_compressed_writeback(cb);
- 	/* Note, our inode could be gone now. */
--	btrfs_free_compressed_folios(cb);
-+	bio_for_each_folio_all(fi, &bbio->bio)
-+		btrfs_free_compr_folio(fi.folio);
-+	kfree(cb->compressed_folios);
- 	bio_put(&cb->bbio.bio);
- }
- 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index be47aa58e944..f4e1c1507c32 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -756,10 +756,7 @@ static noinline int cow_file_range_inline(struct btrfs_inode *inode,
- struct async_extent {
- 	u64 start;
- 	u64 ram_size;
--	u64 compressed_size;
--	struct folio **folios;
--	unsigned long nr_folios;
--	int compress_type;
-+	struct compressed_bio *cb;
- 	struct list_head list;
- };
- 
-@@ -780,24 +777,19 @@ struct async_cow {
- 	struct async_chunk chunks[];
- };
- 
--static noinline int add_async_extent(struct async_chunk *cow,
--				     u64 start, u64 ram_size,
--				     u64 compressed_size,
--				     struct folio **folios,
--				     unsigned long nr_folios,
--				     int compress_type)
-+static int add_async_extent(struct async_chunk *cow,
-+			    u64 start, u64 ram_size,
-+			    struct compressed_bio *cb)
- {
- 	struct async_extent *async_extent;
- 
- 	async_extent = kmalloc(sizeof(*async_extent), GFP_NOFS);
- 	if (!async_extent)
- 		return -ENOMEM;
-+	ASSERT(ram_size < U32_MAX);
- 	async_extent->start = start;
- 	async_extent->ram_size = ram_size;
--	async_extent->compressed_size = compressed_size;
--	async_extent->folios = folios;
--	async_extent->nr_folios = nr_folios;
--	async_extent->compress_type = compress_type;
-+	async_extent->cb = cb;
- 	list_add_tail(&async_extent->list, &cow->extents);
+@@ -1024,45 +993,6 @@ int btrfs_compress_filemap_get_folio(struct address_space *mapping, u64 start,
  	return 0;
  }
-@@ -871,6 +863,36 @@ static int extent_range_clear_dirty_for_io(struct btrfs_inode *inode, u64 start,
- 	return ret;
- }
  
-+static void zero_last_folio(struct compressed_bio *cb)
-+{
-+	struct bio *bio = &cb->bbio.bio;
-+	struct bio_vec *bvec = bio_last_bvec_all(bio);
-+	phys_addr_t last_paddr = page_to_phys(bvec->bv_page) + bvec->bv_offset + bvec->bv_len - 1;
-+	struct folio *last_folio = page_folio(phys_to_page(last_paddr));
-+	const u32 bio_size = bio->bi_iter.bi_size;
-+	const u32 foffset = offset_in_folio(last_folio, bio_size);
-+
-+	folio_zero_range(last_folio, foffset, folio_size(last_folio) - foffset);
-+}
-+
-+static void round_up_last_block(struct compressed_bio *cb, u32 blocksize)
-+{
-+	struct bio *bio = &cb->bbio.bio;
-+	struct bio_vec *bvec = bio_last_bvec_all(bio);
-+	phys_addr_t last_paddr = page_to_phys(bvec->bv_page) + bvec->bv_offset + bvec->bv_len - 1;
-+	struct folio *last_folio = page_folio(phys_to_page(last_paddr));
-+	const u32 bio_size = bio->bi_iter.bi_size;
-+	const u32 foffset = offset_in_folio(last_folio, bio_size);
-+	bool ret;
-+
-+	if (IS_ALIGNED(bio_size, blocksize))
-+		return;
-+
-+	ret = bio_add_folio(bio, last_folio, round_up(foffset, blocksize) - foffset, foffset);
-+	/* The remaining part should be merged thus never fail. */
-+	ASSERT(ret);
-+}
-+
- /*
-  * Work queue call back to started compression on a file and pages.
-  *
-@@ -891,20 +913,18 @@ static void compress_file_range(struct btrfs_work *work)
- 	struct btrfs_inode *inode = async_chunk->inode;
- 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
- 	struct address_space *mapping = inode->vfs_inode.i_mapping;
--	const u32 min_folio_shift = PAGE_SHIFT + fs_info->block_min_order;
-+	struct compressed_bio *cb = NULL;
- 	const u32 min_folio_size = btrfs_min_folio_size(fs_info);
- 	u64 blocksize = fs_info->sectorsize;
- 	u64 start = async_chunk->start;
- 	u64 end = async_chunk->end;
- 	u64 actual_end;
- 	u64 i_size;
-+	u32 cur_len;
- 	int ret = 0;
--	struct folio **folios = NULL;
--	unsigned long nr_folios;
- 	unsigned long total_compressed = 0;
- 	unsigned long total_in = 0;
- 	unsigned int loff;
--	int i;
- 	int compress_type = fs_info->compress_type;
- 	int compress_level = fs_info->compress_level;
- 
-@@ -943,9 +963,10 @@ static void compress_file_range(struct btrfs_work *work)
- 	barrier();
- 	actual_end = min_t(u64, i_size, end + 1);
- again:
--	folios = NULL;
--	nr_folios = (end >> min_folio_shift) - (start >> min_folio_shift) + 1;
--	nr_folios = min_t(unsigned long, nr_folios, BTRFS_MAX_COMPRESSED >> min_folio_shift);
-+	total_in = 0;
-+	cur_len = min(end + 1 - start, BTRFS_MAX_UNCOMPRESSED);
-+	ret = 0;
-+	cb = NULL;
- 
- 	/*
- 	 * we don't want to send crud past the end of i_size through
-@@ -960,10 +981,6 @@ static void compress_file_range(struct btrfs_work *work)
- 	if (actual_end <= start)
- 		goto cleanup_and_bail_uncompressed;
- 
--	total_compressed = min_t(unsigned long, actual_end - start, BTRFS_MAX_UNCOMPRESSED);
--	total_in = 0;
--	ret = 0;
+-/*
+- * Given an address space and start and length, compress the bytes into @pages
+- * that are allocated on demand.
+- *
+- * @type_level is encoded algorithm and level, where level 0 means whatever
+- * default the algorithm chooses and is opaque here;
+- * - compression algo are 0-3
+- * - the level are bits 4-7
+- *
+- * @out_folios is an in/out parameter, holds maximum number of folios to allocate
+- * and returns number of actually allocated folios
+- *
+- * @total_in is used to return the number of bytes actually read.  It
+- * may be smaller than the input length if we had to exit early because we
+- * ran out of room in the folios array or because we cross the
+- * max_out threshold.
+- *
+- * @total_out is an in/out parameter, must be set to the input length and will
+- * be also used to return the total number of compressed bytes
+- */
+-int btrfs_compress_folios(unsigned int type, int level, struct btrfs_inode *inode,
+-			 u64 start, struct folio **folios, unsigned long *out_folios,
+-			 unsigned long *total_in, unsigned long *total_out)
+-{
+-	struct btrfs_fs_info *fs_info = inode->root->fs_info;
+-	const unsigned long orig_len = *total_out;
+-	struct list_head *workspace;
+-	int ret;
 -
- 	/*
- 	 * We do compression for mount -o compress and when the inode has not
- 	 * been flagged as NOCOMPRESS.  This flag can change at any time if we
-@@ -972,15 +989,6 @@ static void compress_file_range(struct btrfs_work *work)
- 	if (!inode_need_compress(inode, start, end))
- 		goto cleanup_and_bail_uncompressed;
- 
--	folios = kcalloc(nr_folios, sizeof(struct folio *), GFP_NOFS);
--	if (!folios) {
--		/*
--		 * Memory allocation failure is not a fatal error, we can fall
--		 * back to uncompressed code.
--		 */
--		goto cleanup_and_bail_uncompressed;
--	}
--
- 	if (0 < inode->defrag_compress && inode->defrag_compress < BTRFS_NR_COMPRESS_TYPES) {
- 		compress_type = inode->defrag_compress;
- 		compress_level = inode->defrag_compress_level;
-@@ -989,11 +997,15 @@ static void compress_file_range(struct btrfs_work *work)
- 	}
- 
- 	/* Compression level is applied here. */
--	ret = btrfs_compress_folios(compress_type, compress_level,
--				    inode, start, folios, &nr_folios, &total_in,
--				    &total_compressed);
--	if (ret)
-+	cb = btrfs_compress_bio(inode, start, cur_len, compress_type,
-+				 compress_level, async_chunk->write_flags);
-+	if (IS_ERR(cb)) {
-+		cb = NULL;
- 		goto mark_incompressible;
-+	}
-+
-+	total_compressed = cb->bbio.bio.bi_iter.bi_size;
-+	total_in = cur_len;
- 
- 	/*
- 	 * Zero the tail end of the last folio, as we might be sending it down
-@@ -1001,7 +1013,7 @@ static void compress_file_range(struct btrfs_work *work)
- 	 */
- 	loff = (total_compressed & (min_folio_size - 1));
- 	if (loff)
--		folio_zero_range(folios[nr_folios - 1], loff, min_folio_size - loff);
-+		zero_last_folio(cb);
- 
- 	/*
- 	 * Try to create an inline extent.
-@@ -1017,11 +1029,13 @@ static void compress_file_range(struct btrfs_work *work)
- 					    BTRFS_COMPRESS_NONE, NULL, false);
- 	else
- 		ret = cow_file_range_inline(inode, NULL, start, end, total_compressed,
--					    compress_type, folios[0], false);
-+					    compress_type,
-+					    bio_first_folio_all(&cb->bbio.bio), false);
- 	if (ret <= 0) {
-+		cleanup_compressed_bio(cb);
- 		if (ret < 0)
- 			mapping_set_error(mapping, -EIO);
--		goto free_pages;
-+		return;
- 	}
- 
- 	/*
-@@ -1029,6 +1043,7 @@ static void compress_file_range(struct btrfs_work *work)
- 	 * block size boundary so the allocator does sane things.
- 	 */
- 	total_compressed = ALIGN(total_compressed, blocksize);
-+	round_up_last_block(cb, blocksize);
- 
- 	/*
- 	 * One last check to make sure the compression is really a win, compare
-@@ -1039,12 +1054,12 @@ static void compress_file_range(struct btrfs_work *work)
- 	if (total_compressed + blocksize > total_in)
- 		goto mark_incompressible;
- 
-+
- 	/*
- 	 * The async work queues will take care of doing actual allocation on
- 	 * disk for these compressed pages, and will submit the bios.
- 	 */
--	ret = add_async_extent(async_chunk, start, total_in, total_compressed, folios,
--			       nr_folios, compress_type);
-+	ret = add_async_extent(async_chunk, start, total_in, cb);
- 	BUG_ON(ret);
- 	if (start + total_in < end) {
- 		start += total_in;
-@@ -1057,33 +1072,10 @@ static void compress_file_range(struct btrfs_work *work)
- 	if (!btrfs_test_opt(fs_info, FORCE_COMPRESS) && !inode->prop_compress)
- 		inode->flags |= BTRFS_INODE_NOCOMPRESS;
- cleanup_and_bail_uncompressed:
--	ret = add_async_extent(async_chunk, start, end - start + 1, 0, NULL, 0,
--			       BTRFS_COMPRESS_NONE);
-+	ret = add_async_extent(async_chunk, start, end - start + 1, NULL);
- 	BUG_ON(ret);
--free_pages:
--	if (folios) {
--		for (i = 0; i < nr_folios; i++) {
--			WARN_ON(folios[i]->mapping);
--			btrfs_free_compr_folio(folios[i]);
--		}
--		kfree(folios);
--	}
+-	level = btrfs_compress_set_level(type, level);
+-	workspace = get_workspace(fs_info, type, level);
+-	ret = compression_compress_pages(type, workspace, inode, start, folios,
+-					 out_folios, total_in, total_out);
+-	/* The total read-in bytes should be no larger than the input. */
+-	ASSERT(*total_in <= orig_len);
+-	put_workspace(fs_info, type, workspace);
+-	return ret;
 -}
 -
--static void free_async_extent_pages(struct async_extent *async_extent)
--{
--	int i;
--
--	if (!async_extent->folios)
--		return;
--
--	for (i = 0; i < async_extent->nr_folios; i++) {
--		WARN_ON(async_extent->folios[i]->mapping);
--		btrfs_free_compr_folio(async_extent->folios[i]);
--	}
--	kfree(async_extent->folios);
--	async_extent->nr_folios = 0;
--	async_extent->folios = NULL;
-+	if (cb)
-+		cleanup_compressed_bio(cb);
+ /*
+  * Given an address space and start and length, compress the page cache
+  * contents into @cb.
+diff --git a/fs/btrfs/compression.h b/fs/btrfs/compression.h
+index 49cf0f5421e6..fcf4ae2879de 100644
+--- a/fs/btrfs/compression.h
++++ b/fs/btrfs/compression.h
+@@ -91,9 +91,6 @@ int __init btrfs_init_compress(void);
+ void __cold btrfs_exit_compress(void);
+ 
+ bool btrfs_compress_level_valid(unsigned int type, int level);
+-int btrfs_compress_folios(unsigned int type, int level, struct btrfs_inode *inode,
+-			  u64 start, struct folio **folios, unsigned long *out_folios,
+-			 unsigned long *total_in, unsigned long *total_out);
+ int btrfs_decompress(int type, const u8 *data_in, struct folio *dest_folio,
+ 		     unsigned long dest_pgoff, size_t srclen, size_t destlen);
+ int btrfs_decompress_buf2page(const char *buf, u32 buf_len,
+@@ -160,9 +157,6 @@ static inline void cleanup_compressed_bio(struct compressed_bio *cb)
+ 	bio_put(bio);
  }
  
- static void submit_uncompressed_range(struct btrfs_inode *inode,
-@@ -1130,7 +1122,7 @@ static void submit_one_async_extent(struct async_chunk *async_chunk,
- 	struct extent_state *cached = NULL;
- 	struct extent_map *em;
- 	int ret = 0;
--	bool free_pages = false;
-+	u32 compressed_size;
- 	u64 start = async_extent->start;
- 	u64 end = async_extent->start + async_extent->ram_size - 1;
+-int zlib_compress_folios(struct list_head *ws, struct btrfs_inode *inode,
+-			 u64 start, struct folio **folios, unsigned long *out_folios,
+-		unsigned long *total_in, unsigned long *total_out);
+ int zlib_compress_bio(struct list_head *ws, struct compressed_bio *cb);
+ int zlib_decompress_bio(struct list_head *ws, struct compressed_bio *cb);
+ int zlib_decompress(struct list_head *ws, const u8 *data_in,
+@@ -172,9 +166,6 @@ struct list_head *zlib_alloc_workspace(struct btrfs_fs_info *fs_info, unsigned i
+ void zlib_free_workspace(struct list_head *ws);
+ struct list_head *zlib_get_workspace(struct btrfs_fs_info *fs_info, unsigned int level);
  
-@@ -1150,17 +1142,14 @@ static void submit_one_async_extent(struct async_chunk *async_chunk,
- 			locked_folio = async_chunk->locked_folio;
- 	}
+-int lzo_compress_folios(struct list_head *ws, struct btrfs_inode *inode,
+-			u64 start, struct folio **folios, unsigned long *out_folios,
+-		unsigned long *total_in, unsigned long *total_out);
+ int lzo_compress_bio(struct list_head *ws, struct compressed_bio *cb);
+ int lzo_decompress_bio(struct list_head *ws, struct compressed_bio *cb);
+ int lzo_decompress(struct list_head *ws, const u8 *data_in,
+@@ -183,9 +174,6 @@ int lzo_decompress(struct list_head *ws, const u8 *data_in,
+ struct list_head *lzo_alloc_workspace(struct btrfs_fs_info *fs_info);
+ void lzo_free_workspace(struct list_head *ws);
  
--	if (async_extent->compress_type == BTRFS_COMPRESS_NONE) {
--		ASSERT(!async_extent->folios);
--		ASSERT(async_extent->nr_folios == 0);
-+	if (!async_extent->cb) {
- 		submit_uncompressed_range(inode, async_extent, locked_folio);
--		free_pages = true;
- 		goto done;
- 	}
+-int zstd_compress_folios(struct list_head *ws, struct btrfs_inode *inode,
+-			 u64 start, struct folio **folios, unsigned long *out_folios,
+-		unsigned long *total_in, unsigned long *total_out);
+ int zstd_compress_bio(struct list_head *ws, struct compressed_bio *cb);
+ int zstd_decompress_bio(struct list_head *ws, struct compressed_bio *cb);
+ int zstd_decompress(struct list_head *ws, const u8 *data_in,
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index f4e1c1507c32..1fc4d02f8299 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -943,7 +943,7 @@ static void compress_file_range(struct btrfs_work *work)
+ 	/*
+ 	 * All the folios should have been locked thus no failure.
+ 	 *
+-	 * And even if some folios are missing, btrfs_compress_folios()
++	 * And even if some folios are missing, btrfs_compress_bio()
+ 	 * would handle them correctly, so here just do an ASSERT() check for
+ 	 * early logic errors.
+ 	 */
+diff --git a/fs/btrfs/lzo.c b/fs/btrfs/lzo.c
+index f95caad8ad61..2c0ec96dfdc4 100644
+--- a/fs/btrfs/lzo.c
++++ b/fs/btrfs/lzo.c
+@@ -122,98 +122,6 @@ static inline size_t read_compress_length(const char *buf)
+ 	return le32_to_cpu(dlen);
+ }
  
-+	compressed_size = async_extent->cb->bbio.bio.bi_iter.bi_size;
- 	ret = btrfs_reserve_extent(root, async_extent->ram_size,
--				   async_extent->compressed_size,
--				   async_extent->compressed_size,
-+				   compressed_size, compressed_size,
- 				   0, *alloc_hint, &ins, true, true);
- 	if (ret) {
- 		/*
-@@ -1170,7 +1159,8 @@ static void submit_one_async_extent(struct async_chunk *async_chunk,
- 		 * fall back to uncompressed.
- 		 */
- 		submit_uncompressed_range(inode, async_extent, locked_folio);
--		free_pages = true;
-+		cleanup_compressed_bio(async_extent->cb);
-+		async_extent->cb = NULL;
- 		goto done;
- 	}
+-/*
+- * Will do:
+- *
+- * - Write a segment header into the destination
+- * - Copy the compressed buffer into the destination
+- * - Make sure we have enough space in the last sector to fit a segment header
+- *   If not, we will pad at most (LZO_LEN (4)) - 1 bytes of zeros.
+- *
+- * Will allocate new pages when needed.
+- */
+-static int copy_compressed_data_to_page(struct btrfs_fs_info *fs_info,
+-					char *compressed_data,
+-					size_t compressed_size,
+-					struct folio **out_folios,
+-					unsigned long max_nr_folio,
+-					u32 *cur_out)
+-{
+-	const u32 sectorsize = fs_info->sectorsize;
+-	const u32 min_folio_shift = PAGE_SHIFT + fs_info->block_min_order;
+-	u32 sector_bytes_left;
+-	u32 orig_out;
+-	struct folio *cur_folio;
+-	char *kaddr;
+-
+-	if ((*cur_out >> min_folio_shift) >= max_nr_folio)
+-		return -E2BIG;
+-
+-	/*
+-	 * We never allow a segment header crossing sector boundary, previous
+-	 * run should ensure we have enough space left inside the sector.
+-	 */
+-	ASSERT((*cur_out / sectorsize) == (*cur_out + LZO_LEN - 1) / sectorsize);
+-
+-	cur_folio = out_folios[*cur_out >> min_folio_shift];
+-	/* Allocate a new page */
+-	if (!cur_folio) {
+-		cur_folio = btrfs_alloc_compr_folio(fs_info);
+-		if (!cur_folio)
+-			return -ENOMEM;
+-		out_folios[*cur_out >> min_folio_shift] = cur_folio;
+-	}
+-
+-	kaddr = kmap_local_folio(cur_folio, offset_in_folio(cur_folio, *cur_out));
+-	write_compress_length(kaddr, compressed_size);
+-	*cur_out += LZO_LEN;
+-
+-	orig_out = *cur_out;
+-
+-	/* Copy compressed data */
+-	while (*cur_out - orig_out < compressed_size) {
+-		u32 copy_len = min_t(u32, sectorsize - *cur_out % sectorsize,
+-				     orig_out + compressed_size - *cur_out);
+-
+-		kunmap_local(kaddr);
+-
+-		if ((*cur_out >> min_folio_shift) >= max_nr_folio)
+-			return -E2BIG;
+-
+-		cur_folio = out_folios[*cur_out >> min_folio_shift];
+-		/* Allocate a new page */
+-		if (!cur_folio) {
+-			cur_folio = btrfs_alloc_compr_folio(fs_info);
+-			if (!cur_folio)
+-				return -ENOMEM;
+-			out_folios[*cur_out >> min_folio_shift] = cur_folio;
+-		}
+-		kaddr = kmap_local_folio(cur_folio, 0);
+-
+-		memcpy(kaddr + offset_in_folio(cur_folio, *cur_out),
+-		       compressed_data + *cur_out - orig_out, copy_len);
+-
+-		*cur_out += copy_len;
+-	}
+-
+-	/*
+-	 * Check if we can fit the next segment header into the remaining space
+-	 * of the sector.
+-	 */
+-	sector_bytes_left = round_up(*cur_out, sectorsize) - *cur_out;
+-	if (sector_bytes_left >= LZO_LEN || sector_bytes_left == 0)
+-		goto out;
+-
+-	/* The remaining size is not enough, pad it with zeros */
+-	memset(kaddr + offset_in_page(*cur_out), 0,
+-	       sector_bytes_left);
+-	*cur_out += sector_bytes_left;
+-
+-out:
+-	kunmap_local(kaddr);
+-	return 0;
+-}
+-
+ /*
+  * Write data into @out_folio and queue it into @out_bio.
+  *
+@@ -367,102 +275,6 @@ static int copy_compressed_data_to_bio(struct btrfs_fs_info *fs_info,
+ 				     sector_bytes_left);
+ }
  
-@@ -1182,7 +1172,9 @@ static void submit_one_async_extent(struct async_chunk *async_chunk,
- 	file_extent.ram_bytes = async_extent->ram_size;
- 	file_extent.num_bytes = async_extent->ram_size;
- 	file_extent.offset = 0;
--	file_extent.compression = async_extent->compress_type;
-+	file_extent.compression = async_extent->cb->compress_type;
-+
-+	async_extent->cb->bbio.bio.bi_iter.bi_sector = ins.objectid >> SECTOR_SHIFT;
+-int lzo_compress_folios(struct list_head *ws, struct btrfs_inode *inode,
+-			u64 start, struct folio **folios, unsigned long *out_folios,
+-			unsigned long *total_in, unsigned long *total_out)
+-{
+-	struct btrfs_fs_info *fs_info = inode->root->fs_info;
+-	struct workspace *workspace = list_entry(ws, struct workspace, list);
+-	const u32 sectorsize = fs_info->sectorsize;
+-	const u32 min_folio_size = btrfs_min_folio_size(fs_info);
+-	struct address_space *mapping = inode->vfs_inode.i_mapping;
+-	struct folio *folio_in = NULL;
+-	char *sizes_ptr;
+-	const unsigned long max_nr_folio = *out_folios;
+-	int ret = 0;
+-	/* Points to the file offset of input data */
+-	u64 cur_in = start;
+-	/* Points to the current output byte */
+-	u32 cur_out = 0;
+-	u32 len = *total_out;
+-
+-	ASSERT(max_nr_folio > 0);
+-	*out_folios = 0;
+-	*total_out = 0;
+-	*total_in = 0;
+-
+-	/*
+-	 * Skip the header for now, we will later come back and write the total
+-	 * compressed size
+-	 */
+-	cur_out += LZO_LEN;
+-	while (cur_in < start + len) {
+-		char *data_in;
+-		const u32 sectorsize_mask = sectorsize - 1;
+-		u32 sector_off = (cur_in - start) & sectorsize_mask;
+-		u32 in_len;
+-		size_t out_len;
+-
+-		/* Get the input page first */
+-		if (!folio_in) {
+-			ret = btrfs_compress_filemap_get_folio(mapping, cur_in, &folio_in);
+-			if (ret < 0)
+-				goto out;
+-		}
+-
+-		/* Compress at most one sector of data each time */
+-		in_len = min_t(u32, start + len - cur_in, sectorsize - sector_off);
+-		ASSERT(in_len);
+-		data_in = kmap_local_folio(folio_in, offset_in_folio(folio_in, cur_in));
+-		ret = lzo1x_1_compress(data_in, in_len,
+-				       workspace->cbuf, &out_len,
+-				       workspace->mem);
+-		kunmap_local(data_in);
+-		if (unlikely(ret < 0)) {
+-			/* lzo1x_1_compress never fails. */
+-			ret = -EIO;
+-			goto out;
+-		}
+-
+-		ret = copy_compressed_data_to_page(fs_info, workspace->cbuf, out_len,
+-						   folios, max_nr_folio,
+-						   &cur_out);
+-		if (ret < 0)
+-			goto out;
+-
+-		cur_in += in_len;
+-
+-		/*
+-		 * Check if we're making it bigger after two sectors.  And if
+-		 * it is so, give up.
+-		 */
+-		if (cur_in - start > sectorsize * 2 && cur_in - start < cur_out) {
+-			ret = -E2BIG;
+-			goto out;
+-		}
+-
+-		/* Check if we have reached folio boundary. */
+-		if (IS_ALIGNED(cur_in, min_folio_size)) {
+-			folio_put(folio_in);
+-			folio_in = NULL;
+-		}
+-	}
+-
+-	/* Store the size of all chunks of compressed data */
+-	sizes_ptr = kmap_local_folio(folios[0], 0);
+-	write_compress_length(sizes_ptr, cur_out);
+-	kunmap_local(sizes_ptr);
+-
+-	ret = 0;
+-	*total_out = cur_out;
+-	*total_in = cur_in - start;
+-out:
+-	if (folio_in)
+-		folio_put(folio_in);
+-	*out_folios = DIV_ROUND_UP(cur_out, min_folio_size);
+-	return ret;
+-}
+-
+ int lzo_compress_bio(struct list_head *ws, struct compressed_bio *cb)
+ {
+ 	struct btrfs_inode *inode = cb->bbio.inode;
+diff --git a/fs/btrfs/zlib.c b/fs/btrfs/zlib.c
+index dff22cd1147b..524bed9b2c2d 100644
+--- a/fs/btrfs/zlib.c
++++ b/fs/btrfs/zlib.c
+@@ -145,195 +145,6 @@ static int copy_data_into_buffer(struct address_space *mapping,
+ 	return 0;
+ }
  
- 	em = btrfs_create_io_em(inode, start, &file_extent, BTRFS_ORDERED_COMPRESSED);
- 	if (IS_ERR(em)) {
-@@ -1198,22 +1190,20 @@ static void submit_one_async_extent(struct async_chunk *async_chunk,
- 		ret = PTR_ERR(ordered);
- 		goto out_free_reserve;
- 	}
-+	async_extent->cb->bbio.ordered = ordered;
- 	btrfs_dec_block_group_reservations(fs_info, ins.objectid);
+-int zlib_compress_folios(struct list_head *ws, struct btrfs_inode *inode,
+-			 u64 start, struct folio **folios, unsigned long *out_folios,
+-			 unsigned long *total_in, unsigned long *total_out)
+-{
+-	struct btrfs_fs_info *fs_info = inode->root->fs_info;
+-	struct workspace *workspace = list_entry(ws, struct workspace, list);
+-	struct address_space *mapping = inode->vfs_inode.i_mapping;
+-	const u32 min_folio_shift = PAGE_SHIFT + fs_info->block_min_order;
+-	const u32 min_folio_size = btrfs_min_folio_size(fs_info);
+-	int ret;
+-	char *data_in = NULL;
+-	char *cfolio_out;
+-	int nr_folios = 0;
+-	struct folio *in_folio = NULL;
+-	struct folio *out_folio = NULL;
+-	unsigned long len = *total_out;
+-	unsigned long nr_dest_folios = *out_folios;
+-	const unsigned long max_out = nr_dest_folios << min_folio_shift;
+-	const u32 blocksize = fs_info->sectorsize;
+-	const u64 orig_end = start + len;
+-
+-	*out_folios = 0;
+-	*total_out = 0;
+-	*total_in = 0;
+-
+-	ret = zlib_deflateInit(&workspace->strm, workspace->level);
+-	if (unlikely(ret != Z_OK)) {
+-		btrfs_err(fs_info,
+-	"zlib compression init failed, error %d root %llu inode %llu offset %llu",
+-			  ret, btrfs_root_id(inode->root), btrfs_ino(inode), start);
+-		ret = -EIO;
+-		goto out;
+-	}
+-
+-	workspace->strm.total_in = 0;
+-	workspace->strm.total_out = 0;
+-
+-	out_folio = btrfs_alloc_compr_folio(fs_info);
+-	if (out_folio == NULL) {
+-		ret = -ENOMEM;
+-		goto out;
+-	}
+-	cfolio_out = folio_address(out_folio);
+-	folios[0] = out_folio;
+-	nr_folios = 1;
+-
+-	workspace->strm.next_in = workspace->buf;
+-	workspace->strm.avail_in = 0;
+-	workspace->strm.next_out = cfolio_out;
+-	workspace->strm.avail_out = min_folio_size;
+-
+-	while (workspace->strm.total_in < len) {
+-		/*
+-		 * Get next input pages and copy the contents to
+-		 * the workspace buffer if required.
+-		 */
+-		if (workspace->strm.avail_in == 0) {
+-			unsigned long bytes_left = len - workspace->strm.total_in;
+-			unsigned int copy_length = min(bytes_left, workspace->buf_size);
+-
+-			/*
+-			 * For s390 hardware accelerated zlib, and our folio is smaller
+-			 * than the copy_length, we need to fill the buffer so that
+-			 * we can take full advantage of hardware acceleration.
+-			 */
+-			if (need_special_buffer(fs_info)) {
+-				ret = copy_data_into_buffer(mapping, workspace,
+-							    start, copy_length);
+-				if (ret < 0)
+-					goto out;
+-				start += copy_length;
+-				workspace->strm.next_in = workspace->buf;
+-				workspace->strm.avail_in = copy_length;
+-			} else {
+-				unsigned int cur_len;
+-
+-				if (data_in) {
+-					kunmap_local(data_in);
+-					folio_put(in_folio);
+-					data_in = NULL;
+-				}
+-				ret = btrfs_compress_filemap_get_folio(mapping,
+-						start, &in_folio);
+-				if (ret < 0)
+-					goto out;
+-				cur_len = btrfs_calc_input_length(in_folio, orig_end, start);
+-				data_in = kmap_local_folio(in_folio,
+-							   offset_in_folio(in_folio, start));
+-				start += cur_len;
+-				workspace->strm.next_in = data_in;
+-				workspace->strm.avail_in = cur_len;
+-			}
+-		}
+-
+-		ret = zlib_deflate(&workspace->strm, Z_SYNC_FLUSH);
+-		if (unlikely(ret != Z_OK)) {
+-			btrfs_warn(fs_info,
+-		"zlib compression failed, error %d root %llu inode %llu offset %llu",
+-				   ret, btrfs_root_id(inode->root), btrfs_ino(inode),
+-				   start);
+-			zlib_deflateEnd(&workspace->strm);
+-			ret = -EIO;
+-			goto out;
+-		}
+-
+-		/* we're making it bigger, give up */
+-		if (workspace->strm.total_in > blocksize * 2 &&
+-		    workspace->strm.total_in <
+-		    workspace->strm.total_out) {
+-			ret = -E2BIG;
+-			goto out;
+-		}
+-		/* we need another page for writing out.  Test this
+-		 * before the total_in so we will pull in a new page for
+-		 * the stream end if required
+-		 */
+-		if (workspace->strm.avail_out == 0) {
+-			if (nr_folios == nr_dest_folios) {
+-				ret = -E2BIG;
+-				goto out;
+-			}
+-			out_folio = btrfs_alloc_compr_folio(fs_info);
+-			if (out_folio == NULL) {
+-				ret = -ENOMEM;
+-				goto out;
+-			}
+-			cfolio_out = folio_address(out_folio);
+-			folios[nr_folios] = out_folio;
+-			nr_folios++;
+-			workspace->strm.avail_out = min_folio_size;
+-			workspace->strm.next_out = cfolio_out;
+-		}
+-		/* we're all done */
+-		if (workspace->strm.total_in >= len)
+-			break;
+-		if (workspace->strm.total_out > max_out)
+-			break;
+-	}
+-	workspace->strm.avail_in = 0;
+-	/*
+-	 * Call deflate with Z_FINISH flush parameter providing more output
+-	 * space but no more input data, until it returns with Z_STREAM_END.
+-	 */
+-	while (ret != Z_STREAM_END) {
+-		ret = zlib_deflate(&workspace->strm, Z_FINISH);
+-		if (ret == Z_STREAM_END)
+-			break;
+-		if (unlikely(ret != Z_OK && ret != Z_BUF_ERROR)) {
+-			zlib_deflateEnd(&workspace->strm);
+-			ret = -EIO;
+-			goto out;
+-		} else if (workspace->strm.avail_out == 0) {
+-			/* Get another folio for the stream end. */
+-			if (nr_folios == nr_dest_folios) {
+-				ret = -E2BIG;
+-				goto out;
+-			}
+-			out_folio = btrfs_alloc_compr_folio(fs_info);
+-			if (out_folio == NULL) {
+-				ret = -ENOMEM;
+-				goto out;
+-			}
+-			cfolio_out = folio_address(out_folio);
+-			folios[nr_folios] = out_folio;
+-			nr_folios++;
+-			workspace->strm.avail_out = min_folio_size;
+-			workspace->strm.next_out = cfolio_out;
+-		}
+-	}
+-	zlib_deflateEnd(&workspace->strm);
+-
+-	if (workspace->strm.total_out >= workspace->strm.total_in) {
+-		ret = -E2BIG;
+-		goto out;
+-	}
+-
+-	ret = 0;
+-	*total_out = workspace->strm.total_out;
+-	*total_in = workspace->strm.total_in;
+-out:
+-	*out_folios = nr_folios;
+-	if (data_in) {
+-		kunmap_local(data_in);
+-		folio_put(in_folio);
+-	}
+-
+-	return ret;
+-}
+-
+ int zlib_compress_bio(struct list_head *ws, struct compressed_bio *cb)
+ {
+ 	struct btrfs_inode *inode = cb->bbio.inode;
+diff --git a/fs/btrfs/zstd.c b/fs/btrfs/zstd.c
+index 69ad12af1b15..8035d178de79 100644
+--- a/fs/btrfs/zstd.c
++++ b/fs/btrfs/zstd.c
+@@ -396,195 +396,6 @@ struct list_head *zstd_alloc_workspace(struct btrfs_fs_info *fs_info, int level)
+ 	return ERR_PTR(-ENOMEM);
+ }
  
- 	/* Clear dirty, set writeback and unlock the pages. */
- 	extent_clear_unlock_delalloc(inode, start, end,
- 			NULL, &cached, EXTENT_LOCKED | EXTENT_DELALLOC,
- 			PAGE_UNLOCK | PAGE_START_WRITEBACK);
--	btrfs_submit_compressed_write(ordered,
--			    async_extent->folios,	/* compressed_folios */
--			    async_extent->nr_folios,
--			    async_chunk->write_flags, true);
-+	btrfs_submit_bbio(&async_extent->cb->bbio, 0);
-+	async_extent->cb = NULL;
-+
- 	*alloc_hint = ins.objectid + ins.offset;
- done:
- 	if (async_chunk->blkcg_css)
- 		kthread_associate_blkcg(NULL);
--	if (free_pages)
--		free_async_extent_pages(async_extent);
- 	kfree(async_extent);
- 	return;
- 
-@@ -1228,7 +1218,8 @@ static void submit_one_async_extent(struct async_chunk *async_chunk,
- 				     EXTENT_DEFRAG | EXTENT_DO_ACCOUNTING,
- 				     PAGE_UNLOCK | PAGE_START_WRITEBACK |
- 				     PAGE_END_WRITEBACK);
--	free_async_extent_pages(async_extent);
-+	if (async_extent->cb)
-+		cleanup_compressed_bio(async_extent->cb);
- 	if (async_chunk->blkcg_css)
- 		kthread_associate_blkcg(NULL);
- 	btrfs_debug(fs_info,
+-int zstd_compress_folios(struct list_head *ws, struct btrfs_inode *inode,
+-			 u64 start, struct folio **folios, unsigned long *out_folios,
+-			 unsigned long *total_in, unsigned long *total_out)
+-{
+-	struct btrfs_fs_info *fs_info = inode->root->fs_info;
+-	struct workspace *workspace = list_entry(ws, struct workspace, list);
+-	struct address_space *mapping = inode->vfs_inode.i_mapping;
+-	zstd_cstream *stream;
+-	int ret = 0;
+-	int nr_folios = 0;
+-	struct folio *in_folio = NULL;  /* The current folio to read. */
+-	struct folio *out_folio = NULL; /* The current folio to write to. */
+-	unsigned long tot_in = 0;
+-	unsigned long tot_out = 0;
+-	unsigned long len = *total_out;
+-	const unsigned long nr_dest_folios = *out_folios;
+-	const u64 orig_end = start + len;
+-	const u32 blocksize = fs_info->sectorsize;
+-	const u32 min_folio_size = btrfs_min_folio_size(fs_info);
+-	unsigned long max_out = nr_dest_folios * min_folio_size;
+-	unsigned int cur_len;
+-
+-	workspace->params = zstd_get_btrfs_parameters(workspace->req_level, len);
+-	*out_folios = 0;
+-	*total_out = 0;
+-	*total_in = 0;
+-
+-	/* Initialize the stream */
+-	stream = zstd_init_cstream(&workspace->params, len, workspace->mem,
+-			workspace->size);
+-	if (unlikely(!stream)) {
+-		btrfs_err(fs_info,
+-	"zstd compression init level %d failed, root %llu inode %llu offset %llu",
+-			  workspace->req_level, btrfs_root_id(inode->root),
+-			  btrfs_ino(inode), start);
+-		ret = -EIO;
+-		goto out;
+-	}
+-
+-	/* map in the first page of input data */
+-	ret = btrfs_compress_filemap_get_folio(mapping, start, &in_folio);
+-	if (ret < 0)
+-		goto out;
+-	cur_len = btrfs_calc_input_length(in_folio, orig_end, start);
+-	workspace->in_buf.src = kmap_local_folio(in_folio, offset_in_folio(in_folio, start));
+-	workspace->in_buf.pos = 0;
+-	workspace->in_buf.size = cur_len;
+-
+-	/* Allocate and map in the output buffer */
+-	out_folio = btrfs_alloc_compr_folio(fs_info);
+-	if (out_folio == NULL) {
+-		ret = -ENOMEM;
+-		goto out;
+-	}
+-	folios[nr_folios++] = out_folio;
+-	workspace->out_buf.dst = folio_address(out_folio);
+-	workspace->out_buf.pos = 0;
+-	workspace->out_buf.size = min_t(size_t, max_out, min_folio_size);
+-
+-	while (1) {
+-		size_t ret2;
+-
+-		ret2 = zstd_compress_stream(stream, &workspace->out_buf,
+-				&workspace->in_buf);
+-		if (unlikely(zstd_is_error(ret2))) {
+-			btrfs_warn(fs_info,
+-"zstd compression level %d failed, error %d root %llu inode %llu offset %llu",
+-				   workspace->req_level, zstd_get_error_code(ret2),
+-				   btrfs_root_id(inode->root), btrfs_ino(inode),
+-				   start);
+-			ret = -EIO;
+-			goto out;
+-		}
+-
+-		/* Check to see if we are making it bigger */
+-		if (tot_in + workspace->in_buf.pos > blocksize * 2 &&
+-				tot_in + workspace->in_buf.pos <
+-				tot_out + workspace->out_buf.pos) {
+-			ret = -E2BIG;
+-			goto out;
+-		}
+-
+-		/* We've reached the end of our output range */
+-		if (workspace->out_buf.pos >= max_out) {
+-			tot_out += workspace->out_buf.pos;
+-			ret = -E2BIG;
+-			goto out;
+-		}
+-
+-		/* Check if we need more output space */
+-		if (workspace->out_buf.pos == workspace->out_buf.size) {
+-			tot_out += min_folio_size;
+-			max_out -= min_folio_size;
+-			if (nr_folios == nr_dest_folios) {
+-				ret = -E2BIG;
+-				goto out;
+-			}
+-			out_folio = btrfs_alloc_compr_folio(fs_info);
+-			if (out_folio == NULL) {
+-				ret = -ENOMEM;
+-				goto out;
+-			}
+-			folios[nr_folios++] = out_folio;
+-			workspace->out_buf.dst = folio_address(out_folio);
+-			workspace->out_buf.pos = 0;
+-			workspace->out_buf.size = min_t(size_t, max_out, min_folio_size);
+-		}
+-
+-		/* We've reached the end of the input */
+-		if (workspace->in_buf.pos >= len) {
+-			tot_in += workspace->in_buf.pos;
+-			break;
+-		}
+-
+-		/* Check if we need more input */
+-		if (workspace->in_buf.pos == workspace->in_buf.size) {
+-			tot_in += workspace->in_buf.size;
+-			kunmap_local(workspace->in_buf.src);
+-			workspace->in_buf.src = NULL;
+-			folio_put(in_folio);
+-			start += cur_len;
+-			len -= cur_len;
+-			ret = btrfs_compress_filemap_get_folio(mapping, start, &in_folio);
+-			if (ret < 0)
+-				goto out;
+-			cur_len = btrfs_calc_input_length(in_folio, orig_end, start);
+-			workspace->in_buf.src = kmap_local_folio(in_folio,
+-							 offset_in_folio(in_folio, start));
+-			workspace->in_buf.pos = 0;
+-			workspace->in_buf.size = cur_len;
+-		}
+-	}
+-	while (1) {
+-		size_t ret2;
+-
+-		ret2 = zstd_end_stream(stream, &workspace->out_buf);
+-		if (unlikely(zstd_is_error(ret2))) {
+-			btrfs_err(fs_info,
+-"zstd compression end level %d failed, error %d root %llu inode %llu offset %llu",
+-				  workspace->req_level, zstd_get_error_code(ret2),
+-				  btrfs_root_id(inode->root), btrfs_ino(inode),
+-				  start);
+-			ret = -EIO;
+-			goto out;
+-		}
+-		if (ret2 == 0) {
+-			tot_out += workspace->out_buf.pos;
+-			break;
+-		}
+-		if (workspace->out_buf.pos >= max_out) {
+-			tot_out += workspace->out_buf.pos;
+-			ret = -E2BIG;
+-			goto out;
+-		}
+-
+-		tot_out += min_folio_size;
+-		max_out -= min_folio_size;
+-		if (nr_folios == nr_dest_folios) {
+-			ret = -E2BIG;
+-			goto out;
+-		}
+-		out_folio = btrfs_alloc_compr_folio(fs_info);
+-		if (out_folio == NULL) {
+-			ret = -ENOMEM;
+-			goto out;
+-		}
+-		folios[nr_folios++] = out_folio;
+-		workspace->out_buf.dst = folio_address(out_folio);
+-		workspace->out_buf.pos = 0;
+-		workspace->out_buf.size = min_t(size_t, max_out, min_folio_size);
+-	}
+-
+-	if (tot_out >= tot_in) {
+-		ret = -E2BIG;
+-		goto out;
+-	}
+-
+-	ret = 0;
+-	*total_in = tot_in;
+-	*total_out = tot_out;
+-out:
+-	*out_folios = nr_folios;
+-	if (workspace->in_buf.src) {
+-		kunmap_local(workspace->in_buf.src);
+-		folio_put(in_folio);
+-	}
+-	return ret;
+-}
+-
+ int zstd_compress_bio(struct list_head *ws, struct compressed_bio *cb)
+ {
+ 	struct btrfs_inode *inode = cb->bbio.inode;
 -- 
 2.52.0
 
