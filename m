@@ -1,97 +1,67 @@
-Return-Path: <linux-btrfs+bounces-21080-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21081-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id yNOfIz7Ed2nckgEAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21080-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Jan 2026 20:45:02 +0100
+	id yELBEKjKd2lylAEAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21081-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Jan 2026 21:12:24 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4F838CB7E
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Jan 2026 20:45:01 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB32E8CEDA
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Jan 2026 21:12:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D031D304C0BB
-	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Jan 2026 19:41:59 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id E19383020FD6
+	for <lists+linux-btrfs@lfdr.de>; Mon, 26 Jan 2026 20:12:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 602CD2868A9;
-	Mon, 26 Jan 2026 19:41:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67BC12C0F78;
+	Mon, 26 Jan 2026 20:12:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="JwWfk6cJ";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="OLvFsyqb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B3K3AwRd"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fhigh-b8-smtp.messagingengine.com (fhigh-b8-smtp.messagingengine.com [202.12.124.159])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34CF12853F7
-	for <linux-btrfs@vger.kernel.org>; Mon, 26 Jan 2026 19:41:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.159
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C5112C027C;
+	Mon, 26 Jan 2026 20:12:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769456518; cv=none; b=ApYJmCpP7pit/08l0ghpuG5n4MY9hpi8BWIwnK65fJu6lFzbJCGb7M4X/01cKxJ2zwgW4ZeDnetHma7umMqBc8Q9M2RiUBxQZlajEbJzMP7c7f3mp246mloNzoVHjo9uoBtpfai/ncwqGypIt8aOyV+ce81iPAASutJDxvh/ZZ4=
+	t=1769458328; cv=none; b=i79V/FBxa9FJMijdix4gURmZrbDg+CP/HytoWTvIx07No5+N+pJn02AsUQQ31/teX1NTP+zfZRYG9bcpLK9XMm5u4Z2tT4GDPv8r0AkDSB5A+A4WxGAa10AJg472UQ06DD4YPNpinVvdaeVkftG7U5zhJ4J+lhiydV7fBsTpb+U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769456518; c=relaxed/simple;
-	bh=F1UWb4qwhnRrzHLA0DbgumZ49r2Dx64hPP+h2va54HA=;
+	s=arc-20240116; t=1769458328; c=relaxed/simple;
+	bh=NBe+OxYRigsrCScWNRGhoFuPEsSz3lykHJTIWDbyMDI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=u32TYA92ICQc7NSavuRFVbRicNFKVXsIRGRKpmA02KjEBOu7SdEHd05GdgnBhPEp47fmoAMUgz9dia5RAeOJH5N/OEi1k9deWqw0zSDAXSISRrgrkD7aZQxwamZ8Z+vAZr5MA+beTV3bkbt0LZfsUYyODkBg+Mc1Pa/ELQi+Va8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=JwWfk6cJ; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=OLvFsyqb; arc=none smtp.client-ip=202.12.124.159
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-03.internal (phl-compute-03.internal [10.202.2.43])
-	by mailfhigh.stl.internal (Postfix) with ESMTP id 56B8F7A02AE;
-	Mon, 26 Jan 2026 14:41:56 -0500 (EST)
-Received: from phl-frontend-03 ([10.202.2.162])
-  by phl-compute-03.internal (MEProxy); Mon, 26 Jan 2026 14:41:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1769456516; x=1769542916; bh=Zt5nQh5lO9
-	nxwYFMEFhe5i88n3BksBjsKL3UyjoZRYQ=; b=JwWfk6cJGycI1FZp06GQBKCKGY
-	EnoNcf3erHj+z1iOwfncSUI1M+UM5Q0yMN8VltG6cU9ASfBplJRRzR1gABnw7Z33
-	9W7yBnCGs41YGyN/iMR4AUB17ZJOXSuMGIdVOrwtOHA47Qu8D5hxSEnGmpfdskMI
-	6+FzsfZAFBh5jQucuzwqrrIqGdZcBOt4XEqZUyPXbWjAbuqWS9Nj/pQYSO32G3r2
-	RMJhqawvu/KVvyQN79AufxUjahBsYEoMjH/Kaee4dankgfuXZ5OesrRrJFGD8D5w
-	iBwNu2NBWVGJOw+8GKBxI67r/eLiCOj4xJqqhytidMPdFymtEcaXDktkaHow==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-	1769456516; x=1769542916; bh=Zt5nQh5lO9nxwYFMEFhe5i88n3BksBjsKL3
-	UyjoZRYQ=; b=OLvFsyqb5UwwwFmLnkwuttK0wxZuBTCQDkf2QYSDA3RlYmu0fEI
-	4WOgOH7Wh7QW0GCBnrxa7GGCE8ikqjUxi/iB+tgYFxJfjAD0qzitqF76JyDgNGSn
-	BZiZ44flZhzpw3x1dCBPPp1fj2KyALNnJB4nSxsCdLbYAOluPZPDRY3f7gCratWP
-	r5t8LByl2jTbRUWaxGdWDb5fjgr/Mq6Tc8Q7xdPk/uYJIbKNIXjMOzoCOmCCvrDP
-	M4E2i9dYhhFZuXp6ThhBrcOvbfpLZRgGeIaLmPW3euEPb/HJ/kSkXHO+ot9xqJwW
-	Agl4Z3CaLvRM+Jo0Qbxr6T+/GZtX1/WgHQw==
-X-ME-Sender: <xms:hMN3aShEUZe50nCs01bNrrb67x6_UUPcV59pf23XzxoGUDrbrgacMg>
-    <xme:hMN3aZCUSc7y_Og0P0swhOZA1y4tx_MaJDRHPOxNKDVmrVfnf9euPdAFzVfRWWAAu
-    oaebSfqw8gLf3ZAGRReCVzjhNcaUo7SCJpjHjXDP0wi61yRHSy_L2o>
-X-ME-Received: <xmr:hMN3aXuX1vkheMCL81D0kVzIgTJ7ifeHITgqGJyWad6O30CjCybdj5RMj4AxaR_BMxbhtie6_UbCzYdccc7rbU4zyOE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdduheekheefucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhishcu
-    uehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpeehtd
-    fhvefghfdtvefghfelhffgueeugedtveduieehieehteelgeehvdefgeefgeenucffohhm
-    rghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
-    hmpehmrghilhhfrhhomhepsghorhhishessghurhdrihhopdhnsggprhgtphhtthhopedv
-    pdhmohguvgepshhmthhpohhuthdprhgtphhtthhopeifqhhusehsuhhsvgdrtghomhdprh
-    gtphhtthhopehlihhnuhigqdgsthhrfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:hMN3aWZKtaPX6HuNWnKftV2S6MdIHMZDlKreRrhMUVy9kMsHYNB0XQ>
-    <xmx:hMN3aSXP1ojXbFmVg5PExuaL4OPGCBTvnNnsQaSrpnIzG9RzeWcvpw>
-    <xmx:hMN3aS5cRes7llwmo8aBnCExX5trkEsvViOqFa2t17oNlqh210kuDg>
-    <xmx:hMN3aVhGVjfvAy4CVWE82FFjnU6D4rfNVcihaLpbwe5fWIaNKzf65Q>
-    <xmx:hMN3aQvDzprSzc_Oaha8I3mUBw3DwfNp6KgZTuF19z5cDX6IMY5We4Fd>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 26 Jan 2026 14:41:55 -0500 (EST)
-Date: Mon, 26 Jan 2026 11:41:33 -0800
-From: Boris Burkov <boris@bur.io>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v2 0/9] btrfs: used compressed_bio structure for read and
- write
-Message-ID: <20260126194133.GD1066493@zen.localdomain>
-References: <cover.1769397502.git.wqu@suse.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=jUeFvyPqwIj7MkFwY4LHp/BYsTYlewRh72QM+1z2V4uHM1Hh/eRV0lSekiaMGcU00WfOn2hsVeYwLg2HI+r48EGtTbGj2ctAlZDAB9SZE70lyFRQ9cDfOM6jRjNndJQweGo4U8KZWnFluyezWNuFdkteG+XDfHNcGZgqP8x57m8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B3K3AwRd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C26AEC116C6;
+	Mon, 26 Jan 2026 20:12:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1769458328;
+	bh=NBe+OxYRigsrCScWNRGhoFuPEsSz3lykHJTIWDbyMDI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=B3K3AwRdtBqGRu/L0NVC2m/GP0oeFUwZGfM5GvznVm9SC4gLQ0Q/wUEhnJgCtVJ6/
+	 3hBgOYdjlX4u9PUZ0AVnNlNqsADYsiji5c7ZCYbDF3dPITcbpj0MWR24shiGQ+aZyN
+	 qhBUxH2vAzOy0Q+hW8/87TrJC5oOxviszzzyQi+o7HiwPKy0ODSW/eeG+xVqNQNFPG
+	 aCd3Tr+fuP0vTljmBoLEVDvqhaqRvXutNBbYDiGg3XmuUxeCLfYatg3u21MkYa6tET
+	 4+2gllNik8k0IpeNxNVqiGa88nvSll2D2FKnPiS0Mz94gEdfhKUxrVNYxjgAXP6E/N
+	 Wg+2yKtJ8gj+A==
+Date: Mon, 26 Jan 2026 12:12:06 -0800
+From: Eric Biggers <ebiggers@kernel.org>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Matthew Wilcox <willy@infradead.org>, Al Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	David Sterba <dsterba@suse.com>, Theodore Ts'o <tytso@mit.edu>,
+	Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+	Andrey Albershteyn <aalbersh@redhat.com>,
+	linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+	fsverity@lists.linux.dev
+Subject: Re: [PATCH 11/11] fsverity: use a hashtable to find the fsverity_info
+Message-ID: <20260126201206.GA30838@quark>
+References: <20260122082214.452153-1-hch@lst.de>
+ <20260122082214.452153-12-hch@lst.de>
+ <20260125013104.GA2255@sol>
+ <aXaPph6Yi-hzf0J-@casper.infradead.org>
+ <20260126044432.GE30803@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -100,161 +70,91 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1769397502.git.wqu@suse.com>
+In-Reply-To: <20260126044432.GE30803@lst.de>
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_DKIM_ALLOW(-0.20)[bur.io:s=fm3,messagingengine.com:s=fm2];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21080-lists,linux-btrfs=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_TWO(0.00)[2];
-	DMARC_NA(0.00)[bur.io];
-	DKIM_TRACE(0.00)[bur.io:+,messagingengine.com:+];
-	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[boris@bur.io,linux-btrfs@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-21081-lists,linux-btrfs=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[15];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	TAGGED_RCPT(0.00)[linux-btrfs];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-btrfs@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	TAGGED_RCPT(0.00)[linux-btrfs];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,messagingengine.com:dkim,zen.localdomain:mid]
-X-Rspamd-Queue-Id: E4F838CB7E
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: EB32E8CEDA
 X-Rspamd-Action: no action
 
-On Mon, Jan 26, 2026 at 01:54:07PM +1030, Qu Wenruo wrote:
-> [CHANGELOG]
-> v2:
-> - Fix an error in error path of of compress_file_range()
->   If btrfs_compress_bio() returned an error, we should reset @cb to NULL
->   before doing error handling, or cleanup_compressed_bio() can be called
->   on an error pointer.
+On Mon, Jan 26, 2026 at 05:44:32AM +0100, Christoph Hellwig wrote:
+> On Sun, Jan 25, 2026 at 09:48:22PM +0000, Matthew Wilcox wrote:
+> > Is there a reason not to do as DAX did:
 > 
-> - Fix several bugs in zstd_compress_bio() which causes compression
->   failure
->   There are several different bugs in the mostly copy-n-pasted code:
+> > +#ifdef CONFIG_FS_VERITY
+> >  #define S_VERITY       (1 << 16) /* Verity file (using fs/verity/) */
+> > +#else
+> > +#define S_VERITY       0         /* Make all the verity checks disappear */
+> > +#endif
+> >  #define S_KERNEL_FILE  (1 << 17) /* File is in use by the kernel (eg. fs/cachefiles) */
+> >  #define S_ANON_INODE   (1 << 19) /* Inode is an anonymous inode */
+> > 
+> > 
+> > and then we can drop the CONFIG_FS_VERITY check here and in (at leaast)
+> > three other places
 > 
->   * Uncommon @start and @len usage
->     The old code allows @start and @len to be modified, which is against
->     the more common practice nowadays.
-> 
->   * Fix a incorrect input buffer check
->     Which cause us to incorrectly end the compression early and fallback
->     to uncompressed write.
-> 
-> I was never a huge fan of the current btrfs_compress_folios() interface:
-> 
-> - Complex and duplicated parameter list
-> 
->   * A folio array to hold all folios
->     Which means extra error handling.
-> 
->   * A @nr_folios pointer
->     That pointer is both input and output, representing the number of max
->     folios, but also the number of compressed folios.
-> 
->     The number of input folios is not really necessary, it's always no
->     larger than DIV_ROUND_UP(len, PAGE_SIZE) in the first place.
-> 
->   * A @total_in pointer
->     Again an pointer as both input and output, representing the filemap
->     range length, and how many bytes are compressed in this run.
-> 
->     However if we failed to compress the full range, all supported
->     algorithms will return an error, thus fallback to uncompressed path.
-> 
->     Thus there is no need to use it as an output pointer.
-> 
->   * A @total_compressed point
->     Again an pointer as both input and output, representing the max
->     number of compressed size, and the final compressed size.
-> 
->     However we do not need it as an input at all, we always error out
->     if the compressed size is larger than the original size.
-> 
-> - Extra error cleanup handling
-> 
->   We need to cleanup the compressed_folios[] array during error
->   handling.
-> 
-> Replace the old btrfs_compress_folios() interface with
-> btrfs_compress_bio(), which has the following benefits:
-> 
-> - Simplified parameter list
-> 
->   * inode
->   * start
->   * len
->   * compress_type
->   * compress_level 
->   * write_flags
-> 
->     No parameter is sharing input and output members, and all are very
->     straightforward (except the last write_flags, which is just an extra
->     bio flag).
-> 
-> - Directly return a compressed_bio structure
-> 
->   With minor modifications, that pointer can be passed to
->   btrfs_submit_bio().
-> 
->   The caller still needs to do proper round up and fill the proper
->   disk_bytenr/num_bytes before submission.
-> 
->   And for error handling, simply call cleanup_compressed_bio() then
->   everything is cleaned up properly (at least I hope so).
-> 
-> - No more extra folios array passing and error handling
+> I looked into this, but wasn't entirely sure about all callers.  Also
+> in at least some places we might need the barrier in fsverity_active,
+> so my plan was to see how many of the checks should simply be converted
+> to fsverity_active in a follow on and how much is left after that first.
 
-I really like your new design! I am a little worried about making sure
-all the cleanup happens accurately across the change but I think this
-will be really nice. Storing the folios directly on the bio and using
-that to track them is indeed much cleaner, in my opinion.
+When CONFIG_FS_VERITY=n, there can still be inodes that have fsverity
+enabled, since they might have already been present on the filesystem.
+The S_VERITY flag and the corresponding IS_VERITY() macro are being used
+to identify such inodes and handle them appropriately.  
 
-I previously tried to send a patch to track compr_folio leaks, so maybe
-resurrecting that could be helpful (in CONFIG_BTRFS_DEBUG?) to make sure
-we do this safely?
+Consider fsverity_file_open() for example:
 
-Please feel free to lift/borrow/steal/be-inspired-by/whatever:
-https://lore.kernel.org/linux-btrfs/95f5c89f52556f69decc7f18a6fd1f2c09d711c9.1747095560.git.boris@bur.io/
+static inline int fsverity_file_open(struct inode *inode, struct file *filp)
+{
+	if (IS_VERITY(inode))
+		return __fsverity_file_open(inode, filp);
+	return 0;
+}
 
-Also, the patch series did not successfully apply for me on
-btrfs/for-next and since it is a pretty large change that made it
-harder to do a really thorough review.
+When CONFIG_FS_VERITY=n, __fsverity_file_open() resolves to the stub:
 
-Thanks,
-Boris
+static inline int __fsverity_file_open(struct inode *inode, struct file *filp)
+{
+	return -EOPNOTSUPP;
+}
 
-> 
-> Qu Wenruo (9):
->   btrfs: introduce lzo_compress_bio() helper
->   btrfs: introduce zstd_compress_bio() helper
->   btrfs: introduce zlib_compress_bio() helper
->   btrfs: introduce btrfs_compress_bio() helper
->   btrfs: switch to btrfs_compress_bio() interface for compressed writes
->   btrfs: remove the old btrfs_compress_folios() infrastructures
->   btrfs: get rid of compressed_folios[] usage for compressed read
->   btrfs: get rid of compressed_folios[] usage for encoded writes
->   btrfs: get rid of compressed_bio::compressed_folios[]
-> 
->  fs/btrfs/compression.c | 205 +++++++++++++++++--------------------
->  fs/btrfs/compression.h |  40 ++++----
->  fs/btrfs/inode.c       | 219 ++++++++++++++++++++--------------------
->  fs/btrfs/lzo.c         | 223 +++++++++++++++++++++++++++--------------
->  fs/btrfs/zlib.c        |  64 ++++++------
->  fs/btrfs/zstd.c        |  98 +++++++++---------
->  6 files changed, 450 insertions(+), 399 deletions(-)
-> 
-> -- 
-> 2.52.0
-> 
+So the result is that on a kernel that doesn't have fsverity support
+enabled, trying to open an fsverity file fails with EOPNOTSUPP.
+
+But this relies on IS_VERITY() still working correctly.
+
+Similar code that relies on IS_VERITY() working correctly exists in
+other places as well, for example in the implementation of statx().
+
+So IS_VERITY() can't be changed to always return false when
+CONFIG_FS_VERITY=n, unless we identified all the callers like these and
+updated them to check the underlying filesystem-specific flag instead.
+
+- Eric
 
