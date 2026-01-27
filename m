@@ -1,249 +1,214 @@
-Return-Path: <linux-btrfs+bounces-21115-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21116-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id ENt2EU6ueGlasAEAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21115-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jan 2026 13:23:42 +0100
+	id uNtyA//IeGmNtQEAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21116-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jan 2026 15:17:35 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95C3494464
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jan 2026 13:23:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D76C957B4
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jan 2026 15:17:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 756B3306DE76
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jan 2026 12:20:36 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 837FA302DA09
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jan 2026 14:15:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1614B34C818;
-	Tue, 27 Jan 2026 12:20:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E12629DB61;
+	Tue, 27 Jan 2026 14:15:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t0vSp9pj"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TnlcNa0s"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f193.google.com (mail-pl1-f193.google.com [209.85.214.193])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6888F3491D3
-	for <linux-btrfs@vger.kernel.org>; Tue, 27 Jan 2026 12:20:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD4D31E3DF2
+	for <linux-btrfs@vger.kernel.org>; Tue, 27 Jan 2026 14:15:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769516434; cv=none; b=P3TLjKQl4P9oAY57ps8k05Sglh69ttPty0J2yVkAKWhkvbS3esMS+JmCVLeqY5QtUlgfqYZSlxXXY/I8c0zYq6uNTpFwyoeVq3+LHjy0U4Yv99r505LTADtyOjP8w/irsoxDrQqheudo4Dcl3dohywivg22whBdwXNrcV7BJlWQ=
+	t=1769523328; cv=none; b=AYmmTXl4R8ag13KFr0wyMYwWfS06XqX0SE5kczuCVd2wDwj+Dc269UU7zMjJ6NMblyFsKvZRm0EU8LItnvWRFs2ndMFU//F/ppnD9RLoiXuuTluUMZjPA5axYVCM1W439ulGAUGZEftzz26oK54mVagLdgABoWbkUmi8H+dpWqc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769516434; c=relaxed/simple;
-	bh=pBuy0DbxmFYQB7Cm3bXorVduDHUrAirY31vQg53v3rw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DyGsSIRUTvZq010qmmi1fPsB7EVe9bVqxuu6KJjnYx1IrXpR4FAbzsdXBtGQ9tz/Zm6jz9AJQHKbr4JvDaPtesxULA+V46G7N5rhSqi1P6k/zb3ij9at1rFwQ1TKE4SevuSc/2ouAKLipm77kKKrIs3gdhtY4uZtX0bIH6R6ebw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=t0vSp9pj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15969C2BC86
-	for <linux-btrfs@vger.kernel.org>; Tue, 27 Jan 2026 12:20:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1769516434;
-	bh=pBuy0DbxmFYQB7Cm3bXorVduDHUrAirY31vQg53v3rw=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=t0vSp9pjIu3XPaOhQl5LMOZ7kU1WOeCudRntyuiK6U/RfR2gAk5vuUzUcPlmWwLN4
-	 IBcCrqLJCU31OCmQKPVbVDKUHuOLIpJZ8cANfbq/6+7cInj30HgNO7e/RYLHReLEIt
-	 MrzbDKImHvMknzTp0RL2+Wg7A4Xp0NAotZlUJuxuL9GoWc+RhlAUSs/MldzEPG9AZK
-	 iSlhyR9g40yFryVAjxR67TjuWz3glNBRHilySnNRW2t4wxkKctJAypz9RzmnI7n8qs
-	 k9oxuHHRhR+18yIRDA2Ylu9aRXTwavIZNhvXy3jB8FWQwdAhhz53PyiIp7ZSYDGNex
-	 oa8Xj/pQyYmug==
-Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-b885e8c6700so705452066b.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 27 Jan 2026 04:20:34 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXOfpIh2+Aek8J771n6l3/gUvNMb4nYdEAG4Hvhycfeh6NIgvfSaQ2jkXRLhrpR6sTLJeoxvIbSrvWpAw==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw67R/cnOha0Xg6PFapVmamcNgfItPuYhk3w5XNnC5HFOSm9F0K
-	n6cOhDGImxX6DIvKQe92ah0y9lMT6fRK9sbgHhsz1YofuDl5bvoTcfWJJ1sTRDikGNVa6yEvykY
-	urlj+/Ur7fTk0l7yQtG53/bXaRlr0M80=
-X-Received: by 2002:a17:907:9806:b0:b88:783e:64f9 with SMTP id
- a640c23a62f3a-b8dab33172fmr130561466b.25.1769516432614; Tue, 27 Jan 2026
- 04:20:32 -0800 (PST)
+	s=arc-20240116; t=1769523328; c=relaxed/simple;
+	bh=aDjsM9iSJhBqQB7fdZuo4gHJBMU/kbqKFproLooAFDk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jOtDQFaJgY2Tw8vp0H6PMG8jzjDmz8UMRnJm1Uueq0du8HdtS8c+ES9us22ft23DgXRRVa7Ac1aXGPLYJvgWWSq5lePzom5n/PAY9wk/a0LhMmqNcJA3/I6i5OGb8yYXPT1HN8hEVXUy2dKmKKuZ75cR2xe2ZDvzWHRgJRVAw2c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TnlcNa0s; arc=none smtp.client-ip=209.85.214.193
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f193.google.com with SMTP id d9443c01a7336-2a08c65fceeso9471455ad.2
+        for <linux-btrfs@vger.kernel.org>; Tue, 27 Jan 2026 06:15:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1769523326; x=1770128126; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=aDjsM9iSJhBqQB7fdZuo4gHJBMU/kbqKFproLooAFDk=;
+        b=TnlcNa0sYoFRz5WVmXLPRv7k6mL1MawHGm6Kl17gkD2BQy54xNEsjdJ6kZHtjVB2uR
+         /V7f5Zd6irKmciL7T0b5tHKox7B2q0hvdvVHDGz5noBCkjzs2hOADBISbCJmErsPK2Jb
+         DZoEs/XS8TCfZmJS9ZoMGb7ZfC7zaTfq7wuaRMcD1Q0UH1SOa12CjXYeuyyDega0/a9w
+         IM51nTIYZCP3RSotbZdA++4R488gEWkVTWIRPFGcJAUxGu6G1b2K6XikDL5e9s8ul0o2
+         0bNuSzL+fO9MWQY1dCYGx6Dna0U9u1svyEKra0LN/Xp/p3CDMfGbhxHYAGM/kVprqpGL
+         Z50Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1769523326; x=1770128126;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=aDjsM9iSJhBqQB7fdZuo4gHJBMU/kbqKFproLooAFDk=;
+        b=eVA3sbP+cQZ1aY1sJXSATOLnjVd4OlndlhY+Y4Wo7ts1WlCoOpUpTYBSk4wLoGV5w2
+         WXDwvP2UVlnDLHe1RuT+LBEM3OtJ+Z8TYriwjfRq4bVvIw3rt828e2+NtyS5BGbT+M4s
+         qCCLy9tdKqHj+IqUXz0d6LoAIMPIJsiZjbqJV3e/zNHKFPwcX1JPek9wtmzsGA466GA7
+         iZY5+AFTTM8n4SzsG7Zqm/eUhF9WZMUJLJ5Ps8DHyxubbT8okXD0ktr4jE4lAWXc+vxa
+         Mvn3ksPF8jAhNh+hFU3dJW3/TlEqIJWJHjSOdMeiJY8zbcsSaQcjEgM+P1l11TWsMpoG
+         lE+A==
+X-Gm-Message-State: AOJu0YxTST/tjUdRcVg4uFIJtCYTE9eFT4NbcMBeR/CHGrZ3LEderKi/
+	vXkmfUZi89JMsc8MyVvZtczN32DtAj3dHPzxJVMsEAlrwUOr8P9gu6IFbhVR/CsR2MTtxQ==
+X-Gm-Gg: AZuq6aLnBm0kSyHhs8pqh8O/n1n99Bs6Ew48HOdzb1MPABGDJoouV0cOxhE6mkk7+bO
+	IewamZmUbZ3oeGOqoXlhFwz6uXnhnzW3cHElIswnx/UHPygB/lIbWBTPzcize5UnOBMSki0KM1C
+	fCsn9oNqBBPlkVktZVADXRtNt1VybbqdkQooe3JZNd5CZBCzBYQhYkBbQhzu9loGLJ8LyGUnQCb
+	6wRTborUkN6EcChQF7/QqMJ992fgbwW2lCuJz3avI64sWj6pdgfov5yP5TkfEVSePb1zpsOpR5P
+	Y73k5BloPKkpLBFEKHp0PwfDMdPUnwOBKZOUzOJ1rJWdnKwAA6HM2N2SDnKQqYTJ7b8W7KUy+Da
+	ZzO2k4HJrecnXo53+KqWhw6fMrZmqkflomFe66iV7l44NYZwXHZAjyrwY3PMmToterdKsb0lvn4
+	YGH2ah0X29vKIaYeu2RIiEel521g==
+X-Received: by 2002:a17:902:fc44:b0:2a0:c495:fc05 with SMTP id d9443c01a7336-2a870d57bbemr15520035ad.2.1769523325603;
+        Tue, 27 Jan 2026 06:15:25 -0800 (PST)
+Received: from [192.168.1.13] ([175.143.94.228])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2a802fb07b6sm118247125ad.86.2026.01.27.06.15.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 27 Jan 2026 06:15:25 -0800 (PST)
+Message-ID: <4f2af29b-6720-47fb-814c-e6f8b0327c30@gmail.com>
+Date: Tue, 27 Jan 2026 22:15:20 +0800
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAL3q7H4=9vH3UP6=i1zTe7MVKf6aWAqEqb7i+Fmxoc3q4qDyKA@mail.gmail.com>
- <20260127074055.781388-1-jinbaohong@synology.com> <CAL3q7H62qyB_nWL2HHr8ua39K+oZC9TjHhF9BQn7bWJ60t8zQA@mail.gmail.com>
-In-Reply-To: <CAL3q7H62qyB_nWL2HHr8ua39K+oZC9TjHhF9BQn7bWJ60t8zQA@mail.gmail.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Tue, 27 Jan 2026 12:19:54 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H4zKsA3bW5WDsOEsu4sJ6vLF+-muCsh42oW4Y3hJcHRCg@mail.gmail.com>
-X-Gm-Features: AZwV_QiPj_NypxmmvjAdoZwxpo95yRsN4vpK6yopTWjm-ZJdNRZJ6pNt1dmWOAI
-Message-ID: <CAL3q7H4zKsA3bW5WDsOEsu4sJ6vLF+-muCsh42oW4Y3hJcHRCg@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] btrfs: continue trimming remaining devices on failure
-To: jinbaohong <jinbaohong@synology.com>
-Cc: dsterba@suse.com, linux-btrfs@vger.kernel.org, robbieko@synology.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] btrfs: initialize periodic_reclaim_ready to true
+To: Boris Burkov <boris@bur.io>
+Cc: linux-btrfs@vger.kernel.org
+References: <20260126113104.9884-1-sunk67188@gmail.com>
+ <20260126173450.GB1066493@zen.localdomain>
+Content-Language: en-US
+From: Sun Yangkai <sunk67188@gmail.com>
+In-Reply-To: <20260126173450.GB1066493@zen.localdomain>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
 	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	FROM_HAS_DN(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21116-lists,linux-btrfs=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_THREE(0.00)[4];
-	TAGGED_FROM(0.00)[bounces-21115-lists,linux-btrfs=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWO(0.00)[2];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DKIM_TRACE(0.00)[gmail.com:+];
 	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[fdmanana@kernel.org,linux-btrfs@vger.kernel.org];
-	MISSING_XM_UA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_FROM(0.00)[gmail.com];
 	RCVD_COUNT_FIVE(0.00)[5];
-	TAGGED_RCPT(0.00)[linux-btrfs];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[sunk67188@gmail.com,linux-btrfs@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	NEURAL_HAM(-0.00)[-1.000];
+	TAGGED_RCPT(0.00)[linux-btrfs];
+	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,synology.com:email]
-X-Rspamd-Queue-Id: 95C3494464
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 6D76C957B4
 X-Rspamd-Action: no action
 
-On Tue, Jan 27, 2026 at 11:38=E2=80=AFAM Filipe Manana <fdmanana@kernel.org=
-> wrote:
->
-> On Tue, Jan 27, 2026 at 7:41=E2=80=AFAM jinbaohong <jinbaohong@synology.c=
-om> wrote:
-> >
-> > Hi Filipe,
-> >
-> > > > @@ -6648,7 +6780,7 @@ int btrfs_trim_fs(struct btrfs_fs_info *fs_in=
-fo, struct fstrim_range *range)
-> > > >                 }
-> > > >
-> > > >                 start =3D max(range->start, cache->start);
-> > > > -               end =3D min(range_end, btrfs_block_group_end(cache)=
-);
-> > > > +               end =3D min(range_end, cache->start + cache->length=
-);
-> > >
-> > > Please don't do that. We should use the helper btrfs_block_group_end(=
-).
-> > > Why did you do this change? This seems completely unrelated.
-> > >
-> > > Otherwise it looks fine, thanks.
-> >
-> > First, sorry about the unrelated change from btrfs_block_group_end() to
-> > cache->start + cache->length in v3. That was an accidental leftover fro=
-m
-> > debugging - I'll make sure it's removed in v4.
-> >
-> > Before sending v4, I'd like to discuss some behavior details about trim
-> > error handling.
-> >
-> > =3D=3D=3D 1. Block Group Loop Interrupt Handling =3D=3D=3D
-> >
-> > Currently, block_group loop has the same problem:
-> >
-> >   ret =3D btrfs_trim_block_group(...);
-> >   if (ret) {
-> >       bg_failed++;
-> >       bg_ret =3D ret;
-> >       continue;  // Doesn't break on user interrupt
-> >   }
-> >
-> > I think we should also break the block group loop on user interrupt,
-> > similar to the device loop.
->
-> Yes.
->
->
-> >
-> > =3D=3D=3D 2. First Error vs Last Error =3D=3D=3D
-> >
-> > Currently, both block_group and device loops store the last error.
-> > I'm considering changing this to preserve the first error.
-> > This would show the root cause rather than the most recent failure.
-> > What do you think?
->
-> That's fine.
->
-> >
-> > =3D=3D=3D 3. ERESTARTSYS/EINTR and Error Code Precedence =3D=3D=3D
-> >
-> > After reconsideration, I think user interrupt (-ERESTARTSYS or -EINTR)
-> > should NOT overwrite a previous device error (if any). For example, if
-> > device A fails with -EIO, then user interrupts during device B, the
-> > final dev_ret should be -EIO rather than -ERESTARTSYS/-EINTR.
->
-> That's fine too.
->
-> >
-> > =3D=3D=3D 4. Scope of ERESTARTSYS to EINTR Conversion =3D=3D=3D
-> >
-> > > > @@ -6685,10 +6687,14 @@ int btrfs_trim_fs(struct btrfs_fs_info *fs_=
-info, struct fstrim_range *range)
-> > > >                 ret =3D btrfs_trim_free_extents(device, &group_trim=
-med);
-> > > >
-> > > >                 trimmed +=3D group_trimmed;
-> > > > +               if (ret =3D=3D -ERESTARTSYS) {
-> > > > +                       dev_ret =3D -ERESTARTSYS;
-> > >
-> > > And either replace it with -EINTR.
-> > >
-> > > Otherwise it looks fine, thanks.
-> > >
-> > > > +                       break;
-> > > > +               }
-> > > >                 if (ret) {
-> > > >                         dev_failed++;
-> > > >                         dev_ret =3D ret;
-> > > > -                       break;
-> > > > +                       continue;
-> > > >                 }
-> > > >         }
-> > > >         mutex_unlock(&fs_devices->device_list_mutex);
-> >
-> > You mentioned the issue of -ERESTARTSYS. Could you clarify the intended
-> > scope?
-> >
-> > Option A: Convert all btrfs_trim_interrupted() paths to return -EINTR
-> >           (changes in extent-tree.c and free-space-cache.c)
-> >
-> > Option B: Only convert at btrfs_trim_fs() level before returning to
-> >           user space, keeping -ERESTARTSYS internally.
-> >
-> > Which approach do you prefer?
->
-> ERESTARTSYS is not meant to be returned to user space, it's a kernel
-> internal thing.
-> We should make sure that we return EINTR to user space instead.
->
-> Yes, there are other places using and returning ERESTARTSYS which gets
-> propagated up the call stack and then into user space.
-> I think we can just replace all ERESTARTSYS with EINTR, it's simpler
-> than leaving ERESTARTSYS and then converting to EINTR before returning
-> to userpace.
-
-Ok, so taking a closer look at this, we don't need to convert
-ERESTARTSYS to EINTR.
-There's an automatic conversion in the kernel and checks if the
-syscall/ioctl caller has the SA_RESTART flag.
-That happens, for example for x86, at:
-
-arch/x86/kernel/signal.c:handle_signal()
 
 
->
-> But please address each of those issues in separate patches, which
-> with its own changelog describing the change.
->
-> Thanks!
->
+在 2026/1/27 01:34, Boris Burkov 写道:
+> On Mon, Jan 26, 2026 at 07:30:52PM +0800, Sun YangKai wrote:
+> > The periodic_reclaim_ready flag determines whether the background reclaim
+> > worker should process a specific space_info. Previously, this flag
+> > defaulted to false because space_info structures are zero-initialized.
 > >
-> > Thanks,
-> > jinbaohong
+> > According to the original design, periodic reclaim should be active from
+> > the start and only disable itself (set to false) if it fails to find
+> > reclaimable block groups.
 > >
-> > Disclaimer: The contents of this e-mail message and any attachments are=
- confidential and are intended solely for addressee. The information may al=
-so be legally privileged. This transmission is sent in trust, for the sole =
-purpose of delivery to the intended recipient. If you have received this tr=
-ansmission in error, any use, reproduction or dissemination of this transmi=
-ssion is strictly prohibited. If you are not the intended recipient, please=
- immediately notify the sender by reply e-mail or phone and delete this mes=
-sage and its attachments, if any.
+> > Now that the reclaim condition has been fixed in a previous patch to
+> > properly handle reclaim_bytes, it is necessary to enable this by default.
+> > This ensures background reclaim logic kicks in as soon as the thresholds
+> > are met after mount.
+
+Hi Boris. Glad to receive your reply within hours :)
+
+> Is this problem practical on a test/real workload or theoretical? If we
+> never free net-1G, I don't know how much reclaim is gonna help anyway.
+
+Yes, actually we don't know how much space is enough currently :(. It would be
+a lot better of we could find it out when failed to reclaim a blockgroup ...
+
+I have a test case for periodic reclaim like this:
+1. mount the fs with >10G unallocated
+2. filling the disk to nearly full (< 10G unallocated)
+3. free up some space(>10G unallocated) and umount, preparing for the next
+test
+
+I expect the periodic reclaim kick in when the disk is nearly full (during 2)
+instead of after freeing up some space(during 3). This let me started to think
+about this patch.
+
+In real world workload, we may have a fs quite empty when mounted, and fill up
+to quite full and expect periodic reclaim will happen to get rid of running
+out of space for unallocated. But periodic reclaim will not work without this
+change.
+
+And this patch is the simple and quick fix for that "edge case".
+
+> If the "net 1G freed" condition is not the actual condition that we
+> want, maybe we should rethink that? We can enable it on 1G total freed,
+> regardless of allocation to give it a chance to run even if the net free
+> is 800M or something. I was worried about workloads that did actually
+> allocate and fill in the gaps.
+
+I agree. It's not reliable and may trigger too often than what we expect.
+
+> Or we can just use the total available space
+> as a proxy, like "if we do a free and the total free in the space_info
+> is >1G, enable periodic reclaim". The reclaim loops aren't gonna be
+> costly and we don't expect them to do anything when the fs isn't full
+> anyway.
+
+Comparing current free space with a target free space instead of tracing a
+reclaim_bytes is a good idea. At least we don't need to maintain an extra
+counter any more. But the fixed 1G target might cause some problems since a
+reclaim might fail with a >1G free space. With the fixed 1G target, we might
+trying the useless work again and again. I suggest to set a target larger than
+the free space we have when setting periodic_reclaim_ready to false so we'll
+not trigger periodic reclaim if there's no "enough" free space freed.
+
+How much the target should be larger than the current free space? Still 1G, or
+maybe we could find a better value, taking more factors into consideration?
+
+And at mount time we cannot find out a proper target value so just set
+periodic_reclaim_ready to true. (BTW, this is why I use "paused" instead of
+"ready" in the previous fixup patch: to make the default value fits the default
+logic, but just set it to true as default seems enough :)
+
+So even with this redesign , I think this patch is also necessary, or at least
+no harm.
+
+Thanks,
+Sun YangKai
+
+> Either way, though, I don't think this is harmful, so we can probably
+> put it in. Just curious what you think about the other ideas and why
+> you decided this was needed.
+>
+> Thanks,
+> Boris
+
 
