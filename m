@@ -1,258 +1,335 @@
-Return-Path: <linux-btrfs+bounces-21119-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21120-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 6Jq6AzfneGmHtwEAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21119-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jan 2026 17:26:31 +0100
+	id 4Pq+LsAMeWnyugEAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21120-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jan 2026 20:06:40 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F16497BCA
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jan 2026 17:26:30 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B869999CF
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jan 2026 20:06:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 61CC9322240C
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jan 2026 15:35:31 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id C67283042990
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jan 2026 19:00:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7220234B676;
-	Tue, 27 Jan 2026 15:34:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70C73266565;
+	Tue, 27 Jan 2026 19:00:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="H3k/Q3x8";
-	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="eGOh5K4t"
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="cxPJJtus";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="uKzUuRPL"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from esa1.hgst.iphmx.com (esa1.hgst.iphmx.com [68.232.141.245])
+Received: from fout-a7-smtp.messagingengine.com (fout-a7-smtp.messagingengine.com [103.168.172.150])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE261334C27
-	for <linux-btrfs@vger.kernel.org>; Tue, 27 Jan 2026 15:34:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=68.232.141.245
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769528082; cv=fail; b=IgeNDNktiH3HVd68WaeC3/Pv3LojYtZnFnkuEgTft8T2IPUWZJHGCsujWiR1B7+aKaXFELRN6tEGoGsgKrTU87V3VohqkksE+u8zFQSNm5Fm4MnN/bYpgFznzAuE4Z7VS7gI/pvKhi0xP2mGbYynMQymE+ENWh79W4odcNF37hg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769528082; c=relaxed/simple;
-	bh=2RHUvoyxsWkz0yNLT+7Mirr3I4kM87zTjKogpVm6zNI=;
-	h=From:To:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=T0rpwhvDylMM27EFJ7idIZ5SP8TTL0CU2oJ0WF+u4c5f30XraqgpGn23COoAGKlPBUjy8JQiVoYv3w3duWPSoeHnRDYjuxnv7BvAij10cd0ZYkT3PkdqEz6x8lSixnEkd9dahEVJxPispw9kpIbPzELhv1VwMEV7dfPjXLZ3cRw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=H3k/Q3x8; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=eGOh5K4t; arc=fail smtp.client-ip=68.232.141.245
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1769528080; x=1801064080;
-  h=from:to:subject:date:message-id:references:in-reply-to:
-   content-id:content-transfer-encoding:mime-version;
-  bh=2RHUvoyxsWkz0yNLT+7Mirr3I4kM87zTjKogpVm6zNI=;
-  b=H3k/Q3x82NEO5bxz0GJLRIZA+i7rXar2zyqxOynTbmIvh4hvFef1xoqW
-   hy7BmT5dRIkdf9QqBzPmKOOiBTr8W64j4GnDgqBugdsyTV0zodey91Zin
-   cg/hm405CXhVXNLMy7hg0qF2ibdEKXRy87/iAmotgYJWSK1wZj/rT36Je
-   Z1GdXHDQ9lNukl86AwzqsPEp9fglgcIFkzlZseBCBEp3wdZNpdcny87i+
-   zxYjWqU4BM3Ybb+H4u5+vN1cBtD094aHKK0NLivwqtRegPY0YRIYGJuT4
-   MWfrZjNzvjXJaTjwsWCkXpLqNAyWmEHBva3lwU75w65JPhKgC7oIrceE4
-   Q==;
-X-CSE-ConnectionGUID: iQhvcnOeTYSNatsOS5ycnw==
-X-CSE-MsgGUID: Rr+WgwYUQnWrnCXlrOc8yA==
-X-IronPort-AV: E=Sophos;i="6.21,257,1763395200"; 
-   d="scan'208";a="139568938"
-Received: from mail-westcentralusazon11010049.outbound.protection.outlook.com (HELO CY7PR03CU001.outbound.protection.outlook.com) ([40.93.198.49])
-  by ob1.hgst.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 27 Jan 2026 23:34:39 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=ahBMrdyK7eSs8A/LQgqCgoClladUTfPAnsVL3hWfqv68o/tPIxCUPLBgXee90+I3+uyW7ijv68gZ2RH+rmmel3/V+MsRKJ3SzKQx8BQSnzVxvxl91NObc3K/p1eRwLL8PmP7yEJJJOHP4XpwxE81Sa3YZ5hLbmGue1Sohkt34Op1RCKQZlb4JX50nhrV9cFmo/wYHwDieIZe6ngysDOnjQ8VVd1co5uqAiRSFo1o+4SgGVQ2GNQrlV0IBEkZVdl+LM0WHBjQ83d7Fn4h0G1sFfPrFY2MpZ4a7P6G4SH8Gx1Vct4cETeA4oAtlc9QYpa8brWtzt0fWr6h4eRk9FVNkQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2RHUvoyxsWkz0yNLT+7Mirr3I4kM87zTjKogpVm6zNI=;
- b=jiCxPWjxr8uiVvN+kNLi1YjkpxmgLf9n5IEI7zpZ7GDGq6ETWtDCXzjRTKYi5pg310menSpTgbp6CAr+LgwZiZclq/GUmFvNHl0QR7Bf2ht7KE8UiiE3v8xeWhCi5kWuOyMwUHvaIRr5ffuyd2BDGDo7k0mvDs+UD3r5N07SK11gsRAFxBczYvqlxBpheeesgbwIs7SMDfaZKmrT4i6P/Eapt9KAFmQOkH+QXU6lAqB1aCNN6RHZHTpawhk5JcDthevL3ABMbp4c0C5arHmDKHglfSja7d79z/2xQRZgfqEOOikLqXrNzP0U3mk3LRGiJhH8dDzrd8hIoR5GTEm5Ag==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2RHUvoyxsWkz0yNLT+7Mirr3I4kM87zTjKogpVm6zNI=;
- b=eGOh5K4tYnFrCJ7FdFEWFku1s+uGMGww9szi8MrASn/+aS3x2aSfDwPbVMklo48GshtKbpuwUHCsWwwllS/LzNKmGTV5icoDn14t9n+7tLpzAs0FrSAL+HBJPhblUZXCohdEkw7T/nW0Nvf/wcoTa0h7Mt9Wlc6axzIk/tXtvBM=
-Received: from LV8PR04MB8984.namprd04.prod.outlook.com (2603:10b6:408:18b::13)
- by DM8PR04MB7861.namprd04.prod.outlook.com (2603:10b6:8:24::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9542.8; Tue, 27 Jan
- 2026 15:34:36 +0000
-Received: from LV8PR04MB8984.namprd04.prod.outlook.com
- ([fe80::9ba6:7273:90bc:53a8]) by LV8PR04MB8984.namprd04.prod.outlook.com
- ([fe80::9ba6:7273:90bc:53a8%5]) with mapi id 15.20.9564.001; Tue, 27 Jan 2026
- 15:34:36 +0000
-From: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To: "fdmanana@kernel.org" <fdmanana@kernel.org>, "linux-btrfs@vger.kernel.org"
-	<linux-btrfs@vger.kernel.org>
-Subject: Re: [PATCH 0/2] btrfs: unfold transaction aborts for bg delete and
- get rid of a BUG_ON()
-Thread-Topic: [PATCH 0/2] btrfs: unfold transaction aborts for bg delete and
- get rid of a BUG_ON()
-Thread-Index: AQHcjFG/pF1CoNOBck+t7kHrWK2IWbVmLD4A
-Date: Tue, 27 Jan 2026 15:34:36 +0000
-Message-ID: <bb472ca9-bd88-4f48-aa52-412f6442a060@wdc.com>
-References: <cover.1769163248.git.fdmanana@suse.com>
-In-Reply-To: <cover.1769163248.git.fdmanana@suse.com>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Mozilla Thunderbird
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: LV8PR04MB8984:EE_|DM8PR04MB7861:EE_
-x-ms-office365-filtering-correlation-id: 512a1288-a83f-4bbc-c697-08de5db993f1
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam:
- BCL:0;ARA:13230040|1800799024|376014|19092799006|10070799003|366016|7053199007|38070700021;
-x-microsoft-antispam-message-info:
- =?utf-8?B?Z3RDcUFZVHEzQmtDZnByZFJqU3FCWStQRExqbm5mV1IwRzBKMmJjbUlNbUN5?=
- =?utf-8?B?QW1YY0VNK0N5cGYrYnkyQjNHVlFjN0tKekhrbnk4MzkzWnhHeldwWDZaVlZG?=
- =?utf-8?B?dmdUZUZFeVA3QnpTaDVoSkNHZ2xDdEFrL3c2M1VFSVdmQnptTWExTlNFYnZo?=
- =?utf-8?B?YUxGVlVNZXdqV1hRa3FHTG9nY21vb2E2UUZyc29CTC9SbVFISUwrbjlhWTdQ?=
- =?utf-8?B?amVKSWdjZjdrblNVbTUzVDlkZERESXRLcWZTVlFqVDZYTkxROTBFMnZWaFov?=
- =?utf-8?B?aTA2U2o2Z2w4TFVPL0hKNkdsNXhLNTQzdDRFVVVUOFp5VENvZlpzcVU3d0U2?=
- =?utf-8?B?UXBEb09GY0lJZVhUSFdnUlAzOVJnRjduS3FsYXZZTk1Bd2h2MjZTelZUS2Rs?=
- =?utf-8?B?RTZka2V0VXkzY3F5aHBLaU9PNUtmY3l4TmZnelFhR1A2b3Y1bXp3MFIrZlMz?=
- =?utf-8?B?Yk0yUms1N2lNNlowdFYvY2lqWU9raXJnWlo3QU5sOGtkS1ZzdGF2OUp4allF?=
- =?utf-8?B?d08vQ21kOHFvd1RuQzFMeHMzaGhEQ3JTWDVaWWhVNTdhS25sVm1sYmw3bS9G?=
- =?utf-8?B?b0NMZ2xRclJVZktjbHZQTkZJMUlGMWRTOGEyMkRMeWloQzZZdG16ZmU1LzAy?=
- =?utf-8?B?VGdjdXpqMUZMS2FNUGw4dmxId1gxWC91RGEwWW5Jc0w5TEVVanJWVElDcFBj?=
- =?utf-8?B?REVsbnJnckxDVnRBbHp6WkM2RjRlMkF2aU9DLzlYeFg1a29POXJObGJKaGFr?=
- =?utf-8?B?N0REdUdVdkZvOE9SdFhWSTVRUEJZaTFoYWN2dktzN2JqM2tzektzczhBaUg5?=
- =?utf-8?B?S1BOZ2lSYVRwcDg2WmVwMDBJTG1Pb09CeTFtSmYwM2s3NlZOc1hzUmxVUXVV?=
- =?utf-8?B?VHZsaGVVYjBMUW9xdUltM3E3SS9ELzllQTQ0UkNkR1BDUm56ckZhRDVNNXlK?=
- =?utf-8?B?T0VhVFRZOHVYU0J4MUZUSUtjTC9zQWdqYmxHbDY1R2hXYmU4eTROaTRJUmdH?=
- =?utf-8?B?SlJwZXZBelRLMEZISlpwcDBLYWVWUEZnUWN6TFZ5ckI1dXp3dVNxckF1RTlo?=
- =?utf-8?B?cXhhSHRBcTVlemVETVNnV3p3SU5MZmV1UERnTXJja1VSNkxLS2lhVmtlL1pB?=
- =?utf-8?B?akpneS96aWd2Q0VGOXNFYjRlQS85OUUwcjNFa2EzU3JpZjUrUEtzVkdTOTNY?=
- =?utf-8?B?bWRZOFhyUFBEN210bzJ4TW1BbGNKdXU1aS9LVVBJNCtsUmIzNEJKUExpR2JI?=
- =?utf-8?B?MWF6ZitQdWlVd3BIU0FjVWZKU2FqcGRHWUVrb3U1MFY5WGhaY2NVamtyTG5Z?=
- =?utf-8?B?ellhVUluSXFKT1RwS3dxWEFRQmVOMm5hNnVQdmhFUGdwd1I3VGdlOERuc3RQ?=
- =?utf-8?B?My8wQnZ1Vy8xbUZHR2pONE5YeG5Db0xHZVRYTENISUkwRGNzTmVxOFdVTFh2?=
- =?utf-8?B?WmIvSXFKYTIrcUsrUGNYQ2U3ODRNc3FQQ3JYVEoyaFdKcVdOWkd1U1FvYzky?=
- =?utf-8?B?Sm9RSytSQ2lmTUt4K0ZTMExwL0FjNnlzcGRyeVdzamdJK0FpREVTd0FINnRY?=
- =?utf-8?B?N21HNm15V3ZPYWRVYW9hUHJjWUFSZFc4Q2V5OW5EOW9CbVpaS3hVVUxrS0Z5?=
- =?utf-8?B?VmVKeW5sUmFRVTFMU29LRGhzVGJsUFlSdTBLVk5UdVZsdmZlN1JIY3Y5dHJn?=
- =?utf-8?B?OVFPc1hwMk8ycktxQW5kaGR1d0k1dFNkbklCVnJENWV2UDIwK0IwY0Z2Q2pY?=
- =?utf-8?B?ZktxT2JrWHluZnFuQVdCd1N6WkZtSXh2ZEY3N3h1bXdEWUl0d3N6dkNveWV6?=
- =?utf-8?B?dmRxTmtzaU5OSHBKTG0rNTlKeTU3ME51bHlSZnhDdFBmeXYwcUtlRXdDaEo1?=
- =?utf-8?B?WStvelVQclhqc3VGYTJhaDRwU29TTUdVMFZIVXdZdjFnTGhGZ1JMZGFONUFC?=
- =?utf-8?B?QUpUQiswNXlVVEIxcW9LL2hsMXZ6TTlEQ0JJY3Jhd1hDeXBiMWRqYzJUSU81?=
- =?utf-8?B?WnI5dUk3RjM1S0ZtV3gyaFVnTXRNYzEzOEhISlh4Zkc0Q3h2aGlaL2JLS2ZF?=
- =?utf-8?B?V2FtbS9vR3crSkltbzYxQVBoZHhnYmE1OVlrQ0FaQUJyS21hTWM4M0U4bkVL?=
- =?utf-8?B?YkMxWW13RG0zQmx4eUI0YXRRUExjYndiR1I2RTBSdzcvbWdJRXo3T2dtODZk?=
- =?utf-8?Q?JVfTwwZTeWVvf1qaxZoPFzo=3D?=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV8PR04MB8984.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(19092799006)(10070799003)(366016)(7053199007)(38070700021);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 2
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?TzFQSFlCYTRWL1Ixa3YwTWJCRFZld0QrTE1scnNuQWhtRnZrZjFMRjFsZW5R?=
- =?utf-8?B?VjRFV0xyZ3hWS3VTaWZJZWtBdmtkL05rTkNQbG94cXkwTHlZZ0RYTXJnQlZJ?=
- =?utf-8?B?MXRDakhkMDUyN1l3dDVTZmhEUXBMRzNVN2EvNGRvaUpTa1lQVFNDSU5yNEJN?=
- =?utf-8?B?aS9BeUdseUhTRFpJWVlMejJDRlRSUkZHdkVjYzJuYTFsUXBRUGNPNVNobFNO?=
- =?utf-8?B?SnkySTVjeURyMUFTTVFCNUZmZlNuZThSeit6ZlVIamtWRVQ3dEsyamRBSTVK?=
- =?utf-8?B?Rzh5UWxPemlMMWpleEpZRzg5ay9ETlo1Z0dRbjhmUzRWWU1WaXZ0YVpwLzhX?=
- =?utf-8?B?bSs5bDdNN0JpZWZmM29QaWtSaUtGNm9sbmhHYk0zRjRiNjgxbGszYytQME94?=
- =?utf-8?B?eDluSERSYnFPdGRsT3k4QzJMaXJmbTZOajMxNWlhOEk2VmhkVzJYNVBlVzlJ?=
- =?utf-8?B?aURsaFZXcGRkWjlqeG9abU9rUTBBUUF4Y0V5MU1hSGloTEZYSVhOb3RFQmdj?=
- =?utf-8?B?NzVneWwwNDg2emZEaGpWVnU5MjVIR29jNXNPcmYxUFRyK3ltYVZtcG1xOHdN?=
- =?utf-8?B?VkJYU1hCY3J4Yy9BemVDeUl5Q1htUkJERUQ3TVc4WDQ4WWxTN0pHSVV3UnRZ?=
- =?utf-8?B?NkMvc1JvcEtLYUMvbHJEVHZjWmpEZSs5bitDZVN5ZjA0a1BDUmU4dzdPZHVJ?=
- =?utf-8?B?R24xWHEzWk0xb1UzMEUxRUp5UkNKSjhlYUw0MVZOMnlxU2E5d3NJcmdQUlFN?=
- =?utf-8?B?ZzZ4bEplQkZyOERncDNpKzc4azNLWjI4MlJibnUzeUl5K2JMUHVROTJoRlFJ?=
- =?utf-8?B?TWpiY1NZbUsyVG0yTkJjQkJ5Mk8wSDdQblg4cUFOamxmMVlPQnp2ZCtON094?=
- =?utf-8?B?S1hmVE15cXVaVTdwNk0rZmRUTE9Dc0c5V2xJbFJuUEwxeHk4L3F5YWlqWDRX?=
- =?utf-8?B?R3dtMWExcDJkb1AxMmV2NzJjV2Q5dXp1TEJjZ2xRQlN2Wlg3eGJsZ0EyTktR?=
- =?utf-8?B?T0tTYVR1eE5LSGRGTGJnRm45SnR4Vm0rVXNtMmQzY2RtamdDem04bmtsbDdR?=
- =?utf-8?B?SWFLZEF0V05FVmdaM3F4U1RldnA0QXBUcC9wcVgweE51VjMzUkpuZS9LWXpo?=
- =?utf-8?B?Vk83Y2lySnpoZDdjdTA3YW4xVVJxSStid3dFbTgrdUNpcVg4Kzl3R1ZmNDhX?=
- =?utf-8?B?cHVrK3F4ZnJCdTc3UjRDM29VU3Jndi9laXZzRzgxSGtzL1RZWWhxRS9HUDJr?=
- =?utf-8?B?b0RWbnNiNXI3ZktkMVUrcGNXRTJ1SXpTWkFmZzhHT2dTbmU4S2I4T0plKzkv?=
- =?utf-8?B?a3FuU0pvWFhtcm1jRURSTjgzcnk2TXFHQlFLK2FMU2VEVnd5SWx0WEdHVGJS?=
- =?utf-8?B?MklSTVBSbUVBQzNWK2hHcmpROXE4T0R1eittKytsTkljTU5kaVk0a3p4UkFt?=
- =?utf-8?B?NWdSNjRBTVhWemxJRWdYSUxaWWVTWk1kTk5RcXhGWVBKTElnMnViRmVyK2NS?=
- =?utf-8?B?K2RXazJCVnFsYWJNSTlDQm04TG9FTHFaVXVaQkRhb1JFdVFnb05aUW9neVNV?=
- =?utf-8?B?UDFrN2dHblJ3bGQ4d2dIZ3ZucktyRFRaZ3RkYjQ0QklTK1VaQVIwdThMbEVZ?=
- =?utf-8?B?MUtGNEJUU1BFTXpCMkJ5Rk05Rmw4WmlvbzN2VDdoZ1cyMFo5dGZ2VmdYNHRn?=
- =?utf-8?B?OUJFSnhSV1I3bWwxb1I5bU1CUE56R3ViZDVUMmJOa3F5VTBBV3ZPMmw1QWx4?=
- =?utf-8?B?aGFuM1JQTmFsaGwveElYV0lXOVdZS0hOanp5d1laMmRCczdIUENQSEJ4eWM2?=
- =?utf-8?B?NG40OXA1SExjUktVTmRCcUJsdG5xaEx1a2RtSHpLS2d1L2VYSlFyOWZYQmti?=
- =?utf-8?B?WXZLa0w3dEVkMmhnL09rZUtTQjgxT1NUMHVnRmNEM1J5VFJCMG9WVzlCMTlk?=
- =?utf-8?B?Zlg4M1dRckt2dS9MV2RDam96K1E4aHQwR2NFbW16ZEw4NlMvTDBQR1ZRdkZE?=
- =?utf-8?B?eUNzU0ljSUVEWlkvdk9Nak1uZ2lmWlZPUlBiRk0yVlRJWUtqc3ZiampQY25i?=
- =?utf-8?B?WndDS0pIUUt5RVVQL1N3RVFZV3NIR1puMkRSMFk4MlFxK0g3YW1MU0xBbkM0?=
- =?utf-8?B?Vk01RktwTGxJVEZmUURZZ1JxRjhNYndXZnY3NXJJZVUzWEdzVC9adXVIZGxy?=
- =?utf-8?B?NHVvQU5JSFpiZklQWEhiUWdxLzhjZGtrdGJjQng1b29HdUlPY21MMDV1enFh?=
- =?utf-8?B?OTJ3WVNwWTNqYkorMktDbkgvWk5VcU5VcUYxMlBiU0liRTZEaGFMdnhSVjBT?=
- =?utf-8?B?ZFJ1NmhSay93WCtwbUplT0d2QzNQYXlOcVM3NWZZekZScGNISWFMenZ2eUVj?=
- =?utf-8?Q?Fc5VGt1q2lzDrv4GA40fTMe5j3FbQGfh/4vigc6hWTzDW?=
-x-ms-exchange-antispam-messagedata-1: exQVDs3VeX403etjQx7Nn71wDOZKMhtdlig=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <4756CB05FBB36A49A55C954AD39DCF34@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3665023D281
+	for <linux-btrfs@vger.kernel.org>; Tue, 27 Jan 2026 19:00:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.150
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1769540449; cv=none; b=ifqBFo+3kgKBJ55yrMco4NY4nvbmkzFniVHk2s/cGj6ZE5F4OnnCNoduT9t8ziO83ohKkQtdgpoBbPL3sQl/0Kq5G7AZIzase2uC/Mkme45WX78bncJN/w6lD4D8NC/5/RMY8z9JTvAYcP99F+Hk3KlIKV/YKlIASOYkw+JsxIY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1769540449; c=relaxed/simple;
+	bh=oS/88Ev6l5eq8RqIi48XNhG3Pr0nMcVnoZaLwI+7NKo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tF9E5Lg3bYWi5SIBk12Z2MGxJ5/Q/Ld2EVtCZygc7HX3OXqNMJf9e45A/yUrry0SO3b8UYkAzmvDSE9NjTas8Pqhs2jxxmZnT7Z3sEuLpBwkcV7friGmgXNtqmRYIgpCAHn93DEQCvozEp8HEiKPsqtIDdaEFFPasrxJBcTnvBo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=cxPJJtus; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=uKzUuRPL; arc=none smtp.client-ip=103.168.172.150
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
+Received: from phl-compute-01.internal (phl-compute-01.internal [10.202.2.41])
+	by mailfout.phl.internal (Postfix) with ESMTP id 48C04EC02A4;
+	Tue, 27 Jan 2026 14:00:46 -0500 (EST)
+Received: from phl-frontend-04 ([10.202.2.163])
+  by phl-compute-01.internal (MEProxy); Tue, 27 Jan 2026 14:00:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+	:content-transfer-encoding:content-type:content-type:date:date
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1769540445;
+	 x=1769626845; bh=Ib+tL2qIiHnTn7mRSWN09pwj3Ucplfl8KZ3/I+h76UE=; b=
+	cxPJJtustOK7pyLOK7febTWWqGr5Ruams9qr3LasErHHPG9nytU8DZfPA0usQEqU
+	KKY2CPHWNo+v0oYdwEAFWaPe3ja6vMCFKf4pQp2gdkfRAlTLvVTVMVfk/Hfoqxt1
+	mrd+r19Mepl8xgSVLxByM6bFrO8XVadhziwjpge1sWsgnnMoF9o5qbH4pqWyT7tR
+	hFUlxvoA+quhkVgcJJ7d8ji14zta3BSvLDGOa9dAu45h8lOValZSB03IejhARtqJ
+	SVqtgc72oMbTaM9X/qkwHEiXxlbHoBgycwu5b58r0JAbBApO/WU2mUypTMvbiPrA
+	ltjchCdj5fzAwDB1c4SCQw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1769540445; x=
+	1769626845; bh=Ib+tL2qIiHnTn7mRSWN09pwj3Ucplfl8KZ3/I+h76UE=; b=u
+	KzUuRPL5VDDBoa1jtlTcKoxGDpoaS2BPentnARRrOmQ3uvxEBvMqPTFvqYtJLBzG
+	RDQ1RMI+ST/kK1yYelra4utf6amf+caVGVjQxvxfynq+B6STUBWbYPI5Idz9WN8U
+	4ObIZYOWoJEYgAmJOYk5rGBIEc0C1nftgw/jqIOGDots1Pp3GyLpc3HLpsvcuZJb
+	9FBJhcaM7RnojX6uFuztup+AoFXlJQn36BrnZ0+3XC5dhNKzyLsWxOx8qd1toHun
+	zFyYxsGIBJFtWHnl81QI9ydHShUICCAMSjeioR/Ihj0zOs3Es8KicDuowEab88GI
+	Je+3KYAtCiY8gUWbTehTQ==
+X-ME-Sender: <xms:XAt5aZf5MZsJlrYnpqSwh0o0N6ov18VqSzqM9l121LbR2PNo4dEkKg>
+    <xme:XAt5aermirUO5a8NYPr4t622b3EhoEit1RPW0jmfBIu140bD5e9biG4USB7k4_Vf4
+    Isw2rhBPxyZGbAZLagFosIA5j2qacHMxLxC2H1ir_fywxwWMRRmJbQ>
+X-ME-Received: <xmr:XAt5af6V0BcUV0xKiXF0J_XCMKpCngc040p8ClhJGpUbNypTDqlHDfRvqIx6P88Bvt1QsmRagt96lQ3ctPMzioPjIMc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdduieduvdejucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
+    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
+    gurhepfffhvfevuffkfhggtggugfgjsehtkeertddttdejnecuhfhrohhmpeeuohhrihhs
+    uceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhepud
+    elhfdthfetuddvtefhfedtiedtteehvddtkedvledtvdevgedtuedutdeitdeinecuvehl
+    uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessg
+    hurhdrihhopdhnsggprhgtphhtthhopeefpdhmohguvgepshhmthhpohhuthdprhgtphht
+    thhopehfughmrghnrghnrgeskhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugi
+    dqsghtrhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehkvghrnhgv
+    lhdqthgvrghmsehfsgdrtghomh
+X-ME-Proxy: <xmx:XAt5acqUhP0iGSqZ_8C5i15693h_lo4VY4gs4MpMuvh2Pzf-CuobqQ>
+    <xmx:XAt5aZhRus_YI9RJqwr2N3N9VHxlsB_q5pJptIsVM-9-Wml01Vce6g>
+    <xmx:XAt5aeLOVOoCjcdSvMoXI_ch1i-szWNADv6K-Xa2qvTtymsxFOR0ZA>
+    <xmx:XAt5aRAsJhoohekkYRxkmNJI9MdaREOfguVvf70IVX15Kkxz1KfZnA>
+    <xmx:XQt5aTL3j-K1PAbjr49-8u-ZjFkhB5OL88sN2nxD8yy5dMmfyH_NQUZS>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 27 Jan 2026 14:00:44 -0500 (EST)
+Date: Tue, 27 Jan 2026 11:00:20 -0800
+From: Boris Burkov <boris@bur.io>
+To: Filipe Manana <fdmanana@kernel.org>
+Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH] btrfs: fix block_group_tree dirty_list corruption
+Message-ID: <20260127190020.GA3450664@zen.localdomain>
+References: <3fd15bae79aae6bb366ecffced32775e8cb4f55a.1769468599.git.boris@bur.io>
+ <CAL3q7H7SoLUDhUcQN=nvhKppb3eYWGCcLaa-Tg401DrVRMHQHA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	/IZZlSMh7jHEd8lxI+IIB1PfcytqjmpPy8Qh2qd4qw0mV8giDSwlaANwWwaGhOQTktoeQ9K9G32YXundW5OWXlz0Y12xjPm5+ZkeccGY7EDF+PtU+r6HBS8YJkfSEs/Sp3k7Mcb/2lRWCLVH+lEKibdZ5CLSHI9ffUDbC730nwAOdvTSJ48adZPhaSNNSGQdX6n1BWqNovsnRPgx8FN8L+7fS8Jdvn00jzHvcI6ECBBFDAdjhrOBfonno72luLzkiOGWz3XwXKldPZMekRTwEsj/dv3/i+4F/39/DTHP8eITxZxL6sKNAB37sZGSwiU8ldUkENsbAy+fOlAaePpt1l4aBSK0i2rf7KZyfzdtxHS4Pv6T28Rgf4EvK/jrKhwAw3qXbiUQBKXeClwk3O3xUsTwQR8jD5C5jShswgD1+v701o9h5wSzimVDrrrsDNH6a2C46wZMEtG6z2q2iQ4vJsSi8wTffMYPe2oNpsmZDYLfou2i1AQQnHK/jgabiuLIXwZw4zCb6joaWxQnGQJkLiQWD7gaIn7wp8U75zF8u9XpcMG/DIhAseHsnxaEApMxxnhYrLuw3Lj96ucuoBK8Tw8eqZYXfMPWvTN/5dTDcbVRqL5d19DYkSRUTEYt/pjv
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: LV8PR04MB8984.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 512a1288-a83f-4bbc-c697-08de5db993f1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Jan 2026 15:34:36.5427
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: U8WsL2l5HJDwrk4t5tvnCuG65zrzcemmBOzvBQ0qvAofk/vd7SUojcHbZHBFQ9iprJQKdZ5yeynWVxeQF5/UJr70KJIVAw+B0tpnHSP4zoI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM8PR04MB7861
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAL3q7H7SoLUDhUcQN=nvhKppb3eYWGCcLaa-Tg401DrVRMHQHA@mail.gmail.com>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.94 / 15.00];
-	ARC_REJECT(1.00)[cv is fail on i=2];
-	MIME_BASE64_TEXT_BOGUS(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[wdc.com,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
-	R_DKIM_ALLOW(-0.20)[wdc.com:s=dkim.wdc.com,sharedspace.onmicrosoft.com:s=selector2-sharedspace-onmicrosoft-com];
+X-Spamd-Result: default: False [-1.66 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	R_DKIM_ALLOW(-0.20)[bur.io:s=fm3,messagingengine.com:s=fm2];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
-	MIME_BASE64_TEXT(0.10)[];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TO_DN_EQ_ADDR_ALL(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21119-lists,linux-btrfs=lfdr.de];
-	RCPT_COUNT_TWO(0.00)[2];
+	DKIM_TRACE(0.00)[bur.io:+,messagingengine.com:+];
+	TAGGED_FROM(0.00)[bounces-21120-lists,linux-btrfs=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	DMARC_NA(0.00)[bur.io];
+	RCPT_COUNT_THREE(0.00)[3];
 	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_FIVE(0.00)[6];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[Johannes.Thumshirn@wdc.com,linux-btrfs@vger.kernel.org];
-	DKIM_TRACE(0.00)[wdc.com:+,sharedspace.onmicrosoft.com:+];
-	NEURAL_HAM(-0.00)[-1.000];
+	FROM_NEQ_ENVFROM(0.00)[boris@bur.io,linux-btrfs@vger.kernel.org];
+	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,suse.com:email,sharedspace.onmicrosoft.com:dkim,wdc.com:email,wdc.com:dkim,wdc.com:mid]
-X-Rspamd-Queue-Id: 2F16497BCA
+	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[zen.localdomain:mid,messagingengine.com:dkim,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,bur.io:email,bur.io:dkim]
+X-Rspamd-Queue-Id: 4B869999CF
 X-Rspamd-Action: no action
 
-T24gMS8yMy8yNiAxMToxOSBBTSwgZmRtYW5hbmFAa2VybmVsLm9yZyB3cm90ZToNCj4gRnJvbTog
-RmlsaXBlIE1hbmFuYSA8ZmRtYW5hbmFAc3VzZS5jb20+DQo+DQo+IFNpbXBsZSBjaGFuZ2VzLCBk
-ZXRhaWxzIGluIHRoZSBjaGFuZ2UgbG9ncy4NCj4NCj4gRmlsaXBlIE1hbmFuYSAoMik6DQo+ICAg
-IGJ0cmZzOiBhYm9ydCB0cmFuc2FjdGlvbiBvbiBlcnJvciBpbiBidHJmc19yZW1vdmVfYmxvY2tf
-Z3JvdXAoKQ0KPiAgICBidHJmczogZG8gbm90IEJVR19PTigpIGluIGJ0cmZzX3JlbW92ZV9ibG9j
-a19ncm91cCgpDQo+DQo+ICAgZnMvYnRyZnMvYmxvY2stZ3JvdXAuYyB8IDI2ICsrKysrKysrKysr
-KysrKysrKysrLS0tLS0tDQo+ICAgZnMvYnRyZnMvdm9sdW1lcy5jICAgICB8ICA3ICsrKy0tLS0N
-Cj4gICAyIGZpbGVzIGNoYW5nZWQsIDIzIGluc2VydGlvbnMoKyksIDEwIGRlbGV0aW9ucygtKQ0K
-Pg0KDQorCWlmICh1bmxpa2VseShyZXQpKQ0KKwkJQVNTRVJUKEJUUkZTX0ZTX0VSUk9SKGZzX2lu
-Zm8pICE9IDApOw0KDQpsb29rcyBzdHJhbmdlIGdpdmVuIEFTU0VSVCgpcyBhcmUgYSBjb25maWcg
-b3B0aW9uLCBidXQgSSd2ZSBjb21waWxlZCBpdCANCndpdGggYW5kIHdpdGhvdXQgYW5kIEdDQyBk
-aWRuJ3QgY29tcGxhaW4uDQoNCg0KQW55d2F5cyBsb29rcyBnb29kLA0KDQpSZXZpZXdlZC1ieTog
-Sm9oYW5uZXMgVGh1bXNoaXJuIDxqb2hhbm5lcy50aHVtc2hpcm5Ad2RjLmNvbT4NCg0KDQo=
+On Tue, Jan 27, 2026 at 03:15:42PM +0000, Filipe Manana wrote:
+> On Mon, Jan 26, 2026 at 11:05 PM Boris Burkov <boris@bur.io> wrote:
+> >
+> > When the incompat flag EXTENT_TREE_V2 is set, we unconditionally add the
+> > block group tree to the switch_commits list before calling
+> > switch_commit_roots, as we do for the tree root and the chunk root.
+> > However, the block group tree uses normal root dirty tracking and in any
+> > transaction that does an allocation and dirties a block group, the block
+> > group root will already be linked to a list by the dirty_list field and
+> > this use of list_add_tail() is invalid and corrupts the prev/next
+> > members of block_group_root->dirty_list.
+> >
+> > This is apparent on a subsequent list_del on the prev if we enable
+> > CONFIG_DEBUG_LIST:
+> > [   32.157161] ------------[ cut here ]------------
+> > [   32.157298] list_del corruption. next->prev should be
+> > ffff958890202538, but was ffff9588992bd538. (next=ffff958890201538)
+> > [   32.157538] WARNING: lib/list_debug.c:65 at 0x0, CPU#3: sync/607
+> > [   32.157712] Modules linked in: btrfs libblake2b xor zlib_deflate
+> > zstd_compress raid6_pq xfs ahci libahci libata virtio_scsi scsi_mod nvme
+> > virtio_net net_failover bsg nvme_core failover scsi_common evdev
+> > sch_fq_codel loop dm_mod configfs nfnetlink bpf_preload dmi_sysfs
+> > qemu_fw_cfg vmw_vsock_virtio_transport vmw_vsock_virtio_transport_common
+> > vsock virtio_rng rng_core ipv6 crc_ccitt autofs4
+> > [   32.158368] CPU: 3 UID: 0 PID: 607 Comm: sync Not tainted 6.18.0 #24
+> > PREEMPT(none)
+> > [   32.158527] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS
+> > 1.17.0-4.fc41 04/01/2014
+> > [   32.158708] RIP: 0010:__list_del_entry_valid_or_report+0x108/0x120
+> > [   32.158870] Code: e9 48 89 ee 67 48 0f b9 3a 31 c0 e9 67 ff ff ff 4c
+> > 89 e7 e8 3a fb c5 ff 48 8d 3d 03 f8 10 01 49 8b 54 24 08 4c 89 e1 48 89
+> > ee <67> 48 0f b9 3a 31 c0 e9 41 ff ff ff 66 2e 0f 1f 84 00 00 00 00 00
+> > [   32.159309] RSP: 0018:ffffaa288287fdd0 EFLAGS: 00010202
+> > [   32.159430] RAX: 0000000000000001 RBX: ffff95889326e800 RCX:
+> > ffff958890201538
+> > [   32.159609] RDX: ffff9588992bd538 RSI: ffff958890202538 RDI:
+> > ffffffff82a41e00
+> > [   32.159781] RBP: ffff958890202538 R08: ffffffff828fc1e8 R09:
+> > 00000000ffffefff
+> > [   32.159973] R10: ffffffff8288c200 R11: ffffffff828e4200 R12:
+> > ffff958890201538
+> > [   32.160153] R13: ffff95889326e958 R14: ffff958895c24000 R15:
+> > ffff958890202538
+> > [   32.160355] FS:  00007f0c28eb5740(0000) GS:ffff958af2bd2000(0000)
+> > knlGS:0000000000000000
+> > [   32.160574] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > [   32.160723] CR2: 00007f0c28e8a3cc CR3: 0000000109942005 CR4:
+> > 0000000000370ef0
+> > [   32.160967] Call Trace:
+> > [   32.161054]  <TASK>
+> > [   32.161119]  switch_commit_roots+0x82/0x1d0 [btrfs]
+> > [   32.161521]  btrfs_commit_transaction+0x968/0x1550 [btrfs]
+> > [   32.161803]  ? btrfs_attach_transaction_barrier+0x23/0x60 [btrfs]
+> > [   32.162114]  __iterate_supers+0xe8/0x190
+> > [   32.162217]  ? __pfx_sync_fs_one_sb+0x10/0x10
+> > [   32.162342]  ksys_sync+0x63/0xb0
+> > [   32.162443]  __do_sys_sync+0xe/0x20
+> > [   32.162535]  do_syscall_64+0x73/0x450
+> > [   32.162641]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+> > [   32.162760] RIP: 0033:0x7f0c28d05d2b
+> > [   32.162881] Code: c3 66 0f 1f 44 00 00 48 8b 15 e9 40 0f 00 f7 d8 64
+> > 89 02 b8 ff ff ff ff eb b8 0f 1f 44 00 00 f3 0f 1e fa b8 a2 00 00 00 0f
+> > 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d bd 40 0f 00 f7 d8 64 89 01 48
+> > [   32.163278] RSP: 002b:00007ffc9d988048 EFLAGS: 00000246 ORIG_RAX:
+> > 00000000000000a2
+> > [   32.163452] RAX: ffffffffffffffda RBX: 00007ffc9d988228 RCX:
+> > 00007f0c28d05d2b
+> > [   32.163614] RDX: 00007f0c28e02301 RSI: 00007ffc9d989b21 RDI:
+> > 00007f0c28dba90d
+> > [   32.163780] RBP: 0000000000000001 R08: 0000000000000001 R09:
+> > 0000000000000000
+> > [   32.163954] R10: 0000000000000000 R11: 0000000000000246 R12:
+> > 000055b96572cb80
+> > [   32.164111] R13: 000055b96572b19f R14: 00007f0c28dfa434 R15:
+> > 000055b96572b034
+> > [   32.164337]  </TASK>
+> > [   32.164404] irq event stamp: 0
+> > [   32.164490] hardirqs last  enabled at (0): [<0000000000000000>] 0x0
+> > [   32.164649] hardirqs last disabled at (0): [<ffffffff81298817>]
+> > copy_process+0xb37/0x2260
+> > [   32.164809] softirqs last  enabled at (0): [<ffffffff81298817>]
+> > copy_process+0xb37/0x2260
+> > [   32.165029] softirqs last disabled at (0): [<0000000000000000>] 0x0
+> > [   32.165222] ---[ end trace 0000000000000000 ]---
+> >
+> > Furthermore, this list corruption eventually (when we happen to add a
+> > new block group) results in getting the switch_commits and
+> > dirty_cowonly_roots lists mixed up and attempting to call update_root
+> > on the tree root which can't be found in the tree root, resulting in a
+> > transaction abort:
+> >
+> > [   87.826960] BTRFS critical (device nvme1n1): unable to find root key (1 0 0) in tree 1
+> > [   87.827271] ------------[ cut here ]------------
+> > [   87.827418] BTRFS: Transaction aborted (error -117)
+> > [   87.827540] WARNING: fs/btrfs/root-tree.c:153 at 0x0, CPU#4: sync/703
+> > [   87.827722] Modules linked in: btrfs libblake2b xor zlib_deflate zstd_compress raid6_pq xfs ahci libahci libata virtio_scsi scsi_mod nvme nvme_core virtio_net bsg net_failover scsi_common failover evdev sch_fq_codel loop dm_mod configfs nfnetlink bpf_preload dmi_sysfs qemu_fw_cfg vmw_vsock_virtio_transport vmw_vsock_virtio_transport_common vsock virtio_rng rng_core ipv6 crc_ccitt autofs4
+> > [   87.828568] CPU: 4 UID: 0 PID: 703 Comm: sync Not tainted 6.18.0 #25 PREEMPT(none)
+> > [   87.828760] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.17.0-4.fc41 04/01/2014
+> > [   87.828974] RIP: 0010:btrfs_update_root+0x296/0x790 [btrfs]
+> > [   87.829218] Code: 99 00 00 00 48 c7 c6 10 5d e0 c0 4c 89 ef e8 81 7c 01 00 41 bc 8b ff ff ff e9 1a ff ff ff 48 8d 3d ff e9 ee ff be 8b ff ff ff <67> 48 0f b9 3a 41 b8 01 00 00 00 eb c3 e8 f8 c6 b4 d8 84 c0 75 8a
+> > [   87.829583] RSP: 0018:ffffa58d035dfd60 EFLAGS: 00010282
+> > [   87.829704] RAX: ffff9a59126ddb68 RBX: ffff9a59126dc000 RCX: 0000000000000000
+> > [   87.829958] RDX: 0000000000000000 RSI: 00000000ffffff8b RDI: ffffffffc0b28270
+> > [   87.830168] RBP: ffff9a5904aec000 R08: 0000000000000000 R09: 00000000ffffefff
+> > [   87.830324] R10: ffffffff9ac8c200 R11: ffffffff9ace4200 R12: 0000000000000001
+> > [   87.830550] R13: ffff9a59041740e8 R14: ffff9a5904aec1f7 R15: ffff9a590fdefaf0
+> > [   87.830750] FS:  00007f54cde6b740(0000) GS:ffff9a5b5a81c000(0000) knlGS:0000000000000000
+> > [   87.830924] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > [   87.831078] CR2: 00007f54cde403cc CR3: 0000000112902004 CR4: 0000000000370ef0
+> > [   87.831274] Call Trace:
+> > [   87.831370]  <TASK>
+> > [   87.831466]  ? _raw_spin_unlock+0x23/0x40
+> > [   87.831575]  commit_cowonly_roots+0x1ad/0x250 [btrfs]
+> > [   87.831787]  ? btrfs_commit_transaction+0x79b/0x1560 [btrfs]
+> > [   87.832016]  btrfs_commit_transaction+0x8aa/0x1560 [btrfs]
+> > [   87.832258]  ? btrfs_attach_transaction_barrier+0x23/0x60 [btrfs]
+> > [   87.832523]  __iterate_supers+0xf1/0x170
+> > [   87.832621]  ? __pfx_sync_fs_one_sb+0x10/0x10
+> > [   87.832736]  ksys_sync+0x63/0xb0
+> > [   87.832835]  __do_sys_sync+0xe/0x20
+> > [   87.832940]  do_syscall_64+0x73/0x450
+> > [   87.833035]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+> > [   87.833174] RIP: 0033:0x7f54cdd05d2b
+> > [   87.833277] Code: c3 66 0f 1f 44 00 00 48 8b 15 e9 40 0f 00 f7 d8 64 89 02 b8 ff ff ff ff eb b8 0f 1f 44 00 00 f3 0f 1e fa b8 a2 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d bd 40 0f 00 f7 d8 64 89 01 48
+> > [   87.833697] RSP: 002b:00007fff1b58ff78 EFLAGS: 00000246 ORIG_RAX: 00000000000000a2
+> > [   87.833896] RAX: ffffffffffffffda RBX: 00007fff1b590158 RCX: 00007f54cdd05d2b
+> > [   87.834072] RDX: 00007f54cde02301 RSI: 00007fff1b592b66 RDI: 00007f54cddba90d
+> > [   87.834272] RBP: 0000000000000001 R08: 0000000000000001 R09: 0000000000000000
+> > [   87.834478] R10: 0000000000000000 R11: 0000000000000246 R12: 000055e07ca96b80
+> > [   87.834646] R13: 000055e07ca9519f R14: 00007f54cddfa434 R15: 000055e07ca95034
+> > [   87.834849]  </TASK>
+> > [   87.834894] irq event stamp: 0
+> > [   87.834997] hardirqs last  enabled at (0): [<0000000000000000>] 0x0
+> > [   87.835165] hardirqs last disabled at (0): [<ffffffff99698797>] copy_process+0xb37/0x21e0
+> > [   87.835338] softirqs last  enabled at (0): [<ffffffff99698797>] copy_process+0xb37/0x21e0
+> > [   87.835557] softirqs last disabled at (0): [<0000000000000000>] 0x0
+> > [   87.835709] ---[ end trace 0000000000000000 ]---
+> > [   87.835824] BTRFS: error (device nvme1n1 state A) in btrfs_update_root:153: errno=-117 Filesystem corrupted
+> > [   87.836040] BTRFS info (device nvme1n1 state EA): forced readonly
+> > [   87.836221] BTRFS warning (device nvme1n1 state EA): Skipping commit of aborted transaction.
+> > [   87.836437] BTRFS: error (device nvme1n1 state EA) in cleanup_transaction:2037: errno=-117 Filesystem corrupted
+> >
+> > Since the block group tree was pulled out of the extent tree and uses
+> > normal root dirty tracking, remove the offending extra list_add. This
+> > fixes the list corruption and the resulting fs corruption.
+> >
+> > Fixes: f7238e5094048 ("btrfs: add support for multiple global roots")
+> 
+> That's the commit that introduced the code this patch is removing,
+> sure, but back then things were fine because the block group root was
+> not getting the flag BTRFS_ROOT_TRACK_DIRTY set.
+> 
+> The correct commit should be the one that adds that flag to the block
+> group root without removing the code that is being removed in this
+> patch, which is:
+> 
+> 14033b08a02916 ("btrfs: don't save block group root into super block")
+
+Good catch, thanks. Fixed that and pushed to for-next.
+
+> 
+> > Signed-off-by: Boris Burkov <boris@bur.io>
+> 
+> With the Fixes tag updated:
+> 
+> Reviewed-by: Filipe Manana <fdmanana@suse.com>
+> 
+> Thanks.
+> 
+> 
+> 
+> > ---
+> >  fs/btrfs/transaction.c | 7 -------
+> >  1 file changed, 7 deletions(-)
+> >
+> > diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+> > index 8aa55cd8a0bf..0b2498749b1e 100644
+> > --- a/fs/btrfs/transaction.c
+> > +++ b/fs/btrfs/transaction.c
+> > @@ -2508,13 +2508,6 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
+> >         list_add_tail(&fs_info->chunk_root->dirty_list,
+> >                       &cur_trans->switch_commits);
+> >
+> > -       if (btrfs_fs_incompat(fs_info, EXTENT_TREE_V2)) {
+> > -               btrfs_set_root_node(&fs_info->block_group_root->root_item,
+> > -                                   fs_info->block_group_root->node);
+> > -               list_add_tail(&fs_info->block_group_root->dirty_list,
+> > -                             &cur_trans->switch_commits);
+> > -       }
+> > -
+> >         switch_commit_roots(trans);
+> >
+> >         ASSERT(list_empty(&cur_trans->dirty_bgs));
+> > --
+> > 2.52.0
+> >
+> >
 
