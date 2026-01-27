@@ -1,82 +1,82 @@
-Return-Path: <linux-btrfs+bounces-21096-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21093-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 0PsWOywueGl7oQEAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21096-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jan 2026 04:17:00 +0100
+	id qFQuEVIueGl7oQEAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21093-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jan 2026 04:17:38 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 528698F7A5
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jan 2026 04:17:00 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id D41248F7CA
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jan 2026 04:17:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 0C3E53091943
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jan 2026 03:11:24 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 00E2A308BE6E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jan 2026 03:11:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A042E2FFDEB;
-	Tue, 27 Jan 2026 03:11:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F33452FF679;
+	Tue, 27 Jan 2026 03:11:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="T+cx5MVg";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="T+cx5MVg"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="OrpSgRmW";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="OrpSgRmW"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F2862EBBB2
-	for <linux-btrfs@vger.kernel.org>; Tue, 27 Jan 2026 03:11:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A38D187FE4
+	for <linux-btrfs@vger.kernel.org>; Tue, 27 Jan 2026 03:11:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769483478; cv=none; b=TtlEq5lNu70i+vBYPQFU7s6XUfOcg3HgMFghUqTVkDTwfURtodmSt3xeT7vS9XIkFdU8qLkyxhnhK/S8/Wtxz+th1rQlGPJ6EuhbVoIcwlBwZfczTHUFDm73Yh134CKSSY5LdWQrh5K2p638CIFR1qthWtUahfOGFDYbgWLxOwI=
+	t=1769483469; cv=none; b=IBkNo1oBpB72MracbFa/QgaQEKjXd3pGOr4kwxzem/i44w0pLfv85TJppg/eAdKU04G1qhysHhTUGNfqCy6zjUp//vXT0LZs/nxzrMkOb2dqvWpApe/kEprSYKiLYNcBqpdujrD+q3nM4Q4bmOc2EFIFActplKFp5lLS+bjJ60w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769483478; c=relaxed/simple;
-	bh=xDEoqhMu4DebQL0f2esCzYekZjcmMv7bqYP+R3z8p4s=;
+	s=arc-20240116; t=1769483469; c=relaxed/simple;
+	bh=7fXKIHvRE6hvNKx1HQhxsI9/AzNgPgfUUWA7pJckH5Q=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=fPDFQMeY9UOUbEh0lW5qqueF4AU26YOwcPsAj/5eL2Pu4ObMhKYQ8TZ8cAhcEoSS23D8uONcj5qatIXB/iHOFkSq8qpd6+S6UYdv4mQJteopYojKGQgVf0ZjlJSlWOlsCRxXIv0A4eGUOQ5/5Zu5IHD2qNnI6q9fUZ3M4Ptf6Ag=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=T+cx5MVg; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=T+cx5MVg; arc=none smtp.client-ip=195.135.223.130
+	 MIME-Version; b=F8W8370B6jU7pd/TNOReL8CIMkLUO6wbS2SOaz28AQAzBAbbvgYJKE+tA8XIywsMiMalATMrkm4feau5doT+pOp8tqDTJdQwrAklfD4ToTa3asXzT6d433/EBvdFNQBBJKYkPpvQCsSv47TJrst2IIaLdg0G9sBuHIsECcv4isc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=OrpSgRmW; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=OrpSgRmW; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id DA87433735
-	for <linux-btrfs@vger.kernel.org>; Tue, 27 Jan 2026 03:11:03 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 83B205BCD9
+	for <linux-btrfs@vger.kernel.org>; Tue, 27 Jan 2026 03:11:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1769483463; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1769483465; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=QdYeW+f0t1fs4+Lw+0MdCHaNI+LPWUs4A6jMmKIqtGo=;
-	b=T+cx5MVgiCHs3P24DBI3kI/BN/PJvqEzpfOHopwGx1JbDNOVNRw2U7J58AaGCf7B97Dvin
-	jUv9zi+p/8vlVydHOYn20dZrW0nynPuoqEA/9ZpMCZBfiMrD61qGTWpmwsYKGgLOVy1FA4
-	Ow7jwzHt9r6bALa7uFGqUafWk5OJ3mY=
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=T+cx5MVg
+	bh=OkYQApzSMbaoHLT05ATb8Yar74OcIgTVVPJnx3ftSwI=;
+	b=OrpSgRmW0Cepqzc/Ae/Slv38gnSjxdB3Hjn6b6m1woHxhvRUkKEt5Qz/h59R1KUIPCe1pi
+	XA8F3Cy+viP+NItYpOZ25PyS3DdHRIevxO1rhOV44iZnkRS7z80DmwKQ4pkEbTSoqDkwSw
+	w29AIyFco59+LnGPgUSov00X7h7k/NA=
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.com header.s=susede1 header.b=OrpSgRmW
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1769483463; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1769483465; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=QdYeW+f0t1fs4+Lw+0MdCHaNI+LPWUs4A6jMmKIqtGo=;
-	b=T+cx5MVgiCHs3P24DBI3kI/BN/PJvqEzpfOHopwGx1JbDNOVNRw2U7J58AaGCf7B97Dvin
-	jUv9zi+p/8vlVydHOYn20dZrW0nynPuoqEA/9ZpMCZBfiMrD61qGTWpmwsYKGgLOVy1FA4
-	Ow7jwzHt9r6bALa7uFGqUafWk5OJ3mY=
+	bh=OkYQApzSMbaoHLT05ATb8Yar74OcIgTVVPJnx3ftSwI=;
+	b=OrpSgRmW0Cepqzc/Ae/Slv38gnSjxdB3Hjn6b6m1woHxhvRUkKEt5Qz/h59R1KUIPCe1pi
+	XA8F3Cy+viP+NItYpOZ25PyS3DdHRIevxO1rhOV44iZnkRS7z80DmwKQ4pkEbTSoqDkwSw
+	w29AIyFco59+LnGPgUSov00X7h7k/NA=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CC1AF13712
-	for <linux-btrfs@vger.kernel.org>; Tue, 27 Jan 2026 03:11:02 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7757313712
+	for <linux-btrfs@vger.kernel.org>; Tue, 27 Jan 2026 03:11:04 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id WEYqHsYseGnFewAAD6G6ig
+	id gOJ/CcgseGnFewAAD6G6ig
 	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Tue, 27 Jan 2026 03:11:02 +0000
+	for <linux-btrfs@vger.kernel.org>; Tue, 27 Jan 2026 03:11:04 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v3 1/9] btrfs: introduce lzo_compress_bio() helper
-Date: Tue, 27 Jan 2026 13:40:34 +1030
-Message-ID: <4257741ffc6e5dabc242a3b732f504c4de1377de.1769482298.git.wqu@suse.com>
+Subject: [PATCH v3 2/9] btrfs: introduce zstd_compress_bio() helper
+Date: Tue, 27 Jan 2026 13:40:35 +1030
+Message-ID: <a6ad07d6acc1f83269c49e8f4fa1486c08263023.1769482298.git.wqu@suse.com>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <cover.1769482298.git.wqu@suse.com>
 References: <cover.1769482298.git.wqu@suse.com>
@@ -87,22 +87,22 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Flag: NO
 X-Spam-Score: -3.01
 X-Spam-Level: 
+X-Spam-Flag: NO
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	DKIM_TRACE(0.00)[suse.com:+];
-	TAGGED_FROM(0.00)[bounces-21096-lists,linux-btrfs=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-21093-lists,linux-btrfs=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
 	RCPT_COUNT_ONE(0.00)[1];
@@ -112,347 +112,258 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[wqu@suse.com,linux-btrfs@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	RCVD_COUNT_FIVE(0.00)[6];
 	NEURAL_HAM(-0.00)[-0.999];
 	TO_DN_NONE(0.00)[];
 	TAGGED_RCPT(0.00)[linux-btrfs];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,suse.com:email,suse.com:dkim,suse.com:mid]
-X-Rspamd-Queue-Id: 528698F7A5
+X-Rspamd-Queue-Id: D41248F7CA
 X-Rspamd-Action: no action
 
 The new helper has the following enhancements against the existing
-lzo_compress_folios()
+zstd_compress_folios()
 
 - Much smaller parameter list
 
   No more shared IN/OUT members, no need to pre-allocate a
   compressed_folios[] array.
 
-  Just a workspace list header and a compressed_bio pointer.
+  Just a workspace and compressed_bio pointer, everything we need can be
+  extracted from that @cb pointer.
 
-  Everything else can be fetched from that @cb pointer.
-
-- Read-to-be-submitted compressed bio
+- Ready-to-be-submitted compressed bio
 
   Although the caller still needs to do some common works like
   rounding up and zeroing the tailing part of the last fs block.
 
-Some workloads are specific to lzo that is not needed with other
-multi-run compression interfaces:
+Overall the workflow is the same as zstd_compress_folios(), but with
+some minor changes:
 
-- Need to write a LZO header or segment header
+- @start/@len is now constant
+  For the current input file offset, use @start + @tot_in instead.
 
-  Use the new write_and_queue_folio() helper to do the bio_add_folio()
-  call and folio switching.
+  The original change of @start and @len makes it pretty hard to know
+  what value we're really comparing to.
 
-- Need to update the LZO header after compression is done
-
-  Use bio_first_folio_all() to grab the first folio and update the header.
-
-- Extra corner case of error handling
-
-  This can happen when we have queued part of a folio and hit an error.
-  In that case those folios will be released by the bio.
-  Thus we can only release the folio that has no queued part.
+- No more @cur_len
+  It's only utilized when switching input buffer.
+  Directly use btrfs_calc_input_length() instead.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
  fs/btrfs/compression.h |   1 +
- fs/btrfs/lzo.c         | 261 +++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 262 insertions(+)
+ fs/btrfs/zstd.c        | 185 +++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 186 insertions(+)
 
 diff --git a/fs/btrfs/compression.h b/fs/btrfs/compression.h
-index e0228017e861..4b63d7e4a9ad 100644
+index 4b63d7e4a9ad..454c8e0461b4 100644
 --- a/fs/btrfs/compression.h
 +++ b/fs/btrfs/compression.h
-@@ -161,6 +161,7 @@ struct list_head *zlib_get_workspace(struct btrfs_fs_info *fs_info, unsigned int
- int lzo_compress_folios(struct list_head *ws, struct btrfs_inode *inode,
- 			u64 start, struct folio **folios, unsigned long *out_folios,
+@@ -172,6 +172,7 @@ void lzo_free_workspace(struct list_head *ws);
+ int zstd_compress_folios(struct list_head *ws, struct btrfs_inode *inode,
+ 			 u64 start, struct folio **folios, unsigned long *out_folios,
  		unsigned long *total_in, unsigned long *total_out);
-+int lzo_compress_bio(struct list_head *ws, struct compressed_bio *cb);
- int lzo_decompress_bio(struct list_head *ws, struct compressed_bio *cb);
- int lzo_decompress(struct list_head *ws, const u8 *data_in,
++int zstd_compress_bio(struct list_head *ws, struct compressed_bio *cb);
+ int zstd_decompress_bio(struct list_head *ws, struct compressed_bio *cb);
+ int zstd_decompress(struct list_head *ws, const u8 *data_in,
  		struct folio *dest_folio, unsigned long dest_pgoff, size_t srclen,
-diff --git a/fs/btrfs/lzo.c b/fs/btrfs/lzo.c
-index bd5ee82080fa..7314ab500005 100644
---- a/fs/btrfs/lzo.c
-+++ b/fs/btrfs/lzo.c
-@@ -214,6 +214,159 @@ static int copy_compressed_data_to_page(struct btrfs_fs_info *fs_info,
- 	return 0;
- }
- 
-+/*
-+ * Write data into @out_folio and queue it into @out_bio.
-+ *
-+ * Return 0 if everything is fine and @total_out will be increased.
-+ * Return <0 for error.
-+ *
-+ * The @out_folio can be NULL after a full folio is queued.
-+ * Thus the caller should check and allocate a new folio when needed.
-+ */
-+static int write_and_queue_folio(struct bio *out_bio,
-+				 struct folio **out_folio,
-+				 u32 *total_out, u32 write_len)
-+{
-+	const u32 fsize = folio_size(*out_folio);
-+	const u32 foffset = offset_in_folio(*out_folio, *total_out);
-+
-+	ASSERT(out_folio && *out_folio);
-+	/* Should not cross folio boundary. */
-+	ASSERT(foffset + write_len <= fsize);
-+
-+	/* We can not use bio_add_folio_nofail() which doesn't do any merge. */
-+	if (!bio_add_folio(out_bio, *out_folio, write_len, foffset)) {
-+		/*
-+		 * We have allocated a bio that havs BTRFS_MAX_COMPRESSED_PAGES
-+		 * vecs, and all ranges inside the same folio should have been
-+		 * merged.
-+		 * If bio_add_folio() still failed, that means we have reached
-+		 * the bvec limits.
-+		 *
-+		 * This should only happen at the beginning of a folio, and
-+		 * caller is responsible for releasing the folio, since it's
-+		 * not yet queued into the bio.
-+		 */
-+		ASSERT(IS_ALIGNED(*total_out, fsize));
-+		return -E2BIG;
-+	}
-+
-+	*total_out += write_len;
-+	/*
-+	 * The full folio has been filled and queued, reset @out_folio to NULL,
-+	 * so that error handling is fully handled by the bio.
-+	 */
-+	if (IS_ALIGNED(*total_out, fsize))
-+		*out_folio = NULL;
-+	return 0;
-+}
-+
-+/*
-+ * Will do:
-+ *
-+ * - Write a segment header into the destination
-+ * - Copy the compressed buffer into the destination
-+ * - Make sure we have enough space in the last sector to fit a segment header
-+ *   If not, we will pad at most (LZO_LEN (4)) - 1 bytes of zeros.
-+ * - If a full folio is filled, it will be queued into @out_bio, and @out_folio
-+ *   will be updated.
-+ *
-+ * Will allocate new pages when needed.
-+ *
-+ * @out_bio:		The bio that will contain all the compressed data.
-+ * @compressed_data:	The compressed data of this segment.
-+ * @compressed_size:	The size of the compressed data.
-+ * @out_folio:		The current output folio, will be updated if a new
-+ *			folio is allocated.
-+ * @total_out:		The total bytes of current output.
-+ * @max_out:		The maximum size of the compressed data.
-+ */
-+static int copy_compressed_data_to_bio(struct btrfs_fs_info *fs_info,
-+				       struct bio *out_bio,
-+				       const char *compressed_data,
-+				       size_t compressed_size,
-+				       struct folio **out_folio,
-+				       u32 *total_out, u32 max_out)
-+{
-+	const u32 sectorsize = fs_info->sectorsize;
-+	const u32 sectorsize_bits = fs_info->sectorsize_bits;
-+	const u32 fsize = btrfs_min_folio_size(fs_info);
-+	const u32 old_size = out_bio->bi_iter.bi_size;
-+	u32 copy_start;
-+	u32 sector_bytes_left;
-+	char *kaddr;
-+	int ret;
-+
-+	ASSERT(out_folio);
-+
-+	/* There should be at least a lzo header queued. */
-+	ASSERT(old_size);
-+	ASSERT(old_size == *total_out);
-+
-+	/*
-+	 * We never allow a segment header crossing sector boundary, previous
-+	 * run should ensure we have enough space left inside the sector.
-+	 */
-+	ASSERT((old_size >> sectorsize_bits) == (old_size + LZO_LEN - 1) >> sectorsize_bits);
-+
-+	if (!*out_folio) {
-+		*out_folio = btrfs_alloc_compr_folio(fs_info);
-+		if (!*out_folio)
-+			return -ENOMEM;
-+	}
-+
-+	/* Write the segment header first. */
-+	kaddr = kmap_local_folio(*out_folio, offset_in_folio(*out_folio, *total_out));
-+	write_compress_length(kaddr, compressed_size);
-+	kunmap_local(kaddr);
-+	ret = write_and_queue_folio(out_bio, out_folio, total_out, LZO_LEN);
-+	if (ret < 0)
-+		return ret;
-+
-+	copy_start = *total_out;
-+
-+	/* Copy compressed data. */
-+	while (*total_out - copy_start < compressed_size) {
-+		u32 copy_len = min_t(u32, sectorsize - *total_out % sectorsize,
-+				     copy_start + compressed_size - *total_out);
-+		u32 foffset = *total_out & (fsize - 1);
-+
-+		/* With the range copied, we're larger than the original range. */
-+		if (((*total_out + copy_len) >> sectorsize_bits) >=
-+		    max_out >> sectorsize_bits)
-+			return -E2BIG;
-+
-+		if (!*out_folio) {
-+			*out_folio = btrfs_alloc_compr_folio(fs_info);
-+			if (!*out_folio)
-+				return -ENOMEM;
-+		}
-+
-+		kaddr = kmap_local_folio(*out_folio, foffset);
-+		memcpy(kaddr, compressed_data + *total_out - copy_start, copy_len);
-+		kunmap_local(kaddr);
-+		ret = write_and_queue_folio(out_bio, out_folio, total_out, copy_len);
-+		if (ret < 0)
-+			return ret;
-+	}
-+
-+	/*
-+	 * Check if we can fit the next segment header into the remaining space
-+	 * of the sector.
-+	 */
-+	sector_bytes_left = round_up(*total_out, sectorsize) - *total_out;
-+	if (sector_bytes_left >= LZO_LEN || sector_bytes_left == 0)
-+		return 0;
-+
-+	ASSERT(*out_folio);
-+
-+	/* The remaining size is not enough, pad it with zeros */
-+	folio_zero_range(*out_folio, offset_in_folio(*out_folio, *total_out),
-+			 sector_bytes_left);
-+	return write_and_queue_folio(out_bio, out_folio, total_out,
-+				     sector_bytes_left);
-+}
-+
- int lzo_compress_folios(struct list_head *ws, struct btrfs_inode *inode,
- 			u64 start, struct folio **folios, unsigned long *out_folios,
- 			unsigned long *total_in, unsigned long *total_out)
-@@ -310,6 +463,114 @@ int lzo_compress_folios(struct list_head *ws, struct btrfs_inode *inode,
+diff --git a/fs/btrfs/zstd.c b/fs/btrfs/zstd.c
+index 7fad1e299c7a..ce204a9300b5 100644
+--- a/fs/btrfs/zstd.c
++++ b/fs/btrfs/zstd.c
+@@ -585,6 +585,191 @@ int zstd_compress_folios(struct list_head *ws, struct btrfs_inode *inode,
  	return ret;
  }
  
-+int lzo_compress_bio(struct list_head *ws, struct compressed_bio *cb)
++int zstd_compress_bio(struct list_head *ws, struct compressed_bio *cb)
 +{
 +	struct btrfs_inode *inode = cb->bbio.inode;
 +	struct btrfs_fs_info *fs_info = inode->root->fs_info;
 +	struct workspace *workspace = list_entry(ws, struct workspace, list);
++	struct address_space *mapping = inode->vfs_inode.i_mapping;
 +	struct bio *bio = &cb->bbio.bio;
++	zstd_cstream *stream;
++	int ret = 0;
++	struct folio *in_folio = NULL;  /* The current folio to read. */
++	struct folio *out_folio = NULL; /* The current folio to write to. */
++	unsigned long tot_in = 0;
++	unsigned long tot_out = 0;
 +	const u64 start = cb->start;
 +	const u32 len = cb->len;
-+	const u32 sectorsize = fs_info->sectorsize;
++	const u64 end = start + len;
++	const u32 blocksize = fs_info->sectorsize;
 +	const u32 min_folio_size = btrfs_min_folio_size(fs_info);
-+	struct address_space *mapping = inode->vfs_inode.i_mapping;
-+	struct folio *folio_in = NULL;
-+	struct folio *folio_out = NULL;
-+	char *sizes_ptr;
-+	int ret = 0;
-+	/* Points to the file offset of input data */
-+	u64 cur_in = start;
-+	/* Points to the current output byte */
-+	u32 total_out = 0;
 +
-+	ASSERT(bio->bi_iter.bi_size == 0);
-+	ASSERT(len);
++	workspace->params = zstd_get_btrfs_parameters(workspace->req_level, len);
 +
-+	folio_out = btrfs_alloc_compr_folio(fs_info);
-+	if (!folio_out)
-+		return -ENOMEM;
++	/* Initialize the stream */
++	stream = zstd_init_cstream(&workspace->params, len, workspace->mem,
++			workspace->size);
++	if (unlikely(!stream)) {
++		btrfs_err(fs_info,
++	"zstd compression init level %d failed, root %llu inode %llu offset %llu",
++			  workspace->req_level, btrfs_root_id(inode->root),
++			  btrfs_ino(inode), start);
++		ret = -EIO;
++		goto out;
++	}
 +
-+	/* Queue a segment header first. */
-+	ret = write_and_queue_folio(bio, &folio_out, &total_out, LZO_LEN);
-+	/* The first header should not fail. */
-+	ASSERT(ret == 0);
++	/* map in the first page of input data */
++	ret = btrfs_compress_filemap_get_folio(mapping, start, &in_folio);
++	if (ret < 0)
++		goto out;
++	workspace->in_buf.src = kmap_local_folio(in_folio, offset_in_folio(in_folio, start));
++	workspace->in_buf.pos = 0;
++	workspace->in_buf.size = btrfs_calc_input_length(in_folio, end, start);
 +
-+	while (cur_in < start + len) {
-+		char *data_in;
-+		const u32 sectorsize_mask = sectorsize - 1;
-+		u32 sector_off = (cur_in - start) & sectorsize_mask;
-+		u32 in_len;
-+		size_t out_len;
++	/* Allocate and map in the output buffer */
++	out_folio = btrfs_alloc_compr_folio(fs_info);
++	if (out_folio == NULL) {
++		ret = -ENOMEM;
++		goto out;
++	}
++	workspace->out_buf.dst = folio_address(out_folio);
++	workspace->out_buf.pos = 0;
++	workspace->out_buf.size = min_folio_size;
 +
-+		/* Get the input page first */
-+		if (!folio_in) {
-+			ret = btrfs_compress_filemap_get_folio(mapping, cur_in, &folio_in);
-+			if (ret < 0)
-+				goto out;
-+		}
++	while (1) {
++		size_t ret2;
 +
-+		/* Compress at most one sector of data each time */
-+		in_len = min_t(u32, start + len - cur_in, sectorsize - sector_off);
-+		ASSERT(in_len);
-+		data_in = kmap_local_folio(folio_in, offset_in_folio(folio_in, cur_in));
-+		ret = lzo1x_1_compress(data_in, in_len,
-+				       workspace->cbuf, &out_len,
-+				       workspace->mem);
-+		kunmap_local(data_in);
-+		if (unlikely(ret < 0)) {
-+			/* lzo1x_1_compress never fails. */
++		ret2 = zstd_compress_stream(stream, &workspace->out_buf,
++				&workspace->in_buf);
++		if (unlikely(zstd_is_error(ret2))) {
++			btrfs_warn(fs_info,
++"zstd compression level %d failed, error %d root %llu inode %llu offset %llu",
++				   workspace->req_level, zstd_get_error_code(ret2),
++				   btrfs_root_id(inode->root), btrfs_ino(inode),
++				   start + tot_in);
 +			ret = -EIO;
 +			goto out;
 +		}
 +
-+		ret = copy_compressed_data_to_bio(fs_info, bio, workspace->cbuf, out_len,
-+						  &folio_out, &total_out, len);
-+		if (ret < 0)
-+			goto out;
-+
-+		cur_in += in_len;
-+
-+		/*
-+		 * Check if we're making it bigger after two sectors.  And if
-+		 * it is so, give up.
-+		 */
-+		if (cur_in - start > sectorsize * 2 && cur_in - start < total_out) {
++		/* Check to see if we are making it bigger */
++		if (tot_in + workspace->in_buf.pos > blocksize * 2 &&
++		    tot_in + workspace->in_buf.pos < tot_out + workspace->out_buf.pos) {
 +			ret = -E2BIG;
 +			goto out;
 +		}
 +
-+		/* Check if we have reached input folio boundary. */
-+		if (IS_ALIGNED(cur_in, min_folio_size)) {
-+			folio_put(folio_in);
-+			folio_in = NULL;
++		/* Check if we need more output space */
++		if (workspace->out_buf.pos >= workspace->out_buf.size) {
++			tot_out += min_folio_size;
++			if (tot_out >= len) {
++				ret = -E2BIG;
++				goto out;
++			}
++			/* Queue the current foliot into the bio. */
++			if (!bio_add_folio(bio, out_folio, folio_size(out_folio), 0)) {
++				ret = -E2BIG;
++				goto out;
++			}
++
++			out_folio = btrfs_alloc_compr_folio(fs_info);
++			if (out_folio == NULL) {
++				ret = -ENOMEM;
++				goto out;
++			}
++			workspace->out_buf.dst = folio_address(out_folio);
++			workspace->out_buf.pos = 0;
++			workspace->out_buf.size = min_folio_size;
++		}
++
++		/* We've reached the end of the input */
++		if (tot_in + workspace->in_buf.pos >= len) {
++			tot_in += workspace->in_buf.pos;
++			break;
++		}
++
++		/* Check if we need more input */
++		if (workspace->in_buf.pos >= workspace->in_buf.size) {
++			u64 cur;
++
++			tot_in += workspace->in_buf.size;
++			cur = start + tot_in;
++
++			kunmap_local(workspace->in_buf.src);
++			workspace->in_buf.src = NULL;
++			folio_put(in_folio);
++
++			ret = btrfs_compress_filemap_get_folio(mapping, cur, &in_folio);
++			if (ret < 0)
++				goto out;
++			workspace->in_buf.src = kmap_local_folio(in_folio,
++							 offset_in_folio(in_folio, cur));
++			workspace->in_buf.pos = 0;
++			workspace->in_buf.size = btrfs_calc_input_length(in_folio, end, cur);
 +		}
 +	}
-+	/*
-+	 * The last folio is already queued. Bio is responsible for
-+	 * freeing those folios now.
-+	 */
-+	folio_out = NULL;
++	while (1) {
++		size_t ret2;
 +
-+	/* Store the size of all chunks of compressed data */
-+	sizes_ptr = kmap_local_folio(bio_first_folio_all(bio), 0);
-+	write_compress_length(sizes_ptr, total_out);
-+	kunmap_local(sizes_ptr);
-+out:
-+	/*
-+	 * We can only free the folio that has no part queued into the bio.
-+	 *
-+	 * As any folio that is already queued into bio will be released by
-+	 * the endio function of bio.
-+	 */
-+	if (folio_out && IS_ALIGNED(total_out, min_folio_size)) {
-+		btrfs_free_compr_folio(folio_out);
-+		folio_out = NULL;
++		ret2 = zstd_end_stream(stream, &workspace->out_buf);
++		if (unlikely(zstd_is_error(ret2))) {
++			btrfs_err(fs_info,
++"zstd compression end level %d failed, error %d root %llu inode %llu offset %llu",
++				  workspace->req_level, zstd_get_error_code(ret2),
++				  btrfs_root_id(inode->root), btrfs_ino(inode),
++				  start + tot_in);
++			ret = -EIO;
++			goto out;
++		}
++		/* Queue the remaining part of the output folio into bio. */
++		if (ret2 == 0) {
++			tot_out += workspace->out_buf.pos;
++			if (tot_out >= len) {
++				ret = -E2BIG;
++				goto out;
++			}
++			if (!bio_add_folio(bio, out_folio, workspace->out_buf.pos, 0)) {
++				ret = -E2BIG;
++				goto out;
++			}
++			out_folio = NULL;
++			break;
++		}
++		tot_out += min_folio_size;
++		if (tot_out >= len) {
++			ret = -E2BIG;
++			goto out;
++		}
++		if (!bio_add_folio(bio, out_folio, folio_size(out_folio), 0)) {
++			ret = -E2BIG;
++			goto out;
++		}
++		out_folio = btrfs_alloc_compr_folio(fs_info);
++		if (out_folio == NULL) {
++			ret = -ENOMEM;
++			goto out;
++		}
++		workspace->out_buf.dst = folio_address(out_folio);
++		workspace->out_buf.pos = 0;
++		workspace->out_buf.size = min_folio_size;
 +	}
-+	if (folio_in)
-+		folio_put(folio_in);
++
++	if (tot_out >= tot_in) {
++		ret = -E2BIG;
++		goto out;
++	}
++
++	ret = 0;
++	ASSERT(tot_out == bio->bi_iter.bi_size);
++out:
++	if (out_folio)
++		btrfs_free_compr_folio(out_folio);
++	if (workspace->in_buf.src) {
++		kunmap_local(workspace->in_buf.src);
++		folio_put(in_folio);
++	}
 +	return ret;
 +}
 +
- static struct folio *get_current_folio(struct compressed_bio *cb, struct folio_iter *fi,
- 				       u32 *cur_folio_index, u32 cur_in)
+ int zstd_decompress_bio(struct list_head *ws, struct compressed_bio *cb)
  {
+ 	struct btrfs_fs_info *fs_info = cb_to_fs_info(cb);
 -- 
 2.52.0
 
