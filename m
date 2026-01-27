@@ -1,404 +1,480 @@
-Return-Path: <linux-btrfs+bounces-21124-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21125-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id uDtFCPQfeWkQvgEAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21124-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jan 2026 21:28:36 +0100
+	id yFbWBXUjeWndvgEAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21125-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jan 2026 21:43:33 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 342E29A5C4
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jan 2026 21:28:35 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EAFF9A6BD
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jan 2026 21:43:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 1E7AD3017519
-	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jan 2026 20:28:34 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 4946F3033500
+	for <lists+linux-btrfs@lfdr.de>; Tue, 27 Jan 2026 20:42:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C201136EAA7;
-	Tue, 27 Jan 2026 20:28:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8E1536D4EB;
+	Tue, 27 Jan 2026 20:42:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="mH6eBR76";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="SSfeOuPw"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dcIQxbqk"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fout-a4-smtp.messagingengine.com (fout-a4-smtp.messagingengine.com [103.168.172.147])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f195.google.com (mail-yw1-f195.google.com [209.85.128.195])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C93132F747
-	for <linux-btrfs@vger.kernel.org>; Tue, 27 Jan 2026 20:28:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.147
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3116B23C503
+	for <linux-btrfs@vger.kernel.org>; Tue, 27 Jan 2026 20:42:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769545712; cv=none; b=bqCaWKAICb9222ykFCIsdAzN6BhjMjC5SQ/Nnld4uv9qIc2gYcwmsjPeSWgXACdfbgrclB6J8+HSq4GO2KRrL0XDnrsn21LhnLemEhh12o3f5dSeGESjToBLrxl/e9EoYJLjVc6JF0xyowsKXytZ1wSvD72t9wrZkgn7nlwGn9o=
+	t=1769546554; cv=none; b=bSAd/vG6UWX6LsbTLw4bhTAkkuPMNnWvAOIk7pGLwDci6aZIY1s6gECx76AtmmdSrrSl6RTqnqR+n3KlhigwEkFr+Bx4WbR8IDfjB7yqUFl8rxWB3Y/Jvl9nfxMzG2RqsObYuBhBeIXfp9xvTP1MNf28fpBkqAComd/UI1VaKlY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769545712; c=relaxed/simple;
-	bh=oADJe8HUjAJHiQPoSGtH656pHkAfjDVNXEZTnzwoUqw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PDJ70jfd4CZYlF9l+PLQPBLTj+rAdycjmYW5InPNza+bFkatrzA4Z/lYmAA1OAdxjln+pFojcwFMIn/maOsMnxE3nTORItM2uv6AnQZotBN/UNvkHjJYkOxRgy7XvXvJ9jacuU9zl91/Ymci/L2lTT+dLs9c02hEcWcI+2KnDgc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=mH6eBR76; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=SSfeOuPw; arc=none smtp.client-ip=103.168.172.147
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-03.internal (phl-compute-03.internal [10.202.2.43])
-	by mailfout.phl.internal (Postfix) with ESMTP id D7F95EC00D2;
-	Tue, 27 Jan 2026 15:28:29 -0500 (EST)
-Received: from phl-frontend-03 ([10.202.2.162])
-  by phl-compute-03.internal (MEProxy); Tue, 27 Jan 2026 15:28:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1769545709; x=1769632109; bh=AgTI2F0vln
-	7bCToEYBy4pbIHzVMUy+BfTKi64tpdI00=; b=mH6eBR76C2epJ1Ott+3ppoQlnh
-	ECEcfcE9lZAlcPLN79b5Px/FUr+dQBzpmKErtMcP2ko3BmHmNhWLwScMtW1AE92h
-	+HqN3GfH2HhHv8Hkpsn1J6mA0riSNPIGfRgipCv+96ybkiI0ebCh2ufwTqZN1Zg3
-	VKCxUdo9Zd9t9f02MnHeIfZVZbnJPem5P9Xr2yfGDfF+jBr/wZ7VxVr27qENFZWP
-	w5vJbeGm5Xjg4PEVh9GVcw6q/aK8BKyn60chP84DvwzMQBc4GXl60cB3cYTIyLW8
-	k2bBGZOY+i2cXMEG0YdTMpSMzybIGA3L/dqKYmQ2LUwwdB+1fUSuJE27eLdg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-	1769545709; x=1769632109; bh=AgTI2F0vln7bCToEYBy4pbIHzVMUy+BfTKi
-	64tpdI00=; b=SSfeOuPwWScdya2lCnRhEivtO9SlpvQvlkpH5XbDIyfGeLvttCo
-	WIYS4XGA/s6QypL5zCXUjf5cc745QkTlmdKT9UbKSv2Tw5xyf/reQ/wSp9O0gAIY
-	2SVS+n/aCB8bWLHW05P5lIaLdChswaP04qod3y1YxNWVOoiuLk0B56fvpfTwoLx3
-	aXM4y8Aqq9XOt9g5Yo1rLS4Zqclm5KGVfLguKJDaviqf9Yf9EBtZgAlBy02a8p93
-	00Ie7wyNLksIeyTCJ9fsK6PFPw9Ytzo/IXDWvPtc+5UGz0HQc4RhQFGy4mromNWJ
-	XZnjw30qzpHR1sJX4QnQUHTJEo84J/+Tn8g==
-X-ME-Sender: <xms:7R95aaDPk4n5KzQbwGfH6fNUWBjQoNRflrjwOgUH4PFrofcONarSSg>
-    <xme:7R95aajGjGA2m_UTQJH8jRtJqVIzddeJZd2xywz3GRAuxce1rRmSByCcvvUH-4VoG
-    nAb4scTBQOSea4net9JULHU6zysh6akZbQasRUZc7mblH0jSTiZ1bQ>
-X-ME-Received: <xmr:7R95abN7lJ0vJqiXqRh7-ukEZ2DECWO8hhV68Z62S8MrPvyKSJL9wyTNOqEUKIQR-r9ZHDIkJ2zL4d8GBOzpJaSoSfM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgdduiedugeehucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehorhhishcu
-    uehurhhkohhvuceosghorhhishessghurhdrihhoqeenucggtffrrghtthgvrhhnpeeite
-    ffhedtieetfeeffeelhedtheevheeviefftdethffggfeikeeuiefggedvjeenucffohhm
-    rghinhepsghipghithgvrhdrsghinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
-    hmpehmrghilhhfrhhomhepsghorhhishessghurhdrihhopdhnsggprhgtphhtthhopedv
-    pdhmohguvgepshhmthhpohhuthdprhgtphhtthhopeifqhhusehsuhhsvgdrtghomhdprh
-    gtphhtthhopehlihhnuhigqdgsthhrfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:7R95aT7GOery1ELlmbHQ2ygSSyDDgBdvWdib4Ljbse0RyycAYVvNXg>
-    <xmx:7R95aR2aoxGddo0kC7TUglcqcs_HeLbaA5uZ5PqAdTWKmRKsZMsdwQ>
-    <xmx:7R95acaXclUYsbsIQ9ck9YNi3Sln6581wG478o73VhIjFKUoG6PCHA>
-    <xmx:7R95aRA2Q9Dp4T7_Y2iK759J4fgXgrc8aW8W9cjcvAs72mvlw15xxw>
-    <xmx:7R95aUM0M1ejfsY3n2sJA74fYg4le-20MmKWIZx247x5ZVgi5TmDtGRa>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 27 Jan 2026 15:28:29 -0500 (EST)
-Date: Tue, 27 Jan 2026 12:28:05 -0800
-From: Boris Burkov <boris@bur.io>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH v3 8/9] btrfs: get rid of compressed_folios[] usage for
- encoded writes
-Message-ID: <20260127202805.GA3504710@zen.localdomain>
-References: <cover.1769482298.git.wqu@suse.com>
- <9781beb3fa2948d125d16393d755c60096b855e8.1769482298.git.wqu@suse.com>
+	s=arc-20240116; t=1769546554; c=relaxed/simple;
+	bh=cc1KQ9PQZ14lyaNNFGa4Ri+JhCP/kuy+FIrbBbMt8F8=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=LSerDFzKX6YvwRuoUn6+9OKlzf4sggbLyfG7tB09WlfsLaG/O8f84rvhJEw9uP/9ygLU3g888Mu3YOnnHASFoie6nvvE/a5M+ioNAR93iwb7D0qOrBI3tVoRDoJyT6tE4j9f0JlbEfEy6oLHmrvoMNf0cAmONbsX5/MJdBCSD+4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dcIQxbqk; arc=none smtp.client-ip=209.85.128.195
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f195.google.com with SMTP id 00721157ae682-790b7b3e594so64263197b3.3
+        for <linux-btrfs@vger.kernel.org>; Tue, 27 Jan 2026 12:42:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1769546551; x=1770151351; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=AjyY1OpNeRIU+E3diG1GNpfWTirDz9SA7vO6rfT6AAY=;
+        b=dcIQxbqkRsac3QjsfTi/jeNus+GKq0EXvHliX4g05PWXrkSoM22of/yBTXEHZ4uDpP
+         8/Ai/zQ2/wg/LaMBkADZXzwbxZKfsqn9y0D7L1JKCBW86PpD4RpdliGhg4mlqGIiCGwm
+         0zDe5Ba4CI49heNhCnqF2sh6nkOphlFs5DZu6A+lF7Qh2haDCO0GDFhw1bgEfXuS33QU
+         ERH6V25ehConH3vr/IqSvmXfpBXSHjy1Tc9CX9RLF5dJ0xNR0RwS1TxU/SuekQ6GzrFE
+         gLmLXnFWbfkyBBHOYqX0fmXvUUCrvAfp0oXA4HM2QNo4qv+nPEzquQYyhAfTBZ4vSvX4
+         3puw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1769546551; x=1770151351;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=AjyY1OpNeRIU+E3diG1GNpfWTirDz9SA7vO6rfT6AAY=;
+        b=Dizm0kEoN3p1gsMXBPDbtWh/q57EsXPvdZ8gSJ5cWUC0dmpsglaXC7GDCE2PsG2G+4
+         q3KTJlZBo73x7Op48Uhc6bdwvXKgkUfJFzzVdF1C6QrDiDCsIcYc1x+lcHQd1DboTSVM
+         hvZc6w2HCCtHAqoBQDLcsQ9QE63KTVX07kR+wRHKKoG4F4tD0NISa7CoAZ2HUhYpD4nE
+         RIAw0z1AyFpW4OhFWZsYud4EsRHDEYgqVEXQgyniD4IIQsL9OrNSGFx3vvEBSmLleDmY
+         /D1It3Yh5TuAqicsR75gkL4r8XTkVeQYOjNV5FrRAyUT50teV2XCPW3koRl6oOcpfBwY
+         deLQ==
+X-Gm-Message-State: AOJu0YyAt1dzzuFYl+xqBmDEGvxg1Sc7yD+CfHFQWSLjv+aqziX3Gf0i
+	m9Gyrllmkbdk1n07xWZk36XmZitLMb2vzAy0Qtltwd4VcBITNhGdI/Eeoj/7kYfo
+X-Gm-Gg: AZuq6aILIOwWnbwYTcjXiNQpzgX+0Y6eBFDUIWE3Vff5tBOOb/zgq/ODbTPY2AoTOXG
+	ks+BRKJowO3Nhs8keJmtfduZHNbg0udCuSVCpvztaj/nXwM8NrSueXxnye1z/MN/e+kOdRn1iZq
+	CZ3tFCz/l1+2xDy2KQho5KrQqoiUMctJGKt42l//mmKufWhlMEQtbLvwwP+wemm0zIU86+eBvh7
+	YEIaC0jSgoQWvLRQB+LT3EiT5exbnsyDtAneyjSJivlxl9L6UcnPe2tqLz8cL4msjmFucSRVPTq
+	Uxw71+7fTVZ3+aAT4ORKtKGWq7at2PNuCbtQR0oig3Tr4zn0ctwnh8vhKY38OvLlhxdVqjzMZoa
+	j3MKLzwfud1U5iL9odaULB6eg3+aN+FMfVW/UzJLeNYefCU4aNKId06kWrLW99N6O2ozMEGxDN+
+	Ph+Qetgw==
+X-Received: by 2002:a05:690c:f09:b0:794:77da:aa2a with SMTP id 00721157ae682-7947ac1a7b1mr24058567b3.42.1769546550664;
+        Tue, 27 Jan 2026 12:42:30 -0800 (PST)
+Received: from localhost ([2a03:2880:25ff:73::])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-7948278f079sm2241547b3.19.2026.01.27.12.42.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 27 Jan 2026 12:42:30 -0800 (PST)
+From: Leo Martins <loemra.dev@gmail.com>
+To: linux-btrfs@vger.kernel.org,
+	kernel-team@fb.com
+Subject: [PATCH] btrfs: prevent COW amplification during btrfs_search_slot
+Date: Tue, 27 Jan 2026 12:42:24 -0800
+Message-ID: <ba53d279b8bb3456f61cb8a4f15d9a4b1e618d0e.1769546089.git.loemra.dev@gmail.com>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9781beb3fa2948d125d16393d755c60096b855e8.1769482298.git.wqu@suse.com>
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[bur.io:s=fm3,messagingengine.com:s=fm2];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21124-lists,linux-btrfs=lfdr.de];
-	DKIM_TRACE(0.00)[bur.io:+,messagingengine.com:+];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	RCPT_COUNT_TWO(0.00)[2];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	DMARC_NA(0.00)[bur.io];
-	RCPT_COUNT_TWO(0.00)[2];
+	TAGGED_FROM(0.00)[bounces-21125-lists,linux-btrfs=lfdr.de];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[boris@bur.io,linux-btrfs@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	RCVD_COUNT_FIVE(0.00)[6];
-	TAGGED_RCPT(0.00)[linux-btrfs];
-	NEURAL_HAM(-0.00)[-1.000];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_SOME(0.00)[]
-X-Rspamd-Queue-Id: 342E29A5C4
+	FREEMAIL_FROM(0.00)[gmail.com];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[loemradev@gmail.com,linux-btrfs@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCVD_COUNT_FIVE(0.00)[5];
+	NEURAL_HAM(-0.00)[-1.000];
+	TO_DN_NONE(0.00)[];
+	TAGGED_RCPT(0.00)[linux-btrfs];
+	MID_RHS_MATCH_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 6EAFF9A6BD
 X-Rspamd-Action: no action
 
-On Tue, Jan 27, 2026 at 01:40:41PM +1030, Qu Wenruo wrote:
-> Currently only encoded writes utilized btrfs_submit_compressed_write(),
-> which utilized compressed_bio::compressed_folios[] array.
-> 
-> Change the only call site to call the new helper,
-> btrfs_alloc_compressed_write(), to allocate a compressed bio, then queue
-> needed folios into that bio, and finally call
-> btrfs_submit_compressed_write() to submit the compreseed bio.
-> 
-> This change has one hidden benefit, previously we use
-> btrfs_alloc_folio_array() for the folios of
-> btrfs_submit_compressed_read(), which doesn't utilize the compression
-> page pool for bs == ps cases.
-> 
-> Now we call btrfs_alloc_compr_folio() which will benefit from page pool.
-> 
-> The other obvious benefit is that we no longer need to allocate an array
-> to hold all those folios, thus one less error path.
+I've been investigating enospcs at Meta and have observed a strange
+pattern where filesystems are enospcing with lots of unallocated space
+(> 100G). Sample dmesg dump at bottom of message.
 
-This review is from claude using Chris's review prompts with some light
-editing / checking by me.
+btrfs_insert_delayed_dir_index is attempting to migrate some reservation
+from the transaction block reserve and finding it exhausted leading to a
+warning and enospc. This is a bug as the reservations are meant to be
+worst case. It should be impossible to exhaust the transaction block
+reserve.
 
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  fs/btrfs/compression.c | 53 +++++++++++++++++----------------------
->  fs/btrfs/compression.h |  6 ++---
->  fs/btrfs/inode.c       | 56 +++++++++++++++++++++++-------------------
->  3 files changed, 56 insertions(+), 59 deletions(-)
-> 
-> diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-> index c018b3c4554e..205f6828c1e6 100644
-> --- a/fs/btrfs/compression.c
-> +++ b/fs/btrfs/compression.c
-> @@ -304,25 +304,6 @@ static void end_bbio_compressed_write(struct btrfs_bio *bbio)
->  	bio_put(&cb->bbio.bio);
->  }
->  
-> -static void btrfs_add_compressed_bio_folios(struct compressed_bio *cb)
-> -{
-> -	struct bio *bio = &cb->bbio.bio;
-> -	u32 offset = 0;
-> -	unsigned int findex = 0;
-> -
-> -	while (offset < cb->compressed_len) {
-> -		struct folio *folio = cb->compressed_folios[findex];
-> -		u32 len = min_t(u32, cb->compressed_len - offset, folio_size(folio));
-> -		int ret;
-> -
-> -		/* Maximum compressed extent is smaller than bio size limit. */
-> -		ret = bio_add_folio(bio, folio, len, 0);
-> -		ASSERT(ret);
-> -		offset += len;
-> -		findex++;
-> -	}
-> -}
-> -
->  /*
->   * worker function to build and submit bios for previously compressed pages.
->   * The corresponding pages in the inode should be marked for writeback
-> @@ -333,34 +314,44 @@ static void btrfs_add_compressed_bio_folios(struct compressed_bio *cb)
->   * the end io hooks.
->   */
->  void btrfs_submit_compressed_write(struct btrfs_ordered_extent *ordered,
-> -				   struct folio **compressed_folios,
-> -				   unsigned int nr_folios,
-> -				   blk_opf_t write_flags,
-> -				   bool writeback)
-> +				   struct compressed_bio *cb)
->  {
->  	struct btrfs_inode *inode = ordered->inode;
->  	struct btrfs_fs_info *fs_info = inode->root->fs_info;
-> -	struct compressed_bio *cb;
->  
->  	ASSERT(IS_ALIGNED(ordered->file_offset, fs_info->sectorsize));
->  	ASSERT(IS_ALIGNED(ordered->num_bytes, fs_info->sectorsize));
-> +	ASSERT(cb->writeback);
->  
-> -	cb = alloc_compressed_bio(inode, ordered->file_offset,
-> -				  REQ_OP_WRITE | write_flags,
-> -				  end_bbio_compressed_write);
->  	cb->start = ordered->file_offset;
->  	cb->len = ordered->num_bytes;
-> -	cb->compressed_folios = compressed_folios;
->  	cb->compressed_len = ordered->disk_num_bytes;
-> -	cb->writeback = writeback;
-> -	cb->nr_folios = nr_folios;
->  	cb->bbio.bio.bi_iter.bi_sector = ordered->disk_bytenr >> SECTOR_SHIFT;
->  	cb->bbio.ordered = ordered;
-> -	btrfs_add_compressed_bio_folios(cb);
->  
->  	btrfs_submit_bbio(&cb->bbio, 0);
->  }
->  
-> +/*
-> + * Allocate a compressed write bio for @inode file offset @start length @len.
-> + *
-> + * The caller still needs to properly queue all folios and populate involved
-> + * members.
-> + */
-> +struct compressed_bio *btrfs_alloc_compressed_write(struct btrfs_inode *inode,
-> +						    u64 start, u64 len)
-> +{
-> +	struct compressed_bio *cb;
-> +
-> +	cb = alloc_compressed_bio(inode, start, REQ_OP_WRITE,
-> +				  end_bbio_compressed_write);
-> +	cb->start = start;
-> +	cb->len = len;
-> +	cb->writeback = true;
-> +
-> +	return cb;
-> +}
-> +
->  /*
->   * Add extra pages in the same compressed file extent so that we don't need to
->   * re-read the same extent again and again.
-> diff --git a/fs/btrfs/compression.h b/fs/btrfs/compression.h
-> index 7dc48e556313..2d3a28b26997 100644
-> --- a/fs/btrfs/compression.h
-> +++ b/fs/btrfs/compression.h
-> @@ -96,10 +96,10 @@ int btrfs_decompress(int type, const u8 *data_in, struct folio *dest_folio,
->  int btrfs_decompress_buf2page(const char *buf, u32 buf_len,
->  			      struct compressed_bio *cb, u32 decompressed);
->  
-> +struct compressed_bio *btrfs_alloc_compressed_write(struct btrfs_inode *inode,
-> +						    u64 start, u64 len);
->  void btrfs_submit_compressed_write(struct btrfs_ordered_extent *ordered,
-> -				   struct folio **compressed_folios,
-> -				   unsigned int nr_folios, blk_opf_t write_flags,
-> -				   bool writeback);
-> +				   struct compressed_bio *cb);
->  void btrfs_submit_compressed_read(struct btrfs_bio *bbio);
->  
->  int btrfs_compress_str2level(unsigned int type, const char *str, int *level_ret);
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index d010621b64d5..f1df43f2e69a 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -9804,12 +9804,13 @@ ssize_t btrfs_do_encoded_write(struct kiocb *iocb, struct iov_iter *from,
->  	struct extent_state *cached_state = NULL;
->  	struct btrfs_ordered_extent *ordered;
->  	struct btrfs_file_extent file_extent;
-> +	struct compressed_bio *cb = NULL;
->  	int compression;
->  	size_t orig_count;
-> +	const u32 min_folio_size = btrfs_min_folio_size(fs_info);
->  	u64 start, end;
->  	u64 num_bytes, ram_bytes, disk_num_bytes;
-> -	unsigned long nr_folios, i;
-> -	struct folio **folios;
-> +	unsigned long nr_folios;
->  	struct btrfs_key ins;
->  	bool extent_reserved = false;
->  	struct extent_map *em;
-> @@ -9899,38 +9900,45 @@ ssize_t btrfs_do_encoded_write(struct kiocb *iocb, struct iov_iter *from,
->  	 */
->  	disk_num_bytes = ALIGN(orig_count, fs_info->sectorsize);
->  	nr_folios = DIV_ROUND_UP(disk_num_bytes, PAGE_SIZE);
-> -	folios = kvcalloc(nr_folios, sizeof(struct folio *), GFP_KERNEL_ACCOUNT);
-> -	if (!folios)
-> -		return -ENOMEM;
-> -	for (i = 0; i < nr_folios; i++) {
-> -		size_t bytes = min_t(size_t, PAGE_SIZE, iov_iter_count(from));
-> +
-> +	cb = btrfs_alloc_compressed_write(inode, start, num_bytes);
-> +	for (int i = 0; i < nr_folios; i++) {
-> +		struct folio *folio;
-> +		size_t bytes = min(min_folio_size, iov_iter_count(from));
->  		char *kaddr;
->  
-> -		folios[i] = folio_alloc(GFP_KERNEL_ACCOUNT, 0);
-> -		if (!folios[i]) {
-> +		folio = btrfs_alloc_compr_folio(fs_info);
-> +		if (!folio) {
->  			ret = -ENOMEM;
-> -			goto out_folios;
-> +			goto out_cb;
->  		}
-> -		kaddr = kmap_local_folio(folios[i], 0);
-> +		kaddr = kmap_local_folio(folio, 0);
->  		if (copy_from_iter(kaddr, bytes, from) != bytes) {
->  			kunmap_local(kaddr);
-> +			folio_put(folio);
->  			ret = -EFAULT;
-> -			goto out_folios;
-> +			goto out_cb;
-> +		}
-> +		if (bytes < min_folio_size)
-> +			folio_zero_range(folio, bytes, min_folio_size - bytes);
-> +		ret = bio_add_folio(&cb->bbio.bio, folio, folio_size(folio), 0);
-> +		if (!unlikely(ret)) {
+Some tracing of affected hosts revealed that there were single
+btrfs_search_slot calls that were COWing 100s of times. I was able to
+reproduce this behavior locally by creating a very constrained cgroup
+and producing a lot of concurrent filesystem operations. Here's the
+pattern:
 
-Should this be unlikely(!ret) instead of !unlikely(ret)?
+ 1. btrfs_search_slot() begins tree traversal with cow=1
+ 2. Node at level N needs COW (old generation or WRITTEN flag set)
+ 3. btrfs_cow_block() allocates new node, updates parent pointer
+ 4. Traversal continues, but hits a condition requiring restart (e.g., node
+    not cached, lock contention, need higher write_lock_level)
+ 5. btrfs_release_path() releases all locks and references
+ 6. Memory pressure triggers writeback on the COW'd node
+ 7. lock_extent_buffer_for_io() clears EXTENT_BUFFER_DIRTY and sets
+    BTRFS_HEADER_FLAG_WRITTEN
+ 8. goto again - traversal restarts from root
+ 9. Traversal reaches the freshly COW'd node
+ 10. should_cow_block() sees WRITTEN flag set, returns true
+ 11. btrfs_cow_block() allocates another new node - same logical position,
+     new physical location, new reservation consumed
+ 12. Steps 4-11 repeat indefinitely under sustained memory pressure
 
-While !unlikely(ret) evaluates to the same boolean result as !ret, the
-branch prediction hint is inverted.
+Note this behavior should be much harder to trigger since Boris's
+AS_KERNEL_FILE changes that make it so that extent_buffer pages aren't
+accounted for in user cgroups. However, I believe it
+would still be an issue under global memory pressure.
+Link: https://lore.kernel.org/linux-btrfs/cover.1755812945.git.boris@bur.io/
 
-> +			folio_put(folio);
-> +			ret = -EINVAL;
-> +			goto out_cb;
->  		}
-> -		if (bytes < PAGE_SIZE)
-> -			memset(kaddr + bytes, 0, PAGE_SIZE - bytes);
-> -		kunmap_local(kaddr);
+This COW amplification breaks the idea that transaction reservations are
+worst case as any search slot call could find itself in this COW loop and
+exhaust its reservation.
 
-Is there a missing kunmap_local(kaddr) here? The original code called
-kunmap_local() after the memset:
+My proposed solution is to temporarily pin extent buffers for the
+lifetime of btrfs_search_slot. This prevents the massive COW
+amplification that can be seen during high memory pressure.
 
-    if (bytes < PAGE_SIZE)
-        memset(kaddr + bytes, 0, PAGE_SIZE - bytes);
-    kunmap_local(kaddr);
+The implementation uses a local xarray to track COW'd buffers for the
+duration of the search. The xarray stores extent_buffer pointers without
+taking additional references; this is safe because tracked buffers remain
+dirty (writeback_blockers prevents the dirty bit from being cleared) and
+dirty buffers cannot be reclaimed by memory pressure.
 
-But the new code appears to have lost the corresponding kunmap_local().
+Synchronization is provided by eb->lock: increments in
+btrfs_search_slot_track_cow() occur while holding the write lock, and
+the check in lock_extent_buffer_for_io() also holds the write lock via
+btrfs_tree_lock(). Decrements don't require eb->lock because
+writeback_blockers is atomic and merely indicates "don't write yet".
+Once we decrement, we're done and don't care if writeback proceeds
+immediately.
 
->  	}
-> +	ASSERT(cb->bbio.bio.bi_iter.bi_size == disk_num_bytes);
->  
->  	for (;;) {
->  		ret = btrfs_wait_ordered_range(inode, start, num_bytes);
->  		if (ret)
-> -			goto out_folios;
-> +			goto out_cb;
->  		ret = invalidate_inode_pages2_range(inode->vfs_inode.i_mapping,
->  						    start >> PAGE_SHIFT,
->  						    end >> PAGE_SHIFT);
->  		if (ret)
-> -			goto out_folios;
-> +			goto out_cb;
->  		btrfs_lock_extent(io_tree, start, end, &cached_state);
->  		ordered = btrfs_lookup_ordered_range(inode, start, num_bytes);
->  		if (!ordered &&
-> @@ -9962,7 +9970,8 @@ ssize_t btrfs_do_encoded_write(struct kiocb *iocb, struct iov_iter *from,
->  	    encoded->unencoded_offset == 0 &&
->  	    can_cow_file_range_inline(inode, start, encoded->len, orig_count)) {
->  		ret = __cow_file_range_inline(inode, encoded->len,
-> -					      orig_count, compression, folios[0],
-> +					      orig_count, compression,
-> +					      bio_first_folio_all(&cb->bbio.bio),
->  					      true);
->  		if (ret <= 0) {
->  			if (ret == 0)
-> @@ -10007,7 +10016,7 @@ ssize_t btrfs_do_encoded_write(struct kiocb *iocb, struct iov_iter *from,
->  
->  	btrfs_delalloc_release_extents(inode, num_bytes);
->  
-> -	btrfs_submit_compressed_write(ordered, folios, nr_folios, 0, false);
-> +	btrfs_submit_compressed_write(ordered, cb);
->  	ret = orig_count;
->  	goto out;
->  
-> @@ -10029,12 +10038,9 @@ ssize_t btrfs_do_encoded_write(struct kiocb *iocb, struct iov_iter *from,
->  		btrfs_free_reserved_data_space_noquota(inode, disk_num_bytes);
->  out_unlock:
->  	btrfs_unlock_extent(io_tree, start, end, &cached_state);
-> -out_folios:
-> -	for (i = 0; i < nr_folios; i++) {
-> -		if (folios[i])
-> -			folio_put(folios[i]);
-> -	}
-> -	kvfree(folios);
-> +out_cb:
-> +	if (cb)
-> +		cleanup_compressed_bio(cb);
->  out:
->  	if (ret >= 0)
->  		iocb->ki_pos += encoded->len;
-> -- 
-> 2.52.0
-> 
+Here is pahole output of extent_buffer showing that the new atomic_t
+member can slot into an existing 6 byte hole.
+
+Before:
+struct extent_buffer {
+        u64                        start;                /*     0     8 */
+        u32                        len;                  /*     8     4 */
+        u32                        folio_size;           /*    12     4 */
+        unsigned long              bflags;               /*    16     8 */
+        struct btrfs_fs_info *     fs_info;              /*    24     8 */
+        void *                     addr;                 /*    32     8 */
+        spinlock_t                 refs_lock;            /*    40     0 */
+        refcount_t                 refs;                 /*    40     4 */
+        int                        read_mirror;          /*    44     4 */
+        s8                         log_index;            /*    48     1 */
+        u8                         folio_shift;          /*    49     1 */
+
+        /* XXX 6 bytes hole, try to pack */
+
+        struct callback_head       callback_head __attribute__((__aligned__(8))); /*    56    16 */
+        /* --- cacheline 1 boundary (64 bytes) was 8 bytes ago --- */
+        struct rw_semaphore        lock;                 /*    72    32 */
+        struct folio *             folios[16];           /*   104   128 */
+
+        /* size: 232, cachelines: 4, members: 14 */
+        /* sum members: 226, holes: 1, sum holes: 6 */
+        /* forced alignments: 1, forced holes: 1, sum forced holes: 6 */
+        /* last cacheline: 40 bytes */
+};
+
+After:
+struct extent_buffer {
+        u64                        start;                /*     0     8 */
+        u32                        len;                  /*     8     4 */
+        u32                        folio_size;           /*    12     4 */
+        unsigned long              bflags;               /*    16     8 */
+        struct btrfs_fs_info *     fs_info;              /*    24     8 */
+        void *                     addr;                 /*    32     8 */
+        spinlock_t                 refs_lock;            /*    40     0 */
+        refcount_t                 refs;                 /*    40     4 */
+        int                        read_mirror;          /*    44     4 */
+        s8                         log_index;            /*    48     1 */
+        u8                         folio_shift;          /*    49     1 */
+
+        /* XXX 2 bytes hole, try to pack */
+
+        atomic_t                   writeback_blockers;   /*    52     4 */
+        struct callback_head       callback_head __attribute__((__aligned__(8))); /*    56    16 */
+        /* --- cacheline 1 boundary (64 bytes) was 8 bytes ago --- */
+        struct rw_semaphore        lock;                 /*    72    32 */
+        struct folio *             folios[16];           /*   104   128 */
+
+        /* size: 232, cachelines: 4, members: 15 */
+        /* sum members: 230, holes: 1, sum holes: 2 */
+        /* forced alignments: 1 */
+        /* last cacheline: 40 bytes */
+};
+
+------------[ cut here ]------------
+WARNING: CPU: 28 PID: 930807 at fs/btrfs/delayed-inode.c:1547 btrfs_insert_delayed_dir_index+0x346/0x3a0
+Modules linked in: ip_tables(E) ip6_tables(E) vhost_net(E) tun(E) vhost(E) vhost_iotlb(E) tap(E) mpls_gso(E) mpls_iptunnel(E) mpls_router(E) fou(E) bpf_preload(E) act_gact(E) cls_bpf(E) tcp_diag(E) inet_diag(E) sch_fq(E) tls(E) intel_uncore_frequency(E) intel_uncore_frequency_common(E) skx_edac(E) skx_edac_common(E) nfit(E) libnvdimm(E) x86_pkg_temp_thermal(E) intel_powerclamp(E) coretemp(E) iTCO_wdt(E) kvm_intel(E) mlx5_ib(E) iTCO_vendor_support(E) xhci_pci(E) mlx5_fwctl(E) i2c_i801(E) kvm(E) xhci_hcd(E) ib_uverbs(E) acpi_cpufreq(E) fwctl(E) i2c_smbus(E) wmi(E) ipmi_si(E) ipmi_devintf(E) evdev(E) ipmi_msghandler(E) button(E) sch_fq_codel(E) loop(E) drm(E) backlight(E) drm_panel_orientation_quirks(E) autofs4(E) raid0(E) efivarfs(E) dm_crypt(E)
+CPU: 28 UID: 34126 PID: 930807 Comm: CPUThreadPool0 Kdump: loaded Tainted: G S          E       6.13.2-0_fbk9_0_gb487e362c3df #1
+Tainted: [S]=CPU_OUT_OF_SPEC, [E]=UNSIGNED_MODULE
+Hardware name: Wiwynn Delta Lake MP/Delta Lake-Class1, BIOS Y3DL403 06/20/2025
+RIP: 0010:btrfs_insert_delayed_dir_index+0x346/0x3a0
+Code: 08 48 89 de 48 c7 c2 e8 09 61 82 4d 89 e0 45 31 c9 e8 2e da 73 ff 48 89 df 48 8b 6c 24 08 4c 8b 74 24 10 e9 57 fe ff ff 89 c3 <0f> 0b 4c 89 e7 e8 b0 fb ff ff e9 5a fe ff ff 65 8b 05 50 d9 2b 7e
+RSP: 0000:ffffc900047b79f8 EFLAGS: 00010286
+RAX: 00000000ffffffe4 RBX: 00000000ffffffe4 RCX: 0000000000000000
+RDX: fffffffffffc0000 RSI: ffff8882aaeb7170 RDI: ffff8882aaeb7128
+RBP: ffff888348114d68 R08: 000000006f684265 R09: 5f79636e6574616c
+R10: 5f726f74696e6f6d R11: 617461646174656d R12: ffff8882d49c4180
+R13: ffff8882aaeb7000 R14: 0000000000000045 R15: 0000000000040000
+FS:  00007fb5563fd640(0000) GS:ffff889036600000(0000) knlGS:0000000000000000
+CR2: 000000000ba8bffd CR3: 0000000906d1b002 CR4: 00000000007726f0
+PKRU: 55555554
+Call Trace:
+ <TASK>
+ ? __warn+0xa4/0x140
+ ? btrfs_insert_delayed_dir_index+0x346/0x3a0
+ ? report_bug+0xe1/0x140
+ ? handle_bug+0x5e/0x90
+ ? exc_invalid_op+0x16/0x40
+ ? asm_exc_invalid_op+0x16/0x20
+ ? btrfs_insert_delayed_dir_index+0x346/0x3a0
+ ? btrfs_insert_delayed_dir_index+0x20c/0x3a0
+ btrfs_insert_dir_item+0x1b0/0x210
+ ? setup_items_for_insert+0x250/0x480
+ btrfs_add_link+0x94/0x3e0
+ btrfs_create_new_inode+0x60a/0xb90
+ ? start_transaction.llvm.5573957049853623343+0x2e4/0x7a0
+ btrfs_create_common+0x16c/0x1f0
+ path_openat+0x20ff/0x4140
+ do_filp_open+0xa2/0x130
+ ? _raw_spin_lock+0x10/0x20
+ __x64_sys_openat+0x114/0x1b0
+ do_syscall_64+0x68/0x130
+ ? exc_page_fault+0x69/0x130
+ entry_SYSCALL_64_after_hwframe+0x4b/0x53
+RIP: 0033:0x7fb55a51b592
+Code: 8b 55 d0 eb b0 0f 1f 00 44 89 55 9c e8 b7 b6 f7 ff 41 89 c0 44 8b 55 9c 44 89 e2 4c 89 ee bf 9c ff ff ff b8 01 01 00 00 0f 05 <48> 3d 00 f0 ff ff 77 46 44 89 c7 89 45 9c e8 eb b6 f7 ff 8b 45 9c
+RSP: 002b:00007fb5563f70a0 EFLAGS: 00000293 ORIG_RAX: 0000000000000101
+RAX: ffffffffffffffda RBX: f49998db0aa753ff RCX: 00007fb55a51b592
+RDX: 00000000000000c2 RSI: 00007fb557509cc0 RDI: 00000000ffffff9c
+RBP: 00007fb5563f7110 R08: 0000000000000000 R09: 0000000000000001
+R10: 0000000000000180 R11: 0000000000000293 R12: 00000000000000c2
+R13: 00007fb557509cc0 R14: 000000000f595b0b R15: 00007fb55a5e0ca0
+ </TASK>
+---[ end trace 0000000000000000 ]---
+------------[ cut here ]------------
+BTRFS: Transaction aborted (error -28)
+WARNING: CPU: 28 PID: 930807 at fs/btrfs/inode.c:6606 btrfs_add_link+0x3ae/0x3e0
+Modules linked in: ip_tables(E) ip6_tables(E) vhost_net(E) tun(E) vhost(E) vhost_iotlb(E) tap(E) mpls_gso(E) mpls_iptunnel(E) mpls_router(E) fou(E) bpf_preload(E) act_gact(E) cls_bpf(E) tcp_diag(E) inet_diag(E) sch_fq(E) tls(E) intel_uncore_frequency(E) intel_uncore_frequency_common(E) skx_edac(E) skx_edac_common(E) nfit(E) libnvdimm(E) x86_pkg_temp_thermal(E) intel_powerclamp(E) coretemp(E) iTCO_wdt(E) kvm_intel(E) mlx5_ib(E) iTCO_vendor_support(E) xhci_pci(E) mlx5_fwctl(E) i2c_i801(E) kvm(E) xhci_hcd(E) ib_uverbs(E) acpi_cpufreq(E) fwctl(E) i2c_smbus(E) wmi(E) ipmi_si(E) ipmi_devintf(E) evdev(E) ipmi_msghandler(E) button(E) sch_fq_codel(E) loop(E) drm(E) backlight(E) drm_panel_orientation_quirks(E) autofs4(E) raid0(E) efivarfs(E) dm_crypt(E)
+CPU: 28 UID: 34126 PID: 930807 Comm: CPUThreadPool0 Kdump: loaded Tainted: G S      W   E       6.13.2-0_fbk9_0_gb487e362c3df #1
+Tainted: [S]=CPU_OUT_OF_SPEC, [W]=WARN, [E]=UNSIGNED_MODULE
+Hardware name: Wiwynn Delta Lake MP/Delta Lake-Class1, BIOS Y3DL403 06/20/2025
+RIP: 0010:btrfs_add_link+0x3ae/0x3e0
+Code: 00 e9 75 ff ff ff 48 c7 c7 9b 10 6a 82 89 de e8 28 c1 36 ff 0f 0b e9 81 fe ff ff 48 c7 c7 9b 10 6a 82 44 89 e6 e8 12 c1 36 ff <0f> 0b e9 cf fe ff ff 48 c7 c7 9b 10 6a 82 89 de e8 fd c0 36 ff 0f
+RSP: 0000:ffffc900047b7b00 EFLAGS: 00010282
+RAX: 0000000000000026 RBX: 00000000000acc00 RCX: 0000000000000000
+RDX: ffff889036630158 RSI: ffff889036621c60 RDI: ffff889036621c60
+RBP: 00000000001569d0 R08: ffffffff832692a0 R09: 000000000002fffd
+R10: 0000000000000000 R11: ffffffffffffffff R12: 00000000ffffffe4
+R13: 0000000000000000 R14: ffff8882a6707400 R15: ffffc900047b7ca8
+FS:  00007fb5563fd640(0000) GS:ffff889036600000(0000) knlGS:0000000000000000
+CR2: 000000000ba8bffd CR3: 0000000906d1b002 CR4: 00000000007726f0
+PKRU: 55555554
+Call Trace:
+ <TASK>
+ ? __warn+0xa4/0x140
+ ? btrfs_add_link+0x3ae/0x3e0
+ ? report_bug+0xe1/0x140
+ ? btrfs_add_link+0x3ae/0x3e0
+ ? handle_bug+0x5e/0x90
+ ? exc_invalid_op+0x16/0x40
+ ? asm_exc_invalid_op+0x16/0x20
+ ? btrfs_add_link+0x3ae/0x3e0
+ btrfs_create_new_inode+0x60a/0xb90
+ ? start_transaction.llvm.5573957049853623343+0x2e4/0x7a0
+ btrfs_create_common+0x16c/0x1f0
+ path_openat+0x20ff/0x4140
+ do_filp_open+0xa2/0x130
+ ? _raw_spin_lock+0x10/0x20
+ __x64_sys_openat+0x114/0x1b0
+ do_syscall_64+0x68/0x130
+ ? exc_page_fault+0x69/0x130
+ entry_SYSCALL_64_after_hwframe+0x4b/0x53
+RIP: 0033:0x7fb55a51b592
+Code: 8b 55 d0 eb b0 0f 1f 00 44 89 55 9c e8 b7 b6 f7 ff 41 89 c0 44 8b 55 9c 44 89 e2 4c 89 ee bf 9c ff ff ff b8 01 01 00 00 0f 05 <48> 3d 00 f0 ff ff 77 46 44 89 c7 89 45 9c e8 eb b6 f7 ff 8b 45 9c
+RSP: 002b:00007fb5563f70a0 EFLAGS: 00000293 ORIG_RAX: 0000000000000101
+RAX: ffffffffffffffda RBX: f49998db0aa753ff RCX: 00007fb55a51b592
+RDX: 00000000000000c2 RSI: 00007fb557509cc0 RDI: 00000000ffffff9c
+RBP: 00007fb5563f7110 R08: 0000000000000000 R09: 0000000000000001
+R10: 0000000000000180 R11: 0000000000000293 R12: 00000000000000c2
+R13: 00007fb557509cc0 R14: 000000000f595b0b R15: 00007fb55a5e0ca0
+ </TASK>
+---[ end trace 0000000000000000 ]---
+BTRFS info (device nvme0n1p2 state A): dumping space info:
+BTRFS info (device nvme0n1p2 state A): space_info DATA has 11715895296 free, is not full
+BTRFS info (device nvme0n1p2 state A): space_info total=92350185472, used=80633892864, pinned=0, reserved=241664, may_use=155648, readonly=0 zone_unusable=0 delalloc=151552 ordered=8192
+BTRFS info (device nvme0n1p2 state A): space_info METADATA has 880836608 free, is not full
+BTRFS info (device nvme0n1p2 state A): space_info total=2181038080, used=912293888, pinned=3784704, reserved=557056, may_use=383500288, readonly=65536 zone_unusable=0 delalloc=151552 ordered=8192
+BTRFS info (device nvme0n1p2 state A): space_info SYSTEM has 8372224 free, is not full
+BTRFS info (device nvme0n1p2 state A): space_info total=8388608, used=16384, pinned=0, reserved=0, may_use=0, readonly=0 zone_unusable=0 delalloc=151552 ordered=8192
+BTRFS info (device nvme0n1p2 state A): global_block_rsv: size 306905088 reserved 306905088
+BTRFS info (device nvme0n1p2 state A): trans_block_rsv: size 1310720 reserved 0
+BTRFS info (device nvme0n1p2 state A): chunk_block_rsv: size 0 reserved 0
+BTRFS info (device nvme0n1p2 state A): delayed_block_rsv: size 4980736 reserved 4980736
+BTRFS info (device nvme0n1p2 state A): delayed_refs_rsv: size 47841280 reserved 46858240
+BTRFS: error (device nvme0n1p2 state A) in btrfs_add_link:6606: errno=-28 No space left
+BTRFS info (device nvme0n1p2 state EA): forced readonly
+
+
+Signed-off-by: Leo Martins <loemra.dev@gmail.com>
+---
+ fs/btrfs/ctree.c     | 42 ++++++++++++++++++++++++++++++++++++++++++
+ fs/btrfs/extent_io.c |  4 +++-
+ fs/btrfs/extent_io.h |  8 ++++++++
+ 3 files changed, 53 insertions(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+index 7267b2502665..473e78f398b4 100644
+--- a/fs/btrfs/ctree.c
++++ b/fs/btrfs/ctree.c
+@@ -1972,6 +1972,40 @@ static int search_leaf(struct btrfs_trans_handle *trans,
+ 	return ret;
+ }
+ 
++/*
++ * Track an extent buffer that was COW'd during btrfs_search_slot.
++ * Prevents the flusher from writing this buffer until the search completes.
++ * This avoids COW amplification where a restart would force an unnecessary
++ * re-COW of the same block.
++ */
++static inline int btrfs_search_slot_track_cow(struct xarray *cowed_buffers,
++					       struct extent_buffer *eb)
++{
++	u32 tmp;
++	int ret = 0;
++
++	lockdep_assert_held_write(&eb->lock);
++
++	ret = xa_alloc(cowed_buffers, &tmp, eb, xa_limit_32b, GFP_NOFS);
++	if (!ret)
++		atomic_inc(&eb->writeback_blockers);
++	return ret;
++}
++
++/*
++ * Clear COW protection from all extent buffers tracked during this search.
++ * Called at the end of btrfs_search_slot to allow normal writeback behavior.
++ */
++static inline void btrfs_search_slot_clear_cow_protection(struct xarray *cowed_buffers)
++{
++	struct extent_buffer *eb;
++	unsigned long index;
++
++	xa_for_each(cowed_buffers, index, eb)
++		atomic_dec(&eb->writeback_blockers);
++	xa_destroy(cowed_buffers);
++}
++
+ /*
+  * Look for a key in a tree and perform necessary modifications to preserve
+  * tree invariants.
+@@ -2009,6 +2043,7 @@ int btrfs_search_slot(struct btrfs_trans_handle *trans, struct btrfs_root *root,
+ {
+ 	struct btrfs_fs_info *fs_info;
+ 	struct extent_buffer *b;
++	DEFINE_XARRAY_ALLOC(cowed_buffers);
+ 	int slot;
+ 	int ret;
+ 	int level;
+@@ -2121,6 +2156,11 @@ int btrfs_search_slot(struct btrfs_trans_handle *trans, struct btrfs_root *root,
+ 				ret = ret2;
+ 				goto done;
+ 			}
++			ret2 = btrfs_search_slot_track_cow(&cowed_buffers, b);
++			if (ret2) {
++				ret = ret2;
++				goto done;
++			}
+ 		}
+ cow_done:
+ 		p->nodes[level] = b;
+@@ -2242,6 +2282,8 @@ int btrfs_search_slot(struct btrfs_trans_handle *trans, struct btrfs_root *root,
+ 			ret = ret2;
+ 	}
+ 
++	btrfs_search_slot_clear_cow_protection(&cowed_buffers);
++
+ 	return ret;
+ }
+ ALLOW_ERROR_INJECTION(btrfs_search_slot, ERRNO);
+diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+index dfc17c292217..5dd7fcaec5a5 100644
+--- a/fs/btrfs/extent_io.c
++++ b/fs/btrfs/extent_io.c
+@@ -1940,7 +1940,8 @@ static noinline_for_stack bool lock_extent_buffer_for_io(struct extent_buffer *e
+ 	 * of time.
+ 	 */
+ 	spin_lock(&eb->refs_lock);
+-	if (test_and_clear_bit(EXTENT_BUFFER_DIRTY, &eb->bflags)) {
++	if (!atomic_read(&eb->writeback_blockers) &&
++	    test_and_clear_bit(EXTENT_BUFFER_DIRTY, &eb->bflags)) {
+ 		XA_STATE(xas, &fs_info->buffer_tree, eb->start >> fs_info->nodesize_bits);
+ 		unsigned long flags;
+ 
+@@ -3009,6 +3010,7 @@ static struct extent_buffer *__alloc_extent_buffer(struct btrfs_fs_info *fs_info
+ 	eb->len = fs_info->nodesize;
+ 	eb->fs_info = fs_info;
+ 	init_rwsem(&eb->lock);
++	atomic_set(&eb->writeback_blockers, 0);
+ 
+ 	btrfs_leak_debug_add_eb(eb);
+ 
+diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
+index 73571d5d3d5a..da77c4eb9a43 100644
+--- a/fs/btrfs/extent_io.h
++++ b/fs/btrfs/extent_io.h
+@@ -102,6 +102,14 @@ struct extent_buffer {
+ 	/* >= 0 if eb belongs to a log tree, -1 otherwise */
+ 	s8 log_index;
+ 	u8 folio_shift;
++
++	/*
++	 * Active btrfs_search_slot() operations blocking writeback.
++	 * Prevents COW amplification when searches restart under memory
++	 * pressure. Checked under eb->lock in lock_extent_buffer_for_io().
++	 */
++	atomic_t writeback_blockers;
++
+ 	struct rcu_head rcu_head;
+ 
+ 	struct rw_semaphore lock;
+-- 
+2.47.3
+
 
