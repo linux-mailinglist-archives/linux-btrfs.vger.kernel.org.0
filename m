@@ -1,166 +1,143 @@
-Return-Path: <linux-btrfs+bounces-21217-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21218-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id kPGmGPrSemlX+wEAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21217-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Jan 2026 04:24:42 +0100
+	id +IEqAWsje2nXBgIAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21218-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Jan 2026 10:07:55 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FDE6AB6BF
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Jan 2026 04:24:42 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id A12E3ADF04
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Jan 2026 10:07:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 65BE9300A8CE
-	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Jan 2026 03:24:41 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 5BA5E302B393
+	for <lists+linux-btrfs@lfdr.de>; Thu, 29 Jan 2026 09:07:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AF8D353EEC;
-	Thu, 29 Jan 2026 03:24:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="EXKuHR0G";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="EXKuHR0G"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 046D8376482;
+	Thu, 29 Jan 2026 09:07:33 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-oo1-f69.google.com (mail-oo1-f69.google.com [209.85.161.69])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F04A34A797
-	for <linux-btrfs@vger.kernel.org>; Thu, 29 Jan 2026 03:24:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C49637648B
+	for <linux-btrfs@vger.kernel.org>; Thu, 29 Jan 2026 09:07:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769657077; cv=none; b=XlQZ6DFcsohygAy6hDnu4niKd/pu4OM+t5BbZUVkio9r2ONN7/OxjzCvXvuEFB2gBchGw2xNAt1uNSL6flkjS842foRc3CacRJMQJVgCsrRvvGQ3dM0FnLlOMFZ0HjiZbY8GW3M9utv71IKt9nZI1brGbw7b2pzDai6PhGGvc1g=
+	t=1769677651; cv=none; b=FW6mBgeLaSAQaRbJ1Q1TY5sGeALXOO3PPaGiNJeqJgUpWvPsF4c7pB9JPBQyhEuD0oH50ihZZ0TbikRmcmtDKndBqwv1NKZqgIHUMYLpdXaSIVZa1s6ULr92PHSz6qZ5q2O4OYBraZJHg5tzRPGQ3/d9KF1VzmIQvocGmdSM0UU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769657077; c=relaxed/simple;
-	bh=N9GHWEz1UdWqfKKSpRmnv0njwASJsAbTUcrvBl94rPs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KCFkA+GmNFUpPODOHxHBK7RRUgRgztubUCH0YgXO5eNZFZHXV6ZuQI6wkfbv5dzUUyK+kXH2+FUn4UHq6rps840nGO1eHGwOYX3oqql08Af75CcZP1Dzgbl+NUT6CYoxe4XnrCt0P7qaCxLM21JrRh83ELLQe2XxY4DOtxTsuJg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=EXKuHR0G; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=EXKuHR0G; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id CC7B433F06;
-	Thu, 29 Jan 2026 03:24:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1769657064; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HMQpp41STRFTUtgeP56CBnbZFP1hU6L7JSfbqHuZU/s=;
-	b=EXKuHR0Gx9gvRamMIPo+BwB5klUmy34VebTyeal52u8d+7DBDnsooJ0jvJaIPlUcXgxXHx
-	xlY4y6GKOEaQ9DV+3KelZJ+LMwirmGuK6/BTwfW2VZuHLFGrRh0n03LbAhjENt0PTKs5O5
-	L4jbtne3gYXLCcXyylAcHjL5IHwULVk=
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1769657064; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=HMQpp41STRFTUtgeP56CBnbZFP1hU6L7JSfbqHuZU/s=;
-	b=EXKuHR0Gx9gvRamMIPo+BwB5klUmy34VebTyeal52u8d+7DBDnsooJ0jvJaIPlUcXgxXHx
-	xlY4y6GKOEaQ9DV+3KelZJ+LMwirmGuK6/BTwfW2VZuHLFGrRh0n03LbAhjENt0PTKs5O5
-	L4jbtne3gYXLCcXyylAcHjL5IHwULVk=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6E1F23EA61;
-	Thu, 29 Jan 2026 03:24:23 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id gAQzB+fSemk+TgAAD6G6ig
-	(envelope-from <wqu@suse.com>); Thu, 29 Jan 2026 03:24:23 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Cc: Boris Burkov <boris@bur.io>
-Subject: [PATCH v5 9/9] btrfs: get rid of compressed_bio::compressed_folios[]
-Date: Thu, 29 Jan 2026 13:53:46 +1030
-Message-ID: <91287522dbe94cddc78a02a9c7c38d21d67a8864.1769656714.git.wqu@suse.com>
-X-Mailer: git-send-email 2.52.0
-In-Reply-To: <cover.1769656714.git.wqu@suse.com>
-References: <cover.1769656714.git.wqu@suse.com>
+	s=arc-20240116; t=1769677651; c=relaxed/simple;
+	bh=NSxZzN4zQYQRzw3y+N+CD/LGGWHw/dUtdEmOUZfKQn0=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=GFFy1GkfPWzOMu3+idxlKWMmTSApEK4+WVJ4YASaXb1igEqBV/6AoeuxqLQySR1usbidd1X1NRAZ0rPqdT9RJWfW3q+p5OP3DipllkBvqWC9psAxy3boNI7CyeKXIUjOsIgjgUbT6Z+Ymx3lFdGtVm877T1WLhevPSzTMN2dsRY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.161.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-oo1-f69.google.com with SMTP id 006d021491bc7-662f738c3bfso3206052eaf.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 29 Jan 2026 01:07:27 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1769677645; x=1770282445;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=cRvMJbq9ydTkGeOFJHGxZ5AydHsltv621xO3SvO3qck=;
+        b=o3J3cmCxAdk3RfD6DAbOUQmGE5nZhLmNxPoXh+GUNqKnVUpHoCylEcA0ICLufoq/T3
+         pGh8BLXj6PmnURkIasfdm5mfXvFQadcKkUIvAWPBY2sC0MARmk7O+aVRpigj+qVNyPa5
+         CKDxn9/7WA+A7dFJPJpj6uy1TbTBJXV7P7IAKJ3/FKTJUH8HxlHNZSVqL5uID+BwZ/o8
+         VMwyg5czhUWiw/o/iAqIFPjejajEoYi/nyagZMHixUq9umRRGWG23qyxHkrnW48rYhkH
+         /cwgHwY4pJv8F+VghJFR9xczALm3C/XK3zog52rn8TNLEG7Goyqh/cZ66etx03x/1OHE
+         BIbw==
+X-Forwarded-Encrypted: i=1; AJvYcCVvThsW8fPU3N1Jb8zR1U6q/78aoo5v3hXKXcdzJWlY5WjWHOKh7HbnGvuC418NbcOlRsxebVAc8GKWQg==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy2SiphHKi0zk1ypoZSGqpR8kpZizDnqiENgL+dKsuqv53ywZhS
+	nNT9HgRtGBZ+wmGMEQPhUoCprz26s6KY26EU4uaCEGdo2SKVvDmYw81jw78YUQwF/iRf7lsmsK5
+	+hDi6aSUQyhOOhq1wciLnHgFtgA9C7P47zJLSnc/KMEqcQBOrwVtTLY3xRx0=
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Flag: NO
-X-Spam-Score: -2.80
-X-Spam-Level: 
+X-Received: by 2002:a05:6820:1622:b0:65f:1038:130c with SMTP id
+ 006d021491bc7-662f212824amr4921721eaf.53.1769677645797; Thu, 29 Jan 2026
+ 01:07:25 -0800 (PST)
+Date: Thu, 29 Jan 2026 01:07:25 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <697b234d.a00a0220.35f26.0006.GAE@google.com>
+Subject: [syzbot] Monthly btrfs report (Jan 2026)
+From: syzbot <syzbot+liste18b34051f3be249266e@syzkaller.appspotmail.com>
+To: clm@fb.com, dsterba@suse.com, linux-btrfs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [-1.36 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
+	DMARC_POLICY_SOFTFAIL(0.10)[appspotmail.com : SPF not aligned (relaxed), No valid DKIM,none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21217-lists,linux-btrfs=lfdr.de];
-	RCPT_COUNT_TWO(0.00)[2];
-	RCVD_COUNT_FIVE(0.00)[6];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FROM_NEQ_ENVFROM(0.00)[wqu@suse.com,linux-btrfs@vger.kernel.org];
+	RCVD_COUNT_THREE(0.00)[4];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21218-lists,linux-btrfs=lfdr.de,liste18b34051f3be249266e];
+	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FROM_HAS_DN(0.00)[];
+	REDIRECTOR_URL(0.00)[goo.gl];
 	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[syzbot@syzkaller.appspotmail.com,linux-btrfs@vger.kernel.org];
+	RCPT_COUNT_FIVE(0.00)[5];
+	TO_DN_NONE(0.00)[];
+	R_DKIM_NA(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	NEURAL_HAM(-0.00)[-0.999];
-	DKIM_TRACE(0.00)[suse.com:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,suse.com:email,suse.com:dkim,suse.com:mid,bur.io:email]
-X-Rspamd-Queue-Id: 1FDE6AB6BF
+	DBL_BLOCKED_OPENRESOLVER(0.00)[syzkaller.appspot.com:url,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,goo.gl:url,googlegroups.com:email]
+X-Rspamd-Queue-Id: A12E3ADF04
 X-Rspamd-Action: no action
 
-Now there is no one utilizing that member, we can safely remove it along
-with compressed_bio::nr_folios member.
+Hello btrfs maintainers/developers,
 
-Reviewed-by: Boris Burkov <boris@bur.io>
-Signed-off-by: Qu Wenruo <wqu@suse.com>
+This is a 31-day syzbot report for the btrfs subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/btrfs
+
+During the period, 2 new issues were detected and 1 were fixed.
+In total, 43 issues are still open and 112 have already been fixed.
+
+Some of the still happening issues:
+
+Ref  Crashes Repro Title
+<1>  10989   Yes   BUG: MAX_LOCKDEP_CHAIN_HLOCKS too low! (7)
+                   https://syzkaller.appspot.com/bug?extid=74f79df25c37437e4d5a
+<2>  6564    Yes   kernel BUG in close_ctree
+                   https://syzkaller.appspot.com/bug?extid=2665d678fffcc4608e18
+<3>  5425    Yes   WARNING in btrfs_space_info_update_bytes_may_use
+                   https://syzkaller.appspot.com/bug?extid=8edfa01e46fd9fe3fbfb
+<4>  1331    Yes   WARNING in btrfs_create_pending_block_groups (2)
+                   https://syzkaller.appspot.com/bug?extid=b0643a1387dac0572b27
+<5>  1215    Yes   WARNING in btrfs_commit_transaction (2)
+                   https://syzkaller.appspot.com/bug?extid=dafbca0e20fbc5946925
+<6>  676     Yes   WARNING in btrfs_chunk_alloc
+                   https://syzkaller.appspot.com/bug?extid=e8e56d5d31d38b5b47e7
+<7>  480     Yes   WARNING in cleanup_transaction
+                   https://syzkaller.appspot.com/bug?extid=021d10c4d4edc87daa03
+<8>  437     Yes   WARNING in btrfs_remove_chunk
+                   https://syzkaller.appspot.com/bug?extid=e8582cc16881ec70a430
+<9>  264     Yes   WARNING in btrfs_release_global_block_rsv (2)
+                   https://syzkaller.appspot.com/bug?extid=48ed002119c0f19daf63
+<10> 193     Yes   WARNING in btrfs_put_block_group
+                   https://syzkaller.appspot.com/bug?extid=e38c6fff39c0d7d6f121
+
 ---
- fs/btrfs/compression.c | 1 -
- fs/btrfs/compression.h | 6 ------
- 2 files changed, 7 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-index 205f6828c1e6..ebada0b64846 100644
---- a/fs/btrfs/compression.c
-+++ b/fs/btrfs/compression.c
-@@ -300,7 +300,6 @@ static void end_bbio_compressed_write(struct btrfs_bio *bbio)
- 	/* Note, our inode could be gone now. */
- 	bio_for_each_folio_all(fi, &bbio->bio)
- 		btrfs_free_compr_folio(fi.folio);
--	kfree(cb->compressed_folios);
- 	bio_put(&cb->bbio.bio);
- }
- 
-diff --git a/fs/btrfs/compression.h b/fs/btrfs/compression.h
-index 2d3a28b26997..65b8bc4bbe0b 100644
---- a/fs/btrfs/compression.h
-+++ b/fs/btrfs/compression.h
-@@ -42,12 +42,6 @@ static_assert((BTRFS_MAX_COMPRESSED % PAGE_SIZE) == 0);
- #define	BTRFS_ZLIB_DEFAULT_LEVEL		3
- 
- struct compressed_bio {
--	/* Number of compressed folios in the array. */
--	unsigned int nr_folios;
--
--	/* The folios with the compressed data on them. */
--	struct folio **compressed_folios;
--
- 	/* starting offset in the inode for our pages */
- 	u64 start;
- 
--- 
-2.52.0
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
 
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
 
