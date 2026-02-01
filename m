@@ -1,211 +1,263 @@
-Return-Path: <linux-btrfs+bounces-21268-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21269-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 2PO2Dnf8fmlThwIAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21268-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Sun, 01 Feb 2026 08:10:47 +0100
+	id TaJiBRv9fml9hwIAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21269-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Sun, 01 Feb 2026 08:13:31 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE5B6C5177
-	for <lists+linux-btrfs@lfdr.de>; Sun, 01 Feb 2026 08:10:46 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 904F7C5189
+	for <lists+linux-btrfs@lfdr.de>; Sun, 01 Feb 2026 08:13:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 40676301410E
-	for <lists+linux-btrfs@lfdr.de>; Sun,  1 Feb 2026 07:10:42 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 60AB73015D10
+	for <lists+linux-btrfs@lfdr.de>; Sun,  1 Feb 2026 07:13:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAD532DC337;
-	Sun,  1 Feb 2026 07:10:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QT2zH3zP"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC3942E339B;
+	Sun,  1 Feb 2026 07:13:22 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-dy1-f173.google.com (mail-dy1-f173.google.com [74.125.82.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from cstnet.cn (smtp81.cstnet.cn [159.226.251.81])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 144E4283CB1
-	for <linux-btrfs@vger.kernel.org>; Sun,  1 Feb 2026 07:10:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 692A21DF987
+	for <linux-btrfs@vger.kernel.org>; Sun,  1 Feb 2026 07:13:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769929836; cv=none; b=MV+JQZ5Dx3DsOJe3MeNR86+4qS/G8A3GIjmtXmYlO1CsondHS2kh4qw32ylbpuEdjvX5BA2fCJihigyjZchSDofimE/vE6O15rdB7YQYaGib9Dv8NKHXRPGcLJ49VKVKXfK3losPuH9ByWO3DmRUxjjuFsYQ8dXnBPBJNvdIiTc=
+	t=1769930002; cv=none; b=cjhW5mloKLSumCXbRzl7dAGEvS06Cm4uSCkMXOkR2B1+LBejDceNeMaMwl9daaLIzyJlWjQ6ELaFgCXfNLu6UIZ/O/lSDvGFZ5YjAo/tZPsy9FQ5JKMiLApl/RFSslwwQyXJk80Vx3NR8K3RnFFQjVuBARetpnY0i0oSkhthb4E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769929836; c=relaxed/simple;
-	bh=/+vbohuWCeA5apK0xQZdqX1BArl3qOvcWSMuYG2I2XM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=HQ5E6Qt2yBwGsV2aqf85YmfnYXvXUlRTue15hUV+Z+45MgAV6cbVrJYVvivHjtV++wgHPcZgW+SLhyUR3RWCfaDKJKZiO76NG/XF/nMRvypOOBU2MGz6OleYYiGIqbeOEfcUpL+OgrXS7X5ofckTeiCky+8MWtowdw6L5gqfQGE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QT2zH3zP; arc=none smtp.client-ip=74.125.82.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-dy1-f173.google.com with SMTP id 5a478bee46e88-2b4520f6b32so6562759eec.0
-        for <linux-btrfs@vger.kernel.org>; Sat, 31 Jan 2026 23:10:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1769929834; x=1770534634; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=wzXD3tBTqqP8oZwwUMhbpbowxhGXxwF671sYxC/ntIA=;
-        b=QT2zH3zPCQnaqkgMKXnabxiywIRFiR9McJxKxMOf7c0tLMmQuHhGWxJjcpVKXEA+uc
-         gCxH1cAJ6gkU10dRj5oDwXt9IaQPZAj/RUCdldUMoKaQ4AMkpFWewsW0pCoJTd+Tytck
-         U4Wqf7i68iygwYSVRnx8YLc5R2Z9UgWYuYgz+QYp1ea5c/iNEvVUIJcJ8ZUnku1fT1Tc
-         1B4yzd04iAvGVU58k1jBH0BSCMOatxHp9AEDnVK18ZHFr8iEA/5YJ8mQIQP9E/e1w3Qg
-         UlGxY8jGJ9F8oWT5+T/sGviYu8ncau21QDL8/+TnM1tuyH+Na4fmyW+oOBw5gstIYrN/
-         qG4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1769929834; x=1770534634;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wzXD3tBTqqP8oZwwUMhbpbowxhGXxwF671sYxC/ntIA=;
-        b=WTPo/7Hq25Y0M24x5djuPsKDiEPCQmqdTLgUqUJcJ51nELPBH/RUjgHyEOuQ6dBt+F
-         G/p0u8NYwO0nXzf3NlOoz9EO9Fyfxgb/94wEoG+9bkf76D0X4Lw/4gnNQ4Y2TtNDNdNG
-         Uuww+Vmaoh+DdImApZhVg5al3Lw6vxEddPBcpwVF6jfO2GWUK6XXCqPjUWv/yXZ44PTI
-         6YeeasL0IXTUAWdcZ8Gq0GXV3630rDUv7tLZn2DAeXCz8/+XN5W9FhmRTYsBCDb0wTrR
-         HTkphpkdCVXjAxCHgaUS9Igo5PAkM1XSMYYXMAQZ2Wq9jCXfTRZcIwNwFe4bKLg4fbie
-         2v6w==
-X-Gm-Message-State: AOJu0YxO4rYuwMj0k0W7kG5I7YFgp/+ubnT6DStowc/wDAxSGg1pruRw
-	9LiSWAte+ZHoRF6X0sVQVYkRIMk6kMS8v2gXpVeju6icaFkzM0vMdKWT
-X-Gm-Gg: AZuq6aKe8w8WDkhLZMBBb01UiE5EJsYbAyNR/IHDEI6T+RHkirmIxguMAiGJwZRXF+Z
-	/ybrLl+MsevF3c3Y4DkffLGChp6UH6mqmfEYy0Fl5cY8Bw2OeXn9sjfqvE+XTzVaO+gPno1dx2Z
-	QTNcTl3OHF3rH3tM6TnN8qm5DklabuXnCyzKCz4o84GI57LgHzgx07jhG0KeI9vc1scHNjXgZDy
-	QBtkLo6EthmgkDBTTGGtylrjudTit6WcHXdZTaTpV7XC1T0JUad5OHRinpInM1LAED0jWLA/fjL
-	mnWpWqi7SJKLyZEk5Wp7TKS3YbYaFCK1G58zb01ZrXCvJ5ygBBrJP/v3MhrH3lvwvC7cCQ2RsNS
-	oOrKRg/Vv0CzDRlc+vDnUqje0QjbsuJHsPh+PYOTbhvEOQYUMkgNh54peAi5ZTj2NMHXu6b+5Au
-	rGk/7iyahtK5ux+pnQERfJeC6e2XLJaoxD5ITEYw==
-X-Received: by 2002:a05:7022:e1f:b0:11e:3e9:3e8c with SMTP id a92af1059eb24-125c101b3demr4250108c88.49.1769929834048;
-        Sat, 31 Jan 2026 23:10:34 -0800 (PST)
-Received: from jpkobryn-fedora-PF5CFKNC.lan ([73.222.117.172])
-        by smtp.gmail.com with ESMTPSA id a92af1059eb24-124a9d6b663sm15486422c88.1.2026.01.31.23.10.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 31 Jan 2026 23:10:33 -0800 (PST)
-From: JP Kobryn <inwardvessel@gmail.com>
-To: wqu@suse.com,
-	boris@bur.io,
-	clm@fb.com,
-	dsterba@suse.com
-Cc: linux-btrfs@vger.kernel.org,
-	stable@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	kernel-team@meta.com
-Subject: [PATCH stable 5.15-6.9] btrfs: prevent use-after-free on page private data in btrfs_subpage_clear_uptodate()
-Date: Sat, 31 Jan 2026 23:09:53 -0800
-Message-ID: <20260201070953.129723-1-inwardvessel@gmail.com>
-X-Mailer: git-send-email 2.52.0
+	s=arc-20240116; t=1769930002; c=relaxed/simple;
+	bh=BkzrcFCFhmpVXH0wF/TJCLA3t6L+J18m3pfmUDygols=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=WT/R6bHpfDjh07NZNw7P6PnLq/lUL77C7bRag1eGORUChIiyDD1DZ2LaEpph3TRIE8fCz0sJlrad3y/oRzY8JkU69S0ik2fsMk24rMK5QQl16TYq/JfWieZHNTwXdrwQsrQbhpH+/HsVp94IJFZO5Atp6PMu9kr1Qd9y/6r87Oo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mails.ucas.ac.cn; spf=pass smtp.mailfrom=mails.ucas.ac.cn; arc=none smtp.client-ip=159.226.251.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mails.ucas.ac.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mails.ucas.ac.cn
+Received: from [192.168.1.29] (unknown [112.45.178.9])
+	by APP-03 (Coremail) with SMTP id rQCowAAnSeAJ_X5pSJ5rBw--.18706S2;
+	Sun, 01 Feb 2026 15:13:14 +0800 (CST)
+Message-ID: <914f64a8-d51c-4424-97dd-f8b917e72acf@mails.ucas.ac.cn>
+Date: Sun, 1 Feb 2026 15:13:13 +0800
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: =?UTF-8?B?TW96aWxsYSBUaHVuZGVyYmlyZCDmtYvor5XniYg=?=
+Content-Language: en-US
+To: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
+From: Qiyu Yan <yanqiyu17@mails.ucas.ac.cn>
+Subject: [BUG] ZONED: Transaction aborted (ENOSPC) during auto-reclaim/balance
+ on 6.18.7-200.fc43
+Autocrypt: addr=yanqiyu17@mails.ucas.ac.cn; keydata=
+ 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
+ Ywog7hj32UG3g6tAUN7D
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:rQCowAAnSeAJ_X5pSJ5rBw--.18706S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxWF1xZryxuw48ArW3KFW7Jwb_yoWrKr4Upr
+	yfAF1akryUCwn7CFs3Xw4DW34kGw4kXw45Wr9akFnrJ3W3Ar4YqFZ8ZryF93yDtrWrA3W7
+	Ar1Dt3W8Zr43C3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUBj14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+	6F4UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Cr
+	1j6rxdM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAC
+	Y4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJV
+	W8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAG
+	YxC7MxkF7I0Ew4C26cxK6c8Ij28IcwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbV
+	WUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67x2
+	8xkI4xCE0xIEc2x0rwC2zVAF1VAY17CE14v26r1Y6r17MIIYrxkI7VAKI48JMIIF0xvE2I
+	x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK
+	8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
+	0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0pRvD7-UUUUU=
+X-CM-SenderInfo: 51dq1xl1xrlqxpdlz24oxft2wodfhubq/1tbiBgoFB2l++I0FYAAAsJ
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [-1.46 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21268-lists,linux-btrfs=lfdr.de];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[inwardvessel@gmail.com,linux-btrfs@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	RCVD_COUNT_FIVE(0.00)[5];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	RCPT_COUNT_ONE(0.00)[1];
 	NEURAL_HAM(-0.00)[-1.000];
-	TO_DN_NONE(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: EE5B6C5177
+	MIME_TRACE(0.00)[0:+];
+	R_DKIM_NA(0.00)[];
+	DMARC_NA(0.00)[ucas.ac.cn];
+	RCVD_TLS_LAST(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[yanqiyu17@mails.ucas.ac.cn,linux-btrfs@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TO_DN_EQ_ADDR_ALL(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21269-lists,linux-btrfs=lfdr.de];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,mails.ucas.ac.cn:mid]
+X-Rspamd-Queue-Id: 904F7C5189
 X-Rspamd-Action: no action
 
-This is a stable-only patch. The issue was inadvertently fixed in 6.17 [0]
-as part of a refactoring, but this patch serves as a minimal targeted fix
-for prior kernels.
+Hi all,
 
-Users of find_lock_page() need to guard against the situation where
-releasepage() has been invoked during reclaim but the page was ultimately
-not removed from the page cache. This patch covers one location that was
-overlooked.
+I am reporting an issue where a Btrfs filesystem on a zoned device 
+forced itself into a read-only state due to an ENOSPC error (-28) during 
+a background block group reclaim/relocation process. The related logs 
+can be found at: 
+https://gist.github.com/karuboniru/4eb8835507f97a6d57f4addf25fab7f7
 
-After acquiring the page, use set_page_extent_mapped() to ensure the page
-private state is valid. This is especially important in the subpage case,
-where the private field is an allocated struct containing bitmap and lock
-data.
+The environment I am on is Fedora 43 with kernel 6.18.7-200.fc43.x86_64, 
+the drive is WD HC650. The issue happened soon after after upgrading to 
+6.18 series from 6.17.
 
-Without this protection, the race below is possible:
+The system automatically started relocating block groups (via 
+btrfs_reclaim_bgs_work). During this process, a transaction was aborted 
+with errno -28 (No space left), despite btrfs filesystem usage 
+indicating significant unallocated space and free capacity.
 
-[mm] page cache reclaim path        [fs] relocation in subpage mode
-shrink_page_list()
-  trylock_page() /* lock acquired */
-  try_to_release_page()
-    mapping->a_ops->releasepage()
-      btrfs_releasepage()
-        __btrfs_releasepage()
-          clear_page_extent_mapped()
-            btrfs_detach_subpage()
-              subpage = detach_page_private(page)
-              btrfs_free_subpage(subpage)
-                kfree(subpage) /* point A */
-                                        prealloc_file_extent_cluster()
-                                          find_lock_page()
-                                            page_cache_get_speculative()
-                                            lock_page() /* wait for lock */
-  if (...)
-    ...
-  else if (!mapping || !__remove_mapping(..))
-    /*
-     * __remove_mapping() returns zero when
-     * page_ref_freeze(page, refcount) fails /* point B */
-     */
-    goto keep_locked /* page remains in cache */
-keep_locked:
-  unlock_page(page) /* lock released */
-                                        /* lock acquired */
-                                        btrfs_subpage_clear_uptodate()
-                                          /* use-after-free */
-                                          subpage = page->private
+Best,
+Qiyu
 
-Fixes: 9d9ea1e68a05 ("btrfs: subpage: fix relocation potentially overwriting last page data")
-Cc: stable@vger.kernel.org # 5.15 - 6.9
-Signed-off-by: JP Kobryn <inwardvessel@gmail.com>
+------------[ cut here ]------------
+BTRFS: Transaction aborted (error -28)
+BTRFS: error (device sda state A) in __btrfs_free_extent:3237: errno=-28 
+No space left
+WARNING: CPU: 16 PID: 472499 at fs/btrfs/extent-tree.c:3237 
+__btrfs_free_extent.isra.0+0x49d/0xc80
+BTRFS info (device sda state EA): forced readonly
+BTRFS error (device sda state EA): failed to run delayed ref for logical 
+46726206365696 num_bytes 4096 type 184 action 2 ref_mod 1: -28
+...
+  ? srso_return_thunk+0x5/0x5f
+  btrfs_run_delayed_refs_for_head+0x2b0/0x380
+  ? srso_return_thunk+0x5/0x5f
+  ? btrfs_select_ref_head+0xda/0x140
+  __btrfs_run_delayed_refs+0xb8/0x140
+  btrfs_run_delayed_refs+0x3b/0x120
+  btrfs_start_dirty_block_groups+0x30a/0x5b0
+  ? kmem_cache_alloc_noprof+0x14b/0x5a0
+  btrfs_commit_transaction+0xb1/0xd20
+  ? srso_return_thunk+0x5/0x5f
+  ? start_transaction+0x228/0x840
+  prepare_to_relocate+0x135/0x1d0
+  relocate_block_group+0x6b/0x530
+  ? srso_return_thunk+0x5/0x5f
+  ? do_zone_finish+0x372/0x400
+  btrfs_relocate_block_group+0x256/0x450
+  btrfs_relocate_chunk+0x44/0x170
+  btrfs_reclaim_bgs_work+0x428/0x570
+...
 
-[0] 4e346baee95f ("btrfs: reloc: unconditionally invalidate the page cache for each cluster")
----
- fs/btrfs/relocation.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+BTRFS info (device sda state EA): dumping space info:
+BTRFS info (device sda state EA): space_info DATA (sub-group id 0) has 
+216444928 free, is not full
+BTRFS info (device sda state EA): space_info total=12228040327168, 
+used=10905359462400, pinned=0, reserved=0, may_use=0, readonly=0 
+zone_unusable=1322464419840
+BTRFS info (device sda state EA): space_info METADATA (sub-group id 0) 
+has -34808119296 free, is full
+BTRFS info (device sda state EA): space_info total=918049259520, 
+used=64758857728, pinned=147456, reserved=1421541376, 
+may_use=34808119296, readonly=239616000 zone_unusable=851629096960
+BTRFS info (device sda state EA): space_info SYSTEM (sub-group id 0) has 
+196608 free, is not full
+BTRFS info (device sda state EA): space_info total=268435456, 
+used=6455296, pinned=114688, reserved=49152, may_use=0, readonly=0 
+zone_unusable=261619712
+BTRFS info (device sda state EA): global_block_rsv: size 536870912 
+reserved 536870912
+BTRFS info (device sda state EA): trans_block_rsv: size 0 reserved 0
+BTRFS info (device sda state EA): chunk_block_rsv: size 0 reserved 0
+BTRFS info (device sda state EA): delayed_block_rsv: size 0 reserved 0
+BTRFS info (device sda state EA): delayed_refs_rsv: size 4676581195776 
+reserved 34267054080
+BTRFS: error (device sda state EA) in __btrfs_free_extent:3237: 
+errno=-28 No space left
+BTRFS error (device sda state EA): failed to run delayed ref for logical 
+46726206337024 num_bytes 4096 type 184 action 2 ref_mod 1: -28
+BTRFS: error (device sda state EA) in btrfs_run_delayed_refs:2161: 
+errno=-28 No space left
+BTRFS error (device sda state EA): error relocating chunk 48256373489664
 
-diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-index 96c89884988b..e66ec0c23153 100644
---- a/fs/btrfs/relocation.c
-+++ b/fs/btrfs/relocation.c
-@@ -2900,6 +2900,19 @@ static noinline_for_stack int prealloc_file_extent_cluster(
- 		 * will re-read the whole page anyway.
- 		 */
- 		if (page) {
-+			/*
-+			 * releasepage() could have cleared the page private data while
-+			 * we were not holding the lock. Reset the mapping if needed so
-+			 * subpage operations can access a valid private page state.
-+			 */
-+			ret = set_page_extent_mapped(page);
-+			if (ret) {
-+				unlock_page(page);
-+				put_page(page);
-+
-+				return ret;
-+			}
-+
- 			btrfs_subpage_clear_uptodate(fs_info, page, i_size,
- 					round_up(i_size, PAGE_SIZE) - i_size);
- 			unlock_page(page);
--- 
-2.52.0
+$ sudo btrfs fi us /run/media/cold
+Overall:
+     Device size:          18.19TiB
+     Device allocated:          12.79TiB
+     Device unallocated:           5.40TiB
+     Device missing:             0.00B
+     Device slack:             0.00B
+     Device zone unusable:       1.98TiB
+     Device zone size:         256.00MiB
+     Used:              10.04TiB
+     Free (estimated):           6.60TiB    (min: 3.90TiB)
+     Free (statfs, df):           6.60TiB
+     Data ratio:                  1.00
+     Metadata ratio:              2.00
+     Global reserve:         512.00MiB    (used: 0.00B)
+     Multiple profiles:                no
+
+Data,single: Size:11.12TiB, Used:9.92TiB (89.18%)
+    /dev/sda      11.12TiB
+
+Metadata,DUP: Size:855.00GiB, Used:60.31GiB (7.05%)
+    /dev/sda       1.67TiB
+
+System,DUP: Size:256.00MiB, Used:6.16MiB (2.40%)
+    /dev/sda     512.00MiB
+
+Unallocated:
+    /dev/sda       5.39TiB
+
 
 
