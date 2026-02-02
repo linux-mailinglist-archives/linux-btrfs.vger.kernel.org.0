@@ -1,107 +1,68 @@
-Return-Path: <linux-btrfs+bounces-21289-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21290-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id GKqDDwWpgGmeAAMAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21289-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Mon, 02 Feb 2026 14:39:17 +0100
+	id QCSnJubBgGl3AgMAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21290-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Mon, 02 Feb 2026 16:25:26 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD1C1CCDE4
-	for <lists+linux-btrfs@lfdr.de>; Mon, 02 Feb 2026 14:39:16 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4B61CE2C9
+	for <lists+linux-btrfs@lfdr.de>; Mon, 02 Feb 2026 16:25:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 07030302F6A9
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Feb 2026 13:38:47 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 4796C305DC1B
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Feb 2026 15:12:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5581369985;
-	Mon,  2 Feb 2026 13:38:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58E7F378821;
+	Mon,  2 Feb 2026 15:11:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="JjawmUVR";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="0dIJITb0";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="cSkzfpqK";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="KIvVr/cE"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="BDtlxC7H"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5DC236826F
-	for <linux-btrfs@vger.kernel.org>; Mon,  2 Feb 2026 13:38:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69DAA3783C1;
+	Mon,  2 Feb 2026 15:11:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770039520; cv=none; b=Q6R7o1SxZ78yDADp2ylkqJ5b6StGwR4s2RqJ3pZlArPefLlcVUMEO9s9Z1qYtl6few7Dy19zluwKNPOxq7ZHpBe5yXU7EJO5NM+GCmpXUfOYZiDexjgCr+zpXA9c0mGNisDS+nioofam8IBC5+EiuCownk94k5A00Bmp1BmcfVw=
+	t=1770045112; cv=none; b=qsTZbO3pGujIS/q1vTnsTNkBoF3s/NbV5ufGHBD3oAlxQ9pNwexDQShkcGMWYxc37uwo7LtMkj01/odcFB6YxEJqF6CxJOTdlfCJzkv7rTylaF/aiAUvEu049DdIIFK+JZdtOUqsQqChx2iA4z2FCSkQqUBsJcmydUAZAM2N/GA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770039520; c=relaxed/simple;
-	bh=l/8LNkn3HhziWJswzZ8vil7HBfy8+hdvqt2g6LjhEos=;
+	s=arc-20240116; t=1770045112; c=relaxed/simple;
+	bh=XD1mJNWkOcI6dGgHAOJhJcnbwykWRo8a4yuMq6e9Z1U=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bnrJrTtjqWIFn3VNgMbx7tqwOXSUnOnlONIjBpuHcyLJpFH+P6sYnd9uzhGITGxxBfSP69qvb6B6NtI3bSMi0o4gJfxfNILVJS8xOe8CUTZ299J6moEzldcicxt9RtwMZONxqnc2WRFRF5CuJI3dl+efEZ4TAvddt2TUsMJIpuo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=JjawmUVR; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=0dIJITb0; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=cSkzfpqK; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=KIvVr/cE; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id CCA5C5BD80;
-	Mon,  2 Feb 2026 13:38:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1770039517; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/oyTyuOKaSQwWiPhfy61kOxEJp2TZIsDhC+lWzUuyAo=;
-	b=JjawmUVRKz6OAXw7k49ipwKq82sevQPhxtyqCCkBDLvZnLWC3lUrQXmd1jSdoudgn5vfGt
-	BNR6GIWjO35G70jUBJ9Nr1WU8wySX5toK3BTEvj1LqZMFtXqPidfQmEu6bG8iaZIWAnMvr
-	xHAHJC/BL5aGByU73xG2aVsjwJe5aH0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1770039517;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/oyTyuOKaSQwWiPhfy61kOxEJp2TZIsDhC+lWzUuyAo=;
-	b=0dIJITb0A7AYvYgpEMWqlm5aXR8pNoSvSvCS349tFKlDUmq751UwU0fDe8kqsZ8bEq4uvx
-	PGzsyZIavyObjUAA==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1770039515; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/oyTyuOKaSQwWiPhfy61kOxEJp2TZIsDhC+lWzUuyAo=;
-	b=cSkzfpqKBn0c5ZR4kFZ3myxLpPB+nNGB/YDhaw20M4+Ie/gvLnJE7GoFn+r0wACInIBuMc
-	lcC3xx51DAL3d8FZAfH0f+4SfZ93JBr6hvjXDGvLiPP8L1PjtOiaHv5lQY3a3lxqGL/g1O
-	81EQp9PlHAibWZe7lzI/fIN3M+7HLaQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1770039515;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/oyTyuOKaSQwWiPhfy61kOxEJp2TZIsDhC+lWzUuyAo=;
-	b=KIvVr/cEJ3g5JcGwLQEBZXyJVBRdxR9ngg5szTlzBaA7ij45sAPjQ9oRXn6IhLocLzKVPm
-	0KC2tLcGks9dQLBA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 981F53EA62;
-	Mon,  2 Feb 2026 13:38:35 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id xtsgJduogGmFSQAAD6G6ig
-	(envelope-from <jack@suse.cz>); Mon, 02 Feb 2026 13:38:35 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 3EB41A08F8; Mon,  2 Feb 2026 14:38:35 +0100 (CET)
-Date: Mon, 2 Feb 2026 14:38:35 +0100
-From: Jan Kara <jack@suse.cz>
+	 Content-Type:Content-Disposition:In-Reply-To; b=mGQ6Tv691PiT9goi5MuWdx/vxN63s1SZgwaZUXMfzBextpMQMtUczaS8tddg2YKrJcV/mBMdkjzTNjDMK5ACNM3sU2x/N0wdy1wqRsls1F1Vj2+Zq6PWV0hdKIaBa4SMuA/lBzHzJRTA3uEC88mRR84lsvKEL87vdgHe5fVQLFc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=BDtlxC7H; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=29jy1DWONXoy2B6xjNCVE28WgCP/0GEBN/PkS8AOnVg=; b=BDtlxC7H+13PZmg79XlT4cSMua
+	xCmWldl386DVv7YKhloM8ay70jGq0ky18Petto6satpvMsOL7fevIgvAqiZ+m+T6dTk9OSYyjC9B1
+	dgk5DWbW5WtnJ5dXJqJtbG8v1U3xFLHjpHoDe9S11x2Hx3rNbI7g0hkbr2HHCIxDzAbUzzAv6dbgP
+	6rP862nQMv4gnxs7ZGhGVAFYzSMXeOynEkfnl+8Ge3pLQoZw9MEPAuPqTtnZ33oYU7uTa/WHu11eu
+	NkI4dVGUFndZcaqlAzsnvzeNwkeanApgqsDci6lZ3Cx+VX0m0V0A/2I/YzUijvV5CJd1qIVP+qJOm
+	VWpZWm+Q==;
+Received: from willy by casper.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vmvab-0000000Gf51-3qX6;
+	Mon, 02 Feb 2026 15:11:45 +0000
+Date: Mon, 2 Feb 2026 15:11:45 +0000
+From: Matthew Wilcox <willy@infradead.org>
 To: Christoph Hellwig <hch@lst.de>
-Cc: Eric Biggers <ebiggers@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, 
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, David Sterba <dsterba@suse.com>, 
-	Theodore Ts'o <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>, 
-	Andrey Albershteyn <aalbersh@redhat.com>, Matthew Wilcox <willy@infradead.org>, 
-	linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org, 
-	linux-f2fs-devel@lists.sourceforge.net, fsverity@lists.linux.dev, "Darrick J. Wong" <djwong@kernel.org>
-Subject: Re: [PATCH 07/11] fs: consolidate fsverity_info lookup in buffer.c
-Message-ID: <o5g2i6epyug7rx4v3hdejsqhemva2ewnm63mfnqs5e57o72ska@rsdcewqcwd3g>
+Cc: Eric Biggers <ebiggers@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	David Sterba <dsterba@suse.com>, Theodore Ts'o <tytso@mit.edu>,
+	Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+	Andrey Albershteyn <aalbersh@redhat.com>,
+	linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+	fsverity@lists.linux.dev
+Subject: Re: [PATCH 02/11] readahead: push invalidate_lock out of
+ page_cache_ra_unbounded
+Message-ID: <aYC-set6OAK9F9GE@casper.infradead.org>
 References: <20260202060754.270269-1-hch@lst.de>
- <20260202060754.270269-8-hch@lst.de>
+ <20260202060754.270269-3-hch@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -110,137 +71,70 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260202060754.270269-8-hch@lst.de>
-X-Spam-Flag: NO
-X-Spam-Score: -3.80
-X-Spam-Level: 
+In-Reply-To: <20260202060754.270269-3-hch@lst.de>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.16 / 15.00];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	DMARC_POLICY_ALLOW(-0.50)[infradead.org,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_DKIM_ALLOW(-0.20)[infradead.org:s=casper.20170209];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:dkim,suse.com:email,lst.de:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns];
-	DMARC_NA(0.00)[suse.cz];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21289-lists,linux-btrfs=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[17];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	MISSING_XM_UA(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jack@suse.cz,linux-btrfs@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-21290-lists,linux-btrfs=lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[15];
+	DKIM_TRACE(0.00)[infradead.org:+];
+	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[willy@infradead.org,linux-btrfs@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_SEVEN(0.00)[7]
-X-Rspamd-Queue-Id: AD1C1CCDE4
+	MID_RHS_MATCH_FROMTLD(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,casper.infradead.org:mid,infradead.org:dkim]
+X-Rspamd-Queue-Id: A4B61CE2C9
 X-Rspamd-Action: no action
 
-On Mon 02-02-26 07:06:36, Christoph Hellwig wrote:
-> Look up the fsverity_info once in end_buffer_async_read_io, and then
-> pass it along to the I/O completion workqueue in
-> struct postprocess_bh_ctx.
-> 
-> This amortizes the lookup better once it becomes less efficient.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> Reviewed-by: "Darrick J. Wong" <djwong@kernel.org>
+On Mon, Feb 02, 2026 at 07:06:31AM +0100, Christoph Hellwig wrote:
+> +++ b/fs/f2fs/file.c
+> @@ -4418,7 +4418,9 @@ static int redirty_blocks(struct inode *inode, pgoff_t page_idx, int len)
+>  	pgoff_t redirty_idx = page_idx;
+>  	int page_len = 0, ret = 0;
+>  
+> +	filemap_invalidate_lock_shared(mapping);
+>  	page_cache_ra_unbounded(&ractl, len, 0);
+> +	filemap_invalidate_unlock_shared(mapping);
 
-Looks good. Feel free to add:
+Why is f2fs calling page_cache_ra_unbounded() here?  The documentation
+literally says not to call it:
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+ * This function is for filesystems to call when they want to start
+ * readahead beyond a file's stated i_size.  This is almost certainly
+ * not the function you want to call.  Use page_cache_async_readahead()
+ * or page_cache_sync_readahead() instead.
 
-								Honza
+(in this case, f2fs doesn't have a folio, so page_cache_async_ra() is
+probably the right function to call).  But what's the point in writing
+documentation when people don't read it?
 
-> ---
->  fs/buffer.c | 27 +++++++++++----------------
->  1 file changed, 11 insertions(+), 16 deletions(-)
-> 
-> diff --git a/fs/buffer.c b/fs/buffer.c
-> index 3982253b6805..f4b3297ef1b1 100644
-> --- a/fs/buffer.c
-> +++ b/fs/buffer.c
-> @@ -302,6 +302,7 @@ static void end_buffer_async_read(struct buffer_head *bh, int uptodate)
->  struct postprocess_bh_ctx {
->  	struct work_struct work;
->  	struct buffer_head *bh;
-> +	struct fsverity_info *vi;
->  };
+> @@ -228,9 +229,10 @@ void page_cache_ra_unbounded(struct readahead_control *ractl,
+>  	 */
+>  	unsigned int nofs = memalloc_nofs_save();
 >  
->  static void verify_bh(struct work_struct *work)
-> @@ -309,25 +310,14 @@ static void verify_bh(struct work_struct *work)
->  	struct postprocess_bh_ctx *ctx =
->  		container_of(work, struct postprocess_bh_ctx, work);
->  	struct buffer_head *bh = ctx->bh;
-> -	struct inode *inode = bh->b_folio->mapping->host;
->  	bool valid;
->  
-> -	valid = fsverity_verify_blocks(*fsverity_info_addr(inode), bh->b_folio,
-> -				       bh->b_size, bh_offset(bh));
-> +	valid = fsverity_verify_blocks(ctx->vi, bh->b_folio, bh->b_size,
-> +				       bh_offset(bh));
->  	end_buffer_async_read(bh, valid);
->  	kfree(ctx);
->  }
->  
-> -static bool need_fsverity(struct buffer_head *bh)
-> -{
-> -	struct folio *folio = bh->b_folio;
-> -	struct inode *inode = folio->mapping->host;
-> -
-> -	return fsverity_active(inode) &&
-> -		/* needed by ext4 */
-> -		folio->index < DIV_ROUND_UP(inode->i_size, PAGE_SIZE);
-> -}
-> -
->  static void decrypt_bh(struct work_struct *work)
->  {
->  	struct postprocess_bh_ctx *ctx =
-> @@ -337,7 +327,7 @@ static void decrypt_bh(struct work_struct *work)
->  
->  	err = fscrypt_decrypt_pagecache_blocks(bh->b_folio, bh->b_size,
->  					       bh_offset(bh));
-> -	if (err == 0 && need_fsverity(bh)) {
-> +	if (err == 0 && ctx->vi) {
->  		/*
->  		 * We use different work queues for decryption and for verity
->  		 * because verity may require reading metadata pages that need
-> @@ -359,15 +349,20 @@ static void end_buffer_async_read_io(struct buffer_head *bh, int uptodate)
->  {
->  	struct inode *inode = bh->b_folio->mapping->host;
->  	bool decrypt = fscrypt_inode_uses_fs_layer_crypto(inode);
-> -	bool verify = need_fsverity(bh);
-> +	struct fsverity_info *vi = NULL;
-> +
-> +	/* needed by ext4 */
-> +	if (bh->b_folio->index < DIV_ROUND_UP(inode->i_size, PAGE_SIZE))
-> +		vi = fsverity_get_info(inode);
->  
->  	/* Decrypt (with fscrypt) and/or verify (with fsverity) if needed. */
-> -	if (uptodate && (decrypt || verify)) {
-> +	if (uptodate && (decrypt || vi)) {
->  		struct postprocess_bh_ctx *ctx =
->  			kmalloc(sizeof(*ctx), GFP_ATOMIC);
->  
->  		if (ctx) {
->  			ctx->bh = bh;
-> +			ctx->vi = vi;
->  			if (decrypt) {
->  				INIT_WORK(&ctx->work, decrypt_bh);
->  				fscrypt_enqueue_decrypt_work(&ctx->work);
-> -- 
-> 2.47.3
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> +	lockdep_assert_held_read(&mapping->invalidate_lock);
+
+Hm, why are we asserting that it's not write-locked?  For the
+purposes of this function, I'd think we want to just
+lockdep_assert_held()?
+
+In the tree I'm looking at, there are also calls to
+page_cache_ra_unbounded() in fs/ext4/verity.c and fs/f2fs/verity.c
+which probably need the lock taken too?
 
