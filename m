@@ -1,60 +1,62 @@
-Return-Path: <linux-btrfs+bounces-21294-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21295-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id SH4QOJQbgWm0EAMAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21294-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Mon, 02 Feb 2026 22:48:04 +0100
+	id QHbIOp4bgWm0EAMAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21295-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Mon, 02 Feb 2026 22:48:14 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FAA3D1C88
-	for <lists+linux-btrfs@lfdr.de>; Mon, 02 Feb 2026 22:48:04 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DA21D1C8F
+	for <lists+linux-btrfs@lfdr.de>; Mon, 02 Feb 2026 22:48:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 25ACC301C725
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Feb 2026 21:47:23 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 7DEDA3015B90
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Feb 2026 21:47:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3535F316190;
-	Mon,  2 Feb 2026 21:47:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A46B7314A65;
+	Mon,  2 Feb 2026 21:47:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZUcye/ro"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NKRGplfL"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 826981C84BD;
-	Mon,  2 Feb 2026 21:47:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E958229ACD7;
+	Mon,  2 Feb 2026 21:47:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770068831; cv=none; b=H0cxHkzsd0QqTH6J3w44p2XIGGNjNd7B3fb64mxPHFo84mhWM1t4jux5m6s3csm9G5GRNgE0TBvC6pd1n2BCJVjWHmEtvOdf4c/NS2IVAK+bcdZuHrp+NcQ17cpt95c2bNMFEAdBh4zrRBqODvogBAOBFDnsubToZbLCG2y/ASM=
+	t=1770068838; cv=none; b=YYRi/CNM0LQJC2ETo/DYvB75fTMN88M3xM+v5kHCHn8as1M2J6y8iJFlQkg6l+XKMW2jXMioqgma4f2QFP0e48PEInMtwwucqUJ4ZxHc3ylb2dKoalb/POZwFAZlJ5J4mpSGvCC5wZ++Pw3+doxJ86UxkuVG8OOGsd0YmxaNcSQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770068831; c=relaxed/simple;
-	bh=2Vgx4ah3QCD/wKqotM08VvSQGy89QT7N5q9u7CQOhxE=;
+	s=arc-20240116; t=1770068838; c=relaxed/simple;
+	bh=Uhu+OJ3/Ct+nm1SqSDzlrwEegfw9IFUXsLNNcY+v7es=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tMAw3AjR+H+JQ1AE0xhpqY5dzkaNo7Dp3y/e/Cq2vZksJLZtxAjLPXvlx999oBlv6R6YzW2xEg9MajJO6jzAEICGXRj25CaRnTuEdhuCsjYP5+VeQTe9TUV+x/iNy9j7sXORI4/Pe7dIBJokq7cONfV23Z9dUiKVImjTYrylc7Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZUcye/ro; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9475C2BC86;
-	Mon,  2 Feb 2026 21:47:10 +0000 (UTC)
+	 MIME-Version; b=Q4jurEk6BiesVhm+CjllmCnVTYSId9yJu7sj+KM/s70oZ1Q/F5t1NK3cNETdgjXDURA0aLiI4DWuA3xbzltmMQb5gUkSNHvFFWjG7SjU19Y6cP6Nr4rRShNsUUcW8TyVQ1SOVx3k9nmlph5JlfGU70ejZBNZiDpQShKwfSYMk88=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NKRGplfL; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2CB8C116C6;
+	Mon,  2 Feb 2026 21:47:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1770068831;
-	bh=2Vgx4ah3QCD/wKqotM08VvSQGy89QT7N5q9u7CQOhxE=;
+	s=k20201202; t=1770068837;
+	bh=Uhu+OJ3/Ct+nm1SqSDzlrwEegfw9IFUXsLNNcY+v7es=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ZUcye/ronTYMEs/46ooywyd35mBBoA5HcihuQxyLecV0f1tBY01FqaW9FZNSTl+WS
-	 Li8Zyxkm2GFh7rzFBa1L9ZYrm4/Ka48XJFLMuXi7vwQsm8zx9RfHieQNrM7I508C/E
-	 CyPadaY9g4PEq6AT6ThVl6rfa/+yZLhYR1k9JP817dmKke9so24ZGpy0TBmjUtSwXu
-	 OaWwgud1yKGNSRBBFsEz06nzyxCTq8OUsBwx0myNFHB1ucVX/wkcKcwL7cXve48G96
-	 UvXmym5Blel39QG0AWP0fGrEhG/tK367PMilr9x2FP8ny+T5zopS6ZyCQlkNAC3i9+
-	 77jLI4GUdfBww==
+	b=NKRGplfLh8xfzxssG9u10DG/T+lU2W1PyoUVsIu670b4dRab52dRRbgM68+cRRFH/
+	 ZupNPb65rVCw975Wd2FmSradSWtq+ciTY7s3J8mlRUaBby4NOAd6J6UaXaDI9nZpLH
+	 66vZuT9yI5jfadNDKHMtqdm1xzXiVJQR7gPKiAUJ4Z3RnST7IpVwlAUnJNckOrZ+GQ
+	 F5EUPyWceycghKD3JN2m6bgQbycA/y0tKqohg6PvoqUJGBlQJGBInl8IeaLtDl/yXL
+	 xakga/6ooDJuiUKaZhyW/YH/0Ew/9qJOIWNV5JGJKxBGysyo+Ost7H/pefaROJeA5j
+	 dmRz7L6DQawuQ==
 From: Sasha Levin <sashal@kernel.org>
 To: patches@lists.linux.dev,
 	stable@vger.kernel.org
-Cc: Qiang Ma <maqianga@uniontech.com>,
+Cc: Edward Adam Davis <eadavis@qq.com>,
+	syzbot+b4a2af3000eaa84d95d5@syzkaller.appspotmail.com,
+	Filipe Manana <fdmanana@suse.com>,
 	David Sterba <dsterba@suse.com>,
 	Sasha Levin <sashal@kernel.org>,
 	clm@fb.com,
 	linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.18] btrfs: fix Wmaybe-uninitialized warning in replay_one_buffer()
-Date: Mon,  2 Feb 2026 16:46:07 -0500
-Message-ID: <20260202214643.212290-12-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.18] btrfs: sync read disk super and set block size
+Date: Mon,  2 Feb 2026 16:46:10 -0500
+Message-ID: <20260202214643.212290-15-sashal@kernel.org>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20260202214643.212290-1-sashal@kernel.org>
 References: <20260202214643.212290-1-sashal@kernel.org>
@@ -69,194 +71,242 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.18.8
 Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+X-Spamd-Result: default: False [0.84 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21294-lists,linux-btrfs=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[qq.com,syzkaller.appspotmail.com,suse.com,kernel.org,fb.com,vger.kernel.org];
 	MIME_TRACE(0.00)[0:+];
-	FROM_NEQ_ENVFROM(0.00)[sashal@kernel.org,linux-btrfs@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21295-lists,linux-btrfs=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	NEURAL_HAM(-0.00)[-1.000];
+	FROM_NEQ_ENVFROM(0.00)[sashal@kernel.org,linux-btrfs@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
 	DKIM_TRACE(0.00)[kernel.org:+];
-	TAGGED_RCPT(0.00)[linux-btrfs];
+	NEURAL_HAM(-0.00)[-1.000];
+	TAGGED_RCPT(0.00)[linux-btrfs,b4a2af3000eaa84d95d5];
+	RCPT_COUNT_SEVEN(0.00)[9];
 	TO_DN_SOME(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,suse.com:email]
-X-Rspamd-Queue-Id: 8FAA3D1C88
+	DBL_BLOCKED_OPENRESOLVER(0.00)[qq.com:email,suse.com:email,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,appspotmail.com:email]
+X-Rspamd-Queue-Id: 8DA21D1C8F
 X-Rspamd-Action: no action
 
-From: Qiang Ma <maqianga@uniontech.com>
+From: Edward Adam Davis <eadavis@qq.com>
 
-[ Upstream commit 9c7e71c97c8cd086b148d0d3d1cd84a1deab023c ]
+[ Upstream commit 3f29d661e5686f3aa14e6f11537ff5c49846f2e2 ]
 
-Warning was found when compiling using loongarch64-gcc 12.3.1:
+When the user performs a btrfs mount, the block device is not set
+correctly. The user sets the block size of the block device to 0x4000
+by executing the BLKBSZSET command.
+Since the block size change also changes the mapping->flags value, this
+further affects the result of the mapping_min_folio_order() calculation.
 
-  $ make CFLAGS_tree-log.o=-Wmaybe-uninitialized
+Let's analyze the following two scenarios:
 
-  In file included from fs/btrfs/ctree.h:21,
-		   from fs/btrfs/tree-log.c:12:
-  fs/btrfs/accessors.h: In function 'replay_one_buffer':
-  fs/btrfs/accessors.h:66:16: warning: 'inode_item' may be used uninitialized [-Wmaybe-uninitialized]
-     66 |         return btrfs_get_##bits(eb, s, offsetof(type, member));         \
-	|                ^~~~~~~~~~
-  fs/btrfs/tree-log.c:2803:42: note: 'inode_item' declared here
-   2803 |                 struct btrfs_inode_item *inode_item;
-	|                                          ^~~~~~~~~~
+Scenario 1: Without executing the BLKBSZSET command, the block size is
+0x1000, and mapping_min_folio_order() returns 0;
 
-Initialize the inode_item to NULL, the compiler does not seem to see the
-relation between the first 'wc->log_key.type == BTRFS_INODE_ITEM_KEY'
-check and the other one that also checks the replay phase.
+Scenario 2: After executing the BLKBSZSET command, the block size is
+0x4000, and mapping_min_folio_order() returns 2.
 
-Signed-off-by: Qiang Ma <maqianga@uniontech.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
+do_read_cache_folio() allocates a folio before the BLKBSZSET command
+is executed. This results in the allocated folio having an order value
+of 0. Later, after BLKBSZSET is executed, the block size increases to
+0x4000, and the mapping_min_folio_order() calculation result becomes 2.
+
+This leads to two undesirable consequences:
+
+1. filemap_add_folio() triggers a VM_BUG_ON_FOLIO(folio_order(folio) <
+mapping_min_folio_order(mapping)) assertion.
+
+2. The syzbot report [1] shows a null pointer dereference in
+create_empty_buffers() due to a buffer head allocation failure.
+
+Synchronization should be established based on the inode between the
+BLKBSZSET command and read cache page to prevent inconsistencies in
+block size or mapping flags before and after folio allocation.
+
+[1]
+KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+RIP: 0010:create_empty_buffers+0x4d/0x480 fs/buffer.c:1694
+Call Trace:
+ folio_create_buffers+0x109/0x150 fs/buffer.c:1802
+ block_read_full_folio+0x14c/0x850 fs/buffer.c:2403
+ filemap_read_folio+0xc8/0x2a0 mm/filemap.c:2496
+ do_read_cache_folio+0x266/0x5c0 mm/filemap.c:4096
+ do_read_cache_page mm/filemap.c:4162 [inline]
+ read_cache_page_gfp+0x29/0x120 mm/filemap.c:4195
+ btrfs_read_disk_super+0x192/0x500 fs/btrfs/volumes.c:1367
+
+Reported-by: syzbot+b4a2af3000eaa84d95d5@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=b4a2af3000eaa84d95d5
+Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
 Signed-off-by: David Sterba <dsterba@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
 
 LLM Generated explanations, may be completely bogus:
 
-Now I have a clear understanding of the code flow. Let me verify what
-the commit changes and analyze it:
+So this commit is going into v6.19. Let me now analyze the complete
+picture.
 
 ## Analysis Summary
 
 ### 1. COMMIT MESSAGE ANALYSIS
 
-The commit addresses a compiler warning (`-Wmaybe-uninitialized`) for
-the `inode_item` pointer in `replay_one_buffer()`. The warning is
-triggered by certain compilers (loongarch64-gcc 12.3.1 in this case)
-that don't recognize the relationship between:
-- The first check: `wc->log_key.type == BTRFS_INODE_ITEM_KEY` (which
-  assigns `inode_item`)
-- The later use: `wc->log_key.type == BTRFS_INODE_ITEM_KEY && wc->stage
-  == LOG_WALK_REPLAY_INODES` (which uses `inode_item`)
+**Subject:** "btrfs: sync read disk super and set block size"
 
-The compiler can't prove that `inode_item` is always initialized before
-use due to the complex conditional logic.
+**Key indicators:**
+- **Reported-by: syzbot**: Indicates a real bug found by fuzzing
+- **Closes: syzkaller bug link**: Confirms this is fixing a reported
+  issue
+- **Reviewed-by: Filipe Manana**: Core btrfs maintainer reviewed and
+  approved
+- **Signed-off-by: David Sterba**: Btrfs maintainer signed off
+
+The commit message describes a race condition that leads to:
+1. `VM_BUG_ON_FOLIO` assertion failure
+2. Null pointer dereference in `create_empty_buffers()`
 
 ### 2. CODE CHANGE ANALYSIS
 
-The change is trivial:
+The fix is **extremely simple** - just 2 lines added:
 ```c
-- struct btrfs_inode_item *inode_item;
-+ struct btrfs_inode_item *inode_item = NULL;
++       filemap_invalidate_lock(mapping);
+        page = read_cache_page_gfp(mapping, bytenr >> PAGE_SHIFT,
+GFP_NOFS);
++       filemap_invalidate_unlock(mapping);
 ```
 
-Looking at the control flow:
-- Line 2807: `if (wc->log_key.type == BTRFS_INODE_ITEM_KEY)` -
-  inode_item is assigned via `btrfs_item_ptr()`
-- Line 2838-2845: `if (wc->log_key.type == BTRFS_INODE_ITEM_KEY &&
-  wc->stage == LOG_WALK_REPLAY_INODES)` - inode_item is used via
-  `btrfs_inode_mode(eb, inode_item)`
+**Root cause:** A race between:
+1. `btrfs_read_disk_super()` allocating a folio via
+   `read_cache_page_gfp()`
+2. User space calling `BLKBSZSET` ioctl to change block size
 
-Logically, whenever the second condition is true, the first condition
-must also have been true (both check `wc->log_key.type ==
-BTRFS_INODE_ITEM_KEY`), so `inode_item` will have been assigned. But
-some compilers cannot deduce this relationship due to the second
-condition also checking `wc->stage`.
+When the block size changes mid-operation, the folio order requirements
+change, causing either a BUG_ON or null pointer dereference.
+
+**Why the fix works:** The `filemap_invalidate_lock()` provides
+synchronization between the page cache reader and the block size setter
+(in `set_blocksize()`), preventing the race.
 
 ### 3. CLASSIFICATION
 
-This is a **build fix** - it silences a compiler warning. It falls under
-the "BUILD FIXES" exception category:
-- Fixes for compilation warnings
-- Zero risk of runtime regression (initializing a pointer to NULL that
-  will always be properly assigned before use)
+- **Bug type:** Race condition leading to kernel crash (null pointer
+  deref) or BUG_ON
+- **Severity:** High - causes kernel panic/crash
+- **Category:** Synchronization fix
 
 ### 4. SCOPE AND RISK ASSESSMENT
 
-- **Lines changed**: 1 line
-- **Files touched**: 1 file (fs/btrfs/tree-log.c)
-- **Complexity**: Trivial - just adding `= NULL` initialization
-- **Risk**: Extremely low - this is a defensive initialization that
-  doesn't change runtime behavior
-
-The only possible risk would be if the compiler warning was actually
-detecting a real bug. However, analyzing the code:
-- Line 2838 checks `wc->log_key.type == BTRFS_INODE_ITEM_KEY` AND
-  `wc->stage == LOG_WALK_REPLAY_INODES`
-- Line 2807 checks `wc->log_key.type == BTRFS_INODE_ITEM_KEY`
-- If we reach line 2845 (where `inode_item` is used), we must have
-  passed the check at 2838, which implies `wc->log_key.type ==
-  BTRFS_INODE_ITEM_KEY` is true, which means we also entered the block
-  at 2807 and assigned `inode_item`.
-
-The warning is a false positive.
+- **Lines changed:** 2 additions only
+- **Files touched:** 1 (fs/btrfs/volumes.c)
+- **Complexity:** Very low - just lock/unlock pair around existing call
+- **Risk:** LOW - the lock is well-understood and used elsewhere for
+  exactly this purpose
 
 ### 5. USER IMPACT
 
-- This fixes a compiler warning that can be annoying for
-  developers/users who enable `-Wmaybe-uninitialized`
-- Some build configurations with stricter warning settings (e.g.,
-  `-Werror`) could fail to compile without this fix
-- The btrfs subsystem is widely used, so build issues affect many users
+- **Who is affected:** Any btrfs user where concurrent block device
+  operations occur
+- **Triggering scenario:** User space modifying block device size while
+  btrfs is mounting/reading superblock
+- **Severity of impact:** Kernel crash (HIGH)
 
 ### 6. STABILITY INDICATORS
 
-- **Reviewed-by: David Sterba <dsterba@suse.com>** - David Sterba is the
-  btrfs maintainer
-- **Signed-off-by: David Sterba <dsterba@suse.com>** - Merged by the
-  maintainer
-- This is a simple, obviously correct fix
+- **Reviewed-by:** Filipe Manana (senior btrfs developer at SUSE)
+- **Multiple sign-offs:** Through the btrfs maintainer chain
+- **Syzbot reported:** Reproducible issue
 
-### 7. DEPENDENCY CHECK
+### 7. CRITICAL DEPENDENCY CHECK
 
-- No dependencies on other commits
-- This is a self-contained one-line change
-- The code exists in stable trees (tree-log.c is present in all kernel
-  versions)
+**THIS IS THE KEY ISSUE:** The fix relies on `set_blocksize()` also
+taking `filemap_invalidate_lock()`. This was added by commit
+`c0e473a0d2264` ("block: fix race between set_blocksize and read paths")
+which is **only in kernel 6.15+**.
 
-## Conclusion
+Without that block layer fix:
+- On kernels < 6.15: `set_blocksize()` does NOT take
+  `filemap_invalidate_lock`, so this btrfs fix would NOT provide proper
+  synchronization
+- The btrfs fix by itself would be ineffective in preventing the race
 
-This commit is an ideal candidate for stable backporting:
+### Risk vs Benefit Analysis
 
-1. **Meets stable criteria**:
-   - Obviously correct - trivial initialization
-   - Fixes a real issue - compiler warning that could break builds with
-     strict settings
-   - Small and contained - single line change
-   - No new features
+**Benefits:**
+- Fixes real crash reported by syzbot
+- Very small, surgical fix (2 lines)
+- Well-reviewed by btrfs maintainers
+- Follows established synchronization pattern
 
-2. **Falls under BUILD FIXES exception**: Compiler warning fixes are
-   explicitly allowed in stable
+**Risks/Concerns:**
+- **CRITICAL DEPENDENCY**: Requires `c0e473a0d2264` to be present for
+  the synchronization to work
+- Without the block layer fix, this btrfs fix is essentially a no-op
+  (won't actually synchronize)
+- The block layer fix is only in 6.15+, so backporting this btrfs fix to
+  6.14 or earlier would be pointless without also backporting the block
+  layer changes
 
-3. **Zero risk**: Initializing a pointer to NULL that is guaranteed to
-   be assigned before use cannot cause any runtime regression
+### Conclusion
 
-4. **Maintainer approved**: Reviewed and merged by David Sterba, the
-   btrfs maintainer
+This commit fixes a real kernel crash (null pointer dereference) in
+btrfs that was reported by syzbot. The fix itself is minimal and correct
+- it adds proper locking around the `read_cache_page_gfp()` call to
+synchronize with block size changes.
+
+However, there is a **critical dependency issue**: This fix only
+provides effective synchronization when paired with commit
+`c0e473a0d2264` ("block: fix race between set_blocksize and read paths")
+which adds the corresponding lock acquisition in `set_blocksize()`. That
+commit is only in kernel 6.15+.
+
+For stable trees **6.15.y and later**: This is a clear YES - fixes a
+real crash with minimal risk.
+
+For stable trees **6.14 and earlier**: The fix would be ineffective
+without also backporting the block layer changes, which are more
+invasive.
+
+Given that the question is about backporting in general and this commit
+would only be effective in 6.15+ (where the block layer infrastructure
+exists), and the fix is correct, small, and addresses a real crash, the
+answer depends on the target kernel. For the current stable (6.15+),
+this should be backported.
 
 **YES**
 
- fs/btrfs/tree-log.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/btrfs/volumes.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
-index 1444857de9fe8..ae2e035d013e2 100644
---- a/fs/btrfs/tree-log.c
-+++ b/fs/btrfs/tree-log.c
-@@ -2800,7 +2800,7 @@ static int replay_one_buffer(struct extent_buffer *eb,
+diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+index 48e717c105c35..8e7dcb12af4c4 100644
+--- a/fs/btrfs/volumes.c
++++ b/fs/btrfs/volumes.c
+@@ -1365,7 +1365,9 @@ struct btrfs_super_block *btrfs_read_disk_super(struct block_device *bdev,
+ 				      (bytenr + BTRFS_SUPER_INFO_SIZE) >> PAGE_SHIFT);
+ 	}
  
- 	nritems = btrfs_header_nritems(eb);
- 	for (wc->log_slot = 0; wc->log_slot < nritems; wc->log_slot++) {
--		struct btrfs_inode_item *inode_item;
-+		struct btrfs_inode_item *inode_item = NULL;
- 
- 		btrfs_item_key_to_cpu(eb, &wc->log_key, wc->log_slot);
++	filemap_invalidate_lock(mapping);
+ 	page = read_cache_page_gfp(mapping, bytenr >> PAGE_SHIFT, GFP_NOFS);
++	filemap_invalidate_unlock(mapping);
+ 	if (IS_ERR(page))
+ 		return ERR_CAST(page);
  
 -- 
 2.51.0
