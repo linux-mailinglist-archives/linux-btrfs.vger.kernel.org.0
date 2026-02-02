@@ -1,60 +1,108 @@
-Return-Path: <linux-btrfs+bounces-21285-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21286-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id AFDIFEpDgGnW5QIAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21285-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Mon, 02 Feb 2026 07:25:14 +0100
+	id CAc3LfalgGlNAAMAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21286-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Mon, 02 Feb 2026 14:26:14 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DE4AC8A14
-	for <lists+linux-btrfs@lfdr.de>; Mon, 02 Feb 2026 07:25:13 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1EA60CCB3B
+	for <lists+linux-btrfs@lfdr.de>; Mon, 02 Feb 2026 14:26:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9E33F3011868
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Feb 2026 06:25:03 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6E194305A6E1
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Feb 2026 13:23:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C60D92F616B;
-	Mon,  2 Feb 2026 06:25:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02D5D367F3C;
+	Mon,  2 Feb 2026 13:23:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="CIJKFs9R"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="O8UcVMSw";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="cgHhQxOp";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="O8UcVMSw";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="cgHhQxOp"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33A032DF144
-	for <linux-btrfs@vger.kernel.org>; Mon,  2 Feb 2026 06:24:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECDB2366DC5
+	for <linux-btrfs@vger.kernel.org>; Mon,  2 Feb 2026 13:23:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770013502; cv=none; b=aVxh9EdwGJmIttH+cKUKa+WVtptmMXrwkZzpy+Tj2PAANvWkcsQliANCk5CvGOSQaln5lhHERWXFW/1iiXBvfRT5upzBxo8tyfz187zQoiaKF29b1ScWhjeKVXPP8+3wo8S/mdYmZMka2fnq5Ozm3P5AJtugPnJoV5VQ0ZONxZ4=
+	t=1770038590; cv=none; b=IrxJRSMKftlmbpdb+/2OX1VcA/L6/eXm+/9zyLVP8hGKVx/VcZRydFCiVQKcnocmQ03s3MGLI4lC3firTjBh23f2JhqY4r6rUe/9tzFgaEdsQdU7DWkqFFgye+iZqxrRPK3K7sANc9KprQhqWehDYQnD5V+Z4Dyd5unxoQWyB+o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770013502; c=relaxed/simple;
-	bh=1stEsRXMrvtz8ayBVAtEaJbfARkQAtDcUuc1wkDlnSg=;
+	s=arc-20240116; t=1770038590; c=relaxed/simple;
+	bh=26zWbhZ3quDnRBRQlfNMUJkdmyZDQtdDoqRKUZfp39I=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ReCUms6UbDKOFnFKF9QWh0KpCLQoxHrXeyzwPnEE1ZZxiYpBXI2JueiUp0NrFwzI4V+ig/g92FHJKWGZ76XieVuezqhvbcAhvkgrnsG92aBzjnW2uvI5+VgYnPawSen2papacWnA95bNVUgCSQm3/he/ETJgo0U1Cm/TZ9IJ2z4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=CIJKFs9R; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=R7UUS8YTAFiDOtlPb4fSAo/WYggPwUbnTSBl206jBuU=; b=CIJKFs9RVjiljyf4iqGCr5QpWI
-	q1AviO0eYvz9tl9B2gnSRz4LgXFL0ue4CtEYeAPtqUeA2gReaXaF5hzAYvvZ0uGuSk0XvKEqU9KlP
-	HuKCUTigCZXT0T9ke00VEZV459sDdLE3ArnLWOt2BIl0YPm07G/csR5pQYd+c24PwvX/N3vhbYPj2
-	dR/srp/iBPToFb9e6Yh/urVvW9rYFkJY2hc5f7gYLtlIBCMnWNTMytir6RVR2k1/nYf0YhGltOkdm
-	4zm93+Z/6SZcMQfKia1P1YtfdwxrGNDSV7hmGNALOX1DK+SV8xEBMiLBWaqR7kpzHcuLbieGPwXV7
-	gIpNRB9w==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vmnMp-00000004VMY-236L;
-	Mon, 02 Feb 2026 06:24:59 +0000
-Date: Sun, 1 Feb 2026 22:24:59 -0800
-From: Christoph Hellwig <hch@infradead.org>
-To: fdmanana@kernel.org
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH] btrfs: raid56: fix memory leak of
- btrfs_raid_bio::stripe_uptodate_bitmap
-Message-ID: <aYBDO6g5JB8F9Vvm@infradead.org>
-References: <140aedc1e1af2866bb838d29b742c2015d55d91e.1769793280.git.fdmanana@suse.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Abkg6v0IQN3DRY1pmCIxxZhH+PHAw9GxJce0CeXqSo3MFCWpemFxTQXwALsjqH+PGlnZCpI8fw7jMrCsOo6NBwUc1/FPq/EXT14/8lH/69vlVx4J3dhtOShwC3qXOMbgOwztr+8KNNmjBYqEzN9z6/Wn60BWZjR/lfGssBbMq4U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=O8UcVMSw; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=cgHhQxOp; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=O8UcVMSw; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=cgHhQxOp; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 27BBB3E73A;
+	Mon,  2 Feb 2026 13:23:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1770038587; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=z3Tl325ZHEOerEDjAj+q8fElNt5iSa6FovhV/OM3kno=;
+	b=O8UcVMSwdPeSRo5QHDzpnoQD0utSyBGdT0SYM0yo2hsU46KRNF+GfCogeKKFwkIzmOf7ro
+	505sveLamiJdLnPGaYJetc8kEKOv6un6N0ulUHFuVvS3BbSa4kCAGzgPw7PcXBXIzSITFs
+	flH8tkLTPiYh0G+MXGOh2OsLaFgUgJE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1770038587;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=z3Tl325ZHEOerEDjAj+q8fElNt5iSa6FovhV/OM3kno=;
+	b=cgHhQxOp+6dEumsLPNF0vhuziX7oYprxduJvthIKF38+P8f5oQgW3llE+f0B+9UO+RYfwL
+	hxqIdbhsL8UMqwAw==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1770038587; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=z3Tl325ZHEOerEDjAj+q8fElNt5iSa6FovhV/OM3kno=;
+	b=O8UcVMSwdPeSRo5QHDzpnoQD0utSyBGdT0SYM0yo2hsU46KRNF+GfCogeKKFwkIzmOf7ro
+	505sveLamiJdLnPGaYJetc8kEKOv6un6N0ulUHFuVvS3BbSa4kCAGzgPw7PcXBXIzSITFs
+	flH8tkLTPiYh0G+MXGOh2OsLaFgUgJE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1770038587;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=z3Tl325ZHEOerEDjAj+q8fElNt5iSa6FovhV/OM3kno=;
+	b=cgHhQxOp+6dEumsLPNF0vhuziX7oYprxduJvthIKF38+P8f5oQgW3llE+f0B+9UO+RYfwL
+	hxqIdbhsL8UMqwAw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 103EB3EA62;
+	Mon,  2 Feb 2026 13:23:07 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id BhrnAzulgGlVUwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Mon, 02 Feb 2026 13:23:07 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id CC3ABA08F8; Mon,  2 Feb 2026 14:23:02 +0100 (CET)
+Date: Mon, 2 Feb 2026 14:23:02 +0100
+From: Jan Kara <jack@suse.cz>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Eric Biggers <ebiggers@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, 
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, David Sterba <dsterba@suse.com>, 
+	Theodore Ts'o <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>, 
+	Andrey Albershteyn <aalbersh@redhat.com>, Matthew Wilcox <willy@infradead.org>, 
+	linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org, 
+	linux-f2fs-devel@lists.sourceforge.net, fsverity@lists.linux.dev
+Subject: Re: [PATCH 01/11] fsverity: don't issue readahead for non-ENOENT
+ errors from __filemap_get_folio
+Message-ID: <5tbvx3urecnju72wyvursogffocasy43jcizxncdhl34w72row@blj7csijokcg>
+References: <20260202060754.270269-1-hch@lst.de>
+ <20260202060754.270269-2-hch@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -63,51 +111,87 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <140aedc1e1af2866bb838d29b742c2015d55d91e.1769793280.git.fdmanana@suse.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20260202060754.270269-2-hch@lst.de>
+X-Spam-Score: -3.80
+X-Spam-Level: 
+X-Spam-Flag: NO
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-1.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[infradead.org,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64];
-	R_DKIM_ALLOW(-0.20)[infradead.org:s=bombadil.20210309];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21285-lists,linux-btrfs=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	DKIM_TRACE(0.00)[infradead.org:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[lst.de:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,suse.com:email,suse.cz:email,suse.cz:dkim];
+	DMARC_NA(0.00)[suse.cz];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWO(0.00)[2];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TAGGED_FROM(0.00)[bounces-21286-lists,linux-btrfs=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[16];
 	MIME_TRACE(0.00)[0:+];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[hch@infradead.org,linux-btrfs@vger.kernel.org];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	MISSING_XM_UA(0.00)[];
-	TO_DN_NONE(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jack@suse.cz,linux-btrfs@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[lst.de:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,infradead.org:mid,infradead.org:dkim,suse.com:email]
-X-Rspamd-Queue-Id: 9DE4AC8A14
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_SEVEN(0.00)[7]
+X-Rspamd-Queue-Id: 1EA60CCB3B
 X-Rspamd-Action: no action
 
-On Fri, Jan 30, 2026 at 05:14:59PM +0000, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
+On Mon 02-02-26 07:06:30, Christoph Hellwig wrote:
+> Issuing more reads on errors is not a good idea, especially when the
+> most common error here is -ENOMEM.
 > 
-> We allocate the bitmap but we never free it in free_raid_bio_pointers().
-> Fix this by adding a bitmap_free() call against the stripe_uptodate_bitmap
-> of a raid bio.
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+
+Looks good. Feel free to add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
+> ---
+>  fs/verity/pagecache.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
 > 
-> Fixes: 1810350b04ef ("btrfs: raid56: move sector_ptr::uptodate into a dedicated bitmap")
-> Reported-by: Christoph Hellwig <hch@lst.de>
-> Link: https://lore.kernel.org/linux-btrfs/20260126045315.GA31641@lst.de/
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
-
-This works there, thanks!
-
-Tested-by: Christoph Hellwig <hch@lst.de>
+> diff --git a/fs/verity/pagecache.c b/fs/verity/pagecache.c
+> index 01c652bc802f..1a88decace53 100644
+> --- a/fs/verity/pagecache.c
+> +++ b/fs/verity/pagecache.c
+> @@ -22,7 +22,8 @@ struct page *generic_read_merkle_tree_page(struct inode *inode, pgoff_t index,
+>  	struct folio *folio;
+>  
+>  	folio = __filemap_get_folio(inode->i_mapping, index, FGP_ACCESSED, 0);
+> -	if (IS_ERR(folio) || !folio_test_uptodate(folio)) {
+> +	if (folio == ERR_PTR(-ENOENT) ||
+> +	    (!IS_ERR(folio) && !folio_test_uptodate(folio))) {
+>  		DEFINE_READAHEAD(ractl, NULL, NULL, inode->i_mapping, index);
+>  
+>  		if (!IS_ERR(folio))
+> @@ -30,9 +31,9 @@ struct page *generic_read_merkle_tree_page(struct inode *inode, pgoff_t index,
+>  		else if (num_ra_pages > 1)
+>  			page_cache_ra_unbounded(&ractl, num_ra_pages, 0);
+>  		folio = read_mapping_folio(inode->i_mapping, index, NULL);
+> -		if (IS_ERR(folio))
+> -			return ERR_CAST(folio);
+>  	}
+> +	if (IS_ERR(folio))
+> +		return ERR_CAST(folio);
+>  	return folio_file_page(folio, index);
+>  }
+>  EXPORT_SYMBOL_GPL(generic_read_merkle_tree_page);
+> -- 
+> 2.47.3
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
