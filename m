@@ -1,44 +1,53 @@
-Return-Path: <linux-btrfs+bounces-21291-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21292-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id YE4xEX3BgGl3AgMAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21291-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Mon, 02 Feb 2026 16:23:41 +0100
+	id uL1GIG8RgWnmDwMAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21292-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Mon, 02 Feb 2026 22:04:47 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8172CE259
-	for <lists+linux-btrfs@lfdr.de>; Mon, 02 Feb 2026 16:23:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DE1B8D1730
+	for <lists+linux-btrfs@lfdr.de>; Mon, 02 Feb 2026 22:04:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C6FBA30D2FD1
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Feb 2026 15:18:03 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 0B7943029AEE
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Feb 2026 21:04:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C156D37AA85;
-	Mon,  2 Feb 2026 15:18:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BD0F31062D;
+	Mon,  2 Feb 2026 21:04:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="akopJkb3"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B52F6376BD0;
-	Mon,  2 Feb 2026 15:17:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B60A5222565;
+	Mon,  2 Feb 2026 21:04:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770045481; cv=none; b=UD7YeQpcRhJedyxKC8qZkjhe1nArmUfG5xazmqODNo2IR7XBM0KGM9jeAO6+SOYiBgCOENrLEaslqoPZmPCzL4+zNYfwXi1Up6FiIVx7Gy3jeFu0Zp8MpXPegIBWJ95Q2sSSdPSjE0OqpXLMRZfhDgMTy9dOvLQ2ubBIUfVjBY4=
+	t=1770066256; cv=none; b=u7Ug1ZNna40K1ejcbVUX+ZTUOAsBq/uLuPYv0PaR/nFqdl/0pxVwlj4+vFLRuD5VgBNJPrs+uuvx5xYjzV/TvEaaB+t+D7qRDbkXffnYTTVAbxuvwzPJ3Uysc+Ui4hw0gWwjlnUzPaXy7FiMxi4pCBbxZjj6ZHXrHDxRW89TV2Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770045481; c=relaxed/simple;
-	bh=ItSKWaumOM7HpYyVcNPQ+V1Q1W6mCW+aJwTafDtYBIM=;
+	s=arc-20240116; t=1770066256; c=relaxed/simple;
+	bh=XRzlzAwIzrWwQQCJu0yYDI/QY/MD+z952CyEosMvgJ4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GvCC6GqMdJBbkwlKIpzTZvfNgNY0ts0zptl80yvgK2rq4oixEFlTh2aK3hDD4IFd+Rqidk5DNUeBPa9/FgDLmlceQj+RD6kLKM31dN3PjrKGCgXcX42j1GCISsIQmHSmZj/1jbcukVprqAp2kKtj+UmIbajD9tZsiWfvMC6AXRM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id B67D168B05; Mon,  2 Feb 2026 16:17:55 +0100 (CET)
-Date: Mon, 2 Feb 2026 16:17:55 +0100
-From: Christoph Hellwig <hch@lst.de>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Christoph Hellwig <hch@lst.de>, Eric Biggers <ebiggers@kernel.org>,
-	Al Viro <viro@zeniv.linux.org.uk>,
+	 Content-Type:Content-Disposition:In-Reply-To; b=C3muMsSWLpDMePuwB40GShf+gGYPaIOzW2ZMO8OxS40iKVW+nOuYVaT5+zFQTGykyH1a6/318ZUQuNbGnQ4rxOtZz6yvEjoUqrr7DiBGYKo87/opdhAzTQDKcTd9Ebmvic4HUqrcn2lypj9czSgvrJcPZJSS74ICTIHOi7YQMgs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=akopJkb3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A01EFC116C6;
+	Mon,  2 Feb 2026 21:04:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1770066256;
+	bh=XRzlzAwIzrWwQQCJu0yYDI/QY/MD+z952CyEosMvgJ4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=akopJkb3IJUb0UY+zPkONhlRaYXvL+MBanv8EvQ06eGrkuDIIuCdgXqTMQwBLD923
+	 rovYpMsNDFP0Hy2s/XpuQC0hETgCjQM8VsLjBGubzj9cmy3x7SAavwwSswydbABffE
+	 nQgDK2NgJceLQRNmpX/wCLHbRRbnQMpKSd0k+xQOsDXFGBRvwxepCTL98xtrMKKtmD
+	 xRObm8348BVZvMzN/0zXNq712b9oUL2DK9aAFWEg1IGYpqY3dcYQ1ESkgRqJKW/r+f
+	 WEN9bmXfY4GVeFGziTXeBgEov43XNehyJMtQXXHS8H231V4Iha289/VQoJHffUNblu
+	 KFkHwgDfhwarQ==
+Date: Mon, 2 Feb 2026 13:04:13 -0800
+From: Eric Biggers <ebiggers@kernel.org>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Matthew Wilcox <willy@infradead.org>, Al Viro <viro@zeniv.linux.org.uk>,
 	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
 	David Sterba <dsterba@suse.com>, Theodore Ts'o <tytso@mit.edu>,
 	Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
@@ -48,8 +57,11 @@ Cc: Christoph Hellwig <hch@lst.de>, Eric Biggers <ebiggers@kernel.org>,
 	fsverity@lists.linux.dev
 Subject: Re: [PATCH 02/11] readahead: push invalidate_lock out of
  page_cache_ra_unbounded
-Message-ID: <20260202151755.GA22756@lst.de>
-References: <20260202060754.270269-1-hch@lst.de> <20260202060754.270269-3-hch@lst.de> <aYC-set6OAK9F9GE@casper.infradead.org>
+Message-ID: <20260202210413.GA4838@quark>
+References: <20260202060754.270269-1-hch@lst.de>
+ <20260202060754.270269-3-hch@lst.de>
+ <aYC-set6OAK9F9GE@casper.infradead.org>
+ <20260202151755.GA22756@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -58,73 +70,81 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aYC-set6OAK9F9GE@casper.infradead.org>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <20260202151755.GA22756@lst.de>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.36 / 15.00];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
-	DMARC_POLICY_SOFTFAIL(0.10)[lst.de : SPF not aligned (relaxed), No valid DKIM,none];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_TWELVE(0.00)[16];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_RCPT(0.00)[linux-btrfs];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[hch@lst.de,linux-btrfs@vger.kernel.org];
-	RCVD_COUNT_THREE(0.00)[4];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[lst.de:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21291-lists,linux-btrfs=lfdr.de];
-	R_DKIM_NA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[]
-X-Rspamd-Queue-Id: C8172CE259
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21292-lists,linux-btrfs=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[15];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-btrfs@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	TAGGED_RCPT(0.00)[linux-btrfs];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: DE1B8D1730
 X-Rspamd-Action: no action
 
-On Mon, Feb 02, 2026 at 03:11:45PM +0000, Matthew Wilcox wrote:
-> On Mon, Feb 02, 2026 at 07:06:31AM +0100, Christoph Hellwig wrote:
-> > +++ b/fs/f2fs/file.c
-> > @@ -4418,7 +4418,9 @@ static int redirty_blocks(struct inode *inode, pgoff_t page_idx, int len)
-> >  	pgoff_t redirty_idx = page_idx;
-> >  	int page_len = 0, ret = 0;
-> >  
-> > +	filemap_invalidate_lock_shared(mapping);
-> >  	page_cache_ra_unbounded(&ractl, len, 0);
-> > +	filemap_invalidate_unlock_shared(mapping);
+On Mon, Feb 02, 2026 at 04:17:55PM +0100, Christoph Hellwig wrote:
+> On Mon, Feb 02, 2026 at 03:11:45PM +0000, Matthew Wilcox wrote:
+> > On Mon, Feb 02, 2026 at 07:06:31AM +0100, Christoph Hellwig wrote:
+> > > +++ b/fs/f2fs/file.c
+> > > @@ -4418,7 +4418,9 @@ static int redirty_blocks(struct inode *inode, pgoff_t page_idx, int len)
+> > >  	pgoff_t redirty_idx = page_idx;
+> > >  	int page_len = 0, ret = 0;
+> > >  
+> > > +	filemap_invalidate_lock_shared(mapping);
+> > >  	page_cache_ra_unbounded(&ractl, len, 0);
+> > > +	filemap_invalidate_unlock_shared(mapping);
+> > 
+> > Why is f2fs calling page_cache_ra_unbounded() here?
 > 
-> Why is f2fs calling page_cache_ra_unbounded() here?
-
-From tracing the callers is seems to be able to be called from the
-garbage collector, which might have to move fsverity files.  Not sure if
-that was the reason or is incidental.
-
-(using the pagecache for GC is generally a very bad idea, and there is
-at least one academic paper showing it is a huge performance problem in
-f2fs, and my initial attempts at using the pagecache for GC in zoned XFS
-also showed horrible results)
-
-> >  	unsigned int nofs = memalloc_nofs_save();
-> >  
-> > +	lockdep_assert_held_read(&mapping->invalidate_lock);
+> From tracing the callers is seems to be able to be called from the
+> garbage collector, which might have to move fsverity files.  Not sure if
+> that was the reason or is incidental.
 > 
-> Hm, why are we asserting that it's not write-locked?  For the
-> purposes of this function, I'd think we want to just
-> lockdep_assert_held()?
+> (using the pagecache for GC is generally a very bad idea, and there is
+> at least one academic paper showing it is a huge performance problem in
+> f2fs, and my initial attempts at using the pagecache for GC in zoned XFS
+> also showed horrible results)
+> 
+> > >  	unsigned int nofs = memalloc_nofs_save();
+> > >  
+> > > +	lockdep_assert_held_read(&mapping->invalidate_lock);
+> > 
+> > Hm, why are we asserting that it's not write-locked?  For the
+> > purposes of this function, I'd think we want to just
+> > lockdep_assert_held()?
+> 
+> Fine with me.
+> 
+> > In the tree I'm looking at, there are also calls to
+> > page_cache_ra_unbounded() in fs/ext4/verity.c and fs/f2fs/verity.c
+> > which probably need the lock taken too?
+> 
+> I consolidated those into the single call in fs/verity/pagecache.c
+> in the previous iteration of this series, and Eric merged the
+> first few patches including that one into the fsverity tree.
 
-Fine with me.
+I changed both instances of lockdep_assert_held_read() to
+lockdep_assert_held() when applying.
 
-> In the tree I'm looking at, there are also calls to
-> page_cache_ra_unbounded() in fs/ext4/verity.c and fs/f2fs/verity.c
-> which probably need the lock taken too?
-
-I consolidated those into the single call in fs/verity/pagecache.c
-in the previous iteration of this series, and Eric merged the
-first few patches including that one into the fsverity tree.
+- Eric
 
