@@ -1,176 +1,344 @@
-Return-Path: <linux-btrfs+bounces-21335-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21336-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 6NdjNoRjgmkATgMAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21335-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Tue, 03 Feb 2026 22:07:16 +0100
+	id mM67N9pvgmlkUAMAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21336-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Tue, 03 Feb 2026 22:59:54 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E1CEDEBA3
-	for <lists+linux-btrfs@lfdr.de>; Tue, 03 Feb 2026 22:07:16 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B037DF0DD
+	for <lists+linux-btrfs@lfdr.de>; Tue, 03 Feb 2026 22:59:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 96D55302FAB2
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Feb 2026 21:07:00 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 735A2303ABCB
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Feb 2026 21:49:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E56663242AC;
-	Tue,  3 Feb 2026 21:06:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B267238886D;
+	Tue,  3 Feb 2026 21:47:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="fpZ420Pg"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cQ3Oeriq"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBE9D2D8792
-	for <linux-btrfs@vger.kernel.org>; Tue,  3 Feb 2026 21:06:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D96E38887A
+	for <linux-btrfs@vger.kernel.org>; Tue,  3 Feb 2026 21:47:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770152818; cv=none; b=ZbKa4J6QhViDSaRjTe/le26VnT+KrJc/95Exyw+POif4TU2DIOlfs8B2KVG+WWoniOwACfxzJ06/dUhCg2gvHcYPNsR5FnS3vngp5zmmtMOkBsPYzL+VMucGoZglqTd1sii0avFmPhd0nl2JhqZ838hvRDuVPOtLc+uYMjRRXjg=
+	t=1770155231; cv=none; b=P44KD0ZX5bK0YO+qztM9b5LSvAGbN3k31DgBLKev/FsTm4xuMNPN/zEjfrKtnIHvTDWQaTbJSlCR2xQ5HFIOqnEUMeCMOeuz7SwHAjbjYjD8qD8eqJmdM2sJznzLgRYAKGEOaa6R+ty4TKfLhRpD83ovkZ8A2gkqz9602w3Upfw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770152818; c=relaxed/simple;
-	bh=/QLV/2TGvpj2CuVWGRMrdphn2x0zlCzuAyPiwwH8wGM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fDOH36f0KA9I18FuJPjribm8lhPFryO/7ILuzzZAm+NOkvsIhKpNTe4JpRMQ3YFWZQ1kHu1b+Ue+Xz8AgTVMNLN2dloUl00N8Na5SqHMFVypRHM5Fg7Y7BmAH8H6NuYILLfIyf+eYZo413rmGqXosPLniscvur8uQWrUNAZiurI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=fpZ420Pg; arc=none smtp.client-ip=209.85.128.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-4806b43beb6so44462605e9.3
-        for <linux-btrfs@vger.kernel.org>; Tue, 03 Feb 2026 13:06:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1770152815; x=1770757615; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=J/OP+Stit8mZiL4SsfstG3wC1oTgEl0vU0ibIp4okRM=;
-        b=fpZ420Pg8iHU64h01f15irtEyx7kILNLBaUK8vgQpt0qrF2E5oLMLUhRdIpvx5cWWw
-         0MnJiZMNO6wGj52LB+TYM7iVpRBo6R5DNe+9TJg3uGn0lV2eL3h0wWUf3HOSRAuP3D1+
-         rd+vNEHnJnUsPZ8m9+jzCxe3lmRr8/sZbd8AUTVFIjFKUhm5tpm1SozwEgcthw+XwbtU
-         D8pRJNOhpDnmJU2GEKG3JCBZ6k/lY5aT2nhTaE1eQxYSd7taS/iEMxJ0FtJKrbXMN3mY
-         Rrnb8RUrHkXtSavztcbzOVEyKQJp9DszjggzeA1240yloDJU/1G55BOHgpJRvV/3lAfH
-         RFug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770152815; x=1770757615;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=J/OP+Stit8mZiL4SsfstG3wC1oTgEl0vU0ibIp4okRM=;
-        b=Pmmg20TqIHGjgW92o0rNRfdciog+AUAgjOlnuht+hbV/9Y4rm/nAtWF3XARLb/vKox
-         a1FpGoMFCXCVUoh6x81Ix81kOX9pbSforYNeNaBmwhEyDlIT4VMIxq6IEK/ODLijWVZh
-         9bZtUoa0mlastlV2ljeUQ9e6SqJK3d2yEV4/9WtyhUwKU+xmF0nO0t9eqWF10w419grr
-         zdFO5R3thfp3UVmYwFQFoQLxsddmv9qL5iM4mi9Al/46p2WhGU63ZjD5KOW1nOIulmFI
-         iHmnJcqKri7TEqMcCVtaE4tvFjOjimKJUwmScirK3xJon/OXiD6DOvq7Ih8YF6/kbrPa
-         RbeQ==
-X-Gm-Message-State: AOJu0Yy84pqO/OsstSm3HF3ZkNGn1USaN0zE62HjkJIcH37P97teTaC0
-	emj5JYDoQlomhfz6jET2XrIxBGDHVnAlcbDkuOHePSb8/fBHR0GhGzrYbPCh+og6Mxw=
-X-Gm-Gg: AZuq6aKDr3s4hNEGdQcQ0SAFe/gXMxIYmlnj6yHw2v3el1CiKRnyNoWIHwIMI92leID
-	a4VdVlSlCyDBBP+p9gYRRF6KTqY+gzuvI+Z1ibO2mw5TPEhoQAR6gjAJkGOniYyFmKbS17dfRDo
-	V9mSkBYr5amVXtGxE6VplrIVte9d/Gwdd6wE5BoMu8xz+/2vbPMeZezPahvMsEeS3V1toY1CAkR
-	6aInB39vVd1ZcFKIenkjysF9o5TtNzXxvhUEdfTTqyIHAmABIwJil/qoNGPu+YxPkMZnTWLTf3w
-	KZwIyuBVOA6dB84Jct32vIfzbUtvDTSezNbHRdHISEvZZgiIj6wYQ23RZjiz4EgghUcXl1q+Y1/
-	BdZeqSMkjk/MaEeksxMiOmI+3qzxe4KfY4peeUYpnwgevYiKISmasC6ujsaVwJtp5dL+0+BcnLb
-	Tm6Ab33LNTpwsWrKDN5b44OpGk5Hhx1/HuHw0ohBw=
-X-Received: by 2002:a05:600c:3106:b0:477:9976:9e1a with SMTP id 5b1f17b1804b1-4830e92caf4mr14516035e9.6.1770152815293;
-        Tue, 03 Feb 2026 13:06:55 -0800 (PST)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-354894c2c0dsm31658a91.12.2026.02.03.13.06.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Feb 2026 13:06:54 -0800 (PST)
-Message-ID: <e2783fa0-b511-442a-baa3-145419af034a@suse.com>
-Date: Wed, 4 Feb 2026 07:36:48 +1030
+	s=arc-20240116; t=1770155231; c=relaxed/simple;
+	bh=/0W9Ysl8fi09j3Uj4wkBkI/z5RW4bWTyfRnCrQ4LJIA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=adN6y5ogu0hw1vBKB2Sha41e8yryS5qJhxJDIGj9Mu0eAXX8UO0ZUlt/ODwIMsaFHLut86LrwJ103qJcoNUlhSA8EICcLPM8WdwSD9j8d9b9Ut+6BmiCImbhG9zwpckueYXFnT0tWp6UyhUqHYH9uaL4MUskg3WWefuL9DCSF6U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cQ3Oeriq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8580BC19425
+	for <linux-btrfs@vger.kernel.org>; Tue,  3 Feb 2026 21:47:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1770155230;
+	bh=/0W9Ysl8fi09j3Uj4wkBkI/z5RW4bWTyfRnCrQ4LJIA=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=cQ3OeriqIEbJ6bbo/l5/TMQZJnKawQOKv9XapMlRwfFsdJ+D/EbzkyikbMh97hXzk
+	 8YBYbrVfSTegkwUMztEycYVtffBrAL87pQl8Jp8y42EL16DGn6QL10nwuLuqukuYbx
+	 B8TGdu6q5/Kx0UO+hmSF9JpWLwRRXXLy+idbWyCE1BjwdPqppPvh32+lWPCsZQpixw
+	 iM7+tMP9p4kN1euyWJ6AigsuvDL2oNb8BAzXodU4O3pHVt3jZDs67xL3oAN20LYeDk
+	 zLBfR8WlB8EasvE8rjrvyA/wepmb7EyOlKCA4X4Ki6d7NwFA06saJzYbJd3Vlu+pH3
+	 KhzJPSMy4G2Gw==
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-b885e8c6700so1001133466b.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 03 Feb 2026 13:47:10 -0800 (PST)
+X-Gm-Message-State: AOJu0Ywxwq0jO6n82Ino9MjOqZv96eZvxc+cUb3/5F4Psc3jKFxrCFjw
+	6ZOckjDbsfGuP2JvEiI20HZ2P1rRuiTxZtD9BoPPM5cZ98T8i31m2nMkXMf/uhtCyYZ3kkgbDFS
+	nRk4euurucYpG3hAHOAIztSjwzaJ9JYQ=
+X-Received: by 2002:a17:906:fe48:b0:b88:5957:2d65 with SMTP id
+ a640c23a62f3a-b8e9f39674fmr59871566b.37.1770155228995; Tue, 03 Feb 2026
+ 13:47:08 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/2] btrfs: clean up two FIXMEs related to
- btrfs_search_slot output handling
-To: Adarsh Das <adarshdas950@gmail.com>, Chris Mason <clm@fb.com>,
- David Sterba <dsterba@suse.com>
-Cc: linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20260203172357.65383-1-adarshdas950@gmail.com>
-Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <20260203172357.65383-1-adarshdas950@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <cover.1770123544.git.fdmanana@suse.com> <213736b4ab22e6ecdd6a10513eaed5d85b4053bc.1770123545.git.fdmanana@suse.com>
+ <a3b63027-9e17-41b3-bc7f-477d1e59381a@suse.com>
+In-Reply-To: <a3b63027-9e17-41b3-bc7f-477d1e59381a@suse.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Tue, 3 Feb 2026 21:46:30 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H5_Q=na-W+uPm88yWAtPxYFd_t3kP1WK-9YhnFMr8uoZA@mail.gmail.com>
+X-Gm-Features: AZwV_Qg3Q0TylrdTNzpRpy2H-6u5q-yK3-bt4pRTv-Q5eliH1wT6tQXnBblJQHQ
+Message-ID: <CAL3q7H5_Q=na-W+uPm88yWAtPxYFd_t3kP1WK-9YhnFMr8uoZA@mail.gmail.com>
+Subject: Re: [PATCH 1/3] btrfs: be less agressive with metadata overcommit
+ when we can do full flushing
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21335-lists,linux-btrfs=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-21336-lists,linux-btrfs=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com,fb.com,suse.com];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[suse.com:+];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[5];
-	RCVD_COUNT_FIVE(0.00)[5];
+	RCPT_COUNT_TWO(0.00)[2];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[wqu@suse.com,linux-btrfs@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	NEURAL_HAM(-0.00)[-1.000];
+	FROM_NEQ_ENVFROM(0.00)[fdmanana@kernel.org,linux-btrfs@vger.kernel.org];
+	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	MID_RHS_MATCH_FROM(0.00)[];
+	NEURAL_HAM(-0.00)[-0.999];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,suse.com:email,suse.com:dkim,suse.com:mid]
-X-Rspamd-Queue-Id: 3E1CEDEBA3
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,mail.gmail.com:mid,belden.com:email,qemu.org:url,test.sh:url]
+X-Rspamd-Queue-Id: 0B037DF0DD
 X-Rspamd-Action: no action
 
+On Tue, Feb 3, 2026 at 9:02=E2=80=AFPM Qu Wenruo <wqu@suse.com> wrote:
+>
+>
+>
+> =E5=9C=A8 2026/2/3 23:32, fdmanana@kernel.org =E5=86=99=E9=81=93:
+> > From: Filipe Manana <fdmanana@suse.com>
+> >
+> > Over the years we often get reports of some -ENOSPC failure while updat=
+ing
+> > metadata that leads to a transaction abort. I have seen this happen for
+> > filesystems of all sizes and with workloads that are very user/customer
+> > specific and unable to reproduce, but Aleksandar recently reported a
+> > simple way to reproduce this with a 1G filesystem and using the bonnie+=
++
+> > benchmark tool. The following test script reproduces the failure:
+> >
+> >      $ cat test.sh
+> >      #!/bin/bash
+> >
+> >      # Create and use a 1G null block device, memory backed, otherwise
+> >      # the test takes a very long time.
+> >      modprobe null_blk nr_devices=3D"0"
+> >      null_dev=3D"/sys/kernel/config/nullb/nullb0"
+> >      mkdir "$null_dev"
+> >      size=3D$((1 * 1024)) # in MB
+> >      echo 2 > "$null_dev/submit_queues"
+> >      echo "$size" > "$null_dev/size"
+> >      echo 1 > "$null_dev/memory_backed"
+> >      echo 1 > "$null_dev/discard"
+> >      echo 1 > "$null_dev/power"
+> >
+> >      DEV=3D/dev/nullb0
+> >      MNT=3D/mnt/nullb0
+> >
+> >      mkfs.btrfs -f $DEV
+> >      mount $DEV $MNT
+> >
+> >      mkdir $MNT/test/
+> >      bonnie++ -d $MNT/test/ -m BTRFS -u 0 -s 256M -r 128M -b
+> >
+> >      umount $MNT
+> >
+> >      echo 0 > "$null_dev/power"
+> >      rmdir "$null_dev"
+> >
+> > When running this bonnie++ fails in the phase where it deletes test
+> > directories and files:
+> >
+> >      $ ./test.sh
+> >      (...)
+> >      Using uid:0, gid:0.
+> >      Writing a byte at a time...done
+> >      Writing intelligently...done
+> >      Rewriting...done
+> >      Reading a byte at a time...done
+> >      Reading intelligently...done
+> >      start 'em...done...done...done...done...done...
+> >      Create files in sequential order...done.
+> >      Stat files in sequential order...done.
+> >      Delete files in sequential order...done.
+> >      Create files in random order...done.
+> >      Stat files in random order...done.
+> >      Delete files in random order...Can't sync directory, turning off d=
+ir-sync.
+> >      Can't delete file 9Bq7sr0000000338
+> >      Cleaning up test directory after error.
+> >      Bonnie: drastic I/O error (rmdir): Read-only file system
+> >
+> > And in the syslog/dmesg we can see the following transaction abort trac=
+e:
+> >
+> >      [161915.501506] BTRFS warning (device nullb0): Skipping commit of =
+aborted transaction.
+> >      [161915.502983] ------------[ cut here ]------------
+> >      [161915.503832] BTRFS: Transaction aborted (error -28)
+> >      [161915.504748] WARNING: fs/btrfs/transaction.c:2045 at btrfs_comm=
+it_transaction+0xa21/0xd30 [btrfs], CPU#11: bonnie++/3377975
+> >      [161915.506786] Modules linked in: btrfs dm_zero dm_snapshot (...)
+> >      [161915.518759] CPU: 11 UID: 0 PID: 3377975 Comm: bonnie++ Tainted=
+: G        W           6.19.0-rc7-btrfs-next-224+ #4 PREEMPT(full)
+> >      [161915.520857] Tainted: [W]=3DWARN
+> >      [161915.521405] Hardware name: QEMU Standard PC (i440FX + PIIX, 19=
+96), BIOS rel-1.16.2-0-gea1b7a073390-prebuilt.qemu.org 04/01/2014
+> >      [161915.523414] RIP: 0010:btrfs_commit_transaction+0xa24/0xd30 [bt=
+rfs]
+> >      [161915.524630] Code: 48 8b 7c 24 (...)
+> >      [161915.526982] RSP: 0018:ffffd3fe8206fda8 EFLAGS: 00010292
+> >      [161915.527707] RAX: 0000000000000002 RBX: ffff8f4886d3c000 RCX: 0=
+000000000000000
+> >      [161915.528723] RDX: 0000000002040001 RSI: 00000000ffffffe4 RDI: f=
+fffffffc088f780
+> >      [161915.529691] RBP: ffff8f4f5adae7e0 R08: 0000000000000000 R09: f=
+fffd3fe8206fb90
+> >      [161915.530842] R10: ffff8f4f9c1fffa8 R11: 0000000000000003 R12: 0=
+0000000ffffffe4
+> >      [161915.532027] R13: ffff8f4ef2cf2400 R14: ffff8f4f5adae708 R15: f=
+fff8f4f62d18000
+> >      [161915.533229] FS:  00007ff93112a780(0000) GS:ffff8f4ff63ee000(00=
+00) knlGS:0000000000000000
+> >      [161915.534611] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> >      [161915.535575] CR2: 00005571b3072000 CR3: 0000000176080005 CR4: 0=
+000000000370ef0
+> >      [161915.536758] Call Trace:
+> >      [161915.537185]  <TASK>
+> >      [161915.537575]  btrfs_sync_file+0x431/0x530 [btrfs]
+> >      [161915.538473]  do_fsync+0x39/0x80
+> >      [161915.539042]  __x64_sys_fsync+0xf/0x20
+> >      [161915.539750]  do_syscall_64+0x50/0xf20
+> >      [161915.540396]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+> >      [161915.541301] RIP: 0033:0x7ff930ca49ee
+> >      [161915.541904] Code: 08 0f 85 f5 (...)
+> >      [161915.544830] RSP: 002b:00007ffd94291f38 EFLAGS: 00000246 ORIG_R=
+AX: 000000000000004a
+> >      [161915.546152] RAX: ffffffffffffffda RBX: 00007ff93112a780 RCX: 0=
+0007ff930ca49ee
+> >      [161915.547263] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0=
+000000000000003
+> >      [161915.548383] RBP: 0000000000000dab R08: 0000000000000000 R09: 0=
+000000000000000
+> >      [161915.549853] R10: 0000000000000000 R11: 0000000000000246 R12: 0=
+0007ffd94291fb0
+> >      [161915.551196] R13: 00007ffd94292350 R14: 0000000000000001 R15: 0=
+0007ffd94292340
+> >      [161915.552161]  </TASK>
+> >      [161915.552457] ---[ end trace 0000000000000000 ]---
+> >      [161915.553232] BTRFS info (device nullb0 state A): dumping space =
+info:
+> >      [161915.553236] BTRFS info (device nullb0 state A): space_info DAT=
+A (sub-group id 0) has 12582912 free, is not full
+> >      [161915.553239] BTRFS info (device nullb0 state A): space_info tot=
+al=3D12582912, used=3D0, pinned=3D0, reserved=3D0, may_use=3D0, readonly=3D=
+0 zone_unusable=3D0
+> >      [161915.553243] BTRFS info (device nullb0 state A): space_info MET=
+ADATA (sub-group id 0) has -5767168 free, is full
+> >      [161915.553245] BTRFS info (device nullb0 state A): space_info tot=
+al=3D53673984, used=3D6635520, pinned=3D46956544, reserved=3D16384, may_use=
+=3D5767168, readonly=3D65536 zone_unusable=3D0
+> >      [161915.553251] BTRFS info (device nullb0 state A): space_info SYS=
+TEM (sub-group id 0) has 8355840 free, is not full
+> >      [161915.553254] BTRFS info (device nullb0 state A): space_info tot=
+al=3D8388608, used=3D16384, pinned=3D16384, reserved=3D0, may_use=3D0, read=
+only=3D0 zone_unusable=3D0
+> >      [161915.553257] BTRFS info (device nullb0 state A): global_block_r=
+sv: size 5767168 reserved 5767168
+> >      [161915.553261] BTRFS info (device nullb0 state A): trans_block_rs=
+v: size 0 reserved 0
+> >      [161915.553263] BTRFS info (device nullb0 state A): chunk_block_rs=
+v: size 0 reserved 0
+> >      [161915.553265] BTRFS info (device nullb0 state A): remap_block_rs=
+v: size 0 reserved 0
+> >      [161915.553268] BTRFS info (device nullb0 state A): delayed_block_=
+rsv: size 0 reserved 0
+> >      [161915.553270] BTRFS info (device nullb0 state A): delayed_refs_r=
+sv: size 0 reserved 0
+> >      [161915.553272] BTRFS: error (device nullb0 state A) in cleanup_tr=
+ansaction:2045: errno=3D-28 No space left
+> >      [161915.554463] BTRFS info (device nullb0 state EA): forced readon=
+ly
+> >
+> > The problem is that we allow for a very agressive metadata overcommit,
+> > about 1/8th of the currently available space, even when the task
+> > attempting the reservation allows for full flushing. Over time this all=
+ows
+> > more and more tasks to overcommit without getting a transaction commit =
+to
+> > release pinned extents, joining the same transaction and eventually lea=
+d
+> > to the transaction abort when attempting some tree update, as the exten=
+t
+> > allocator is not able to find any available metadata extent and it's no=
+t
+> > able to allocate a new metadata block group either (not enough unalloca=
+ted
+> > space for that).
+>
+> I'm a little curious about why we are unable to allocate a metadata bg.
+>
+> Both the original report and your backtrace only shows a very small
+> data/metadata/sys space info.
+>
+> Data is only 12M, metadata is around 52MiB, system is 8MiB, even with
+> DUP for metadata and system, they are still very tiny.
+> (Add up to less than 128MiB, vs 1GiB of the device size)
+>
+>
+> Thus I'm wondering if it's some other reason, like at certain locations
+> we're not allowed to allocate new bgs?
 
+We can allocate when we attempt to allocate a metadata extent.
+However here it fails because we really have no space:
 
-在 2026/2/4 03:53, Adarsh Das 写道:
-> Both patches fix cases where a search with offset (u64)-1 gets an
-> unexpected exact match. The first silently returned success, and the
-> second crashed the kernel. Both now both log an error and return -EUCLEAN.
+at calc_available_free_space() we subtract the data chunk size, and
+that leaves us at around 300M, which is not enough to allocate a
+metadata chunk in DUP profile (256M * 2 =3D 512M).
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-
-Thanks,
-Qu
-
-> 
-> Adarsh Das (2):
->    btrfs: handle unexpected exact match in btrfs_set_inode_index_count()
->    btrfs: replace BUG() with error handling in __btrfs_balance()
-> 
->   fs/btrfs/inode.c   | 15 ++++++++++++---
->   fs/btrfs/volumes.c | 10 ++++++++--
->   2 files changed, 20 insertions(+), 5 deletions(-)
-> 
-
+>
+> Thanks,
+> Qu
+>
+> >
+> > Fix this by allowing the overcommit to be up to 1/64th of the available
+> > (unallocated) space instead and for that limit to apply to both types o=
+f
+> > full flushing, BTRFS_RESERVE_FLUSH_ALL and BTRFS_RESERVE_FLUSH_ALL_STEA=
+L.
+> > This way we get more frequent transaction commits to release pinned
+> > extents in case our caller is in a context where full flushing is allow=
+ed.
+> >
+> > Reported-by: Aleksandar Gerasimovski <Aleksandar.Gerasimovski@belden.co=
+m>
+> > Link: https://lore.kernel.org/linux-btrfs/SA1PR18MB56922F690C5EC2D85371=
+408B998FA@SA1PR18MB5692.namprd18.prod.outlook.com/
+> > Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> > ---
+> >   fs/btrfs/space-info.c | 7 ++++---
+> >   1 file changed, 4 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+> > index bb5aac7ee9d2..8192edf92d26 100644
+> > --- a/fs/btrfs/space-info.c
+> > +++ b/fs/btrfs/space-info.c
+> > @@ -489,10 +489,11 @@ static u64 calc_available_free_space(const struct=
+ btrfs_space_info *space_info,
+> >       /*
+> >        * If we aren't flushing all things, let us overcommit up to
+> >        * 1/2th of the space. If we can flush, don't let us overcommit
+> > -      * too much, let it overcommit up to 1/8 of the space.
+> > +      * too much, let it overcommit up to 1/64th of the space.
+> >        */
+> > -     if (flush =3D=3D BTRFS_RESERVE_FLUSH_ALL)
+> > -             avail >>=3D 3;
+> > +     if (flush =3D=3D BTRFS_RESERVE_FLUSH_ALL ||
+> > +         flush =3D=3D BTRFS_RESERVE_FLUSH_ALL_STEAL)
+> > +             avail >>=3D 6;
+> >       else
+> >               avail >>=3D 1;
+> >
+>
 
