@@ -1,582 +1,257 @@
-Return-Path: <linux-btrfs+bounces-21316-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21317-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id CJx6Nnn0gWkMNAMAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21316-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Tue, 03 Feb 2026 14:13:29 +0100
+	id qLBBLvgEgmmYNgMAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21317-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Tue, 03 Feb 2026 15:23:52 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 610D8D9C16
-	for <lists+linux-btrfs@lfdr.de>; Tue, 03 Feb 2026 14:13:29 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36035DA864
+	for <lists+linux-btrfs@lfdr.de>; Tue, 03 Feb 2026 15:23:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 7FA4830D8671
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Feb 2026 13:06:19 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id A61BA30B44C4
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Feb 2026 14:22:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A006B34BA5A;
-	Tue,  3 Feb 2026 13:06:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E64173A901E;
+	Tue,  3 Feb 2026 14:22:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ONT+2a44"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="R5AwYuoT";
+	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="A1lv+AIF"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from esa1.hgst.iphmx.com (esa1.hgst.iphmx.com [68.232.141.245])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEBDD34B68C
-	for <linux-btrfs@vger.kernel.org>; Tue,  3 Feb 2026 13:06:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770123975; cv=none; b=WbnxLONNXIqrp9XmnIvtiZzvpVZAH5K+rlBgsbkqH3d4m4zzgIa0JeVKnPeEiEVTygK3y2//vI11lj/hAeBBscasXtlFX+qqIp+syki+f7pMoMrD/pLUOGwuGs9pV65vuLdRJn0cNGhQifZSxbnJhLaa0g77QvtZorvRqsg3uxE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770123975; c=relaxed/simple;
-	bh=vkdoV4Z/2tnxgPGapASOquR3LOP1cu2Pr7/F7nPofkM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sb88fxdGEjLE/iydG+yAFN/ikwj6uG/08qvqNNbn1v0B1WfY1l4WRMntuVcDkhGlQApifIBUoA2gmnDxD/SCanki720mfUlqz8oi74BJRgT5FAw0MDhHRsvrparBcHPocgco0yEhIJSmGMiKNGA+DvmQ8kG6HshAWXlKp6ZS6r0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ONT+2a44; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4EE1C19421
-	for <linux-btrfs@vger.kernel.org>; Tue,  3 Feb 2026 13:06:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1770123974;
-	bh=vkdoV4Z/2tnxgPGapASOquR3LOP1cu2Pr7/F7nPofkM=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=ONT+2a44AyU6eMQzCSsGdu7qZOEx+patnesK6DnELY/E7VLwjcNnfrI4asaOjgIpy
-	 WkoOVwfZb2IwcG/nVekTdQbDqAWp4FWzLIysuzyJeEFFppStUuMVkjkDU60qIvAWg4
-	 CxE83ddwrV8Xznudd3qwSJwRGkSkeFxzi9TEXz3cRyhndgfVnMP6U13bry83/KHwS0
-	 HhydY3QDVf9riLkUUkfKoQ6pa1u67edX4gAQe140Wzw0OghN89A8UTcGgZyEQNbrAe
-	 vcMMwz48wxN+dC4fnh2Xw0Rv+lglwXS4Uf/8hD4J2/1Dyad1LKg4o5zfeYxsZTe6qT
-	 fC+yHwcn/DuoQ==
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-b885e8c6727so160467466b.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 03 Feb 2026 05:06:14 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCX8mErgxhvlAXobGiK+9Yj+ZY2A+zoalg2FZRWnwSRsUayVGw556QXdMoGCCpCG60CixHkz2DUtI5y1Ow==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwdmRGYBGa81cCN/SzswMtbNXSotawJ8vae9tqNA7PM/sg1B0+K
-	pW4+QBJ6GvtnlTCZjo/Twvq1FrzwS5C6vScj/4L+THMn8X2QK9uduKPSXQLWLkpAONBvKBWTl4P
-	xr4IJBWDn678DQeFKlvb8iG4qpzx4BlU=
-X-Received: by 2002:a17:906:c147:b0:b87:cf6d:8ea with SMTP id
- a640c23a62f3a-b8e838d3ab4mr188807166b.27.1770123973255; Tue, 03 Feb 2026
- 05:06:13 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D26923A9017
+	for <linux-btrfs@vger.kernel.org>; Tue,  3 Feb 2026 14:22:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=68.232.141.245
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1770128562; cv=fail; b=lTPDNAgBHx9d0hTlefc8LZBeFre2gPkkL5A8YlXqhfK2pLpaMFBzjfGt2mn5Nq3Bmk9pnUkKteE3BbdaH+hiWJ5bO5loWgXhd9dCBcZ/Ut5wPNrbh38hehLB4U3sfuCejk4Ky0VVyxcgC5AbbG5YBIDEH+lnrFJNcPxG4oY+qII=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1770128562; c=relaxed/simple;
+	bh=PDfyxvaMQQprhiwtoFPtZOJXRwH6MQDQ0AVQ8WNi7Co=;
+	h=From:To:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=ZuKOGLENNOT2bYfY5dnzYJdHapwlR4bv1yCspaJ2zpJnjsZ3y4nyr83D0xN2AHrI1E++wkZIvVZibs9c/gaD0mH9cULMpyUtSg8jwBnhTl3F0MF3Y6Hcd7DnhDDNhMKuj2+NeGMf/km/1imINVLmCvMEOzRYuwi2ZiTnf3V0VSU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=R5AwYuoT; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=A1lv+AIF; arc=fail smtp.client-ip=68.232.141.245
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1770128559; x=1801664559;
+  h=from:to:subject:date:message-id:references:in-reply-to:
+   content-id:content-transfer-encoding:mime-version;
+  bh=PDfyxvaMQQprhiwtoFPtZOJXRwH6MQDQ0AVQ8WNi7Co=;
+  b=R5AwYuoTNfBbZOELLpLwQtP5WG1WE7O58XHIIJwHbKYD5Wcb6I5nCxmJ
+   NRU9/Vd80nu8ST+PmkPwbrQy69LE2psXSKKXkoc7/tkzGJoNwVSMs7DTr
+   7Y9XuPM3pgksdhEhlflpPIHAgZ1Zg5g2Pyl6HakmydXABRLCT/YzKpMHS
+   MESPUz15m+qfLrZVond2aXXZXg8Q5E8etBYEsgUAyvpyhW4CD7LUpWo9b
+   AH6BKygESNsZQYw417+eqs2TeM6SNO+HhmxrX3UqrvsvqsdRmLWFspQBR
+   3Q0wriZySB4KcgWcy+K0zwCT8190H9dViepc+LzxhMXA1ZvgY8rpyhvrm
+   A==;
+X-CSE-ConnectionGUID: 7/E9M+6TSkmp1+i1Rj5b+Q==
+X-CSE-MsgGUID: uXD5Kh2uSaWKFpkIXYR4mg==
+X-IronPort-AV: E=Sophos;i="6.21,270,1763395200"; 
+   d="scan'208";a="140010590"
+Received: from mail-northcentralusazon11010015.outbound.protection.outlook.com (HELO CH1PR05CU001.outbound.protection.outlook.com) ([52.101.193.15])
+  by ob1.hgst.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 03 Feb 2026 22:22:32 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=ee5rPpFxz/PvyYnEK019A5LNyihLZ4Jaz8Itp04T84GOWTnDcvqA16lP6VNAkxmPd7I1iP4BzR3pXItaZLn9frtFmoIDPdCBcw5Q805+A/qTlBWPb1JutPy9w5LSZ2e6+NAI7G3f53CXu3gN7oeP9wC/34H6gcoafOJqUzjs8AJOmd2rrQwagGCCOwgQSdnsBv9an3jF8xyvnROgDbVf9hVcXh88pGQLSurIzYGp04GXS5uncF8RBwm8xZdQ1swxzyYkKn1pNubPAl8NzfP8tPrYVwK+BlIVNYxt3ZqVagGy0+d+cFtdvwKlV2fdTCsnASOMxHgGzTZSxH1OJBqjKQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=PDfyxvaMQQprhiwtoFPtZOJXRwH6MQDQ0AVQ8WNi7Co=;
+ b=KeSdm4Ae69wv81ccpolHI1WTs5y+ePDZPQSNryQWI63HIz/+xLidCmy6I2bfmuBHt6/tL4zdL/1UvoutU9Ee/KVkWpQr3qL8tLn9JoepUx+z8TPpXa/8V7itGr7/YQIVTno/LIKqO3tIIM0WmuvH2KDYTOdMVNkYEKdtjYFJyBVo20fX3vkR4C7JkuWy0MPsAg3QOauvtKr+H0qaahcGOwm+brV7Rd++flrblJlI/Vm4/Vxx8CRETyts59myxtTmBp0eRrXFCpyhGvja9LlfSWYP9wvceY175prTqyHg8wa4Z40bLRlzx4d95ft2s0YAtHntpQvxgfk5F2p8Nu23zA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PDfyxvaMQQprhiwtoFPtZOJXRwH6MQDQ0AVQ8WNi7Co=;
+ b=A1lv+AIFSrUAtF/3VMktvikvsKeJUR8SMGk9wSKtTGM/K++Mk5sGCJw8kJPqzxqTpuGlXFh45Ofyb6hBw5ry0DXdOtQxhJz9U4l4UYUcNYwtb/Q20iN9QjzifiZGC2pCSydPtkL8mZErpQPo7OqVp8LZuPFlyk+sK7CWAzyhFNg=
+Received: from LV8PR04MB8984.namprd04.prod.outlook.com (2603:10b6:408:18b::13)
+ by CH0PR04MB8177.namprd04.prod.outlook.com (2603:10b6:610:f5::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9587.12; Tue, 3 Feb
+ 2026 14:22:32 +0000
+Received: from LV8PR04MB8984.namprd04.prod.outlook.com
+ ([fe80::9ba6:7273:90bc:53a8]) by LV8PR04MB8984.namprd04.prod.outlook.com
+ ([fe80::9ba6:7273:90bc:53a8%3]) with mapi id 15.20.9587.010; Tue, 3 Feb 2026
+ 14:22:32 +0000
+From: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To: HAN Yuwei <hrx@bupt.moe>, Naohiro Aota <Naohiro.Aota@wdc.com>, linux-btrfs
+	<linux-btrfs@vger.kernel.org>
+Subject: Re: [BUG] 6.18-rc7 cannot mount RAID1 zoned btrfs.
+Thread-Topic: [BUG] 6.18-rc7 cannot mount RAID1 zoned btrfs.
+Thread-Index:
+ AQHcYFs7ICy2wYW+6UypQP3O7Xqwx7UIL5GAgAAJswCABB3sAIANCT8AgADaJoCAGSCBgIARdXCAgAILKYCAJ0XUAIADTtaA
+Date: Tue, 3 Feb 2026 14:22:32 +0000
+Message-ID: <9d0b0e19-f08a-407a-8708-e597ce29e6a9@wdc.com>
+References: <0BED8C36F63EBD8F+f61c437e-3e5f-4a1c-9c18-17fd31abfcd4@bupt.moe>
+ <e865d52c-8f07-431a-8fff-907bd6cfb0e8@wdc.com>
+ <F24595B65EF81413+dddb8a6c-9da6-4480-b168-fcfa20d3c296@bupt.moe>
+ <8bd72651-bad5-4e27-8972-1aa00ceead0a@wdc.com>
+ <3BB597E0959AF3E9+275dc513-febd-4497-a73a-61707d2d9e90@bupt.moe>
+ <99066be8-992b-4476-9a22-8c1ff6f5cff2@wdc.com>
+ <36718DD03AD165EF+c4b42ca9-02f2-41e9-9c43-1ff360a6e73e@bupt.moe>
+ <DFH8LGFH8LD8.39G3E2X9L5318@wdc.com>
+ <D61E098DC9397C2B+268b627b-a7c7-45e6-b388-c05dec782bb1@bupt.moe>
+ <905AE41129A9BED2+b999eeea-ad95-4326-8207-effc149eeae6@bupt.moe>
+In-Reply-To: <905AE41129A9BED2+b999eeea-ad95-4326-8207-effc149eeae6@bupt.moe>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Mozilla Thunderbird
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: LV8PR04MB8984:EE_|CH0PR04MB8177:EE_
+x-ms-office365-filtering-correlation-id: 3ca7c7fa-1b9f-4c68-b99e-08de632fab81
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|376014|10070799003|19092799006|1800799024|366016|38070700021;
+x-microsoft-antispam-message-info:
+ =?utf-8?B?aVlRMTFIQm1CRDBtYUxFVisrYnZnNC9KYkUyS3dMSU9RamRhZ2JlYTAveTBB?=
+ =?utf-8?B?VXl6Ni8rTkoveXJxYlFRT014KytRbnJQWnhHRDA0SnltVHdIOTdFUGRsM2tW?=
+ =?utf-8?B?NmJXYk43a3ppY0RoKzE4TW1UMW5kUGJ5RHJ4NXNqMW9kYVNyV3Y2ekdJYWN4?=
+ =?utf-8?B?RElxUGw3ZHZDR2ZEVzJxUUpLNklkNUlTRzJ4MlVpWHJkOVROT1M1bUVEdXNz?=
+ =?utf-8?B?M1ZqcFBPT0lTZTY0ZlhwSUFRbTdsQ3JHcVM3ZElLTStuNU9UanhrREVpV0FF?=
+ =?utf-8?B?ZVhpWXdDaDNhME9kNU1CYVVEUGU2aEhDWXp1bDRLbk5rVEdZWlUrdFF2Nkt4?=
+ =?utf-8?B?STBhaTMweXNLMzQ4cmIyMEY4Y2ViZ3QxVTBqTW5HNm43dUhYeWVIVHJ2K0NK?=
+ =?utf-8?B?Q053bWV1QWtOb016L0wwYUlDWGNjVUs0eU9LZ0hXeE5MT2NQWWo5b3MyU25M?=
+ =?utf-8?B?ajdIOVlGMzJtTUJlNnpPckJnaXYyUC8ydkkvcmN6THk2eE5oQ2dWaXZKTXhq?=
+ =?utf-8?B?UUNiTzFmcy90V3NUdVE5TkJXcVZVNHBDeTFaTHRBNGhFbWMxSUR1aU1KdG5U?=
+ =?utf-8?B?NHNrcmZTWlRtaEFtczYwMEFjcEhvdE80V2ZIc1M3U0pXT3FNWkdKdEZlNXhh?=
+ =?utf-8?B?U2tzUmpHRGVOTXJLNkhpQVVHcGgySGliNkt0MW05V3pQaURiS1RLZjJud1RY?=
+ =?utf-8?B?Ni9od1lDTkpieCtKRDVJZmU1aXU2NHBacmJuOW5nTklzZUs0YnpVL1Fyc3NJ?=
+ =?utf-8?B?b2Vyd1pPaUNkOXNzdjlrK1pjMjF0b1hzNHhDRXk0ODAzSHdPbU9HU3BuaFdy?=
+ =?utf-8?B?ZHdJM1hXdDl5YkRobFJTUHNRV1E5U25veS9INWkvM0VxUE13ZHhkQ2Q2UWlI?=
+ =?utf-8?B?TjR2bUtvTUxMVm0xV3NIQVRUTzFCTzlUcHB1QVo1MklTczhvZ2VYeExwTmVr?=
+ =?utf-8?B?THE1eHp0ZUQrQWZiVElPSXEwVjlmVFVJQ0pHTjk5b3RMOVZ5QlhxMTJWOHpl?=
+ =?utf-8?B?RUpQVjU1YkJicEpsTmdwYURvdThJaElCZEVuTFN2a01qOFo5bzRmVUVUKytx?=
+ =?utf-8?B?ekU0YWlXSHBtNFF6VmhEa0I2TUhlcXA3QXpYOUNORnNTOVRGZlhPNGRvSjlD?=
+ =?utf-8?B?YmtmaVRWUjIxaU5xYlZmRXhFelY3RWlZVlVmUXVISGxQZDZIU3JZdUM1WDJB?=
+ =?utf-8?B?aXFzeGV5dzgvVjNxTGM0Z2JzUERrMUU1R2dZR1piWjhZaG5jaDMwYmg4THV5?=
+ =?utf-8?B?NFR3UHd1cTcybzB2WFV2UlBhelRYWEl4R2FYamlVMjRFOVdrOURKSUh0WTN6?=
+ =?utf-8?B?V0VKQTFkUHowL3A5UTc2R0VPaFBYNFZEWnhqaGhHSk9ZbWlxbzM5WFdwaGFS?=
+ =?utf-8?B?eG0xSUc0bkIzQWhpL3VieUtpVm9KMjdPMEpIYUhQWlRCeVVsdFBTNVR6Rnll?=
+ =?utf-8?B?bnhIUHMyRkhIbE5TRTdyaFgwYlVEYWYzeHNCL0dZSkJSdjVDdFhFc01jMGt4?=
+ =?utf-8?B?RUNhdS9WbzQ0OVlneVNsNjFIRmdmR2pSdE9Ob29GaE5QM3gvSlFHYkpxNTFF?=
+ =?utf-8?B?M1ZRNkVoMHVCUER1WUQyM1F3YWhCR1luNldhSmFta05uVVZvOTUvU2dUUG42?=
+ =?utf-8?B?TC9pUkNVaHVob0FTbm5ybjRyWStXN1RwbTZjWEZWTUlLSWFWMnpjcE9razJN?=
+ =?utf-8?B?YVdneUNSQjJpZEJzcTBwbmhZNk9FYWMxZWhCZ003aFFnOVNGZWY4OEpRNEth?=
+ =?utf-8?B?b1c2M1NRRGxSdUd0YmhUUlBqT3ZEcE9zOTA0NlR3NGN0MEVSbHpMYk90QkpC?=
+ =?utf-8?B?bmp0bGFXRVlnMlQzUzNaZlBGQkxtWEhFUFF4TWlrQ01FdENpNzBxcEZYNU8y?=
+ =?utf-8?B?ampmb2c1TDBVajJJZDU1R2VWbDRYUW9JTUdjQXA0bkRlUmZDZTJGR3VVbjkw?=
+ =?utf-8?B?L1lvSDJ6YVBIYnE4c2c4UlZxaU04RFE2d1JqUTl6eHJVYXlwcEI1ODhOaHhy?=
+ =?utf-8?B?TVc5NkRuY3VUWk5VMXc3WlJ5R2YwWXlHbFdRdGE3QmVoREhnNnhmY2ZUSWpE?=
+ =?utf-8?B?ajNQcDd5aUphQzIxeHpDbWlZRk5BUHRWUThOZHFrSWhWTE1maHVIWlQ5ZllJ?=
+ =?utf-8?B?UjhQSTdxMDN6cHhUMTJpemgyTjhTa3dpMTJLT2RraWtqV1FCdXArZTJPM3V1?=
+ =?utf-8?Q?+qurc52XM97r9IKThrCmiZU=3D?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV8PR04MB8984.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(10070799003)(19092799006)(1800799024)(366016)(38070700021);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 2
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?Rkd2OU5RdlgzUmhlaEh0WG9qL2JEMGtOTEdFaGMvTUdvMTBDYmdtK0toR2hQ?=
+ =?utf-8?B?OVFqNUM2N0Y3a0lDSEdlZVgzTFdMM004ekUvSnZBM3Izc1ZDUlRZQWRsRlpV?=
+ =?utf-8?B?Z2R4UEZDd0U1WDFva1B1YWdwWHh1MWZyM213NitzUVBRREtWb21Yc1VtSnBV?=
+ =?utf-8?B?VmcvcWFFU0k4ZzRmV3FhdVlPWnhiSjRoTHpqeFZzR28zV3ROdHlHaDZEaFla?=
+ =?utf-8?B?em1mVVkyNS82Q2gzazMxWkhoMHJmRGJoQnlCcUI4dEFzdHd6akt0WGwrSGNu?=
+ =?utf-8?B?SC9OL0htQWkyaE5PYTlXV1JjTnJ3REwrbVQ4M0c3RXllMm9RZmcyWXI1QXlC?=
+ =?utf-8?B?ZlVBQU03d2IwS2c5V1B3TUM3Vng3OU9Oc0FhSzN1bVlML01nbXZDN2NTZGt0?=
+ =?utf-8?B?NjU4RTNERVFCcWxYcmUrUjgzaDNtVGlMdHJBWGdvbmlGMEtVWDRHVVQzUkR5?=
+ =?utf-8?B?R3E2dGhJQ0F1dExPQlhCa3VDTmlTNER5RWJ6RjdqNTNBMjMyelhWb3EyRStU?=
+ =?utf-8?B?OG9mdTM0VGxHd0FYZkpzMzBvVERDMTN4QjRqVmh4ZElxYmhXM0ErY3cxRWVi?=
+ =?utf-8?B?Tkg0UUZaeGEzelZNWFRuWlBUTHk2U0c5dGM3NHRJNDQ0bER4bnRvdE5IM0Q0?=
+ =?utf-8?B?NlpFNWV1emJCLytjbFdQTHd2N2VyKzJxbEdPYXpCdldUa2tnQWN3L1dmeVEx?=
+ =?utf-8?B?TGJrZHRUNTBYVzNYeStmUFVUM2IxV1ZsWElXc0ZkZjVNZzd0SWV2UDVYUStx?=
+ =?utf-8?B?Z2tyRzJuVGRFRWNYcjZtTFMyYjFqWWJVQjF0K3NRK0JuS05VME5QK2lydDNK?=
+ =?utf-8?B?eElCRVlybTFsL1B2S2I1VUQzZm9sNGFXYzVlak5SeWE3MHFYQ2ZVNFAxT2VH?=
+ =?utf-8?B?bUh1WVNFb1ZFOHVVMTdWeG5nTGJtVm9SNEpLejB5SzlINEhUVlRYSXJmazBP?=
+ =?utf-8?B?VEtYTTA0amxRa042eXBCb1VYMXlrcDFsQVJURTMvYUltM0V2eFFhV0pnWCtX?=
+ =?utf-8?B?NmRhMmxINTdTTDZ4dzhFWUpkdlNZMVEyNzF1RTJPY0o2OEcvTldZdUxaN1FR?=
+ =?utf-8?B?SDhFbmp0K0YrazhUYUo5TWxMSkxJSEt3RXFxdC9DVDBaMWFJQU1PWWQxRXow?=
+ =?utf-8?B?emY4UVNpQ3RyZk8xZHV5bmlvVVN4VUdSY2VDTkxFMkhrRTVqR1hDbDZiOWgv?=
+ =?utf-8?B?NklacmxvMkJRcDFoMlQ0dXlTRjdxeWtST3p0UnlkT0YwM1M1NFpVTmhidlBy?=
+ =?utf-8?B?RVNpZi8xZ3paMzFjTGdMem5zT1ZueWI0cnV5WVdUV1hsekhCNEV1ZUhyL0FW?=
+ =?utf-8?B?dTZwSzAxZkxEZmNsK0JNNWFWVENBT0cvQWgrR0hmQ096RWFyYzdRN1preXJN?=
+ =?utf-8?B?YXUyb3NrdlVWUXZpdFFHVkRheUlseHpNSm5EOFo4bC9vM205TVJHZHVCVVgr?=
+ =?utf-8?B?MWxURi8zdGVqSWN2ZjBoNjlla29MYmRvcGlESXYvdHE3ckNUN3hhQkxJUVlM?=
+ =?utf-8?B?WHdIYzBmQ3RWZW5OdXBDVVdsMldRLzVGMCtsVFFmQVpKbmtQRktzbTFsU25V?=
+ =?utf-8?B?YWtXREw3WlhXZFcycXJhTC9kbC80d3UwT0tYRWV3a1UwOEZHak1VMjFhTDBx?=
+ =?utf-8?B?U1pOMHMvQ1YwSzU3eVRDdmhBTnJrYmhQMW9RMW50TW5YTFY4ZnlZMDJ4NFdv?=
+ =?utf-8?B?ODRybGZZNGVERTlyRDNHVjJQZVNCNDJPdXZzWElPaVlzaVR4ZmdCQzZEUTlj?=
+ =?utf-8?B?LzBNM0pPeFVGdytjcGFwbEdxUU01NWFIZ3hZc1hxVUxHRGh1djdVanI2dnph?=
+ =?utf-8?B?ZVZackJ3RUFpMkZhOFpGSVBuV3lCTk1kRWZITWl0OFVQU2crR2QxT01hcks5?=
+ =?utf-8?B?aisrWUc2UFVHRUI3NTNwQ2N5SDNCVUZXNFJhNTZZNVk5bTZQa1V0eWNIbXZL?=
+ =?utf-8?B?UlNWd2RhSDJ0a3RmeXIrbVVDbW9SbEZYdjdQdVF0OUJrY1c0ZWZCK2NHTnl3?=
+ =?utf-8?B?d0JGaUNqWTFoLzhMQWJvazkrYUtXTVNnOFZVblBHOUlzY3NJSTl5cmt0M0Ex?=
+ =?utf-8?B?RG5tcHU4Q0UzOGJMTysvN2JZSlkyamxCcmw2SWpCWFh6ZUtQL0RuKzgwRmJZ?=
+ =?utf-8?B?NGRnWnZzZ0pVem5PSFI2S0dJL08zTklpSE5OT2FBV29LektWa3RrMytOMlJQ?=
+ =?utf-8?B?dnVyb25GZ1Q5a0V1cDQ1WkFrV3o3bGJkNkJta3I2Q3MyNWIvVXhCTXBpV0pt?=
+ =?utf-8?B?TTVsbFdud1Zzd1hGdk16dkFXcDh1dTNZYnJ2WTd4S1V5b0d2a25ydXdhQmJ4?=
+ =?utf-8?B?eXVRUWtGNGRJbEl3ek1mUHNtYTZkYXZuTXlaRDlpeUM3ZFdGa0lsZHowcDZS?=
+ =?utf-8?Q?XN6jOhKdwmxhvbAVA9nFI1gBC2UsHgg9TJzyttFuu6COF?=
+x-ms-exchange-antispam-messagedata-1: Cfa1oabsu2CdJUB8mrby9bInEExgMkZdojs=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <AB1DC70648C5984FAAA315FA264D1614@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <SA1PR18MB56922F690C5EC2D85371408B998FA@SA1PR18MB5692.namprd18.prod.outlook.com>
- <f53f9520-9168-49a3-8354-33d90d2ee3e5@gmx.com> <SA1PR18MB5692EBE3FFC7694F733E6007998FA@SA1PR18MB5692.namprd18.prod.outlook.com>
- <12a4bcff-0cd5-4c20-8e15-67d9e6e854b5@gmx.com> <SA1PR18MB569257A1B797A511E68D458C998CA@SA1PR18MB5692.namprd18.prod.outlook.com>
- <CAL3q7H5uz2uLnZOTHOH0oC2vB39m5w9yhBzcFp0NJyMYCnSQ9w@mail.gmail.com>
- <CAL3q7H7z+GMe4xEcQe7yEr1jiiqPaHAyvub-7797qEcPrvetow@mail.gmail.com> <SA1PR18MB56922B92618BE63BAF121C18998DA@SA1PR18MB5692.namprd18.prod.outlook.com>
-In-Reply-To: <SA1PR18MB56922B92618BE63BAF121C18998DA@SA1PR18MB5692.namprd18.prod.outlook.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Tue, 3 Feb 2026 13:05:36 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H5qqXVXL5KWrQthwp7UBCPVp-r+wEY0mveRkmih6-o9KQ@mail.gmail.com>
-X-Gm-Features: AZwV_QhPT4Xvb_eHOVTwPdua95nBBfvMg9tYblqpOKHkQHxkttCRR54_mhm67Pg
-Message-ID: <CAL3q7H5qqXVXL5KWrQthwp7UBCPVp-r+wEY0mveRkmih6-o9KQ@mail.gmail.com>
-Subject: Re: btrfs stopps working when stressed
-To: Aleksandar Gerasimovski <Aleksandar.Gerasimovski@belden.com>
-Cc: Qu Wenruo <quwenruo.btrfs@gmx.com>, 
-	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	eZF5WdlzkjatBkJHCqzTqzVIVAdmjjuL3CBfj6OCNVEeOVirfwW/J6SUoe4VMrm5ztWNHlV6gmFbS6F0HFS2U6XxsrHmjXqZuO1W+ebNm+GEuxP9HvnlMPTub7Hs/QbReznumMvCnBaGJaQYipzDVNwSkwVg8wYksEkqABB5/07s6kiZxPZVjDjlEqJTm1KCJYXk40DFUEQzl68mvntah2DCltUO5hv6UBX7z89Ly2kEjznjjIGcymq3Mq8gpkwUKaTjTlRuru4niwQOzcoGg5Dud8hWM7DsTvchyb0BA/5MeO80X/WS+hiidOK3kpSTbKn4Z2fpZdaIkOxdpWB6oHCudmOmdE23iqRIXv1eZxk7+Rl1O3H4jM6X5aG8PjseFpSYmQJyI2em+n4jS2PViwr7W1VN+SJplEanzNoZSBTe2eQ3HubZD5ov7mjyy6NLdolcGVPRMjuwEL/g8UkxXlb2LPipfZEveNiIjsJFlIQ8COXiHJTf/OF3UCVGQlBcJ0Pb+N67n+ALwaFzZbK8y/tQTnip47cGdBQBk56u6DbaUWGI0qyWFx/hrKy8G2Vne4erHGSWvou3YkVbHb9yyVRWLErfmtnj/M7QAb+REtyvsMjpPmNEPwfcw7VWsVQ9
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: LV8PR04MB8984.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3ca7c7fa-1b9f-4c68-b99e-08de632fab81
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Feb 2026 14:22:32.4965
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ROv9Ie3+mPg/PGG3ZwNbzti3l6BdmOamGSZgZlxEnDGt0Omu5XTFg3/vYSO9DF9+C35b6NVvy1oxMWmXcmzpwzRKzGtZdbHuJ5bvCGwvkHs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR04MB8177
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+X-Spamd-Result: default: False [0.94 / 15.00];
+	MIME_BASE64_TEXT_BOGUS(1.00)[];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	DMARC_POLICY_ALLOW(-0.50)[wdc.com,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_DKIM_ALLOW(-0.20)[wdc.com:s=dkim.wdc.com,sharedspace.onmicrosoft.com:s=selector2-sharedspace-onmicrosoft-com];
 	MAILLIST(-0.15)[generic];
+	MIME_BASE64_TEXT(0.10)[];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[gmx.com,vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21316-lists,linux-btrfs=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[fdmanana@kernel.org,linux-btrfs@vger.kernel.org];
-	RCPT_COUNT_THREE(0.00)[3];
-	NEURAL_HAM(-0.00)[-1.000];
-	REDIRECTOR_URL(0.00)[urldefense.com];
-	TAGGED_RCPT(0.00)[linux-btrfs];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[urldefense.com:url,gmx.com:email,mail.gmail.com:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,belden.com:email]
-X-Rspamd-Queue-Id: 610D8D9C16
+	TAGGED_FROM(0.00)[bounces-21317-lists,linux-btrfs=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_ALL(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_THREE(0.00)[3];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_FIVE(0.00)[6];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[Johannes.Thumshirn@wdc.com,linux-btrfs@vger.kernel.org];
+	DKIM_TRACE(0.00)[wdc.com:+,sharedspace.onmicrosoft.com:+];
+	NEURAL_HAM(-0.00)[-1.000];
+	TAGGED_RCPT(0.00)[linux-btrfs];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sharedspace.onmicrosoft.com:dkim,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 36035DA864
 X-Rspamd-Action: no action
 
-On Fri, Jan 16, 2026 at 8:55=E2=80=AFPM Aleksandar Gerasimovski
-<Aleksandar.Gerasimovski@belden.com> wrote:
->
-> On Thu, Jan 15, 2026 at 3:47=E2=80=AFPM Filipe Manana <mailto:fdmanana@ke=
-rnel.org> wrote:
->
-> > > On Thu, Jan 15, 2026 at 9:03=E2=80=AFAM Aleksandar Gerasimovski
-> > > <mailto:Aleksandar.Gerasimovski@belden.com> wrote:
-> > > >
-> > > >
-> > > >
-> > > > From: Qu Wenruo <mailto:quwenruo.btrfs@gmx.com>
-> > > >
-> > > > =E5=9C=A8 2026/1/15 00:34, Aleksandar Gerasimovski =E5=86=99=E9=81=
-=93:
-> > > > > Hi Qu,
-> > > > >
-> > > > > Many thanks for answering:
-> > > > >
-> > > > > No, our setup has single device (btrfs output is posted below).
-> > > > >
-> > > > > We are on an embedded device so the specific partition with btrfs=
- is 1GiB, so if you really suggest 10GiB minimum than do we indeed do wrong=
- FS selection?
-> > > >
-> > > > >> OK, there is a real bug.
-> > > > If you could give us some starting pointers we would try to go on w=
-ith debugging.
-> > >
-> > > No need to, this is reproducible with a 1G device on latest kernel.
-> >
-> >
-> > Try this (also at https://urldefense.com/v3/__https://pastebin.com/raw/=
-xqeHDVEU__;!!Fpyg6SJIkmElPg!0KYpoxHWcGc0Fh3t8M1p_JYThch0xXN9hQLWZdgTvZH-1VR=
-3beriGo1uNTdWbt1-OU7hNY-FB0-geXSBPr8GwNj8Lk4L$):
-> >
-> > diff --git a/fs/btrfs/block-rsv.c b/fs/btrfs/block-rsv.c
-> > index 96cf7a162987..ddb43a5b3efd 100644
-> > --- a/fs/btrfs/block-rsv.c
-> > +++ b/fs/btrfs/block-rsv.c
-> > @@ -532,6 +532,11 @@ struct btrfs_block_rsv
-> > *btrfs_use_block_rsv(struct btrfs_trans_handle *trans,
-> >                                            BTRFS_RESERVE_NO_FLUSH);
-> >         if (!ret)
-> >                 return block_rsv;
-> > +
-> > +       /* TODO explain why. */
-> > +       if (btrfs_root_id(root) =3D=3D BTRFS_TREE_LOG_OBJECTID)
-> > +               return ERR_PTR(ret);
-> > +
-> >         /*
-> >          * If we couldn't reserve metadata bytes try and use some from
-> >          * the global reserve if its space type is the same as the glob=
-al
-> > diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-> > index 857e4fd2c77e..bd6fdee8cf2d 100644
-> > --- a/fs/btrfs/space-info.c
-> > +++ b/fs/btrfs/space-info.c
-> > @@ -512,6 +512,10 @@ static inline bool can_overcommit(const struct
-> > btrfs_space_info *space_info,
-> >         if (space_info->flags & BTRFS_BLOCK_GROUP_DATA)
-> >                 return false;
-> >
-> > +       /* TODO: explain. */
-> > +       if (data_race(space_info->fs_info->global_block_rsv.full))
-> > +               return false;
-> > +
-> >         return check_can_overcommit(space_info, space_info_used_bytes,
-> > bytes, flush);
-> >  }
-> >
-> >
-> > For me it fixes the -ENOSPC with that bonnie++ test on a 1G device.
-> > I have been meaning to test and submit the first chunk for a while.
-> > After some more testing, I'll split that into two patches and write
-> > some change logs and submit them to the list.
-> >
->
-> Thanks for sharing, I have backported and tested this with 6.12 (that's w=
-hat we use now), and I also do not see -ENOSPC when stressing with bonnie++=
-.
-> In any case I think we will enable mixed-bg option, as that's recommended=
- for our filesystems size (=3D<1GiB).
-
-Yeah, but the -ENOSPC problem is particularly serious because it
-results in a transaction abort, turning the fs into read-only mode.
-In any case, it's a situation that should not ENOSPC, and when we
-really can't allocate space, we should fail gracefully without a
-transaction abort.
-
-I have changed part of the patch and sent it here:
-
-https://lore.kernel.org/linux-btrfs/cover.1770123544.git.fdmanana@suse.com/
-
-Thanks.
-
-
->
-> >
-> > >
-> > > >
-> > > > >> The problem is, when the failure happened, there are only around=
- 350MiB
-> > > > >> utilized, not 1GiB.
-> > > >
-> > > > >> The metadata over-allocation decision is correct as we should be=
- able to
-> > > > >> allocate new metadata chunks.
-> > > > Looks mixed-bg option helps in this case, thanks for the hint.
-> > > >
-> > > >
-> > > > >> Thanks,
-> > > > >> Qu
-> > > >
-> > > > >
-> > > > > We could for sure try if mixed-bg improves the robustness.
-> > > > > Is this known limitation of the btrfs?
-> > > > >
-> > > > > BTRFS status before the test:
-> > > > > ------------------------------------------------------------
-> > > > > # btrfs filesystem usage /mnt/data
-> > > > > Overall:
-> > > > >      Device size:                   1.00GiB
-> > > > >      Device allocated:            350.38MiB
-> > > > >      Device unallocated:          673.62MiB
-> > > > >      Device missing:                  0.00B
-> > > > >      Device slack:                    0.00B
-> > > > >      Used:                         20.80MiB
-> > > > >      Free (estimated):            885.20MiB      (min: 548.39MiB)
-> > > > >      Free (statfs, df):           884.20MiB
-> > > > >      Data ratio:                       1.00
-> > > > >      Metadata ratio:                   2.00
-> > > > >      Global reserve:                5.50MiB      (used: 0.00B)
-> > > > >      Multiple profiles:                  no
-> > > > >
-> > > > > Data,single: Size:232.00MiB, Used:20.43MiB (8.80%)
-> > > > >     /dev/mmcblk1p9        232.00MiB
-> > > > >
-> > > > > Metadata,DUP: Size:51.19MiB, Used:176.00KiB (0.34%)
-> > > > >     /dev/mmcblk1p9        102.38MiB
-> > > > >
-> > > > > System,DUP: Size:8.00MiB, Used:16.00KiB (0.20%)
-> > > > >     /dev/mmcblk1p9         16.00MiB
-> > > > >
-> > > > > Unallocated:
-> > > > >     /dev/mmcblk1p9        673.62MiB
-> > > > > -------------------------------------------------------
-> > > > >
-> > > > > ------------------------------------------------------
-> > > > > # btrfs filesystem df /mnt/data/
-> > > > > Data, single: total=3D232.00MiB, used=3D20.43MiB
-> > > > > System, DUP: total=3D8.00MiB, used=3D16.00KiB
-> > > > > Metadata, DUP: total=3D51.19MiB, used=3D176.00KiB
-> > > > > GlobalReserve, single: total=3D5.50MiB, used=3D0.00B
-> > > > >
-> > > > > Running the test:
-> > > > > # bonnie++ -d test/ -m NITROC -u 0 -s 256M -r 128M -b
-> > > > > Using uid:0, gid:0.
-> > > > > Writing a byte at a time...done
-> > > > > Writing intelligently...done
-> > > > > Rewriting...done
-> > > > > Reading a byte at a time...done
-> > > > > Reading intelligently...done
-> > > > > start 'em...done...done...done...done...done...
-> > > > > Create files in sequential order...[  971.162957] BTRFS warning (=
-device mmcblk1p9): Skipping commit of aborted transaction.
-> > > > > [  971.170964] ------------[ cut here ]------------
-> > > > > [  971.175668] BTRFS: Transaction aborted (error -28)
-> > > > > [  971.180579] WARNING: CPU: 2 PID: 845 at /fs/btrfs/transaction.=
-c:2027 btrfs_commit_transaction+0x9ec/0xb34
-> > > > > [  971.190238] Modules linked in: omap_rng rng_core mac80211(O) c=
-fg80211(O) firmware_class compat(O)
-> > > > > [  971.199251] CPU: 2 UID: 0 PID: 845 Comm: bonnie++ Tainted: G  =
-         O       6.12.62-coreos-cn913x-tiny #1
-> > > > > [  971.209161] Tainted: [O]=3DOOT_MODULE
-> > > > > [  971.212684] Hardware name: belden nitroc VNX/NetModule CN9131 =
-based NITROC platform V1, BIOS 2024.10-g97cd8f3422eb 10/01/2024
-> > > > > [  971.224059] pstate: 60000005 (nZCv daif -PAN -UAO -TCO -DIT -S=
-SBS BTYPE=3D--)
-> > > > > [  971.231082] pc : btrfs_commit_transaction+0x9ec/0xb34
-> > > > > [  971.236182] lr : btrfs_commit_transaction+0x9ec/0xb34
-> > > > > [  971.241281] sp : ffff8000822a3c70
-> > > > > [  971.244628] x29: ffff8000822a3ca0 x28: ffff0001012a3000 x27: f=
-fff0001012a3c9c
-> > > > > [  971.251854] x26: ffff0001012a3000 x25: ffff000100432b90 x24: f=
-fff000100432b90
-> > > > > [  971.259076] x23: ffff000100432a78 x22: ffff0001012a3000 x21: f=
-fff000100432b28
-> > > > > [  971.266294] x20: 00000000ffffffe4 x19: ffff0001012e4c00 x18: 0=
-00000000000000a
-> > > > > [  971.273513] x17: 0000000000000000 x16: 0000000000000000 x15: f=
-fff8000822a36d0
-> > > > > [  971.280732] x14: 0000000000000000 x13: 2938322d20726f72 x12: 7=
-265282064657472
-> > > > > [  971.287951] x11: 0000000000000293 x10: ffff800080f0a730 x9 : f=
-fff800080f62760
-> > > > > [  971.295170] x8 : ffff00013f795708 x7 : ffff00013f795708 x6 : f=
-fff00013f7976f0
-> > > > > [  971.302387] x5 : 0000000000000000 x4 : 0000000000000000 x3 : 0=
-000000000000000
-> > > > > [  971.309604] x2 : 0000000000000000 x1 : 0000000000000000 x0 : f=
-fff00010f911e00
-> > > > > [  971.316821] Call trace:
-> > > > > [  971.319298]  btrfs_commit_transaction+0x9ec/0xb34
-> > > > > [  971.324051]  btrfs_sync_file+0x43c/0x488
-> > > > > [  971.328028]  vfs_fsync_range+0x68/0x84
-> > > > > [  971.331833]  vfs_fsync+0x1c/0x28
-> > > > > [  971.335108]  do_fsync+0x30/0x58
-> > > > > [  971.338296]  __arm64_sys_fsync+0x18/0x28
-> > > > > [  971.342272]  invoke_syscall.constprop.0+0x74/0xc8
-> > > > > [  971.347034]  do_el0_svc+0x90/0xb0
-> > > > > [  971.350396]  el0_svc+0xbc/0x104
-> > > > > [  971.353581]  el0t_64_sync_handler+0x84/0x12c
-> > > > > [  971.357899]  el0t_64_sync+0x190/0x194
-> > > > > [  971.361604] ---[ end trace 0000000000000000 ]---
-> > > > > [  971.366654] BTRFS info (device mmcblk1p9 state A): dumping spa=
-ce info:
-> > > > > [  971.373230] BTRFS info (device mmcblk1p9 state A): space_info =
-DATA has 562245632 free, is not full
-> > > > > [  971.382247] BTRFS info (device mmcblk1p9 state A): space_info =
-total=3D583663616, used=3D21417984, pinned=3D0, reserved=3D0, may_use=3D0, =
-readonly=3D0 zone_unusable=3D0
-> > > > > [  971.396066] BTRFS info (device mmcblk1p9 state A): space_info =
-METADATA has -5767168 free, is full
-> > > > > [  971.404994] BTRFS info (device mmcblk1p9 state A): space_info =
-total=3D53673984, used=3D475136, pinned=3D53116928, reserved=3D16384, may_u=
-se=3D5767168, readonly=3D65536 zone_unusable=3D0
-> > > > > [  971.420375] BTRFS info (device mmcblk1p9 state A): space_info =
-SYSTEM has 8355840 free, is not full
-> > > > > [  971.429389] BTRFS info (device mmcblk1p9 state A): space_info =
-total=3D8388608, used=3D16384, pinned=3D16384, reserved=3D0, may_use=3D0, r=
-eadonly=3D0 zone_unusable=3D0
-> > > > > [  971.443110] BTRFS info (device mmcblk1p9 state A): global_bloc=
-k_rsv: size 5767168 reserved 5767168
-> > > > > [  971.452117] BTRFS info (device mmcblk1p9 state A): trans_block=
-_rsv: size 0 reserved 0
-> > > > > [  971.459991] BTRFS info (device mmcblk1p9 state A): chunk_block=
-_rsv: size 0 reserved 0
-> > > > > [  971.467865] BTRFS info (device mmcblk1p9 state A): delayed_blo=
-ck_rsv: size 0 reserved 0
-> > > > > [  971.475915] BTRFS info (device mmcblk1p9 state A): delayed_ref=
-s_rsv: size 0 reserved 0
-> > > > > [  971.483876] BTRFS: error (device mmcblk1p9 state A) in cleanup=
-_transaction:2027: errno=3D-28 No space left
-> > > > > [  971.493414] BTRFS info (device mmcblk1p9 state EA): forced rea=
-donly
-> > > > > Can't sync directory, turning off dir-sync.
-> > > > > Can't create file 000000028fIyc
-> > > > > Cleaning up test directory after error.
-> > > > > Bonnie: drastic I/O error (rmdir): Read-only file system
-> > > > > -----------------------------------------------------------------=
--------
-> > > > >
-> > > > > BTRFS status after the failing test:
-> > > > > ---------------------------------------------
-> > > > > # btrfs filesystem usage /mnt/data
-> > > > > Overall:
-> > > > >      Device size:                   1.00GiB
-> > > > >      Device allocated:            675.00MiB
-> > > > >      Device unallocated:          349.00MiB
-> > > > >      Device missing:                  0.00B
-> > > > >      Device slack:                    0.00B
-> > > > >      Used:                         21.36MiB
-> > > > >      Free (estimated):            885.20MiB      (min: 710.70MiB)
-> > > > >      Free (statfs, df):           884.20MiB
-> > > > >      Data ratio:                       1.00
-> > > > >      Metadata ratio:                   2.00
-> > > > >      Global reserve:                5.50MiB      (used: 0.00B)
-> > > > >      Multiple profiles:                  no
-> > > > >
-> > > > > Data,single: Size:556.62MiB, Used:20.43MiB (3.67%)
-> > > > >     /dev/mmcblk1p9        556.62MiB
-> > > > >
-> > > > > Metadata,DUP: Size:51.19MiB, Used:464.00KiB (0.89%)
-> > > > >     /dev/mmcblk1p9        102.38MiB
-> > > > >
-> > > > > System,DUP: Size:8.00MiB, Used:16.00KiB (0.20%)
-> > > > >     /dev/mmcblk1p9         16.00MiB
-> > > > >
-> > > > > Unallocated:
-> > > > >     /dev/mmcblk1p9        349.00MiB
-> > > > > -------------------------------------------------
-> > > > >
-> > > > > Regards,
-> > > > > Aleksandar
-> > > > >
-> > > > > From: Qu Wenruo <mailto:quwenruo.btrfs@gmx.com>
-> > > > > Sent: Wednesday, January 14, 2026 11:06 AM
-> > > > > To: Aleksandar Gerasimovski <mailto:Aleksandar.Gerasimovski@belde=
-n.com>; mailto:linux-btrfs@vger.kernel.org
-> > > > > Subject: Re: btrfs stopps working when stressed
-> > > > >
-> > > > > =E5=9C=A8 2026/1/14 19:=E2=80=8A55, Aleksandar Gerasimovski =E5=
-=86=99=E9=81=93: > Hello everyone, > > I'm looking for a solution for a pro=
-blem that we have with the btrfs. > > We have tried to do some initial inve=
-stigation on our side however we have limited
-> > > > >
-> > > > >
-> > > > >
-> > > > > =E5=9C=A8 2026/1/14 19:55, Aleksandar Gerasimovski =E5=86=99=E9=
-=81=93:
-> > > > >> Hello everyone,
-> > > > >>
-> > > > >> I'm looking for a solution for a problem that we have with the b=
-trfs.
-> > > > >>
-> > > > >> We have tried to do some initial investigation on our side howev=
-er we have limited knowledge and experience in this area.
-> > > > >> I hope you can give us some pointers how to investigate this fur=
-ther and in what corners we shall start looking.
-> > > > >>
-> > > > >> So, on our products using the btrfs we see that the filesystem s=
-ometimes stops working when we stress it with bonnie++ tool.
-> > > > >> We see the problem with mainstream 6.12 and 6.18 Kernels, our cu=
-rrent guess from the debugging done so far is that
-> > > > >> we run in kind of a concurrency      and/or scheduling issue wer=
-e the asynchron meta data space reclaiming is not executed on time,
-> > > > >> and this leads to metadata space to not be free up on time for t=
-he new data. We can even see that adding a printk trace in a specific
-> > > > >> point is covering the problem.
-> > > > >
-> > > > > Did your setup have multiple devices involved?
-> > > > >
-> > > > > If so there is a known bug that slightly unbalanced device size c=
-an
-> > > > > trick btrfs into it can still over-commit metadata, but it can no=
-t in
-> > > > > fact and error out at one of the critical path that we can not do
-> > > > > anything but aborting the transaction.
-> > > > >
-> > > > >
-> > > > > Although even without that specific quirk, it's still known that =
-btrfs
-> > > > > has some other problems related to metadata space reservation.
-> > > > >
-> > > > >>
-> > > > >> To reproduce the problem, we run: "bonnie++ -d test/ -m BTRFS -u=
- 0 -s 256M -r 128M -b"
-> > > > >> Note that the tested partition is for sure not full we have 800M=
-B space there and we test with 256MB so it's not a space issue.
-> > > > >
-> > > > > Unfortunately it's too small for btrfs.
-> > > > >
-> > > > > Btrfs has the requirement to strictly split metadata and data spa=
-ce,
-> > > > > thus it's possible to let unbalanced metadata and data chunk usag=
-e to
-> > > > > exhaust one while the other has a lot of free space.
-> > > > >
-> > > > > You can consider it as the ext4/xfs inode number limits vs data s=
-pace
-> > > > > usage. One can exhaust all the available inodes way before exhaus=
-ting
-> > > > > the available data.
-> > > > >
-> > > > > It's just way worse in btrfs for smaller fses.
-> > > > >
-> > > > > [...]
-> > > > >> [ 174.013001] BTRFS info (device mmcblk0p7 state A): space_info =
-DATA has 234418176 free, is not full
-> > > > >> [ 174.022018] BTRFS info (device mmcblk0p7 state A): space_info =
-total=3D255852544, used=3D21434368, pinned=3D0, reserved=3D0, may_use=3D0, =
-readonly=3D0 zone_unusable=3D0
-> > > > >
-> > > > > You have only 244MiB of data chunk, which is already tiny for btr=
-fs.
-> > > > > The worse part is, there is only 20MiB utilized
-> > > > >
-> > > > >> [ 174.035829] BTRFS info (device mmcblk0p7 state A): space_info =
-METADATA has -5767168 free, is full
-> > > > >> [ 174.044752] BTRFS info (device mmcblk0p7 state A): space_info =
-total=3D53673984, used=3D1146880, pinned=3D52445184, reserved=3D16384, may_=
-use=3D5767168, readonly=3D65536 zone_unusable=3D0
-> > > > >
-> > > > > Your metadata is tiny, only less than 52MiB (and will be doubled =
-by the
-> > > > > default DUP profile for single dev setup).
-> > > > >
-> > > > > This means your fs is only around 350MiB?
-> > > > >
-> > > > > This is definitely not a good disk size for btrfs.
-> > > > >
-> > > > > My recommendation for any btrfs is at least 10GiB.
-> > > > >
-> > > > > This will allow btrfs to use 1Gib chunk stripe size (the max), so=
- that
-> > > > > we won't have those tiny metadata blocks, and greatly reduce the =
-problem
-> > > > > caused by unbalacned data/metadata.
-> > > > >
-> > > > >
-> > > > > But still, flipping RO is not a good behavior, although in such s=
-mall
-> > > > > fs, you may have a better experience using mixed-bg feature, whic=
-h will
-> > > > > let data and metadata share the same block groups, resolving the
-> > > > > unbalance problem (but introducing more limits).
-> > > > >
-> > > > > Thanks,
-> > > > > Qu
-> > > > >
-> > > > >> [ 174.060221] BTRFS info (device mmcblk0p7 state A): space_info =
-SYSTEM has 8355840 free, is not full
-> > > > >> [ 174.069252] BTRFS info (device mmcblk0p7 state A): space_info =
-total=3D8388608, used=3D16384, pinned=3D16384, reserved=3D0, may_use=3D0, r=
-eadonly=3D0 zone_unusable=3D0
-> > > > >> [ 174.082979] BTRFS info (device mmcblk0p7 state A): global_bloc=
-k_rsv: size 5767168 reserved 5767168
-> > > > >> [ 174.091989] BTRFS info (device mmcblk0p7 state A): trans_block=
-_rsv: size 0 reserved 0
-> > > > >> [ 174.099865] BTRFS info (device mmcblk0p7 state A): chunk_block=
-_rsv: size 0 reserved 0
-> > > > >> [ 174.107739] BTRFS info (device mmcblk0p7 state A): delayed_blo=
-ck_rsv: size 0 reserved 0
-> > > > >> [ 174.115794] BTRFS info (device mmcblk0p7 state A): delayed_ref=
-s_rsv: size 0 reserved 0
-> > > > >> [ 174.123787] BTRFS: error (device mmcblk0p7 state A) in cleanup=
-_transaction:2027: errno=3D-28 No space left
-> > > > >> [ 174.133336] BTRFS info (device mmcblk0p7 state EA): forced rea=
-donly
-> > > > >> Can't sync file.
-> > > > >> Cleaning up test directory after error.
-> > > > >> Bonnie: drastic I/O error (rmdir): Read-only file system
-> > > > >> ------------------------------------------------
-> > > > >>
-> > > > >> Trying to follow the "btrfs_add_bg_to_space_info" that is in "as=
-ync_reclaim_work" context:
-> > > > >> -------------------------------------------------
-> > > > >> @@ -322,15 +322,21 @@ void btrfs_add_bg_to_space_info(struct btr=
-fs_fs_info *info,
-> > > > >>           struct btrfs_space_info *found;
-> > > > >>           int factor, index;
-> > > > >>
-> > > > >>           factor =3D btrfs_bg_type_to_factor(block_group->flags)=
-;
-> > > > >>
-> > > > >>           found =3D btrfs_find_space_info(info, block_group->fla=
-gs);
-> > > > >>           ASSERT(found);
-> > > > >>           spin_lock(&found->lock);
-> > > > >> +       pr_info("%s(%d): %s %lld %lld\n", __func__, __LINE__, sp=
-ace_info_flag_to_str(found), found->total_bytes, block_group->length);
-> > > > >> +       // OK: trigger twice free space is freed at second attem=
-pt.
-> > > > >> +       // METADATA 53673984 6291456
-> > > > >> +       // ..
-> > > > >> +       // METADATA 59965440 117440512
-> > > > >> +
-> > > > >> +       // KO: triggered one, no space
-> > > > >> +       // METADATA 53673984 6291456
-> > > > >> +       // crash...
-> > > > >> -------------------------------------------------
-> > > > >>
-> > > > >> Also maybe interesting to know is that trying to trace (printk) =
-"btrfs_add_bg_to_space_info" influence the reproducibility.
-> > > > >>
-> > > > >> Any hints to resolve this problem are welcome.
-> > > > >>
-> > > > >> Regards,
-> > > > >> Aleksandar
-> >
->
-> **********************************************************************
-> DISCLAIMER:
-> Privileged and/or Confidential information may be contained in this messa=
-ge. If you are not the addressee of this message, you may not copy, use or =
-deliver this message to anyone. In such event, you should destroy the messa=
-ge and kindly notify the sender by reply e-mail. It is understood that opin=
-ions or conclusions that do not relate to the official business of the comp=
-any are neither given nor endorsed by the company. Thank You.
+T24gMi8xLzI2IDEyOjUyIFBNLCBIQU4gWXV3ZWkgd3JvdGU6DQo+IGJyaW5naW5nIHRoaXMgdXAg
+YWdhaW4uDQo+DQoNCkRhdmlkIG1lcmdlZCB0aGUgcGF0Y2ggZnJvbSBOYW9oaXJvIGFkcmVzc2lu
+ZyB0aGlzIGlzc3VlLiBJdCdzIGxpa2VseSANCmNvbnRhaW5lZCBpbiB0aGUgMXN0IG9yIDJuZCBw
+dWxsIHJlcXVlc3QgdG8gTGludXMgZm9yIDYuMjAuDQoNClRoYW5rcywNCg0KSm9oYW5uZXMNCg0K
 
