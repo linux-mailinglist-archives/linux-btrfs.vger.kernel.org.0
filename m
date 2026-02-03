@@ -1,136 +1,146 @@
-Return-Path: <linux-btrfs+bounces-21346-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21347-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id iMZcBEuHgmnDVwMAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21346-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Wed, 04 Feb 2026 00:39:55 +0100
+	id gEl3GbSJgmk9WAMAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21347-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Wed, 04 Feb 2026 00:50:12 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D1A4DFCAF
-	for <lists+linux-btrfs@lfdr.de>; Wed, 04 Feb 2026 00:39:54 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9464DFD8F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 04 Feb 2026 00:50:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 3C1E130DAB21
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Feb 2026 23:39:08 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id DCEA73038FF9
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Feb 2026 23:50:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EE8032C925;
-	Tue,  3 Feb 2026 23:39:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1057032FA38;
+	Tue,  3 Feb 2026 23:50:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pkaEBNsS"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FXFxJOej"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59D4B32C326
-	for <linux-btrfs@vger.kernel.org>; Tue,  3 Feb 2026 23:39:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D6A531ED8A
+	for <linux-btrfs@vger.kernel.org>; Tue,  3 Feb 2026 23:49:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770161947; cv=none; b=TrTLREr22iTB8APzAJZ/g928RyZK5qlE6txie1/bj2D44tJZfeBLr5IMGDfi7QyCuTB5awTzn8hqnxQLf+VVNQmJf7QcqoJaZkbF2YnJzgrlJsu9Ky1cgF0eVwxwWm4gwnyaoL1RJnJrYWvJdzGOOe+iWfV4kiOAKITr2+BTGnk=
+	t=1770162601; cv=none; b=b+LHpsI/cljwl4OBxqYhKDwoBhUKHr9j+oAOeAPf0Ij1u76MSV0sHKz/2yV8OEA2e3Oit8pr6iXepWh6CyKd39WyCdJX5Sk3oE3Cn9mV1eWCjNYLGgaBrtGNrz5rY7G/fFTTIlnsxzkeV2BbdQaMqDtgNgbsPd+gqY+97yFrJKc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770161947; c=relaxed/simple;
-	bh=DlNgDipoFREjna5v1D+H2Bs0oDzRNW8D1X2caSwiRCI=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CThA7EvnYWMbaC7UIUTgvvB/5XaX/XaKEOe4Lf5nEGrCh50chVyQ5bzvcF9cpJwpQlqO5LNeEitsRA/qQelETfYdU+P3s2/ziYqX5B62I2YyKvc9ccTu4GXXIsR6ANaNjJqj1ROswztVlkFW7FwVak5YDNPT1c5yfOSj9OHCrZU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pkaEBNsS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9FE4C19422
-	for <linux-btrfs@vger.kernel.org>; Tue,  3 Feb 2026 23:39:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1770161947;
-	bh=DlNgDipoFREjna5v1D+H2Bs0oDzRNW8D1X2caSwiRCI=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=pkaEBNsSwvS45ziUB4aYxRpVT5GaRfrKhUhzXolaK9F74F+JwZPuv9ajua52uLPjG
-	 6D4qaXvE/bgs+thcmrs/b36GfKny+Mg2mlxg5cw7w0BJRa8RvP4EbVneLLsd9OKyvG
-	 8S7ifQzf6EGOJvgs/m4lfaHQ99KtPmnZp9Skk1nZUabxH6Rz3SKDwA1Hqqk1nZSMaH
-	 sebfIODG3/luMQEBx5Egye5bHeIfWneH4GYASzv8lFJIbbLwpn11c7FtbpT4FPzCkW
-	 l5R6yExNBdubQpVxRPnp5NfZTb61RPoLbVimC7I6erjAtqHrJYnB/TRmsVEp01ecYl
-	 zE6oAZOn9b79Q==
-From: fdmanana@kernel.org
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 3/3] btrfs: update comment for BTRFS_RESERVE_NO_FLUSH
-Date: Tue,  3 Feb 2026 23:39:01 +0000
-Message-ID: <8990fb15015c4df073fc70890ba94f0507e87500.1770161798.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.47.2
-In-Reply-To: <cover.1770161798.git.fdmanana@suse.com>
-References: <cover.1770161798.git.fdmanana@suse.com>
+	s=arc-20240116; t=1770162601; c=relaxed/simple;
+	bh=0FE/9IlbnnnB5Syjs+C+XOn2w3fMFyktdcf8wsWYO6g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=p78w4H6XKnxC9W/o0CqD3RCiCkNmu7rpyhnB2SnnvypxDON4IoUoLiwzapPoCWYAkWAtWE7jFhZ7ib24fR4tywcdqunPz2/bRrqBxZ7CC+o5tIxMkGNJuxn043tE+3SApVyRXP2mELUbsvCxRNGaNhS51Esomj6Si+7p4UCig2E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FXFxJOej; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1770162599; x=1801698599;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=0FE/9IlbnnnB5Syjs+C+XOn2w3fMFyktdcf8wsWYO6g=;
+  b=FXFxJOejA+kJ/I7lxLIk5tDJHvxBMnPwZTyqIvM1cU6uEC8/BFlkI2gC
+   OlP1Shv4qm6PiFfVtVDiZBGPkg68xj9cSF5mAe1LrjfLchhb38WWQWxah
+   4TOvWci3nZWzMoEH5h4/LxIGBBcvVN4jMwBgBMYP0EWmDf4m0GZgJGvMp
+   G5hvKr51121bZ98Xz3U7iLnfjL60oN/CtBh6nxvBNOYhJe5fyfqjet0pf
+   SsuSbpdU7/bGp7YQQU9XWpIl96Q1xKlYhclsl+9YZEFg/BuWpC8NARnML
+   Gn2xL3x7B4bTlLMKr9cnLQfe38EAb4P4ddKggi1yge1Sn3p9loWZaI7hx
+   A==;
+X-CSE-ConnectionGUID: KhiIxOxZSkSWifAYEnWy0g==
+X-CSE-MsgGUID: xn9n3Cs1TZyMiLgMzPkBQA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11691"; a="75203084"
+X-IronPort-AV: E=Sophos;i="6.21,271,1763452800"; 
+   d="scan'208";a="75203084"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2026 15:49:58 -0800
+X-CSE-ConnectionGUID: Vi1ojMQATI2mKhbvShqgtg==
+X-CSE-MsgGUID: w99rgcScTZmh8a6mvf0kog==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.21,271,1763452800"; 
+   d="scan'208";a="209381034"
+Received: from lkp-server01.sh.intel.com (HELO 765f4a05e27f) ([10.239.97.150])
+  by fmviesa007.fm.intel.com with ESMTP; 03 Feb 2026 15:49:58 -0800
+Received: from kbuild by 765f4a05e27f with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1vnQ9b-00000000hJ6-3eTc;
+	Tue, 03 Feb 2026 23:49:55 +0000
+Date: Wed, 4 Feb 2026 07:49:13 +0800
+From: kernel test robot <lkp@intel.com>
+To: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev
+Subject: Re: [PATCH 1/3] btrfs: introduce the device layout aware per-profile
+ available space
+Message-ID: <202602040700.ald285sK-lkp@intel.com>
+References: <eb573bac21a16092d8e9f64533c6b0d6ed6b16a4.1770087101.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <eb573bac21a16092d8e9f64533c6b0d6ed6b16a4.1770087101.git.wqu@suse.com>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-1.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-21346-lists,linux-btrfs=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	DKIM_TRACE(0.00)[kernel.org:+];
+	DKIM_TRACE(0.00)[intel.com:+];
+	FROM_HAS_DN(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21347-lists,linux-btrfs=lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_THREE(0.00)[3];
+	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[fdmanana@kernel.org,linux-btrfs@vger.kernel.org];
-	FROM_NO_DN(0.00)[];
-	TO_DN_NONE(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[lkp@intel.com,linux-btrfs@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 5D1A4DFCAF
+	NEURAL_HAM(-0.00)[-0.999];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:email,intel.com:dkim,intel.com:mid,git-scm.com:url,01.org:url,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: D9464DFD8F
 X-Rspamd-Action: no action
 
-From: Filipe Manana <fdmanana@suse.com>
+Hi Qu,
 
-The comment is incomplete as BTRFS_RESERVE_NO_FLUSH is used for more
-reasons than currently holding a transaction handle open. Update the
-comment with all the other reasons and give some details.
+kernel test robot noticed the following build errors:
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/space-info.h | 19 ++++++++++++++++++-
- 1 file changed, 18 insertions(+), 1 deletion(-)
+[auto build test ERROR on kdave/for-next]
+[also build test ERROR on linus/master v6.19-rc8 next-20260203]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-diff --git a/fs/btrfs/space-info.h b/fs/btrfs/space-info.h
-index 0703f24b23f7..6f96cf48d7da 100644
---- a/fs/btrfs/space-info.h
-+++ b/fs/btrfs/space-info.h
-@@ -21,7 +21,24 @@ struct btrfs_block_group;
-  * The higher the level, the more methods we try to reclaim space.
-  */
- enum btrfs_reserve_flush_enum {
--	/* If we are in the transaction, we can't flush anything.*/
-+	/*
-+	 * Used when we can't flush or don't need:
-+	 *
-+	 * 1) We are holding a transaction handle open, so we can't flush as
-+	 *    that could deadlock.
-+	 *
-+	 * 2) For a nowait write we don't want to block when reserving delalloc.
-+	 *
-+	 * 3) Joining a transaction or attaching a transaction, we don't want
-+	 *    to wait and we don't need to reserve anything (any needed space
-+	 *    was reserved before in a dedicated block reserve, or we rely on
-+	 *    the global block reserve, see btrfs_init_root_block_rsv()).
-+	 *
-+	 * 4) Starting a transaction when we don't need to reserve space, as
-+	 *    we don't need it because we previously reserved in a dedicated
-+	 *    block reserve or rely on the global block reserve, like the above
-+	 *    case.
-+	 */
- 	BTRFS_RESERVE_NO_FLUSH,
- 
- 	/*
+url:    https://github.com/intel-lab-lkp/linux/commits/Qu-Wenruo/btrfs-introduce-the-device-layout-aware-per-profile-available-space/20260203-110526
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
+patch link:    https://lore.kernel.org/r/eb573bac21a16092d8e9f64533c6b0d6ed6b16a4.1770087101.git.wqu%40suse.com
+patch subject: [PATCH 1/3] btrfs: introduce the device layout aware per-profile available space
+config: powerpc-randconfig-002-20260204 (https://download.01.org/0day-ci/archive/20260204/202602040700.ald285sK-lkp@intel.com/config)
+compiler: powerpc-linux-gcc (GCC) 14.3.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260204/202602040700.ald285sK-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202602040700.ald285sK-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   powerpc-linux-ld: fs/btrfs/volumes.o: in function `alloc_virtual_chunk':
+>> volumes.c:(.text+0x2648): undefined reference to `__udivdi3'
+
 -- 
-2.47.2
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
