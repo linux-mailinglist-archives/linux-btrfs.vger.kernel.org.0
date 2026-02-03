@@ -1,127 +1,113 @@
-Return-Path: <linux-btrfs+bounces-21327-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21329-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id wI9PKas4gmmVQgMAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21327-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Tue, 03 Feb 2026 19:04:27 +0100
+	id ovbnKc5AgmmORQMAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21329-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Tue, 03 Feb 2026 19:39:10 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D979DD481
-	for <lists+linux-btrfs@lfdr.de>; Tue, 03 Feb 2026 19:04:27 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0657DDB4A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 03 Feb 2026 19:39:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id B2F2D30AF98C
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Feb 2026 18:03:41 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 9E791306620D
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Feb 2026 18:29:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E0133A0EBD;
-	Tue,  3 Feb 2026 18:03:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D395F366833;
+	Tue,  3 Feb 2026 18:29:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OO+ytZFE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UH8wwJHh"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD46B36405E
-	for <linux-btrfs@vger.kernel.org>; Tue,  3 Feb 2026 18:03:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DC0E31B812;
+	Tue,  3 Feb 2026 18:29:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770141819; cv=none; b=kAAA9LLK/rPEKrVIFQBaq/aiE/92Q+/zEfxiIWYV1LGpm7zs3rib+2PCxeAcFhkscIC7+tYkoXC4fc1VacAkVM5j0+JwuEsKtA0Fa6cDzZCXu5NSby3XZW3OCXShs2bBTvlu/BqwuCatgNSU2GWCKkEXDcCvnogDfMPSLVw/hDY=
+	t=1770143346; cv=none; b=ir7BGXd5ZU50Wab0JgyX1BOAyvQVKAuax81QRuz1Uqsnd3FtoNKboaP4E68nAuCGyUvfimZIXtM+CJdUK/TlBx1HCw3iGMRMlvWSNE1JCpZne9yxbm04OVP9wfSEs4hoigjUQNDQmhHCBlAWh/kw4Wn5t9sseprDtY09g0AO1Vg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770141819; c=relaxed/simple;
-	bh=bYh4GqRlzqlbDurVee3rGbEIMnw4AnddC4mxTKOUACI=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=GnNrGb9h8jTAEc+gNs4IsrrmiZxdwvl8wCDfEdRytfqCA6fIBiSbJWdz0MUca1M5rmYIQFPdVeF8X5LzxTNtd40skIsyCxkTdStiI7qA5x7nRFgp+U64B0SJ4gJ42mIKkpwlLx4tHDaHzj7l0DxW4VhlB6qhh17aQE5WRDjYIHY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OO+ytZFE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6323C116D0
-	for <linux-btrfs@vger.kernel.org>; Tue,  3 Feb 2026 18:03:38 +0000 (UTC)
+	s=arc-20240116; t=1770143346; c=relaxed/simple;
+	bh=tIb2MVQfTYmZIBJEheYn0kvBf/ADzmATawvemxdVY/0=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=rHX/vA/L8bsrKQuaXTsozo1fxr0S3Pp509Mv8Qu4zlGIKCZxww5WxQp7EBgslCYviCbCgmMcxUMmyWi6YoIfu4X5TT8qkBbc/p87ON+3txsdfRynZgU23dqR6QP3V91k0FaaB/tCGwtW3tULFWR9CJ8qh85na7+cb/ORWCdB+cw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UH8wwJHh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3C5CC116D0;
+	Tue,  3 Feb 2026 18:29:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1770141819;
-	bh=bYh4GqRlzqlbDurVee3rGbEIMnw4AnddC4mxTKOUACI=;
-	h=From:To:Subject:Date:From;
-	b=OO+ytZFEM7DbH67L+11Xi8Ly0njGJEol1GDLj9p06psgXZrNPEfa3JGlRPW1gGXR3
-	 mh2A4T9/zRle8t3SHV2Lt4FleVWfP6F2y/NY5HfLsk5NO+XVpnjEIZac37KQZFh6ua
-	 yBFY6WVOpB+kC1waWyU7pRwkLGXk6po0a73mMr5PmRKSt/OT4p4Koy11DjBxQrckO+
-	 bl4XrDnlCreHV2rLZh8pTD5tbT7VPRfzrhpcEHg+vyPp8ka3dMMDks1bPGCsbsnv/R
-	 AJjrPiHuhgXVd7wbifIGV8lq+WfEbQdGCSXPQDD5OpWFfuivGKPlg+u81rEEHSk4cp
-	 9wQPPTDmf8QkQ==
-From: fdmanana@kernel.org
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: use the correct type to initialize block reserve for delayed refs
-Date: Tue,  3 Feb 2026 18:03:35 +0000
-Message-ID: <c16363c678a392fafd249223228c6c75985e4a59.1770141624.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.47.2
+	s=k20201202; t=1770143345;
+	bh=tIb2MVQfTYmZIBJEheYn0kvBf/ADzmATawvemxdVY/0=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=UH8wwJHhKK8agxQuoD7SeAp0zRpmnA2yLFkUbjBWPonn2SRjIN4al7A0dLtdX65Dq
+	 lReV5GogckJCKHIOnE58Ifohzs+8fGShZEI5CBFDN0ornjWvsH+SdYQTizrlWy1GiW
+	 QFHaRC1P7wOWTRnqdI7eOML6c/3DE7vy9NdLrtCQu6UQWkdbOQXnQ9iIysuakvtp0w
+	 N6B3Asfe/9J4KoFGS9Wb711pxvjv4YTT1rGHwR8ZNCGIvqpXIeDrVV99fI+vWGdIkG
+	 Zmweloliu+P9LpsPxKQd8uwb7gERDrnrP2UjvwYQjl7+De9aTXptahbksngPnkOIQ5
+	 JvQo1v486500w==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 9111C3808200;
+	Tue,  3 Feb 2026 18:29:03 +0000 (UTC)
+Subject: Re: [GIT PULL] Btrfs fix for 6.19-rc8+
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <cover.1770137071.git.dsterba@suse.com>
+References: <cover.1770137071.git.dsterba@suse.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <cover.1770137071.git.dsterba@suse.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.19-rc8-tag
+X-PR-Tracked-Commit-Id: 29fb415a6a72c9207d118dd0a7a37184a14a3680
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: de0674d9bc69699c497477d45172493393ae9007
+Message-Id: <177014334226.1592914.15479525661354168599.pr-tracker-bot@kernel.org>
+Date: Tue, 03 Feb 2026 18:29:02 +0000
+To: David Sterba <dsterba@suse.com>
+Cc: torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCPT_COUNT_ONE(0.00)[1];
 	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-21327-lists,linux-btrfs=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
+	TO_DN_SOME(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21329-lists,linux-btrfs=lfdr.de];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[fdmanana@kernel.org,linux-btrfs@vger.kernel.org];
 	FROM_NO_DN(0.00)[];
-	TO_DN_NONE(0.00)[];
-	TAGGED_RCPT(0.00)[linux-btrfs];
+	RCPT_COUNT_FIVE(0.00)[5];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[pr-tracker-bot@kernel.org,linux-btrfs@vger.kernel.org];
+	MISSING_XM_UA(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,suse.com:mid,suse.com:email,zadara.com:email]
-X-Rspamd-Queue-Id: 2D979DD481
+	TAGGED_RCPT(0.00)[linux-btrfs];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: E0657DDB4A
 X-Rspamd-Action: no action
 
-From: Filipe Manana <fdmanana@suse.com>
+The pull request you sent on Tue,  3 Feb 2026 18:45:22 +0100:
 
-When initializing the delayed refs block reserve for a transaction handle
-we are passing a type of BTRFS_BLOCK_RSV_DELOPS, which is meant for
-delayed items and not for delayed refs. The correct type for delayed refs
-is BTRFS_BLOCK_RSV_DELREFS.
+> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-6.19-rc8-tag
 
-The consequence here is that when releasing unused space from that local
-block reserve, instead of transferring it to the global delayed refs
-block reserve we transfer it to global block reserve. If the global block
-reserve is full, we just return that space to the metadata space info.
-There's no harm in that, but ideally we should transfer the excess
-reserved space to the delayed refs block reserve.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/de0674d9bc69699c497477d45172493393ae9007
 
-Reported-by: Alex Lyakas <alex.lyakas@zadara.com>
-Link: https://lore.kernel.org/linux-btrfs/CAOcd+r0FHG5LWzTSu=LknwSoqxfw+C00gFAW7fuX71+Z5AfEew@mail.gmail.com/
-Fixes: 28270e25c69a ("btrfs: always reserve space for delayed refs when starting transaction")
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/transaction.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thank you!
 
-diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-index 87a3f746cecc..08f691661874 100644
---- a/fs/btrfs/transaction.c
-+++ b/fs/btrfs/transaction.c
-@@ -726,7 +726,7 @@ start_transaction(struct btrfs_root *root, unsigned int num_items,
- 
- 	h->type = type;
- 	INIT_LIST_HEAD(&h->new_bgs);
--	btrfs_init_metadata_block_rsv(fs_info, &h->delayed_rsv, BTRFS_BLOCK_RSV_DELOPS);
-+	btrfs_init_metadata_block_rsv(fs_info, &h->delayed_rsv, BTRFS_BLOCK_RSV_DELREFS);
- 
- 	smp_mb();
- 	if (cur_trans->state >= TRANS_STATE_COMMIT_START &&
 -- 
-2.47.2
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
