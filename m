@@ -1,54 +1,57 @@
-Return-Path: <linux-btrfs+bounces-21319-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21320-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MKPyBxMXgmmZPAMAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21319-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Tue, 03 Feb 2026 16:41:07 +0100
+	id +Hb5BRoXgmmZPAMAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21320-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Tue, 03 Feb 2026 16:41:14 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4E42DB627
-	for <lists+linux-btrfs@lfdr.de>; Tue, 03 Feb 2026 16:41:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A6E4BDB637
+	for <lists+linux-btrfs@lfdr.de>; Tue, 03 Feb 2026 16:41:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 5E07A308B43B
+	by sea.lore.kernel.org (Postfix) with ESMTP id C57023094A75
 	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Feb 2026 15:39:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8CE23B95F5;
-	Tue,  3 Feb 2026 15:39:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D51B2DB7AE;
+	Tue,  3 Feb 2026 15:39:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XzAPqyY5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B4RVKXg6"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15D792DB7AE
-	for <linux-btrfs@vger.kernel.org>; Tue,  3 Feb 2026 15:39:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 788933B95E0
+	for <linux-btrfs@vger.kernel.org>; Tue,  3 Feb 2026 15:39:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770133166; cv=none; b=g+EYFEEUjX/AUucDjvIGhB/FA9kw4lzDjAyUFf4mv1DUpts9MjFJcFJzKZBa4O+MMdTLReSPlS29BZumYZ6isbrVShQ9M3Ldmx/yYSiGzcIPLUA0kW03C1BXHVVHGBPaeKq4YBeKteLW2j+vZZpzRoaYEPvkKlmr/DLvy88dwec=
+	t=1770133166; cv=none; b=gQkeRm4xCYlfNf9SqXPeqIqO+ZR2jklYJzbTiGglVsZfuYPZiTuMRnH/ukDeFTbUu9xMfpMX2UckbdFwUDszw25W+HoeORNllVTy5awO0JUT4KuZFEFMJCYctGvRezllA7AC8890gXElM0znh/aCIb8ohf2YwwsnSCl6wfz2Y60=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1770133166; c=relaxed/simple;
-	bh=RCfW27BeLZUsNtnllnwPSQaGZb+eFQOdZizVd9z37UU=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=rz3MxTAY0hQpBCzCIr+eDMqjroi6pY+3ZRI5n+q4P0H4wQegNOv3DCpwaT+8qQIbBHDvXC+skh08d2mJDAiwJWTvDOAQXZ4V3DyhEhpbuzKollegihuiYvAxbt8Q/wZeSmy5Z4N7CwB5YlwwmlZiyo8LhxEVMKK0bnAMJfkgwBk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XzAPqyY5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05D9CC116D0
-	for <linux-btrfs@vger.kernel.org>; Tue,  3 Feb 2026 15:39:24 +0000 (UTC)
+	bh=12pqNVoMM+srT+qEcRzAflRXjvR44BAPpXtTm3rbtIk=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=abzbEN27uTJM95+c2iftoEg6OTbJv0y6V47hRX0XbTpB9NMaU4anxXg0mS/8I6E1gjMxDXTNxq4fDf03kiSjpdmiHWK+zy9L5U8PU+Zp1k65U6tIBcXSrWuamIoAqTWzQSchHOs6jTWKmHHZzsJ9rbCdCu26JgzBRWIOQ33s7NY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B4RVKXg6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1B79C19421
+	for <linux-btrfs@vger.kernel.org>; Tue,  3 Feb 2026 15:39:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1770133165;
-	bh=RCfW27BeLZUsNtnllnwPSQaGZb+eFQOdZizVd9z37UU=;
-	h=From:To:Subject:Date:From;
-	b=XzAPqyY5PcQhZo8rKLy326bnMTKuaiUmLry8wJPf0042jbdYkbPYygCNutx/IYkys
-	 T/7LRw4fpywfUtLoeV5ybqa3iesbZTLvxt1rCkaTLk/eH7SvTJRyG/lEeILIbHCgyA
-	 j4U12p0+hy3tGnH/LH5D/ilj1VS6mMTXA/YSf1xOF+KkHXM+B5nhhMxrefUJ92fsAA
-	 nwxoLWilvCSdWr1A4QDSIvbnvtzpFvqymC4q2C4pvHZUbwVD9l85oOEA1IEbbe3RpR
-	 bH8dmsv0bDoAx7kFPXV1WcCJihd5RXpby/8F3p3ckkkb+PsaHMsxMdMUF6zWyNhiZY
-	 ZtkTKgWYV6K8g==
+	s=k20201202; t=1770133166;
+	bh=12pqNVoMM+srT+qEcRzAflRXjvR44BAPpXtTm3rbtIk=;
+	h=From:To:Subject:Date:In-Reply-To:References:From;
+	b=B4RVKXg6nAB3L8zG9jlmNzGMcplr3sg93aw6pHkIiO9TmxKPQid/mHzDe1Z8b2fL9
+	 DFrw0TgYUpXcnxXkAIralvLY9dLEMQ0pgpOenhMt56vtZxJ8de3pdFq7NWZtiLy6Dm
+	 LFK2FEYPjObM99CPDI8qJrAli0S3NVs0/DFZLVZGns+J3A1vA9oLIjVD4Ks+ov7HgC
+	 PyFq58NgMEe3Xput12iYJGLMxLVvDkrZPRrHAeUkRAi1uCOWQE3IuhFlzi8CVs95Sz
+	 eIRYi6+XKA1yWfZC8trU9m6HH5L3Tr3Io2bvGzbsWCFNynXxxhByUmfTAADoBRBakx
+	 JTZKC1Jf2q8hw==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 0/2] btrfs: cleanups to the sys chunk array checks
-Date: Tue,  3 Feb 2026 15:39:19 +0000
-Message-ID: <cover.1770133086.git.fdmanana@suse.com>
+Subject: [PATCH 1/2] btrfs: remove duplicate system chunk array max size overflow check
+Date: Tue,  3 Feb 2026 15:39:20 +0000
+Message-ID: <6c43557e420916124d3da3fa212c505a71919eb8.1770133086.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.47.2
+In-Reply-To: <cover.1770133086.git.fdmanana@suse.com>
+References: <cover.1770133086.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -68,7 +71,7 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCPT_COUNT_ONE(0.00)[1];
 	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-21319-lists,linux-btrfs=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-21320-lists,linux-btrfs=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	RCVD_TLS_LAST(0.00)[];
@@ -83,20 +86,38 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	NEURAL_HAM(-0.00)[-1.000];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: B4E42DB627
+X-Rspamd-Queue-Id: A6E4BDB637
 X-Rspamd-Action: no action
 
 From: Filipe Manana <fdmanana@suse.com>
 
-Details in the changelogs.
+We check it twice, once in validate_sys_chunk_array() and then again in
+its caller, btrfs_validate_super(), right after it calls
+validate_sys_chunk_array(). So remove the duplicated check from
+btrfs_validate_super().
 
-Filipe Manana (2):
-  btrfs: remove duplicate system chunk array max size overflow check
-  btrfs: move min sys chunk array size check to validate_sys_chunk_array()
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/disk-io.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
- fs/btrfs/disk-io.c | 28 +++++++++-------------------
- 1 file changed, 9 insertions(+), 19 deletions(-)
-
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 20c405a4789d..540ec255b7a4 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -2534,12 +2534,6 @@ int btrfs_validate_super(const struct btrfs_fs_info *fs_info,
+ 	 * Obvious sys_chunk_array corruptions, it must hold at least one key
+ 	 * and one chunk
+ 	 */
+-	if (btrfs_super_sys_array_size(sb) > BTRFS_SYSTEM_CHUNK_ARRAY_SIZE) {
+-		btrfs_err(fs_info, "system chunk array too big %u > %u",
+-			  btrfs_super_sys_array_size(sb),
+-			  BTRFS_SYSTEM_CHUNK_ARRAY_SIZE);
+-		ret = -EINVAL;
+-	}
+ 	if (btrfs_super_sys_array_size(sb) < sizeof(struct btrfs_disk_key)
+ 			+ sizeof(struct btrfs_chunk)) {
+ 		btrfs_err(fs_info, "system chunk array too small %u < %zu",
 -- 
 2.47.2
 
