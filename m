@@ -1,106 +1,67 @@
-Return-Path: <linux-btrfs+bounces-21362-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21363-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MHj0NYxag2mJlQMAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21362-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Wed, 04 Feb 2026 15:41:16 +0100
+	id WAYKM5leg2mJlQMAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21363-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Wed, 04 Feb 2026 15:58:33 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A454E73CA
-	for <lists+linux-btrfs@lfdr.de>; Wed, 04 Feb 2026 15:41:16 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 017EDE7AC2
+	for <lists+linux-btrfs@lfdr.de>; Wed, 04 Feb 2026 15:58:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 0499A302E931
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Feb 2026 14:40:12 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 23ACE3038A93
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Feb 2026 14:54:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9060B41B352;
-	Wed,  4 Feb 2026 14:40:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9D9441C2E1;
+	Wed,  4 Feb 2026 14:54:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="SnDQn9tu";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="u08NVjXt";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="SnDQn9tu";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="u08NVjXt"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="oxZnN3K5"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB4312459C6
-	for <linux-btrfs@vger.kernel.org>; Wed,  4 Feb 2026 14:40:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B6F23D413D;
+	Wed,  4 Feb 2026 14:54:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770216010; cv=none; b=OaMSVtMAlxhTbqSqno4dKoiwgKdSqc2Y/MZFzeZTCGiDhpQm1ukTsecRZ24egEm+okqJk3VanscYNYAWN4UMYIEKV8l5AVb2LYTH1kn5jk15W5Zc29yKpXdUxea6j0Vi/h7ogAy6nmkmT7x8dek0QUF4JmI4zWEO62nfrUKbijY=
+	t=1770216865; cv=none; b=h2JROxLbn1arHzLTEnxhlRoDbDxoryWG2D5r7qHet44/9pWvFMnSorHp6BxdhITx0jra9ljAkCOQv3lRCu7CjMC1/Z1EN+wypXFZWA0+NPAxRqMw/8rGnnD4wKxOljXyKdJWlvsF4kkzHYT6ej+JB7prJrOPcWx3hEFYqx+d218=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770216010; c=relaxed/simple;
-	bh=ASIU25GiiX+wnCxHbKUApUSAy+LAjIuMGR0n3OCqZWU=;
+	s=arc-20240116; t=1770216865; c=relaxed/simple;
+	bh=bQJBM1CzMKaGOt+OTMHIALAKEUrXTLnZcnSE9Mi8+BE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PTeD6eEf1JOIyKiGQkpj9F1I/F1Q18l64CwS95Y138/LqbE6Dia6831LCgzqxI99BxahtwUkx9EoqTpxB826C98k18iCyW+tglY3Cl6JDgqPJff6VnG609rafouFb/m/WZEfg17SjIJwduazcE4gxOH6V4qXbcrwFEzHzhIM5+s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=SnDQn9tu; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=u08NVjXt; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=SnDQn9tu; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=u08NVjXt; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id BB26E5BCE8;
-	Wed,  4 Feb 2026 14:40:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1770216007;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LaqO2nRy8RCtP7aeIIMb34Nhyk8V5UA6bkEU4t4xEFs=;
-	b=SnDQn9tuJwHRDKhectCcEl34xXa9cUgN9A3FH+LOqAZw0NjI1/AB9Z/QwowvROdtrrGGEU
-	I3Gf9hQqWNSsMAQLYaaq9nlH7K0vyuDrLa9X/j0Z1yXfulaeeNAkjarMhfpGx0CI2RBRWM
-	/m18nhD0sKKjIzplefzxrxlSFQygbxs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1770216007;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LaqO2nRy8RCtP7aeIIMb34Nhyk8V5UA6bkEU4t4xEFs=;
-	b=u08NVjXtJoVvlOFbv0lXxdG8o9gdxgsUKSygveTTX598q4dSw6TVB8Wf2Bx+MaTSZMTowX
-	GZLqLmAOU8CA7UAQ==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=SnDQn9tu;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=u08NVjXt
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1770216007;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LaqO2nRy8RCtP7aeIIMb34Nhyk8V5UA6bkEU4t4xEFs=;
-	b=SnDQn9tuJwHRDKhectCcEl34xXa9cUgN9A3FH+LOqAZw0NjI1/AB9Z/QwowvROdtrrGGEU
-	I3Gf9hQqWNSsMAQLYaaq9nlH7K0vyuDrLa9X/j0Z1yXfulaeeNAkjarMhfpGx0CI2RBRWM
-	/m18nhD0sKKjIzplefzxrxlSFQygbxs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1770216007;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=LaqO2nRy8RCtP7aeIIMb34Nhyk8V5UA6bkEU4t4xEFs=;
-	b=u08NVjXtJoVvlOFbv0lXxdG8o9gdxgsUKSygveTTX598q4dSw6TVB8Wf2Bx+MaTSZMTowX
-	GZLqLmAOU8CA7UAQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 943F43EA63;
-	Wed,  4 Feb 2026 14:40:07 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 8YIHJEdag2n5dgAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Wed, 04 Feb 2026 14:40:07 +0000
-Date: Wed, 4 Feb 2026 15:40:06 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Jiasheng Jiang <jiashengjiangcool@gmail.com>
-Cc: naohiro.aota@wdc.com, boris@bur.io, clm@fb.com, dsterba@suse.com,
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] btrfs: zoned: remove redundant space_info lock and
- variable in do_allocation_zoned
-Message-ID: <20260204144006.GT26902@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <DFOC3S5F0LN3.158CDRO798GJ8@wdc.com>
- <20260114144450.48776-1-jiashengjiangcool@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=dl8vfzYQCDXdPhxfO7aIHCPrmU0CFJ9kKQk3Nal/VJsXWv9YRERO9WCe/bXFUTWzyu8PFygvmpMqo5JuLqnU/HSc2m5bgJgRBNpH7AB85OxZ5elq4sJldK7eusmOCKuFwWcrOctGFxBv7VZSfLWb9/Yv7nLrWc8m5EzFpypl9JA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=oxZnN3K5; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=NSFwipYtJGppFo1niPpuRr+jtuErqeP9kDtjaWPeRb4=; b=oxZnN3K5faDjoL5v5OXKHO0/5B
+	ALVraMASeOdO1r04MRFOfO4rurUs6RmI865xOx4yso0ar7+P20MsCkTabs1ya5R7FJMXs0ce/Ez/q
+	rbw7GcQz34Rv1Uu4uCXSYS/vjKmtDX7MWB90vI8Y6XrnLPQCQXb9VQLbaHpe2XJ1FOsYrzz4EAtTD
+	0pejcPBsHfrRajM4IfKrqCUr02C6nMxD982pRJhIo8toILLn2rYjgRPmHchK/LCdN/5qjKs6HNCj7
+	f/o5jziZ7q20pft0KQB2Xb21eynAKosZ7IXbGzJcIEHSVLJzQUdCffAiCsqVd3oLW659nU25c/4ST
+	czQtWaFQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vneGo-00000002DxS-1MWR;
+	Wed, 04 Feb 2026 14:54:18 +0000
+Date: Wed, 4 Feb 2026 14:54:18 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	David Sterba <dsterba@suse.com>, Theodore Ts'o <tytso@mit.edu>,
+	Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+	Andrey Albershteyn <aalbersh@redhat.com>,
+	linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+	fsverity@lists.linux.dev
+Subject: Re: fsverity speedup and memory usage optimization v5
+Message-ID: <aYNdmk1EE5etfUYE@casper.infradead.org>
+References: <20260202060754.270269-1-hch@lst.de>
+ <20260202211423.GB4838@quark>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -109,59 +70,55 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260114144450.48776-1-jiashengjiangcool@gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Score: -4.21
-X-Spam-Level: 
-X-Spam-Flag: NO
+In-Reply-To: <20260202211423.GB4838@quark>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	DMARC_POLICY_ALLOW(-0.50)[infradead.org,none];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_DKIM_ALLOW(-0.20)[infradead.org:s=casper.20170209];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TO_DN_SOME(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	TAGGED_FROM(0.00)[bounces-21362-lists,linux-btrfs=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	DMARC_NA(0.00)[suse.cz];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21363-lists,linux-btrfs=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	HAS_REPLYTO(0.00)[dsterba@suse.cz];
-	RCVD_COUNT_FIVE(0.00)[6];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[dsterba@suse.cz,linux-btrfs@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCVD_COUNT_THREE(0.00)[4];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[15];
+	DKIM_TRACE(0.00)[infradead.org:+];
+	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[willy@infradead.org,linux-btrfs@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-0.999];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.cz:dkim,twin.jikos.cz:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 7A454E73CA
+	MID_RHS_MATCH_FROMTLD(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 017EDE7AC2
 X-Rspamd-Action: no action
 
-On Wed, Jan 14, 2026 at 02:44:50PM +0000, Jiasheng Jiang wrote:
-> In do_allocation_zoned(), the code acquires space_info->lock before
-> block_group->lock. However, the critical section does not access or
-> modify any members of the space_info structure. Thus, the lock is
-> redundant as it provides no necessary synchronization here.
-> 
-> This change simplifies the locking logic and aligns the function with
-> other zoned paths, such as __btrfs_add_free_space_zoned(), which only
-> rely on block_group->lock. Since the 'space_info' local variable is
-> no longer used after removing the lock calls, it is also removed.
-> 
-> Removing this unnecessary lock reduces contention on the global
-> space_info lock, improving concurrency in the zoned allocation path.
-> 
-> Signed-off-by: Jiasheng Jiang <jiashengjiangcool@gmail.com>
+On Mon, Feb 02, 2026 at 01:14:23PM -0800, Eric Biggers wrote:
+> - Used the code formatting from 'git clang-format' in the cases where it
+>   looks better than the ad-hoc formatting
 
-Added to for-next, thanks.
+clang-format makes some bad choices.
+
+>  static int ext4_mpage_readpages(struct inode *inode, struct fsverity_info *vi,
+> -		struct readahead_control *rac, struct folio *folio)
+> +				struct readahead_control *rac,
+> +				struct folio *folio)
+
+Aligning to the opening bracket is one of them.  If anything changes
+in a subsequent patch (eg function name, whether or not it's static,
+adding a function attribute like __must_check, converting the return
+type from int to bool), you have to eitheer break the formatting or
+needlessly change the lines which have the subsequent arguments.
+
+Also, you've consumed an extra line in this case.  Just leave the
+two tab indent, it's actually easier to read.
+
 
