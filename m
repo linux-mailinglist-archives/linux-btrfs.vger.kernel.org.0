@@ -1,54 +1,54 @@
-Return-Path: <linux-btrfs+bounces-21369-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21370-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id UEOdGvVxg2mFmwMAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21369-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Wed, 04 Feb 2026 17:21:09 +0100
+	id aIvvJtlrg2l+mgMAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21370-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Wed, 04 Feb 2026 16:55:05 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id B92E3EA1D3
-	for <lists+linux-btrfs@lfdr.de>; Wed, 04 Feb 2026 17:21:08 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48E8DE9954
+	for <lists+linux-btrfs@lfdr.de>; Wed, 04 Feb 2026 16:55:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 3B37730E256C
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Feb 2026 15:52:24 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 903DF3013DB4
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Feb 2026 15:52:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E2CB421EE0;
-	Wed,  4 Feb 2026 15:52:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23C6E421EF5;
+	Wed,  4 Feb 2026 15:52:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KV2Nf+9o"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sr4wCgO5"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0711421A1E
-	for <linux-btrfs@vger.kernel.org>; Wed,  4 Feb 2026 15:52:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75458421EEE
+	for <linux-btrfs@vger.kernel.org>; Wed,  4 Feb 2026 15:52:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770220335; cv=none; b=f4erKvh7qKhpOO4cDU6RsCfyJIsdJ2nr+dpQEAOg4Gx49xEUNj57VlzWeF/Mqq5qLtftOWPY6tBfefRviCsuzBR9u0ON8YlF3lfyIMxzQymTPnkVJ6PnLOji0dpeCwFADtZokU0CSka1lN0BiVJm15lEItnK0y36R1W0qBDk624=
+	t=1770220336; cv=none; b=Mtr8uGRTcxSqjPnRLzntj5ClYrEC3HgIz9DI7i2bdjY+O2/445QkFOeMSbXolRcScBrwY8RWQd2pI9o5pkfElCV0I6XXBI197SQeLdNYcWloee/pnEMrtozATYRpM65ZYztVvce6n1vQfaol9wj7z6aKvmTHL5KQhLcfwMlLYOQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770220335; c=relaxed/simple;
-	bh=uKnrrV5LgfSvyBh+BrCKiEvsf/UCVozi5WRN/dx2zgE=;
+	s=arc-20240116; t=1770220336; c=relaxed/simple;
+	bh=pTe3jMwy5kE0hc1683N0I75wu2P5WbLOs7dYyuPXh04=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=AbQtxqXzRb9j9kgy6NZ4hzN/VDVyNBprjWK9plcscQHKmsyKAeRG3lxLLAK/rU/uCty8509O+lr7XuezZMEhn6x78FBF7XiHKAQctBMDMrQtB6UQtcsA6Em7ccVBSmlx9eC2Bo3Vu2XApGRtx2q8v53xz8qCFyxsEGXy6ni9YGw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KV2Nf+9o; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D90CCC4CEF7
-	for <linux-btrfs@vger.kernel.org>; Wed,  4 Feb 2026 15:52:14 +0000 (UTC)
+	 MIME-Version; b=Uig9/FPn/MjUudXYqNB3XRznMzBdjx3f1A2dxs1hbRudPgaReT8YK/XS6wU8TM0/ZRYgDKoLRNR0Pfxzkld72GzHW/TbkduqUdYAwrncG3C5KtJUuKNa5mERMGk6OYbtyVNvTxVdr+uRrGLTEf9E1ToDHWW5MJB+IC6FGDtpnio=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sr4wCgO5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9479C116C6
+	for <linux-btrfs@vger.kernel.org>; Wed,  4 Feb 2026 15:52:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1770220335;
-	bh=uKnrrV5LgfSvyBh+BrCKiEvsf/UCVozi5WRN/dx2zgE=;
+	s=k20201202; t=1770220336;
+	bh=pTe3jMwy5kE0hc1683N0I75wu2P5WbLOs7dYyuPXh04=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=KV2Nf+9oUgkuVDmONkKuF6agEWx6w+jgfolx/LXjGItOx+nTw2oiKl/xjkDhSZCEF
-	 X2tI5AwOfBS4GpjXx1pDpns+OA2Ks76zfX/6SKuIg/SrxqiV/nxjJp9OY+ml3cIOO5
-	 lMEPN6RnvsfRWdnOdjlMEL1Co5acq1GoZI7f4H2IGxYolsAS4U9T8lRMo+MW2RVybN
-	 RE/aWWXMhSGJiOWVYAaQ3FJOTP2whFQ1MHq9XgNf0i0mA7lorX86Bx8BveEnxYT9nT
-	 kbvMPB33EhWjDnCjgb4/qUeTBuhZKHX0hfZRFRzKvF1+6RlFmiciwVMmHio4Mz2JFs
-	 CTb7uuwLce1qQ==
+	b=sr4wCgO5vttxowCixvaMYMfQJpqno33Ud/3132babmIVeJCDy1cufIgJTuJMxCpmq
+	 7vfIRFEpqUYjJntHx7ibLR8DVF+YQ0U9ZVca8vc/S790FflHYaL4dUDN95epBUWG7P
+	 6f+o3Fc4448SD8URble1WTjFLcckC14EZzT8nEUgBLqhkeJHGgxsTMEK10aF2urHXp
+	 s1MRH0hb8QvoSVgfK9EWubz+sfJPKtbZ1plDH7VUcSGxpL/tYj8ADvcbwW88y3iupZ
+	 A6ZYLxQCY02B/81Pdr+z5BZ+i6q6uqLo0ZyVDbo6Cg4cc2tSw2fh2/fOYIKrfIaj74
+	 TlvgOynU2Tvag==
 From: fdmanana@kernel.org
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/7] btrfs: mark all error and warning checks as unlikely in btrfs_validate_super()
-Date: Wed,  4 Feb 2026 15:51:59 +0000
-Message-ID: <09f9fef601b39776ad0f0c9b46c645f6866b2a17.1770212626.git.fdmanana@suse.com>
+Subject: [PATCH 3/7] btrfs: pass transaction handle to write_all_supers()
+Date: Wed,  4 Feb 2026 15:52:00 +0000
+Message-ID: <a8b87224639b596f080adb56b6a0ccf55ed4ed5d.1770212626.git.fdmanana@suse.com>
 X-Mailer: git-send-email 2.47.2
 In-Reply-To: <cover.1770212626.git.fdmanana@suse.com>
 References: <cover.1770212626.git.fdmanana@suse.com>
@@ -64,19 +64,19 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCPT_COUNT_ONE(0.00)[1];
 	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-21369-lists,linux-btrfs=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-21370-lists,linux-btrfs=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[fdmanana@kernel.org,linux-btrfs@vger.kernel.org];
@@ -85,244 +85,79 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	TAGGED_RCPT(0.00)[linux-btrfs];
 	NEURAL_HAM(-0.00)[-1.000];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: B92E3EA1D3
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 48E8DE9954
 X-Rspamd-Action: no action
 
 From: Filipe Manana <fdmanana@suse.com>
 
-When validating a super block, either when mounting or every time we write
-a super block to disk, we do many checks for error and warnings and we
-don't expect to hit any. So mark each one as unlikely to reflect that and
-allow the compiler to potentially generate better code.
+We are holding a transaction In every context we call write_all_supers(),
+so pass the transaction handle instead of fs_info to it. This will allow
+us to abort the transaction in write_all_supers() instead of calling
+btrfs_handle_fs_error() in a later patch.
 
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 ---
- fs/btrfs/disk-io.c | 78 +++++++++++++++++++++++-----------------------
- 1 file changed, 39 insertions(+), 39 deletions(-)
+ fs/btrfs/disk-io.c     | 3 ++-
+ fs/btrfs/disk-io.h     | 2 +-
+ fs/btrfs/transaction.c | 2 +-
+ fs/btrfs/tree-log.c    | 2 +-
+ 4 files changed, 5 insertions(+), 4 deletions(-)
 
 diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index a6011da279e3..b9eb38072191 100644
+index b9eb38072191..6454cbbcaa88 100644
 --- a/fs/btrfs/disk-io.c
 +++ b/fs/btrfs/disk-io.c
-@@ -2363,11 +2363,11 @@ int btrfs_validate_super(const struct btrfs_fs_info *fs_info,
- 	int ret = 0;
- 	const bool ignore_flags = btrfs_test_opt(fs_info, IGNORESUPERFLAGS);
+@@ -4019,8 +4019,9 @@ int btrfs_get_num_tolerated_disk_barrier_failures(u64 flags)
+ 	return min_tolerated;
+ }
  
--	if (btrfs_super_magic(sb) != BTRFS_MAGIC) {
-+	if (unlikely(btrfs_super_magic(sb) != BTRFS_MAGIC)) {
- 		btrfs_err(fs_info, "no valid FS found");
- 		ret = -EINVAL;
- 	}
--	if ((btrfs_super_flags(sb) & ~BTRFS_SUPER_FLAG_SUPP)) {
-+	if (unlikely(btrfs_super_flags(sb) & ~BTRFS_SUPER_FLAG_SUPP)) {
- 		if (!ignore_flags) {
- 			btrfs_err(fs_info,
- 			"unrecognized or unsupported super flag 0x%llx",
-@@ -2379,17 +2379,17 @@ int btrfs_validate_super(const struct btrfs_fs_info *fs_info,
- 				   btrfs_super_flags(sb) & ~BTRFS_SUPER_FLAG_SUPP);
- 		}
- 	}
--	if (btrfs_super_root_level(sb) >= BTRFS_MAX_LEVEL) {
-+	if (unlikely(btrfs_super_root_level(sb) >= BTRFS_MAX_LEVEL)) {
- 		btrfs_err(fs_info, "tree_root level too big: %d >= %d",
- 				btrfs_super_root_level(sb), BTRFS_MAX_LEVEL);
- 		ret = -EINVAL;
- 	}
--	if (btrfs_super_chunk_root_level(sb) >= BTRFS_MAX_LEVEL) {
-+	if (unlikely(btrfs_super_chunk_root_level(sb) >= BTRFS_MAX_LEVEL)) {
- 		btrfs_err(fs_info, "chunk_root level too big: %d >= %d",
- 				btrfs_super_chunk_root_level(sb), BTRFS_MAX_LEVEL);
- 		ret = -EINVAL;
- 	}
--	if (btrfs_super_log_root_level(sb) >= BTRFS_MAX_LEVEL) {
-+	if (unlikely(btrfs_super_log_root_level(sb) >= BTRFS_MAX_LEVEL)) {
- 		btrfs_err(fs_info, "log_root level too big: %d >= %d",
- 				btrfs_super_log_root_level(sb), BTRFS_MAX_LEVEL);
- 		ret = -EINVAL;
-@@ -2399,65 +2399,65 @@ int btrfs_validate_super(const struct btrfs_fs_info *fs_info,
- 	 * Check sectorsize and nodesize first, other check will need it.
- 	 * Check all possible sectorsize(4K, 8K, 16K, 32K, 64K) here.
- 	 */
--	if (!is_power_of_2(sectorsize) || sectorsize < BTRFS_MIN_BLOCKSIZE ||
--	    sectorsize > BTRFS_MAX_METADATA_BLOCKSIZE) {
-+	if (unlikely(!is_power_of_2(sectorsize) || sectorsize < BTRFS_MIN_BLOCKSIZE ||
-+		     sectorsize > BTRFS_MAX_METADATA_BLOCKSIZE)) {
- 		btrfs_err(fs_info, "invalid sectorsize %llu", sectorsize);
- 		ret = -EINVAL;
+-int write_all_supers(struct btrfs_fs_info *fs_info, int max_mirrors)
++int write_all_supers(struct btrfs_trans_handle *trans, int max_mirrors)
+ {
++	struct btrfs_fs_info *fs_info = trans->fs_info;
+ 	struct list_head *head;
+ 	struct btrfs_device *dev;
+ 	struct btrfs_super_block *sb;
+diff --git a/fs/btrfs/disk-io.h b/fs/btrfs/disk-io.h
+index 5320da83d0cf..081a6860861c 100644
+--- a/fs/btrfs/disk-io.h
++++ b/fs/btrfs/disk-io.h
+@@ -58,7 +58,7 @@ void __cold close_ctree(struct btrfs_fs_info *fs_info);
+ int btrfs_validate_super(const struct btrfs_fs_info *fs_info,
+ 			 const struct btrfs_super_block *sb, int mirror_num);
+ int btrfs_check_features(struct btrfs_fs_info *fs_info, bool is_rw_mount);
+-int write_all_supers(struct btrfs_fs_info *fs_info, int max_mirrors);
++int write_all_supers(struct btrfs_trans_handle *trans, int max_mirrors);
+ int btrfs_commit_super(struct btrfs_fs_info *fs_info);
+ struct btrfs_root *btrfs_read_tree_root(struct btrfs_root *tree_root,
+ 					const struct btrfs_key *key);
+diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+index 463238ca8a4d..08f691661874 100644
+--- a/fs/btrfs/transaction.c
++++ b/fs/btrfs/transaction.c
+@@ -2557,7 +2557,7 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
+ 		goto scrub_continue;
  	}
  
--	if (!btrfs_supported_blocksize(sectorsize)) {
-+	if (unlikely(!btrfs_supported_blocksize(sectorsize))) {
- 		btrfs_err(fs_info,
- 			"sectorsize %llu not yet supported for page size %lu",
- 			sectorsize, PAGE_SIZE);
- 		ret = -EINVAL;
- 	}
+-	ret = write_all_supers(fs_info, 0);
++	ret = write_all_supers(trans, 0);
+ 	/*
+ 	 * the super is written, we can safely allow the tree-loggers
+ 	 * to go about their business
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index e1bd03ebfd98..ed5704e0a92c 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -3569,7 +3569,7 @@ int btrfs_sync_log(struct btrfs_trans_handle *trans,
  
--	if (!is_power_of_2(nodesize) || nodesize < sectorsize ||
--	    nodesize > BTRFS_MAX_METADATA_BLOCKSIZE) {
-+	if (unlikely(!is_power_of_2(nodesize) || nodesize < sectorsize ||
-+		     nodesize > BTRFS_MAX_METADATA_BLOCKSIZE)) {
- 		btrfs_err(fs_info, "invalid nodesize %llu", nodesize);
- 		ret = -EINVAL;
- 	}
--	if (nodesize != le32_to_cpu(sb->__unused_leafsize)) {
-+	if (unlikely(nodesize != le32_to_cpu(sb->__unused_leafsize))) {
- 		btrfs_err(fs_info, "invalid leafsize %u, should be %llu",
- 			  le32_to_cpu(sb->__unused_leafsize), nodesize);
- 		ret = -EINVAL;
- 	}
- 
- 	/* Root alignment check */
--	if (!IS_ALIGNED(btrfs_super_root(sb), sectorsize)) {
-+	if (unlikely(!IS_ALIGNED(btrfs_super_root(sb), sectorsize))) {
- 		btrfs_err(fs_info, "tree_root block unaligned: %llu",
- 			  btrfs_super_root(sb));
- 		ret = -EINVAL;
- 	}
--	if (!IS_ALIGNED(btrfs_super_chunk_root(sb), sectorsize)) {
-+	if (unlikely(!IS_ALIGNED(btrfs_super_chunk_root(sb), sectorsize))) {
- 		btrfs_err(fs_info, "chunk_root block unaligned: %llu",
- 			   btrfs_super_chunk_root(sb));
- 		ret = -EINVAL;
- 	}
--	if (!IS_ALIGNED(btrfs_super_log_root(sb), sectorsize)) {
-+	if (unlikely(!IS_ALIGNED(btrfs_super_log_root(sb), sectorsize))) {
- 		btrfs_err(fs_info, "log_root block unaligned: %llu",
- 			  btrfs_super_log_root(sb));
- 		ret = -EINVAL;
- 	}
- 
--	if (!fs_info->fs_devices->temp_fsid &&
--	    memcmp(fs_info->fs_devices->fsid, sb->fsid, BTRFS_FSID_SIZE) != 0) {
-+	if (unlikely(!fs_info->fs_devices->temp_fsid &&
-+		     memcmp(fs_info->fs_devices->fsid, sb->fsid, BTRFS_FSID_SIZE) != 0)) {
- 		btrfs_err(fs_info,
- 		"superblock fsid doesn't match fsid of fs_devices: %pU != %pU",
- 			  sb->fsid, fs_info->fs_devices->fsid);
- 		ret = -EINVAL;
- 	}
- 
--	if (memcmp(fs_info->fs_devices->metadata_uuid, btrfs_sb_fsid_ptr(sb),
--		   BTRFS_FSID_SIZE) != 0) {
-+	if (unlikely(memcmp(fs_info->fs_devices->metadata_uuid, btrfs_sb_fsid_ptr(sb),
-+			    BTRFS_FSID_SIZE) != 0)) {
- 		btrfs_err(fs_info,
- "superblock metadata_uuid doesn't match metadata uuid of fs_devices: %pU != %pU",
- 			  btrfs_sb_fsid_ptr(sb), fs_info->fs_devices->metadata_uuid);
- 		ret = -EINVAL;
- 	}
- 
--	if (memcmp(fs_info->fs_devices->metadata_uuid, sb->dev_item.fsid,
--		   BTRFS_FSID_SIZE) != 0) {
-+	if (unlikely(memcmp(fs_info->fs_devices->metadata_uuid, sb->dev_item.fsid,
-+			    BTRFS_FSID_SIZE) != 0)) {
- 		btrfs_err(fs_info,
- 			"dev_item UUID does not match metadata fsid: %pU != %pU",
- 			fs_info->fs_devices->metadata_uuid, sb->dev_item.fsid);
-@@ -2468,9 +2468,9 @@ int btrfs_validate_super(const struct btrfs_fs_info *fs_info,
- 	 * Artificial requirement for block-group-tree to force newer features
- 	 * (free-space-tree, no-holes) so the test matrix is smaller.
- 	 */
--	if (btrfs_fs_compat_ro(fs_info, BLOCK_GROUP_TREE) &&
--	    (!btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE_VALID) ||
--	     !btrfs_fs_incompat(fs_info, NO_HOLES))) {
-+	if (unlikely(btrfs_fs_compat_ro(fs_info, BLOCK_GROUP_TREE) &&
-+		     (!btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE_VALID) ||
-+		      !btrfs_fs_incompat(fs_info, NO_HOLES)))) {
- 		btrfs_err(fs_info,
- 		"block-group-tree feature requires free-space-tree and no-holes");
- 		ret = -EINVAL;
-@@ -2481,25 +2481,25 @@ int btrfs_validate_super(const struct btrfs_fs_info *fs_info,
- 		 * Reduce test matrix for remap tree by requiring block-group-tree
- 		 * and no-holes. Free-space-tree is a hard requirement.
- 		 */
--		if (!btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE_VALID) ||
--		    !btrfs_fs_incompat(fs_info, NO_HOLES) ||
--		    !btrfs_fs_compat_ro(fs_info, BLOCK_GROUP_TREE)) {
-+		if (unlikely(!btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE_VALID) ||
-+			     !btrfs_fs_incompat(fs_info, NO_HOLES) ||
-+			     !btrfs_fs_compat_ro(fs_info, BLOCK_GROUP_TREE))) {
- 			btrfs_err(fs_info,
- "remap-tree feature requires free-space-tree, no-holes, and block-group-tree");
- 			ret = -EINVAL;
- 		}
- 
--		if (btrfs_fs_incompat(fs_info, MIXED_GROUPS)) {
-+		if (unlikely(btrfs_fs_incompat(fs_info, MIXED_GROUPS))) {
- 			btrfs_err(fs_info, "remap-tree not supported with mixed-bg");
- 			ret = -EINVAL;
- 		}
- 
--		if (btrfs_fs_incompat(fs_info, ZONED)) {
-+		if (unlikely(btrfs_fs_incompat(fs_info, ZONED))) {
- 			btrfs_err(fs_info, "remap-tree not supported with zoned devices");
- 			ret = -EINVAL;
- 		}
- 
--		if (sectorsize > PAGE_SIZE) {
-+		if (unlikely(sectorsize > PAGE_SIZE)) {
- 			btrfs_err(fs_info, "remap-tree not supported when block size > page size");
- 			ret = -EINVAL;
- 		}
-@@ -2509,32 +2509,32 @@ int btrfs_validate_super(const struct btrfs_fs_info *fs_info,
- 	 * Hint to catch really bogus numbers, bitflips or so, more exact checks are
- 	 * done later
- 	 */
--	if (btrfs_super_bytes_used(sb) < 6 * btrfs_super_nodesize(sb)) {
-+	if (unlikely(btrfs_super_bytes_used(sb) < 6 * btrfs_super_nodesize(sb))) {
- 		btrfs_err(fs_info, "bytes_used is too small %llu",
- 			  btrfs_super_bytes_used(sb));
- 		ret = -EINVAL;
- 	}
--	if (!is_power_of_2(btrfs_super_stripesize(sb))) {
-+	if (unlikely(!is_power_of_2(btrfs_super_stripesize(sb)))) {
- 		btrfs_err(fs_info, "invalid stripesize %u",
- 			  btrfs_super_stripesize(sb));
- 		ret = -EINVAL;
- 	}
--	if (btrfs_super_num_devices(sb) > (1UL << 31))
-+	if (unlikely(btrfs_super_num_devices(sb) > (1UL << 31)))
- 		btrfs_warn(fs_info, "suspicious number of devices: %llu",
- 			   btrfs_super_num_devices(sb));
--	if (btrfs_super_num_devices(sb) == 0) {
-+	if (unlikely(btrfs_super_num_devices(sb) == 0)) {
- 		btrfs_err(fs_info, "number of devices is 0");
- 		ret = -EINVAL;
- 	}
- 
--	if (mirror_num >= 0 &&
--	    btrfs_super_bytenr(sb) != btrfs_sb_offset(mirror_num)) {
-+	if (unlikely(mirror_num >= 0 &&
-+		     btrfs_super_bytenr(sb) != btrfs_sb_offset(mirror_num))) {
- 		btrfs_err(fs_info, "super offset mismatch %llu != %u",
- 			  btrfs_super_bytenr(sb), BTRFS_SUPER_INFO_OFFSET);
- 		ret = -EINVAL;
- 	}
- 
--	if (ret)
-+	if (unlikely(ret))
- 		return ret;
- 
- 	ret = validate_sys_chunk_array(fs_info, sb);
-@@ -2543,13 +2543,13 @@ int btrfs_validate_super(const struct btrfs_fs_info *fs_info,
- 	 * The generation is a global counter, we'll trust it more than the others
- 	 * but it's still possible that it's the one that's wrong.
- 	 */
--	if (btrfs_super_generation(sb) < btrfs_super_chunk_root_generation(sb))
-+	if (unlikely(btrfs_super_generation(sb) < btrfs_super_chunk_root_generation(sb)))
- 		btrfs_warn(fs_info,
- 			"suspicious: generation < chunk_root_generation: %llu < %llu",
- 			btrfs_super_generation(sb),
- 			btrfs_super_chunk_root_generation(sb));
--	if (btrfs_super_generation(sb) < btrfs_super_cache_generation(sb)
--	    && btrfs_super_cache_generation(sb) != (u64)-1)
-+	if (unlikely(btrfs_super_generation(sb) < btrfs_super_cache_generation(sb) &&
-+		     btrfs_super_cache_generation(sb) != (u64)-1))
- 		btrfs_warn(fs_info,
- 			"suspicious: generation < cache_generation: %llu < %llu",
- 			btrfs_super_generation(sb),
+ 	btrfs_set_super_log_root(fs_info->super_for_commit, log_root_start);
+ 	btrfs_set_super_log_root_level(fs_info->super_for_commit, log_root_level);
+-	ret = write_all_supers(fs_info, 1);
++	ret = write_all_supers(trans, 1);
+ 	mutex_unlock(&fs_info->tree_log_mutex);
+ 	if (unlikely(ret)) {
+ 		btrfs_set_log_full_commit(trans);
 -- 
 2.47.2
 
