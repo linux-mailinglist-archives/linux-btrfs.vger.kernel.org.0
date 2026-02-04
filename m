@@ -1,128 +1,138 @@
-Return-Path: <linux-btrfs+bounces-21375-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21376-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id JcZCEMOBg2llowMAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21375-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Wed, 04 Feb 2026 18:28:35 +0100
+	id 2KktGeiXg2lnpwMAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21376-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Wed, 04 Feb 2026 20:03:04 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8745EEAFA5
-	for <lists+linux-btrfs@lfdr.de>; Wed, 04 Feb 2026 18:28:34 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 50FC8EBCF0
+	for <lists+linux-btrfs@lfdr.de>; Wed, 04 Feb 2026 20:03:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 8955E3016ED7
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Feb 2026 17:28:26 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 664A4300C006
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Feb 2026 19:03:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD76134A76A;
-	Wed,  4 Feb 2026 17:28:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24457423A97;
+	Wed,  4 Feb 2026 19:02:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gnMYfOZ7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iofq7J9Z"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A16D33B945
-	for <linux-btrfs@vger.kernel.org>; Wed,  4 Feb 2026 17:28:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FA002DF707;
+	Wed,  4 Feb 2026 19:02:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770226105; cv=none; b=hp9/6bxYIO0jq2I7TqGUgIC0xsKyGZXsDAiQ6Ldem3weysqr5++92sKzObYu/hAqBE7M/UscgRGQL+8MEA1HCSk4cUXUQ+n45lXoDpEFmN52qACgHewJSe2qvqsgZHVe3O0Z/KvHqv/hR1l/Dv0jAd7tAefPbMoLmfHjdnMtPxE=
+	t=1770231775; cv=none; b=B3ubt/4F9GUsosQg20yEuhcYNymC7q0HU6nHqWos6QYMrgzZYpPGbUVI4uVKBExxx1Tz16TMRFiDeStIk58zuxKupTKWiGX+Hbdm7Q0d3wrv407PdgtDBlm/DugJK7yCIeSkOKYTneKUFPlanFBMtR+nTvgZb+U2MVRQmATb3Qw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770226105; c=relaxed/simple;
-	bh=I406EnWiYKNCpt/Hvx7t0Pr7p2+ROqnnQmWYwf6idmg=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=q1wet816lwUHTB2ZogCDFEbMrnaBx0/WpgvFpClVhC1yfjP0vN6HPooz5CmfmhPkzp86aqRm0/v9ofCuW1zEPyVaYALRYqNGiuOe4OKr1crKAdbtBqQ4C+QV8TJuJsxJ+KamsCgalW859Y4WWdVd9SZCZq15IF0vMf4DaZfqU3A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gnMYfOZ7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C188C4CEF7
-	for <linux-btrfs@vger.kernel.org>; Wed,  4 Feb 2026 17:28:23 +0000 (UTC)
+	s=arc-20240116; t=1770231775; c=relaxed/simple;
+	bh=fvuVHItsYXpPWArU/0i6pDSN5I363ZzcoNvZNPppv2A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=s05oJA4DObHl4Sn9fBGfw2usZ2RtuT4r5ZHVIODr6GpEDqmFLYhppPpNOcs0cI+oqfc5rsxgZMuLjpqM/aU86vuLkbRvp8bfDABTn2dSC0E5PYmsv/qGIEmNxh2wvmn2xRo8v7Cz59f+ZFSv6xUUAFC5a8mtD2taru2Hfw+8ilA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iofq7J9Z; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CF1DC4CEF7;
+	Wed,  4 Feb 2026 19:02:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1770226104;
-	bh=I406EnWiYKNCpt/Hvx7t0Pr7p2+ROqnnQmWYwf6idmg=;
-	h=From:To:Subject:Date:From;
-	b=gnMYfOZ7P9rqfVnkvXRRi2q6u/B3tCLHT4GXdsjfNBQcfajtToAdtIKMC/q7AX7YP
-	 5+V2e7LdNSYChAL8a1t9CxXcon9L7VozTT3EmcBMoBWm4Ep+kdaXvoBTGG11oI6dLa
-	 3Pq3Dct1ng857lCWtQcF2ie4b2wImvvnFZvXPYRGQpP7ce8wjlTuwO62apu4Y8XFk8
-	 HsURTTp+zno2ZhA8CtnnDfEYS90e27obqvj1c5EvTzc5CVaptPDbRTIbSnB1ToAhc1
-	 HwBIyXAK9n9vFrLt8rwPO7TF0od3qrWrftprgGciFITjaAAa4Lv5cpPF6QhhCweBpx
-	 3y5PUFU8E/spA==
-From: fdmanana@kernel.org
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: fix invalid leaf access in btrfs_quota_enable() if ref key not found
-Date: Wed,  4 Feb 2026 17:28:20 +0000
-Message-ID: <78d48962c97102192c0daea9393b0014430024f0.1770225728.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.47.2
+	s=k20201202; t=1770231775;
+	bh=fvuVHItsYXpPWArU/0i6pDSN5I363ZzcoNvZNPppv2A=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=iofq7J9ZB5Q1dLAB7Qy2uln0MXvVcL8qlvWkKB9VOYrtveQA4p5R4JTmTGe9Gx4mC
+	 Ly679d9E5LOL2n1FGUeWmohBZgFgVIkdBvw+55f1to50oLS5fY9G4zPv+d8uBnGhzo
+	 LmRcgveKUt7s6aE5+Pbkm904SsxtQlB04KUAu9gbIY+U0c0q7pTnP7rUIE6DY7CvT7
+	 AWNUxuB028+w9gFncQbilhM43+W4aUnf0kqw0ju5I8u+DZUqUGksc3l8vdRI8X2u9n
+	 YEUuj8GIaw8EwBwmU7aB8JU/OP0avF4KzqkYdpw5Kzh4D/gZTea5d4fWopgA3+BMmk
+	 oE3OICQWQ9TCg==
+Date: Wed, 4 Feb 2026 11:02:18 -0800
+From: Eric Biggers <ebiggers@kernel.org>
+To: Matthew Wilcox <willy@infradead.org>
+Cc: Christoph Hellwig <hch@lst.de>, Al Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	David Sterba <dsterba@suse.com>, Theodore Ts'o <tytso@mit.edu>,
+	Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+	Andrey Albershteyn <aalbersh@redhat.com>,
+	linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+	fsverity@lists.linux.dev
+Subject: Re: fsverity speedup and memory usage optimization v5
+Message-ID: <20260204190218.GA2193@sol>
+References: <20260202060754.270269-1-hch@lst.de>
+ <20260202211423.GB4838@quark>
+ <aYNdmk1EE5etfUYE@casper.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aYNdmk1EE5etfUYE@casper.infradead.org>
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_MISSING_CHARSET(0.50)[];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21375-lists,linux-btrfs=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	FROM_NO_DN(0.00)[];
-	TO_DN_NONE(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21376-lists,linux-btrfs=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[15];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-btrfs@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	MIME_TRACE(0.00)[0:+];
-	FROM_NEQ_ENVFROM(0.00)[fdmanana@kernel.org,linux-btrfs@vger.kernel.org]
-X-Rspamd-Queue-Id: 8745EEAFA5
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 50FC8EBCF0
 X-Rspamd-Action: no action
 
-From: Filipe Manana <fdmanana@suse.com>
+On Wed, Feb 04, 2026 at 02:54:18PM +0000, Matthew Wilcox wrote:
+> On Mon, Feb 02, 2026 at 01:14:23PM -0800, Eric Biggers wrote:
+> > - Used the code formatting from 'git clang-format' in the cases where it
+> >   looks better than the ad-hoc formatting
+> 
+> clang-format makes some bad choices.
+> 
+> >  static int ext4_mpage_readpages(struct inode *inode, struct fsverity_info *vi,
+> > -		struct readahead_control *rac, struct folio *folio)
+> > +				struct readahead_control *rac,
+> > +				struct folio *folio)
+> 
+> Aligning to the opening bracket is one of them.  If anything changes
+> in a subsequent patch (eg function name, whether or not it's static,
+> adding a function attribute like __must_check, converting the return
+> type from int to bool), you have to eitheer break the formatting or
+> needlessly change the lines which have the subsequent arguments.
+> 
+> Also, you've consumed an extra line in this case.  Just leave the
+> two tab indent, it's actually easier to read.
 
-If btrfs_search_slot_for_read() returns 1, it means we did not find any
-key greather than or equals to the key we asked for, meaning we have
-reached the end of the tree and therefore the path is not valid. If
-this happens we need to break out of the loop and stop, instead of
-continuing and accessing an invalid path.
+Aligning to the opening bracket is the usual style as agreed on by the
+kernel community.  This should also be clear if you look at the existing
+style in all the files this patchset touches.  It's not done exclusively
+but is the more common way.  clang-format just follows that.
 
-Fixes: 5223cc60b40a ("btrfs: drop the path before adding qgroup items when enabling qgroups")
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/qgroup.c | 11 +++++++----
- 1 file changed, 7 insertions(+), 4 deletions(-)
+It's 2026.  We generally shouldn't be formatting code manually.  We have
+better things to do.
 
-diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-index f53c313ab6e4..ea1806accdca 100644
---- a/fs/btrfs/qgroup.c
-+++ b/fs/btrfs/qgroup.c
-@@ -1169,11 +1169,14 @@ int btrfs_quota_enable(struct btrfs_fs_info *fs_info,
- 			}
- 			if (ret > 0) {
- 				/*
--				 * Shouldn't happen, but in case it does we
--				 * don't need to do the btrfs_next_item, just
--				 * continue.
-+				 * Shouldn't happen because the keu should still
-+				 * be there (return 0), but in case it does it
-+				 * means we have reached the end of the tree -
-+				 * there are no more leaves with items that have
-+				 * a key greater than or equals to @found_key,
-+				 * so just stop the search loop.
- 				 */
--				continue;
-+				break;
- 			}
- 		}
- 		ret = btrfs_next_item(tree_root, path);
--- 
-2.47.2
+If you're going to insist on ad-hoc formatting of argument lists, you'll
+need to be more specific about where and how you want it to be done.  It
+certainly doesn't make sense in files that are already using the normal
+style exclusively, for example.
 
+- Eric
 
