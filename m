@@ -1,34 +1,34 @@
-Return-Path: <linux-btrfs+bounces-21446-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21448-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id +M7dI7U0hmneKQQAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21446-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Fri, 06 Feb 2026 19:36:37 +0100
+	id UH5JFQg3hmmHLAQAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21448-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Fri, 06 Feb 2026 19:46:32 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B14A101FFB
-	for <lists+linux-btrfs@lfdr.de>; Fri, 06 Feb 2026 19:36:37 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A57710236B
+	for <lists+linux-btrfs@lfdr.de>; Fri, 06 Feb 2026 19:46:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id CF6753092574
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Feb 2026 18:29:56 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id DA92130405AA
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Feb 2026 18:30:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08CFF44BCB3;
-	Fri,  6 Feb 2026 18:25:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4181944CAD8;
+	Fri,  6 Feb 2026 18:25:32 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3729244BC9B
-	for <linux-btrfs@vger.kernel.org>; Fri,  6 Feb 2026 18:25:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C7E743DA49
+	for <linux-btrfs@vger.kernel.org>; Fri,  6 Feb 2026 18:25:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770402327; cv=none; b=sx7dWthPhA84d3+BClYKZD3JLV1qBBeimip4BrutkJBEUAg/7PLyMaZYbezTomPJl4VIicJIRRA2MblQB/ACYvsnD92Znu4MP/11OvirrWBG2qzCbEcn1MPYaGHUQ9/oQATAiee4YDMJzQUIPPCy5qfejLubvgNN+znq1IPsHys=
+	t=1770402331; cv=none; b=GTdN7ZE8bR+RNKpSh2dPr3wg0NquqysupVCgFebv7LSH7aVOERjCOGFHvjcBqhxskS9P8//CDZDcKye0idjjJ+XG6wXi5JdkYuIwJn7nv9cl4frHQbMnDqNB2YIcx4lhts5+xMHbCz4ps3LVxHUeUGFJgwUZt9yXSK35kkcPjr8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770402327; c=relaxed/simple;
-	bh=9LsGDAhN6yaS4eVreOGRrVmOuVBkuDvHtHFMAJyoGyQ=;
+	s=arc-20240116; t=1770402331; c=relaxed/simple;
+	bh=Tfn+Z9xauLtsg6WSNT0FytGznv6AKi3dk0uKZsElWiM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=X5D9Bcct9W7Xf/2G7HGzKX3axpv73ReXcUEvTza1mjNSeAg+/JfAxVL0aNgUSbF9C+WmF4+joZMU0WF/dI1wmx/lqEWANNumQmCliULeML/ceiCdV/j2SZWdar+3yo+nfVBHbcuBDT5hSI5VXC63FT2Jjx16A0zcCgDmyKDdu3Y=
+	 MIME-Version; b=Smvd8eZu2NpC5dOHflvSYFLtgxgeHqf7Uo7Jr7vLB7fxfkXk4niKnGwV/zdhJv795i4eachhQCn9vDMkEtFQALt5r34fgPu2s3VYH76pLXdhn23wHTPXsE07VZKI2cxXQFbfDF9Rw87SXLFCv5TPoL+GyP+DvMKCN4tRd3UnCxk=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
@@ -36,7 +36,7 @@ Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 102F53E737;
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 7B99D3E75F;
 	Fri,  6 Feb 2026 18:24:17 +0000 (UTC)
 Authentication-Results: smtp-out1.suse.de;
 	none
@@ -44,12 +44,12 @@ Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D5F513EA63;
-	Fri,  6 Feb 2026 18:24:16 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 505653EA63;
+	Fri,  6 Feb 2026 18:24:17 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id uOKzM9AxhmkTCQAAD6G6ig
-	(envelope-from <neelx@suse.com>); Fri, 06 Feb 2026 18:24:16 +0000
+	id IFK3EtExhmkTCQAAD6G6ig
+	(envelope-from <neelx@suse.com>); Fri, 06 Feb 2026 18:24:17 +0000
 From: Daniel Vacek <neelx@suse.com>
 To: Chris Mason <clm@fb.com>,
 	Josef Bacik <josef@toxicpanda.com>,
@@ -63,9 +63,9 @@ Cc: linux-block@vger.kernel.org,
 	linux-fscrypt@vger.kernel.org,
 	linux-btrfs@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v6 35/43] btrfs: make btrfs_ref_to_path handle encrypted filenames
-Date: Fri,  6 Feb 2026 19:23:07 +0100
-Message-ID: <20260206182336.1397715-36-neelx@suse.com>
+Subject: [PATCH v6 36/43] btrfs: deal with encrypted symlinks in send
+Date: Fri,  6 Feb 2026 19:23:08 +0100
+Message-ID: <20260206182336.1397715-37-neelx@suse.com>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20260206182336.1397715-1-neelx@suse.com>
 References: <20260206182336.1397715-1-neelx@suse.com>
@@ -91,17 +91,17 @@ X-Spamd-Result: default: False [1.54 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	MIME_TRACE(0.00)[0:+];
 	RCPT_COUNT_TWELVE(0.00)[12];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21446-lists,linux-btrfs=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-21448-lists,linux-btrfs=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-btrfs];
 	FROM_NEQ_ENVFROM(0.00)[neelx@suse.com,linux-btrfs@vger.kernel.org];
@@ -111,182 +111,89 @@ X-Spamd-Result: default: False [1.54 / 15.00];
 	NEURAL_HAM(-0.00)[-0.994];
 	RCVD_COUNT_FIVE(0.00)[6];
 	R_DKIM_NA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[toxicpanda.com:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,suse.com:mid,suse.com:email]
-X-Rspamd-Queue-Id: 0B14A101FFB
+	DBL_BLOCKED_OPENRESOLVER(0.00)[toxicpanda.com:email,suse.com:mid,suse.com:email,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 8A57710236B
 X-Rspamd-Action: no action
 
 From: Josef Bacik <josef@toxicpanda.com>
 
-We use this helper for inode-resolve and path resolution in send, so
-update this helper to properly decrypt any encrypted names it finds.
+Send needs to send the decrypted value of the symlinks, handle the case
+where the inode is encrypted and decrypt the symlink name into a buffer
+and copy this buffer into our fs_path struct.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 Signed-off-by: Daniel Vacek <neelx@suse.com>
 ---
 
-v5: https://lore.kernel.org/linux-btrfs/365d4f820f70b7cf69b1b9cae9b949a15c3350b0.1706116485.git.josef@toxicpanda.com/
- * Adapted to btrfs_iget() now returning binode instead of vfs inode
-   as before.
- * Adapted to crypt info being moved from vfs inode to FS specific inode.
+v5: https://lore.kernel.org/linux-btrfs/4d97f35d6f85ff041b09bed33b63446a92b7a20c.1706116485.git.josef@toxicpanda.com/
+ * read_symlink_encrypted() reworked from using pages to using folios.
 ---
- fs/btrfs/backref.c | 42 +++++++++++++++++++++++++++++++++++++----
- fs/btrfs/fscrypt.c | 47 ++++++++++++++++++++++++++++++++++++++++++++++
- fs/btrfs/fscrypt.h | 10 ++++++++++
- 3 files changed, 95 insertions(+), 4 deletions(-)
+ fs/btrfs/send.c | 45 ++++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 42 insertions(+), 3 deletions(-)
 
-diff --git a/fs/btrfs/backref.c b/fs/btrfs/backref.c
-index 9bb406f7dd30..577c3ef87791 100644
---- a/fs/btrfs/backref.c
-+++ b/fs/btrfs/backref.c
-@@ -20,6 +20,7 @@
- #include "extent-tree.h"
- #include "relocation.h"
- #include "tree-checker.h"
-+#include "fscrypt.h"
- 
- /* Just arbitrary numbers so we can be sure one of these happened. */
- #define BACKREF_FOUND_SHARED     6
-@@ -2107,6 +2108,39 @@ int btrfs_find_one_extref(struct btrfs_root *root, u64 inode_objectid,
+diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+index 3dcfdba018b5..b77f96ae2fea 100644
+--- a/fs/btrfs/send.c
++++ b/fs/btrfs/send.c
+@@ -1701,9 +1701,7 @@ static int find_extent_clone(struct send_ctx *sctx,
  	return ret;
  }
  
-+static int copy_resolved_iref_to_buf(struct btrfs_root *fs_root,
-+				     struct extent_buffer *eb, char *dest,
-+				     u64 parent, unsigned long name_off,
-+				     u32 name_len, s64 *bytes_left)
+-static int read_symlink(struct btrfs_root *root,
+-			u64 ino,
+-			struct fs_path *dest)
++static int read_symlink_unencrypted(struct btrfs_root *root, u64 ino, struct fs_path *dest)
+ {
+ 	int ret;
+ 	BTRFS_PATH_AUTO_FREE(path);
+@@ -1764,6 +1762,47 @@ static int read_symlink(struct btrfs_root *root,
+ 	return fs_path_add_from_extent_buffer(dest, path->nodes[0], off, len);
+ }
+ 
++static int read_symlink_encrypted(struct btrfs_root *root, u64 ino, struct fs_path *dest)
 +{
-+	struct btrfs_fs_info *fs_info = fs_root->fs_info;
-+	struct fscrypt_str fname = FSTR_INIT(NULL, 0);
-+	int ret;
++	DEFINE_DELAYED_CALL(done);
++	const char *buf;
++	struct folio *folio;
++	struct btrfs_inode *inode;
++	int ret = 0;
 +
-+	/* No encryption, just copy the name in. */
-+	if (!btrfs_fs_incompat(fs_info, ENCRYPT)) {
-+		*bytes_left -= name_len;
-+		if (*bytes_left >= 0)
-+			read_extent_buffer(eb, dest + *bytes_left, name_off, name_len);
-+		return 0;
++	inode = btrfs_iget(ino, root);
++	if (IS_ERR(inode))
++		return PTR_ERR(inode);
++
++	folio = read_mapping_folio(inode->vfs_inode.i_mapping, 0, NULL);
++	if (IS_ERR(folio)) {
++		iput(&inode->vfs_inode);
++		return PTR_ERR(folio);
 +	}
 +
-+	ret = fscrypt_fname_alloc_buffer(BTRFS_NAME_LEN, &fname);
-+	if (ret)
-+		return ret;
++	buf = fscrypt_get_symlink(&inode->vfs_inode, folio_address(folio),
++				  BTRFS_MAX_INLINE_DATA_SIZE(root->fs_info),
++				  &done);
++	folio_put(folio);
++	iput(&inode->vfs_inode);
 +
-+	ret = btrfs_decrypt_name(fs_root, eb, name_off, name_len, parent, &fname);
-+	if (ret)
-+		goto out;
++	if (IS_ERR(buf))
++		return PTR_ERR(buf);
 +
-+	*bytes_left -= fname.len;
-+	if (*bytes_left >= 0)
-+		memcpy(dest + *bytes_left, fname.name, fname.len);
-+out:
-+	fscrypt_fname_free_buffer(&fname);
++	ret = fs_path_add(dest, buf, strlen(buf));
++	do_delayed_call(&done);
 +	return ret;
++}
++
++
++static int read_symlink(struct btrfs_root *root, u64 ino,
++			struct fs_path *dest)
++{
++	if (btrfs_fs_incompat(root->fs_info, ENCRYPT))
++		return read_symlink_encrypted(root, ino, dest);
++	return read_symlink_unencrypted(root, ino, dest);
 +}
 +
  /*
-  * this iterates to turn a name (from iref/extref) into a full filesystem path.
-  * Elements of the path are separated by '/' and the path is guaranteed to be
-@@ -2138,10 +2172,10 @@ char *btrfs_ref_to_path(struct btrfs_root *fs_root, struct btrfs_path *path,
- 		dest[bytes_left] = '\0';
- 
- 	while (1) {
--		bytes_left -= name_len;
--		if (bytes_left >= 0)
--			read_extent_buffer(eb, dest + bytes_left,
--					   name_off, name_len);
-+		ret = copy_resolved_iref_to_buf(fs_root, eb, dest, parent,
-+						name_off, name_len, &bytes_left);
-+		if (ret)
-+			break;
- 		if (eb != eb_in) {
- 			if (!path->skip_locking)
- 				btrfs_tree_read_unlock(eb);
-diff --git a/fs/btrfs/fscrypt.c b/fs/btrfs/fscrypt.c
-index d1a4cbb990d4..bcb86cbaa171 100644
---- a/fs/btrfs/fscrypt.c
-+++ b/fs/btrfs/fscrypt.c
-@@ -385,6 +385,53 @@ int btrfs_fscrypt_bio_length(struct bio *bio, u64 map_length)
- 	return map_length;
- }
- 
-+int btrfs_decrypt_name(struct btrfs_root *root, struct extent_buffer *eb,
-+		       unsigned long name_off, u32 name_len,
-+		       u64 parent_ino, struct fscrypt_str *name)
-+{
-+	struct btrfs_inode *inode;
-+	struct inode *dir;
-+	struct fscrypt_str iname = FSTR_INIT(NULL, 0);
-+	int ret;
-+
-+	ASSERT(name_len <= BTRFS_NAME_LEN);
-+
-+	ret = fscrypt_fname_alloc_buffer(name_len, &iname);
-+	if (ret)
-+		return ret;
-+
-+	inode = btrfs_iget(parent_ino, root);
-+	if (IS_ERR(inode)) {
-+		ret = PTR_ERR(inode);
-+		goto out;
-+	}
-+	dir = &inode->vfs_inode;
-+
-+	/*
-+	 * Directory isn't encrypted, the name isn't encrypted, we can just copy
-+	 * it into the buffer.
-+	 */
-+	if (!IS_ENCRYPTED(dir)) {
-+		read_extent_buffer(eb, name->name, name_off, name_len);
-+		name->len = name_len;
-+		goto out_inode;
-+	}
-+
-+	read_extent_buffer(eb, iname.name, name_off, name_len);
-+
-+	ret = fscrypt_prepare_readdir(dir);
-+	if (ret)
-+		goto out_inode;
-+
-+	ASSERT(inode->i_crypt_info);
-+	ret = fscrypt_fname_disk_to_usr(dir, 0, 0, &iname, name);
-+out_inode:
-+	iput(dir);
-+out:
-+	fscrypt_fname_free_buffer(&iname);
-+	return ret;
-+}
-+
- const struct fscrypt_operations btrfs_fscrypt_ops = {
- 	.inode_info_offs = (int)offsetof(struct btrfs_inode, i_crypt_info) -
- 			   (int)offsetof(struct btrfs_inode, vfs_inode),
-diff --git a/fs/btrfs/fscrypt.h b/fs/btrfs/fscrypt.h
-index 347b34f45715..4f49ed6176d4 100644
---- a/fs/btrfs/fscrypt.h
-+++ b/fs/btrfs/fscrypt.h
-@@ -32,6 +32,9 @@ bool btrfs_mergeable_encrypted_bio(struct bio *bio, struct inode *inode,
- 				   struct fscrypt_extent_info *fi,
- 				   u64 logical_offset);
- int btrfs_fscrypt_bio_length(struct bio *bio, u64 map_length);
-+int btrfs_decrypt_name(struct btrfs_root *root, struct extent_buffer *eb,
-+		       unsigned long name_off, u32 name_len,
-+		       u64 parent_ino, struct fscrypt_str *name);
- 
- #else
- static inline void btrfs_fscrypt_save_extent_info(struct btrfs_path *path,
-@@ -91,6 +94,13 @@ static inline u64 btrfs_fscrypt_bio_length(struct bio *bio, u64 map_length)
- 	return map_length;
- }
- 
-+static inline int btrfs_decrypt_name(struct btrfs_root *root, struct extent_buffer *eb,
-+				     unsigned long name_off, u32 name_len,
-+				     u64 parent_ino, struct fscrypt_str *name)
-+{
-+	return -EINVAL;
-+}
-+
- #endif /* CONFIG_FS_ENCRYPTION */
- 
- extern const struct fscrypt_operations btrfs_fscrypt_ops;
+  * Helper function to generate a file name that is unique in the root of
+  * send_root and parent_root. This is used to generate names for orphan inodes.
 -- 
 2.51.0
 
