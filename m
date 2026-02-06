@@ -1,76 +1,55 @@
-Return-Path: <linux-btrfs+bounces-21427-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21429-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id SLeHLagzhmneKQQAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21427-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Fri, 06 Feb 2026 19:32:08 +0100
+	id 0LI/ENwzhmneKQQAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21429-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Fri, 06 Feb 2026 19:33:00 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B0DF101EC4
-	for <lists+linux-btrfs@lfdr.de>; Fri, 06 Feb 2026 19:32:08 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5DE0101EF0
+	for <lists+linux-btrfs@lfdr.de>; Fri, 06 Feb 2026 19:32:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id D329630374B6
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Feb 2026 18:26:15 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id EF36D301A7C4
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Feb 2026 18:26:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86E2F4418C2;
-	Fri,  6 Feb 2026 18:24:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="OY7zAGUK";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="OY7zAGUK"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3D0F428495;
+	Fri,  6 Feb 2026 18:24:48 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A410E441056
-	for <linux-btrfs@vger.kernel.org>; Fri,  6 Feb 2026 18:24:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D58A428468
+	for <linux-btrfs@vger.kernel.org>; Fri,  6 Feb 2026 18:24:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770402282; cv=none; b=cx6t9Tj2PeT28Rf6L5igB7MB8/T8RxIqtjHWbtZ6zWc7nu83Dz7FpvnMIT05Qt+uEKvFGp+ltgniKOecFZXjTWFf8ofiVB1njrLn2I5sKyErYKZaFfd5WeY4h2kW69h2n2N/9POEpnQtw25j6XRznry9+0H0DErtZrN1S/eqwdY=
+	t=1770402288; cv=none; b=hMQAKWrurpv8QQap9reJmZZE8tGlAKi3pQu7TqZfM/EbWEg4fNBZtiDt3eK8FBg6LbE3dbSmRM3R6P5U6j01A5i4YIpGR3KmFIdd+qqO02+w3sLE0nAoyPxiX8VimRJCiANNQrkJrUHyDuVYsEWi3oXze2LKbJEkAIpNqHggh5s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770402282; c=relaxed/simple;
-	bh=+NNKrKZBxf1YzCP43qrAbbVRt54PK87oJ/7BnhV/IO0=;
+	s=arc-20240116; t=1770402288; c=relaxed/simple;
+	bh=57zrBcpTNnZ9dSBcH18Ql37o6I66oeN+cim/q8qd3Bo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=JmICJTtJb8jBBY1VCUD0wOvKxKaS9yF84FNKjBC56ztNz5X6sW6403XVPr+4vRkwXivkcQoUJIqPweWC+wb5mYqSlSsiPnWhol436kGhEfc+ukWUWtQXfwmvwMAXXp4X7vXFP3bCYRpaJ0KhdFjLax9D5EejvOKyyOphOia9Gz8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=OY7zAGUK; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=OY7zAGUK; arc=none smtp.client-ip=195.135.223.131
+	 MIME-Version; b=gUityl9d21AGMKzSLdekY1DzpVxVsCuKV2hzzd1pwQFEGgpk0LZ/yiv4Yr3KROWQE3c54eHEjx77RkzZi5jVO9xfvqSJ3jBcys0wsPKdRoMMqXGeaOtbZ/x7FlF8NLdd+b0zdMKH7dU0m3yELaDeOg297O3VcviY7QmfWzS7u+s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 279305BD29;
+	by smtp-out2.suse.de (Postfix) with ESMTPS id E14D95BD2B;
 	Fri,  6 Feb 2026 18:24:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1770402245; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1kkMxy8XmUk8cQiHlFLSrRmbG6vYEnV5u0ThGPeCzWw=;
-	b=OY7zAGUKsb4fN15VAVW9MtuVeuOPOnPtn71qU40nQuZczR7EjxAFC7akQY0n9vJXHqWCPz
-	iSzTXr59NEPcKD4U2pHY5sgJt+QY5mFknIPFWgiC2yCHtgP2WvFsMKSPK2lW2XMEs9h6fT
-	qw0Twxd2zBP4bDpcm2j0flvNDjTC5mY=
 Authentication-Results: smtp-out2.suse.de;
 	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1770402245; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1kkMxy8XmUk8cQiHlFLSrRmbG6vYEnV5u0ThGPeCzWw=;
-	b=OY7zAGUKsb4fN15VAVW9MtuVeuOPOnPtn71qU40nQuZczR7EjxAFC7akQY0n9vJXHqWCPz
-	iSzTXr59NEPcKD4U2pHY5sgJt+QY5mFknIPFWgiC2yCHtgP2WvFsMKSPK2lW2XMEs9h6fT
-	qw0Twxd2zBP4bDpcm2j0flvNDjTC5mY=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id ED0163EA63;
-	Fri,  6 Feb 2026 18:24:04 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B22DC3EA63;
+	Fri,  6 Feb 2026 18:24:05 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id AANfOcQxhmkTCQAAD6G6ig
-	(envelope-from <neelx@suse.com>); Fri, 06 Feb 2026 18:24:04 +0000
+	id mNQIK8UxhmkTCQAAD6G6ig
+	(envelope-from <neelx@suse.com>); Fri, 06 Feb 2026 18:24:05 +0000
 From: Daniel Vacek <neelx@suse.com>
 To: Chris Mason <clm@fb.com>,
 	Josef Bacik <josef@toxicpanda.com>,
@@ -85,9 +64,9 @@ Cc: linux-block@vger.kernel.org,
 	linux-btrfs@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
-Subject: [PATCH v6 17/43] btrfs: add get_devices hook for fscrypt
-Date: Fri,  6 Feb 2026 19:22:49 +0100
-Message-ID: <20260206182336.1397715-18-neelx@suse.com>
+Subject: [PATCH v6 18/43] btrfs: set file extent encryption excplicitly
+Date: Fri,  6 Feb 2026 19:22:50 +0100
+Message-ID: <20260206182336.1397715-19-neelx@suse.com>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20260206182336.1397715-1-neelx@suse.com>
 References: <20260206182336.1397715-1-neelx@suse.com>
@@ -98,116 +77,170 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Flag: NO
-X-Spam-Score: -6.80
+X-Rspamd-Pre-Result: action=no action;
+	module=replies;
+	Message is reply to one we originated
+X-Spam-Score: -4.00
+X-Rspamd-Pre-Result: action=no action;
+	module=replies;
+	Message is reply to one we originated
 X-Spam-Level: 
+X-Spam-Flag: NO
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [1.54 / 15.00];
+	DMARC_POLICY_QUARANTINE(1.50)[suse.com : SPF not aligned (relaxed), No valid DKIM,quarantine];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21427-lists,linux-btrfs=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
 	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[13];
-	FROM_NEQ_ENVFROM(0.00)[neelx@suse.com,linux-btrfs@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	TAGGED_RCPT(0.00)[linux-btrfs];
-	NEURAL_HAM(-0.00)[-1.000];
-	DKIM_TRACE(0.00)[suse.com:+];
+	TAGGED_FROM(0.00)[bounces-21429-lists,linux-btrfs=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	TAGGED_RCPT(0.00)[linux-btrfs];
+	FROM_NEQ_ENVFROM(0.00)[neelx@suse.com,linux-btrfs@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[dorminy.me:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,toxicpanda.com:email,suse.com:email,suse.com:dkim,suse.com:mid]
-X-Rspamd-Queue-Id: 4B0DF101EC4
+	PRECEDENCE_BULK(0.00)[];
+	NEURAL_HAM(-0.00)[-0.994];
+	RCVD_COUNT_FIVE(0.00)[6];
+	R_DKIM_NA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[dorminy.me:email,toxicpanda.com:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,suse.com:mid,suse.com:email]
+X-Rspamd-Queue-Id: B5DE0101EF0
 X-Rspamd-Action: no action
 
 From: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 
-Since extent encryption requires inline encryption, even though we
-expect to use the inlinecrypt software fallback most of the time, we
-need to enumerate all the devices in use by btrfs.
+This puts the long-preserved 1-byte encryption field to work, storing
+whether the extent is encrypted.  Update the tree-checker to allow for
+the encryption bit to be set to our valid types.
 
 Signed-off-by: Sweet Tea Dorminy <sweettea-kernel@dorminy.me>
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 Signed-off-by: Daniel Vacek <neelx@suse.com>
 ---
 
-v5: https://lore.kernel.org/linux-btrfs/47ff044fae65cb2b06a6bb6ffc91027511c4d1f4.1706116485.git.josef@toxicpanda.com/
+v5: https://lore.kernel.org/linux-btrfs/1bf1cb768bc8bc54b3855e271412077c60f23c50.1706116485.git.josef@toxicpanda.com/
  * No changes since.
 ---
- fs/btrfs/fscrypt.c | 36 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 36 insertions(+)
+ fs/btrfs/accessors.h            | 2 ++
+ fs/btrfs/inode.c                | 6 ++++--
+ fs/btrfs/tree-checker.c         | 8 +++++---
+ fs/btrfs/tree-log.c             | 2 ++
+ include/uapi/linux/btrfs_tree.h | 8 +++++++-
+ 5 files changed, 20 insertions(+), 6 deletions(-)
 
-diff --git a/fs/btrfs/fscrypt.c b/fs/btrfs/fscrypt.c
-index 078b8c9a0334..608f8797ea6f 100644
---- a/fs/btrfs/fscrypt.c
-+++ b/fs/btrfs/fscrypt.c
-@@ -12,7 +12,9 @@
- #include "ioctl.h"
- #include "messages.h"
- #include "root-tree.h"
-+#include "super.h"
- #include "transaction.h"
-+#include "volumes.h"
- #include "xattr.h"
+diff --git a/fs/btrfs/accessors.h b/fs/btrfs/accessors.h
+index 8938357fcb40..09ed68fa2041 100644
+--- a/fs/btrfs/accessors.h
++++ b/fs/btrfs/accessors.h
+@@ -907,6 +907,8 @@ BTRFS_SETGET_STACK_FUNCS(stack_file_extent_disk_num_bytes,
+ 			 struct btrfs_file_extent_item, disk_num_bytes, 64);
+ BTRFS_SETGET_STACK_FUNCS(stack_file_extent_compression,
+ 			 struct btrfs_file_extent_item, compression, 8);
++BTRFS_SETGET_STACK_FUNCS(stack_file_extent_encryption,
++			 struct btrfs_file_extent_item, encryption, 8);
  
- /*
-@@ -177,10 +179,44 @@ static bool btrfs_fscrypt_empty_dir(struct inode *inode)
- 	return inode->i_size == BTRFS_EMPTY_DIR_SIZE;
- }
  
-+static struct block_device **btrfs_fscrypt_get_devices(struct super_block *sb,
-+						       unsigned int *num_devs)
-+{
-+	struct btrfs_fs_info *fs_info = btrfs_sb(sb);
-+	struct btrfs_fs_devices *fs_devices = fs_info->fs_devices;
-+	int nr_devices = fs_devices->open_devices;
-+	struct block_device **devs;
-+	struct btrfs_device *device;
-+	int i = 0;
+ BTRFS_SETGET_FUNCS(file_extent_type, struct btrfs_file_extent_item, type, 8);
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 79f0b67249de..758dde148be6 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -3123,7 +3123,8 @@ static int insert_ordered_extent_file_extent(struct btrfs_trans_handle *trans,
+ 	btrfs_set_stack_file_extent_num_bytes(&stack_fi, num_bytes);
+ 	btrfs_set_stack_file_extent_ram_bytes(&stack_fi, ram_bytes);
+ 	btrfs_set_stack_file_extent_compression(&stack_fi, oe->compress_type);
+-	/* Encryption and other encoding is reserved and all 0 */
++	btrfs_set_stack_file_extent_encryption(&stack_fi, BTRFS_ENCRYPTION_NONE);
++	/* Other encoding is reserved and always 0 */
+ 
+ 	/*
+ 	 * For delalloc, when completing an ordered extent we update the inode's
+@@ -9205,7 +9206,8 @@ static struct btrfs_trans_handle *insert_prealloc_file_extent(
+ 	btrfs_set_stack_file_extent_num_bytes(&stack_fi, len);
+ 	btrfs_set_stack_file_extent_ram_bytes(&stack_fi, len);
+ 	btrfs_set_stack_file_extent_compression(&stack_fi, BTRFS_COMPRESS_NONE);
+-	/* Encryption and other encoding is reserved and all 0 */
++	btrfs_set_stack_file_extent_encryption(&stack_fi, BTRFS_ENCRYPTION_NONE);
++	/* Other encoding is reserved and always 0 */
+ 
+ 	ret = btrfs_qgroup_release_data(inode, file_offset, len, &qgroup_released);
+ 	if (ret < 0)
+diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
+index 452394b34d01..9675dbcd78a3 100644
+--- a/fs/btrfs/tree-checker.c
++++ b/fs/btrfs/tree-checker.c
+@@ -213,6 +213,7 @@ static int check_extent_data_item(struct extent_buffer *leaf,
+ 	u32 sectorsize = fs_info->sectorsize;
+ 	u32 item_size = btrfs_item_size(leaf, slot);
+ 	u64 extent_end;
++	u8 policy;
+ 
+ 	if (unlikely(!IS_ALIGNED(key->offset, sectorsize))) {
+ 		file_extent_err(leaf, slot,
+@@ -264,10 +265,11 @@ static int check_extent_data_item(struct extent_buffer *leaf,
+ 			BTRFS_NR_COMPRESS_TYPES - 1);
+ 		return -EUCLEAN;
+ 	}
+-	if (unlikely(btrfs_file_extent_encryption(leaf, fi))) {
++	policy = btrfs_file_extent_encryption(leaf, fi);
++	if (unlikely(policy >= BTRFS_NR_ENCRYPTION_TYPES)) {
+ 		file_extent_err(leaf, slot,
+-			"invalid encryption for file extent, have %u expect 0",
+-			btrfs_file_extent_encryption(leaf, fi));
++			"invalid encryption for file extent, have %u expect range [0, %u]",
++			policy, BTRFS_NR_ENCRYPTION_TYPES - 1);
+ 		return -EUCLEAN;
+ 	}
+ 	if (btrfs_file_extent_type(leaf, fi) == BTRFS_FILE_EXTENT_INLINE) {
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index d6d3ce41fc3e..118dd1888996 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -5123,6 +5123,7 @@ static int log_one_extent(struct btrfs_trans_handle *trans,
+ 	u64 block_start = btrfs_extent_map_block_start(em);
+ 	u64 block_len;
+ 	int ret;
++	u8 encryption = BTRFS_ENCRYPTION_NONE;
+ 
+ 	btrfs_set_stack_file_extent_generation(&fi, trans->transid);
+ 	if (em->flags & EXTENT_FLAG_PREALLOC)
+@@ -5144,6 +5145,7 @@ static int log_one_extent(struct btrfs_trans_handle *trans,
+ 	btrfs_set_stack_file_extent_num_bytes(&fi, em->len);
+ 	btrfs_set_stack_file_extent_ram_bytes(&fi, em->ram_bytes);
+ 	btrfs_set_stack_file_extent_compression(&fi, compress_type);
++	btrfs_set_stack_file_extent_encryption(&fi, encryption);
+ 
+ 	ret = log_extent_csums(trans, inode, log, em, ctx);
+ 	if (ret)
+diff --git a/include/uapi/linux/btrfs_tree.h b/include/uapi/linux/btrfs_tree.h
+index 02b1ab1f7858..cb8dbcc612e9 100644
+--- a/include/uapi/linux/btrfs_tree.h
++++ b/include/uapi/linux/btrfs_tree.h
+@@ -1107,8 +1107,14 @@ struct btrfs_file_extent_item {
+ 	 * but not for stat.
+ 	 */
+ 	__u8 compression;
 +
-+	devs = kmalloc_array(nr_devices, sizeof(*devs), GFP_NOFS | GFP_NOWAIT);
-+	if (!devs)
-+		return ERR_PTR(-ENOMEM);
++	/*
++	 * Type of encryption in use. Unencrypted value is 0.
++	 */
+ 	__u8 encryption;
+-	__le16 other_encoding; /* spare for later use */
 +
-+	rcu_read_lock();
-+	list_for_each_entry_rcu(device, &fs_devices->devices, dev_list) {
-+		if (!test_bit(BTRFS_DEV_STATE_IN_FS_METADATA, &device->dev_state) ||
-+		    !device->bdev ||
-+		    test_bit(BTRFS_DEV_STATE_REPLACE_TGT, &device->dev_state))
-+			continue;
-+
-+		devs[i++] = device->bdev;
-+
-+		if (i >= nr_devices)
-+			break;
-+
-+	}
-+	rcu_read_unlock();
-+
-+	*num_devs = i;
-+	return devs;
-+}
-+
- const struct fscrypt_operations btrfs_fscrypt_ops = {
- 	.inode_info_offs = (int)offsetof(struct btrfs_inode, i_crypt_info) -
- 			   (int)offsetof(struct btrfs_inode, vfs_inode),
- 	.get_context = btrfs_fscrypt_get_context,
- 	.set_context = btrfs_fscrypt_set_context,
- 	.empty_dir = btrfs_fscrypt_empty_dir,
-+	.get_devices = btrfs_fscrypt_get_devices,
- };
++	/* spare for later use */
++	__le16 other_encoding;
+ 
+ 	/* are we inline data or a real extent? */
+ 	__u8 type;
 -- 
 2.51.0
 
