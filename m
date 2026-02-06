@@ -1,76 +1,55 @@
-Return-Path: <linux-btrfs+bounces-21443-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21450-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id YDRqJA81hmlrLAQAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21443-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Fri, 06 Feb 2026 19:38:07 +0100
+	id uKF5O5I0hmneKQQAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21450-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Fri, 06 Feb 2026 19:36:02 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CBA51020BB
-	for <lists+linux-btrfs@lfdr.de>; Fri, 06 Feb 2026 19:38:07 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 798C7101F92
+	for <lists+linux-btrfs@lfdr.de>; Fri, 06 Feb 2026 19:36:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 36E1F315CAD1
-	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Feb 2026 18:29:10 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id DC9BD30CE054
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Feb 2026 18:30:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C88A44A731;
-	Fri,  6 Feb 2026 18:25:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="D7eLlhRf";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="o3CIKfJw"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EB9443E4A8;
+	Fri,  6 Feb 2026 18:25:41 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D9D243D4F9
-	for <linux-btrfs@vger.kernel.org>; Fri,  6 Feb 2026 18:25:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBC4B43DA53
+	for <linux-btrfs@vger.kernel.org>; Fri,  6 Feb 2026 18:25:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770402318; cv=none; b=FKM3P8l4LU4+uLIIZkhnbKVwSC9IKDgRfzeXRHX6FJrPJ6LK/AqAQW/zzzdjqks8mlyQcMSOzO4cZfjDngc7iwJFexvMQ7DouVKYAwb7x63Fe8zWZG6ru1QN/SIFoMl86j2SOiXpxNHgGj50E64dOieTVwiiJT5eGTu0/QKbqOA=
+	t=1770402341; cv=none; b=PAuiV18pL2wNqY7Nyu2MkjYVsMq8Z8YA9PVvmsu3AT5K4a+lGGoQcFdEIXhzja7Ue3f7pcH5PJ62j835qufsMu0PzO+spXjZLVNLgjRt+O66Rdg/uQC2Uq3tuTo79sYO2D+HcGIF+i1DjbM2EYsVZMm6r+O1t4OY+Xg7dqxALcw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770402318; c=relaxed/simple;
-	bh=x51Cg5xsCzKVGWOmBJtih3DOztBpxfL6ZG35siCQ3ms=;
+	s=arc-20240116; t=1770402341; c=relaxed/simple;
+	bh=fZxW8wexZZ7fyQehWlyzdfCe9GH5o7H4GiTaE8gAS1o=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=UNVlKaW5AtCHy34JqVcU/GQ2tcKBCeIiSgA2kVS0698BLsuxACcSgimx8VMkUyFyhXhM3zYw5YQS3ND4Hx/sKLNGzkWMDAQwHZ2Cli+hD2YWW8VdolDTWXCr7UPQ34DVUNzqcVtIzP+kt9jo2znWGobXhyZ0v9M0oiZw04VfQSM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=D7eLlhRf; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=o3CIKfJw; arc=none smtp.client-ip=195.135.223.131
+	 MIME-Version; b=SOcxSr2TaYqK9VxwvkFdN4seOieoCLw7pynPYxX6RpTgCierPjJKOuZKVRnQbjWjLRVtTY3SHOfHuTE+tzOjFIMULvL7DRj/OtMyRAcHrCCXK5Ink5+Gx3F9mRd3d6UXz2EI1wGE4w963POZe8DYKGH/xkf+qWWvXObf82d+f+U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id E70C05BD38;
-	Fri,  6 Feb 2026 18:24:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1770402259; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=u9CaRWPO0XEEkcqklCFMGPi2Gz5Gl8+A3LyPbQLO5J0=;
-	b=D7eLlhRfCnY9+hkf+p9KXeqIRvCUG/8VTOeBoBatxFEeHl/Xn0bMe5QwI88ijwFQ+EWRiH
-	uvth8ETfOFWA1ozenxXnMFRMTrVEiI/qif9B64u8lnRZnzmxLfbBQmV88MX8fSKsMuXwcI
-	VopFnAy38Gpat5BMEP9cRgdHwHI2HQc=
-Authentication-Results: smtp-out2.suse.de;
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 69D0A3E745;
+	Fri,  6 Feb 2026 18:24:19 +0000 (UTC)
+Authentication-Results: smtp-out1.suse.de;
 	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1770402258; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=u9CaRWPO0XEEkcqklCFMGPi2Gz5Gl8+A3LyPbQLO5J0=;
-	b=o3CIKfJwv0X6WkIAr2IiYMi8eN6avPef/zXeFxEXUE36h903nV+Owpb7u4etSigKcKohLD
-	gdEgUE5gkC9KQaUnY11RyWswS+kgcFwLNuK7No7/ssnOEx6DuCszdIE0mPjwJE35N/GHJl
-	2U392xn0mh+Rg5g2lhcEdHOhoNKz4CY=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B9DC33EA63;
-	Fri,  6 Feb 2026 18:24:18 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3F3A63EA63;
+	Fri,  6 Feb 2026 18:24:19 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id ACrlLNIxhmkTCQAAD6G6ig
-	(envelope-from <neelx@suse.com>); Fri, 06 Feb 2026 18:24:18 +0000
+	id SJfzDtMxhmkTCQAAD6G6ig
+	(envelope-from <neelx@suse.com>); Fri, 06 Feb 2026 18:24:19 +0000
 From: Daniel Vacek <neelx@suse.com>
 To: Chris Mason <clm@fb.com>,
 	Josef Bacik <josef@toxicpanda.com>,
@@ -84,9 +63,9 @@ Cc: linux-block@vger.kernel.org,
 	linux-fscrypt@vger.kernel.org,
 	linux-btrfs@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v6 39/43] btrfs: set the appropriate free space settings in reconfigure
-Date: Fri,  6 Feb 2026 19:23:11 +0100
-Message-ID: <20260206182336.1397715-40-neelx@suse.com>
+Subject: [PATCH v6 40/43] btrfs: support encryption with log replay
+Date: Fri,  6 Feb 2026 19:23:12 +0100
+Message-ID: <20260206182336.1397715-41-neelx@suse.com>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20260206182336.1397715-1-neelx@suse.com>
 References: <20260206182336.1397715-1-neelx@suse.com>
@@ -97,166 +76,97 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Flag: NO
-X-Spam-Score: -6.80
+X-Rspamd-Pre-Result: action=no action;
+	module=replies;
+	Message is reply to one we originated
+X-Spam-Score: -4.00
+X-Rspamd-Pre-Result: action=no action;
+	module=replies;
+	Message is reply to one we originated
 X-Spam-Level: 
+X-Spam-Flag: NO
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [1.54 / 15.00];
+	DMARC_POLICY_QUARANTINE(1.50)[suse.com : SPF not aligned (relaxed), No valid DKIM,quarantine];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21443-lists,linux-btrfs=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
 	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[12];
-	FROM_NEQ_ENVFROM(0.00)[neelx@suse.com,linux-btrfs@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	TAGGED_RCPT(0.00)[linux-btrfs];
-	NEURAL_HAM(-0.00)[-1.000];
-	DKIM_TRACE(0.00)[suse.com:+];
+	TAGGED_FROM(0.00)[bounces-21450-lists,linux-btrfs=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	TAGGED_RCPT(0.00)[linux-btrfs];
+	FROM_NEQ_ENVFROM(0.00)[neelx@suse.com,linux-btrfs@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,toxicpanda.com:email,suse.com:email,suse.com:dkim,suse.com:mid]
-X-Rspamd-Queue-Id: 2CBA51020BB
+	PRECEDENCE_BULK(0.00)[];
+	NEURAL_HAM(-0.00)[-0.994];
+	RCVD_COUNT_FIVE(0.00)[6];
+	R_DKIM_NA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:email,toxicpanda.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 798C7101F92
 X-Rspamd-Action: no action
 
 From: Josef Bacik <josef@toxicpanda.com>
 
-btrfs/330 uncovered a problem where we were accidentally turning off the
-free space tree when we do the transition from ro->rw.  This happens
-because we don't update
+Log replay needs a few tweaks in order to make sure everything works
+with encryption.
+
+1. Copy in the fscrypt context if we find one in the log.
+2. Set NEEDS_FULL_SYNC when we update the inode context so all of the
+   items are copied into the log at fsync time.
+
+This makes replay of encrypted files work properly.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 Signed-off-by: Daniel Vacek <neelx@suse.com>
 ---
 
-v5: https://lore.kernel.org/linux-btrfs/325598eeb1d23f9ae04f675b4ee218f7e98e3ff0.1706116485.git.josef@toxicpanda.com/
- * Re-wrapped comments.
- * Fixed argument type.  mount_opt is now ull.
+v5: https://lore.kernel.org/linux-btrfs/d1ada7ac632c2ab554a840c7ba29b53a93b9855f.1706116485.git.josef@toxicpanda.com/
+ * Adapted to the redesigned encryption context storing.
+   - No need to specially handle the extent item now.
+     It is not any different to before and the
+     new context items are simply copied.
 ---
- fs/btrfs/disk-io.c |  2 +-
- fs/btrfs/super.c   | 28 +++++++++++++++-------------
- fs/btrfs/super.h   |  3 ++-
- 3 files changed, 18 insertions(+), 15 deletions(-)
+ fs/btrfs/fscrypt.c  | 1 +
+ fs/btrfs/tree-log.c | 4 +++-
+ 2 files changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index f47a20976b53..993d2080fcbf 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -3416,7 +3416,7 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
- 	 * Handle the space caching options appropriately now that we have the
- 	 * super block loaded and validated.
- 	 */
--	btrfs_set_free_space_cache_settings(fs_info);
-+	btrfs_set_free_space_cache_settings(fs_info, &fs_info->mount_opt);
- 
- 	if (!btrfs_check_options(fs_info, &fs_info->mount_opt, sb->s_flags)) {
- 		ret = -EINVAL;
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 06788b27a870..4a2887147ead 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -745,10 +745,10 @@ bool btrfs_check_options(const struct btrfs_fs_info *info,
- }
- 
- /*
-- * This is subtle, we only call this during open_ctree().  We need to pre-load
-- * the mount options with the on-disk settings.  Before the new mount API took
-- * effect we would do this on mount and remount.  With the new mount API we'll
-- * only do this on the initial mount.
-+ * Because we have an odd set of behavior with turning on and off the space cache
-+ * and free space tree we have to call this before we start the mount operation
-+ * after we load the super, or before we start remount.  This is to make sure we
-+ * have the proper free space settings in place if the user didn't specify any.
-  *
-  * This isn't a change in behavior, because we're using the current state of the
-  * file system to set the current mount options.  If you mounted with special
-@@ -756,21 +756,22 @@ bool btrfs_check_options(const struct btrfs_fs_info *info,
-  * settings, because mounting without these features cleared the on-disk
-  * settings, so this being called on re-mount is not needed.
-  */
--void btrfs_set_free_space_cache_settings(struct btrfs_fs_info *fs_info)
-+void btrfs_set_free_space_cache_settings(struct btrfs_fs_info *fs_info,
-+					 unsigned long long *mount_opt)
- {
--	if (fs_info->sectorsize != PAGE_SIZE && btrfs_test_opt(fs_info, SPACE_CACHE)) {
-+	if (fs_info->sectorsize != PAGE_SIZE && btrfs_raw_test_opt(*mount_opt, SPACE_CACHE)) {
- 		btrfs_info(fs_info,
- 			   "forcing free space tree for sector size %u with page size %lu",
- 			   fs_info->sectorsize, PAGE_SIZE);
--		btrfs_clear_opt(fs_info->mount_opt, SPACE_CACHE);
--		btrfs_set_opt(fs_info->mount_opt, FREE_SPACE_TREE);
-+		btrfs_clear_opt(*mount_opt, SPACE_CACHE);
-+		btrfs_set_opt(*mount_opt, FREE_SPACE_TREE);
+diff --git a/fs/btrfs/fscrypt.c b/fs/btrfs/fscrypt.c
+index bcb86cbaa171..cbdeaa75a868 100644
+--- a/fs/btrfs/fscrypt.c
++++ b/fs/btrfs/fscrypt.c
+@@ -145,6 +145,7 @@ static int btrfs_fscrypt_set_context(struct inode *inode, const void *ctx,
+ 			goto out_err;
  	}
  
- 	/*
- 	 * At this point our mount options are populated, so we only mess with
- 	 * these settings if we don't have any settings already.
- 	 */
--	if (btrfs_test_opt(fs_info, FREE_SPACE_TREE))
-+	if (btrfs_raw_test_opt(*mount_opt, FREE_SPACE_TREE))
- 		return;
++	set_bit(BTRFS_INODE_NEEDS_FULL_SYNC, &BTRFS_I(inode)->runtime_flags);
+ 	leaf = path->nodes[0];
+ 	ptr = btrfs_item_ptr_offset(leaf, path->slots[0]);
  
- 	if (btrfs_is_zoned(fs_info) &&
-@@ -780,10 +781,10 @@ void btrfs_set_free_space_cache_settings(struct btrfs_fs_info *fs_info)
- 		return;
- 	}
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index 0d01e31a4592..fa75531f9633 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -2922,7 +2922,9 @@ static int replay_one_buffer(struct extent_buffer *eb,
+ 			continue;
  
--	if (btrfs_test_opt(fs_info, SPACE_CACHE))
-+	if (btrfs_raw_test_opt(*mount_opt, SPACE_CACHE))
- 		return;
- 
--	if (btrfs_test_opt(fs_info, NOSPACECACHE))
-+	if (btrfs_raw_test_opt(*mount_opt, NOSPACECACHE))
- 		return;
- 
- 	/*
-@@ -791,9 +792,9 @@ void btrfs_set_free_space_cache_settings(struct btrfs_fs_info *fs_info)
- 	 * them ourselves based on the state of the file system.
- 	 */
- 	if (btrfs_fs_compat_ro(fs_info, FREE_SPACE_TREE))
--		btrfs_set_opt(fs_info->mount_opt, FREE_SPACE_TREE);
-+		btrfs_set_opt(*mount_opt, FREE_SPACE_TREE);
- 	else if (btrfs_free_space_cache_v1_active(fs_info))
--		btrfs_set_opt(fs_info->mount_opt, SPACE_CACHE);
-+		btrfs_set_opt(*mount_opt, SPACE_CACHE);
- }
- 
- static void set_device_specific_options(struct btrfs_fs_info *fs_info)
-@@ -1573,6 +1574,7 @@ static int btrfs_reconfigure(struct fs_context *fc)
- 
- 	sync_filesystem(sb);
- 	set_bit(BTRFS_FS_STATE_REMOUNTING, &fs_info->fs_state);
-+	btrfs_set_free_space_cache_settings(fs_info, &ctx->mount_opt);
- 
- 	if (!btrfs_check_options(fs_info, &ctx->mount_opt, fc->sb_flags))
- 		return -EINVAL;
-diff --git a/fs/btrfs/super.h b/fs/btrfs/super.h
-index d80a86acfbbe..584f428d36e2 100644
---- a/fs/btrfs/super.h
-+++ b/fs/btrfs/super.h
-@@ -16,7 +16,8 @@ bool btrfs_check_options(const struct btrfs_fs_info *info,
- int btrfs_sync_fs(struct super_block *sb, int wait);
- char *btrfs_get_subvol_name_from_objectid(struct btrfs_fs_info *fs_info,
- 					  u64 subvol_objectid);
--void btrfs_set_free_space_cache_settings(struct btrfs_fs_info *fs_info);
-+void btrfs_set_free_space_cache_settings(struct btrfs_fs_info *fs_info,
-+					 unsigned long long *mount_opt);
- 
- static inline struct btrfs_fs_info *btrfs_sb(struct super_block *sb)
- {
+ 		/* these keys are simply copied */
+-		if (wc->log_key.type == BTRFS_XATTR_ITEM_KEY) {
++		if (wc->log_key.type == BTRFS_XATTR_ITEM_KEY ||
++		    wc->log_key.type == BTRFS_FSCRYPT_INODE_CTX_KEY ||
++		    wc->log_key.type == BTRFS_FSCRYPT_CTX_KEY) {
+ 			ret = overwrite_item(wc);
+ 			if (ret)
+ 				break;
 -- 
 2.51.0
 
