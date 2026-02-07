@@ -1,198 +1,239 @@
-Return-Path: <linux-btrfs+bounces-21457-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21456-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 2XiZIWK/hmlLQgQAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21457-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Sat, 07 Feb 2026 05:28:18 +0100
+	id mA6PGvakhmlrPgQAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21456-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Sat, 07 Feb 2026 03:35:34 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8283104E75
-	for <lists+linux-btrfs@lfdr.de>; Sat, 07 Feb 2026 05:28:17 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6A2D104AC7
+	for <lists+linux-btrfs@lfdr.de>; Sat, 07 Feb 2026 03:35:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id DA5AF3019128
-	for <lists+linux-btrfs@lfdr.de>; Sat,  7 Feb 2026 04:28:14 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 7249A305DA7C
+	for <lists+linux-btrfs@lfdr.de>; Sat,  7 Feb 2026 02:34:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E8D22DCC04;
-	Sat,  7 Feb 2026 04:28:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB9AA330332;
+	Sat,  7 Feb 2026 02:34:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Hu6y9co1"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from cheetah.ash.relay.mailchannels.net (cheetah.ash.relay.mailchannels.net [23.83.222.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C10201482E8
-	for <linux-btrfs@vger.kernel.org>; Sat,  7 Feb 2026 04:28:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=23.83.222.34
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770438490; cv=pass; b=Bfv8GfgUuoBn5b1pbI1EsrKyBCzM6ScBFs17QDF/ejjhnpCkAMoP4cqg4tBvUvrx0N1SjsNlJRC328cAOnFJ1rbdBwLw8BbVW+feHgubcNcuR77q9U4Vpw3LAftmAZRYlkrSgKJSuz1JdbPvdoXWWBY/7cI2GW5dd87tKNTmB5c=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770438490; c=relaxed/simple;
-	bh=uuVqxeOjSx4ZGb4B/RQJc18ZDMO6Yl1bEpd79wsIMYU=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=CnSJgRbpCvYllEksLBev2Zk9wd7LIsqopWhMLqF7AoGlIDrntHBfKr0w62QyBOOtgjVIM/EGKgO4hlDrXufBObl8XxxAXO1FgN5Q3SvgCAZQyfunho5FYRw8xG9iMuVnjbgsMf9Inkte4kd2Or55RntrAobJviIoYqjC5s4R2PE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=scientia.org; spf=pass smtp.mailfrom=scientia.org; arc=pass smtp.client-ip=23.83.222.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=scientia.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=scientia.org
-X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-	by relay.mailchannels.net (Postfix) with ESMTP id ADDF38C009F;
-	Sat, 07 Feb 2026 01:28:02 +0000 (UTC)
-Received: from cpanel-007-fra.hostingww.com (trex-green-0.trex.outbound.svc.cluster.local [100.96.77.52])
-	(Authenticated sender: instrampxe0y3a)
-	by relay.mailchannels.net (Postfix) with ESMTPA id D53EA8C26F7;
-	Sat, 07 Feb 2026 01:28:01 +0000 (UTC)
-ARC-Seal: i=1; a=rsa-sha256; d=mailchannels.net; s=arc-2022; cv=none;
-	t=1770427682;
-	b=Q76LvCTIt5xASiN5TMypt/AUx9F8A8dsZVaZSxDCm8oQBCmMW3oy8THMaRl1PKenP/a3zF
-	rSgQhimYFf9uKRv5dfGFFso6g2BZ31ZR7RWTY5Mz+5mpgYacnbJ+qFmFKtDLPk4CdM15BB
-	Koniu/v7QZMM0m/3Vj8zB2mL3Poc4qXDQ/QPCrE4udxZSl/8fJGXUn+Xr6k73ZTiYryC6d
-	5WvER89FmhNV08IXpinb9xa9ubVrZmiT+qlZgHezfjKW8+JwngRBRv8qIG1DrdMdvvGv8U
-	Bdq59FIEByjTAwHh22TBV9/kRt3HWnIr5VIMKSrVSbQYyH7IfpmRO4WtoTB1Cw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mailchannels.net;
-	s=arc-2022; t=1770427682;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5eicBYGp5GfEIGwb9VR2vaD7Cr1hi4wD+/T/Nkcxnd4=;
-	b=Hip7TBuSz0pzi9oxXJwHfT75rWVEy6OI0vGB7Myj1QeEWPEjsy8pQ6oPuHz0fbyaDZemJQ
-	aRAlwZjv0HNjKKWnK8D1Rx7ww3fEwQ4ymr61eI1NROIV+b2c+wRrOc1P3qj2ACecZcTlBQ
-	Smo4hPPAAEvyk0QcmF2q7VT4Q7Tx46hNXTMshJLmBMpKecYsqxMPUXxUnwkSfi1G5Z52jo
-	fcuhxxIEeOVJuk2Hkenjjb6A9WqwgjzZqUISYmESEMdv3+mzDNIbCws2NwKpJ9hDBZqlyj
-	MagBCuKV9Ht+oedzYYjvvvdwNbo45HgpwicsXHdcyw8D7rdRsfP6mrATDGo1gQ==
-ARC-Authentication-Results: i=1;
-	rspamd-845545c4df-nxw5v;
-	auth=pass smtp.auth=instrampxe0y3a smtp.mailfrom=calestyo@scientia.org
-X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
-X-MC-Relay: Neutral
-X-MailChannels-SenderId: instrampxe0y3a|x-authuser|calestyo@scientia.org
-X-MailChannels-Auth-Id: instrampxe0y3a
-X-Continue-Lettuce: 1a22994e1a081438_1770427682592_533619037
-X-MC-Loop-Signature: 1770427682592:3315925643
-X-MC-Ingress-Time: 1770427682592
-Received: from cpanel-007-fra.hostingww.com (cpanel-007-fra.hostingww.com
- [3.69.87.180])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
-	by 100.96.77.52 (trex/7.1.3);
-	Sat, 07 Feb 2026 01:28:02 +0000
-Received: from [212.104.214.84] (port=10942 helo=[10.2.0.2])
-	by cpanel-007-fra.hostingww.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.99.1)
-	(envelope-from <calestyo@scientia.org>)
-	id 1voX7B-00000009a4r-2W4W;
-	Sat, 07 Feb 2026 01:28:00 +0000
-Message-ID: <f094ddbb70cabd2e329615269519b1844f786629.camel@scientia.org>
-Subject: Re: We have a space info key for a block group that doesn't exist
-From: Christoph Anton Mitterer <calestyo@scientia.org>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs <linux-btrfs@vger.kernel.org>
-Date: Sat, 07 Feb 2026 02:27:58 +0100
-In-Reply-To: <52c813cf8dffe11325ce291d3f3bd41bcce21936.camel@scientia.org>
-References: <f3574976d7b5bc8f05e42055d85d4b61263bc5c5.camel@scientia.org>
-		 <c07b6fde-03a3-4c97-9f59-866c81e78b85@suse.com>
-		 <31615495f428dbe499ae5f5a109cc6c74c8979ca.camel@scientia.org>
-		 <fc2f1d31-7f2c-493f-be42-2cb8c1fd5a17@gmx.com>
-		 <84b22b2cc7534be60eb423973336101c9e9b9ad3.camel@scientia.org>
-		 <b681834e-7b0f-4606-8c52-f2b4dafba246@suse.com>
-		 <4e6ad7ef198de72edaf890a2257bf63864984197.camel@scientia.org>
-		 <cca8b4ea-97ef-433e-9db9-4eca67b89576@suse.com>
-		 <f1aaada378adad0da020bd679531c7f503ad6f93.camel@scientia.org>
-		 <914a6a60-6bb6-4255-a8cc-ea6f28e7a9cf@suse.com>
-		 <a75537dc77e5b6fac922a97409ca4636805147dc.camel@scientia.org>
-		 <fff60222-0b9f-4f09-b3a6-d415aa64b6d7@gmx.com>
-		 <18a87dd4f3155bb1d9c9884f39dbf53c802a10cd.camel@scientia.org>
-		 <572f0ac4-90f6-4c56-aa4c-2a64e365d526@suse.com>
-	 <52c813cf8dffe11325ce291d3f3bd41bcce21936.camel@scientia.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2-8 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9522D1FE47B
+	for <linux-btrfs@vger.kernel.org>; Sat,  7 Feb 2026 02:34:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1770431681; cv=none; b=XUaPA11TpiBhIS/OQyirBXPXY3Y2huDyCh+l3fcY+dgAcCaBlEw+b5R9BtzXl0fclpLS5yaPF7gGAZELjoy3d9NnXwU3X9aGHn1YyuMu6TsaXexDtmvkjyLAuaGNewoaBKs6Wha3qTwZxWuP3PCL2Hz9QK/sAXJVT45/nDqWM/0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1770431681; c=relaxed/simple;
+	bh=f33HgZoMQMWTLvt1bh8MKEdI8JTYgVr87YcYsWhsS4w=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=A1oS8v8mFqRZ/sBP5siSnQpmaHDsXdc63kgyitOTzgKNDqxUerPnjkQnXN8Zk9JD/NGkoeUEPpbXFRGSb53APurtmAy7U5dNanBbnpfAgP3jRA0biAiVJOq13t6arNf+jL+iiz2dWBr/C5N6Xit3sreLOV1vSv3XmF8YVA7mMBE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Hu6y9co1; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-48069a48629so24822125e9.0
+        for <linux-btrfs@vger.kernel.org>; Fri, 06 Feb 2026 18:34:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1770431679; x=1771036479; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=86EYPnxJ4ttYO1y1g+bCxrZ15h2589GsV8yiOtMjsjw=;
+        b=Hu6y9co1XysCC6nYah/84ktwWyALqqltyUJYBSRtK0IEogHIQQsiDeA3x5r5kHaOGP
+         A8xSNGIUw5bucING1Lk4Oi4h44OCjbYu1unCWB47fTPtvejtU+O4WYdR+4gGWr3iKLmB
+         dLH1mDjjcZwzo2/GEILv8HFvjk6fg8MUNCe1uJJTH+1+B5sGw074336UhUYTbbfpo/SB
+         6ahHKRPqoFqC0zS1YCvpYjXt/I2SfZwGPnsd8poQkz0iyoi/FsZaMcijabruxnp1tMjz
+         i6gl1nnrkyhNO2zQcWT/GUp36EkKPXJMwtzklctd2lt+aWK+xYGo+8jwqwUVV+RFZhkN
+         69tA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1770431679; x=1771036479;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=86EYPnxJ4ttYO1y1g+bCxrZ15h2589GsV8yiOtMjsjw=;
+        b=TrW8T0PFjrdsilqonwBMIkTxOlZQI1bhdPEjcKm2mcvRL5tMcizvKQz5FsmCNYFWhv
+         r5xFekDjDkBTC3npgbkWZrZ2irpacm/w5sv2CEt+wwssVYqyApmR/0rXzEtkgBIVkt5y
+         czpaVODiOXszSmrwu5J2MNLMAiBWyx5GTqDrKlXjeR9UvOXYWFvZgzTAjiR6+ip26r0t
+         iUxCnONX257NSs5dIFL9t9TIryFLlkx4iIk5lVE/UeeJq/CD2Q0FHec/s9hIiyOU889Z
+         VucWFR6ZBUY4+zTrsoeaEU+YfYQW3CT0gR1jTtdQj40gOhnIX+2azKWJqaYV1XLjRWjj
+         vrhQ==
+X-Gm-Message-State: AOJu0Yybi1682O18/tjdD/utOyivp4mMCVOA8GOmb6C9ada0qcNnf6cY
+	q/6POH3OaIqrYu7yCcBThvS0krGMhMcihGgOUri9EMBgZ0U5kEaZTxsmGo2LCw2lM2h42XKgecP
+	ypOONPlQ=
+X-Gm-Gg: AZuq6aLbRXqRagtk4AJfUf1Qsr50Kyb5WqcOJNVGkWdo95FZCgsF2gNBwQcoGt1MWfv
+	gJjUdzkrx1IYwFtxBlXXz/5L4+lhhGXoQBmpb5ZlfU5F6YzIhZC9ScxBKHK13jzGGa8mymgZ+ia
+	Nlxxtj0/ERNv1WGGRMzusfxY9wUrN9MscoV7I1m/FNAecD6IE91H06IdRlUJKxl77Ugh7x8EV3s
+	IVJezSG+4rlbmbfTwUjjgqViwmixtZPDrck18ZMvjQZ18pdffAgIdDNfMOkZnggeWZenadn5HMP
+	7hk83HihFEkoKNvCOw2/jTgbHSmHp0n/rXMa6yJkWp2BTj3YjOJC5ms8qVtRpG+5LPJstxdnUY2
+	OnTlYe95nqetbkbqWRf1UWS5XKNYZ6dFOyhxPNSmkNlfdM7d7xHW8RUgvpQ9Bw3FEe7vzhk9pMD
+	8pdZd0pCVKvUVL/vxxHmK2X1XgUGEZzlHHby5+4T8=
+X-Received: by 2002:a05:600c:5489:b0:480:3b4e:41b8 with SMTP id 5b1f17b1804b1-48320229c89mr68305115e9.33.1770431678826;
+        Fri, 06 Feb 2026 18:34:38 -0800 (PST)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-82441882481sm3465724b3a.35.2026.02.06.18.34.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 06 Feb 2026 18:34:38 -0800 (PST)
+Message-ID: <a6d825eb-3e8c-404f-90f6-6b4e5621479d@suse.com>
+Date: Sat, 7 Feb 2026 13:04:34 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-AuthUser: calestyo@scientia.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: We have a space info key for a block group that doesn't exist
+To: Christoph Anton Mitterer <calestyo@scientia.org>
+Cc: linux-btrfs <linux-btrfs@vger.kernel.org>
+References: <f3574976d7b5bc8f05e42055d85d4b61263bc5c5.camel@scientia.org>
+ <c07b6fde-03a3-4c97-9f59-866c81e78b85@suse.com>
+ <31615495f428dbe499ae5f5a109cc6c74c8979ca.camel@scientia.org>
+ <fc2f1d31-7f2c-493f-be42-2cb8c1fd5a17@gmx.com>
+ <84b22b2cc7534be60eb423973336101c9e9b9ad3.camel@scientia.org>
+ <b681834e-7b0f-4606-8c52-f2b4dafba246@suse.com>
+ <4e6ad7ef198de72edaf890a2257bf63864984197.camel@scientia.org>
+ <cca8b4ea-97ef-433e-9db9-4eca67b89576@suse.com>
+ <f1aaada378adad0da020bd679531c7f503ad6f93.camel@scientia.org>
+ <914a6a60-6bb6-4255-a8cc-ea6f28e7a9cf@suse.com>
+ <a75537dc77e5b6fac922a97409ca4636805147dc.camel@scientia.org>
+ <fff60222-0b9f-4f09-b3a6-d415aa64b6d7@gmx.com>
+ <18a87dd4f3155bb1d9c9884f39dbf53c802a10cd.camel@scientia.org>
+ <572f0ac4-90f6-4c56-aa4c-2a64e365d526@suse.com>
+ <52c813cf8dffe11325ce291d3f3bd41bcce21936.camel@scientia.org>
+ <f094ddbb70cabd2e329615269519b1844f786629.camel@scientia.org>
+Content-Language: en-US
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
+ Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
+ fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
+ 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
+ V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
+ rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
+ cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
+ qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
+ /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
+ o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
+ JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+In-Reply-To: <f094ddbb70cabd2e329615269519b1844f786629.camel@scientia.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.46 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21457-lists,linux-btrfs=lfdr.de];
-	TO_DN_ALL(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DMARC_NA(0.00)[scientia.org];
 	RCPT_COUNT_TWO(0.00)[2];
-	RCVD_COUNT_SEVEN(0.00)[7];
-	MIME_TRACE(0.00)[0:+];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[calestyo@scientia.org,linux-btrfs@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21456-lists,linux-btrfs=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	TO_DN_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.com:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	NEURAL_HAM(-0.00)[-0.879];
-	MID_RHS_MATCH_FROM(0.00)[];
-	R_DKIM_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[wqu@suse.com,linux-btrfs@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	NEURAL_HAM(-0.00)[-0.996];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,scientia.org:mid]
-X-Rspamd-Queue-Id: E8283104E75
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,suse.com:mid,suse.com:dkim]
+X-Rspamd-Queue-Id: B6A2D104AC7
 X-Rspamd-Action: no action
 
-Hey.
-
-I think I might have found the reason... and I guess it's a mix of me
-being an imbecile and perhaps not detailed enough
-documentation/messages:
 
 
-When I did e.g.:
-  mount -o space_cache=3Dv2,clear_cache
-I actually used my fstab entries and did e.g.:
-  mount -o space_cache=3Dv2,clear_cache /data/e
+在 2026/2/7 11:57, Christoph Anton Mitterer 写道:
+> Hey.
+> 
+> I think I might have found the reason... and I guess it's a mix of me
+> being an imbecile and perhaps not detailed enough
+> documentation/messages:
+> 
+> 
+> When I did e.g.:
+>    mount -o space_cache=v2,clear_cache
+> I actually used my fstab entries and did e.g.:
+>    mount -o space_cache=v2,clear_cache /data/e
+> 
+> but my fstab is has ro set as option for all these data devices.
 
-but my fstab is has ro set as option for all these data devices.
+OK, you got me completely.
 
+Next time we need the full mount command just in case some one is using 
+fstab to save some key strikes.
 
-So I'd guess ro here not only means no "normal" IO. but also no fs
-internal IO (like rebuilding/clearing the tree).
+> 
+> 
+> So I'd guess ro here not only means no "normal" IO. but also no fs
+> internal IO (like rebuilding/clearing the tree).
 
-Would also explain why it worked with btrfs check.
+Not really, read-only mount can still write, the most common one is the 
+log replay.
 
-If I now mount it explicitly e.g:
- # mount -o space_cache=3Dv2,clear_cache /dev/mapper/data-e /mnt/
+But other than that, we follow RO pretty well.
 
-I get:
-Feb 07 02:20:33 heisenberg kernel: BTRFS: device label data-e devid 1 trans=
-id 12267 /dev/mapper/data-e (253:1) scanned by mount (21114)
-Feb 07 02:20:33 heisenberg kernel: BTRFS info (device dm-1): first mount of=
- filesystem 1f346f85-af92-4025-8647-6d1ecb962bc1
-Feb 07 02:20:33 heisenberg kernel: BTRFS info (device dm-1): using crc32c (=
-crc32c-lib) checksum algorithm
-Feb 07 02:20:48 heisenberg kernel: BTRFS info (device dm-1): creating free =
-space tree
-Feb 07 02:23:41 heisenberg kernel: BTRFS info (device dm-1): setting compat=
--ro feature flag for FREE_SPACE_TREE (0x1)
-Feb 07 02:23:41 heisenberg kernel: BTRFS info (device dm-1): setting compat=
--ro feature flag for FREE_SPACE_TREE_VALID (0x2)
-Feb 07 02:23:41 heisenberg kernel: BTRFS info (device dm-1): checking UUID =
-tree
-Feb 07 02:23:41 heisenberg kernel: BTRFS info (device dm-1): enabling free =
-space tree
-Feb 07 02:23:41 heisenberg kernel: BTRFS info (device dm-1): force clearing=
- of disk cache
+> 
+> Would also explain why it worked with btrfs check.
+> 
+> If I now mount it explicitly e.g:
+>   # mount -o space_cache=v2,clear_cache /dev/mapper/data-e /mnt/
+> 
+> I get:
+> Feb 07 02:20:33 heisenberg kernel: BTRFS: device label data-e devid 1 transid 12267 /dev/mapper/data-e (253:1) scanned by mount (21114)
+> Feb 07 02:20:33 heisenberg kernel: BTRFS info (device dm-1): first mount of filesystem 1f346f85-af92-4025-8647-6d1ecb962bc1
+> Feb 07 02:20:33 heisenberg kernel: BTRFS info (device dm-1): using crc32c (crc32c-lib) checksum algorithm
+> Feb 07 02:20:48 heisenberg kernel: BTRFS info (device dm-1): creating free space tree
+> Feb 07 02:23:41 heisenberg kernel: BTRFS info (device dm-1): setting compat-ro feature flag for FREE_SPACE_TREE (0x1)
+> Feb 07 02:23:41 heisenberg kernel: BTRFS info (device dm-1): setting compat-ro feature flag for FREE_SPACE_TREE_VALID (0x2)
+> Feb 07 02:23:41 heisenberg kernel: BTRFS info (device dm-1): checking UUID tree
+> Feb 07 02:23:41 heisenberg kernel: BTRFS info (device dm-1): enabling free space tree
+> Feb 07 02:23:41 heisenberg kernel: BTRFS info (device dm-1): force clearing of disk cache
+> 
+> 
+> Not sure what one should do to prevent this trap?
+> Nothing a all? A kernel message that xxx isn't done because the fs is
+> mounted ro?
+> Documenting all these cases (this probably not just space cache
+> related?) in the manpage?
 
+I prefer nothing, if we really want to dig into the situation, I should 
+have asked about your mount command, but I haven't and that's my fault.
 
-Not sure what one should do to prevent this trap?
-Nothing a all? A kernel message that xxx isn't done because the fs is
-mounted ro?
-Documenting all these cases (this probably not just space cache
-related?) in the manpage?
+The function btrfs_start_pre_rw_mount() should give us enough clue, but 
+I didn't think too much about the RO mount possibility.
 
+So nothing unexpected expect the fstab usage.
 
-Cheers,
-Chris.
+Thanks,
+Qu
+
+> 
+> 
+> Cheers,
+> Chris.
+
 
