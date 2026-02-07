@@ -1,224 +1,183 @@
-Return-Path: <linux-btrfs+bounces-21459-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21460-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id YD/dFC7Bhml1QgQAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21459-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Sat, 07 Feb 2026 05:35:58 +0100
+	id I344BaLIhmlhQwQAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21460-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Sat, 07 Feb 2026 06:07:46 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 087EF104EBA
-	for <lists+linux-btrfs@lfdr.de>; Sat, 07 Feb 2026 05:35:58 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id A3C7A104FBF
+	for <lists+linux-btrfs@lfdr.de>; Sat, 07 Feb 2026 06:07:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id DDB7D30182BA
-	for <lists+linux-btrfs@lfdr.de>; Sat,  7 Feb 2026 04:35:50 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 348F0302A040
+	for <lists+linux-btrfs@lfdr.de>; Sat,  7 Feb 2026 05:07:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F08D12DB7B4;
-	Sat,  7 Feb 2026 04:35:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="jVbODMK0";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="jVbODMK0"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E15102E091B;
+	Sat,  7 Feb 2026 05:07:36 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from poodle.tulip.relay.mailchannels.net (poodle.tulip.relay.mailchannels.net [23.83.218.249])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F3142D8DB5
-	for <linux-btrfs@vger.kernel.org>; Sat,  7 Feb 2026 04:35:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770438945; cv=none; b=lVXGO8VGQO1s9YlslnOAdBxxj8w/9ElkWQPc6FUAq50BHI7XhVBQH3eCn58nvRUgXDs6rYkRHdQaTbM8aegYAHm9Sxg6O3mSFS0TndTsttQSTMM+BwjiTMPFM8ulLY9iRcDS+4SeySczYgWcxG9//xIsTCmk6WDryTjb5ebxUu4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770438945; c=relaxed/simple;
-	bh=Vk49zraOuUFjhmucyb/6tk3mylj5AHUrVAN3nvXAUg4=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ldYYIyGPrO75qMIGYeV1HKuPGXvptHxilZjRNqxZRzVj9jvHq2+W3c05UwFBuN8S4Wz7/YldXLdqZDnP7fNdQuDsplyZPl2o50dVZeKgU80JywKJh3k8pkXAZ8sFr6QG7Fk/0PBRb4RBJJO5hsNnbABSL/B4LrXIyUU5quHk2Jc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=jVbODMK0; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=jVbODMK0; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 548635BCCE
-	for <linux-btrfs@vger.kernel.org>; Sat,  7 Feb 2026 04:35:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1770438943; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B51D2E413
+	for <linux-btrfs@vger.kernel.org>; Sat,  7 Feb 2026 05:07:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=23.83.218.249
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1770440856; cv=pass; b=Q9aSMAwRrwKLjQd60RyvLJgBZhoPMqc5LoSHqSydgGJWdaTRj4xEMLQCBwbNiYr3+otTzKXDZX21LxH1yQ32NskbUPJlzCb0lKChXBr8LHL9hGz+/zNS5faouA2P3Nr8piF39+ThbxMnUXYL1D+7rDimz3o0I2Zc6bSu2FAAAGk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1770440856; c=relaxed/simple;
+	bh=0X4Ff7kLrKJVztv50wF4xIZRo2yKF5pOiJRBMBWJNd0=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=RtK4WYv+6IlIg4brFPeRWQSESSj4k0doVGs2oE8KJAniHJ70ybn02iFDNrRWMqz5LpX4PJde02va6Qx1aD7PU2Fh5GsWnlb5Xjk0vfzK1yRHbc5sOXNoqxwVnNRIrNCz/biACu+w66NOxyQT3Ym+EOGQNTse4GYkQMMWAl8ybX0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=scientia.org; spf=pass smtp.mailfrom=scientia.org; arc=pass smtp.client-ip=23.83.218.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=scientia.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=scientia.org
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+	by relay.mailchannels.net (Postfix) with ESMTP id 2076F722B71;
+	Sat, 07 Feb 2026 05:00:24 +0000 (UTC)
+Received: from cpanel-007-fra.hostingww.com (trex-green-2.trex.outbound.svc.cluster.local [100.96.84.203])
+	(Authenticated sender: instrampxe0y3a)
+	by relay.mailchannels.net (Postfix) with ESMTPA id 14A31722B8F;
+	Sat, 07 Feb 2026 05:00:22 +0000 (UTC)
+ARC-Seal: i=1; a=rsa-sha256; d=mailchannels.net; s=arc-2022; cv=none;
+	t=1770440423;
+	b=a7UrYfvIz+dZb2lBUtTWT/nLy1nYA0efew9mPqIg51Jiv83wpYwzqTEqQ6JXeClxjyQ1bI
+	Jea67+qKkLL8NChWW6ez9MvizuPa4FfKUBGV+V2XePY4I1A9/2CJp8nv9BoBMb8NduNEAw
+	2wpOXMfkGhYehrEUIiWOYo6KSXjUQNfpiKrXVLm1ybtlhOUkHdhEbz81QW7g7vlywHw6hZ
+	ca7fSX87njWp4HfsbN/m5DpAWDA/ELb9SwEnUCMc87DHlwAspNk5pUU8EWQDUINJbuh4ux
+	f9euPsarhCrePSWYNcLzkwnRl5pcMleJpBq7etaf/ZFdWjjIo5tO9XrZRzNFfA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mailchannels.net;
+	s=arc-2022; t=1770440423;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=SLJTFnYJzhZuH9yEyRLH31UzxS3SgnovtUU6qPR5uFk=;
-	b=jVbODMK00LRk8/EV7xijS5SminZvEV6tv77oyZIogw1eo+AkMRGOzri8EiDS8QmBv1fgdD
-	hLp3f3n2tydJASynnIsh8osB6Eg8bEGSifpgW5oYAsdUs3SjCQGBBSZboeiqR3bn+culOk
-	9F7wTsTMl6fTa6tfMqFrS3YWzcaUQfI=
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1770438943; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SLJTFnYJzhZuH9yEyRLH31UzxS3SgnovtUU6qPR5uFk=;
-	b=jVbODMK00LRk8/EV7xijS5SminZvEV6tv77oyZIogw1eo+AkMRGOzri8EiDS8QmBv1fgdD
-	hLp3f3n2tydJASynnIsh8osB6Eg8bEGSifpgW5oYAsdUs3SjCQGBBSZboeiqR3bn+culOk
-	9F7wTsTMl6fTa6tfMqFrS3YWzcaUQfI=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 84A443EA63
-	for <linux-btrfs@vger.kernel.org>; Sat,  7 Feb 2026 04:35:42 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id CJKzER7Bhmm0LQAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Sat, 07 Feb 2026 04:35:42 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs-progs: tests: output the directory path for missing custom script
-Date: Sat,  7 Feb 2026 15:05:23 +1030
-Message-ID: <a0cfce59143cf99e9c89baa0f4b0f189dfe40687.1770337623.git.wqu@suse.com>
-X-Mailer: git-send-email 2.52.0
-In-Reply-To: <bac89ac52147344ab6244beef8c0085552a3aacb.1770438921.git.wqu@suse.com>
-References: <bac89ac52147344ab6244beef8c0085552a3aacb.1770438921.git.wqu@suse.com>
+	bh=0X4Ff7kLrKJVztv50wF4xIZRo2yKF5pOiJRBMBWJNd0=;
+	b=7c3lB1jLl+UbMWQ7DeKIm5+Lvf8Yu5SiDVLtUxL1LEstsY2iN0h8UgXbeqVoQycDMzF3pW
+	r3OAY86F5Q8kumEKv9pSgezAKnJufqSjQUJ5mzMo5IxC3O1JWnDYG82mLnqVueOK/d9f5e
+	PLOBY+NNj8gQEcvNg0JfPyK8oABxW9EZqzrWWpsAxfaMRB0VNurq4+AmcKn2JrTJsoSnUs
+	PYCyd5usE2lEmrQVbbzIN1xXB4DILe5gxum/vnHk2vcZeVsJBPgKNPd7euk06s9xViErva
+	fuw5+8g6+6ums1QrQG4tzDN/NWa9hP9mXgGqwscABjCYK4D0o50S6YfNwWd6RQ==
+ARC-Authentication-Results: i=1;
+	rspamd-845545c4df-d6lbc;
+	auth=pass smtp.auth=instrampxe0y3a smtp.mailfrom=calestyo@scientia.org
+X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
+X-MC-Relay: Neutral
+X-MailChannels-SenderId: instrampxe0y3a|x-authuser|calestyo@scientia.org
+X-MailChannels-Auth-Id: instrampxe0y3a
+X-Towering-Daffy: 12c405ec3671df37_1770440423975_3214778546
+X-MC-Loop-Signature: 1770440423974:3034199569
+X-MC-Ingress-Time: 1770440423974
+Received: from cpanel-007-fra.hostingww.com (cpanel-007-fra.hostingww.com
+ [3.69.87.180])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
+	by 100.96.84.203 (trex/7.1.3);
+	Sat, 07 Feb 2026 05:00:23 +0000
+Received: from p5b071a6f.dip0.t-ipconnect.de ([91.7.26.111]:64656 helo=heisenberg.fritz.box)
+	by cpanel-007-fra.hostingww.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.99.1)
+	(envelope-from <calestyo@scientia.org>)
+	id 1voaQh-0000000AZo0-1AUU;
+	Sat, 07 Feb 2026 05:00:21 +0000
+Message-ID: <05e63d59951cfb8612c876d5bc7fdb76b272b01c.camel@scientia.org>
+Subject: Re: We have a space info key for a block group that doesn't exist
+From: Christoph Anton Mitterer <calestyo@scientia.org>
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs <linux-btrfs@vger.kernel.org>
+Date: Sat, 07 Feb 2026 06:00:19 +0100
+In-Reply-To: <a6d825eb-3e8c-404f-90f6-6b4e5621479d@suse.com>
+References: <f3574976d7b5bc8f05e42055d85d4b61263bc5c5.camel@scientia.org>
+	 <c07b6fde-03a3-4c97-9f59-866c81e78b85@suse.com>
+	 <31615495f428dbe499ae5f5a109cc6c74c8979ca.camel@scientia.org>
+	 <fc2f1d31-7f2c-493f-be42-2cb8c1fd5a17@gmx.com>
+	 <84b22b2cc7534be60eb423973336101c9e9b9ad3.camel@scientia.org>
+	 <b681834e-7b0f-4606-8c52-f2b4dafba246@suse.com>
+	 <4e6ad7ef198de72edaf890a2257bf63864984197.camel@scientia.org>
+	 <cca8b4ea-97ef-433e-9db9-4eca67b89576@suse.com>
+	 <f1aaada378adad0da020bd679531c7f503ad6f93.camel@scientia.org>
+	 <914a6a60-6bb6-4255-a8cc-ea6f28e7a9cf@suse.com>
+	 <a75537dc77e5b6fac922a97409ca4636805147dc.camel@scientia.org>
+	 <fff60222-0b9f-4f09-b3a6-d415aa64b6d7@gmx.com>
+	 <18a87dd4f3155bb1d9c9884f39dbf53c802a10cd.camel@scientia.org>
+	 <572f0ac4-90f6-4c56-aa4c-2a64e365d526@suse.com>
+	 <52c813cf8dffe11325ce291d3f3bd41bcce21936.camel@scientia.org>
+	 <f094ddbb70cabd2e329615269519b1844f786629.camel@scientia.org>
+	 <a6d825eb-3e8c-404f-90f6-6b4e5621479d@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2-8 
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Score: -2.80
-X-Spam-Level: 
-X-Spam-Flag: NO
+X-AuthUser: calestyo@scientia.org
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+X-Spamd-Result: default: False [-1.46 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DKIM_TRACE(0.00)[suse.com:+];
-	TAGGED_FROM(0.00)[bounces-21459-lists,linux-btrfs=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21460-lists,linux-btrfs=lfdr.de];
+	TO_DN_ALL(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	DMARC_NA(0.00)[scientia.org];
+	RCPT_COUNT_TWO(0.00)[2];
+	RCVD_COUNT_SEVEN(0.00)[7];
+	MIME_TRACE(0.00)[0:+];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[wqu@suse.com,linux-btrfs@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[calestyo@scientia.org,linux-btrfs@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	RCVD_COUNT_FIVE(0.00)[6];
-	NEURAL_HAM(-0.00)[-0.998];
-	TO_DN_NONE(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	NEURAL_HAM(-0.00)[-0.878];
+	MID_RHS_MATCH_FROM(0.00)[];
+	R_DKIM_NA(0.00)[];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[mkfs-tests.sh:url,suse.com:email,suse.com:dkim,suse.com:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 087EF104EBA
+	DBL_BLOCKED_OPENRESOLVER(0.00)[scientia.org:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: A3C7A104FBF
 X-Rspamd-Action: no action
 
-I hit a mkfs failure locally where I reverted the commit which
-introduced the mkfs/040 test case.
+On Sat, 2026-02-07 at 13:04 +1030, Qu Wenruo wrote:
+> Not really, read-only mount can still write, the most common one is
+> the=20
+> log replay.
 
-However that directory didn't got removed as there are local image files
-left due to previous test failure.
+Well I knew about the log replay case... which was also why it never
+really occurred to me that it might disallow its own fs tree
+deletion/creation.
 
-This results a very confusing error message:
 
-    [TEST/mkfs]   039-zoned-profiles
- custom test script not found or lacks execution permission
- make: *** [Makefile:557: test-mkfs] Error 1
+> But other than that, we follow RO pretty well.
 
-The reality is, the failure is caused by 040 not 039, but the error
-message lacks the proper info on it.
+I see ;-)
 
-Add the directory name for every test script, so that now the failure
-will be more readable:
 
-  TEST     mkfs-tests.sh
-    [TEST/mkfs]   001-basic-profiles
- custom test script not found or lacks execution permission ("/home/adam/btrfs-progs/tests/mkfs-tests/002-empty-dir-to-fail")
- make: *** [Makefile:557: test-mkfs] Error 1
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- tests/cli-tests.sh     | 2 +-
- tests/convert-tests.sh | 2 +-
- tests/fuzz-tests.sh    | 2 +-
- tests/misc-tests.sh    | 2 +-
- tests/mkfs-tests.sh    | 2 +-
- 5 files changed, 5 insertions(+), 5 deletions(-)
+>=20
+> I prefer nothing, if we really want to dig into the situation, I
+> should=20
+> have asked about your mount command, but I haven't and that's my
+> fault.
 
-diff --git a/tests/cli-tests.sh b/tests/cli-tests.sh
-index 3a13cf70ffb0..55dd559c2694 100755
---- a/tests/cli-tests.sh
-+++ b/tests/cli-tests.sh
-@@ -75,7 +75,7 @@ do
- 			_fail "test failed for case $name"
- 		fi
- 	else
--		_fail "custom test script not found or lacks execution permission"
-+		_fail "custom test script not found or lacks execution permission (\"$i\")"
- 	fi
- 	cd "$TEST_TOP"
- done
-diff --git a/tests/convert-tests.sh b/tests/convert-tests.sh
-index f11adebd4edf..157a8118e79d 100755
---- a/tests/convert-tests.sh
-+++ b/tests/convert-tests.sh
-@@ -85,7 +85,7 @@ run_one_test() {
- 		fi
- 		check_test_results "$RESULTS" "$testname"
- 	else
--		_fail "custom test script not found or lacks execution permission"
-+		_fail "custom test script not found or lacks execution permission (\"$testdir\")"
- 	fi
- }
- 
-diff --git a/tests/fuzz-tests.sh b/tests/fuzz-tests.sh
-index 666f245836fd..52a2802f0e35 100755
---- a/tests/fuzz-tests.sh
-+++ b/tests/fuzz-tests.sh
-@@ -74,7 +74,7 @@ do
- 			_fail "test failed for case $(basename $i)"
- 		fi
- 	else
--		_not_run "custom test script not found or lacks execution permission"
-+		_not_run "custom test script not found or lacks execution permission (\"$i\")"
- 	fi
- 	cd "$TEST_TOP"
- done
-diff --git a/tests/misc-tests.sh b/tests/misc-tests.sh
-index 2cb8d6081c17..28756c2acde7 100755
---- a/tests/misc-tests.sh
-+++ b/tests/misc-tests.sh
-@@ -82,7 +82,7 @@ do
- 		fi
- 		check_test_results "$RESULTS" "$name"
- 	else
--		_fail "custom test script not found or lacks execution permission"
-+		_fail "custom test script not found or lacks execution permission (\"$i\")"
- 	fi
- 	cd "$TEST_TOP"
- done
-diff --git a/tests/mkfs-tests.sh b/tests/mkfs-tests.sh
-index 55d1dc7ac3e9..6ab1fb77d62b 100755
---- a/tests/mkfs-tests.sh
-+++ b/tests/mkfs-tests.sh
-@@ -77,7 +77,7 @@ do
- 		fi
- 		check_test_results "$RESULTS" "$name"
- 	else
--		_fail "custom test script not found or lacks execution permission"
-+		_fail "custom test script not found or lacks execution permission (\"$i\")"
- 	fi
- 	cd "$TEST_TOP"
- done
--- 
-2.52.0
+Well... people may still fall for that "trap" off-list.
 
+I've seen your patch for the docs from just before... I think what
+would be even better (maybe additionally) was a warning at the kernel
+log for ever mount option that is effectively ignored because the fs
+being ro.
+
+
+> So nothing unexpected expect the fstab usage.
+
+Sorry again O:-)
+
+
+Thanks,
+Chris.
 
