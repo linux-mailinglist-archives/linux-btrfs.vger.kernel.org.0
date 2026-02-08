@@ -1,186 +1,291 @@
-Return-Path: <linux-btrfs+bounces-21492-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21494-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id YBYjB33YiGkCxQQAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21492-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Sun, 08 Feb 2026 19:39:57 +0100
+	id 2JcCGdbaiGnFxQQAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21494-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Sun, 08 Feb 2026 19:49:58 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F8AE109E6D
-	for <lists+linux-btrfs@lfdr.de>; Sun, 08 Feb 2026 19:39:56 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB0E2109F05
+	for <lists+linux-btrfs@lfdr.de>; Sun, 08 Feb 2026 19:49:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A5CA03013D52
-	for <lists+linux-btrfs@lfdr.de>; Sun,  8 Feb 2026 18:38:33 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 7C5C830094F1
+	for <lists+linux-btrfs@lfdr.de>; Sun,  8 Feb 2026 18:49:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 209DD2F9D9A;
-	Sun,  8 Feb 2026 18:38:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CBB130100E;
+	Sun,  8 Feb 2026 18:49:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jhU/1ib4"
+	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="WF8bmblS"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72517243969
-	for <linux-btrfs@vger.kernel.org>; Sun,  8 Feb 2026 18:38:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5412B1D7E5C
+	for <linux-btrfs@vger.kernel.org>; Sun,  8 Feb 2026 18:49:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.153.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770575912; cv=none; b=A84ez0LWCUWMw3IPRVuLLBAvfmH0EGE+fO8/Rz3ZC9BV5QcF1MCBlNMh4YC1ngH7hCk8UprImB9R8dBMjz3DErzmWwl8RyaTFtixkAtQEUqE//GLlsdfm9xcbN8ap12VjjmqI+alsajd2u58PEWsDjwPHvuaKXhh4Co6XnYjG5U=
+	t=1770576589; cv=none; b=ZMCrv8nf9rY092dYPqhTX/zYEctHCjUVTGRp59xJc2dHvW/DEzVTCnDDEljN6P8vdy5UoOuoRMsf4HThBs3yyx94VTHgIydaEu4WsdG2M1S8RG0ip/wixn5a6MpRywunyAE0tatB8w1tSXb58KOI09WhR71CmjFlh1R9xmsIjWU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770575912; c=relaxed/simple;
-	bh=pe1arkh94VOEvuGQyV9/CWHoBvOSxb/OcxSRjDlDQ/s=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mDMB8jX3AJmCRTQD0FRFhJxUHu4DemLVKz7ig21mN1Biq5r3InEvpC0Y+zRpxKr/XxLZnr9tFbkMqQSpMTuE+jleIzvgc7WW37pf61/xgnvBhRW4sLLA8XNapk1Dlq9g5rhAfoNeMuSg6x1y7ChTrcX494XTGG0RTsl2xp/Jl1M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jhU/1ib4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CF44C19421
-	for <linux-btrfs@vger.kernel.org>; Sun,  8 Feb 2026 18:38:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1770575912;
-	bh=pe1arkh94VOEvuGQyV9/CWHoBvOSxb/OcxSRjDlDQ/s=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=jhU/1ib4/aTn3GxXqnYUuxVnrBhFBI4nJnrvwlTl7JGYobgxPMUa6oq1omsokpqRw
-	 9lYAtbUyqap/pmaN1Q6vbjpJub501dALx9MdWncxCDOQa//T9cRtOMfhRmhb/M/Udm
-	 EltafQpVrodd6aHQ/kEA860CC1vfg7P/JzyfrK+EmpMoE6rp0mNTnkFhlRhQ1DwxQA
-	 RAporses6J7NkQks2Factli87BJdxQvhW8Yt/CfPQeGbyvib6c753CBzGllniFGtPj
-	 BHFpUk+LP/yTaBRbIvrEX6NrMFfCQa/SB7HfulpJdEulKbLofkyQ37fCegzMVkiOr4
-	 MhbNKA26KCKmA==
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-658b511573cso6270594a12.0
-        for <linux-btrfs@vger.kernel.org>; Sun, 08 Feb 2026 10:38:32 -0800 (PST)
-X-Gm-Message-State: AOJu0Yz3RZf1G1ipIUOG0VtTO2glaoj7rZyIOH1+UiW99ZNQ8DL19jqP
-	rmvZe3hhlglcTpFguW2+pbBZb+s835gI5kU+3aLImxUNvnU3St2jTtnQLtn1/675H+J389R6Acp
-	ymOF3xhJ8GGJWddeuo47MSFqxdbQT+Qo=
-X-Received: by 2002:a17:906:4fd2:b0:b86:edb9:c01b with SMTP id
- a640c23a62f3a-b8edf175e47mr586458866b.8.1770575910881; Sun, 08 Feb 2026
- 10:38:30 -0800 (PST)
+	s=arc-20240116; t=1770576589; c=relaxed/simple;
+	bh=W+t8SotURr0Ds7cC13lgXzmmd9h8Tq7p7K+Nc63wodU=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=bNAmMBJj1vUmxZ2QrKEwwzSn3Eu35tIPJqNgupLGwsOtGexFAfAmXMNcUNai/eFDSF1NBUfwE59EWV8ZiMVwLaSNvjwHErUWabXNKURQCPoHBqojPqrS1mKxg3/bhU417LJJF2AbovwOYwjuIGrYLcbanwDx8otJXLB9mG7svLI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=WF8bmblS; arc=none smtp.client-ip=67.231.153.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 6188QODX3972544;
+	Sun, 8 Feb 2026 10:49:47 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=s2048-2025-q2;
+	 bh=Sq1jaqiL13Gys+CF0XIffhD4JBuIe2WI8N5erVQ5BrE=; b=WF8bmblSwpGd
+	ZsnKY0rySKzO9adUbUpdNr//EeAd27RGGKfM301AG2edD6Bio9qSdMp0plajOMvp
+	f5DJTiH62TVU7FQDoiwkHKIdm/9PVFBznsiZUTqoPtVs0+kKQadfw74fQ11spskl
+	csOL/pZYIJGZwSDbuSezfvOWOvpU9JYLKLqtwrsU18rUbZ5YKM9QBzxew5+Y0I+t
+	cJYA9L+ifCmXFmiladlXxiWtJMnJCYI4SNipaZZ1v12By89tvEwLLJJqQe5RCFiB
+	BpESV1iCHVDxXzXPMEO65yxSpRb59P5t6eHKIcgkrQzjxXLLPkBhQpcele6b8GDT
+	xc6DHvgiRA==
+Received: from mail.thefacebook.com ([163.114.134.16])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 4c67ycg1w5-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+	Sun, 08 Feb 2026 10:49:47 -0800 (PST)
+Received: from devbig003.atn7.facebook.com (2620:10d:c085:108::150d) by
+ mail.thefacebook.com (2620:10d:c08b:78::c78f) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.2562.35; Sun, 8 Feb 2026 18:49:33 +0000
+From: Chris Mason <clm@meta.com>
+To: Qu Wenruo <wqu@suse.com>
+CC: <linux-btrfs@vger.kernel.org>
+Subject: Re: [PATCH] btrfs: refactor the main loop of cow_file_range()
+Date: Sun, 8 Feb 2026 10:48:20 -0800
+Message-ID: <20260208184920.1102719-1-clm@meta.com>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <5ff61d63a33409de2b821562613ebb3ac0da9bae.1765788497.git.wqu@suse.com>
+References: <5ff61d63a33409de2b821562613ebb3ac0da9bae.1765788497.git.wqu@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1768993725.git.fdmanana@suse.com> <1974159cc321acb84acea5ccef0427592a576cad.1768993725.git.fdmanana@suse.com>
- <20260208161129.3888234-1-clm@meta.com>
-In-Reply-To: <20260208161129.3888234-1-clm@meta.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Sun, 8 Feb 2026 18:37:54 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H5nyMS8VfEHDYKY1ELyWv3BTxrc5wkLHycYHGR8sZqa_w@mail.gmail.com>
-X-Gm-Features: AZwV_Qi_RHeuZJ10P6OIPrTdPe07k5LgynR2xQyEpqVUcg4fVUkta1D6Ns2DM84
-Message-ID: <CAL3q7H5nyMS8VfEHDYKY1ELyWv3BTxrc5wkLHycYHGR8sZqa_w@mail.gmail.com>
-Subject: Re: [PATCH 16/19] btrfs: remove out label in finish_verity()
-To: Chris Mason <clm@meta.com>
-Cc: linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMjA4MDE2MiBTYWx0ZWRfXwYt5gF1akH/A
+ zNf3auc93+ACPslAJv30Osyx124eTx5vfyH3mVkq/uYxsRG8hdfo8XeFl4pT/HqD7HIxRtp886P
+ XgusZOEQiN4t7tsF2SKiQozF4/4AeUZwRAQ30SxPvIHcKZ1YpPa9xxv/+fpFrVulfMKAn2gfYVi
+ 2iNFiKdbGzLj2+FPXrGk2aWUfRlgI4z/D5USZIXEzxhouB5xtULkXns9sVYU0CkbgZYUcOLYDMm
+ zhrH8GRDjSRRRHIx6CFdkT7t3mYqrWS87ccmYvQYL+RIseiU0EIZzbjIfityxqbw9ZS89C7SCVb
+ IS9tItLpWr/dC+opzqJjmG40jyjsts4TxMEXcoYvcY91Hyc1mCzPhu5keSAi9g4UIxKMc3fbYl+
+ hoXv2929PwFchBYme2PjK3H3d4Dw73LfQ8DxNK821L+CIgb5EsZJcBxrxvQLk1dEWPnLlwXOl2B
+ v1INdBrpwidCYibpZvg==
+X-Proofpoint-ORIG-GUID: uJgvQ58OdnXg2HFK78IVRovuToO6LHIf
+X-Authority-Analysis: v=2.4 cv=PomergM3 c=1 sm=1 tr=0 ts=6988dacb cx=c_pps
+ a=CB4LiSf2rd0gKozIdrpkBw==:117 a=CB4LiSf2rd0gKozIdrpkBw==:17
+ a=HzLeVaNsDn8A:10 a=VkNPw1HP01LnGYTKEx00:22 a=Mpw57Om8IfrbqaoTuvik:22
+ a=GgsMoib0sEa3-_RKJdDe:22 a=NEAV23lmAAAA:8 a=iox4zFpeAAAA:8
+ a=OwSd4tB7qwwLmjfTHYcA:9 a=WzC6qhA0u3u7Ye7llzcV:22
+X-Proofpoint-GUID: uJgvQ58OdnXg2HFK78IVRovuToO6LHIf
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.51,FMLib:17.12.100.49
+ definitions=2026-02-08_05,2026-02-05_03,2025-10-01_01
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[meta.com,reject];
+	R_DKIM_ALLOW(-0.20)[meta.com:s=s2048-2025-q2];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21492-lists,linux-btrfs=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_TWO(0.00)[2];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWO(0.00)[2];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21494-lists,linux-btrfs=lfdr.de];
+	DKIM_TRACE(0.00)[meta.com:+];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	TO_DN_SOME(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[clm@meta.com,linux-btrfs@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[fdmanana@kernel.org,linux-btrfs@vger.kernel.org];
-	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	TAGGED_RCPT(0.00)[linux-btrfs];
 	NEURAL_HAM(-0.00)[-0.998];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,mail.gmail.com:mid]
-X-Rspamd-Queue-Id: 6F8AE109E6D
+	RCVD_COUNT_FIVE(0.00)[6];
+	TAGGED_RCPT(0.00)[linux-btrfs];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,meta.com:mid,meta.com:dkim,suse.com:email]
+X-Rspamd-Queue-Id: DB0E2109F05
 X-Rspamd-Action: no action
 
-On Sun, Feb 8, 2026 at 4:11=E2=80=AFPM Chris Mason <clm@meta.com> wrote:
->
-> fdmanana@kernel.org wrote:
-> > From: Filipe Manana <fdmanana@suse.com>
-> >
-> > There is no point in having the label since all it does is return the
-> > value in the 'ret' variable. Instead make every goto return directly
-> > and remove the label.
->
-> Hi everyone,
->
-> I'm running the btrfs for-next branch, along with the encryption patch se=
-t
-> through my AI review prompts:
->
-> https://github.com/masoncl/review-prompts
->
-> I'm working on some btrfs specific instructions, but hopefully these revi=
-ews
-> are already useful.  I've kept the headers to make it easier to double ch=
-eck
-> that I'm actually replying to the right email, but please let me know if =
-any
-> parts of this are incorrect:
->
-> commit 61fb7f04ee06e6c7e113a490af1a057f958f1d05
-> Author: Filipe Manana <fdmanana@suse.com>
->
-> btrfs: remove out label in finish_verity()
->
-> This commit refactors the finish_verity() function by removing the 'out'
-> label and making error paths return directly. The goal is to simplify the
-> control flow.
->
-> > diff --git a/fs/btrfs/verity.c b/fs/btrfs/verity.c
-> > index a2ac3fb68bc85..06cbd6f00a78c 100644
-> > --- a/fs/btrfs/verity.c
-> > +++ b/fs/btrfs/verity.c
->
-> [ ... ]
->
-> > @@ -554,8 +552,7 @@ static int finish_verity(struct btrfs_inode *inode,=
- const void *desc,
-> >       btrfs_set_fs_compat_ro(root->fs_info, VERITY);
-> >  end_trans:
-> >       btrfs_end_transaction(trans);
-> > -out:
-> > -     return ret;
-> > +     return 0;
-> >
->
-> Does this change introduce an error handling regression? When
-> btrfs_update_inode() or del_orphan() fail (lines 546, 549), execution
-> jumps to the end_trans label which now returns 0 instead of returning the
-> error code in 'ret'.
+Qu Wenruo <wqu@suse.com> wrote:
+> Currently inside the main loop of cow_file_range(), we do the following
+> sequence:
+> 
+> - Reserve an extent
+> - Lock the IO tree range
+> - Create an IO extent map
+> - Create an ordered extent
 
-Correct, fix sent here:
+Hi everyone,
 
-https://lore.kernel.org/linux-btrfs/1d384c9ac09392353418f47a8b41366545d7386=
-7.1770575632.git.fdmanana@suse.com/
+I'm running the btrfs for-next branch, along with the encryption patch set
+through my AI review prompts:
 
-Thanks.
+https://github.com/masoncl/review-prompts
 
+I'm working on some btrfs specific instructions, but hopefully these reviews
+are already useful.  I've kept the headers to make it easier to double check
+that I'm actually replying to the right email, but please let me know if any
+parts of this are incorrect:
+
+commit c28214bde6da6e05554a0e5b6375b7b65f98cdbf
+Author: Qu Wenruo <wqu@suse.com>
+
+btrfs: refactor the main loop of cow_file_range()
+
+This commit refactors error handling in cow_file_range() by introducing
+a dedicated cow_one_range() helper that consolidates the
+reserve/lock/allocation sequence and moves error handling into the
+helper itself.
+
+> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+> index e83a881fe202e..b95dab8ac8a11 100644
+> --- a/fs/btrfs/inode.c
+> +++ b/fs/btrfs/inode.c
+
+[ ... ]
+
+> @@ -1274,6 +1274,133 @@ u64 btrfs_get_extent_allocation_hint(struct btrfs_inode *inode, u64 start,
+>  	return alloc_hint;
+>  }
 >
-> Looking at btrfs_end_enable_verity() at line 632:
->
->     ret =3D finish_verity(inode, desc, desc_size);
->     if (ret)
->         goto rollback;
->
-> If finish_verity incorrectly returns 0 on these failures, the caller will
-> not trigger its rollback mechanism, leaving the inode in an inconsistent
-> state. The verity flag changes (BTRFS_INODE_RO_VERITY set at line 543)
-> would not be persisted to disk and the orphan item would not be properly
-> removed.
->
-> The original code correctly returned 'ret' via the 'out' label. Should th=
-e
-> end_trans label also return 'ret' instead of 0?
->
-> >  }
->
+> +/*
+> + * Handle COW for one range.
+> + *
+> + * @ins:		The key representing the allocated range.
+> + * @file_offset:	The file offset of the COW range
+> + * @num_bytes:		The expected length of the COW range
+> + *			The actually allocated length can be smaller than it.
+> + * @min_alloc_size:	The minimal extent size.
+> + * @alloc_hint:		The hint for the extent allocator.
+> + * @ret_alloc_size:	The COW range handles by this function.
+> + *
+> + * Return 0 if everything is fine and update @ret_alloc_size updated.  The
+> + * range is still locked, and caller should unlock the range after everything
+> + * is done or for error handling.
+> + *
+> + * Return <0 for error and @is updated for where the extra cleanup should
+> + * happen. The range [file_offset, file_offset + ret_alloc_size) will be
+> + * cleaned up by this function.
+> + */
+> +static int cow_one_range(struct btrfs_inode *inode, struct folio *locked_folio,
+> +			 struct btrfs_key *ins, struct extent_state **cached,
+> +			 u64 file_offset, u32 num_bytes, u32 min_alloc_size,
+> +			 u64 alloc_hint, u32 *ret_alloc_size)
+> +{
+> +	struct btrfs_root *root = inode->root;
+> +	struct btrfs_fs_info *fs_info = root->fs_info;
+> +	struct btrfs_ordered_extent *ordered;
+> +	struct btrfs_file_extent file_extent;
+> +	struct extent_map *em;
+> +	u32 cur_len = 0;
+> +	u64 cur_end;
+> +	int ret;
+> +
+> +	ret = btrfs_reserve_extent(root, num_bytes, num_bytes, min_alloc_size,
+> +				   0, alloc_hint, ins, true, true);
+> +	if (ret < 0) {
+> +		*ret_alloc_size = cur_len;
+> +		return ret;
+> +	}
+> +
+> +	cur_len = ins->offset;
+> +	cur_end = file_offset + cur_len - 1;
+> +
+> +	file_extent.disk_bytenr = ins->objectid;
+> +	file_extent.disk_num_bytes = ins->offset;
+> +	file_extent.num_bytes = ins->offset;
+> +	file_extent.ram_bytes = ins->offset;
+> +	file_extent.offset = 0;
+> +	file_extent.compression = BTRFS_COMPRESS_NONE;
+> +
+> +	/*
+> +	 * Locked range will be released either during error clean up (inside
+> +	 * this function or by the caller for previously successful ranges) or
+> +	 * after the whole range is finished.
+> +	 */
+> +	btrfs_lock_extent(&inode->io_tree, file_offset, cur_end, cached);
+> +	em = btrfs_create_io_em(inode, file_offset, &file_extent, BTRFS_ORDERED_REGULAR);
+> +	if (IS_ERR(em)) {
+> +		ret = PTR_ERR(em);
+> +		goto free_reserved;
+> +	}
+> +	btrfs_free_extent_map(em);
+> +
+> +	ordered = btrfs_alloc_ordered_extent(inode, file_offset, &file_extent,
+> +					     1U << BTRFS_ORDERED_REGULAR);
+> +	if (IS_ERR(ordered)) {
+> +		btrfs_drop_extent_map_range(inode, file_offset, cur_end, false);
+> +		ret = PTR_ERR(ordered);
+> +		goto free_reserved;
+> +	}
+
+[ ... ]
+
+> +free_reserved:
+> +	extent_clear_unlock_delalloc(inode, file_offset, cur_end, locked_folio, cached,
+> +				     EXTENT_LOCKED | EXTENT_DELALLOC |
+> +				     EXTENT_DELALLOC_NEW |
+> +				     EXTENT_DEFRAG | EXTENT_DO_ACCOUNTING,
+> +				     PAGE_UNLOCK | PAGE_START_WRITEBACK |
+> +				     PAGE_END_WRITEBACK);
+
+Can this cause a double decrement of the bytes_may_use space accounting
+counter?
+
+Looking at the error paths in cow_one_range(), when
+btrfs_reserve_extent() succeeds, it calls btrfs_add_reserved_bytes() at
+line 3829 in block-group.c, which already decrements bytes_may_use.
+Then if we hit the free_reserved error path, EXTENT_DO_ACCOUNTING
+includes EXTENT_CLEAR_DATA_RESV, which causes
+btrfs_free_reserved_data_space_noquota() to be called via
+btrfs_clear_delalloc_extent(), decrementing bytes_may_use a second time.
+
+The old code at the out_unlock label explicitly avoided this with the
+comment:
+
+    /*
+     * For the range (2). If we reserved an extent for our delalloc range
+     * (or a subrange) and failed to create the respective ordered extent,
+     * then it means that when we reserved the extent we decremented the
+     * extent's size from the data space_info's bytes_may_use counter and
+     * incremented the space_info's bytes_reserved counter by the same
+     * amount. We must make sure extent_clear_unlock_delalloc() does not try
+     * to decrement again the data space_info's bytes_may_use counter,
+     * therefore we do not pass it the flag EXTENT_CLEAR_DATA_RESV.
+     */
+
+The old code used only EXTENT_CLEAR_META_RESV (not
+EXTENT_CLEAR_DATA_RESV) for this error path. Should the free_reserved
+path use EXTENT_CLEAR_META_RESV instead of EXTENT_DO_ACCOUNTING to avoid
+this double-decrement?
+
+> +	btrfs_qgroup_free_data(inode, NULL, file_offset, cur_len, NULL);
+> +	btrfs_dec_block_group_reservations(fs_info, ins->objectid);
+> +	btrfs_free_reserved_extent(fs_info, ins.objectid, ins.offset, true);
+> +	mapping_set_error(inode->vfs_inode.i_mapping, -EIO);
+> +	*ret_alloc_size = cur_len;
+> +	/*
+> +	 * We should not return -EAGAIN where it's a special return code for
+> +	 * zoned to catch btrfs_reserved_extent().
+> +	 */
+> +	ASSERT(ret != -EAGAIN);
+> +	return ret;
+> +}
+
+[ ... ]
+
 
