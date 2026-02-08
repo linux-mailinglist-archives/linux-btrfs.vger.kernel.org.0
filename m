@@ -1,239 +1,243 @@
-Return-Path: <linux-btrfs+bounces-21490-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21489-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id AGFzOk3ViGnnwwQAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21490-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Sun, 08 Feb 2026 19:26:21 +0100
+	id I266FBzViGnnwwQAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21489-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Sun, 08 Feb 2026 19:25:32 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63236109E03
-	for <lists+linux-btrfs@lfdr.de>; Sun, 08 Feb 2026 19:26:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E7C6109DFB
+	for <lists+linux-btrfs@lfdr.de>; Sun, 08 Feb 2026 19:25:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 69802300DF5E
-	for <lists+linux-btrfs@lfdr.de>; Sun,  8 Feb 2026 18:26:15 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 134AD3008A65
+	for <lists+linux-btrfs@lfdr.de>; Sun,  8 Feb 2026 18:25:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C763A2F83AE;
-	Sun,  8 Feb 2026 18:26:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C20AF2F83AE;
+	Sun,  8 Feb 2026 18:25:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="f6A+M2Zy"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dO6Ad491"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFE77243969
-	for <linux-btrfs@vger.kernel.org>; Sun,  8 Feb 2026 18:26:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.153.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FAA82D839B
+	for <linux-btrfs@vger.kernel.org>; Sun,  8 Feb 2026 18:25:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770575174; cv=none; b=tiOdYEaactqP5Ijyqs8RElPkV+Zd/aa56tutSzkDunjuJ1hxeTlR//nZ1ne/IFRKdedd34RFlPSYpMz85HUPoCDBU0h465ZbooijSKf27ir50AG3nQ1mnN0YcjU7KoBq3y+Mncj47149gBL5UBqTuZxfSEdJ1Z8+0Xsvz+k3Xr0=
+	t=1770575122; cv=none; b=q76Y7XuXlBNiKrfcJ7OeeY431nn+MQQPN+jDUyi3fLAvrDpUgskLGIWrjPfxn2t2Ignxfprfz+C29tuO2viPVXm038x8dD5GdxssDOgle/XFuvOsmqj1fqRZwXU3daf3ffy5VnnKnBfefyJr34Age2bS+KL+zCG3BppyHAoLVzg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770575174; c=relaxed/simple;
-	bh=NVQESX5nS1uVHtKmiPDG4TMumPOVYTFyjecEQEr2OPo=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=lmmWrC/VsGVnPmPvnUmxeBuPBI5eK19DWHs07J/cdD/RrHB5ToDSdJS9oB2VvbwZ3mpF7isleM4m8HOsGVjhtB078w6t3q0DCGNCdiAUeoyR+0PmcxpzUnVAu+xNXUDIIjpEmzoCbzXOmFyV92vAhGDmdH9Xk9PUrAipnU+GQYE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=f6A+M2Zy; arc=none smtp.client-ip=67.231.153.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-	by mx0a-00082601.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 618Eoknk2507952;
-	Sun, 8 Feb 2026 10:26:10 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=s2048-2025-q2;
-	 bh=C9mWF+Qgt/GjT3bZN0NahxiKndxyEaq2h49WAD31nVQ=; b=f6A+M2ZygRgx
-	/g8R7TM5USwDt4RGOY5vAFHNso8+4cLfDjOEhct6z102BOaXhg492zgeb3ymlhNC
-	f8e/yof34X2noUZKZojNnodmb2CAaTkjW2NMRZBqGEfgtB5Tx7w4sqbcAg/TAbsA
-	8Ay5S7/dgDnBOt3XamPKGVEodqvditq2LkpB6v4JYVRkKRvsrjA6Bxn72e9kCv7g
-	RTlIvVvDXdEbzSj1RSzP+BW5dcyTf2CdRI8fwJ37tUsu4jKcfq58h5Y8qHE12CLQ
-	57CfAMntLiwZo6m6bPGZ6GdUIISDOIetoZ77V5hpWO9J6N1d2akVELZ/ZqmQBBXX
-	fwaXubuvpw==
-Received: from maileast.thefacebook.com ([163.114.135.16])
-	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 4c6vm1150g-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-	Sun, 08 Feb 2026 10:26:10 -0800 (PST)
-Received: from devbig003.atn7.facebook.com (2620:10d:c0a8:1c::11) by
- mail.thefacebook.com (2620:10d:c0a9:6f::237c) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.2562.35; Sun, 8 Feb 2026 18:26:09 +0000
-From: Chris Mason <clm@meta.com>
-To: Sun YangKai <sunk67188@gmail.com>
-CC: <linux-btrfs@vger.kernel.org>, Boris Burkov <boris@bur.io>
-Subject: Re: [PATCH v4 1/2] btrfs: fix periodic reclaim condition
-Date: Sun, 8 Feb 2026 10:24:17 -0800
-Message-ID: <20260208182556.891815-1-clm@meta.com>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20260114035126.20095-2-sunk67188@gmail.com>
-References: <20260114035126.20095-1-sunk67188@gmail.com> <20260114035126.20095-2-sunk67188@gmail.com>
+	s=arc-20240116; t=1770575122; c=relaxed/simple;
+	bh=WMbC7h8S5DhILpgsq7NS1ALdIKeimVQwRo7EUECEaXo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QRZpE0Dj/DtenHcZXiREUvBNwL50Td2FvwY0B1Y9ms46d98dggqSHsGF1z2yYW0sTUOCZQdxASCZOU1+YS4xhsZvY3cBqlz8diIEewik/mpyX7qKw/SmJ+4M7EfwduCQ/mxpNAd5ursVLUIkBd+N31VONWT4dVPCR7zqvwbSmlE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dO6Ad491; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0486C4CEF7
+	for <linux-btrfs@vger.kernel.org>; Sun,  8 Feb 2026 18:25:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1770575121;
+	bh=WMbC7h8S5DhILpgsq7NS1ALdIKeimVQwRo7EUECEaXo=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=dO6Ad491R15OiVnlOfP1nNN92N4rwZzkwVV+MxWFvJPOdkfBHymaaMNv4I0A5geGN
+	 qRSPIU00S5YJapXtYQh+03Qn95hskmcMcLtoti2BdutzED7wakr4DprJ2Bi9kzoucD
+	 3ffFCfWgkYYMluNY7BIqeWOgMP19eD/utQt6jwz7/kCWw1mgsKGg1FK9ci/TPbbJ39
+	 V8dQyWttCXt8g7Dsr8HOGONBOdepCqF9qbJ2UMk6q54xYCmxHAZfakzwYKemGZYkol
+	 Cq/LL89ozGCxjFx15QhiSnGzZrCRgbwR078iXdlFlV7qBjshFn6hMEG5xtq4SS+7mA
+	 qwcq/LxA527Fg==
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-65941c07e8dso3398814a12.1
+        for <linux-btrfs@vger.kernel.org>; Sun, 08 Feb 2026 10:25:21 -0800 (PST)
+X-Gm-Message-State: AOJu0YymDKQdcb9PpNsOvapAAcdysDgnPFYAF6txiRTa53WifN1TngAq
+	+u1uTn8mxVTPEe3i9BjZYgRda49vjlyf/4Db+O/PtrqaHgC7ihaORKWcztnVMChT6BivrZLbcOy
+	ffVzneoyths0Dw8wWjHdnKw1yPgw1898=
+X-Received: by 2002:a17:907:940a:b0:b88:448c:be08 with SMTP id
+ a640c23a62f3a-b8edf14f46dmr509845466b.5.1770575120256; Sun, 08 Feb 2026
+ 10:25:20 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Authority-Analysis: v=2.4 cv=ILUPywvG c=1 sm=1 tr=0 ts=6988d542 cx=c_pps
- a=MfjaFnPeirRr97d5FC5oHw==:117 a=MfjaFnPeirRr97d5FC5oHw==:17
- a=HzLeVaNsDn8A:10 a=VkNPw1HP01LnGYTKEx00:22 a=Mpw57Om8IfrbqaoTuvik:22
- a=GgsMoib0sEa3-_RKJdDe:22 a=NEAV23lmAAAA:8 a=pGLkceISAAAA:8
- a=J69yAAYYy6rkEN2CjnUA:9
-X-Proofpoint-ORIG-GUID: 8yLwpJZ6LpYHChckOZ8BIhv8Wp0uqccz
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMjA4MDE1NyBTYWx0ZWRfX1bP/RlnPbuEG
- gupVdOzm+dR3O2b12+m3Y4xqHMSt2Oni8tH0Qah+Hq6xZwKgp9FU9MwgFnnr/Ezq07XENpMmwIp
- x8PWUDUruGc4apufjFBbLH4JcxtYF6ok2rMGH0JmeDLFIyHPkMKKliNAa66t511KO5lbEgOK9dn
- 9ZSlIDOo3Ziedhg2Y+pD7S4saV5KmeI5QCz6tFcUfaqzIRX7/66vmo9fnC7QdeooneR1uBNlqjE
- gqNvBhSZHofQIPLLZMk1Zy7q3MXXsMF9XxHzbj6rPZV6SlqO2ZktE/k2vdvPhjeY0p2fMjcIvQe
- mP4lPp/8ko0G9HumyJRyw/Szt2PNxCaq4Ru1LWmzKxRbbScYuGMHzUXi5a+TiNZtJsMpy72+qfh
- X9UZpvn0Z+y3T1n3Y2JZvGBNw9KCA/+qdL/yMz2NcX1gIM5YEGbpM15RfkfHuvLINGysP6qtoPb
- 1rlCJuBnHxJ+xosH0KA==
-X-Proofpoint-GUID: 8yLwpJZ6LpYHChckOZ8BIhv8Wp0uqccz
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.51,FMLib:17.12.100.49
- definitions=2026-02-08_04,2026-02-05_03,2025-10-01_01
+References: <cover.1770212626.git.fdmanana@suse.com> <a7a8b95c9c2f5d5c6a481aea277194fa615b8390.1770212626.git.fdmanana@suse.com>
+ <20260208155148.3637328-1-clm@meta.com>
+In-Reply-To: <20260208155148.3637328-1-clm@meta.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Sun, 8 Feb 2026 18:24:43 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H6K0Ve+G16Mk+nFyo_dTF0mMA07PQq63S6y7=tkvsiemw@mail.gmail.com>
+X-Gm-Features: AZwV_QjrYNtAI6AjvqDNGCkXGgy5XKsWL65NVgQoX0hP2fO-ir5W56LuO8bk6Ho
+Message-ID: <CAL3q7H6K0Ve+G16Mk+nFyo_dTF0mMA07PQq63S6y7=tkvsiemw@mail.gmail.com>
+Subject: Re: [PATCH 6/7] btrfs: remove max_mirrors argument from write_all_supers()
+To: Chris Mason <clm@meta.com>
+Cc: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[meta.com,reject];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[meta.com:s=s2048-2025-q2];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21490-lists,linux-btrfs=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	RCPT_COUNT_TWO(0.00)[2];
 	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com];
-	DKIM_TRACE(0.00)[meta.com:+];
+	TAGGED_FROM(0.00)[bounces-21489-lists,linux-btrfs=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[clm@meta.com,linux-btrfs@vger.kernel.org];
-	RCPT_COUNT_THREE(0.00)[3];
-	RCVD_COUNT_FIVE(0.00)[6];
-	TAGGED_RCPT(0.00)[linux-btrfs];
-	NEURAL_HAM(-0.00)[-0.999];
+	FROM_NEQ_ENVFROM(0.00)[fdmanana@kernel.org,linux-btrfs@vger.kernel.org];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	FROM_HAS_DN(0.00)[]
-X-Rspamd-Queue-Id: 63236109E03
+	RCVD_COUNT_FIVE(0.00)[5];
+	TAGGED_RCPT(0.00)[linux-btrfs];
+	NEURAL_HAM(-0.00)[-0.998];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[]
+X-Rspamd-Queue-Id: 7E7C6109DFB
 X-Rspamd-Action: no action
 
-Sun YangKai <sunk67188@gmail.com> wrote:
-> Problems with current implementation:
-> 1. reclaimable_bytes is signed while chunk_sz is unsigned, causing
->    negative reclaimable_bytes to trigger reclaim unexpectedly
-> 2. The "space must be freed between scans" assumption breaks the
->    two-scan requirement: first scan marks block groups, second scan
->    reclaims them. Without the second scan, no reclamation occurs.
-> 
-> Instead, track actual reclaim progress: pause reclaim when block groups
-> will be reclaimed, and resume only when progress is made. This ensures
-> reclaim continues until no further progress can be made. And resume
-> perioidc reclaim when there's enough free space.
-> 
-Hi everyone,
-
-I'm running the btrfs for-next branch, along with the encryption patch set
-through my AI review prompts:
-
-https://github.com/masoncl/review-prompts
-
-I'm working on some btrfs specific instructions, but hopefully these reviews
-are already useful.  I've kept the headers to make it easier to double check
-that I'm actually replying to the right email, but please let me know if any
-parts of this are incorrect:
-
-commit 19eff93dc738e8afaa59cb374b44bb5a162e6c2d
-Author: Sun YangKai <sunk67188@gmail.com>
-
-btrfs: fix periodic reclaim condition
-
-This commit fixes issues with periodic reclaim by tracking actual reclaim
-progress rather than relying on the assumption that space must be freed
-between scans. The patch addresses problems with signed/unsigned comparison
-and ensures reclaim continues until no further progress can be made.
-
-> diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-> index ebe97d6d67d3a..bc493243f777d 100644
-> --- a/fs/btrfs/space-info.c
-> +++ b/fs/btrfs/space-info.c
-
-[ ... ]
-
-> @@ -2098,11 +2098,11 @@ static bool is_reclaim_urgent(struct btrfs_space_info *space_info)
->  	return unalloc < data_chunk_size;
->  }
+On Sun, Feb 8, 2026 at 3:52=E2=80=AFPM Chris Mason <clm@meta.com> wrote:
 >
-> -static void do_reclaim_sweep(struct btrfs_space_info *space_info, int raid)
-> +static bool do_reclaim_sweep(struct btrfs_space_info *space_info, int raid)
->  {
->  	struct btrfs_block_group *bg;
->  	int thresh_pct;
-> -	bool try_again = true;
-> +	bool will_reclaim = false;
->  	bool urgent;
+> fdmanana@kernel.org wrote:
+> > From: Filipe Manana <fdmanana@suse.com>
+> >
+> > There's no need to pass max_mirrors to write_all_supers() since from th=
+e
+> > given transaction handle we can infer if we are in a transaction commit
+> > or fsync context, so we can determine how many mirrors we need to use.
+> >
+> > So remove the max_mirror argument from write_all_supers() and stop
+> > adjusting it in the callees write_dev_supers() and wait_dev_supers(),
+> > simplifying them besides the parameter list for write_all_supers().
 >
->  	spin_lock(&space_info->lock);
-
-[ ... ]
-
-> @@ -2137,12 +2137,13 @@ static void do_reclaim_sweep(struct btrfs_space_info *space_info, int raid)
->  	 * If we have any staler groups, we don't touch the fresher ones, but if we
->  	 * really need a block group, do take a fresh one.
->  	 */
-> -	if (try_again && urgent) {
-> -		try_again = false;
-> +	if (!will_reclaim && urgent) {
-> +		urgent = false;
->  		goto again;
->  	}
+> Hi everyone,
 >
->  	up_read(&space_info->groups_sem);
-> +	return will_reclaim;
->  }
-
-[ ... ]
-
-> @@ -2179,7 +2181,6 @@ static bool btrfs_should_periodic_reclaim(struct btrfs_space_info *space_info)
+> I'm running the btrfs for-next branch, along with the encryption patch se=
+t
+> through my AI review prompts:
 >
->  	spin_lock(&space_info->lock);
->  	ret = space_info->periodic_reclaim_ready;
-> -	btrfs_set_periodic_reclaim_ready(space_info, false);
->  	spin_unlock(&space_info->lock);
+> https://github.com/masoncl/review-prompts
 >
->  	return ret;
-> @@ -2193,8 +2194,10 @@ void btrfs_reclaim_sweep(const struct btrfs_fs_info *fs_info)
->  	list_for_each_entry(space_info, &fs_info->space_info, list) {
->  		if (!btrfs_should_periodic_reclaim(space_info))
->  			continue;
-> -		for (raid = 0; raid < BTRFS_NR_RAID_TYPES; raid++)
-> -			do_reclaim_sweep(space_info, raid);
-> +		for (raid = 0; raid < BTRFS_NR_RAID_TYPES; raid++) {
-> +			if (do_reclaim_sweep(space_info, raid))
-> +				btrfs_set_periodic_reclaim_ready(space_info, false);
-> +		}
->  	}
->  }
+> I'm working on some btrfs specific instructions, but hopefully these revi=
+ews
+> are already useful.  I've kept the headers to make it easier to double ch=
+eck
+> that I'm actually replying to the right email, but please let me know if =
+any
+> parts of this are incorrect:
+>
+> commit a30345d606f40c870c69fb77195b3516a6dd6504
+> Author: Filipe Manana <fdmanana@suse.com>
+>
+> btrfs: remove max_mirrors argument from write_all_supers()
+>
+> This commit removes the max_mirrors parameter from write_all_supers()
+> and determines the mirror count from the transaction handle's in_fsync
+> flag, claiming this simplifies the code while maintaining correctness.
+>
+> > diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> > index 19f7927a000d9..cf4ab067be72c 100644
+> > --- a/fs/btrfs/disk-io.c
+> > +++ b/fs/btrfs/disk-io.c
+>
+> [ ... ]
+>
+> > @@ -4018,13 +4011,14 @@ int btrfs_get_num_tolerated_disk_barrier_failur=
+es(u64 flags)
+> >       return min_tolerated;
+> >  }
+> >
+> > -int write_all_supers(struct btrfs_trans_handle *trans, int max_mirrors=
+)
+> > +int write_all_supers(struct btrfs_trans_handle *trans)
+> >  {
+> >       struct btrfs_fs_info *fs_info =3D trans->fs_info;
+> >       struct list_head *head;
+> >       struct btrfs_device *dev;
+> >       struct btrfs_super_block *sb;
+> >       struct btrfs_dev_item *dev_item;
+> > +     int max_mirrors;
+> >       int ret;
+> >       int do_barriers;
+> >       int max_errors;
+> > @@ -4033,13 +4027,13 @@ int write_all_supers(struct btrfs_trans_handle =
+*trans, int max_mirrors)
+> >
+> >       do_barriers =3D !btrfs_test_opt(fs_info, NOBARRIER);
+> >
+> > -     /*
+> > -      * max_mirrors =3D=3D 0 indicates we're from commit_transaction,
+> > -      * not from fsync where the tree roots in fs_info have not
+> > -      * been consistent on disk.
+> > -      */
+> > -     if (max_mirrors =3D=3D 0)
+> > +     if (trans->in_fsync) {
+> > +             max_mirrors =3D 1;
+> > +     } else {
+> > +             /* We are called from transaction commit. */
+> > +             max_mirrors =3D BTRFS_SUPER_MIRROR_MAX;
+> >               backup_super_roots(fs_info);
+> > +     }
+>
+> Can this logic handle the case where btrfs_sync_file() falls through to
+> btrfs_commit_transaction()? Looking at fs/btrfs/file.c, when a full_sync
+> encounters a log sync failure or BTRFS_LOG_FORCE_COMMIT, the code flow is=
+:
+>
+> btrfs_sync_file()
+>    trans->in_fsync =3D true;  /* Set at file.c:1728 */
+>    ...
+>    btrfs_sync_log()  /* May fail or return BTRFS_LOG_FORCE_COMMIT */
+>    ...
+>    btrfs_commit_transaction(trans)  /* Fallthrough at file.c:1787-1816 */
+>       write_all_supers(trans)
+>          if (trans->in_fsync)  /* Still true here */
+>             max_mirrors =3D 1;  /* But we're in transaction commit */
+>
+> The OLD code always passed max_mirrors=3D0 from btrfs_commit_transaction(=
+)
+> (transaction.c:2560), ensuring full superblock redundancy with
+> BTRFS_SUPER_MIRROR_MAX=3D3 and calling backup_super_roots() regardless of
+> how the transaction commit was triggered.
+>
+> The NEW code uses trans->in_fsync which remains true during the
+> fsync-to-commit fallthrough path. This causes write_all_supers() to set
+> max_mirrors=3D1 and skip backup_super_roots(), reducing superblock
+> redundancy from 3 copies to 1 and skipping tree root backups during these
+> commits.
 
-Does btrfs_reclaim_sweep()->btrfs_set_periodic_reclaim_ready() violate
-locking requirements? The function btrfs_set_periodic_reclaim_ready() has
-lockdep_assert_held(&space_info->lock) at line 2163, but at the call site
-above (line 2199), no lock is held.
+Oh yes, it won't write the super block to all mirrors if a fsync falls
+back to a transaction commit.
 
-Looking at do_reclaim_sweep(), it releases space_info->lock via
-up_read(&space_info->groups_sem) at line 2145 before returning. Similarly,
-the old code had btrfs_should_periodic_reclaim() release the lock with
-spin_unlock(&space_info->lock) at line 2184 before returning.
+This fixup addresses the issue (which I'll fold into for-next):
 
-In the original code, btrfs_set_periodic_reclaim_ready() was called from
-btrfs_should_periodic_reclaim() while holding space_info->lock (acquired
-at line 2182, call to btrfs_set_periodic_reclaim_ready, then release at
-line 2184). This patch moves the call to btrfs_reclaim_sweep() but doesn't
-acquire the lock at the new call site.
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index e95c699a0bae..67117e7516bf 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -4026,7 +4026,8 @@ int write_all_supers(struct btrfs_trans_handle *trans=
+)
 
-Should space_info->lock be acquired before calling
-btrfs_set_periodic_reclaim_ready() at line 2199?
+        do_barriers =3D !btrfs_test_opt(fs_info, NOBARRIER);
 
+-       if (trans->in_fsync) {
++       if (trans->transaction->state < TRANS_STATE_UNBLOCKED) {
++               /* We are called from fsync. */
+                max_mirrors =3D 1;
+        } else {
+                /* We are called from transaction commit. */
+
+
+Thanks.
+
+>
+> Is the commit message claim that "from the given transaction handle we ca=
+n
+> infer if we are in a transaction commit or fsync context" accurate for
+> this case?
+>
 
