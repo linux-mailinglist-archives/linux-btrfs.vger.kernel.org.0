@@ -1,83 +1,83 @@
-Return-Path: <linux-btrfs+bounces-21509-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21510-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id OFv/FzQGiWnD1AQAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21509-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Sun, 08 Feb 2026 22:55:00 +0100
+	id d+mmDU4PiWnG1wQAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21510-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Sun, 08 Feb 2026 23:33:50 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6D6C10A4A0
-	for <lists+linux-btrfs@lfdr.de>; Sun, 08 Feb 2026 22:54:59 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9545C10A748
+	for <lists+linux-btrfs@lfdr.de>; Sun, 08 Feb 2026 23:33:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C7F9E300D95C
-	for <lists+linux-btrfs@lfdr.de>; Sun,  8 Feb 2026 21:54:53 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id B0EEC30073D9
+	for <lists+linux-btrfs@lfdr.de>; Sun,  8 Feb 2026 22:33:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A684341AB6;
-	Sun,  8 Feb 2026 21:54:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFB3D37B40E;
+	Sun,  8 Feb 2026 22:33:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WMV4UZJQ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ta1qeBih"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3225524E4A1
-	for <linux-btrfs@vger.kernel.org>; Sun,  8 Feb 2026 21:54:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D897E35E53E
+	for <linux-btrfs@vger.kernel.org>; Sun,  8 Feb 2026 22:33:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770587692; cv=none; b=LkYmkPtfCudycvbX2EM4wd9e6harlWHmXYL2kwRQQEG0jfqPyeF+A7bNczYwxw+n1Cbc1pgadQzCapxKPQ5e5VKi/f+YQXx4ru8dNWNO1ZlediVJ/zrP7c17NEipkRBM94LPKHcD/USVR1ozqyLIbe3zziL/d7sfix1mliU+SJU=
+	t=1770590022; cv=none; b=NaqKr/OFxreryiSWaD6rt73uEEKO9P1EZLlxi7kYjevWh0+0ns8Yq763UkkbUwHAMHd2U67H3rQfGTk/qPwI2MKQo3SrLzR0NAFe/jJKPx0lOeHAk5W/Qk+1d2jLJDWcvYLlM5iJxVfM/C/Jhixk3b1shtLlDumgKXJh+7kLo34=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770587692; c=relaxed/simple;
-	bh=PN7/ACZp3vLlIx+uqP6Fr7sKgy/e5+clmeWbLYowRrY=;
+	s=arc-20240116; t=1770590022; c=relaxed/simple;
+	bh=O56LrsmdJ+4cClzr6pGT2xUb8+ZIeP5/edXYJSYYAzs=;
 	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
-	 In-Reply-To:Content-Type; b=IkTBDFYMT3AJAkFk3S9x1R3alkuVjK1xVKhyP8OJhNNm5PeCb33B1CL9iNmFgDDxvREEmFro8JAiOQvV+72qGRGTq8wyWtaVlC1uykdtEtJw44NfN/RSez88+G2+NbLapb10VmIX2FEZ8LCfqbDHmmhGO7B34bBAqLyOu48pFek=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WMV4UZJQ; arc=none smtp.client-ip=209.85.128.43
+	 In-Reply-To:Content-Type; b=JqxFqpoZdi2BRzT9YBJHXfCHAkYJfkgBSefpw2g/hJ80ZpqF9+vFa79f1JKxZ04jcsctJxqVByLFHpzUsh2YJcWy9U+gEI1u4GlUEqIYeiNz9fY8I6tUXghERV/QhaWZjgvrtyMRhxckqHjFmyICfNgIGmd4I7VGQ1dUu21fdzo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ta1qeBih; arc=none smtp.client-ip=209.85.128.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-482f454be5bso39756595e9.0
-        for <linux-btrfs@vger.kernel.org>; Sun, 08 Feb 2026 13:54:51 -0800 (PST)
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-48334ee0aeaso6950665e9.1
+        for <linux-btrfs@vger.kernel.org>; Sun, 08 Feb 2026 14:33:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1770587690; x=1771192490; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1770590020; x=1771194820; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:content-language
          :references:to:from:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=pXxvcyTTar8xzbZ64V1bAWpEzH2cYLNMQ5SoFwWNmXQ=;
-        b=WMV4UZJQxn2PxA34J61lPiFBNt+x6bLAFpyDUKtLbChfB+utrHE8ULc4DhjvWImna8
-         d43/TxbrVtLUOQ5J6qgMLzdXIHpSpfyDvIx5kMSzpW8NoGyp8XyFq0RwQHSoB7SQimQC
-         IX2PwyvkXz4YUck6Y7DA+U7qwMG0pMfu83m8/44JsltLfSGtWZdv3qFZGUAnoaBkvKpp
-         J2THIsIywBsCtQZ0t0+qyC2SCJ1Uiusro72iZiqWcNvY22aH1fUcW0BJmnCCzuG+Kujt
-         uWt4SCBq0KXKgjPMel06LQk0F7b8Q1bc4gJPcVVXDVLqrCFJMe2kRZ4Zq6kcRYUCkuu0
-         jUbQ==
+        bh=zp5vvK7sYLi/fobYWvN6nBALHwZtx2dynJcr2u92/7w=;
+        b=Ta1qeBihNPYMA0HInNHyv31wbg0woDkiERHrzimFvaP3zGH/INnDU23GS4rEk+wOqV
+         4/R8tW9TASyHIDD0SQqnttrnwA40qUrSA0CrGgdrrD6QAlxohQjpYwuq2YzJ4y2D28Mh
+         gr9q5FkqFUaNn+6VViAQq5O6Sg0oeHOTp0QYNhj9Gl1/R4Qbn2HAK7xe/ImYViNtpf6E
+         E8w56jeKww2aeWCzsYBOmgImDdwGkeXb/NpT+BihiS5HS66XC4bqLULuSPxEaJ9+lY9C
+         N2ZvLXG2Hhzyr33345DWhd0HKlc+cP4lGutE+8nXLbBBsLgo3j9nVim9wy1tH6e66c5L
+         0tLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770587690; x=1771192490;
+        d=1e100.net; s=20230601; t=1770590020; x=1771194820;
         h=content-transfer-encoding:in-reply-to:autocrypt:content-language
          :references:to:from:subject:user-agent:mime-version:date:message-id
          :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=pXxvcyTTar8xzbZ64V1bAWpEzH2cYLNMQ5SoFwWNmXQ=;
-        b=G2rd3XBODpcfVgvJWbOjlcQt529pfDY81j24o/KlnQ9UjqXlHRWlO/UDp8O8rmawI6
-         4pivG0zSfeCrgUayfj/L2iBuizs+Q3PGD2zVkUudwfqIWcIuWv6XXaArrtLjTlSG9ZeR
-         l283Efgf2AdE6Mbls5X2qUqYluBC1BM1kYq53AIJKcUUlRA/JK3rms3GXHbb7pyS9vHY
-         6KoFmKYS86K1lvNm+nrx5OwjC43mI4PIdUIJ/+OhRisu27Llb7oS1BAzM+l4xXYjVqj5
-         eHfqfEoMAUVmdQd4YSvjfA+sZyjmvc19VUYZaW/+x0jImsmXfrrrONFyX9JK3ibn2C+L
-         TQ+g==
-X-Gm-Message-State: AOJu0YzhYy1ZrC+je7U2qFWsktYvjuF0vDuiBGwv9jx55zaD+/NbgBj7
-	JhqIh/jyeVpYTCgqJPKpEQLdKd/Aq14p+2vptEdT/SfIh9AoPi2SwpBHKsnESQ==
-X-Gm-Gg: AZuq6aJKTWaieouGvAzYse3mD1ujYc9KAq0kKzST9G9zdy+YNR7I9i4XpPM5RJlwgnW
-	7s8xOxjn7zBY3SFvgKce/d6FMUVgeXZFGjQnlmBGWNj75KTXdZf0PE7JaddWeHIlgpBygAOLv8r
-	l6f5HBhbJf+JvBxNjrNpueHkYT43hXREEI0Uy4JreT4zbYQbn35SRbIKbFwWsKP0/siFnZVTusC
-	zclcI3uGTJMECf9YTDFhlZqHFXOvTLZ7Rze2oQBrolWgk7knrINNno7YeLJ2DxmQ7tgNqCKe5Nb
-	Es/XX6/ut737y4s8sRXEP4tGzA0k5wAJ+gSQgGiTijjr7k51zIGk9SNZOosYcNJYsZJvg1F+FvP
-	GEeuriOO7ZpE9BjczhSVLYWFmimTj4P6DhDikK2/i06N6h1pft2QO2BI+nLmpeVOcXuzkT8J/n/
-	6eZxI2vgY4e7dfnrJLU3xHLI4Z6/xnVfe/sEZo7gZEdW4sNuOf6p9CgN5VvDeKJP3Fbzzn51M=
-X-Received: by 2002:a05:600c:4e44:b0:47d:6c36:a125 with SMTP id 5b1f17b1804b1-483203de739mr149820875e9.17.1770587689852;
-        Sun, 08 Feb 2026 13:54:49 -0800 (PST)
+        bh=zp5vvK7sYLi/fobYWvN6nBALHwZtx2dynJcr2u92/7w=;
+        b=hzzuvoWIyKaVKRb6Z/rZ6CbNU73Y8Ytsz2JudKP3UqP7j9H5HGvyAPC6foFY9SvQPd
+         tDUgj9jCYMb/XakQZwR1tpSDIP0/PWY28WlPqhoR+pC62IEGlN4dXui/H/jcYj4MYeZk
+         RK3hYTp1muXtJZ52K4L0aijY4iIQp9MMtLvsXqnV7Fv3e8FrqI7jWHu7tYAghybrkpJv
+         eUPKoPYFgfnee6D/Sf/nTAqYysl3k3g2CbNJYk12lC5J4Pc+t/Jlpk2kuP5aHs3dCSXH
+         JYE0ti9HbH2/xzIFlA2RshsL/F80B1qHJhHovbtir1t54ZfrxBoMFTTCltz85SC/AfUb
+         Xbug==
+X-Gm-Message-State: AOJu0YwX6NhwYiNXm0eCCMj6hN8Tmwzu0TW5+39UBlbsYiLGzcR78aK/
+	MfqsI5OewMgObuPxsQV+/qaoGFSc5K+aMuVaE6pl1rumaykFQigIX9Ft9kEpog==
+X-Gm-Gg: AZuq6aLB4TZDwwS/lDKwoncbmSmIZTySfHrXujzsQLzdZL7ewpmnL7yvfCdM69wdRIr
+	5ljbJyDvlHaNYR3SEI7PyPmS5t7QhaWUB+8W7aJsFnxcrB7BNJHMTwmapRIIy/5QlZERRcBccc1
+	hRrUxs0CRBjDQnanuzouLrEcyxayLvYSbFHn5XHMQgNMKOx1gze/xKjQdUt9d5znDTdZBhxGnIW
+	RW6FvQyhMyQJ6zR/E/xW3dDn/jZqckQvPvdiYs1pJ1M0P2p6ib9sKUIW6mEum7Lf72BUPN+/TkZ
+	yH/Ur0+Vqj0MNDT7TlCDccVPU9uQw/uzFTBytvpiesRu+px41Tet1WvjooxmzbnG/1KMohHVlpQ
+	AyntrKvUqYFH4zpAgaSHqqndWzK0t6hjURHdOsgk5K5TTukH5aq3At99ifmxIFd0NUt05EHbpaZ
+	42B2j2PlsYlg6biOtlzr6p3KqgVOvRSAJWf4QIbKup+p2+pIMNhWL6tdTnvbfV
+X-Received: by 2002:a05:600c:6209:b0:480:690e:f14a with SMTP id 5b1f17b1804b1-483201ee840mr132200875e9.14.1770590019715;
+        Sun, 08 Feb 2026 14:33:39 -0800 (PST)
 Received: from ?IPV6:2a0a:ef40:1978:7401:8935:e471:7003:e5cc? ([2a0a:ef40:1978:7401:8935:e471:7003:e5cc])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-483206ced0dsm190673245e9.6.2026.02.08.13.54.49
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-483203f529bsm80365765e9.4.2026.02.08.14.33.38
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 08 Feb 2026 13:54:49 -0800 (PST)
-Message-ID: <8da0df04-0dfb-4eb8-a3af-4f06a0eba01f@gmail.com>
-Date: Sun, 8 Feb 2026 21:54:48 +0000
+        Sun, 08 Feb 2026 14:33:39 -0800 (PST)
+Message-ID: <ace58685-2d84-4f84-a88f-d4a0358ff316@gmail.com>
+Date: Sun, 8 Feb 2026 22:33:38 +0000
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -90,6 +90,7 @@ From: Qiyu Yan <yanqiyu01@gmail.com>
 To: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>
 References: <0c33ef9a-24b1-43a6-9f93-72249b1cceac@gmail.com>
  <5c1a41f2-e8fc-417e-87a0-debca44b56ec@gmail.com>
+ <8da0df04-0dfb-4eb8-a3af-4f06a0eba01f@gmail.com>
 Content-Language: en-US
 Autocrypt: addr=yanqiyu01@gmail.com; keydata=
  xsFNBF6yAhQBEADsMD+lk6hzk5Cr47oC/LdvnMrX5YULzcBcSBj+MJ+mWxQajQRIripNMU0Z
@@ -144,14 +145,14 @@ Autocrypt: addr=yanqiyu01@gmail.com; keydata=
  323cEt5w3rIegvWFeePPjPoZLe3EBg+tA0J+tiqlOZQbmHoAfeVddbmZJmRW1/QzKm0hzXQT
  qborf9eFXEuCNE7dDj2BSF+aY9EUe7lhfxLIHFWPf0QLXjryzw3dwfOaGitg8dPP5A4prx8R
  0/GqXYttz/srV15jCiDuGPfZQbeDq0BQ3sM=
-In-Reply-To: <5c1a41f2-e8fc-417e-87a0-debca44b56ec@gmail.com>
+In-Reply-To: <8da0df04-0dfb-4eb8-a3af-4f06a0eba01f@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64];
 	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -159,7 +160,7 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	FREEMAIL_FROM(0.00)[gmail.com];
 	TO_DN_EQ_ADDR_ALL(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-21509-lists,linux-btrfs=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-21510-lists,linux-btrfs=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCPT_COUNT_ONE(0.00)[1];
 	DKIM_TRACE(0.00)[gmail.com:+];
@@ -169,71 +170,107 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[yanqiyu01@gmail.com,linux-btrfs@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	NEURAL_HAM(-0.00)[-0.990];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	NEURAL_HAM(-0.00)[-0.989];
 	TAGGED_RCPT(0.00)[linux-btrfs];
 	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: B6D6C10A4A0
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 9545C10A748
 X-Rspamd-Action: no action
 
-failed with different reason after some writing
+Those errors in vm seems to be due to configuration issue, but after 
+those test, the filesystem now mounts and can properly be written to on 
+6.18.7-200.fc43.x86_64 host. I suspect the modification done during the 
+test made some difference. And the issue is related to some modification 
+between 6.17 - 6.17
 
-[  624.632595] I/O error, dev vda, sector 0 op 0x1:(WRITE) flags 0x800 
-phys_seg 0 prio class 0
-[  624.642790] BTRFS error (device vda): bdev /dev/vda errs: wr 0, rd 0, 
-flush 1, corrupt 0, gen 0
-[  624.645172] BTRFS warning (device vda): chunk 536870912 missing 1 
-devices, max tolerance is 0 for writable mount
-[  624.645189] BTRFS: error (device vda) in write_all_supers:4037: 
-errno=-5 IO failure (errors while submitting device barriers.)
-[  624.648010] BTRFS info (device vda state E): forced readonly
-[  624.648016] BTRFS warning (device vda state E): Skipping commit of 
-aborted transaction.
-[  624.648019] BTRFS error (device vda state EA): Transaction aborted 
-(error -5)
-[  624.649789] BTRFS: error (device vda state EA) in 
-cleanup_transaction:2021: errno=-5 IO failure
-[  626.360832] BTRFS error (device vda state EA): failed to run delalloc 
-range, root=257 ino=3248 folio=0 submit_bitmap=0 start=0 len=4096: -30
-[  626.362794] BTRFS error (device vda state EA): failed to run delalloc 
-range, root=257 ino=3249 folio=0 submit_bitmap=0 start=0 len=4096: -30
-[  626.364833] BTRFS error (device vda state EA): failed to run delalloc 
-range, root=257 ino=3250 folio=0 submit_bitmap=0 start=0 len=4096: -30
-[  626.366758] BTRFS error (device vda state EA): failed to run delalloc 
-range, root=257 ino=3251 folio=0 submit_bitmap=0 start=0 len=4096: -30
-[  626.370235] BTRFS error (device vda state EA): failed to run delalloc 
-range, root=257 ino=3254 folio=0 submit_bitmap=0 start=0 len=4096: -30
-[  626.372178] BTRFS error (device vda state EA): failed to run delalloc 
-range, root=257 ino=3255 folio=0 submit_bitmap=0 start=0 len=4096: -30
-[  626.374828] BTRFS error (device vda state EA): failed to run delalloc 
-range, root=257 ino=3257 folio=0 submit_bitmap=0 start=0 len=4096: -30
-[  626.377104] BTRFS error (device vda state EA): failed to run delalloc 
-range, root=257 ino=3258 folio=0 submit_bitmap=0 start=0 len=4096: -30
-[  626.379755] BTRFS error (device vda state EA): failed to run delalloc 
-range, root=257 ino=3260 folio=0 submit_bitmap=0 start=0 len=4096: -30
-[  626.382389] BTRFS error (device vda state EA): failed to run delalloc 
-range, root=257 ino=3262 folio=0 submit_bitmap=0 start=0 len=4096: -30
+A recap of the story:
+  1. On 6.18.7-200.fc43.x86_64, I copy files to the zoned device, 
+triggers -11 from btrfs_commit_transaction
+  2. Unmount and re-mount rw, same error happens after leaving the 
+system alone (both 6.18.7-200.fc43.x86_64 and git latest)
+  3. Tried mount in vm with various version, 6.17 gets same result as 
+host (6.18.7-200.fc43.x86_64), 6.16 mount and writes succeed, starting 
+copying files in VM
+  4. Write in VM failed, but might be related to the cache mode set in 
+QEMU, I am seeing
+             Buffer I/O error on dev sdg, logical block 1509206440, lost 
+async page write
+         on host.
+  5. Confused, I mount again on the host, and now I can again, write to it.
 
-cat /sys/fs/btrfs/02b4934e-9807-43d3-b28b-f9ca7d055391/commit_stats
-commits 5
-last_commit_ms 34011
-max_commit_ms 34011
-total_commit_ms 45217
+Now doing more tests (the files on the filesystem have backup so I am 
+not afraid of making it worse.
 
-在 2026/2/8 21:51, Qiyu Yan 写道:
-> The same issue did not happen with kernel 6.16 (mainline, I tried 6.17 
-> and the issue happens), I tried to mount with the 6.16 kernel and can 
-> observe that at least one commit made it through
+在 2026/2/8 21:54, Qiyu Yan 写道:
+> failed with different reason after some writing
+>
+> [  624.632595] I/O error, dev vda, sector 0 op 0x1:(WRITE) flags 0x800 
+> phys_seg 0 prio class 0
+> [  624.642790] BTRFS error (device vda): bdev /dev/vda errs: wr 0, rd 
+> 0, flush 1, corrupt 0, gen 0
+> [  624.645172] BTRFS warning (device vda): chunk 536870912 missing 1 
+> devices, max tolerance is 0 for writable mount
+> [  624.645189] BTRFS: error (device vda) in write_all_supers:4037: 
+> errno=-5 IO failure (errors while submitting device barriers.)
+> [  624.648010] BTRFS info (device vda state E): forced readonly
+> [  624.648016] BTRFS warning (device vda state E): Skipping commit of 
+> aborted transaction.
+> [  624.648019] BTRFS error (device vda state EA): Transaction aborted 
+> (error -5)
+> [  624.649789] BTRFS: error (device vda state EA) in 
+> cleanup_transaction:2021: errno=-5 IO failure
+> [  626.360832] BTRFS error (device vda state EA): failed to run 
+> delalloc range, root=257 ino=3248 folio=0 submit_bitmap=0 start=0 
+> len=4096: -30
+> [  626.362794] BTRFS error (device vda state EA): failed to run 
+> delalloc range, root=257 ino=3249 folio=0 submit_bitmap=0 start=0 
+> len=4096: -30
+> [  626.364833] BTRFS error (device vda state EA): failed to run 
+> delalloc range, root=257 ino=3250 folio=0 submit_bitmap=0 start=0 
+> len=4096: -30
+> [  626.366758] BTRFS error (device vda state EA): failed to run 
+> delalloc range, root=257 ino=3251 folio=0 submit_bitmap=0 start=0 
+> len=4096: -30
+> [  626.370235] BTRFS error (device vda state EA): failed to run 
+> delalloc range, root=257 ino=3254 folio=0 submit_bitmap=0 start=0 
+> len=4096: -30
+> [  626.372178] BTRFS error (device vda state EA): failed to run 
+> delalloc range, root=257 ino=3255 folio=0 submit_bitmap=0 start=0 
+> len=4096: -30
+> [  626.374828] BTRFS error (device vda state EA): failed to run 
+> delalloc range, root=257 ino=3257 folio=0 submit_bitmap=0 start=0 
+> len=4096: -30
+> [  626.377104] BTRFS error (device vda state EA): failed to run 
+> delalloc range, root=257 ino=3258 folio=0 submit_bitmap=0 start=0 
+> len=4096: -30
+> [  626.379755] BTRFS error (device vda state EA): failed to run 
+> delalloc range, root=257 ino=3260 folio=0 submit_bitmap=0 start=0 
+> len=4096: -30
+> [  626.382389] BTRFS error (device vda state EA): failed to run 
+> delalloc range, root=257 ino=3262 folio=0 submit_bitmap=0 start=0 
+> len=4096: -30
 >
 > cat /sys/fs/btrfs/02b4934e-9807-43d3-b28b-f9ca7d055391/commit_stats
-> commits 1
-> last_commit_ms 70
-> max_commit_ms 70
-> total_commit_ms 70
+> commits 5
+> last_commit_ms 34011
+> max_commit_ms 34011
+> total_commit_ms 45217
 >
-> And I am trying to copy file via rsync and check what happens. But 
-> anyway, this issue looks like a regression since 6.17
+> 在 2026/2/8 21:51, Qiyu Yan 写道:
+>> The same issue did not happen with kernel 6.16 (mainline, I tried 
+>> 6.17 and the issue happens), I tried to mount with the 6.16 kernel 
+>> and can observe that at least one commit made it through
+>>
+>> cat /sys/fs/btrfs/02b4934e-9807-43d3-b28b-f9ca7d055391/commit_stats
+>> commits 1
+>> last_commit_ms 70
+>> max_commit_ms 70
+>> total_commit_ms 70
+>>
+>> And I am trying to copy file via rsync and check what happens. But 
+>> anyway, this issue looks like a regression since 6.17
+>
 
 
