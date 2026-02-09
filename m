@@ -1,163 +1,219 @@
-Return-Path: <linux-btrfs+bounces-21522-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21517-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id eQN6OyheiWnZ7gQAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21522-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Mon, 09 Feb 2026 05:10:16 +0100
+	id oG6lD3lYiWlQ7AQAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21517-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Mon, 09 Feb 2026 04:46:01 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EA9B10B84E
-	for <lists+linux-btrfs@lfdr.de>; Mon, 09 Feb 2026 05:10:16 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F7C710B755
+	for <lists+linux-btrfs@lfdr.de>; Mon, 09 Feb 2026 04:46:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E68BE3006B60
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Feb 2026 04:10:09 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 654F730078F4
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Feb 2026 03:45:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AF93265CDD;
-	Mon,  9 Feb 2026 04:10:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 452162765C5;
+	Mon,  9 Feb 2026 03:45:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="XqFxV25A";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="XqFxV25A"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from poodle.tulip.relay.mailchannels.net (poodle.tulip.relay.mailchannels.net [23.83.218.249])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 758891CEADB
-	for <linux-btrfs@vger.kernel.org>; Mon,  9 Feb 2026 04:09:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=23.83.218.249
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770610206; cv=pass; b=rWpsXtJz74D48+wKBPiHp8jLzrF7plzytpbkuktrruiaCZRLSGVsFbHP0rRl6aXAOIv0c+FgO6SaMwHryrzKCsH5yZvy6GV5Quuo/UOjrePmzcgQoMGb4T17LYQo48rcVwRRLi66xfjWjHgaQu6y8rrbt0IODP926dL6EHuuSv8=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770610206; c=relaxed/simple;
-	bh=Yfp43SoApQE8TaDOZa9rL37I+xDaRPRa3KqCRfJxNmI=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=gN4sb1xXF2JGF6FE9eLX9tBq7lSfimy9q5wBJ9gEXtYAZIAfrupTowcZ44H4lxc5X+DvAk46RAG2qAHcC5coQRNMVoDzLZkLPlb8pEqYAGPYP5GamE27/ohYKSovWIV34pX0N6l+IW2BLhLDXM+dcWut9Ch2urrL+C/zW1vQBls=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=scientia.org; spf=pass smtp.mailfrom=scientia.org; arc=pass smtp.client-ip=23.83.218.249
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=scientia.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=scientia.org
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-	by relay.mailchannels.net (Postfix) with ESMTP id 20A95461E80;
-	Mon, 09 Feb 2026 03:32:22 +0000 (UTC)
-Received: from cpanel-007-fra.hostingww.com (100-96-81-148.trex-nlb.outbound.svc.cluster.local [100.96.81.148])
-	(Authenticated sender: instrampxe0y3a)
-	by relay.mailchannels.net (Postfix) with ESMTPA id 2FFE146235B;
-	Mon, 09 Feb 2026 03:32:21 +0000 (UTC)
-ARC-Seal: i=1; a=rsa-sha256; d=mailchannels.net; s=arc-2022; cv=none;
-	t=1770607941;
-	b=w0mglxSOEfFnuWraX2sVD45L2EqzVWYUjVT9jCfzwMz6T4+WBlPTSasM+ZPT+YFDeQAtTV
-	QyNcxoje9chU+pzGHKMk72tgKSPiqwmdyhU+M3uWVJR29Ep6oULDJxbhihQcAqf7EUT4h2
-	wleKh6Sbr7fiZbbzYdmkGU1cPzhrn4t8e4kpPpMIIsaVHelQbR04v+ZRNMc21TMbm864QB
-	K9PBufc5djWFq8s1uWxlxdY4zHQ94yf5E9BCRIS0XCbH7TaXcPVu9Vk47igBWPzVTJchJD
-	zUhjqpFdazQXiTsMAwc9oEXSy10mxoP8VdfDWZCruS2ZRLyoEMLIJjereSHy+Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mailchannels.net;
-	s=arc-2022; t=1770607941;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Yfp43SoApQE8TaDOZa9rL37I+xDaRPRa3KqCRfJxNmI=;
-	b=6yc5IH5VYLy+MuNCYr9ztSBv+NqScENVX9wwtp4ywvKoQhneZytzVVyzvMsrm9Jd9uyt8w
-	n9g4jP9JWAJ0gujFx/OB76CO5LkFUcVYUzKxrZRV3vb6aYmOqZ8NhZyHkYOJ9mNBxsWAJi
-	6Yni6h44oZUwdMExbVVWEnFiuRAubK5ieK12SNJzVnLJApf/8Bllc4Hl4lRXNL6KuDyhR7
-	/8d43Mea1JIRHMaqI+dw54SgpU1qJU17UVDLSrjI6CkqyAgrj3eV2Uxws9DtUUQJqfi0uY
-	2TUtwX0sAQYNcXDbWVPX59cZKcgyq/WZ+NTy3K2pMh1cBZvU+P9xwZwk9SqfVg==
-ARC-Authentication-Results: i=1;
-	rspamd-845545c4df-rtwjf;
-	auth=pass smtp.auth=instrampxe0y3a smtp.mailfrom=calestyo@scientia.org
-X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
-X-MC-Relay: Neutral
-X-MailChannels-SenderId: instrampxe0y3a|x-authuser|calestyo@scientia.org
-X-MailChannels-Auth-Id: instrampxe0y3a
-X-Company-Descriptive: 17edafe717557bce_1770607941872_625575656
-X-MC-Loop-Signature: 1770607941872:2964859231
-X-MC-Ingress-Time: 1770607941872
-Received: from cpanel-007-fra.hostingww.com (cpanel-007-fra.hostingww.com
- [3.69.87.180])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
-	by 100.96.81.148 (trex/7.1.3);
-	Mon, 09 Feb 2026 03:32:21 +0000
-Received: from p5b071a6f.dip0.t-ipconnect.de ([91.7.26.111]:62710 helo=heisenberg.fritz.box)
-	by cpanel-007-fra.hostingww.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
-	(Exim 4.99.1)
-	(envelope-from <calestyo@scientia.org>)
-	id 1vpI0Y-00000007dNY-1jPQ;
-	Mon, 09 Feb 2026 03:32:19 +0000
-Message-ID: <3137a2417287037a2ed52ded55fab35181254009.camel@scientia.org>
-Subject: Re: space_info METADATA (sub-group id 0) has 691535872 free, is not
- full // open_ctree failed: -2
-From: Christoph Anton Mitterer <calestyo@scientia.org>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs <linux-btrfs@vger.kernel.org>
-Date: Mon, 09 Feb 2026 04:32:17 +0100
-In-Reply-To: <9b05f9a3-5efe-4e57-9585-a3886bb419fa@suse.com>
-References: <f3574976d7b5bc8f05e42055d85d4b61263bc5c5.camel@scientia.org>
-	 <fc2f1d31-7f2c-493f-be42-2cb8c1fd5a17@gmx.com>
-	 <84b22b2cc7534be60eb423973336101c9e9b9ad3.camel@scientia.org>
-	 <b681834e-7b0f-4606-8c52-f2b4dafba246@suse.com>
-	 <4e6ad7ef198de72edaf890a2257bf63864984197.camel@scientia.org>
-	 <cca8b4ea-97ef-433e-9db9-4eca67b89576@suse.com>
-	 <f1aaada378adad0da020bd679531c7f503ad6f93.camel@scientia.org>
-	 <914a6a60-6bb6-4255-a8cc-ea6f28e7a9cf@suse.com>
-	 <a75537dc77e5b6fac922a97409ca4636805147dc.camel@scientia.org>
-	 <fff60222-0b9f-4f09-b3a6-d415aa64b6d7@gmx.com>
-	 <18a87dd4f3155bb1d9c9884f39dbf53c802a10cd.camel@scientia.org>
-	 <572f0ac4-90f6-4c56-aa4c-2a64e365d526@suse.com>
-	 <52c813cf8dffe11325ce291d3f3bd41bcce21936.camel@scientia.org>
-	 <f094ddbb70cabd2e329615269519b1844f786629.camel@scientia.org>
-	 <a6d825eb-3e8c-404f-90f6-6b4e5621479d@suse.com>
-	 <05e63d59951cfb8612c876d5bc7fdb76b272b01c.camel@scientia.org>
-	 <89188b7b8b5a1f9bb64af37777aec906134ad75c.camel@scientia.org>
-	 <9b05f9a3-5efe-4e57-9585-a3886bb419fa@suse.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.56.2-8 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DDD3176FB1
+	for <linux-btrfs@vger.kernel.org>; Mon,  9 Feb 2026 03:45:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1770608733; cv=none; b=imBJJKRumS6btdBsjBCuEtOcuEy+0JQK2yJDSNzQXaBANBVFtWVfY4pX1ea8Zk4F/nqHULx4uCyJGyzibR2e2lz/nLbppWt041ZbP1wb7K3OzgCvkrlb3pP9L77RG3jk5rlY/3BP1x0oPMHO5EPjTL4+FceNE2YXnD1JdN9Z8kg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1770608733; c=relaxed/simple;
+	bh=dBebfKE0kEs+87bKpRYi7zKbqxZlWJniPvZK1rMWtOE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=bqQ9Uwm/+dbYx4UMqct86ndzIyAjfVu5ZAYepjE4E7l2RPERKq2TqEXmYOkg5QQkM8BmVddSVXaylHp5IIHgEuTyyUyXTUPflRRXOAnq3FUKtl5ZJeIijcOh5hv7AAJX9hQnZRc50N72zH1glk+0JmfzYAs1sRBPP7oZ1DMinaE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=XqFxV25A; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=XqFxV25A; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 826D53E6E1;
+	Mon,  9 Feb 2026 03:45:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1770608731; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=6PEhiq+xKTZzSKKXPqfgEY9qeV6NGFSPOKhi0pD51oc=;
+	b=XqFxV25A5UhNBg5vlAgIawCCv8MAj493Hh3+SKqpyAe/6G/n/+Kmm+Xvz5jVR7NSTn3BpU
+	7h1NxU+iMg9w6blx/UO3tnxVYe5cZ35nIA3m8hmqQiGYyy82JsxpBpYyqmxvKDK1nieRHv
+	diLAPSlbdRDpx3oDCAHKNj/7EUi61+I=
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1770608731; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=6PEhiq+xKTZzSKKXPqfgEY9qeV6NGFSPOKhi0pD51oc=;
+	b=XqFxV25A5UhNBg5vlAgIawCCv8MAj493Hh3+SKqpyAe/6G/n/+Kmm+Xvz5jVR7NSTn3BpU
+	7h1NxU+iMg9w6blx/UO3tnxVYe5cZ35nIA3m8hmqQiGYyy82JsxpBpYyqmxvKDK1nieRHv
+	diLAPSlbdRDpx3oDCAHKNj/7EUi61+I=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 223213EA63;
+	Mon,  9 Feb 2026 03:45:29 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 6zMjMFlYiWmPFAAAD6G6ig
+	(envelope-from <wqu@suse.com>); Mon, 09 Feb 2026 03:45:29 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Cc: Chris Mason <clm@meta.com>
+Subject: [PATCH] btrfs: fix a double release on reserved extents in cow_one_range()
+Date: Mon,  9 Feb 2026 14:15:11 +1030
+Message-ID: <09b588005eec0809898978728261fff1a7b23d35.1770608707.git.wqu@suse.com>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-AuthUser: calestyo@scientia.org
+Content-Transfer-Encoding: 8bit
+X-Spam-Flag: NO
+X-Spam-Score: -2.80
+X-Spam-Level: 
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.46 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21522-lists,linux-btrfs=lfdr.de];
-	TO_DN_ALL(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DMARC_NA(0.00)[scientia.org];
+	TAGGED_FROM(0.00)[bounces-21517-lists,linux-btrfs=lfdr.de];
 	RCPT_COUNT_TWO(0.00)[2];
-	RCVD_COUNT_SEVEN(0.00)[7];
-	MIME_TRACE(0.00)[0:+];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[calestyo@scientia.org,linux-btrfs@vger.kernel.org];
+	RCVD_COUNT_FIVE(0.00)[6];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	NEURAL_HAM(-0.00)[-0.880];
-	MID_RHS_MATCH_FROM(0.00)[];
-	R_DKIM_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FROM_NEQ_ENVFROM(0.00)[wqu@suse.com,linux-btrfs@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[scientia.org:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 4EA9B10B84E
+	NEURAL_HAM(-0.00)[-1.000];
+	DKIM_TRACE(0.00)[suse.com:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:dkim,suse.com:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,meta.com:email]
+X-Rspamd-Queue-Id: 8F7C710B755
 X-Rspamd-Action: no action
 
-On Mon, 2026-02-09 at 13:51 +1030, Qu Wenruo wrote:
-> I think you're safe to clear the v2 cache, and let the kernel create
-> at=20
-> mount time.
+[BUG]
+Commit c28214bde6da ("btrfs: refactor the main loop of
+cow_file_range()") refactored the handling of COWing one range.
 
-Would it help you if I keep the fs for further debugging (or later
-checking a possible fix)?
+However it changed the error handling of the reserved extent.
 
-If so, any rough estimate on how long that would take (cause in
-principle I would sooner or later want to use that device again for
-backups ;-) ).
+The old cleanup looks like this:
 
+out_drop_extent_cache:
+	btrfs_drop_extent_map_range(inode, start, start + cur_alloc_size - 1, false);
+out_reserve:
+	btrfs_dec_block_group_reservations(fs_info, ins.objectid);
+	btrfs_free_reserved_extent(fs_info, ins.objectid, ins.offset, true);
+	[...]
+	clear_bits = EXTENT_LOCKED | EXTENT_DELALLOC | EXTENT_DELALLOC_NEW |
+		     EXTENT_DEFRAG | EXTENT_CLEAR_META_RESV;
+	page_ops = PAGE_UNLOCK | PAGE_START_WRITEBACK | PAGE_END_WRITEBACK;
+	/*
+	 * For the range (2). If we reserved an extent for our delalloc range
+	 * (or a subrange) and failed to create the respective ordered extent,
+	 * then it means that when we reserved the extent we decremented the
+	 * extent's size from the data space_info's bytes_may_use counter and
+	 * incremented the space_info's bytes_reserved counter by the same
+	 * amount. We must make sure extent_clear_unlock_delalloc() does not try
+	 * to decrement again the data space_info's bytes_may_use counter,
+	 * therefore we do not pass it the flag EXTENT_CLEAR_DATA_RESV.
+	 */
+	if (cur_alloc_size) {
+	        extent_clear_unlock_delalloc(inode, start,
+	                                     start + cur_alloc_size - 1,
+	                                     locked_folio, &cached, clear_bits,
+	                                     page_ops);
+	        btrfs_qgroup_free_data(inode, NULL, start, cur_alloc_size, NULL);
+	}
 
-Thanks,
-Chris
+Which only calls EXTENT_CLEAR_META_RESV.
+As the reserved extent is properly handled by
+btrfs_free_reserved_extent().
+
+However the new cleanup is:
+
+	extent_clear_unlock_delalloc(inode, file_offset, cur_end, locked_folio, cached,
+				     EXTENT_LOCKED | EXTENT_DELALLOC |
+				     EXTENT_DELALLOC_NEW |
+				     EXTENT_DEFRAG | EXTENT_DO_ACCOUNTING,
+				     PAGE_UNLOCK | PAGE_START_WRITEBACK |
+				     PAGE_END_WRITEBACK);
+	btrfs_qgroup_free_data(inode, NULL, file_offset, cur_len, NULL);
+	btrfs_dec_block_group_reservations(fs_info, ins->objectid);
+	btrfs_free_reserved_extent(fs_info, ins->objectid, ins->offset, true);
+
+The flag EXTENT_DO_ACCOUNTING implies both EXTENT_CLEAR_META_RESV and
+EXTENT_CLEAR_DATA_RESV, which will release the bytes_may_use, which
+later btrfs_free_reserved_extent() will do again, causing incorrect
+double release (and may underflow bytes_may_use).
+
+[FIX]
+Use EXTENT_CLEAR_META_RESV to replace EXTENT_DO_ACCOUNTING, and add back
+the comments on why we only use EXTENT_CLEAR_META_RESV.
+
+Fixes: c28214bde6da ("btrfs: refactor the main loop of cow_file_range()")
+Reported-by: Chris Mason <clm@meta.com>
+Link: https://lore.kernel.org/linux-btrfs/20260208184920.1102719-1-clm@meta.com/
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+---
+ fs/btrfs/inode.c | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+index 7b23ae6872fc..4ba38ec22610 100644
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+@@ -1393,10 +1393,25 @@ static int cow_one_range(struct btrfs_inode *inode, struct folio *locked_folio,
+ 	return ret;
+ 
+ free_reserved:
++	/*
++	 * If we have reserved an extent for the current range and failed to
++	 * create the respectiv extent map or ordered extent, it means that
++	 * when we reserved the extent we decremented the extent's size from
++	 * the data space_info's bytes_may_use counter and
++	 * incremented the space_info's bytes_reserved counter by the same
++	 * amount.
++	 *
++	 * We must make sure extent_clear_unlock_delalloc() does not try
++	 * to decrement again the data space_info's bytes_may_use counter, which
++	 * will be handled by btrfs_free_reserved_extent().
++	 *
++	 * Therefore we do not pass it the flag EXTENT_CLEAR_DATA_RESV, but only
++	 * EXTENT_CLEAR_META_RESV.
++	 */
+ 	extent_clear_unlock_delalloc(inode, file_offset, cur_end, locked_folio, cached,
+ 				     EXTENT_LOCKED | EXTENT_DELALLOC |
+ 				     EXTENT_DELALLOC_NEW |
+-				     EXTENT_DEFRAG | EXTENT_DO_ACCOUNTING,
++				     EXTENT_DEFRAG | EXTENT_CLEAR_META_RESV,
+ 				     PAGE_UNLOCK | PAGE_START_WRITEBACK |
+ 				     PAGE_END_WRITEBACK);
+ 	btrfs_qgroup_free_data(inode, NULL, file_offset, cur_len, NULL);
+-- 
+2.52.0
+
 
