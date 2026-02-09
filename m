@@ -1,200 +1,163 @@
-Return-Path: <linux-btrfs+bounces-21516-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21522-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id NgEEEu9UiWnY6wQAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21516-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Mon, 09 Feb 2026 04:30:55 +0100
+	id eQN6OyheiWnZ7gQAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21522-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Mon, 09 Feb 2026 05:10:16 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 933C410B630
-	for <lists+linux-btrfs@lfdr.de>; Mon, 09 Feb 2026 04:30:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EA9B10B84E
+	for <lists+linux-btrfs@lfdr.de>; Mon, 09 Feb 2026 05:10:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 708F130078F3
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Feb 2026 03:30:48 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id E68BE3006B60
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Feb 2026 04:10:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63FDF1E3DDE;
-	Mon,  9 Feb 2026 03:30:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="C0dkG2gl";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="C0dkG2gl"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AF93265CDD;
+	Mon,  9 Feb 2026 04:10:07 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from poodle.tulip.relay.mailchannels.net (poodle.tulip.relay.mailchannels.net [23.83.218.249])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E2C018AE3
-	for <linux-btrfs@vger.kernel.org>; Mon,  9 Feb 2026 03:30:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770607846; cv=none; b=U9ogU3XEqUDJPoxjmYV3663bvIhc46Mz+U5eJBSlJP5TqhCuS55i8fEEAvVCsYalfZvabeBzIPanWb5Z6S5pP/Imiyt2HP5wxsmBLB5zPbXyJHzxCxT5c5YPQc8yNbHQMIEGS9xGb4hSSc91FekLKW9Mp1U1uKJKGq3TgL9FeHs=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770607846; c=relaxed/simple;
-	bh=PXR9x+oMj/MPZPv1F9jB6JgZc/OwlemEGids7ulSk6M=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=lbyVsO0QASJ1JUMwZZMU2bTiPAjvO0AHSwm0BUG6Qo+Q2XCVBLbFa58Jg/jA2lnsGR298s7KWX02g/6AtuTpf3IXEIP7Iei6MgZj0KO14JjNAcu3KJP2JFGRNiHHmXLDqvvU6uQQbcKhByL4nwKznEwxPJtpZye+YTPw9kutJ54=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=C0dkG2gl; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=C0dkG2gl; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id BC2E23E6E1;
-	Mon,  9 Feb 2026 03:30:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1770607844; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=2iC0itCku5YiuF+y1vxrx8ZdBXJi0zdF0+XEofUit3w=;
-	b=C0dkG2gl05clTkGuZ2CzN2njNd6nViuuaNt1D/6VQPC9gr2jL1crMynsRP2g2FiH+v8iw4
-	BETdpgVDmLW+XyV86TzKF5vaVtR+xEfgjkagKrZro4cBvmT4SyVaWUT/MGBuEY47adhyTM
-	BqWsuWsvMERJb5RlzkNMsOvsuIoXgss=
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1770607844; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=2iC0itCku5YiuF+y1vxrx8ZdBXJi0zdF0+XEofUit3w=;
-	b=C0dkG2gl05clTkGuZ2CzN2njNd6nViuuaNt1D/6VQPC9gr2jL1crMynsRP2g2FiH+v8iw4
-	BETdpgVDmLW+XyV86TzKF5vaVtR+xEfgjkagKrZro4cBvmT4SyVaWUT/MGBuEY47adhyTM
-	BqWsuWsvMERJb5RlzkNMsOvsuIoXgss=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 616B23EA63;
-	Mon,  9 Feb 2026 03:30:43 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id +aBmBONUiWn8KgAAD6G6ig
-	(envelope-from <wqu@suse.com>); Mon, 09 Feb 2026 03:30:43 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Cc: Chris Mason <clm@meta.com>
-Subject: [PATCH v2] btrfs: fix the inline compressed extent check in inode_need_compress()
-Date: Mon,  9 Feb 2026 14:00:16 +1030
-Message-ID: <3cd5a484ffc3d8a499b062cbda89793d560b85d7.1770607799.git.wqu@suse.com>
-X-Mailer: git-send-email 2.52.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 758891CEADB
+	for <linux-btrfs@vger.kernel.org>; Mon,  9 Feb 2026 04:09:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=23.83.218.249
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1770610206; cv=pass; b=rWpsXtJz74D48+wKBPiHp8jLzrF7plzytpbkuktrruiaCZRLSGVsFbHP0rRl6aXAOIv0c+FgO6SaMwHryrzKCsH5yZvy6GV5Quuo/UOjrePmzcgQoMGb4T17LYQo48rcVwRRLi66xfjWjHgaQu6y8rrbt0IODP926dL6EHuuSv8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1770610206; c=relaxed/simple;
+	bh=Yfp43SoApQE8TaDOZa9rL37I+xDaRPRa3KqCRfJxNmI=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=gN4sb1xXF2JGF6FE9eLX9tBq7lSfimy9q5wBJ9gEXtYAZIAfrupTowcZ44H4lxc5X+DvAk46RAG2qAHcC5coQRNMVoDzLZkLPlb8pEqYAGPYP5GamE27/ohYKSovWIV34pX0N6l+IW2BLhLDXM+dcWut9Ch2urrL+C/zW1vQBls=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=scientia.org; spf=pass smtp.mailfrom=scientia.org; arc=pass smtp.client-ip=23.83.218.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=scientia.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=scientia.org
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+	by relay.mailchannels.net (Postfix) with ESMTP id 20A95461E80;
+	Mon, 09 Feb 2026 03:32:22 +0000 (UTC)
+Received: from cpanel-007-fra.hostingww.com (100-96-81-148.trex-nlb.outbound.svc.cluster.local [100.96.81.148])
+	(Authenticated sender: instrampxe0y3a)
+	by relay.mailchannels.net (Postfix) with ESMTPA id 2FFE146235B;
+	Mon, 09 Feb 2026 03:32:21 +0000 (UTC)
+ARC-Seal: i=1; a=rsa-sha256; d=mailchannels.net; s=arc-2022; cv=none;
+	t=1770607941;
+	b=w0mglxSOEfFnuWraX2sVD45L2EqzVWYUjVT9jCfzwMz6T4+WBlPTSasM+ZPT+YFDeQAtTV
+	QyNcxoje9chU+pzGHKMk72tgKSPiqwmdyhU+M3uWVJR29Ep6oULDJxbhihQcAqf7EUT4h2
+	wleKh6Sbr7fiZbbzYdmkGU1cPzhrn4t8e4kpPpMIIsaVHelQbR04v+ZRNMc21TMbm864QB
+	K9PBufc5djWFq8s1uWxlxdY4zHQ94yf5E9BCRIS0XCbH7TaXcPVu9Vk47igBWPzVTJchJD
+	zUhjqpFdazQXiTsMAwc9oEXSy10mxoP8VdfDWZCruS2ZRLyoEMLIJjereSHy+Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mailchannels.net;
+	s=arc-2022; t=1770607941;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Yfp43SoApQE8TaDOZa9rL37I+xDaRPRa3KqCRfJxNmI=;
+	b=6yc5IH5VYLy+MuNCYr9ztSBv+NqScENVX9wwtp4ywvKoQhneZytzVVyzvMsrm9Jd9uyt8w
+	n9g4jP9JWAJ0gujFx/OB76CO5LkFUcVYUzKxrZRV3vb6aYmOqZ8NhZyHkYOJ9mNBxsWAJi
+	6Yni6h44oZUwdMExbVVWEnFiuRAubK5ieK12SNJzVnLJApf/8Bllc4Hl4lRXNL6KuDyhR7
+	/8d43Mea1JIRHMaqI+dw54SgpU1qJU17UVDLSrjI6CkqyAgrj3eV2Uxws9DtUUQJqfi0uY
+	2TUtwX0sAQYNcXDbWVPX59cZKcgyq/WZ+NTy3K2pMh1cBZvU+P9xwZwk9SqfVg==
+ARC-Authentication-Results: i=1;
+	rspamd-845545c4df-rtwjf;
+	auth=pass smtp.auth=instrampxe0y3a smtp.mailfrom=calestyo@scientia.org
+X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
+X-MC-Relay: Neutral
+X-MailChannels-SenderId: instrampxe0y3a|x-authuser|calestyo@scientia.org
+X-MailChannels-Auth-Id: instrampxe0y3a
+X-Company-Descriptive: 17edafe717557bce_1770607941872_625575656
+X-MC-Loop-Signature: 1770607941872:2964859231
+X-MC-Ingress-Time: 1770607941872
+Received: from cpanel-007-fra.hostingww.com (cpanel-007-fra.hostingww.com
+ [3.69.87.180])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
+	by 100.96.81.148 (trex/7.1.3);
+	Mon, 09 Feb 2026 03:32:21 +0000
+Received: from p5b071a6f.dip0.t-ipconnect.de ([91.7.26.111]:62710 helo=heisenberg.fritz.box)
+	by cpanel-007-fra.hostingww.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.99.1)
+	(envelope-from <calestyo@scientia.org>)
+	id 1vpI0Y-00000007dNY-1jPQ;
+	Mon, 09 Feb 2026 03:32:19 +0000
+Message-ID: <3137a2417287037a2ed52ded55fab35181254009.camel@scientia.org>
+Subject: Re: space_info METADATA (sub-group id 0) has 691535872 free, is not
+ full // open_ctree failed: -2
+From: Christoph Anton Mitterer <calestyo@scientia.org>
+To: Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs <linux-btrfs@vger.kernel.org>
+Date: Mon, 09 Feb 2026 04:32:17 +0100
+In-Reply-To: <9b05f9a3-5efe-4e57-9585-a3886bb419fa@suse.com>
+References: <f3574976d7b5bc8f05e42055d85d4b61263bc5c5.camel@scientia.org>
+	 <fc2f1d31-7f2c-493f-be42-2cb8c1fd5a17@gmx.com>
+	 <84b22b2cc7534be60eb423973336101c9e9b9ad3.camel@scientia.org>
+	 <b681834e-7b0f-4606-8c52-f2b4dafba246@suse.com>
+	 <4e6ad7ef198de72edaf890a2257bf63864984197.camel@scientia.org>
+	 <cca8b4ea-97ef-433e-9db9-4eca67b89576@suse.com>
+	 <f1aaada378adad0da020bd679531c7f503ad6f93.camel@scientia.org>
+	 <914a6a60-6bb6-4255-a8cc-ea6f28e7a9cf@suse.com>
+	 <a75537dc77e5b6fac922a97409ca4636805147dc.camel@scientia.org>
+	 <fff60222-0b9f-4f09-b3a6-d415aa64b6d7@gmx.com>
+	 <18a87dd4f3155bb1d9c9884f39dbf53c802a10cd.camel@scientia.org>
+	 <572f0ac4-90f6-4c56-aa4c-2a64e365d526@suse.com>
+	 <52c813cf8dffe11325ce291d3f3bd41bcce21936.camel@scientia.org>
+	 <f094ddbb70cabd2e329615269519b1844f786629.camel@scientia.org>
+	 <a6d825eb-3e8c-404f-90f6-6b4e5621479d@suse.com>
+	 <05e63d59951cfb8612c876d5bc7fdb76b272b01c.camel@scientia.org>
+	 <89188b7b8b5a1f9bb64af37777aec906134ad75c.camel@scientia.org>
+	 <9b05f9a3-5efe-4e57-9585-a3886bb419fa@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2-8 
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Flag: NO
-X-Spam-Score: -2.80
-X-Spam-Level: 
+X-AuthUser: calestyo@scientia.org
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+X-Spamd-Result: default: False [-1.46 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21516-lists,linux-btrfs=lfdr.de];
-	RCPT_COUNT_TWO(0.00)[2];
-	RCVD_COUNT_FIVE(0.00)[6];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FROM_NEQ_ENVFROM(0.00)[wqu@suse.com,linux-btrfs@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	TAGGED_RCPT(0.00)[linux-btrfs];
-	NEURAL_HAM(-0.00)[-1.000];
-	DKIM_TRACE(0.00)[suse.com:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21522-lists,linux-btrfs=lfdr.de];
+	TO_DN_ALL(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[meta.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 933C410B630
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DMARC_NA(0.00)[scientia.org];
+	RCPT_COUNT_TWO(0.00)[2];
+	RCVD_COUNT_SEVEN(0.00)[7];
+	MIME_TRACE(0.00)[0:+];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[calestyo@scientia.org,linux-btrfs@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	NEURAL_HAM(-0.00)[-0.880];
+	MID_RHS_MATCH_FROM(0.00)[];
+	R_DKIM_NA(0.00)[];
+	TAGGED_RCPT(0.00)[linux-btrfs];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[scientia.org:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 4EA9B10B84E
 X-Rspamd-Action: no action
 
-[BUG]
-Since commit 59615e2c1f63 ("btrfs: reject single block sized compression
-early"), the following script will result the inode to have NOCOMPRESS
-flag, meanwhile old kernels don't:
+On Mon, 2026-02-09 at 13:51 +1030, Qu Wenruo wrote:
+> I think you're safe to clear the v2 cache, and let the kernel create
+> at=20
+> mount time.
 
-	# mkfs.btrfs -f $dev
-	# mount $dev $mnt -o max_inline=2k,compress=zstd
-	# truncate -s 8k $mnt/foobar
-	# xfs_io -f -c "pwrite 0 2k" $mnt/foobar
-	# sync
+Would it help you if I keep the fs for further debugging (or later
+checking a possible fix)?
 
-Before that commit, the inode will not have NOCOMPRESS flag:
+If so, any rough estimate on how long that would take (cause in
+principle I would sooner or later want to use that device again for
+backups ;-) ).
 
-	item 4 key (257 INODE_ITEM 0) itemoff 15879 itemsize 160
-		generation 9 transid 9 size 8192 nbytes 4096
-		block group 0 mode 100644 links 1 uid 0 gid 0 rdev 0
-		sequence 3 flags 0x0(none)
 
-But after that commit, the inode will have NOCOMPRESS flag:
-
-	item 4 key (257 INODE_ITEM 0) itemoff 15879 itemsize 160
-		generation 9 transid 10 size 8192 nbytes 4096
-		block group 0 mode 100644 links 1 uid 0 gid 0 rdev 0
-		sequence 3 flags 0x8(NOCOMPRESS)
-
-This will make a lot of files no longer to be compressed.
-
-[CAUSE]
-The old compressed inline check looks like this:
-
-	if (total_compressed <= blocksize &&
-	   (start > 0 || end + 1 < inode->disk_i_size))
-		goto cleanup_and_bail_uncompressed;
-
-That inline part check is equal to "!(start == 0 && end + 1 >=
-inode->disk_i_size)", but the new check no longer has that disk_i_size
-check.
-
-Thus it means any single block sized write at file offset 0 will pass
-the inline check, which is wrong.
-
-Furthermore, since we have merged the old check into
-inode_need_compress(), there is no disk_i_size based inline check
-anymore, we will always try compressing that single block at file offset
-0, then later find out it's not a net win and go to the
-mark_incompressible tag.
-
-This results the inode to have NOCOMPRESS flag.
-
-[FIX]
-Add back the missing disk_i_size based check into inode_need_compress().
-
-Now the same script will no longer cause NOCOMPRESS flag.
-
-Fixes: 59615e2c1f63 ("btrfs: reject single block sized compression early")
-Reported-by: Chris Mason <clm@meta.com>
-Link: https://lore.kernel.org/linux-btrfs/20260208183840.975975-1-clm@meta.com/
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-Changelog:
-v2:
-- Fix a off-by-one bug in the disk_i_size check
----
- fs/btrfs/inode.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index b6c763a17406..7b23ae6872fc 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -811,7 +811,8 @@ static inline int inode_need_compress(struct btrfs_inode *inode, u64 start,
- 	 * do not even bother try compression, as there will be no space saving
- 	 * and will always fallback to regular write later.
- 	 */
--	if (start != 0 && end + 1 - start <= fs_info->sectorsize)
-+	if (end + 1 - start <= fs_info->sectorsize &&
-+	    !(start == 0 && end + 1 >= inode->disk_i_size))
- 		return 0;
- 	/* Defrag ioctl takes precedence over mount options and properties. */
- 	if (inode->defrag_compress == BTRFS_DEFRAG_DONT_COMPRESS)
--- 
-2.52.0
-
+Thanks,
+Chris
 
