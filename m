@@ -1,241 +1,286 @@
-Return-Path: <linux-btrfs+bounces-21528-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21529-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id gPpiIrOqiWlZAgUAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21528-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Mon, 09 Feb 2026 10:36:51 +0100
+	id AJN/BjuriWmXAgUAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21529-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Mon, 09 Feb 2026 10:39:07 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D32E310DA1B
-	for <lists+linux-btrfs@lfdr.de>; Mon, 09 Feb 2026 10:36:50 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA2DA10DA6B
+	for <lists+linux-btrfs@lfdr.de>; Mon, 09 Feb 2026 10:39:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 9C43630069B0
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Feb 2026 09:36:41 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 2A70F302F7D9
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Feb 2026 09:37:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACF0B364E8D;
-	Mon,  9 Feb 2026 09:36:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C55383446BC;
+	Mon,  9 Feb 2026 09:37:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k1erP7sU"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="BUINsQug"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08A7F3644CA
-	for <linux-btrfs@vger.kernel.org>; Mon,  9 Feb 2026 09:36:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD58A322C6D
+	for <linux-btrfs@vger.kernel.org>; Mon,  9 Feb 2026 09:37:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770629796; cv=none; b=T/x0oG0x2N0st9ZIdY2ZomFxhqbHqUDQvT3H/BNiJ1q7vQP6yKaUxKIXj5AeAmEvY8tTFt5bYBLpW9JrhgE3yCr2q0Jq0nlwGXNyE4t9b3gxSJNwnAaa22ROQWrvup+Ph2y8Lz5GMjUN9YVjgzZg+w84j5BTVW/3QTQWqL2NgWQ=
+	t=1770629841; cv=none; b=T6U3Zb7RmW2HCVnWpmgc9v/pWiogoY+t6B3XKdFgGyWObzlD94GmZ2rf6DTj5QmAgTa7vhdlhOiMiSdVR2m4pE1jmB0HyMhnWI8he42vXvtDynKJCl5OiXF18iDCIw3MEUWBannsCpGMaI3KVW9gK6eZhaUrE60phpuKReitoHA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770629796; c=relaxed/simple;
-	bh=HO7m5WWWQTO9lTPD3OKtwNwfBPK+62inGQDCyp1DeFI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=eXoTvANgKuJNPZkMK6GyvkjpSY0ZsKb2CDbVrGm2GNel3UCZNK8puEW1yV1er9etk2WheEK22SuDHizkz+FeoYIyYMh+qnkgRUSjYzFKbc0ba8IxY9kwsj1pvh9c5Ji/xydBgCX29v+aH8XTufhJXJoqQ7rLQ+1LGcaorYz6pT8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k1erP7sU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5055C19425
-	for <linux-btrfs@vger.kernel.org>; Mon,  9 Feb 2026 09:36:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1770629795;
-	bh=HO7m5WWWQTO9lTPD3OKtwNwfBPK+62inGQDCyp1DeFI=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=k1erP7sUsFYARvii7ZtVB7hRcO+/Jws/9gkfeTZCyJxov3tnhgfnJbZeE/jD15P1u
-	 pgivi6teAiUDgHv+SrcbfovT2anwKFs5IzmHHFGDtQuOzqXDngkrllNSBegdmDb5BK
-	 4G8sq/F4L4L2Z/7aiZ2905ULUHQLfD/kougZ1Z2djSiYX4GrLmjnplN7oOk5xxemy8
-	 84CSPrX4b3AhmkwtwTVfUfPglfa6X2l6idcmMA5/kZa5SSUFcBrl5gnMBhmHy3d34q
-	 ZTBf8NMO7tUhKvU3M4OcOJJyvvk4UwLHY0QVA2/N63A0F7XnYbe8l5CWC67LJGeGav
-	 +dbQ9DmhTH9fA==
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-658b511573cso7055968a12.0
-        for <linux-btrfs@vger.kernel.org>; Mon, 09 Feb 2026 01:36:35 -0800 (PST)
-X-Gm-Message-State: AOJu0YyHGhP1hE4DerYHweh34djI5HxSvIq0Tyu8vyzJA2H2nqQtoaIa
-	8hKzw0Kps7guDLSTFBTfnofD3nISJNyanqegb9ei2VWV5Yx7pFC+QFTi95DVN86hP54Ban1qz8i
-	hEwADUUXaGHq7GkHSmcqMam+zj7B/2S4=
-X-Received: by 2002:a17:907:a4c:b0:b88:637d:aa75 with SMTP id
- a640c23a62f3a-b8edf378326mr648748266b.30.1770629794181; Mon, 09 Feb 2026
- 01:36:34 -0800 (PST)
+	s=arc-20240116; t=1770629841; c=relaxed/simple;
+	bh=fjheMVuxJCE60otssonEPeZPH8vh1zBc03+9104sv4I=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=FcICm4n73+vaslJWs/WEAXRJodllzhhamjViJSomzk228THASger2nF41I5BBVB5DQ7S384uWiWmI3AWaLtp9qhdjPx8gSF0df5/GM/+IFjSs0EpdZH3ezwHdAgOQExgpSShzN4P+jIU8fh7k3+WBVvyqfuRfumMDy8Ms9U84TU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=BUINsQug; arc=none smtp.client-ip=209.85.128.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-47edd9024b1so33567915e9.3
+        for <linux-btrfs@vger.kernel.org>; Mon, 09 Feb 2026 01:37:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1770629839; x=1771234639; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=sxXUrIaumDVqws4DwPgvnYVK1rs+P22idn5IuOP393A=;
+        b=BUINsQugKI1mAI1Ovz0ml6UlfDUvxXlG4BqKxlc+xn3i5UjwIWv5np0NOd9cLnw5ON
+         ssHcOz1bk0bBvGF4YsTEGHNkUKxg7CUocuB8OHYo4fzkBSYAl7CepyxHILF1w6KeBT6F
+         tmY529qzEuzgU9mFihicWBTpJavkwizetxDUSk16bxgrR96IMrTeemO5n73VOISOWMky
+         j7/TekJaq/l1Sgjh4ON975I/vDXwon00bpnWkfyto2rBoVVQZokGGpwFvna9+WPPACbE
+         GsSZ+HAlDcD01VbLFEe3EP3T8QPzvhEvfJn3EZFRU4euwaQbv6HraZkOSO/g87bWtuHZ
+         dUsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1770629839; x=1771234639;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sxXUrIaumDVqws4DwPgvnYVK1rs+P22idn5IuOP393A=;
+        b=szw1ZUJqkbFeyR9NjGgiDnX23Yxwz3QFdUlpy9JgOZqEH2c8fJaiNsGqKKySm92GTj
+         LxWDNUlH/pEXpVFYEpsC/7VVCKpQYdKg2MFMw5eGndep23dStKHcP+ehtMc2NJYaIK23
+         5HHpBmzW33Y/q5m4J0yk47qXZqAnkeuqEhprmdw3LRK9W88WcV0yn+yx4JUOuN34Tdbq
+         FK6pXg0wwMynpDk7N89BTpbNJ98lwleTnjgpXiGW00Z27lhhEP6LKGYhDy0F/DloZAOh
+         a/eX+AzSlZVG3lx5ZehwJI+2bd+CTtciEkDSGR7s03YODY+JYZC94rLjLtR+EsFVmpSe
+         41bQ==
+X-Gm-Message-State: AOJu0YwkOQPx5r0A/7b7U0vRkp8iGKRlnjIflBcHq2w9uP/VFgB12nso
+	l4/BF24tNxX7W16zOiiM8JlASFoCnwLrvUsd/aNsMy3kAs42kn9lCQKaXPl/31vQfN0=
+X-Gm-Gg: AZuq6aJ/r6sT61wqpkDU3gKhZZU9B7noA8HcKxOplF0h92CdKUxvvkDoo1ncNRkS52a
+	1zkjTH6yXqWfYkh/WBBkk5P2KEc82L6Dfs/4cUfHb33Iu02HAEwF+FHHjy9KeccmbSWUyvFUhQv
+	PCDp/jnqBqsfRouEvBBGXYHlYdgPJSGi6ICwF0RHg1GuW8sKhRalADEDiUcINI/6Qxfcui1/TPg
+	7U7xzBLfEsSXCU7l5erAG9M2iIiAsIU5+WbOaFZ3QBs7uEsXYkplng1TVJt2Ne2hRJ2BXLaVfuk
+	bXm91hqP5ROKAVPd/2DGPaoPgyoy+xxhajRgRvd3vb2kav0ze7b/0etELK71qzddvCCZ3CD6mM7
+	FZuycCmXhqG6TAELiN4jZD08y26TeucFqU48mQvyTiMqe6fDkWDylJgfHuJVN/ha9UO6C6FBNEh
+	wCzzFrN9eIw4mLj3ENpNPWX6Yp0kN4tRBiKvX/vmc=
+X-Received: by 2002:a05:600c:19cd:b0:47d:586e:2fea with SMTP id 5b1f17b1804b1-483201e270bmr137132345e9.15.1770629838900;
+        Mon, 09 Feb 2026 01:37:18 -0800 (PST)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2a951c50206sm96920765ad.19.2026.02.09.01.37.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Feb 2026 01:37:18 -0800 (PST)
+Message-ID: <58b91c8e-6728-45f7-9de9-11c1b3e959e5@suse.com>
+Date: Mon, 9 Feb 2026 20:07:14 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <09b588005eec0809898978728261fff1a7b23d35.1770608707.git.wqu@suse.com>
-In-Reply-To: <09b588005eec0809898978728261fff1a7b23d35.1770608707.git.wqu@suse.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Mon, 9 Feb 2026 09:35:57 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H6HYzOK1YNWv0wPy46DqjLn6LF7TK8r8m=t-+eZCG-g=g@mail.gmail.com>
-X-Gm-Features: AZwV_QifXvQ5EW5vzaLdz8AVHEXWmDQpZFHA__LnAlnHBCF1pTdmFFZaOVDkEEI
-Message-ID: <CAL3q7H6HYzOK1YNWv0wPy46DqjLn6LF7TK8r8m=t-+eZCG-g=g@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: fix a double release on reserved extents in cow_one_range()
-To: Qu Wenruo <wqu@suse.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] btrfs: fix the inline compressed extent check in
+ inode_need_compress()
+To: Filipe Manana <fdmanana@kernel.org>
 Cc: linux-btrfs@vger.kernel.org, Chris Mason <clm@meta.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+References: <3cd5a484ffc3d8a499b062cbda89793d560b85d7.1770607799.git.wqu@suse.com>
+ <CAL3q7H55JWn1ehjTWHg74hqd7P2pSBptcGO4XoFjkBuhqfBQCQ@mail.gmail.com>
+Content-Language: en-US
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
+ Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
+ fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
+ 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
+ V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
+ rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
+ cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
+ qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
+ /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
+ o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
+ JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+In-Reply-To: <CAL3q7H55JWn1ehjTWHg74hqd7P2pSBptcGO4XoFjkBuhqfBQCQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	RCPT_COUNT_THREE(0.00)[3];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21528-lists,linux-btrfs=lfdr.de];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	DKIM_TRACE(0.00)[suse.com:+];
 	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21529-lists,linux-btrfs=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[fdmanana@kernel.org,linux-btrfs@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[wqu@suse.com,linux-btrfs@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	RCVD_COUNT_FIVE(0.00)[5];
+	MID_RHS_MATCH_FROM(0.00)[];
+	NEURAL_HAM(-0.00)[-0.999];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	NEURAL_HAM(-0.00)[-0.998];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TO_DN_SOME(0.00)[]
-X-Rspamd-Queue-Id: D32E310DA1B
+X-Rspamd-Queue-Id: CA2DA10DA6B
 X-Rspamd-Action: no action
 
-On Mon, Feb 9, 2026 at 3:45=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
->
-> [BUG]
-> Commit c28214bde6da ("btrfs: refactor the main loop of
-> cow_file_range()") refactored the handling of COWing one range.
->
-> However it changed the error handling of the reserved extent.
->
-> The old cleanup looks like this:
->
-> out_drop_extent_cache:
->         btrfs_drop_extent_map_range(inode, start, start + cur_alloc_size =
-- 1, false);
-> out_reserve:
->         btrfs_dec_block_group_reservations(fs_info, ins.objectid);
->         btrfs_free_reserved_extent(fs_info, ins.objectid, ins.offset, tru=
-e);
->         [...]
->         clear_bits =3D EXTENT_LOCKED | EXTENT_DELALLOC | EXTENT_DELALLOC_=
-NEW |
->                      EXTENT_DEFRAG | EXTENT_CLEAR_META_RESV;
->         page_ops =3D PAGE_UNLOCK | PAGE_START_WRITEBACK | PAGE_END_WRITEB=
-ACK;
->         /*
->          * For the range (2). If we reserved an extent for our delalloc r=
-ange
->          * (or a subrange) and failed to create the respective ordered ex=
-tent,
->          * then it means that when we reserved the extent we decremented =
-the
->          * extent's size from the data space_info's bytes_may_use counter=
- and
->          * incremented the space_info's bytes_reserved counter by the sam=
-e
->          * amount. We must make sure extent_clear_unlock_delalloc() does =
-not try
->          * to decrement again the data space_info's bytes_may_use counter=
-,
->          * therefore we do not pass it the flag EXTENT_CLEAR_DATA_RESV.
->          */
->         if (cur_alloc_size) {
->                 extent_clear_unlock_delalloc(inode, start,
->                                              start + cur_alloc_size - 1,
->                                              locked_folio, &cached, clear=
-_bits,
->                                              page_ops);
->                 btrfs_qgroup_free_data(inode, NULL, start, cur_alloc_size=
-, NULL);
->         }
->
-> Which only calls EXTENT_CLEAR_META_RESV.
-> As the reserved extent is properly handled by
-> btrfs_free_reserved_extent().
->
-> However the new cleanup is:
->
->         extent_clear_unlock_delalloc(inode, file_offset, cur_end, locked_=
-folio, cached,
->                                      EXTENT_LOCKED | EXTENT_DELALLOC |
->                                      EXTENT_DELALLOC_NEW |
->                                      EXTENT_DEFRAG | EXTENT_DO_ACCOUNTING=
-,
->                                      PAGE_UNLOCK | PAGE_START_WRITEBACK |
->                                      PAGE_END_WRITEBACK);
->         btrfs_qgroup_free_data(inode, NULL, file_offset, cur_len, NULL);
->         btrfs_dec_block_group_reservations(fs_info, ins->objectid);
->         btrfs_free_reserved_extent(fs_info, ins->objectid, ins->offset, t=
-rue);
->
-> The flag EXTENT_DO_ACCOUNTING implies both EXTENT_CLEAR_META_RESV and
-> EXTENT_CLEAR_DATA_RESV, which will release the bytes_may_use, which
-> later btrfs_free_reserved_extent() will do again, causing incorrect
-> double release (and may underflow bytes_may_use).
->
-> [FIX]
-> Use EXTENT_CLEAR_META_RESV to replace EXTENT_DO_ACCOUNTING, and add back
-> the comments on why we only use EXTENT_CLEAR_META_RESV.
->
-> Fixes: c28214bde6da ("btrfs: refactor the main loop of cow_file_range()")
-> Reported-by: Chris Mason <clm@meta.com>
-> Link: https://lore.kernel.org/linux-btrfs/20260208184920.1102719-1-clm@me=
-ta.com/
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  fs/btrfs/inode.c | 17 ++++++++++++++++-
->  1 file changed, 16 insertions(+), 1 deletion(-)
->
-> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-> index 7b23ae6872fc..4ba38ec22610 100644
-> --- a/fs/btrfs/inode.c
-> +++ b/fs/btrfs/inode.c
-> @@ -1393,10 +1393,25 @@ static int cow_one_range(struct btrfs_inode *inod=
-e, struct folio *locked_folio,
->         return ret;
->
->  free_reserved:
-> +       /*
-> +        * If we have reserved an extent for the current range and failed=
- to
-> +        * create the respectiv extent map or ordered extent, it means th=
-at
 
-respectiv -> respective
 
-Otherwise, it looks good, thanks.
+在 2026/2/9 19:55, Filipe Manana 写道:
+> On Mon, Feb 9, 2026 at 3:30 AM Qu Wenruo <wqu@suse.com> wrote:
+>>
+>> [BUG]
+>> Since commit 59615e2c1f63 ("btrfs: reject single block sized compression
+>> early"), the following script will result the inode to have NOCOMPRESS
+>> flag, meanwhile old kernels don't:
+>>
+>>          # mkfs.btrfs -f $dev
+>>          # mount $dev $mnt -o max_inline=2k,compress=zstd
+>>          # truncate -s 8k $mnt/foobar
+>>          # xfs_io -f -c "pwrite 0 2k" $mnt/foobar
+>>          # sync
+>>
+>> Before that commit, the inode will not have NOCOMPRESS flag:
+>>
+>>          item 4 key (257 INODE_ITEM 0) itemoff 15879 itemsize 160
+>>                  generation 9 transid 9 size 8192 nbytes 4096
+>>                  block group 0 mode 100644 links 1 uid 0 gid 0 rdev 0
+>>                  sequence 3 flags 0x0(none)
+>>
+>> But after that commit, the inode will have NOCOMPRESS flag:
+>>
+>>          item 4 key (257 INODE_ITEM 0) itemoff 15879 itemsize 160
+>>                  generation 9 transid 10 size 8192 nbytes 4096
+>>                  block group 0 mode 100644 links 1 uid 0 gid 0 rdev 0
+>>                  sequence 3 flags 0x8(NOCOMPRESS)
+>>
+>> This will make a lot of files no longer to be compressed.
+>>
+>> [CAUSE]
+>> The old compressed inline check looks like this:
+>>
+>>          if (total_compressed <= blocksize &&
+>>             (start > 0 || end + 1 < inode->disk_i_size))
+>>                  goto cleanup_and_bail_uncompressed;
+>>
+>> That inline part check is equal to "!(start == 0 && end + 1 >=
+>> inode->disk_i_size)", but the new check no longer has that disk_i_size
+>> check.
+>>
+>> Thus it means any single block sized write at file offset 0 will pass
+>> the inline check, which is wrong.
+>>
+>> Furthermore, since we have merged the old check into
+>> inode_need_compress(), there is no disk_i_size based inline check
+>> anymore, we will always try compressing that single block at file offset
+>> 0, then later find out it's not a net win and go to the
+>> mark_incompressible tag.
+>>
+>> This results the inode to have NOCOMPRESS flag.
+>>
+>> [FIX]
+>> Add back the missing disk_i_size based check into inode_need_compress().
+>>
+>> Now the same script will no longer cause NOCOMPRESS flag.
+>>
+>> Fixes: 59615e2c1f63 ("btrfs: reject single block sized compression early")
+>> Reported-by: Chris Mason <clm@meta.com>
+>> Link: https://lore.kernel.org/linux-btrfs/20260208183840.975975-1-clm@meta.com/
+>> Signed-off-by: Qu Wenruo <wqu@suse.com>
+>> ---
+>> Changelog:
+>> v2:
+>> - Fix a off-by-one bug in the disk_i_size check
+>> ---
+>>   fs/btrfs/inode.c | 3 ++-
+>>   1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
+>> index b6c763a17406..7b23ae6872fc 100644
+>> --- a/fs/btrfs/inode.c
+>> +++ b/fs/btrfs/inode.c
+>> @@ -811,7 +811,8 @@ static inline int inode_need_compress(struct btrfs_inode *inode, u64 start,
+>>           * do not even bother try compression, as there will be no space saving
+>>           * and will always fallback to regular write later.
+>>           */
+>> -       if (start != 0 && end + 1 - start <= fs_info->sectorsize)
+>> +       if (end + 1 - start <= fs_info->sectorsize &&
+>> +           !(start == 0 && end + 1 >= inode->disk_i_size))
+> 
+> Can we avoid the negated compound expression?
+> 
+> Instead of
+> 
+> !(start == 0 && end + 1 >= inode->disk_i_size)
+> 
+> Do
+> 
+> (start > 0 || end + 1 < inode->disk_i_size)
+> 
+> Which is more straightforward to read, and it's what we had originally too.
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
+The problem is, I find the original code very hard to read.
+It takes me quite some time to understand it.
 
-> +        * when we reserved the extent we decremented the extent's size f=
-rom
-> +        * the data space_info's bytes_may_use counter and
-> +        * incremented the space_info's bytes_reserved counter by the sam=
-e
-> +        * amount.
-> +        *
-> +        * We must make sure extent_clear_unlock_delalloc() does not try
-> +        * to decrement again the data space_info's bytes_may_use counter=
-, which
-> +        * will be handled by btrfs_free_reserved_extent().
-> +        *
-> +        * Therefore we do not pass it the flag EXTENT_CLEAR_DATA_RESV, b=
-ut only
-> +        * EXTENT_CLEAR_META_RESV.
-> +        */
->         extent_clear_unlock_delalloc(inode, file_offset, cur_end, locked_=
-folio, cached,
->                                      EXTENT_LOCKED | EXTENT_DELALLOC |
->                                      EXTENT_DELALLOC_NEW |
-> -                                    EXTENT_DEFRAG | EXTENT_DO_ACCOUNTING=
-,
-> +                                    EXTENT_DEFRAG | EXTENT_CLEAR_META_RE=
-SV,
->                                      PAGE_UNLOCK | PAGE_START_WRITEBACK |
->                                      PAGE_END_WRITEBACK);
->         btrfs_qgroup_free_data(inode, NULL, file_offset, cur_len, NULL);
-> --
-> 2.52.0
->
->
+The negated one is more straightforward, it shows exactly all necessary 
+requirements for an inlined extent:
+
+- File offset 0
+- Covers the full file size
+
+I don't know if it will help to introduce a short helper, and make it 
+more readable like:
+
+	if (end + 1 - start <= fs_info->sectorsize &&
+	    !can_inline_range())
+
+
+BTW, here we can not use can_cow_file_range_inline() directly, as at 
+delalloc time our end + 1 is always block aligned, which will make 
+can_cow_file_range_inline() to always return false due to the max_inline 
+check.
+
+Thanks,
+Qu
+
+> 
+> Otherwise:
+> 
+> Reviewed-by: Filipe Manana <fdmanana@suse.com>
+> 
+> Thanks.
+> 
+>>                  return 0;
+>>          /* Defrag ioctl takes precedence over mount options and properties. */
+>>          if (inode->defrag_compress == BTRFS_DEFRAG_DONT_COMPRESS)
+>> --
+>> 2.52.0
+>>
+>>
+
 
