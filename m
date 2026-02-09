@@ -1,177 +1,159 @@
-Return-Path: <linux-btrfs+bounces-21543-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21544-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id eP/gFRTViWklCAAAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21543-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Mon, 09 Feb 2026 13:37:40 +0100
+	id iIC0Gh7biWlFCgAAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21544-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Mon, 09 Feb 2026 14:03:26 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id B883010ECEF
-	for <lists+linux-btrfs@lfdr.de>; Mon, 09 Feb 2026 13:37:39 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE0DD10F605
+	for <lists+linux-btrfs@lfdr.de>; Mon, 09 Feb 2026 14:03:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9F3B9301BF5E
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Feb 2026 12:36:41 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id DD3A83010B99
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Feb 2026 13:03:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2B7437756D;
-	Mon,  9 Feb 2026 12:36:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C84933D6FA;
+	Mon,  9 Feb 2026 13:03:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ej2NYX85"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X6dsitC3"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f67.google.com (mail-wr1-f67.google.com [209.85.221.67])
+Received: from mail-wr1-f68.google.com (mail-wr1-f68.google.com [209.85.221.68])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2EA037104D
-	for <linux-btrfs@vger.kernel.org>; Mon,  9 Feb 2026 12:36:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9B41225408
+	for <linux-btrfs@vger.kernel.org>; Mon,  9 Feb 2026 13:03:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.68
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770640600; cv=none; b=Fkw02PQ0dIzHM/VIfV02Nuqux7HUiO6pa7UxnhkItmze/h/PDndpV0IHI882jExYj+nMovSLiRXmljP3ARYDKKHzv/mE0Ty1WQMzMlzowECzkL/A9eK7nGKVlmcQAnx/VI9trUx8nZIyaU4TGhmhhH33N6uvOYYQw9z4hUsPHRY=
+	t=1770642186; cv=none; b=YiudzZa6IfTIW8fgMeDq/WAUih+JJDxVGCwg/2o9a+KvieNWviaXxtI82wb7OWts4hBc87LGRUXC6KUYZoZQ28ZGO4a4x5pDv6pm/Ew7eMUHLY9wT+b+crtKsLOn/HkAAtbYCwWmgqIuezLyn2UfMLjc2Vec3z6vqHr/WwfJEM0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770640600; c=relaxed/simple;
-	bh=yBp1VQGDiGKZvhzSVT9bOCKUIk6VkRnQQqesj+8ZNYc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=izzNGDcDzLKR6xAQbrc8GuWOdXy/si7K937LQIMci2JD3ApDSoeB3AaJO9eBqOCqH5XLwPDSGdo378oVtwDbnDpW78KDfNzTTsRtMcHIAutnhMPHPlDVplkgRyDxR4gIZmAYZ5wfF92ZSNaluASvfZ4JQ53IaVn/rCwUA5GoAzY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ej2NYX85; arc=none smtp.client-ip=209.85.221.67
+	s=arc-20240116; t=1770642186; c=relaxed/simple;
+	bh=FiWmVFcw97TnyLbLpy9SFEFhDTwcHVwztNxpiFS1W+w=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Nlk+ldUB4NImSV9fSgwGaCuziL45po50heApm34sZcoy6wBVqc+KkSrFOjzq8F/rf4lXY3aU8gUt9S1EJCjKlkWAl5PMqGfTnEkY+eSTde5CmCDBKyJuD/c68pvm0ecEoi+Di74fTwvRUz7olNSYHMC+XZSXwPhts6idk3Nr1LU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=X6dsitC3; arc=none smtp.client-ip=209.85.221.68
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f67.google.com with SMTP id ffacd0b85a97d-4359c54b682so272992f8f.3
-        for <linux-btrfs@vger.kernel.org>; Mon, 09 Feb 2026 04:36:39 -0800 (PST)
+Received: by mail-wr1-f68.google.com with SMTP id ffacd0b85a97d-436333dcc42so228679f8f.0
+        for <linux-btrfs@vger.kernel.org>; Mon, 09 Feb 2026 05:03:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1770640598; x=1771245398; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=yb4OR6erMoKXOvod9fqHAdvrrTIxetZ3KykLgv096N0=;
-        b=ej2NYX85dXMEuuk1lNw5TcSlypkd/395f9cacy8Z2iYRufmZ1yPPNGWWQK1YRx7cEu
-         Cr0mggXP7zz+0F6jAkgPlGbx+zC2ci9HbbY3hDv5YZvDH7CZ2STjXCg6NryeBy3uYAvR
-         QCakVqvsWtSHnT2+OFQ2qYCZxxYBo1KjkF9j9ARnqdwe5QL/2PR0SPV2mebRpG2BMQ8d
-         SOnmr/84v8LPlwzUWI6cKJ1QSoz61U5p9FwCsc5xwcroW/2NxzIcolAgzTWGj+IoftFJ
-         lMAHDicHHD13cUAAhY7bXak9nGzXkXTc6aiU9qcpydNyOGSnNcCyG23VCAIws5JEFnv0
-         +hbQ==
+        d=gmail.com; s=20230601; t=1770642184; x=1771246984; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=8on40fHUNvh/0Rrfckhi0Mk6qcLpxRLxVjuPB8Kea9w=;
+        b=X6dsitC34xT+O1w5tvIHcttLm3vMGjTWceu0Pl6qYReC1cc0wg4JVtEbUyN2ctWQyU
+         Pk3IqAKOqwGqeIbv2ZhJB+yO+nwouTNJCnLHEefOQ/wIp0g29yFHLIma5d2qkuLlkppG
+         OkF6ksQ8lFsrYgu8JaResAnvORE5m2YjpTUVYSHBe8TsksVoPcR2+9MJPBxs5+lTwp18
+         41C4+AHZmmaBvYxJIuZPzPUb47WMHzbNhRz0yKGeOTnpR1plURDGUziPDaEByibfu7Oo
+         Pt9MpAZlMOEmeVxBjysXR4IjSeDqnizQD5hhnX365HOp3R+2zV3tM4g7/MYD/3L1+srk
+         wBsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770640598; x=1771245398;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=yb4OR6erMoKXOvod9fqHAdvrrTIxetZ3KykLgv096N0=;
-        b=Ct9ZHiB5zkWp11Ji+RNCNwJgkZZOTJLVUnbiwk+0GT41tY6L2R9x/JE/NHtX1xUGs7
-         2+JyQCRzKehgcxUKXAO1AKikNxKbN4NNG8IjzGMr22Jqr3xcli1Gouqub4aGWF+TYMsw
-         LimxYBquMxk0+/Gp1e0nvUvO7njeL6FzrkHH+5PDGAjW1wU+cY6YNj5jTltEbh8qOwzG
-         0XslA7XH8175+arJp4q9Z9wmKb9EGkJmEER9aSzHHyfDW9//Y1YpqGnZ+G8OwgqAdpxi
-         hE6WFSvKFreIwIXcupdNyjvSQEAzmc26J3MK3mpXmnp4qjbLGIwmKT3kUvWr66kvIWa0
-         ONsw==
-X-Forwarded-Encrypted: i=1; AJvYcCVnqtcReKkoXnR2/SLMSIxpHMJC9mezdrfTsW6mfIvOycRXkk42YzcB/9Cv0zePndukJLuMq8OjsruRrw==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyr4hiLcWRC4pUwgSggEI8lIIIf5SBQ/DWJQOGaDr7rnXTuA3w3
-	ZEQrZqXtyCRO4n92gDxIkGV0PTIsF6wxijdRw2BSR0my3C/6RjQXrMoj/RKQxHqQKmw=
-X-Gm-Gg: AZuq6aKORFcg7eAWCR5TFgJnaQEhM5mPGSv35kmu4qt2IpfuPtB7WQlEMyB7Iyqs8du
-	JJE3b5ZdHLvvJ69uWnnoB+ytf6JOKrjK9cQB++lMAMQw5dRKpJSZdUKtWRnp3Q8wCiLSlBvBVV4
-	kbmOlRPRzPRC4aRG7WdGYVwlDLgXJVQnHKmgq9Oxzv0WS2lXr5rTXqoZcQbxYhl8aKcOTQRxV7o
-	ogYKO2PdxHcptCkPvaMyDbg3xjOWJc8Q7wsLdjbZECChMxy5SxWX+y4uAUu0Yv8qKYDLgUEY90g
-	70XztIPToyUUkB0pURafYf6Wdy4P+uWHAzKYD9prNYX1DT+yke5KCtgwlVflzU4tlSyipyB2E8Q
-	2TkbdPJuVrNehBsuei9ZtLDxoQZLfAWyQE9bQcE0XVLD73iNooqtta/P9XYCX6MVeCIa0uEQvZS
-	WOrfH/9mR1eTJPzJ3TlCelUD5duY2/V+3pKA4JF6/ge7oG/FHh/mPF3urllhIjkcWKog==
-X-Received: by 2002:a05:6000:1a8b:b0:432:86e2:8fb5 with SMTP id ffacd0b85a97d-43628ff9bcemr9524110f8f.0.1770640597901;
-        Mon, 09 Feb 2026 04:36:37 -0800 (PST)
-Received: from ?IPV6:2408:8239:502:5512:d7f8:39da:7a53:51af? ([140.238.217.67])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4376d3a32basm9566012f8f.14.2026.02.09.04.36.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 09 Feb 2026 04:36:37 -0800 (PST)
-Message-ID: <a3334884-c1f7-45ce-8d06-6db85eb49d0f@gmail.com>
-Date: Mon, 9 Feb 2026 20:36:26 +0800
+        d=1e100.net; s=20230601; t=1770642184; x=1771246984;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8on40fHUNvh/0Rrfckhi0Mk6qcLpxRLxVjuPB8Kea9w=;
+        b=hYiH3kOM41YTQsT04TQ6E6wL6Kazq8UaUaL354DmafcLiTN9T9Pf0vB43UdancWltK
+         k81sQyx6ScXg4QRhJCjcEZgFw+p5LyAK73eTd2uXwiIRdg+X1YTVBW/2k2X4vhQSgJMT
+         juVtmWJPoFJPGgGz/wFPKYxRubSFW4+ENLVCKxo905lxvmmNxoLe0B3pT/WLGXIENVEm
+         N5mdg76umpSa29MFSmkzr0zDIZRg1xczXeOm3JUC0Kgf/jMkWIyQTnp6JdT8yGjSeL04
+         nuXHUnOesQ4Vsy10hQfxjXTPSwg27vhT/+kUB/0QfqG9onad/s3NjKtXur6hqpm+Fuw4
+         KhdA==
+X-Gm-Message-State: AOJu0Yw75aI1vmzD8h6JWSCk/s/0HjpGQSwEU/9O8piq+LmUF958ehum
+	eCN5NKvM/gHCSV/XozpwSKFvKJ1lo1OddlEDT+fxmpxvbsN0kZrUgoex6WNGEZlZQy0=
+X-Gm-Gg: AZuq6aJpm2cieq8yhsRUSpkvs7qiMbO1R4gxYLnu55N9+RkcoqFJ5HuFvY8xkdj1gTp
+	lWUNReMp/tRFCg/XKD8NAHJ/sJ/FWBbQ7fOP4+2LMKoFS1IpGuddXZYjBJriVZX17DrCFjIgsBf
+	MHkFj5mdkismLdBKAlzaAdmL8d/BF51me+QugmjYMMjZjrca6jHUi+Ja6GKAteCqS+hX3hEc3rh
+	6cf6lnDLGUC5zv2O+340yAb4VZP1H55qzluRc49MNi33cYVk54zpXMhIVpJAR/TC78iV/D/6BdZ
+	SYelmoT+I6R2MZUZyNxZXp4ba5dnn/zORH9yyX5875V2AMkCPiZ5bOn4f0wjq4xAdOzJD8qm43M
+	Y+Ns32c0telh8f56xA4NC5e824GPAMSD+xRmSNxfA9D51FBRFgsdW8sh5zPV54/pZkUmf7leBlb
+	Hj2lvheIV2cegiOq00l7fZqHGxY3MVEQuD
+X-Received: by 2002:a05:600c:34c5:b0:477:a977:b8a0 with SMTP id 5b1f17b1804b1-48320210bbemr113218645e9.3.1770642184016;
+        Mon, 09 Feb 2026 05:03:04 -0800 (PST)
+Received: from SaltyKitkat ([140.238.217.67])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48320978108sm133668105e9.7.2026.02.09.05.03.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Feb 2026 05:03:03 -0800 (PST)
+From: Sun YangKai <sunk67188@gmail.com>
+To: linux-btrfs@vger.kernel.org
+Cc: Sun YangKai <sunk67188@gmail.com>,
+	Chris Mason <clm@meta.com>
+Subject: [PATCH] btrfs: hold space_info->lock when clearing periodic reclaim ready
+Date: Mon,  9 Feb 2026 20:53:39 +0800
+Message-ID: <20260209130248.29418-1-sunk67188@gmail.com>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: fix invalid leaf access in btrfs_quota_enable() if
- ref key not found
-To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <78d48962c97102192c0daea9393b0014430024f0.1770225728.git.fdmanana@suse.com>
-Content-Language: en-US
-From: Sun YangKai <sunk67188@gmail.com>
-In-Reply-To: <78d48962c97102192c0daea9393b0014430024f0.1770225728.git.fdmanana@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	RCVD_TLS_LAST(0.00)[];
+	FREEMAIL_CC(0.00)[gmail.com,meta.com];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	TAGGED_FROM(0.00)[bounces-21543-lists,linux-btrfs=lfdr.de];
-	RCPT_COUNT_TWO(0.00)[2];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21544-lists,linux-btrfs=lfdr.de];
+	RCPT_COUNT_THREE(0.00)[3];
 	FREEMAIL_FROM(0.00)[gmail.com];
-	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[sunk67188@gmail.com,linux-btrfs@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	TO_DN_NONE(0.00)[];
-	TAGGED_RCPT(0.00)[linux-btrfs];
-	MID_RHS_MATCH_FROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	RCVD_COUNT_FIVE(0.00)[5];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: B883010ECEF
+	TAGGED_RCPT(0.00)[linux-btrfs];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,meta.com:email]
+X-Rspamd-Queue-Id: BE0DD10F605
 X-Rspamd-Action: no action
 
+btrfs_set_periodic_reclaim_ready() requires space_info->lock to be held,
+as enforced by lockdep_assert_held(). However, btrfs_reclaim_sweep() was
+calling it after do_reclaim_sweep() returns, at which point
+space_info->lock is no longer held.
 
+Fix this by explicitly acquiring space_info->lock before clearing the
+periodic reclaim ready flag in btrfs_reclaim_sweep().
 
-On 2026/2/5 01:28, fdmanana@kernel.org wrote:
-> From: Filipe Manana <fdmanana@suse.com>
-> 
-> If btrfs_search_slot_for_read() returns 1, it means we did not find any
-> key greather than or equals to the key we asked for, meaning we have
-> reached the end of the tree and therefore the path is not valid. If
-> this happens we need to break out of the loop and stop, instead of
-> continuing and accessing an invalid path.
-> 
-> Fixes: 5223cc60b40a ("btrfs: drop the path before adding qgroup items when enabling qgroups")
-> Signed-off-by: Filipe Manana <fdmanana@suse.com>
-> ---
->   fs/btrfs/qgroup.c | 11 +++++++----
->   1 file changed, 7 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-> index f53c313ab6e4..ea1806accdca 100644
-> --- a/fs/btrfs/qgroup.c
-> +++ b/fs/btrfs/qgroup.c
-> @@ -1169,11 +1169,14 @@ int btrfs_quota_enable(struct btrfs_fs_info *fs_info,
->   			}
->   			if (ret > 0) {
->   				/*
-> -				 * Shouldn't happen, but in case it does we
-> -				 * don't need to do the btrfs_next_item, just
-> -				 * continue.
-> +				 * Shouldn't happen because the keu should still
-keu -> key
+Fixes: 19eff93dc738 ("btrfs: fix periodic reclaim condition")
+Reported-by: Chris Mason <clm@meta.com>
+Closes: https://lore.kernel.org/linux-btrfs/20260208182556.891815-1-clm@meta.com/
+Signed-off-by: Sun YangKai <sunk67188@gmail.com>
+---
+ fs/btrfs/space-info.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-Otherwise, looks good.
-
-Reviewed-by: Sun YangKai <sunk67188@gmail.com>
-
-Thanks,
-Sun YangKai
-> +				 * be there (return 0), but in case it does it
-> +				 * means we have reached the end of the tree -
-> +				 * there are no more leaves with items that have
-> +				 * a key greater than or equals to @found_key,
-> +				 * so just stop the search loop.
->   				 */
-> -				continue;
-> +				break;
->   			}
->   		}
->   		ret = btrfs_next_item(tree_root, path);
+diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+index 1dd65fae6349..931f0dc02b95 100644
+--- a/fs/btrfs/space-info.c
++++ b/fs/btrfs/space-info.c
+@@ -2205,8 +2205,11 @@ void btrfs_reclaim_sweep(const struct btrfs_fs_info *fs_info)
+ 		if (!btrfs_should_periodic_reclaim(space_info))
+ 			continue;
+ 		for (raid = 0; raid < BTRFS_NR_RAID_TYPES; raid++) {
+-			if (do_reclaim_sweep(space_info, raid))
++			if (do_reclaim_sweep(space_info, raid)) {
++				spin_lock(&space_info->lock);
+ 				btrfs_set_periodic_reclaim_ready(space_info, false);
++				spin_unlock(&space_info->lock);
++			}
+ 		}
+ 	}
+ }
+-- 
+2.52.0
 
 
