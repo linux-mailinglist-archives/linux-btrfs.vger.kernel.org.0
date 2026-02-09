@@ -1,85 +1,85 @@
-Return-Path: <linux-btrfs+bounces-21520-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21521-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id iOkhOqpciWlY7gQAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21520-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Mon, 09 Feb 2026 05:03:54 +0100
+	id OMU1E/xciWlY7gQAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21521-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Mon, 09 Feb 2026 05:05:16 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C95610B7E8
-	for <lists+linux-btrfs@lfdr.de>; Mon, 09 Feb 2026 05:03:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E03C610B818
+	for <lists+linux-btrfs@lfdr.de>; Mon, 09 Feb 2026 05:05:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A3A963006B46
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Feb 2026 04:03:48 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id B9EC43006B33
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Feb 2026 04:05:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2964E1E0B86;
-	Mon,  9 Feb 2026 04:03:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AD6323E34C;
+	Mon,  9 Feb 2026 04:05:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="LkOaKMQh"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="E2Flr85C"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A4C71862A
-	for <linux-btrfs@vger.kernel.org>; Mon,  9 Feb 2026 04:03:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3E261862A
+	for <linux-btrfs@vger.kernel.org>; Mon,  9 Feb 2026 04:05:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770609827; cv=none; b=HoS2ZcjbAmuM6cpxZV9QwlId38B9mqUUsGxXMXXer6A1pDcamKx5Eg7OdChvxivMfirHeGUGKLGmLMae1VxSfeV7Kd+tlVCAuekEN4pd7aZi5qkfbxVUsUrgaf43LxBJpTnwfhL0mB9/bAeTN2r7bkfV5Q+NGSuJ0BljC0+rHA0=
+	t=1770609908; cv=none; b=qhd7knlvSYrgivaaqCmnIFl2MVb/4A0d4vnGYKzG0ZtKJAckJVm65NHA7eBPI5gf0MYqu8KJNkVGIUJ4BTVRSVloQeRgBsByf5l1rkdYL8DdyCQmxq46JfE1t5og1CcWhXq8ioJt35OPFXlEjwL5cCnXzZd7JM8OiZYdf8BCZL4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770609827; c=relaxed/simple;
-	bh=cPR/1DlLNGU+dpCVxoza4XgcAEwbjs2LHrah9Tu3Sp4=;
+	s=arc-20240116; t=1770609908; c=relaxed/simple;
+	bh=MDAVAtySpgS4GWToBknbLoytjGNQA+9lN5qc3pA7H3g=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=Cm0qDYlsB4sqOD8sKDdQrjzZd5ir7arJshMN0UaGZ1xx3lwUw0xtHBUlKnrZQH3aXWL3boFTLBkqJeN8jEJ9KwO06ea2idD2U6RmERf2kHrtma2cp3e7eOVB+rahkVH2roc3wlyOIyq38LTXFtzbygHTCGEjJ0B3O9YppmKQsYI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=LkOaKMQh; arc=none smtp.client-ip=209.85.128.46
+	 In-Reply-To:Content-Type; b=em/CxzE6bu/SjepFIDO0muZjQVjRjiYIcS0M7G3FX97na/3WCZD4ao8myzQVyZTYMGnthklroWobhiaYnXK2XZuuBbroVG5H2khjsi+RS2mIS8ykMTWxlDvLVKKJ1mYIoUd3IFVwrj23hzOyT4k+4dUbehaXyX+Ymm1gmR++B3I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=E2Flr85C; arc=none smtp.client-ip=209.85.128.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-47ee0291921so23055945e9.3
-        for <linux-btrfs@vger.kernel.org>; Sun, 08 Feb 2026 20:03:46 -0800 (PST)
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-483337aa225so3596975e9.2
+        for <linux-btrfs@vger.kernel.org>; Sun, 08 Feb 2026 20:05:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1770609825; x=1771214625; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1770609906; x=1771214706; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:to:subject:user-agent:mime-version:date
          :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=G45ws+QTWpXKYKIvRsrym9kpRp34TrD5TjxhGRG9Fcs=;
-        b=LkOaKMQhkLt/rCjq7QsUgpnuoZcIQMKcosgApzcRbSWbs9t7ECFjMIF/1YwygholpS
-         Wi7QRtu1x/RQSx/fVCVlyfY287XNQo+UkDTgM7a8fd+D5Zl4iChb9QMZ17/vYHp5Z4M1
-         BSZLTEQ7hH8mp9QO2kJBORoEvCmWrJCAo4T+za0hNkQdeGXQ07QL9foR1/lE/DDSl17E
-         MZ6pbixjrkj6PVK1R470/UcKViebusCCoQnQyceOpG27akLd+QxxmyuXvOu1EGZaIWXg
-         diFJHkUtF63UxH6K3J3WN/W3DQulrfB7l1cdjRLWI+y+Ov35xs/Vauwy2zzPIoLWcUJM
-         DFjw==
+        bh=qvvSRJp6eqFb5z508i7UNREdNJ6x2Fr+taJ0YnT7AZ0=;
+        b=E2Flr85Cj88OvLlM24ngft4+Gi6eZGRlO5Idr4tZI2OWYWG5EGnzQyZzN7HAs1BUqk
+         Ir0CNKoLYcpmEaVh4FqAHFRAll4Ns33Zug+uppv2Fjd/Bcj0F3r+OX4RQO7DUC1c1oqr
+         /RyvYC70Str5e2dFpT1/bXALTl7CZ9kdY/CwTCy+gNVvjRYWVUv5FXJJR0GcLdSUjtln
+         zo+Sia78CkmTT+W6gz7KYISK1AR4Gr6vBR75xak3R1qdrBSva7CBKcsQBB8DjTY4aaw6
+         daJJWh82KXqj5tTDH5lhi3EGjbx7dDO3ZqFvZXWYIDGcJ3hvYyEuVATmUtOPgHs1d0fs
+         onsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770609825; x=1771214625;
+        d=1e100.net; s=20230601; t=1770609906; x=1771214706;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:to:subject:user-agent:mime-version:date
          :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=G45ws+QTWpXKYKIvRsrym9kpRp34TrD5TjxhGRG9Fcs=;
-        b=rnw7PILKggHBB5GGHlKaYvRPy1kknVY7uTy9YM9v7NmtowSFpTugIiJcXfbe0THkyt
-         U8BsRHHn5O1DME7G8mtm9Vqbu7C1x/0A6DLf0sVcHyvmoGpWsdaTvYnvsgo+tBOaIvfL
-         J50WpgkhRellaIfdiBCXzYx34BZ/CsiAB30xC+EhhL/VH02KWthrVdt+fgzaHNH3NSiE
-         ieypOO4pG9d2gSEND0Rjnmc7SklxUvkROGbSUuhjQKwDKXCD50IhlqZhEfsGUEiLb54Z
-         vMgiTZKAua6Q13PNZE6sIh3ObLOoq8IrO9P+VxqQfHi3U9c9P1KW9Io13wU9BPJ3Mkz0
-         k9mQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWQ8Fgt+O2KMIPlxR8nwGkgFv1Oe7z2R1jwHmNF93T4TZlNzm+Oj7i0gWMC/bwuPdj46Ri4cYep4lyVZA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxtCjbw7SgBNTe90kP5hBcUlSteqrodwubJCQeeg0F7q8rjSCY2
-	o6KE3HOQW/rU8OzzRsc1hAIokq8BotSHTkFZNZQ4q9I+EP93UkaaTWkmSiCD7AY/uETwqSMcyvo
-	tD2l/GLk=
-X-Gm-Gg: AZuq6aLiO7N4NZN1j+ZDbuCcpmfHt2Vjk6MaPf96lhQ+J9leNtZVZizRFEmAVQjsne4
-	SlI4iiM+1RmtUgLna7+Aj+8IDt+yJCXB+3rAMOlcgUKC1ANp2zNFhUgaoRW1lk4fQSEXbsM1JIj
-	SywKdLgHjvaJWhCdyRi6voBaPXCheottTCf1LPjpNdMbOkUfm2o4jYWBeONItylm0zF4k36Yh/8
-	W9dK/kULYpDiSiCnu0Jbsoo/c274pwvtzdtB/V6QRSzD6+rcIz+Ijab8ZODIAS+mjYdm1CJKmrR
-	iQiFxhttWFCru0ceoJ7ku9m46QVj1Z3gyzFZuNKGY5zd1SOKa+JfkpX3PRZHcmb0XkL6R96R3q9
-	5jO8JY5QpMONi6C5iitxvKuUYHHYR+30MXjJJEfLz2A5pk2ZMgkb4zjPpYWQ+ENP0HbZNL4HpVY
-	SgOjNVJgnwPDCqoCqYpswi5PLzLafA+lmY0a68NsNFhWtElbSQ5w==
-X-Received: by 2002:a05:600c:19c7:b0:45d:dc85:c009 with SMTP id 5b1f17b1804b1-483201e160dmr134696095e9.10.1770609825439;
-        Sun, 08 Feb 2026 20:03:45 -0800 (PST)
+        bh=qvvSRJp6eqFb5z508i7UNREdNJ6x2Fr+taJ0YnT7AZ0=;
+        b=nHM/GivmwVIlmZypFwuiudO8cB5ceWiUNpso+3/YXfNMMIsi+hSlv7Z3nvRgwPjG4l
+         cUZEKJj5NtrR9m5CiMHIerUOI+8XXsQx2qmXACXFMSnCLPUJXgusN8zRtGC+2o2taodU
+         /zX0GGSKoq+6DOk40SzJ/MrpuJs9YNm+JjV4RmRNXzchG0bHS+owinVCWGvSTy2KMTp5
+         s20nLCacXiqyKvWxY2EdZYbb4gTQAzgjULm2eAQDShvg7aT7yA8SVRAweTlxfLC5JpoC
+         2LSDj/aAugC0NXMmsIyqH4guHoAntP89SGl0YVPdlI4dbvnOrdkUZPIDgfwPm237Cwj0
+         VQUg==
+X-Forwarded-Encrypted: i=1; AJvYcCWRLWLgwvx6ZRoOQxBWde5/WFktSF+SbHRf2e2YVL0BhfFS5oHk6+saBEMmpQU/FiPxhu7qJ/dNnTGmZw==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxf1VogwXl9dTfckAyca/MAxikZnbzVSADyOx9Z5B21zQhxfB0O
+	PWK0V+/E9bHwkMruPMP360NNsIe1MH1h8Qv7qNMrnAwXRBhq4XOx9Gf+Lad7hzvAKh5vVkmZ2tq
+	KseBbUfg=
+X-Gm-Gg: AZuq6aJVbX0CfExqtQ+yuW/HOu7wG1iSz/Kbb35bkhfKeWzkNus8So+uvpfQsqlBWp2
+	qPF5/hIO8bEPp31iUYg9vMlAergptjj4RjOLyBISoULqi60EBn4O4NhTGvMM5UTdJRlogRbGnk7
+	BthUK6zPNYDvMlLVxqiEux8u2gdeQ53jcaZ5AMsYwM7gq7F5JHX7y3zGPzkUhD6USzN2q5Rl9Bs
+	7vYjrlkdFNxAuHCfBhauEVQwrzGUvfuk0nEYlJXTBXABpyGfTKTUakFjxZ62QicYjZ1zMoyAX85
+	VLOGM+gVLhneDeE/Y0LJyx07QkWKNKHVQhAN66S4JNE0hyQhkkldt5pV0yO1b3g0GTeK6WNSjQ+
+	Kf9VEesXn79Y/Nfn7un9fmBy4oHDTHa7jQHwNg0G9IxwZHwkUWSIZCBvlN7jqjoPpb1gA7SU1U3
+	0QXZ2y8ZWCW2ejC9Y4oFPTqD8qhD5wqbwgGbCbguY=
+X-Received: by 2002:a05:600c:8b88:b0:47e:e20e:bbb0 with SMTP id 5b1f17b1804b1-483201d9fa8mr136553385e9.6.1770609906196;
+        Sun, 08 Feb 2026 20:05:06 -0800 (PST)
 Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-354b465df51sm4338749a91.9.2026.02.08.20.03.43
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-354b46ba137sm3871585a91.13.2026.02.08.20.05.02
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 08 Feb 2026 20:03:44 -0800 (PST)
-Message-ID: <0da2097d-58c1-414e-95cb-972ea9345544@suse.com>
-Date: Mon, 9 Feb 2026 14:33:41 +1030
+        Sun, 08 Feb 2026 20:05:05 -0800 (PST)
+Message-ID: <78ebf47f-9cd2-4d71-acee-965a75e50ca7@suse.com>
+Date: Mon, 9 Feb 2026 14:34:58 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -87,9 +87,9 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: fix lost error return in btrfs_find_orphan_roots()
+Subject: Re: [PATCH] btrfs: fix lost return value on error in finish_verity()
 To: fdmanana@kernel.org, linux-btrfs@vger.kernel.org
-References: <6400dc5103b5ddbe543961b4e865e311ab396790.1770580302.git.fdmanana@suse.com>
+References: <1d384c9ac09392353418f47a8b41366545d73867.1770575632.git.fdmanana@suse.com>
 Content-Language: en-US
 From: Qu Wenruo <wqu@suse.com>
 Autocrypt: addr=wqu@suse.com; keydata=
@@ -116,7 +116,7 @@ Autocrypt: addr=wqu@suse.com; keydata=
  /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
  o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
  JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <6400dc5103b5ddbe543961b4e865e311ab396790.1770580302.git.fdmanana@suse.com>
+In-Reply-To: <1d384c9ac09392353418f47a8b41366545d73867.1770575632.git.fdmanana@suse.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
@@ -132,7 +132,7 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	DKIM_TRACE(0.00)[suse.com:+];
 	FROM_HAS_DN(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21520-lists,linux-btrfs=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-21521-lists,linux-btrfs=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCPT_COUNT_TWO(0.00)[2];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
@@ -145,22 +145,22 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	NEURAL_HAM(-0.00)[-0.999];
 	TO_DN_NONE(0.00)[];
 	MID_RHS_MATCH_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,suse.com:email,suse.com:dkim,suse.com:mid,meta.com:email]
-X-Rspamd-Queue-Id: 8C95610B7E8
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:dkim,suse.com:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: E03C610B818
 X-Rspamd-Action: no action
 
 
 
-在 2026/2/9 06:22, fdmanana@kernel.org 写道:
+在 2026/2/9 05:06, fdmanana@kernel.org 写道:
 > From: Filipe Manana <fdmanana@suse.com>
 > 
-> If the call to btrfs_get_fs_root() returns an error different from -ENOENT
-> we break out of the loop and then return 0, losing the error. Fix this
-> by returning the error instead of breaking from the loop.
+> If btrfs_update_inode() or del_orphan() fail, we jump to the 'end_trans'
+> label and then return 0 instead of the error returned by one of those
+> calls. Fix this and return the error.
 > 
+> Fixes: 61fb7f04ee06 ("btrfs: remove out label in finish_verity()")
 > Reported-by: Chris Mason <clm@meta.com>
-> Link: https://lore.kernel.org/linux-btrfs/20260208185321.1128472-1-clm@meta.com/
-> Fixes: 8670a25ecb2f ("btrfs: use single return variable in btrfs_find_orphan_roots()")
+> Link: https://lore.kernel.org/linux-btrfs/20260208161129.3888234-1-clm@meta.com/
 > Signed-off-by: Filipe Manana <fdmanana@suse.com>
 
 Reviewed-by: Qu Wenruo <wqu@suse.com>
@@ -169,21 +169,21 @@ Thanks,
 Qu
 
 > ---
->   fs/btrfs/root-tree.c | 2 +-
+>   fs/btrfs/verity.c | 2 +-
 >   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/fs/btrfs/root-tree.c b/fs/btrfs/root-tree.c
-> index 37a4173c0a0b..d85a09ae1733 100644
-> --- a/fs/btrfs/root-tree.c
-> +++ b/fs/btrfs/root-tree.c
-> @@ -257,7 +257,7 @@ int btrfs_find_orphan_roots(struct btrfs_fs_info *fs_info)
->   		root = btrfs_get_fs_root(fs_info, root_objectid, false);
->   		ret = PTR_ERR_OR_ZERO(root);
->   		if (ret && ret != -ENOENT) {
-> -			break;
-> +			return ret;
->   		} else if (ret == -ENOENT) {
->   			struct btrfs_trans_handle *trans;
+> diff --git a/fs/btrfs/verity.c b/fs/btrfs/verity.c
+> index 06cbd6f00a78..95ea794f20d3 100644
+> --- a/fs/btrfs/verity.c
+> +++ b/fs/btrfs/verity.c
+> @@ -552,7 +552,7 @@ static int finish_verity(struct btrfs_inode *inode, const void *desc,
+>   	btrfs_set_fs_compat_ro(root->fs_info, VERITY);
+>   end_trans:
+>   	btrfs_end_transaction(trans);
+> -	return 0;
+> +	return ret;
+>   
+>   }
 >   
 
 
