@@ -1,62 +1,63 @@
-Return-Path: <linux-btrfs+bounces-21622-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21623-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MJebAeG/i2l6aQAAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21622-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Feb 2026 00:31:45 +0100
+	id KDthBBDBi2l6aQAAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21623-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Feb 2026 00:36:48 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76D6511FF7A
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Feb 2026 00:31:44 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DC7C12015E
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Feb 2026 00:36:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 570CF30599F9
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Feb 2026 23:31:39 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 52924311371A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Feb 2026 23:32:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FBE331282F;
-	Tue, 10 Feb 2026 23:31:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC91232C923;
+	Tue, 10 Feb 2026 23:31:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lKw2bICs"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZkuD8lzV"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65D582DC76F;
-	Tue, 10 Feb 2026 23:31:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13CA419ABD8;
+	Tue, 10 Feb 2026 23:31:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770766298; cv=none; b=gJ4dmLMm9I4hoKlnNX50lhC5rQlY5Bt7MjZDV0dNsb6Ev9JToBWrhnadX3WFAuppswYBKdFkeqx0Omy96GDHJcZcBLqu+UNcz69cDkfBOlnuB7ocydNwlltEInCv9EaCc/AbbH0jD/pcAx+IPxMrgi1p3yoZm5lFHJZjyAXZbdw=
+	t=1770766319; cv=none; b=pGHOQVBo8PJQ+3zx4i/2UhSMyalfH0tz0+Y81/qX7VP7OVqBGpgeHegAvDhA1DMdrVcc1fT10iSI1Pp31cCOfGtCnL9A7I1gFuQQJenBK+158bQCl2gcYmKL2+L6lIKOMCbUgEBJ0l3uB++jwdtTcHf+KOCXXhpXeVo9s5RgkbI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770766298; c=relaxed/simple;
-	bh=PR342Yvg/wWgOLIi+ArpXvdos4mdkwXg+U2ozOVU6zE=;
+	s=arc-20240116; t=1770766319; c=relaxed/simple;
+	bh=/LFcfH13Xvl2PqBIZxM2EkzvYZWWnm+n/Hix99upP2E=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Bk161RAcG/KqywnIyfjtJVN+ctJBhTa64feNW33XfSILv80p0FbKBOc65LSfomEtOERF6hadQdVH3FOoZ4zjOiudHRPHRHH6Lg+z55hAqPyLoniL7jKagZAk/RowG1VAAW1FKgnYj7pE+b6wPElu4kuuadGwNRX7rXRsADG7aB8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lKw2bICs; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1278AC19424;
-	Tue, 10 Feb 2026 23:31:36 +0000 (UTC)
+	 MIME-Version:Content-Type; b=ct/TwHfBovAkXEG6yycK2/zhrMmInDsse7OJwiH/zAibFL8PwCyacmouSfGek9udM4bchFxqE43dY2/WA+CPpggOuJ73jSjauWSE1c/9rdpexRHNx33lsdL60rl/a2EJE3PWRWKBZfveHlqUERQ5NaZa6B7jPQ+EkUnUYbF2Tnk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZkuD8lzV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F23FDC19423;
+	Tue, 10 Feb 2026 23:31:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1770766298;
-	bh=PR342Yvg/wWgOLIi+ArpXvdos4mdkwXg+U2ozOVU6zE=;
+	s=k20201202; t=1770766319;
+	bh=/LFcfH13Xvl2PqBIZxM2EkzvYZWWnm+n/Hix99upP2E=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=lKw2bICsNxN36rGEXoIOZC2weXIfP+0SDDyppqp0s+385R/TsaQuX7yI9wI8aw/Pi
-	 Frv0DD/T0SVJONqHP7ST6be1L9y/jvrN+DQ5Fa0gCO/T/GQF7Ct3dIKf3V7CfWJhPb
-	 JfIlWs3nUEy7GUmSMiaX78gd9q8uAMsWvImcTjSj/5K9IYAwpGpAkXR7NDy1sBkxlJ
-	 lEc14onn+k0v/4FY7UKsUN7+dtXFRUlwcW4G4tGaBsSJgbPjLUnSiuIH/m/wNlHM0m
-	 5PPNbxpzbzp1zZS1AX8z9biPgc0Ox4knL9fbJQniUCKNoV1K2Lg/lwYTq0oWG257al
-	 vD+Mu7N+7viGA==
+	b=ZkuD8lzVimPJnEKj4uAhZJqhRQxAczI6XUCeQWYgI0d8VMWIWKMvpKuU4qcxziOhQ
+	 RCJB2J5DmLnVrsh0GbnmsIsqk4uNXCHyJj1jEvI6b+oJyhuuerS+s3Y+PZJruxPYpT
+	 d5h8dOGB0ONY60+AlBcLUA4HHZm8nOWFkQqJncEtSlYpWB2m4mOCDRbQmvv5eELmXO
+	 txVrmE5rFgPUzm7bowX6tJZ5PUgW7xLm55ycn2koTceaYQKW8LEDloIZvwtSBfn3VT
+	 2TVoM2v9XFHSTa2nlWcSzpwhx3Ne1HFahEoN6IIlJjQh56n31m5+z8IMgW7t2vBwvD
+	 6fM35JAeTLpsA==
 From: Sasha Levin <sashal@kernel.org>
 To: patches@lists.linux.dev,
 	stable@vger.kernel.org
-Cc: Filipe Manana <fdmanana@suse.com>,
-	Boris Burkov <boris@bur.io>,
+Cc: jinbaohong <jinbaohong@synology.com>,
 	Qu Wenruo <wqu@suse.com>,
+	Robbie Ko <robbieko@synology.com>,
+	Filipe Manana <fdmanana@suse.com>,
 	David Sterba <dsterba@suse.com>,
 	Sasha Levin <sashal@kernel.org>,
 	clm@fb.com,
 	linux-btrfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.19] btrfs: don't BUG() on unexpected delayed ref type in run_one_delayed_ref()
-Date: Tue, 10 Feb 2026 18:30:53 -0500
-Message-ID: <20260210233123.2905307-8-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.19-6.6] btrfs: handle user interrupt properly in btrfs_trim_fs()
+Date: Tue, 10 Feb 2026 18:31:08 -0500
+Message-ID: <20260210233123.2905307-23-sashal@kernel.org>
 X-Mailer: git-send-email 2.51.0
 In-Reply-To: <20260210233123.2905307-1-sashal@kernel.org>
 References: <20260210233123.2905307-1-sashal@kernel.org>
@@ -69,46 +70,54 @@ MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.19
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [-1.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-21622-lists,linux-btrfs=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-21623-lists,linux-btrfs=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	TO_DN_SOME(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[sashal@kernel.org,linux-btrfs@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	TAGGED_RCPT(0.00)[linux-btrfs];
-	RCPT_COUNT_SEVEN(0.00)[9];
+	FROM_NEQ_ENVFROM(0.00)[sashal@kernel.org,linux-btrfs@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	RCPT_COUNT_SEVEN(0.00)[10];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,bur.io:email]
-X-Rspamd-Queue-Id: 76D6511FF7A
+	TAGGED_RCPT(0.00)[linux-btrfs];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:url,suse.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,synology.com:email]
+X-Rspamd-Queue-Id: 7DC7C12015E
 X-Rspamd-Action: no action
 
-From: Filipe Manana <fdmanana@suse.com>
+From: jinbaohong <jinbaohong@synology.com>
 
-[ Upstream commit c7d1d4ff56744074e005771aff193b927392d51f ]
+[ Upstream commit bfb670b9183b0e4ba660aff2e396ec1cc01d0761 ]
 
-There is no need to BUG(), we can just return an error and log an error
-message.
+When a fatal signal is pending or the process is freezing,
+btrfs_trim_block_group() and btrfs_trim_free_extents() return -ERESTARTSYS.
+Currently this is treated as a regular error: the loops continue to the
+next iteration and count it as a block group or device failure.
 
-Reviewed-by: Boris Burkov <boris@bur.io>
+Instead, break out of the loops immediately and return -ERESTARTSYS to
+userspace without counting it as a failure. Also skip the device loop
+entirely if the block group loop was interrupted.
+
 Reviewed-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: Robbie Ko <robbieko@synology.com>
+Signed-off-by: jinbaohong <jinbaohong@synology.com>
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
 Signed-off-by: Filipe Manana <fdmanana@suse.com>
 Reviewed-by: David Sterba <dsterba@suse.com>
 Signed-off-by: David Sterba <dsterba@suse.com>
@@ -117,152 +126,244 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
 
 LLM Generated explanations, may be completely bogus:
 
-Those `BUG()` calls in the sub-functions (`run_delayed_data_ref` line
-1602 and `run_delayed_tree_ref` line 1752) are for unexpected
-`node->action` values, not `node->type` values. The commit we're
-analyzing only addresses the `node->type` BUG() in
-`run_one_delayed_ref`. These are separate concerns and independently
-addressable.
+Now I have a complete understanding. Let me provide my thorough
+analysis.
 
-## Analysis Summary
+---
 
-### What the commit does
-This commit replaces a `BUG()` (unconditional kernel panic) with proper
-error handling (`-EUCLEAN` return + `btrfs_err()` log message) in
-`run_one_delayed_ref()` in `fs/btrfs/extent-tree.c`. The `BUG()`
-triggers when a delayed ref node has an unexpected type value that
-doesn't match any of the known reference key types
-(`BTRFS_TREE_BLOCK_REF_KEY`, `BTRFS_SHARED_BLOCK_REF_KEY`,
-`BTRFS_EXTENT_DATA_REF_KEY`, `BTRFS_SHARED_DATA_REF_KEY`, or
-`BTRFS_EXTENT_OWNER_REF_KEY`).
+## Detailed Analysis
 
-### Why it matters
-- **BUG() causes a complete kernel crash/panic.** The system becomes
-  unresponsive, potentially causing data loss if writes were in
-  progress, and requires a reboot.
-- **With the fix**, the error returns -EUCLEAN, which propagates through
-  `btrfs_run_delayed_refs_for_head()` -> `__btrfs_run_delayed_refs()` ->
-  `btrfs_run_delayed_refs()`, where `btrfs_abort_transaction(trans,
-  ret)` is called. This gracefully aborts the transaction and puts the
-  filesystem into an error state, allowing the system to continue
-  operating (possibly in read-only mode for that filesystem) without a
-  full kernel crash.
+### 1. COMMIT MESSAGE ANALYSIS
 
-### Trigger conditions
-While the `node->type` field is typically populated correctly by
-`btrfs_ref_type()` (which can only return 4 valid values), this BUG()
-can be triggered by:
-1. **Memory corruption** (e.g., hardware memory errors, other kernel
-   bugs corrupting memory)
-2. **Future code bugs** that introduce a new type without handling it
-   here
-3. **Unusual filesystem states** or logic bugs in the delayed ref
-   infrastructure
+The commit message is clear and precise: when `btrfs_trim_block_group()`
+or `btrfs_trim_free_extents()` return `-ERESTARTSYS` (due to fatal
+signal or freezing), the current code treats it as a regular error. It
+continues the loops, counts it as a failure, and logs misleading
+warnings. The fix is to break out immediately and return `-ERESTARTSYS`
+to userspace.
 
-### Stable kernel criteria assessment
+The commit has excellent review pedigree: reviewed by Qu Wenruo, Filipe
+Manana, and David Sterba (the btrfs maintainer himself). Three separate
+reviews is strong confidence.
 
-1. **Obviously correct and tested**: Yes. The patch is reviewed by 3
-   btrfs developers (Boris Burkov, Qu Wenruo, David Sterba). The error
-   path already exists and is exercised by other error codes. The change
-   is straightforward: `BUG()` -> `return -EUCLEAN` + error log.
+### 2. CODE CHANGE ANALYSIS
 
-2. **Fixes a real bug**: Yes. BUG() in a code path that can be triggered
-   is a bug - it causes an unnecessary kernel crash when graceful error
-   handling is possible. The entire call chain already handles errors
-   from this function correctly.
+The fix touches a single function `btrfs_trim_fs()` in `fs/btrfs/extent-
+tree.c`, adding 11 lines across three locations:
 
-3. **Fixes an important issue**: Yes. A kernel panic/crash is a serious
-   issue. Converting to graceful error handling prevents data loss and
-   system downtime.
+**Location 1** - Block group loop: After `btrfs_trim_block_group()`
+returns, check for `-ERESTARTSYS`/`-EINTR` and break immediately:
 
-4. **Small and contained**: Yes. The change is approximately 10 lines in
-   a single function, in a single file. It only modifies error handling
-   behavior.
+```c
+if (ret == -ERESTARTSYS || ret == -EINTR) {
+    btrfs_put_block_group(cache);
+    break;
+}
+```
 
-5. **No new features**: Correct. No new features or APIs are added. This
-   only changes how an error condition is handled.
+Note the critical `btrfs_put_block_group(cache)` call before `break` —
+this prevents a reference count leak. When using `continue`, the loop
+iterator `cache = btrfs_next_block_group(cache)` handles putting the old
+reference. But on `break`, we must do it explicitly. This matches the
+existing pattern earlier in the same loop:
 
-6. **Applies cleanly**: For 6.12.y and later stable trees, it should
-   apply cleanly. For 6.6.y, the `BTRFS_EXTENT_OWNER_REF_KEY` branch
-   needs to be removed (it was introduced in v6.7), requiring a minor
-   backport adaptation.
+```6530:6533:fs/btrfs/extent-tree.c
+                if (cache->start >= range_end) {
+                        btrfs_put_block_group(cache);
+                        break;
+                }
+```
 
-### Precedent
-Similar BUG_ON()/BUG() to -EUCLEAN conversions in the same file
-(`fs/btrfs/extent-tree.c`) by the same author have been backported to
-stable:
-- `28cb13f29faf` ("btrfs: don't BUG_ON() when 0 reference count at
-  btrfs_lookup_extent_info()") - backported to 6.6.y
-- `bb3868033a4c` ("btrfs: do not BUG_ON() when freeing tree block after
-  error") - backported to 6.6.y
+**Location 2** - Between the two loops: Skip the device trimming loop
+entirely if the block group loop was interrupted:
 
-### Risk assessment
-**Very low risk.** The change only affects an error path that was
-previously causing a kernel panic. The new behavior (returning -EUCLEAN)
-is strictly better than the old behavior (BUG/crash). The error
-propagation chain is already well-tested since other errors from
-`run_one_delayed_ref` follow the exact same path.
+```c
+if (ret == -ERESTARTSYS || ret == -EINTR)
+    return ret;
+```
 
-### Dependencies
-The commit is **self-contained**. It has no dependencies on other
-commits. For older stable trees (pre-6.7), the
-`BTRFS_EXTENT_OWNER_REF_KEY` branch wouldn't exist, requiring a trivial
-adaptation.
+**Location 3** - Device loop and final return: Break out of the device
+loop on interrupt and return appropriately:
+
+```c
+if (ret == -ERESTARTSYS || ret == -EINTR)
+    break;
+...
+if (ret == -ERESTARTSYS || ret == -EINTR)
+    return ret;
+```
+
+### 3. THE BUG MECHANISM
+
+This bug is a **follow-up to commit `69313850dce33` ("btrfs: add
+cancellation points to trim loops")** which was merged in v6.12 and is
+`Cc: stable@vger.kernel.org # 5.15+`. That commit added
+`btrfs_trim_interrupted()` checks to the inner trim functions
+(`trim_no_bitmap`, `trim_bitmaps`, `btrfs_issue_discard`,
+`btrfs_trim_free_extents`) so they return `-ERESTARTSYS` when a fatal
+signal is pending or the process is freezing.
+
+**The problem**: The outer function `btrfs_trim_fs()` was NOT updated to
+handle this `-ERESTARTSYS` return. So the inner loops correctly detect
+the interrupt and return early, but the outer loop just treats it as a
+regular error and continues:
+
+1. `btrfs_trim_block_group(cache_0)` → detects signal → returns
+   `-ERESTARTSYS`
+2. Outer loop: `bg_failed++`, `bg_ret = -ERESTARTSYS`, `continue`
+3. `btrfs_trim_block_group(cache_1)` → detects signal again → returns
+   `-ERESTARTSYS`
+4. Repeat for ALL remaining block groups
+5. Then iterate ALL devices, each returning `-ERESTARTSYS` immediately
+
+On a large filesystem with thousands of block groups and multiple
+devices, this means:
+- **Delayed response to Ctrl+C/SIGKILL**: The process doesn't terminate
+  promptly
+- **Blocked system suspend**: `freezing(current)` remains true, but the
+  outer loop keeps going, preventing the process from actually freezing.
+  This was the exact scenario reported in [bug
+  219180](https://bugzilla.kernel.org/show_bug.cgi?id=219180) and [SUSE
+  bug 1229737](https://bugzilla.suse.com/show_bug.cgi?id=1229737)
+- **Misleading dmesg warnings**: `btrfs_warn(fs_info, "failed to trim
+  %llu block group(s)...")` fires, counting all the interrupted block
+  groups as "failures"
+- **Wrong return value**: Instead of returning `-ERESTARTSYS` cleanly to
+  userspace, the function may return a mixed error code
+
+### 4. SCOPE AND RISK ASSESSMENT
+
+- **Size**: 11 lines added, 0 removed. Extremely small and surgical.
+- **Files touched**: 1 (`fs/btrfs/extent-tree.c`)
+- **Scope**: Only affects the interrupt/signal error path. The normal
+  trim path (no signal pending) is completely unaffected — all new code
+  is gated behind `ret == -ERESTARTSYS || ret == -EINTR` checks.
+- **Risk**: Very low. The added checks are early-exit conditions that
+  only trigger when a signal is pending or process is freezing. There's
+  no way these can cause a regression in normal operation.
+- **Reference counting**: Correctly handled
+  (`btrfs_put_block_group(cache)` before break).
+
+### 5. USER IMPACT
+
+- **Who is affected**: Any user running `fstrim` on a btrfs filesystem
+  who interrupts it (Ctrl+C) or has a system that suspends while trim is
+  running. This is a very common scenario, especially on laptops with
+  btrfs and periodic fstrim timers.
+- **Call path**: `fstrim` → `FITRIM` ioctl → `btrfs_ioctl_fitrim()` →
+  `btrfs_trim_fs()`
+- **Severity**: The original bugs from the linked reports were about
+  systems unable to suspend. The cancellation point commit
+  (`69313850dce33`) fixed the inner loops but left the outer loop
+  broken, meaning the fix was incomplete. This commit completes it.
+
+### 6. DEPENDENCY CHECK
+
+This commit depends on two preceding commits:
+
+1. **`912d1c6680bdb` ("btrfs: continue trimming remaining devices on
+   failure")** - Changes `break` to `continue` in the device loop.
+   **Already targeted for stable** (`Fixes:` tag and `Cc:
+   stable@vger.kernel.org # 5.4+`).
+
+2. **`1cc4ada4182fa` ("btrfs: preserve first error in
+   btrfs_trim_fs()")** - Changes `bg_ret = ret` to `if (!bg_ret) bg_ret
+   = ret`. **Not targeted for stable**. This is a small context
+   dependency; the core fix logic is independent of it.
+
+Both prerequisites are small (1-line and 15-line changes respectively).
+The first is already stable-bound. The second would be needed for clean
+application but could alternatively be resolved by a minor context
+adjustment during backport.
+
+The fix also requires `69313850dce33` ("btrfs: add cancellation points
+to trim loops") which is `Cc: stable # 5.15+` and should already be in
+stable trees 5.15+.
+
+### 7. STABILITY INDICATORS
+
+- Reviewed by 3 btrfs experts
+- The parent commit adding interruption infrastructure has been in
+  stable since 5.15+
+- The fix is straightforward conditional checks — no complex logic
+
+### 8. CLASSIFICATION
+
+This is a **bug fix** that:
+- Fixes incomplete signal/interrupt handling
+- Fixes potential system suspend blocking
+- Fixes misleading kernel warnings
+- Fixes incorrect error propagation to userspace
+- Completes an existing stable fix (`69313850dce33`)
+
+It is NOT:
+- A new feature
+- A performance optimization
+- A code cleanup
+- An API change
+
+### Summary
+
+This commit fixes a real, user-visible bug where btrfs trim operations
+cannot be properly interrupted by signals (Ctrl+C) or system suspend. It
+completes the fix started by `69313850dce33` (already in stable 5.15+)
+which added cancellation points to inner trim loops but left the outer
+loop in `btrfs_trim_fs()` unaware of the `-ERESTARTSYS` return code. The
+fix is extremely small (11 lines), well-reviewed by 3 btrfs developers
+including the maintainer, has zero risk to normal code paths, correctly
+handles reference counting, and addresses the same class of bug (suspend
+blocking) that motivated the original stable-tagged commit. It requires
+two small prerequisite commits (one already stable-targeted) for clean
+application.
 
 **YES**
 
- fs/btrfs/extent-tree.c | 20 ++++++++++++--------
- 1 file changed, 12 insertions(+), 8 deletions(-)
+ fs/btrfs/extent-tree.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
 diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index e4cae34620d19..1bf081243efb2 100644
+index 1bf081243efb2..8bdb609f58a7e 100644
 --- a/fs/btrfs/extent-tree.c
 +++ b/fs/btrfs/extent-tree.c
-@@ -1761,32 +1761,36 @@ static int run_one_delayed_ref(struct btrfs_trans_handle *trans,
- 			       struct btrfs_delayed_extent_op *extent_op,
- 			       bool insert_reserved)
- {
-+	struct btrfs_fs_info *fs_info = trans->fs_info;
- 	int ret = 0;
+@@ -6555,6 +6555,10 @@ int btrfs_trim_fs(struct btrfs_fs_info *fs_info, struct fstrim_range *range)
+ 						     range->minlen);
  
- 	if (TRANS_ABORTED(trans)) {
- 		if (insert_reserved) {
- 			btrfs_pin_extent(trans, node->bytenr, node->num_bytes);
--			free_head_ref_squota_rsv(trans->fs_info, href);
-+			free_head_ref_squota_rsv(fs_info, href);
- 		}
- 		return 0;
- 	}
+ 			trimmed += group_trimmed;
++			if (ret == -ERESTARTSYS || ret == -EINTR) {
++				btrfs_put_block_group(cache);
++				break;
++			}
+ 			if (ret) {
+ 				bg_failed++;
+ 				bg_ret = ret;
+@@ -6568,6 +6572,9 @@ int btrfs_trim_fs(struct btrfs_fs_info *fs_info, struct fstrim_range *range)
+ 			"failed to trim %llu block group(s), last error %d",
+ 			bg_failed, bg_ret);
  
- 	if (node->type == BTRFS_TREE_BLOCK_REF_KEY ||
--	    node->type == BTRFS_SHARED_BLOCK_REF_KEY)
-+	    node->type == BTRFS_SHARED_BLOCK_REF_KEY) {
- 		ret = run_delayed_tree_ref(trans, href, node, extent_op,
- 					   insert_reserved);
--	else if (node->type == BTRFS_EXTENT_DATA_REF_KEY ||
--		 node->type == BTRFS_SHARED_DATA_REF_KEY)
-+	} else if (node->type == BTRFS_EXTENT_DATA_REF_KEY ||
-+		   node->type == BTRFS_SHARED_DATA_REF_KEY) {
- 		ret = run_delayed_data_ref(trans, href, node, extent_op,
- 					   insert_reserved);
--	else if (node->type == BTRFS_EXTENT_OWNER_REF_KEY)
-+	} else if (node->type == BTRFS_EXTENT_OWNER_REF_KEY) {
- 		ret = 0;
--	else
--		BUG();
-+	} else {
-+		ret = -EUCLEAN;
-+		btrfs_err(fs_info, "unexpected delayed ref node type: %u", node->type);
-+	}
++	if (ret == -ERESTARTSYS || ret == -EINTR)
++		return ret;
 +
- 	if (ret && insert_reserved)
- 		btrfs_pin_extent(trans, node->bytenr, node->num_bytes);
- 	if (ret < 0)
--		btrfs_err(trans->fs_info,
-+		btrfs_err(fs_info,
- "failed to run delayed ref for logical %llu num_bytes %llu type %u action %u ref_mod %d: %d",
- 			  node->bytenr, node->num_bytes, node->type,
- 			  node->action, node->ref_mod, ret);
+ 	mutex_lock(&fs_devices->device_list_mutex);
+ 	list_for_each_entry(device, &fs_devices->devices, dev_list) {
+ 		if (test_bit(BTRFS_DEV_STATE_MISSING, &device->dev_state))
+@@ -6576,6 +6583,8 @@ int btrfs_trim_fs(struct btrfs_fs_info *fs_info, struct fstrim_range *range)
+ 		ret = btrfs_trim_free_extents(device, &group_trimmed);
+ 
+ 		trimmed += group_trimmed;
++		if (ret == -ERESTARTSYS || ret == -EINTR)
++			break;
+ 		if (ret) {
+ 			dev_failed++;
+ 			dev_ret = ret;
+@@ -6589,6 +6598,8 @@ int btrfs_trim_fs(struct btrfs_fs_info *fs_info, struct fstrim_range *range)
+ 			"failed to trim %llu device(s), last error %d",
+ 			dev_failed, dev_ret);
+ 	range->len = trimmed;
++	if (ret == -ERESTARTSYS || ret == -EINTR)
++		return ret;
+ 	if (bg_ret)
+ 		return bg_ret;
+ 	return dev_ret;
 -- 
 2.51.0
 
