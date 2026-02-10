@@ -1,65 +1,65 @@
-Return-Path: <linux-btrfs+bounces-21581-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21582-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id cDfzI53fimlIOgAAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21581-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Feb 2026 08:34:53 +0100
+	id WDYhGU7fimlIOgAAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21582-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Feb 2026 08:33:34 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31D93117FB3
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Feb 2026 08:34:53 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id D37D2117F73
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Feb 2026 08:33:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 2A1AC30495F1
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Feb 2026 07:33:25 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 583A33031B1B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Feb 2026 07:33:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4B492C027A;
-	Tue, 10 Feb 2026 07:33:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21ADD32B98C;
+	Tue, 10 Feb 2026 07:33:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="XrDwyuWU"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="I4WtFGXN"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from esa6.hgst.iphmx.com (esa6.hgst.iphmx.com [216.71.154.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3185332917
-	for <linux-btrfs@vger.kernel.org>; Tue, 10 Feb 2026 07:33:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 024122D24B7
+	for <linux-btrfs@vger.kernel.org>; Tue, 10 Feb 2026 07:33:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.71.154.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770708804; cv=none; b=RKtGQqStHMzarpbIB0VqTAcs4QZ+PXwHLWhuzJl1Xqc1tITDnvdmiCx5oKGc6tDiEGkfjUuwB5q8yVUYcz35NaXwWhhIz3fmhFk49FqgFq7UCvNIpz1HRW+zwd9NV3K0LFhWIrkP3Zz1od2H3W1bbz7vFBatYatWVHFs3OgiTC8=
+	t=1770708805; cv=none; b=PNALRCrTYDxWhtvid2SHtE07XRk8mSKPdd4PVv7/si9j7lONTLwMEhyQcb4XfMXbAFJjP4KEW4IV881439CUj59mzeNWn2xSUZFsLmB0eLFRw9cPEd99ptnAcEw6zpLm5gAM2AGDzSJV2nq7Ny7TEM51HE4ne6n0xQkjONgIf+A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770708804; c=relaxed/simple;
-	bh=dGlnk4v0CjJEt3yTQ8BtHd2JYAcl8VDrA8D+S6B0MAE=;
+	s=arc-20240116; t=1770708805; c=relaxed/simple;
+	bh=fFMAwfd8PfxD2b4scdf9pijojxbqkn9JTtWQL0I6TeY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=YWAWM+NUHx4FLEepZnMsYZQakx6Md6RHflpYWDjJqsobLqs0FG12vCZeVFF+NWnVmzskFBt/lh3HOtBZm8thJIrH/jCZzeE/kYwt8OPrA3EWKkHJ8deNOLh2Pk8N+ZDaR/EUJYZ68IJZNF19Cqs9SWc8uazJ72DlMCROPdSSdPI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=XrDwyuWU; arc=none smtp.client-ip=216.71.154.45
+	 MIME-Version; b=cCmkR9V21LIlctW8eQmNDSEvdOpwDI+6BDwUpt/+NpGBpBIcbYGFwJ7d1YovM6QXVwjUNmiw2Davsd1q3SK9XjJc0v/AxEWaHWZhGZ1Sx9kfIhrXn3QjYrjBiwkN/a0H3Z3gx0m3xz6YFTGPII0N7vHG8ZFfip80bKhGud9NyoI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=I4WtFGXN; arc=none smtp.client-ip=216.71.154.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1770708802; x=1802244802;
+  t=1770708804; x=1802244804;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=dGlnk4v0CjJEt3yTQ8BtHd2JYAcl8VDrA8D+S6B0MAE=;
-  b=XrDwyuWUgNe5HumFcY8DUWwkxIqv3RfeN3ETmmLLgscLOiZIKaYhuIfb
-   6uTAGzHcnTcg1TZacy/bj8RthL0AdsDMfYFQQccQmrNDlh7fV+HQcxHuU
-   0dtJ9N19IWJB3QMH7WErx1qeK8XV+QEarObZHFJHC0oEs2Qg+3Pko2YlU
-   Rwbv9LQgwPOBQAv4Ifyg1zJkFPv279Ka4eJ/8eiQ3EZ4DKSlsIo553NKL
-   4Iyo9WwLgve7+D6dTLXNoY51LXmUEB+l1bJwxuEfFihrTI1bMA4d1JCKA
-   yb2uZxhJfRr0owejPaRSyNb1zDQoPgogbbdmu+N8mulblC9Dx/69AzxDu
+  bh=fFMAwfd8PfxD2b4scdf9pijojxbqkn9JTtWQL0I6TeY=;
+  b=I4WtFGXNh3LTsibmzVBVU7HIzhZBM5rkigSBUnye4tcZUJlsvAefj1NM
+   la+JcCmZjiRR82CH8o59cjQ7aG4ZREMlvt+vHdzf+R7yw8XPXvCKAL8nB
+   flvrsUk0Qz/hNiA2GKADVZA2qez8ogrjO7WsXsTHXKZE5Weffv+XaQ10w
+   UqR9vbVjafMs82rNbuQRaQlF8p1sYigeegOh/ZL09hr9V7M3VnFjhMc50
+   iNT7lFB85seT9aPGuLrWuNPyKbPs/wjcTlGGo4lY1VHFhvjwP1GInm0op
+   tPN53MAL+ngU7vigVj4AWKUehYdM3TsUQgYFG9ke2MW0i5aHMVu9gU5bO
    A==;
-X-CSE-ConnectionGUID: gq1WRCxaRWaG3//tylIWBg==
-X-CSE-MsgGUID: lLhapDS9Tk2QI5ztRubyhA==
+X-CSE-ConnectionGUID: og+zUuN3QwGHYnb4yHu/KQ==
+X-CSE-MsgGUID: lrsBiyMDRG6vXjp+dMCy/g==
 X-IronPort-AV: E=Sophos;i="6.21,283,1763395200"; 
-   d="scan'208";a="139583135"
+   d="scan'208";a="139583139"
 Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep03.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 10 Feb 2026 15:33:20 +0800
-IronPort-SDR: 698adf40_KR71CWGXc9naKHt2OCCMmAT27pCiXQejbGqHq0CJjNHmPqS
- nr+l1/f37+cOCkAWs4uNwaz2d1JfwMHt5Mj1zxg==
+  by ob1.hgst.iphmx.com with ESMTP; 10 Feb 2026 15:33:23 +0800
+IronPort-SDR: 698adf43_hWut44CckLbQmdrh6UQPIJ4+CBc/TWtFqVAOrc9KAxJfHTa
+ ucu5Uor2xq1+ci1Kz+KykrdyE+RxhNdQfU4kgvg==
 Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep03.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 09 Feb 2026 23:33:20 -0800
+  by uls-op-cesaep03.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 09 Feb 2026 23:33:23 -0800
 WDCIronportException: Internal
 Received: from c2qdky46rp.ad.shared (HELO neo.fritz.box) ([10.224.28.115])
-  by uls-op-cesaip01.wdc.com with ESMTP; 09 Feb 2026 23:33:18 -0800
+  by uls-op-cesaip01.wdc.com with ESMTP; 09 Feb 2026 23:33:21 -0800
 From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 To: linux-btrfs@vger.kernel.org
 Cc: Filipe Manana <fdmanana@suse.com>,
@@ -70,9 +70,9 @@ Cc: Filipe Manana <fdmanana@suse.com>,
 	Boris Burkov <boris@bur.io>,
 	David Sterba <dsterba@suse.com>,
 	Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH v2 2/3] btrfs: zoned: move partially zone_unusable block groups to reclaim list
-Date: Tue, 10 Feb 2026 08:33:08 +0100
-Message-ID: <20260210073309.195274-3-johannes.thumshirn@wdc.com>
+Subject: [PATCH v2 3/3] btrfs: zoned: add zone reclaim flush state for DATA space_info
+Date: Tue, 10 Feb 2026 08:33:09 +0100
+Message-ID: <20260210073309.195274-4-johannes.thumshirn@wdc.com>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260210073309.195274-1-johannes.thumshirn@wdc.com>
 References: <20260210073309.195274-1-johannes.thumshirn@wdc.com>
@@ -90,12 +90,12 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	DMARC_POLICY_ALLOW(-0.50)[wdc.com,quarantine];
 	R_MISSING_CHARSET(0.50)[];
 	R_DKIM_ALLOW(-0.20)[wdc.com:s=dkim.wdc.com];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21581-lists,linux-btrfs=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-21582-lists,linux-btrfs=lfdr.de];
 	RCVD_COUNT_FIVE(0.00)[6];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
@@ -106,71 +106,103 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	RCPT_COUNT_SEVEN(0.00)[9];
 	DKIM_TRACE(0.00)[wdc.com:+];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[wdc.com:mid,wdc.com:dkim,wdc.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 31D93117FB3
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: D37D2117F73
 X-Rspamd-Action: no action
 
-On zoned block devices, block groups accumulate zone_unusable space
-(space between the write pointer and zone end that cannot be allocated
-until the zone is reset). When a block group becomes mostly
-zone_unusable but still contains some valid data and it gets added to the
-unused_bgs list it can never be deleted because it's not actually empty.
+On zoned block devices, DATA block groups can accumulate large amounts
+of zone_unusable space (space between the write pointer and zone end).
+When zone_unusable reaches high levels (e.g., 98% of total space), new
+allocations fail with ENOSPC even though space could be reclaimed by
+relocating data and resetting zones.
 
-The deletion code (btrfs_delete_unused_bgs) skips these block groups
-due to the btrfs_is_block_group_used() check, leaving them on the
-unused_bgs list indefinitely. This causes two problems:
-1. The block groups are never reclaimed, permanently wasting space
-2. Eventually leads to ENOSPC even though reclaimable space exists
+The existing flush states don't handle this scenario effectively - they
+either try to free cached space (which doesn't exist for zone_unusable)
+or reset empty zones (which doesn't help when zones contain valid data
+mixed with zone_unusable space).
 
-Fix by detecting block groups where zone_unusable exceeds 50% of the
-block group size. Move these to the reclaim_bgs list instead of
-skipping them. This triggers btrfs_reclaim_bgs_work() which:
-1. Marks the block group read-only
-2. Relocates the remaining valid data via btrfs_relocate_chunk()
-3. Removes the emptied block group
-4. Resets the zones, converting zone_unusable back to usable space
+Add a new RECLAIM_ZONES flush state that triggers the block group
+reclaim machinery. This state:
+- Calls btrfs_reclaim_sweep() to identify reclaimable block groups
+- Calls btrfs_reclaim_bgs() to queue reclaim work
+- Waits for reclaim_bgs_work to complete via flush_work()
+- Commits the transaction to finalize changes
 
-The 50% threshold ensures we only reclaim block groups where most space
-is unusable, making relocation worthwhile. Block groups with less
-zone_unusable are left on unused_bgs to potentially become fully empty
-through normal deletion.
+The reclaim work (btrfs_reclaim_bgs_work) safely relocates valid data
+from fragmented block groups to other locations before resetting zones,
+converting zone_unusable space back into usable space.
+
+Insert RECLAIM_ZONES before RESET_ZONES in data_flush_states so that
+we attempt to reclaim partially-used block groups before falling back
+to resetting completely empty ones.
 
 Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 ---
- fs/btrfs/block-group.c | 18 ++++++++++++++++++
- 1 file changed, 18 insertions(+)
+ fs/btrfs/space-info.c | 22 ++++++++++++++++++++++
+ fs/btrfs/space-info.h |  1 +
+ 2 files changed, 23 insertions(+)
 
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index 764caaf1d8b2..e3e7852dd3e0 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -1597,6 +1597,24 @@ void btrfs_delete_unused_bgs(struct btrfs_fs_info *fs_info)
- 
- 		spin_lock(&space_info->lock);
- 		spin_lock(&block_group->lock);
-+
-+		if (btrfs_is_zoned(fs_info) && btrfs_is_block_group_used(block_group) &&
-+		    block_group->zone_unusable >= div_u64(block_group->length, 2)) {
-+			/*
-+			 * If the block group has data left, but at least half
-+			 * of the block group is zone_unusable, mark it as
-+			 * reclaimable before continuing with the next block group.
-+			 */
-+
-+			spin_unlock(&block_group->lock);
-+			spin_unlock(&space_info->lock);
-+			up_write(&space_info->groups_sem);
-+
-+			btrfs_mark_bg_to_reclaim(block_group);
-+
-+			goto next;
+diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
+index 243b2593d4bc..b174c68a5ebb 100644
+--- a/fs/btrfs/space-info.c
++++ b/fs/btrfs/space-info.c
+@@ -129,6 +129,15 @@
+  *     churn a lot and we can avoid making some extent tree modifications if we
+  *     are able to delay for as long as possible.
+  *
++ *   RECLAIM_ZONES
++ *     This state only works for the zoned mode. In zoned mode, we cannot reuse
++ *     regions that have once been allocated and then been freed until we reset
++ *     the zone, due to the sequential write requirement. The RECLAIM_ZONES state
++ *     calls the reclaim machinery, evacuating the still valid data in these
++ *     block-groups and relocates it to the data_reloc_bg. Afterwards these
++ *     block-groups get deleted and the transaction is committed. This frees up
++ *     space to use for new allocations.
++ *
+  *   RESET_ZONES
+  *     This state works only for the zoned mode. On the zoned mode, we cannot
+  *     reuse once allocated then freed region until we reset the zone, due to
+@@ -905,6 +914,18 @@ static void flush_space(struct btrfs_space_info *space_info, u64 num_bytes,
+ 		if (ret > 0 || ret == -ENOSPC)
+ 			ret = 0;
+ 		break;
++	case RECLAIM_ZONES:
++		if (btrfs_is_zoned(fs_info)) {
++			btrfs_reclaim_sweep(fs_info);
++			btrfs_delete_unused_bgs(fs_info);
++			btrfs_reclaim_bgs(fs_info);
++			flush_work(&fs_info->reclaim_bgs_work);
++			ASSERT(current->journal_info == NULL);
++			ret = btrfs_commit_current_transaction(root);
++		} else {
++			ret = 0;
 +		}
-+
- 		if (btrfs_is_block_group_used(block_group) ||
- 		    (block_group->ro && !(block_group->flags & BTRFS_BLOCK_GROUP_REMAPPED)) ||
- 		    list_is_singular(&block_group->list) ||
++		break;
+ 	case RUN_DELAYED_IPUTS:
+ 		/*
+ 		 * If we have pending delayed iputs then we could free up a
+@@ -1403,6 +1424,7 @@ static const enum btrfs_flush_state data_flush_states[] = {
+ 	FLUSH_DELALLOC_FULL,
+ 	RUN_DELAYED_IPUTS,
+ 	COMMIT_TRANS,
++	RECLAIM_ZONES,
+ 	RESET_ZONES,
+ 	ALLOC_CHUNK_FORCE,
+ };
+diff --git a/fs/btrfs/space-info.h b/fs/btrfs/space-info.h
+index 6f96cf48d7da..174b1ecf63be 100644
+--- a/fs/btrfs/space-info.h
++++ b/fs/btrfs/space-info.h
+@@ -113,6 +113,7 @@ enum btrfs_flush_state {
+ 	RUN_DELAYED_IPUTS	= 10,
+ 	COMMIT_TRANS		= 11,
+ 	RESET_ZONES		= 12,
++	RECLAIM_ZONES		= 13,
+ };
+ 
+ enum btrfs_space_info_sub_group {
 -- 
 2.53.0
 
