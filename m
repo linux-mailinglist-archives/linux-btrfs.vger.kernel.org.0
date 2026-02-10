@@ -1,85 +1,78 @@
-Return-Path: <linux-btrfs+bounces-21578-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21579-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id SJhOJi6uimkKNAAAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21578-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Feb 2026 05:03:58 +0100
+	id MCUGHYbfimlIOgAAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21579-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Feb 2026 08:34:30 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44B54116D42
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Feb 2026 05:03:58 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20070117F9E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Feb 2026 08:34:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 377ED301AF40
-	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Feb 2026 04:03:35 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 96D7E3045669
+	for <lists+linux-btrfs@lfdr.de>; Tue, 10 Feb 2026 07:33:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD355283C89;
-	Tue, 10 Feb 2026 04:03:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDF803346A9;
+	Tue, 10 Feb 2026 07:33:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="OARCZfiA";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="OARCZfiA"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="aS2qGk2Y"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from esa6.hgst.iphmx.com (esa6.hgst.iphmx.com [216.71.154.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10EEB2F851
-	for <linux-btrfs@vger.kernel.org>; Tue, 10 Feb 2026 04:03:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C3A72C027A
+	for <linux-btrfs@vger.kernel.org>; Tue, 10 Feb 2026 07:33:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.71.154.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770696213; cv=none; b=rRUvIA/olrnsSfyXopCgMF7UoCHBR7PiL7TN1Ld/9I/pUhcHGNEQQbffNw8EdI/xy1BYyTfdIiWKKfqPQnz2qrzsNU5MjzUJEX0AvizjHfSFqM0VcXRZKRzM7TKiCYPCMzijpZwYN7nwgHZ4ghaDCIVJpTheCLJQinNVp2CCjBQ=
+	t=1770708802; cv=none; b=UZH4Vp39SOq3zQkR4apBGJ9qD0Ep0CmsWZYr0/TbmpCdXiZQ9lGjlShTrjpV0Dy43ZDfdHyy330tW8csPwlk2okMc0tDb4tv1F/dA97/kV/Jr39N4xV4rqj92dRn4tR504Wbgced4JL1gIe1qZXNfmZfRtamS4AKWKsvD7l/dqI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770696213; c=relaxed/simple;
-	bh=2ExzDZZYsrkoTtLzGfSA7K4Uw+78sesGf8sBPgJfuRs=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Y0nq6efqkKSDM99+EHrUCpziOO/Otof8otWXFMHjQ0PYxysdz4C2HGZ3Lg9vrcqyHIJvS4jJuO5lBmWhl1SQvURgp+qArg0H1DtelNA6TACsYQxucL+ryC6guRvR1YuHKp9kzSrpBnA5m9zwEDo2QCBoZR76SRCc0istH+ARmeI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=OARCZfiA; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=OARCZfiA; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 7886A3E70F
-	for <linux-btrfs@vger.kernel.org>; Tue, 10 Feb 2026 04:03:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1770696201; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3NhwQndkmdfqxax3f5s228qtnyOuOAzmmANC+M5r0pg=;
-	b=OARCZfiArwi/1jpKpxT+We9lt1jsU8g+EDRGJ+XQTKcW3y3FXJeM9CDW3SGT9lCIkmM+pp
-	A+aBZmy5aFiqPNn9ORD+gBa8TFKI2UrwzM6f8WOq7yN9JOqxjBVO+skUmF7zzk3TGLBPT+
-	6z3Y22JNzKFV9gxckdyOdNtP2pl3BIE=
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=OARCZfiA
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1770696201; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3NhwQndkmdfqxax3f5s228qtnyOuOAzmmANC+M5r0pg=;
-	b=OARCZfiArwi/1jpKpxT+We9lt1jsU8g+EDRGJ+XQTKcW3y3FXJeM9CDW3SGT9lCIkmM+pp
-	A+aBZmy5aFiqPNn9ORD+gBa8TFKI2UrwzM6f8WOq7yN9JOqxjBVO+skUmF7zzk3TGLBPT+
-	6z3Y22JNzKFV9gxckdyOdNtP2pl3BIE=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 68E0D3EA62
-	for <linux-btrfs@vger.kernel.org>; Tue, 10 Feb 2026 04:03:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id UPupBQiuimm/bwAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Tue, 10 Feb 2026 04:03:20 +0000
-From: Qu Wenruo <wqu@suse.com>
+	s=arc-20240116; t=1770708802; c=relaxed/simple;
+	bh=EfTgqGEI74lIvba7XUVf+qvPaBlUGLNQCODeP+ZF97Y=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=L58NBMkOG4hFixVHnFFy+lcnZXeyWdLQ/L+2DI7HNO0eJS+I4yvoDCfEz5dNxCmjgNlP4+bArbB6v23G/exQnj9KeeT4WtPnfi74gWXClRNHOIFwZWaL7YjbEpRJJd4L8/DHtSbjA0JOnAeZw1/tASUHGt+V5OMIUe/08pj0zes=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=aS2qGk2Y; arc=none smtp.client-ip=216.71.154.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1770708801; x=1802244801;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=EfTgqGEI74lIvba7XUVf+qvPaBlUGLNQCODeP+ZF97Y=;
+  b=aS2qGk2YJggcJ0wQA9hFOvIAj0+zgNU3ZNLN5F3o/58FtsHP3+42pJsW
+   bPTjfc9dOJA7flQUraOJnPxcOoPDOxFB6lQmg5uxXEq2NFEu9hTeIjJid
+   m45vzl4hyRDz/iAEVcR69dEzbQADgQ7dR949zc6OUL4XYzsSQmSaG5LfG
+   PrKkNc8eiDvrryPXUMULkYk3Ywu9STDz5A2TJEZZ3Bkoevzo+ApJ8lIEw
+   OJ7WWhcSenDd0nQKFatpNMuLAQVudHo+llNtiAlfMALd46N7Dg6C46fUp
+   j7qnVQFrf7uPWtuOpeq1zI1cCcyQgiG+JERNPfdGkNe9ecjCfFbnohFvU
+   A==;
+X-CSE-ConnectionGUID: /GvUKV94TZS/4ym9QJqinA==
+X-CSE-MsgGUID: /J5GRBZjSMq/zxv3L2f2BQ==
+X-IronPort-AV: E=Sophos;i="6.21,283,1763395200"; 
+   d="scan'208";a="139583129"
+Received: from uls-op-cesaip02.wdc.com (HELO uls-op-cesaep03.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 10 Feb 2026 15:33:14 +0800
+IronPort-SDR: 698adf3a_1huDa1Ch4mcGGYOUkxQ+c4HC7uB6epc1kt2nHr2esoYmrMq
+ xVdodOCiPHG4ybhzbPfMef2onq03bUmpw+fwlJQ==
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep03.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 09 Feb 2026 23:33:14 -0800
+WDCIronportException: Internal
+Received: from c2qdky46rp.ad.shared (HELO neo.fritz.box) ([10.224.28.115])
+  by uls-op-cesaip01.wdc.com with ESMTP; 09 Feb 2026 23:33:12 -0800
+From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 2/2] btrfs: move larger data folios out of experimental features
-Date: Tue, 10 Feb 2026 14:32:58 +1030
-Message-ID: <f93d153fcf09125c407f25f2d81e6a9cad1506b7.1770695952.git.wqu@suse.com>
-X-Mailer: git-send-email 2.52.0
-In-Reply-To: <cover.1770695952.git.wqu@suse.com>
-References: <cover.1770695952.git.wqu@suse.com>
+Cc: Filipe Manana <fdmanana@suse.com>,
+	Damien Le Moal <dlemoal@kernel.org>,
+	Naohiro Aota <naohiro.aota@wdc.com>,
+	Christoph Hellwig <hch@lst.de>,
+	Hans Holmberg <Hans.Holmberg@wdc.com>,
+	Boris Burkov <boris@bur.io>,
+	David Sterba <dsterba@suse.com>,
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH v2 0/3] btrfs: zoned fix two long standing ENOSPC bugs
+Date: Tue, 10 Feb 2026 08:33:06 +0100
+Message-ID: <20260210073309.195274-1-johannes.thumshirn@wdc.com>
+X-Mailer: git-send-email 2.53.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -87,85 +80,106 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Score: -3.01
-X-Spam-Level: 
-X-Spam-Flag: NO
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
+	DMARC_POLICY_ALLOW(-0.50)[wdc.com,quarantine];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	R_DKIM_ALLOW(-0.20)[wdc.com:s=dkim.wdc.com];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21578-lists,linux-btrfs=lfdr.de];
-	TO_DN_NONE(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[wqu@suse.com,linux-btrfs@vger.kernel.org];
-	RCPT_COUNT_ONE(0.00)[1];
-	MIME_TRACE(0.00)[0:+];
-	PRECEDENCE_BULK(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21579-lists,linux-btrfs=lfdr.de];
 	RCVD_COUNT_FIVE(0.00)[6];
-	TAGGED_RCPT(0.00)[linux-btrfs];
-	DKIM_TRACE(0.00)[suse.com:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[]
-X-Rspamd-Queue-Id: 44B54116D42
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[johannes.thumshirn@wdc.com,linux-btrfs@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	DKIM_TRACE(0.00)[wdc.com:+];
+	TAGGED_RCPT(0.00)[linux-btrfs];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,wdc.com:mid,wdc.com:dkim]
+X-Rspamd-Queue-Id: 20070117F9E
 X-Rspamd-Action: no action
 
-This feature is introduced in v6.17 under experimental, and we had
-several small bugs related or exposed by that feature:
+This series fixes two long standing bugs with zoned BTRFS leading to
+premature ENOSPC.
 
- e9e3b22ddfa7 ("btrfs: fix beyond-EOF write handling")
- 18de34daa7c6 ("btrfs: truncate ordered extent when skipping writeback past i_size")
+Patch 1 caps the amount of metadata reservations to not let
+`bytes_may_use + bytes_zone_available` climb beyond a space_info's
+capacity.
 
-Otherwise the feature is being frequently tested by btrfs developers.
+Patch 2 moves a block-group to the reclaim list, if it cannot be deleted
+in btrfs_delete_unused_bgs() because there's still user data left.
 
-The latest fix only arrived in v6.19, after two releases I think it's time
-to move this feature out of experimental.
+Patch 3 adds a new zoned only state to the flush machinery performing
+reclaim of block-groups that can be reclaimed.
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/Kconfig       | 2 +-
- fs/btrfs/btrfs_inode.h | 2 --
- 2 files changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/fs/btrfs/Kconfig b/fs/btrfs/Kconfig
-index 5e75438e0b73..d0451cf93849 100644
---- a/fs/btrfs/Kconfig
-+++ b/fs/btrfs/Kconfig
-@@ -110,7 +110,7 @@ config BTRFS_EXPERIMENTAL
- 
- 	  - extent tree v2 - complex rework of extent tracking
- 
--	  - large folio and block size (> page size) support
-+	  - large block size (> page size) support
- 
- 	  - asynchronous checksum generation for data writes
- 
-diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
-index 73602ee8de3f..9a9d7651d74e 100644
---- a/fs/btrfs/btrfs_inode.h
-+++ b/fs/btrfs/btrfs_inode.h
-@@ -536,11 +536,9 @@ static inline void btrfs_set_inode_mapping_order(struct btrfs_inode *inode)
- 	ASSERT(is_data_inode(inode));
- 
- 	/* We only allow BITS_PER_LONGS blocks for each bitmap. */
--#ifdef CONFIG_BTRFS_EXPERIMENTAL
- 	mapping_set_folio_order_range(inode->vfs_inode.i_mapping,
- 				      inode->root->fs_info->block_min_order,
- 				      inode->root->fs_info->block_max_order);
--#endif
- }
- 
- void btrfs_calculate_block_csum_folio(struct btrfs_fs_info *fs_info,
+For all these patches a single reproducer was used (and it can be turned
+into a fstest):
+
+```
+#!/bin/sh
+
+SCRATCH_DEV="/dev/vdb"
+SCRATCH_MNT="/tmp/scratch"
+MOUNT_OPTIONS="-o enospc_debug"
+
+mkdir -p $SCRATCH_MNT
+mkfs.btrfs -f $SCRATCH_DEV
+mount $MOUNT_OPTIONS $SCRATCH_DEV $SCRATCH_MNT
+
+blocks="$(df -TB 1G $SCRATCH_DEV | awk '/btrfs/ { print $3}')"
+
+loops=$(echo "$blocks * 4 - 2" | bc)
+
+for (( i = 0; i < $loops; i++)); do
+	dd if=/dev/zero of=$SCRATCH_MNT/test bs=1M count=1024 > /dev/null
+	if [ $? -ne 0 ]; then
+		break
+	fi
+done
+
+umount $SCRATCH_DEV
+btrfs check $SCRATCH_DEV
+```
+
+Changes to v1:
+- Don't pass block_rsv to btrfs_zoned_cap_metadata_reservation()
+- Hold space_info->lock in btrfs_zoned_cap_metadata_reservation()
+- Don't divide by 2 but use '>> 1'
+- ASSERT() the -EAGAIN return of btrfs_delayed_refs_rsv_refill() only happens on zoned
+- Call btrfs_mark_bg_to_reclaim() after unlocking
+- Fix comment in 2/3
+- Add description of RECLAIM_ZONES flush state
+- Reflow 'ret' assignment in RECLAIM_ZONES flush state
+
+Link to v1:
+https://lore.kernel.org/linux-btrfs/20260209143644.96411-1-johannes.thumshirn@wdc.com/
+
+Johannes Thumshirn (3):
+  btrfs: zoned: cap delayed refs metadata reservation to avoid
+    overcommit
+  btrfs: zoned: move partially zone_unusable block groups to reclaim
+    list
+  btrfs: zoned: add zone reclaim flush state for DATA space_info
+
+ fs/btrfs/block-group.c | 18 ++++++++++++++++++
+ fs/btrfs/delayed-ref.c | 26 ++++++++++++++++++++++++++
+ fs/btrfs/space-info.c  | 22 ++++++++++++++++++++++
+ fs/btrfs/space-info.h  |  1 +
+ fs/btrfs/transaction.c |  8 ++++++++
+ 5 files changed, 75 insertions(+)
+
 -- 
-2.52.0
+2.53.0
 
 
