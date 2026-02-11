@@ -1,78 +1,49 @@
-Return-Path: <linux-btrfs+bounces-21624-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21625-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id uMNeB+Lzi2mpdwAAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21624-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Feb 2026 04:13:38 +0100
+	id SCG4KX0IjGl7fAAAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21625-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Feb 2026 05:41:33 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77B43120E17
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Feb 2026 04:13:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1341B1213BA
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Feb 2026 05:41:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 7D48E3056171
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Feb 2026 03:13:28 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 1A037305582F
+	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Feb 2026 04:41:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B14B34251E;
-	Wed, 11 Feb 2026 03:13:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Nin/gVDi";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Nin/gVDi"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83B5A3542F9;
+	Wed, 11 Feb 2026 04:41:18 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from cstnet.cn (smtp25.cstnet.cn [159.226.251.25])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CE4B287265
-	for <linux-btrfs@vger.kernel.org>; Wed, 11 Feb 2026 03:13:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DF3410FD;
+	Wed, 11 Feb 2026 04:41:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770779606; cv=none; b=oOdHfdj7bh0VL5weT/xYy9cWn1L7YjLfQrEf96SGnrsCX2Hd0BumTfXbuKkvCIU2itAoW2pyI7bPT3znq083q+DWWdLfcKb+5b9YXcxm5ofkzeUbk/nuf1P1eAW0QAVfzYl/XOIYqLel4ezIOO7Gj25+A15QJwGaUp5liHLnvM0=
+	t=1770784878; cv=none; b=JUmUsy/2YaA7TS3wMS0rNjQN0xT1SK0aHmArclLTMqRAMvd3SFHxV2/6gWwntoSxgTKvugGi1h5GghSPEOkuo8WXLRMBFjNJbn/YZDGLrXUiRvdgBBCBUIfQ+TLJ4ZhHD6vZq5wpjrXmQ7h10HRKQMqqInBra6ZVTbg9ZtQ2Ozc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770779606; c=relaxed/simple;
-	bh=azLI3+M2T6GNczOiAV/j8YRgVc1kh1QmiyHcP8eT5XU=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=dDlYwY36iplxvMN05YZKHh64hfoFaRkLjzhzizsvMAaYAdgTHTKWkftDYpgjWeSk/BxuOFLVF6iDOzzJmR7Hh5Zz90qlDTNl/zC3baIeAXxg/9iZ/fIi+YaYJwMOATIdED93H8yXF/D16+SXJh4DBV9Lgizx+Vtp56tkM7QQjx8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Nin/gVDi; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Nin/gVDi; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 8A4323E723
-	for <linux-btrfs@vger.kernel.org>; Wed, 11 Feb 2026 03:13:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1770779603; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=8Yw7o0t+0fnBN1/3gtnZ/Xcz0nCe2LEnJBq8FUb7c4g=;
-	b=Nin/gVDit7yjKkburuPwI+QjXtKsXXrs+dS4uEcAtuPoFsG0zmtXsLI2+5byv+6RwETd9i
-	PMXs9lQ26qmqiFAjyP+smKxtq1obKJqdQFgzkXNna1yxM+RXhqgCHevwUe7WvMpESbxcqE
-	wl3XKS1pVakH3EVb9L6tw4Td1SCu5m0=
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1770779603; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=8Yw7o0t+0fnBN1/3gtnZ/Xcz0nCe2LEnJBq8FUb7c4g=;
-	b=Nin/gVDit7yjKkburuPwI+QjXtKsXXrs+dS4uEcAtuPoFsG0zmtXsLI2+5byv+6RwETd9i
-	PMXs9lQ26qmqiFAjyP+smKxtq1obKJqdQFgzkXNna1yxM+RXhqgCHevwUe7WvMpESbxcqE
-	wl3XKS1pVakH3EVb9L6tw4Td1SCu5m0=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7A5A13EA62
-	for <linux-btrfs@vger.kernel.org>; Wed, 11 Feb 2026 03:13:22 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id hg8DCtLzi2mTNwAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Wed, 11 Feb 2026 03:13:22 +0000
-From: Qu Wenruo <wqu@suse.com>
+	s=arc-20240116; t=1770784878; c=relaxed/simple;
+	bh=V3q0fH+0mmEV3WfWvACtLSsITlQ6rzyHdW978zCNXak=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=DwQQg6RtfA7UJpVMlV+wCYsN48d5AEDPUSsMn4G4uVgygecGAV6eNwN0e3D1UXGchQtZaPXz1mOexplY4JvLHn/nk3Wlq5cbt5JdorBsoc5dvl9P9vjwO5ljCP5iczNqJiGZmgCMTCCangfelmKCQZttfg1TjlQqLaYnnJBKhvQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn; spf=pass smtp.mailfrom=iscas.ac.cn; arc=none smtp.client-ip=159.226.251.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iscas.ac.cn
+Received: from localhost (unknown [124.16.138.129])
+	by APP-05 (Coremail) with SMTP id zQCowABn9glkCIxpKaYJCA--.4468S2;
+	Wed, 11 Feb 2026 12:41:08 +0800 (CST)
+From: Chen Ni <nichen@iscas.ac.cn>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: remove out-of-date comments in btree_writepages()
-Date: Wed, 11 Feb 2026 13:42:59 +1030
-Message-ID: <f1694e9264f14706a274009aca35504f128c1df1.1770779554.git.wqu@suse.com>
-X-Mailer: git-send-email 2.52.0
+Cc: clm@fb.com,
+	dsterba@suse.com,
+	linux-kernel@vger.kernel.org,
+	Chen Ni <nichen@iscas.ac.cn>
+Subject: [PATCH] btrfs: remove duplicate include of delayed-inode.h
+Date: Wed, 11 Feb 2026 12:40:32 +0800
+Message-Id: <20260211044032.2935837-1-nichen@iscas.ac.cn>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -80,121 +51,73 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Flag: NO
-X-Spam-Score: -2.80
-X-Spam-Level: 
+X-CM-TRANSID:zQCowABn9glkCIxpKaYJCA--.4468S2
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+	VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYX7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E
+	6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
+	kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW8JVW5JwA2z4x0Y4vE2Ix0cI8I
+	cVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2js
+	IEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE
+	5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeV
+	CFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1l
+	c2xSY4AK67AK6r45MxAIw28IcxkI7VAKI48JMxAqzxv262kKe7AKxVWUXVWUAwCF54CYxV
+	CY1x0262kKe7AKxVWUAVWUtwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v2
+	6r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2
+	Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_
+	Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMI
+	IF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUcZ23UUUUU
+	=
+X-CM-SenderInfo: xqlfxv3q6l2u1dvotugofq/
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [0.04 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
 	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
 	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21624-lists,linux-btrfs=lfdr.de];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	RCPT_COUNT_ONE(0.00)[1];
+	DMARC_NA(0.00)[iscas.ac.cn];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	TO_DN_SOME(0.00)[];
 	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-21625-lists,linux-btrfs=lfdr.de];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCPT_COUNT_FIVE(0.00)[5];
+	FROM_NEQ_ENVFROM(0.00)[nichen@iscas.ac.cn,linux-btrfs@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[wqu@suse.com,linux-btrfs@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	TO_DN_NONE(0.00)[];
-	DKIM_TRACE(0.00)[suse.com:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	R_DKIM_NA(0.00)[];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 77B43120E17
+X-Rspamd-Queue-Id: 1341B1213BA
 X-Rspamd-Action: no action
 
-There is a lengthy comment introduced in commit b3ff8f1d380e ("btrfs:
-Don't submit any btree write bio if the fs has errors"), explaining why
-we don't want to submit the metadata write bio when the fs has something
-wrong.
+Remove duplicate inclusion of delayed-inode.h in disk-io.c to clean up
+redundant code.
 
-However it's no longer uptodate by the following reasons:
-
-- We have better checks nowadays
-  Commit 2618849f31e7 ("btrfs: ensure no dirty metadata is written back
-  for an fs with errors") has introduced better checks, that if the
-  fs is in an error state, all metadata write will not result any bio
-  but finished immediately.
-
-  That covers all metadata writes better.
-
-- Mentioning functions no longer there
-  It mentions the function submit_extent_folio(), but the correct
-  function is submit_eb_subpage(), which can return the number of ebs
-  submitted for a page.
-
-  And later commit 5e121ae687b8 ("btrfs: use buffer xarray for extent
-  buffer writeback operations") completely reworks this, and now we
-  always call write_one_eb() to submit an extent buffer, which has no
-  return value.
-
-Just remove the lengthy comment, and replace the "if (ret > 0)" check
-with an ASSERT(), since only btrfs_check_meta_write_pointer() can modify
-@ret and it returns 0 or errors.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: Chen Ni <nichen@iscas.ac.cn>
 ---
- fs/btrfs/extent_io.c | 34 ++++------------------------------
- 1 file changed, 4 insertions(+), 30 deletions(-)
+ fs/btrfs/disk-io.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 3df399dc8856..9999c3f4afa4 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -2386,38 +2386,12 @@ int btree_writepages(struct address_space *mapping, struct writeback_control *wb
- 		index = 0;
- 		goto retry;
- 	}
-+
- 	/*
--	 * If something went wrong, don't allow any metadata write bio to be
--	 * submitted.
--	 *
--	 * This would prevent use-after-free if we had dirty pages not
--	 * cleaned up, which can still happen by fuzzed images.
--	 *
--	 * - Bad extent tree
--	 *   Allowing existing tree block to be allocated for other trees.
--	 *
--	 * - Log tree operations
--	 *   Exiting tree blocks get allocated to log tree, bumps its
--	 *   generation, then get cleaned in tree re-balance.
--	 *   Such tree block will not be written back, since it's clean,
--	 *   thus no WRITTEN flag set.
--	 *   And after log writes back, this tree block is not traced by
--	 *   any dirty extent_io_tree.
--	 *
--	 * - Offending tree block gets re-dirtied from its original owner
--	 *   Since it has bumped generation, no WRITTEN flag, it can be
--	 *   reused without COWing. This tree block will not be traced
--	 *   by btrfs_transaction::dirty_pages.
--	 *
--	 *   Now such dirty tree block will not be cleaned by any dirty
--	 *   extent io tree. Thus we don't want to submit such wild eb
--	 *   if the fs already has error.
--	 *
--	 * We can get ret > 0 from submit_extent_folio() indicating how many ebs
--	 * were submitted. Reset it to 0 to avoid false alerts for the caller.
-+	 * Only btrfs_check_meta_write_pointer() can update @ret,
-+	 * and it only returns 0 or errors.
- 	 */
--	if (ret > 0)
--		ret = 0;
-+	ASSERT(ret <= 0);
- 	if (!ret && BTRFS_FS_ERROR(fs_info))
- 		ret = -EROFS;
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 13e400046c87..09c2ea2f82f2 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -50,7 +50,6 @@
+ #include "relocation.h"
+ #include "scrub.h"
+ #include "super.h"
+-#include "delayed-inode.h"
  
+ #define BTRFS_SUPER_FLAG_SUPP	(BTRFS_HEADER_FLAG_WRITTEN |\
+ 				 BTRFS_HEADER_FLAG_RELOC |\
 -- 
-2.52.0
+2.25.1
 
 
