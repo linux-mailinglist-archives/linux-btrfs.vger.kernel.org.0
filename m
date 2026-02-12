@@ -1,94 +1,178 @@
-Return-Path: <linux-btrfs+bounces-21645-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21646-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id yLMnKnenjWkK5wAAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21645-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Feb 2026 11:12:07 +0100
+	id qBuvFe6+jWlF6gAAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21646-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Feb 2026 12:52:14 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15B5112C519
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Feb 2026 11:12:07 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B73712D2FC
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Feb 2026 12:52:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 6F5E130095F7
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Feb 2026 10:11:53 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 51FC4305DA2A
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Feb 2026 11:52:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97F1E2E8B75;
-	Thu, 12 Feb 2026 10:11:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6881350A1C;
+	Thu, 12 Feb 2026 11:51:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FhQMjqt9"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com [209.85.208.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CF092E040E;
-	Thu, 12 Feb 2026 10:11:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E957C346AF5
+	for <linux-btrfs@vger.kernel.org>; Thu, 12 Feb 2026 11:51:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770891109; cv=none; b=bkYW3+LeoNRtimQgdzRKTY3qJRkY+wn/1hX2kWV+2OLOXucZ89/42jg5FglmUZJ+mCS3xR24JEXqELIKc7geRa1tS4gZ9Lm1cvkAdoH8QOg7xr/WyeimO0Iw31Q/Nj9tiXuj/UMBrP2gzuJkcqSdY/7YFuiwDHnQf0Lqrmwufrw=
+	t=1770897113; cv=none; b=pA8neS6kKpySDEe9UOkmuHbNagdDFonVBe9T6MuBpkVMsDFadRBcGqOJhMbWblpANhaI4UOsNq7fNqIW/aql/TghpfB/AjUC3VfpNxce3wlh2ytMerkYer6ChuT3tMM3gRyWER/OYIuL9WQE5TB9ONaBBYB5wIpNTJfy17U0W7w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770891109; c=relaxed/simple;
-	bh=02odUGS0UD+ubBm3bc3OVqHMb4hikW3j0yQ+PaU080E=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YX6cweGYpzVqRm4vfJ68kmvLQzE4m19QbKHmKQ0src0SQ4qbM72mxcovznCHpQ/fDSaDwEg41s2jmEyS+Tbqm5VZ9mDHt6fCmz7894txex7+pWhyM+gRkVxfafthmpvncDGmI5hrSvsYRpNeMuUidRA5mODbt1lwBpLzvfq/WxI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id 984CA68D09; Thu, 12 Feb 2026 11:11:43 +0100 (CET)
-Date: Thu, 12 Feb 2026 11:11:43 +0100
-From: Christoph Hellwig <hch@lst.de>
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
-	fsverity@lists.linux.dev, linux-fsdevel@vger.kernel.org,
-	linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Theodore Ts'o <tytso@mit.edu>,
-	Andrey Albershteyn <aalbersh@redhat.com>,
-	Christoph Hellwig <hch@lst.de>,
-	"Darrick J. Wong" <djwong@kernel.org>,
-	David Sterba <dsterba@suse.com>, Jan Kara <jack@suse.cz>
-Subject: Re: [GIT PULL] fsverity updates for 7.0
-Message-ID: <20260212101143.GA7951@lst.de>
-References: <20260212012652.GA8885@sol>
+	s=arc-20240116; t=1770897113; c=relaxed/simple;
+	bh=XjSWJvCqXNs6KFHlJCEjDBXFilEFAsp8RQ/y0dAQPl8=;
+	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=fuPAF4BwAbPU531X/BDoHCxe2h7BLvypbSmkkavFipDeVdnwgPndx86DXm1TQLI+UEQhmPS2/8FdWB7neKKi0TLy5AkovyPhcaS1AXzgqR1S2tZf4agprnO/9EN1AZjBHZuSAESzT3SYWn4RDe1PmfB72B8P5jGiyp8EYEuobeE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FhQMjqt9; arc=none smtp.client-ip=209.85.208.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-385bc6910eeso26710921fa.2
+        for <linux-btrfs@vger.kernel.org>; Thu, 12 Feb 2026 03:51:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1770897110; x=1771501910; darn=vger.kernel.org;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=icNB5xuvo+j+qezx7gqf5Y6Yw5qJ0+ofGzzhpNwJwdA=;
+        b=FhQMjqt90S68QJBXL9jHocY7B1/g5ZRIw4R14Jz+q8ubrflb3FFjMjVVlBxz2Hi0VC
+         0dnIBz/gzOseJszrl/f6To9dnq3zIQmBrE2uq6bq0Ovnr3t6Ia26bEm/EL3ZVhgKGiZZ
+         wQ//I9DlDaDkl9wDQF/XYTMzSS6V1ph0rqylYdQcs3t19ho+cjMCq+OqV9gLICvEpsZr
+         Y06Sm3TKWgqdUHJhAHoRcyfWmegywK32x990iLePGZFvgtE1Fpv0CJZ08tt3/hZBJNDx
+         yMjYZXUOv1u0ya1pDSipjc908Q1650HRawkTSMMf6GcDdJb2iLZfYEMQYvDiMb9kVIex
+         /d8Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1770897110; x=1771501910;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-gg:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=icNB5xuvo+j+qezx7gqf5Y6Yw5qJ0+ofGzzhpNwJwdA=;
+        b=ojrJdmrvqj5cq+L9hB+HANuPAloBbkfxtdB0Ea3tggco4/H++pOO6MPx0D5gxXfEyp
+         un1Xa5fzZyBIdNJR9yMw9wlzHGrJzCML1TZju3IjjCX7x7cXBYpKfWqg+iZ82XG8D3zn
+         1tK6u0NBuSzUS0cslKNP+6dTN4ugxItk6sPyXRBJ4telN9FW2KzKDg0zjffuwLPpvBRQ
+         ivAxx2pnkV4wlLV8r3GbHtWGAJOexwxShRN17eGRP5s3DIuicE3vxtdF4/jvnSPU0Jt0
+         2aHyKlLo17C+M0kFvw+2y+2BWTLqSxZm8VeQdCz6ZD8sZd/f/npl9AM+/iWgEpBIVXnE
+         cZrw==
+X-Forwarded-Encrypted: i=1; AJvYcCWK4D5cQ9qhz+IF9C/V0yiWGGDm69mvuub0X8ZdBJyZ1iaPlWJ5crMygKbwHyCqMcbTzVelXUXNumzwkQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyOobrFQn2GPhckXssjoOy4Ga9oBWG1VxDfladAelO8FKs41pts
+	uGaUh/WWnaIWle9Ofgu/usoi0BwCodnc9elmMBQlCJ83wIAUcDtSm9Rr
+X-Gm-Gg: AZuq6aIfJG0hCJohZZbWBPQgu9/cW/Zn4axYBFz38COHk/33ZTvGnv98IqQoc48mBxK
+	LEZnvX/4gOtRrvokzpOrCLcGP4zPueVpqcOTOs2Yy8sWyq2jqnS8rgz4oFyQEgF4i81sybr3Tix
+	xlnzgYk1eHv0AT4NFT/P3U/fcGfGHuw7c7YdOmbEb3tRiwJnNzJq+gmlWgiAxS7gOZ0/BufpGkQ
+	kXJRzh5HV7550ptek83Oni35QiMoUPlDblKC/bJiPwzX/1eY9+Z78yfVVAdkPEsOuKJRKWR/Eis
+	AEmM9Mgd4CZUz8SVAV0JGN0FSWGXeKvl1dMc/JGTSkyGD+BZRT9DFQCw0SVXBIR6k9nqkTLMu97
+	OovJAQEjVfuXUZYBDWD5yJn9/XWUWJJHEY4B2rZPQSiSKUGqnsx4CWQGRwho5IUlIOFzwqQaZiK
+	Ql9GgeSRydhn9NuTecsBxESdQjxWSPO/E6/oG3c5PZxVhg
+X-Received: by 2002:a05:651c:4193:b0:382:624d:a703 with SMTP id 38308e7fff4ca-38712c1064amr7134971fa.45.1770897109932;
+        Thu, 12 Feb 2026 03:51:49 -0800 (PST)
+Received: from [10.128.170.182] ([77.234.210.12])
+        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-3870689e107sm7206681fa.14.2026.02.12.03.51.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Feb 2026 03:51:48 -0800 (PST)
+Message-ID: <4b207a36-5789-41d2-ac17-df86d4cde6da@gmail.com>
+Date: Thu, 12 Feb 2026 14:51:47 +0300
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260212012652.GA8885@sol>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: viro@zeniv.linux.org.uk, brauner@kernel.org
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org
+From: Vyacheslav Kovalevsky <slava.kovalevskiy.2014@gmail.com>
+Subject: File name is not persisted if opened with O_SYNC and O_TRUNC flags
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.36 / 15.00];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
-	DMARC_POLICY_SOFTFAIL(0.10)[lst.de : SPF not aligned (relaxed), No valid DKIM,none];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
-	TAGGED_RCPT(0.00)[linux-btrfs];
-	RCPT_COUNT_TWELVE(0.00)[14];
 	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_THREE(0.00)[4];
-	R_DKIM_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[hch@lst.de,linux-btrfs@vger.kernel.org];
-	MID_RHS_MATCH_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[lst.de:mid,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	TAGGED_FROM(0.00)[bounces-21646-lists,linux-btrfs=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21645-lists,linux-btrfs=lfdr.de];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[]
-X-Rspamd-Queue-Id: 15B5112C519
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[slavakovalevskiy2014@gmail.com,linux-btrfs@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	TO_DN_NONE(0.00)[];
+	TAGGED_RCPT(0.00)[linux-btrfs];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 9B73712D2FC
 X-Rspamd-Action: no action
 
-Note that this had a merge conflict in linux-next.  So unless that
-went away, it needs a merge resolution like:
+Detailed description
+====================
 
-https://lore.kernel.org/fsverity/20260203053604.GC15956@lst.de/T/#m291294c1f6b7368d3c426ee47e6d23dc854b3ba6
+Hello, there seems to be an issue with O_SYNC flag when used together 
+with O_TRUNC on various file systems.
+Opening a file with O_SYNC (or using fsync(fd)) should persist directory 
+entry.
+However, if O_SYNC is used together with O_TRUNC the file will be 
+missing if system crashes.
+According to POSIX this is OK, but most file systems provide stronger 
+guarantees (would be actually nice to have a more recent documentation 
+on this behavior).
+This happens on Btrfs, ext4, XFS, F2FS and likely other file systems.
+
+
+System info
+===========
+
+Linux version 6.19-rc7, also tested on 6.17
+
+
+How to reproduce
+================
+
+```
+#include <errno.h>
+#include <fcntl.h>
+#include <stdio.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
+
+int main() {
+   int status;
+
+   status = creat("file", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+   printf("CREAT: %d\n", status);
+   close(status);
+
+   status = open("file", O_RDWR | O_TRUNC | O_SYNC);
+   printf("OPEN: %d\n", status);
+}
+// after the crash `file` is missing
+```
+
+Steps:
+1. Create and mount new file system in default configuration.
+2. Change directory to root of the file system and run the compiled test.
+3. Cause hard system crash (e.g. QEMU `system_reset` command).
+4. Remount file system after crash.
+5. Observe that file is missing.
 
 
