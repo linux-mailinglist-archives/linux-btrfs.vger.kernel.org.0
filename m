@@ -1,181 +1,183 @@
-Return-Path: <linux-btrfs+bounces-21639-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21640-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id aMzLBJAHjWmwxwAAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21639-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Feb 2026 23:49:52 +0100
+	id sGQULIwsjWnxzgAAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21640-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Feb 2026 02:27:40 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7FEDC1282DB
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Feb 2026 23:49:51 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5669F128F60
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Feb 2026 02:27:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id EA74D302084F
-	for <lists+linux-btrfs@lfdr.de>; Wed, 11 Feb 2026 22:49:45 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id D8700301F033
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Feb 2026 01:27:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D110534C81E;
-	Wed, 11 Feb 2026 22:49:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D596C1F1518;
+	Thu, 12 Feb 2026 01:27:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="B0j1j0op";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="B0j1j0op"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VC8TyQBQ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F38811A58D
-	for <linux-btrfs@vger.kernel.org>; Wed, 11 Feb 2026 22:49:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25B52C8E6;
+	Thu, 12 Feb 2026 01:27:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770850182; cv=none; b=ObBBbgnbNwCNsnZPs6gIByjKmnu8sA6ano5Y1gkXmIXZKI+tJlDnbTq5OPSw9yGtqe3p5F80edmMhHUVbgrtU/hwskaecTk87NqE5K8Ngmv7Y/p0VrVVXlKKN18b/N3zw3Tmx3B6nv00u0kVcL+cD9FoldgkVzvSuPwD/qbvojU=
+	t=1770859655; cv=none; b=hn3HZwPGLk/obQxhVJ3EQzuR3GLL6XMkBXHPjUp20d7GmJq+nS6fXa4F+OUIEBCphG9t+ciiVJL7xsII8Ztie04hikjVacTi/3yLRcC29LXHDTNCHoLtyCaZLtsWl21hacvLNAX/2UHIn+xVR/y19U9gbp7RZZr4cK4Svb80ido=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770850182; c=relaxed/simple;
-	bh=Ji74EMptI56rvsti8R7QVvsAtapWm7BM5/i3K5xNB40=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=IBDfmGe/YIvdIBbGz0myp8j5gEyI9AZifyOhkLyDXM7qgMQX96J2fxd95B6mEVg43tNv26oP/iOWr8e+lAA+XcN9/TU6+QgwVgzWJoVNmN4EOZUNqASht111SO0khTZXRO0VpbbJXvbgs+6IdOo56pfiMpDUxKbTOg3KGduv0cQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=B0j1j0op; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=B0j1j0op; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 15F9F5BCC9
-	for <linux-btrfs@vger.kernel.org>; Wed, 11 Feb 2026 22:49:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1770850179; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=/QvldpNql96Z6ADBaFbCVP0EXWhcr9s77fNW3OgZcns=;
-	b=B0j1j0opxKC/9wI1/hIAWua84PyI22N8OhtiRGS9q8zkpchc1wW5y+p16MP2Fg6a3Y05z9
-	RfEDIMdMoJ9dZd4fEA8SPSFR28CLmI7y05f/C4mBg1vXxp4nViQ7uhODSjH/+dpf8pro3N
-	kWCwnKA1a21ifpQR5Yqwa7qFC1bcApg=
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=B0j1j0op
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1770850179; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=/QvldpNql96Z6ADBaFbCVP0EXWhcr9s77fNW3OgZcns=;
-	b=B0j1j0opxKC/9wI1/hIAWua84PyI22N8OhtiRGS9q8zkpchc1wW5y+p16MP2Fg6a3Y05z9
-	RfEDIMdMoJ9dZd4fEA8SPSFR28CLmI7y05f/C4mBg1vXxp4nViQ7uhODSjH/+dpf8pro3N
-	kWCwnKA1a21ifpQR5Yqwa7qFC1bcApg=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0D9313EA62
-	for <linux-btrfs@vger.kernel.org>; Wed, 11 Feb 2026 22:49:37 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 7tWGK4EHjWmgTQAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Wed, 11 Feb 2026 22:49:37 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH] btrfs: remove the btrfs_inode parameter from btrfs_remove_ordered_extent()
-Date: Thu, 12 Feb 2026 09:19:19 +1030
-Message-ID: <1a8b542d5058110fdb0f42c1aad03f05c6439d39.1770850152.git.wqu@suse.com>
-X-Mailer: git-send-email 2.52.0
+	s=arc-20240116; t=1770859655; c=relaxed/simple;
+	bh=LI9T8ckO6uZfvbB4i3LQ04OePVTEa752sUaYTpdWXPk=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=Z1vBNWmoOiL0g/3vSWTsXMzqGsYMskHZJDkwAVKJ3P1wRW0lEoNXbXPVIDi5PCjcIm0RPwjXbJvmB8AvIAIW2yGTPtshSGbwS0jlO5+ibz7TpT+3C6YwkKs5k7sL415jPGg0XwO43g39VcHjxstPy89NPp0GXLT+KyKgW4+AX30=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VC8TyQBQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BF65C19423;
+	Thu, 12 Feb 2026 01:27:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1770859654;
+	bh=LI9T8ckO6uZfvbB4i3LQ04OePVTEa752sUaYTpdWXPk=;
+	h=Date:From:To:Cc:Subject:From;
+	b=VC8TyQBQCl1ZNhvI97b3cMj0k5IKOhdi2Okelw9VVkk7vUJDiZ3dT48KDUuxLXv10
+	 xu6SI0aberuBRiUDCEFe2gbVLhYUq9NT+mc303UfLpGJ7BOZf/ZEUhYvLReS7i2qcT
+	 pIcUEvauojisi7uZBoWGx/Uni8GhfjBobkSGrio6+7yGMvkKeSZmMILVJrHYzXo1jP
+	 noWt5UlfqbSLMoUWlxFKjtRjbKlQ2g4Sc9pKo/gIutBZsrG4qLK6688ODfTQjzfNA5
+	 FsfL0F7pNpEYcTo/5jyFtG4573sqMz4vtmq1WCa2rBHhIo95wehrQHDH8UzSXYZdqu
+	 BPAvuQLionkcA==
+Date: Wed, 11 Feb 2026 17:26:52 -0800
+From: Eric Biggers <ebiggers@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: fsverity@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+	linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Theodore Ts'o <tytso@mit.edu>,
+	Andrey Albershteyn <aalbersh@redhat.com>,
+	Christoph Hellwig <hch@lst.de>,
+	"Darrick J. Wong" <djwong@kernel.org>,
+	David Sterba <dsterba@suse.com>, Jan Kara <jack@suse.cz>
+Subject: [GIT PULL] fsverity updates for 7.0
+Message-ID: <20260212012652.GA8885@sol>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Flag: NO
-X-Spam-Score: -3.01
-X-Spam-Level: 
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21639-lists,linux-btrfs=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	RCPT_COUNT_ONE(0.00)[1];
+	TAGGED_FROM(0.00)[bounces-21640-lists,linux-btrfs=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[13];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[wqu@suse.com,linux-btrfs@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-btrfs@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	TO_DN_NONE(0.00)[];
-	DKIM_TRACE(0.00)[suse.com:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,suse.com:mid,suse.com:dkim,suse.com:email]
-X-Rspamd-Queue-Id: 7FEDC1282DB
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 5669F128F60
 X-Rspamd-Action: no action
 
-We already have btrfs_ordered_extent::inode, thus there is no need to
-pass a btrfs_inode parameter to btrfs_remove_ordered_extent().
+The following changes since commit 63804fed149a6750ffd28610c5c1c98cce6bd377:
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/inode.c        | 4 ++--
- fs/btrfs/ordered-data.c | 4 ++--
- fs/btrfs/ordered-data.h | 3 +--
- 3 files changed, 5 insertions(+), 6 deletions(-)
+  Linux 6.19-rc7 (2026-01-25 14:11:24 -0800)
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 81600abc0297..3af087c81724 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -3416,7 +3416,7 @@ int btrfs_finish_one_ordered(struct btrfs_ordered_extent *ordered_extent)
- 	 * This needs to be done to make sure anybody waiting knows we are done
- 	 * updating everything for this ordered extent.
- 	 */
--	btrfs_remove_ordered_extent(inode, ordered_extent);
-+	btrfs_remove_ordered_extent(ordered_extent);
- 
- 	/* once for us */
- 	btrfs_put_ordered_extent(ordered_extent);
-@@ -8141,7 +8141,7 @@ void btrfs_destroy_inode(struct inode *vfs_inode)
- 			if (!freespace_inode)
- 				btrfs_lockdep_acquire(root->fs_info, btrfs_ordered_extent);
- 
--			btrfs_remove_ordered_extent(inode, ordered);
-+			btrfs_remove_ordered_extent(ordered);
- 			btrfs_put_ordered_extent(ordered);
- 			btrfs_put_ordered_extent(ordered);
- 		}
-diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
-index a17f18673bed..e47c3a3a619a 100644
---- a/fs/btrfs/ordered-data.c
-+++ b/fs/btrfs/ordered-data.c
-@@ -638,9 +638,9 @@ void btrfs_put_ordered_extent(struct btrfs_ordered_extent *entry)
-  * remove an ordered extent from the tree.  No references are dropped
-  * and waiters are woken up.
-  */
--void btrfs_remove_ordered_extent(struct btrfs_inode *btrfs_inode,
--				 struct btrfs_ordered_extent *entry)
-+void btrfs_remove_ordered_extent(struct btrfs_ordered_extent *entry)
- {
-+	struct btrfs_inode *btrfs_inode = entry->inode;
- 	struct btrfs_root *root = btrfs_inode->root;
- 	struct btrfs_fs_info *fs_info = root->fs_info;
- 	struct rb_node *node;
-diff --git a/fs/btrfs/ordered-data.h b/fs/btrfs/ordered-data.h
-index e178d4a489af..86e69de9e9ff 100644
---- a/fs/btrfs/ordered-data.h
-+++ b/fs/btrfs/ordered-data.h
-@@ -161,8 +161,7 @@ int btrfs_finish_one_ordered(struct btrfs_ordered_extent *ordered_extent);
- int btrfs_finish_ordered_io(struct btrfs_ordered_extent *ordered_extent);
- 
- void btrfs_put_ordered_extent(struct btrfs_ordered_extent *entry);
--void btrfs_remove_ordered_extent(struct btrfs_inode *btrfs_inode,
--				struct btrfs_ordered_extent *entry);
-+void btrfs_remove_ordered_extent(struct btrfs_ordered_extent *entry);
- void btrfs_finish_ordered_extent(struct btrfs_ordered_extent *ordered,
- 				 struct folio *folio, u64 file_offset, u64 len,
- 				 bool uptodate);
--- 
-2.52.0
+are available in the Git repository at:
 
+  git://git.kernel.org/pub/scm/fs/fsverity/linux.git tags/fsverity-for-linus
+
+for you to fetch changes up to 433fbcac9ebe491b518b21c7305fba9a748c7d2c:
+
+  fsverity: remove inode from fsverity_verification_ctx (2026-02-04 11:31:54 -0800)
+
+----------------------------------------------------------------
+
+fsverity cleanups, speedup, and memory usage optimization from
+Christoph Hellwig:
+
+- Move some logic into common code
+
+- Fix btrfs to reject truncates of fsverity files
+
+- Improve the Merkle tree readahead implementation
+
+- Store each inode's fsverity_info in a hash table instead of using a
+  pointer in the filesystem-specific part of the inode.
+
+  This optimizes for memory usage in the usual case where most files
+  don't have fsverity enabled.
+
+- Look up the fsverity_info fewer times during verification, to
+  amortize the hash table overhead
+
+----------------------------------------------------------------
+Christoph Hellwig (17):
+      fs,fsverity: reject size changes on fsverity files in setattr_prepare
+      fs,fsverity: clear out fsverity_info from common code
+      ext4: don't build the fsverity work handler for !CONFIG_FS_VERITY
+      f2fs: don't build the fsverity work handler for !CONFIG_FS_VERITY
+      fsverity: pass struct file to ->write_merkle_tree_block
+      fsverity: start consolidating pagecache code
+      fsverity: don't issue readahead for non-ENOENT errors from __filemap_get_folio
+      readahead: push invalidate_lock out of page_cache_ra_unbounded
+      ext4: move ->read_folio and ->readahead to readpage.c
+      fsverity: kick off hash readahead at data I/O submission time
+      fsverity: deconstify the inode pointer in struct fsverity_info
+      fsverity: push out fsverity_info lookup
+      fs: consolidate fsverity_info lookup in buffer.c
+      ext4: consolidate fsverity_info lookup
+      f2fs: consolidate fsverity_info lookup
+      btrfs: consolidate fsverity_info lookup
+      fsverity: use a hashtable to find the fsverity_info
+
+Eric Biggers (1):
+      fsverity: remove inode from fsverity_verification_ctx
+
+ fs/attr.c                    |  12 ++-
+ fs/btrfs/btrfs_inode.h       |   4 -
+ fs/btrfs/extent_io.c         |  53 +++++++-----
+ fs/btrfs/inode.c             |  13 +--
+ fs/btrfs/verity.c            |  11 +--
+ fs/buffer.c                  |  25 +++---
+ fs/ext4/ext4.h               |   8 +-
+ fs/ext4/inode.c              |  31 -------
+ fs/ext4/readpage.c           |  64 +++++++++++----
+ fs/ext4/super.c              |   4 -
+ fs/ext4/verity.c             |  34 +++-----
+ fs/f2fs/compress.c           |   7 +-
+ fs/f2fs/data.c               | 100 ++++++++++++++---------
+ fs/f2fs/f2fs.h               |  12 +--
+ fs/f2fs/file.c               |   6 +-
+ fs/f2fs/inode.c              |   1 -
+ fs/f2fs/super.c              |   3 -
+ fs/f2fs/verity.c             |  34 +++-----
+ fs/inode.c                   |   9 ++
+ fs/verity/Makefile           |   1 +
+ fs/verity/enable.c           |  41 ++++++----
+ fs/verity/fsverity_private.h |  20 +++--
+ fs/verity/open.c             |  84 +++++++++++--------
+ fs/verity/pagecache.c        |  58 +++++++++++++
+ fs/verity/read_metadata.c    |  19 +++--
+ fs/verity/verify.c           |  91 +++++++++++++--------
+ include/linux/fsverity.h     | 190 +++++++++++++++++--------------------------
+ mm/readahead.c               |  15 ++--
+ 28 files changed, 516 insertions(+), 434 deletions(-)
+ create mode 100644 fs/verity/pagecache.c
 
