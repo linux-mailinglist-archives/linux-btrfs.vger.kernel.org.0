@@ -1,42 +1,59 @@
-Return-Path: <linux-btrfs+bounces-21652-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21653-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id XMYxEls2jmkUBAEAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21652-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Feb 2026 21:21:47 +0100
+	id oB6aGgs+jmkMBQEAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21653-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Feb 2026 21:54:35 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id A872F130EA4
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Feb 2026 21:21:46 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C1D31310FB
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Feb 2026 21:54:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 7DD053036614
-	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Feb 2026 20:21:35 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 63593304A20D
+	for <lists+linux-btrfs@lfdr.de>; Thu, 12 Feb 2026 20:54:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A23BD2FE563;
-	Thu, 12 Feb 2026 20:21:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4ABC2ED84C;
+	Thu, 12 Feb 2026 20:54:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="JlDdeEvJ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mtafr.prnet.org (mtafr.prnet.org [54.38.152.168])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B6FFF9C0;
-	Thu, 12 Feb 2026 20:21:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.38.152.168
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31E282C326A;
+	Thu, 12 Feb 2026 20:54:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770927694; cv=none; b=ObQZLNj+Pb9jQzxjg8QXyIdE8RcTbTIgMdIoB6rOIQVRjEROh4kjF1m9V+obMhFV9svKJkQ6+yToJq/EepDnCPNJnuLj6N7cP6nGewTDjsOjLf+GhexkrdvZWoKor0muNxsYj3vPlXxggwIMtHjVww+V7UYnDj3d+3KrvB0SA0I=
+	t=1770929666; cv=none; b=gKnafpZh/36ySm0aoLbwYA7nQJXwy/zjJIuUgf08uEaG6elCDMqm4zJaxlkDl66BjucVbind56E+S9MQxdksi8Tf/Sb1MGmstkdyGOvOM6pOu7XjcbsZLRPo2QCcc9IaKOH5U0ImWKLdf8uwGNlj/I+p6298+gBf4wewSs/Cg9E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770927694; c=relaxed/simple;
-	bh=owzUQvPsaTuPPQaZ1SV9Z58LRVbvhvdBvnPICHZA2Rg=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=XqC7x3eb4U2t3TcmxyjApWjAxQfyfsHNLCDuiFMyZmbX3iYkm2eL5j7ND5kkxrfG0cFbpAYIvz/iFBqtSZXWyqN+jZZ6vF16ybKUj+zvNNQ/Ck5qPQEuOa0r/13ux/rwUNyyfPZ0526RaYe+nzKJ23zE/b5nLrR4+L7bmN6BUXc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=prnet.org; spf=pass smtp.mailfrom=prnet.org; arc=none smtp.client-ip=54.38.152.168
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=prnet.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=prnet.org
-Received: from secure.prnet.org (unknown [10.1.0.1])
-	by mtafr.prnet.org (Postfix) with ESMTP id 1EFF32004D;
-	Thu, 12 Feb 2026 21:11:59 +0100 (CET)
-Received: from [IPV6:2001:7e8:cf00:bc01:8cac:7fff:fe9e:52] (unknown [IPv6:2001:7e8:cf00:bc01:8cac:7fff:fe9e:52])
-	by secure.prnet.org (Postfix) with ESMTPSA id 30D5A10003F;
-	Thu, 12 Feb 2026 21:11:33 +0100 (CET)
-Message-ID: <8ebe4d76-eb07-499b-b140-1f300c1b8d7e@prnet.org>
-Date: Thu, 12 Feb 2026 21:11:32 +0100
+	s=arc-20240116; t=1770929666; c=relaxed/simple;
+	bh=fNCrntDcX2q17a4JHP/QXYP/wXcVsecow/Q6zKREpDA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=a1ty5e03DCzk23tGc6LsWqRvOoHGFRCui2ri+PY8H+/dN3UYbienpQa/2wmjZ3t38Z5GWFOqRCUAhwxARKCSvSIBC514V9j98+87UIpo487ryYmK3jcGeq81INEy8H61W+78zenRiqnsGcaY7VrXzbpXP9xZAdoOd/usg6kHPwg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=JlDdeEvJ; arc=none smtp.client-ip=212.227.17.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1770929662; x=1771534462; i=quwenruo.btrfs@gmx.com;
+	bh=YVHYgrD3YGEdLdcTSeKEIdvQ4sodIfuVHHqASZOraow=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=JlDdeEvJ2GmzVNkzlztZG01f5N1c6wdwCGXGz3PpdhMj0t9TujUNgeSwUusyrvXj
+	 Ho3ws0Iu4kEOvYYwsg0WhG4SQh56bEeGnC9mNULcbYXkCUVTDKcHrkMBjLAd8C3td
+	 kLzxUFRRZSnVZBAR6Ld/DwagXZS+vJ/qrRh37tH/TA9Wq8X+bHMwxcv9xg3GDw4Ef
+	 IXUNbYXpPSO1Q5yUcqhnfR7AW9/NDIJRwf1fa1lfONnYZs9CxHAkKZ4Ev27Wurljx
+	 ctKr+NqyR0YD2+leE5kVcDGTi6fLyvJbodO/7wrILTvCxuFru7F0cD3AQg1c/61Dy
+	 NbrT5odVdptgOp/5Ig==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1M5QFB-1vpoDo3F7l-00F9A0; Thu, 12
+ Feb 2026 21:54:22 +0100
+Message-ID: <74b8dbc6-34cc-470b-9812-b595af95c5b6@gmx.com>
+Date: Fri, 13 Feb 2026 07:24:17 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -44,1043 +61,220 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] fstests: btrfs: add a regression test for incorrect
+ inode incompressible flag
+To: Zorro Lang <zlang@redhat.com>, Qu Wenruo <wqu@suse.com>
+Cc: linux-btrfs@vger.kernel.org, fstests@vger.kernel.org,
+ Filipe Manana <fdmanana@suse.com>
+References: <20260209095735.130049-1-wqu@suse.com>
+ <20260212184006.5pyxjnwxd5n5uad2@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
 Content-Language: en-US
-To: LKML <linux-kernel@vger.kernel.org>, linux-rockchip@vger.kernel.org,
- Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-From: David Arendt <admin@prnet.org>
-Subject: Orange PI 5 MAX: very unstable using kernel 6.19.0 and 6.18.10,
- 6.18.9 perfectly stable
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
+ sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
+ xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
+ naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
+ tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
+ 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
+ VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
+ CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
+ B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
+ Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
+ +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
+ HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
+In-Reply-To: <20260212184006.5pyxjnwxd5n5uad2@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:AVjSwLPKPrznFKaWFz3S0nnLhNzeXuWxh3mrpIgyfWuFEhROFN8
+ fyF4clIh9r+O8Z/ADP2JVKZGqk5R4FOXiAgvdDPw3/VgZeDqGe1anafTObqZy6EIBMHbPz9
+ gJyt8k0DwboTKIPpWTwCD0GJnlqhS2Fl0Zl8kqiJ1sDKTjQT7vuQhKm6Ov9lrSAXQWiYF7P
+ T3aEP+85IqkEH5IhKvycg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:FuWlMkpvCeA=;NxWEwgTdSuDudvYUsIxN7n1bBZV
+ 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
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.46 / 15.00];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	DMARC_POLICY_ALLOW(-0.50)[gmx.com,quarantine];
+	R_DKIM_ALLOW(-0.20)[gmx.com:s=s31663417];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_RCPT(0.00)[linux-btrfs];
-	MID_RHS_MATCH_FROM(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	R_DKIM_NA(0.00)[];
-	DMARC_NA(0.00)[prnet.org];
 	RCVD_TLS_LAST(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[admin@prnet.org,linux-btrfs@vger.kernel.org];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-21653-lists,linux-btrfs=lfdr.de];
+	FREEMAIL_FROM(0.00)[gmx.com];
+	TO_DN_SOME(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_THREE(0.00)[3];
-	PRECEDENCE_BULK(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21652-lists,linux-btrfs=lfdr.de];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,prnet.org:mid]
-X-Rspamd-Queue-Id: A872F130EA4
+	RCPT_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[quwenruo.btrfs@gmx.com,linux-btrfs@vger.kernel.org];
+	DKIM_TRACE(0.00)[gmx.com:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-btrfs];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,gmx.com:mid,gmx.com:dkim]
+X-Rspamd-Queue-Id: 2C1D31310FB
 X-Rspamd-Action: no action
 
-Hello,
-
-I am using a Kubernetes Cluster with 3 Orange PI5 MAX nodes. The data is 
-stored using a btrfs filesystem as backend. If using kernel 6.19.0 or 
-kernel 6.18.10 I have experienced many crashes during high IO load on 
-all 3 nodes. Reverting back to 6.18.9 solves the problems completely. 
-Unfortunately the crashes are spontaneous reboots without leaving a 
-trace in any logfile, so I have no stacktrace of them. After the crashes 
-I have sometimes incorrect btrfs csums for a file but these may also be 
-a result of a partial write due to the crash. On one node I had a btrfs 
-error logged without crashing, but I am not sure if this is the root 
-cause or a result of a prior crash. A scrub after reboot returned no 
-error with 6.19.0.
-
-Here the error logged on this node using kernel 6.19.0:
 
 
-Feb 10 13:31:07 opi02 kernel: page: refcount:2 mapcount:0 
-mapping:00000000bc8f678b index:0x588556fc pfn:0x6f69
-Feb 10 13:31:07 opi02 kernel: memcg:ffffff81005b8000
-Feb 10 13:31:07 opi02 kernel: aops:0xffffffc08159f0a0 ino:1
-Feb 10 13:31:07 opi02 kernel: flags: 
-0x1e0000000000422e(referenced|uptodate|lru|workingset|private|writeback|zone=0)
-Feb 10 13:31:07 opi02 kernel: raw: 1e0000000000422e fffffffec01bda08 
-fffffffec01bda88 ffffff8103a48ec8
-Feb 10 13:31:07 opi02 kernel: raw: 00000000588556fc ffffff811ae48000 
-00000002ffffffff ffffff81005b8000
-Feb 10 13:31:07 opi02 kernel: page dumped because: eb page dump
-Feb 10 13:31:07 opi02 kernel: BTRFS critical (device nvme0n1p3): corrupt 
-leaf: root=2 block=6083107078144 slot=93, bad key order, prev 
-(13218356101120 168 24576) current (13216208642048 168 36864)
-Feb 10 13:31:07 opi02 kernel: BTRFS info (device nvme0n1p3): leaf 
-6083107078144 gen 1240050 total ptrs 176 free space 4372 owner 2
-Feb 10 13:31:07 opi02 kernel: \x09item 0 key (13218352742400 EXTENT_ITEM 
-32768) itemoff 16246 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-4601309790208 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 1 key (13218352775168 EXTENT_ITEM 
-12288) itemoff 16196 itemsize 50
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 2 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-4601337839616 count 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#1: shared data backref parent 
-2329940934656 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 2 key (13218352787456 EXTENT_ITEM 
-8192) itemoff 16159 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-5397843181568 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 3 key (13218352795648 EXTENT_ITEM 
-24576) itemoff 16122 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1230575 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6083112271872 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 4 key (13218352820224 EXTENT_ITEM 
-32768) itemoff 16085 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1230575 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6083112271872 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 5 key (13218352852992 EXTENT_ITEM 
-36864) itemoff 16048 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1230575 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6083112271872 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 6 key (13218352889856 EXTENT_ITEM 
-24576) itemoff 16011 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1230575 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6083112271872 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 7 key (13218352914432 EXTENT_ITEM 
-4096) itemoff 15974 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1230601 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6082996486144 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 8 key (13218352918528 EXTENT_ITEM 
-28672) itemoff 15937 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-4601309790208 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 9 key (13218352947200 EXTENT_ITEM 
-32768) itemoff 15900 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6083885318144 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 10 key (13218352979968 
-EXTENT_ITEM 32768) itemoff 15863 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-1870215643136 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 11 key (13218353012736 
-EXTENT_ITEM 24576) itemoff 15826 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-1869710753792 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 12 key (13218353037312 
-EXTENT_ITEM 32768) itemoff 15789 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-1584449798144 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 13 key (13218353070080 
-EXTENT_ITEM 32768) itemoff 15752 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-1584449798144 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 14 key (13218353102848 
-EXTENT_ITEM 36864) itemoff 15715 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-4601322930176 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 15 key (13218353139712 
-EXTENT_ITEM 12288) itemoff 15678 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6084410523648 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 16 key (13218353152000 
-EXTENT_ITEM 36864) itemoff 15641 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-2329324519424 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 17 key (13218353188864 
-EXTENT_ITEM 36864) itemoff 15604 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-2329324519424 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 18 key (13218353225728 
-EXTENT_ITEM 28672) itemoff 15567 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-2329324519424 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 19 key (13218353254400 
-EXTENT_ITEM 24576) itemoff 15530 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6084916248576 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 20 key (13218353278976 
-EXTENT_ITEM 32768) itemoff 15493 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-1584449798144 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 21 key (13218353311744 
-EXTENT_ITEM 32768) itemoff 15456 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-1584449798144 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 22 key (13218353344512 
-EXTENT_ITEM 32768) itemoff 15419 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-1584449798144 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 23 key (13218353377280 
-EXTENT_ITEM 32768) itemoff 15382 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-1584449798144 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 24 key (13218353410048 
-EXTENT_ITEM 16384) itemoff 15332 itemsize 50
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 2 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-4601323585536 count 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#1: shared data backref parent 
-4601323569152 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 25 key (13218353426432 
-EXTENT_ITEM 73728) itemoff 15295 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1226216 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6084834459648 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 26 key (13218353500160 
-EXTENT_ITEM 94208) itemoff 15258 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1226216 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6084834459648 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 27 key (13218353594368 
-EXTENT_ITEM 36864) itemoff 15221 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1226216 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6084834459648 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 28 key (13218353631232 
-EXTENT_ITEM 24576) itemoff 15168 itemsize 53
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1239972 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: extent data backref root 
-256 objectid 973 offset 25776128 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 29 key (13218353659904 
-EXTENT_ITEM 114688) itemoff 15131 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1226216 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6084834459648 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 30 key (13218353774592 
-EXTENT_ITEM 53248) itemoff 15094 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1226216 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6084834459648 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 31 key (13218353827840 
-EXTENT_ITEM 36864) itemoff 15028 itemsize 66
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 2 gen 1239973 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: extent data backref root 
-256 objectid 4495 offset 10989568 count 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#1: shared data backref parent 
-4601603588096 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 32 key (13218353864704 
-EXTENT_ITEM 32768) itemoff 14991 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1233577 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6083964059648 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 33 key (13218353897472 
-EXTENT_ITEM 28672) itemoff 14954 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1226216 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-3316006191104 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 34 key (13218353926144 
-EXTENT_ITEM 28672) itemoff 14917 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1226216 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-3316006191104 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 35 key (13218353954816 
-EXTENT_ITEM 36864) itemoff 14864 itemsize 53
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1239972 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: extent data backref root 
-256 objectid 973 offset 26038272 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 36 key (13218353991680 
-EXTENT_ITEM 28672) itemoff 14798 itemsize 66
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 2 gen 1239975 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: extent data backref root 
-256 objectid 4239 offset 9175040 count 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#1: shared data backref parent 
-4601626492928 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 37 key (13218354020352 
-EXTENT_ITEM 32768) itemoff 14732 itemsize 66
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 2 gen 1239972 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: extent data backref root 
-256 objectid 4495 offset 7958528 count 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#1: shared data backref parent 
-4601603588096 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 38 key (13218354053120 
-EXTENT_ITEM 28672) itemoff 14666 itemsize 66
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 2 gen 1239972 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: extent data backref root 
-256 objectid 4239 offset 8003584 count 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#1: shared data backref parent 
-4601626492928 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 39 key (13218354081792 
-EXTENT_ITEM 28672) itemoff 14613 itemsize 53
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1239973 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: extent data backref root 
-256 objectid 973 offset 27795456 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 40 key (13218354110464 
-EXTENT_ITEM 24576) itemoff 14547 itemsize 66
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 2 gen 1239973 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: extent data backref root 
-256 objectid 4495 offset 8892416 count 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#1: shared data backref parent 
-4601603588096 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 41 key (13218354135040 
-EXTENT_ITEM 40960) itemoff 14481 itemsize 66
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 2 gen 1239973 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: extent data backref root 
-256 objectid 4495 offset 9023488 count 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#1: shared data backref parent 
-4601603588096 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 42 key (13218354176000 
-EXTENT_ITEM 8192) itemoff 14444 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1230586 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6082958065664 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 43 key (13218354192384 
-EXTENT_ITEM 40960) itemoff 14407 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-2329324519424 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 44 key (13218354233344 
-EXTENT_ITEM 40960) itemoff 14370 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-4601323143168 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 45 key (13218354274304 
-EXTENT_ITEM 28672) itemoff 14333 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-1869710753792 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 46 key (13218354302976 
-EXTENT_ITEM 20480) itemoff 14296 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6083467198464 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 47 key (13218354327552 
-EXTENT_ITEM 32768) itemoff 14246 itemsize 50
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 2 gen 1226216 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6084844093440 count 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#1: shared data backref parent 
-3375270707200 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 48 key (13218354360320 
-EXTENT_ITEM 32768) itemoff 14209 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-4601322930176 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 49 key (13218354393088 
-EXTENT_ITEM 32768) itemoff 14172 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-1584449798144 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 50 key (13218354425856 
-EXTENT_ITEM 16384) itemoff 14135 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-4601323143168 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 51 key (13218354442240 
-EXTENT_ITEM 24576) itemoff 14098 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1226216 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-3315953352704 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 52 key (13218354466816 
-EXTENT_ITEM 32768) itemoff 14048 itemsize 50
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 2 gen 1226216 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6084844093440 count 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#1: shared data backref parent 
-3375270707200 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 53 key (13218354499584 
-EXTENT_ITEM 32768) itemoff 14011 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-1584449798144 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 54 key (13218354532352 
-EXTENT_ITEM 28672) itemoff 13974 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-1869710753792 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 55 key (13218354561024 
-EXTENT_ITEM 36864) itemoff 13937 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-1584449798144 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 56 key (13218354597888 
-EXTENT_ITEM 28672) itemoff 13900 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-1584449798144 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 57 key (13218354630656 
-EXTENT_ITEM 36864) itemoff 13863 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1226216 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6084837769216 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 58 key (13218354667520 
-EXTENT_ITEM 36864) itemoff 13826 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1226216 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6084901273600 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 59 key (13218354704384 
-EXTENT_ITEM 40960) itemoff 13789 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1226216 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6084837769216 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 60 key (13218354745344 
-EXTENT_ITEM 40960) itemoff 13752 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-4601323143168 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 61 key (13218354786304 
-EXTENT_ITEM 28672) itemoff 13702 itemsize 50
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 2 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6083940007936 count 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#1: shared data backref parent 
-4601318735872 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 62 key (13218354814976 
-EXTENT_ITEM 28672) itemoff 13652 itemsize 50
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 2 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6083940007936 count 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#1: shared data backref parent 
-4601318735872 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 63 key (13218354843648 
-EXTENT_ITEM 28672) itemoff 13615 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-1584449798144 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 64 key (13218354872320 
-EXTENT_ITEM 36864) itemoff 13578 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6083876814848 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 65 key (13218354909184 
-EXTENT_ITEM 40960) itemoff 13525 itemsize 53
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1233577 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: extent data backref root 
-256 objectid 4517 offset 15138816 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 66 key (13218354950144 
-EXTENT_ITEM 69632) itemoff 13488 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1226216 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6083870490624 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 67 key (13218355019776 
-EXTENT_ITEM 24576) itemoff 13451 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6084392681472 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 68 key (13218355044352 
-EXTENT_ITEM 32768) itemoff 13414 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6083885318144 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 69 key (13218355077120 
-EXTENT_ITEM 32768) itemoff 13377 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6083885318144 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 70 key (13218355109888 
-EXTENT_ITEM 32768) itemoff 13340 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-1870215643136 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 71 key (13218355142656 
-EXTENT_ITEM 8192) itemoff 13303 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-5397843181568 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 72 key (13218355150848 
-EXTENT_ITEM 40960) itemoff 13237 itemsize 66
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 2 gen 1239973 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: extent data backref root 
-256 objectid 4495 offset 9285632 count 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#1: shared data backref parent 
-4601603588096 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 73 key (13218355208192 
-EXTENT_ITEM 36864) itemoff 13200 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-1584449798144 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 74 key (13218355245056 
-EXTENT_ITEM 36864) itemoff 13163 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6084410523648 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 75 key (13218355281920 
-EXTENT_ITEM 36864) itemoff 13126 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6084410523648 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 76 key (13218355318784 
-EXTENT_ITEM 20480) itemoff 13089 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6084410523648 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 77 key (13218355339264 
-EXTENT_ITEM 40960) itemoff 13052 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6083876814848 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 78 key (13218355380224 
-EXTENT_ITEM 32768) itemoff 13015 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-5397963751424 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 79 key (13218355412992 
-EXTENT_ITEM 28672) itemoff 12978 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-4601309790208 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 80 key (13218355441664 
-EXTENT_ITEM 24576) itemoff 12941 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6084410523648 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 81 key (13218355466240 
-EXTENT_ITEM 131072) itemoff 12888 itemsize 53
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1229883 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: extent data backref root 
-2751 objectid 2900 offset 7247327232 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 82 key (13218355601408 
-EXTENT_ITEM 36864) itemoff 12851 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6084410523648 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 83 key (13218355638272 
-EXTENT_ITEM 24576) itemoff 12814 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-3316004470784 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 84 key (13218355662848 
-EXTENT_ITEM 36864) itemoff 12777 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-1870212988928 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 85 key (13218355699712 
-EXTENT_ITEM 28672) itemoff 12740 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-5398079373312 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 86 key (13218355732480 
-EXTENT_ITEM 114688) itemoff 12703 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1226216 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6084834459648 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 87 key (13218355847168 
-EXTENT_ITEM 77824) itemoff 12666 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1226216 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6084834459648 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 88 key (13218355924992 
-EXTENT_ITEM 36864) itemoff 12600 itemsize 66
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 2 gen 1239973 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: extent data backref root 
-256 objectid 4495 offset 11120640 count 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#1: shared data backref parent 
-4601603588096 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 89 key (13218355961856 
-EXTENT_ITEM 69632) itemoff 12563 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1226216 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6084834459648 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 90 key (13218356031488 
-EXTENT_ITEM 32768) itemoff 12510 itemsize 53
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1239973 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: extent data backref root 
-256 objectid 973 offset 27271168 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 91 key (13218356064256 
-EXTENT_ITEM 36864) itemoff 12444 itemsize 66
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 2 gen 1239973 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: extent data backref root 
-256 objectid 4495 offset 9547776 count 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#1: shared data backref parent 
-4601603588096 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 92 key (13218356101120 
-EXTENT_ITEM 24576) itemoff 12378 itemsize 66
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 2 gen 1239973 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: extent data backref root 
-256 objectid 4239 offset 8572928 count 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#1: shared data backref parent 
-4601626492928 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 93 key (13216208642048 
-EXTENT_ITEM 36864) itemoff 12341 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1233577 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6083964059648 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 94 key (13218356162560 
-EXTENT_ITEM 32768) itemoff 12304 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1233577 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6083964059648 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 95 key (13218356195328 
-EXTENT_ITEM 36864) itemoff 12251 itemsize 53
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1233578 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: extent data backref root 
-256 objectid 4517 offset 16855040 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 96 key (13218356232192 
-EXTENT_ITEM 40960) itemoff 12201 itemsize 50
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 2 gen 1233589 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6083991683072 count 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#1: shared data backref parent 
-1583866560512 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 97 key (13218356273152 
-EXTENT_ITEM 32768) itemoff 12151 itemsize 50
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 2 gen 1233589 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6083991683072 count 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#1: shared data backref parent 
-1583866560512 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 98 key (13218356305920 
-EXTENT_ITEM 12288) itemoff 12098 itemsize 53
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1236769 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: extent data backref root 
-256 objectid 1152 offset 25165824 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 99 key (13218356318208 
-EXTENT_ITEM 36864) itemoff 12061 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1233579 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6083964059648 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 100 key (13218356355072 
-EXTENT_ITEM 32768) itemoff 12024 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1233579 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6083964059648 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 101 key (13218356387840 
-EXTENT_ITEM 32768) itemoff 11987 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1233579 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6083964059648 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 102 key (13218356420608 
-EXTENT_ITEM 28672) itemoff 11950 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1233579 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6083964059648 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 103 key (13218356449280 
-EXTENT_ITEM 24576) itemoff 11897 itemsize 53
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1234066 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: extent data backref root 
-256 objectid 4537 offset 17248256 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 104 key (13218356473856 
-EXTENT_ITEM 20480) itemoff 11834 itemsize 63
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 3 gen 1226216 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6082876506112 count 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#1: shared data backref parent 
-3316328841216 count 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#2: shared data backref parent 
-3315961479168 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 105 key (13218356494336 
-EXTENT_ITEM 28672) itemoff 11797 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1226216 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-3316006191104 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 106 key (13218356523008 
-EXTENT_ITEM 40960) itemoff 11747 itemsize 50
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 2 gen 1230430 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-4601803194368 count 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#1: shared data backref parent 
-4601266962432 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 107 key (13218356563968 
-EXTENT_ITEM 40960) itemoff 11681 itemsize 66
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 2 gen 1239973 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: extent data backref root 
-256 objectid 4495 offset 10072064 count 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#1: shared data backref parent 
-4601603588096 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 108 key (13218356609024 
-EXTENT_ITEM 20480) itemoff 11618 itemsize 63
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 3 gen 1226216 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6082876506112 count 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#1: shared data backref parent 
-3316328841216 count 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#2: shared data backref parent 
-3315961479168 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 109 key (13218356629504 
-EXTENT_ITEM 16384) itemoff 11581 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1226216 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6084881580032 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 110 key (13218356645888 
-EXTENT_ITEM 24576) itemoff 11518 itemsize 63
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 3 gen 1226216 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6082876506112 count 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#1: shared data backref parent 
-3316328841216 count 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#2: shared data backref parent 
-3315961479168 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 111 key (13218356670464 
-EXTENT_ITEM 32768) itemoff 11468 itemsize 50
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 2 gen 1230430 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-4601803194368 count 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#1: shared data backref parent 
-4601266962432 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 112 key (13218356703232 
-EXTENT_ITEM 36864) itemoff 11402 itemsize 66
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 2 gen 1239973 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: extent data backref root 
-256 objectid 4495 offset 11251712 count 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#1: shared data backref parent 
-4601603588096 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 113 key (13218356740096 
-EXTENT_ITEM 40960) itemoff 11349 itemsize 53
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1235501 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: extent data backref root 
-256 objectid 4593 offset 11141120 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 114 key (13218356781056 
-EXTENT_ITEM 40960) itemoff 11283 itemsize 66
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 2 gen 1239973 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: extent data backref root 
-256 objectid 4495 offset 10203136 count 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#1: shared data backref parent 
-4601603588096 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 115 key (13218356834304 
-EXTENT_ITEM 28672) itemoff 11230 itemsize 53
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1235502 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: extent data backref root 
-256 objectid 4594 offset 54112256 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 116 key (13218356862976 
-EXTENT_ITEM 40960) itemoff 11193 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1226216 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6084834459648 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 117 key (13218356903936 
-EXTENT_ITEM 45056) itemoff 11127 itemsize 66
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 2 gen 1239972 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: extent data backref root 
-256 objectid 4495 offset 8613888 count 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#1: shared data backref parent 
-4601603588096 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 118 key (13218356948992 
-EXTENT_ITEM 32768) itemoff 11074 itemsize 53
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1239973 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: extent data backref root 
-256 objectid 973 offset 28319744 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 119 key (13218356981760 
-EXTENT_ITEM 40960) itemoff 11008 itemsize 66
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 2 gen 1239973 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: extent data backref root 
-256 objectid 4495 offset 10334208 count 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#1: shared data backref parent 
-4601603588096 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 120 key (13218357039104 
-EXTENT_ITEM 57344) itemoff 10971 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1226216 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6084834459648 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 121 key (13218357096448 
-EXTENT_ITEM 28672) itemoff 10918 itemsize 53
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1239972 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: extent data backref root 
-256 objectid 973 offset 26169344 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 122 key (13218357125120 
-EXTENT_ITEM 4096) itemoff 10865 itemsize 53
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1240050 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: extent data backref root 
-2751 objectid 3362 offset 2549063680 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 123 key (13218357129216 
-EXTENT_ITEM 32768) itemoff 10828 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1226216 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6083554082816 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 124 key (13218357161984 
-EXTENT_ITEM 32768) itemoff 10791 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1226216 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6083554082816 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 125 key (13218357194752 
-EXTENT_ITEM 20480) itemoff 10738 itemsize 53
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1234335 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: extent data backref root 
-256 objectid 1007 offset 62439424 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 126 key (13218357215232 
-EXTENT_ITEM 4096) itemoff 10685 itemsize 53
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1237596 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: extent data backref root 
-2751 objectid 2862 offset 1668911104 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 127 key (13218357219328 
-EXTENT_ITEM 32768) itemoff 10648 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6084410523648 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 128 key (13218357252096 
-EXTENT_ITEM 28672) itemoff 10611 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6084410523648 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 129 key (13218357280768 
-EXTENT_ITEM 12288) itemoff 10574 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-4601318735872 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 130 key (13218357293056 
-EXTENT_ITEM 40960) itemoff 10537 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6084410523648 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 131 key (13218357334016 
-EXTENT_ITEM 40960) itemoff 10500 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6084410523648 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 132 key (13218357374976 
-EXTENT_ITEM 28672) itemoff 10463 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-5397963751424 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 133 key (13218357403648 
-EXTENT_ITEM 28672) itemoff 10426 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-1584449798144 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 134 key (13218357432320 
-EXTENT_ITEM 32768) itemoff 10389 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-1584449798144 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 135 key (13218357465088 
-EXTENT_ITEM 36864) itemoff 10352 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-4601322930176 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 136 key (13218357501952 
-EXTENT_ITEM 32768) itemoff 10315 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6084916248576 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 137 key (13218357534720 
-EXTENT_ITEM 32768) itemoff 10278 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-1584449798144 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 138 key (13218357567488 
-EXTENT_ITEM 32768) itemoff 10241 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6083885318144 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 139 key (13218357600256 
-EXTENT_ITEM 20480) itemoff 10204 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6083467198464 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 140 key (13218357620736 
-EXTENT_ITEM 28672) itemoff 10167 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6083885318144 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 141 key (13218357649408 
-EXTENT_ITEM 28672) itemoff 10130 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-838913851392 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 142 key (13218357678080 
-EXTENT_ITEM 8192) itemoff 10080 itemsize 50
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 2 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-4601337839616 count 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#1: shared data backref parent 
-2329940934656 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 143 key (13218357686272 
-EXTENT_ITEM 36864) itemoff 10043 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6084410523648 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 144 key (13218357723136 
-EXTENT_ITEM 32768) itemoff 10006 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6084410523648 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 145 key (13218357755904 
-EXTENT_ITEM 20480) itemoff 9969 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-1869710753792 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 146 key (13218357776384 
-EXTENT_ITEM 40960) itemoff 9932 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-4601322930176 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 147 key (13218357817344 
-EXTENT_ITEM 16384) itemoff 9895 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6084410523648 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 148 key (13218357833728 
-EXTENT_ITEM 20480) itemoff 9858 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6083876044800 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 149 key (13218357854208 
-EXTENT_ITEM 36864) itemoff 9821 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6084410523648 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 150 key (13218357891072 
-EXTENT_ITEM 24576) itemoff 9784 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6084410523648 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 151 key (13218357915648 
-EXTENT_ITEM 8192) itemoff 9734 itemsize 50
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 2 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-4601337839616 count 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#1: shared data backref parent 
-2329940934656 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 152 key (13218357923840 
-EXTENT_ITEM 32768) itemoff 9697 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6084924850176 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 153 key (13218357956608 
-EXTENT_ITEM 32768) itemoff 9660 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-1584449798144 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 154 key (13218357989376 
-EXTENT_ITEM 32768) itemoff 9623 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-5398038151168 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 155 key (13218358022144 
-EXTENT_ITEM 32768) itemoff 9586 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6084916248576 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 156 key (13218358054912 
-EXTENT_ITEM 32768) itemoff 9549 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-4601318146048 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 157 key (13218358087680 
-EXTENT_ITEM 32768) itemoff 9512 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-1584449798144 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 158 key (13218358120448 
-EXTENT_ITEM 12288) itemoff 9475 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6084410523648 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 159 key (13218358132736 
-EXTENT_ITEM 12288) itemoff 9438 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1228851 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6084410523648 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 160 key (13218358145024 
-EXTENT_ITEM 98304) itemoff 9401 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1226216 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6084834459648 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 161 key (13218358243328 
-EXTENT_ITEM 77824) itemoff 9364 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1226216 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6084834459648 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 162 key (13218358321152 
-EXTENT_ITEM 57344) itemoff 9327 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1226216 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6084834459648 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 163 key (13218358378496 
-EXTENT_ITEM 53248) itemoff 9290 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1226216 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6084834459648 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 164 key (13218358431744 
-EXTENT_ITEM 24576) itemoff 9224 itemsize 66
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 2 gen 1239973 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: extent data backref root 
-256 objectid 4495 offset 9940992 count 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#1: shared data backref parent 
-4601603588096 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 165 key (13218358456320 
-EXTENT_ITEM 28672) itemoff 9158 itemsize 66
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 2 gen 1239973 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: extent data backref root 
-256 objectid 4239 offset 8441856 count 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#1: shared data backref parent 
-4601626492928 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 166 key (13218358484992 
-EXTENT_ITEM 4096) itemoff 9105 itemsize 53
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1240050 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: extent data backref root 
-2751 objectid 3362 offset 2549006336 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 167 key (13218358489088 
-EXTENT_ITEM 32768) itemoff 9068 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1226216 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6083535126528 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 168 key (13218358521856 
-EXTENT_ITEM 32768) itemoff 9031 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1226216 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6083535126528 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 169 key (13218358554624 
-EXTENT_ITEM 32768) itemoff 8994 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1226216 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6083535126528 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 170 key (13218358587392 
-EXTENT_ITEM 65536) itemoff 8957 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1226216 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6083504668672 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 171 key (13218358652928 
-EXTENT_ITEM 36864) itemoff 8920 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1226216 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6083504668672 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 172 key (13218358689792 
-EXTENT_ITEM 77824) itemoff 8883 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1226216 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6083504963584 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 173 key (13218358767616 
-EXTENT_ITEM 81920) itemoff 8846 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1226216 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6083504963584 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 174 key (13218358849536 
-EXTENT_ITEM 24576) itemoff 8809 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1226216 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6083504963584 count 1
-Feb 10 13:31:07 opi02 kernel: \x09item 175 key (13218358874112 
-EXTENT_ITEM 28672) itemoff 8772 itemsize 37
-Feb 10 13:31:07 opi02 kernel: \x09\x09extent refs 1 gen 1226216 flags 1
-Feb 10 13:31:07 opi02 kernel: \x09\x09ref#0: shared data backref parent 
-6083504963584 count 1
-Feb 10 13:31:07 opi02 kernel: BTRFS error (device nvme0n1p3): 
-block=6083107078144 write time tree block corruption detected
-Feb 10 13:31:07 opi02 kernel: BTRFS: error (device nvme0n1p3) in 
-btrfs_commit_transaction:2555: errno=-5 IO failure (Error while writing 
-out transaction)
-Feb 10 13:31:07 opi02 kernel: BTRFS info (device nvme0n1p3 state E): 
-forced readonly
-Feb 10 13:31:07 opi02 kernel: BTRFS warning (device nvme0n1p3 state E): 
-Skipping commit of aborted transaction.
-Feb 10 13:31:07 opi02 kernel: BTRFS error (device nvme0n1p3 state EA): 
-Transaction aborted (error -5)
-Feb 10 13:31:07 opi02 kernel: BTRFS: error (device nvme0n1p3 state EA) 
-in cleanup_transaction:2037: errno=-5 IO failure
+=E5=9C=A8 2026/2/13 05:10, Zorro Lang =E5=86=99=E9=81=93:
+[...]
+>> +
+>> +blocksize=3D$(_get_block_size $SCRATCH_MNT)
+>=20
+> Do you mind I replace _get_block_size with _get_file_block_size when I m=
+erge it?
 
-Unfortunately I don't have more information at the moment.
+Sure, and I'll try to remember to use that newer helper in the future.
 
-Thanks in advance,
+And if needed, I can replace the existing callsites with the newer=20
+helper in a dedicated patch.
 
-David Arendt
+Thanks,
+Qu
+
+> Even though btrfs currently doesn't require special handling to get the =
+correct block
+> size, using this interface is more future-proof. It will help us to easi=
+ly add specific
+> logic later if btrfs ever needs it. Others are good to me,
+>=20
+> Reviewed-by: Zorro Lang <zlang@redhat.com>
+>=20
+>> +
+>> +# Create a sparse file which is 2 * blocksize, then try a small write =
+at
+>> +# file offset 0 which should not be inlined.
+>> +# Sync so that [0, 2K) range is written, then write a larger range whi=
+ch
+>> +# should be able to be compressed.
+>> +$XFS_IO_PROG -f -c "truncate $((2 * $blocksize))" -c "pwrite 0 2k" -c =
+sync \
+>> +		-c "pwrite 1m 1m" $SCRATCH_MNT/foobar >> $seqres.full
+>> +ino=3D$(stat -c "%i" $SCRATCH_MNT/foobar)
+>> +_scratch_unmount
+>> +
+>> +# Dump the fstree into seqres.full for debug.
+>> +$BTRFS_UTIL_PROG inspect-internal dump-tree -t 5 $SCRATCH_DEV >> $seqr=
+es.full
+>> +
+>> +# Check the NOCOMPRESS flag of the inode.
+>> +$BTRFS_UTIL_PROG inspect-internal dump-tree -t 5 $SCRATCH_DEV |\
+>> +grep -A 4 -e "item .* key ($ino INODE_ITEM 0)" | grep -q NOCOMPRESS
+>> +[ $? -eq 0 ] && echo "inode $ino has NOCOMPRESS flag"
+>> +
+>> +# Check the file extent at fileoffset 1m.
+>> +$BTRFS_UTIL_PROG inspect-internal dump-tree -t 5 $SCRATCH_DEV |\
+>> +grep -A 4 -e "item .* key ($ino EXTENT_DATA 1048576)" | grep -q "compr=
+ession 0"
+>> +[ $? -eq 0 ] && echo "inode $ino file offset 1M is not compressed"
+>> +
+>> +echo "Silence is golden"
+>> +# success, all done
+>> +_exit 0
+>> diff --git a/tests/btrfs/343.out b/tests/btrfs/343.out
+>> new file mode 100644
+>> index 00000000..2eb30e4f
+>> --- /dev/null
+>> +++ b/tests/btrfs/343.out
+>> @@ -0,0 +1,2 @@
+>> +QA output created by 343
+>> +Silence is golden
+>> --=20
+>> 2.51.2
+>>
+>>
+>=20
+>=20
 
 
