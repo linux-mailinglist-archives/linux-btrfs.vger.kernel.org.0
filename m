@@ -1,225 +1,235 @@
-Return-Path: <linux-btrfs+bounces-21671-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21672-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id TOteLTWGj2mpRQEAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21671-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Feb 2026 21:14:45 +0100
+	id YPK8GKWLj2nURQEAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21672-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Feb 2026 21:37:57 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AE4413959D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Feb 2026 21:14:44 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF3171397A5
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Feb 2026 21:37:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id CAEEE303A5D0
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Feb 2026 20:14:37 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 8460630668A4
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Feb 2026 20:37:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C5E827EFE3;
-	Fri, 13 Feb 2026 20:14:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A03F28134C;
+	Fri, 13 Feb 2026 20:37:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="FAO+WVuH";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="kvg+aizJ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GntejAnZ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f196.google.com (mail-yw1-f196.google.com [209.85.128.196])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8144E23E320
-	for <linux-btrfs@vger.kernel.org>; Fri, 13 Feb 2026 20:14:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4E9B250BEC
+	for <linux-btrfs@vger.kernel.org>; Fri, 13 Feb 2026 20:37:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771013676; cv=none; b=Lz051bfv4n3Q6WJn+sIb2GKlclajHDAfi81ywkZ0/fJ3+8PKtauKbiLf5Dzamym1cg0hmJz2qMWuXDUPyDhMQhRM9nXj2+26RkxR/CdgCRGrh8yxdGB4xjT0RKgNMrTGQKjjXbIuAgE+QQzv1UsbV5cRYVr5t8PSZPP/HasIgr0=
+	t=1771015025; cv=none; b=IijvbvMW4p8foXkyQqpSWLblmU7IGwG7fJSWHu42YxY70gOExu/6SMnly/5xUcG/pbJO69/NYo0w+zb9C8imYyuIvRpQ884TCglZD3TL13PD7iMiDJOSdSp/LH4kUq8LkcGuiUO2HErYKZ8pLrEe8DNG6hSb7LiMSiSTFT/9G9o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771013676; c=relaxed/simple;
-	bh=2yWBR7+6uAiJGZh1+gaD/4Oxl4AB92Rb/uWzQN6SEVw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GilGIRBCU9kdqyOhU6qscI6aZ1f+r8EtcX2qP6ENg+XT9Vw1RXcULKtKNzq5eIrh6nQdFw7mxsUhxXT6w2Yb5a2B+6ugmrx291VSdRi562gw/y+lrhsIwzxdN1JUuk2NPHT36A2ceRiIv7gtizCdExqmb0CbXX2q2+gQGQVzZPk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=FAO+WVuH; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=kvg+aizJ; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1771013674;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8+Sx9VmchKCkAbDF8WdRHlLXOLo0NV/E7WV9Z+vjBJg=;
-	b=FAO+WVuHuDleg/WrSkBTZhtkxrAfZfd5DOMTuQym9zKJINrjIZSDJWZQakD3PGG16i4Lmc
-	EiO2CeKlgPuspqdh8hdqGg1gMOIO/9gI5vCKzdy09UOPC2oLFf1Mej9Eb94GMdf9F/PtJ/
-	zujQFGMfjJHacwl+6h6IGFghhgeNeus=
-Received: from mail-pj1-f70.google.com (mail-pj1-f70.google.com
- [209.85.216.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-252-0RARNAnkMoWbRDP8b2swAg-1; Fri, 13 Feb 2026 15:14:33 -0500
-X-MC-Unique: 0RARNAnkMoWbRDP8b2swAg-1
-X-Mimecast-MFC-AGG-ID: 0RARNAnkMoWbRDP8b2swAg_1771013672
-Received: by mail-pj1-f70.google.com with SMTP id 98e67ed59e1d1-35845fcf0f5so112483a91.0
-        for <linux-btrfs@vger.kernel.org>; Fri, 13 Feb 2026 12:14:33 -0800 (PST)
+	s=arc-20240116; t=1771015025; c=relaxed/simple;
+	bh=M7bkY1Kz0ddERHxsEtjKMdircBj8E/fNy7/+VYrgnCE=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=PGtSSCf0kbed2nDdU0vj4ow8E/t0WGf/ybnSt/IZ3Gq5nKJHBeDRgSYN9rXpmv+RbsdSTmk/wyHcBXzMK8kUCTf7I8l1GtWAF4aWNB3bPI/K1QLiigNauYIMl8TLRdLzfNWCYgFMvsKxlB5hYBLg1gfbFJoXWq1lhUPpwvgzBOs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GntejAnZ; arc=none smtp.client-ip=209.85.128.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f196.google.com with SMTP id 00721157ae682-793fdbb8d3aso14259387b3.3
+        for <linux-btrfs@vger.kernel.org>; Fri, 13 Feb 2026 12:37:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1771013672; x=1771618472; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=8+Sx9VmchKCkAbDF8WdRHlLXOLo0NV/E7WV9Z+vjBJg=;
-        b=kvg+aizJSqAo2/mt3//2RslgvnhDERbS3TadMdlm1OGLQdvaVBbahxSBuxNu1des+c
-         ZvYlzFMz3Y7n8nO8HA1Q6DsFyIE+BVWHCSn2w0WjFREjR0x3XAsujrYrmTdKC6bONMLF
-         /t0ABWpKCj40V9RI5pjH+8ALOfM8flJaPgYbCGFC0OBWWmZIxnJQDKmmzQPa6ICH1HId
-         8ewYP6Ynmk9qT3gpFhhHirbwCPWv3pJFl8yQpr/CaCPFeg2O9Y/7nevsekkl+GwiPCxS
-         PcF01TgMlGsX5qzlTfMuQWCu5GZPpBP/EqpTgPENY9MjVihx4oYGVQ2ImL7s1eE6+cuq
-         qijA==
+        d=gmail.com; s=20230601; t=1771015023; x=1771619823; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=1dpCMdVLj76oNDEYDVnRBdJT8qI6DJ+GbUgeGc/La0o=;
+        b=GntejAnZaYz/yPIEWJK3Okq8ewjrf1IsG9so/vBeWHQY+RgbIQTCHkXckFwRABq4sx
+         TM5HiB3SP7M4OuhNWh5RqUCP7KqsUyFDjVhiP+OvfYYuYmZQk/yOvkrtjhMJ7f8gkGrQ
+         RDSw+gW/gKCc0Fxulx6aKOvtu99cmfe2cf1g+FG2rWlIlWZbrwC3P+Ns2guJOG6BfNxA
+         O52Yds16hVyGSfvR1iRScWEQYDUt+US3RV85QlG/knoObGG3nV5j6CS9mkGSbBJyHIpX
+         NIpor/w8yUeV5l3P2DnOd9LBuy8jCjLMuvPAWFCF4grncBRyn+4b5KWukAi0dyFWjwFs
+         vCyg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771013672; x=1771618472;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8+Sx9VmchKCkAbDF8WdRHlLXOLo0NV/E7WV9Z+vjBJg=;
-        b=C247vF8uX2Z9ds/jrInHpn+w2x1559sRUsOvM30VK1R8lQubMGgxXtwC5o+9xfAIrk
-         gyb+uPzDny03BDfKZo9WTg+ng/pLujblL0CrceSgC01A/gfdeCpr56i8ZfVthGw/JjYa
-         F40DMjtL8DchPxA9Qq7TkQvJ52MYGgugfLxY3aXIROabce6cpOnNuWWVQa5pPCg4jZWo
-         BO43ppCYqiPOBrL3iCjeKU8UruHpdcCxNLN10skwLHFjOjwNWZV16EjA5DAf4Jdc5oQb
-         tma6VwoGp+Dj37BSrPRlI4ePrTq8WaFmonrLXPWhjoMuyqs0Ze1nut+jwBlZfU5r5Ijk
-         kvzg==
-X-Forwarded-Encrypted: i=1; AJvYcCUAc8FPxKWATE5Mv/IP3/uj/wWNkTUF4bd/CvYtgeLWlhNZbmv4PbM+ZhkSGC4helQJirvj+u11tdgHPA==@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywc6FIOSLbhT/4Wgiv6WdSGTXhuxy+ETqIklcB6eqQB5GOL/Hua
-	d8SS0d3I0aCxD2EUl+0TBRAwmxG9zuRaXS0W9y/XHJHj2DeNKw0+RbDmEI33W+BfFnomnGpa7Ks
-	y+eWat1rFm6F1JnHSer9gykYp95ImD7AqIK8h2lsgpuoFprEy1WQSFfTEo/0lPUJhWxmHNJQF
-X-Gm-Gg: AZuq6aIv3LvaO1LYwghTM7zlM5nd+KySsllym5PneZ8ivelPLstv5lGJCxm8Ockol9h
-	ujLRs57q3OQzE713+tvxML7yyHe03PszOS8AImxsfx/2IKZqiV3V7FDrkLsQpsTXPmIQTUJiFKa
-	qQKx104+vijvwDbP6b8aSTnz2DL0AAe1eHZ0UZjOono7uCdusWBrwcYo8Tcf631M6EqT630VJpL
-	RmA9mjcTijRt/LIW1YYiVUonoMMPSyqgnCZXu2Wz75ec6VdCEI9C6r+sWE/Hd6ha6fsg7vQLXcO
-	lrPnB9EBXa86raB3kCEYbqbxmgvGJOHcP8m/vMkfOjAkuBg8dE7XIbtOhQQpeVPjEPhsoSQ1GFz
-	PsRPtL9EjkbNvD/wXOefdmtK5ns8ysDJbX/YS5Zoi6KEsUWMyYtJKdVP5G5y5jQ==
-X-Received: by 2002:a17:90b:53cf:b0:34c:2aac:21a7 with SMTP id 98e67ed59e1d1-357b50c4fb4mr1093925a91.7.1771013671761;
-        Fri, 13 Feb 2026 12:14:31 -0800 (PST)
-X-Received: by 2002:a17:90b:53cf:b0:34c:2aac:21a7 with SMTP id 98e67ed59e1d1-357b50c4fb4mr1093908a91.7.1771013671115;
-        Fri, 13 Feb 2026 12:14:31 -0800 (PST)
-Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([209.132.188.88])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-356629314fbsm12715216a91.0.2026.02.13.12.14.28
+        d=1e100.net; s=20230601; t=1771015023; x=1771619823;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1dpCMdVLj76oNDEYDVnRBdJT8qI6DJ+GbUgeGc/La0o=;
+        b=X4rjjQBeCxCftEeQgS5IyiDSbxdZGfb8Tq+YaZ6LL9jPqDVvNJQxR2ev56BV7WBpW0
+         4zEYQA5JsVV+fImfy+lgf0EzEM642vINCCHVb2vMOSDNLyu5li7jl+oxCDIf7K5JsJfT
+         UttZue6JehPjFL1cqQCxYUO6vs9nS0mMooy6WQOOapp+Gv2B7lczgSkTLsyIzRHuUyYh
+         kF9/lXrxYxNlF3g+9yMloiXU7Mst9Y6tcURFYiHB41CWk4nb5fyYRFeIS5jKHS9Dw06r
+         FHz/4BAn+WdCu7hcQO9bZPZjdN5F0Y00NIozp9tGtLs2352awf4kSZ2zU6zFRf/VDauE
+         JBoA==
+X-Gm-Message-State: AOJu0Yxdv0//cUNL/0Xu+flQW7rz76Y0sJLO7ad6hkRdFyr0hRePRGE9
+	rlnkFZoudnVdlNGGN26wg6sd6Am0RentW7HECjbjLOjPidk2148l/a4bcLy3uM0o
+X-Gm-Gg: AZuq6aIsHovYFwx6FXlDJpX72Y+fjxhGB7WzmSz9cDN56XknPPDgGwJhOU0F7Ui6zs3
+	7Xiox85FHZZmXz4+QGkwwJSm8yGbxlyYSSJ8GVGXsFEDe/va0smuQgbDT7ErYXLInEIleeXSjDD
+	pMpTdqVK3iToZIjJ/9iYlpuiQps/fuG8n9rJK3OV44XgojNYfVTo2QCqpI4MOF1cDi0uzMnAj7K
+	+eVpM74QFpZenTEBhivBjhmwiwO5OZBV8IEH2S5QmsO4cMKUExXFeIyXsRSp7dfQXC0khrK4jVu
+	l5hjGXgTnS+1+rc8fr54KZW4F9nUhlv1uGxAhJglvrlCNs/A6GPptTSplbzBcIcD0NT5uW2XfwV
+	HpYQvaKw5Ariy6XVvJrRlhou8e6oBRb0LS/AW4fSRarXj89/97FbFYiCrvzmCgySq2QGwegS5OG
+	qc1pc/WQIXz7gBeA==
+X-Received: by 2002:a05:690e:1515:b0:64a:d29c:e159 with SMTP id 956f58d0204a3-64c14dceacfmr2915610d50.82.1771015023259;
+        Fri, 13 Feb 2026 12:37:03 -0800 (PST)
+Received: from localhost ([2a03:2880:25ff::])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-7966c23f1bdsm76139627b3.28.2026.02.13.12.37.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Feb 2026 12:14:30 -0800 (PST)
-Date: Sat, 14 Feb 2026 04:14:25 +0800
-From: Zorro Lang <zlang@redhat.com>
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org,
-	fstests@vger.kernel.org, Filipe Manana <fdmanana@suse.com>
-Subject: Re: [PATCH v3] fstests: btrfs: add a regression test for incorrect
- inode incompressible flag
-Message-ID: <20260213201425.d6dz4ovcx25zdzjp@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-References: <20260209095735.130049-1-wqu@suse.com>
- <20260212184006.5pyxjnwxd5n5uad2@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
- <74b8dbc6-34cc-470b-9812-b595af95c5b6@gmx.com>
+        Fri, 13 Feb 2026 12:37:02 -0800 (PST)
+From: Leo Martins <loemra.dev@gmail.com>
+To: linux-btrfs@vger.kernel.org,
+	kernel-team@fb.com
+Subject: [PATCH v2 0/3] btrfs: fix COW amplification under memory pressure
+Date: Fri, 13 Feb 2026 12:30:23 -0800
+Message-ID: <cover.1771012202.git.loemra.dev@gmail.com>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <74b8dbc6-34cc-470b-9812-b595af95c5b6@gmx.com>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
-	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719,redhat.com:s=google];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21671-lists,linux-btrfs=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-21672-lists,linux-btrfs=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	FREEMAIL_TO(0.00)[gmx.com];
+	RCPT_COUNT_TWO(0.00)[2];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	DKIM_TRACE(0.00)[redhat.com:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[zlang@redhat.com,linux-btrfs@vger.kernel.org];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[loemradev@gmail.com,linux-btrfs@vger.kernel.org];
+	TO_DN_NONE(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	RCPT_COUNT_FIVE(0.00)[5];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,dell-per750-06-vm-08.rhts.eng.pek2.redhat.com:mid]
-X-Rspamd-Queue-Id: 1AE4413959D
+	FREEMAIL_FROM(0.00)[gmail.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: BF3171397A5
 X-Rspamd-Action: no action
 
-On Fri, Feb 13, 2026 at 07:24:17AM +1030, Qu Wenruo wrote:
-> 
-> 
-> 在 2026/2/13 05:10, Zorro Lang 写道:
-> [...]
-> > > +
-> > > +blocksize=$(_get_block_size $SCRATCH_MNT)
-> > 
-> > Do you mind I replace _get_block_size with _get_file_block_size when I merge it?
-> 
-> Sure, and I'll try to remember to use that newer helper in the future.
-> 
-> And if needed, I can replace the existing callsites with the newer helper in
-> a dedicated patch.
+I've been investigating a pattern where COW amplification under memory
+pressure exhausts the transaction block reserve, leading to spurious
+ENOSPCs on filesystems with plenty of unallocated space.
 
-Don't worry, since some cases might genuinely need the bare _get_block_size, so I
-didn't do a blanket replacement, just keep an eye on it during code reviewing :)
-Anyway, I'll review this patch at first.
+The pattern is:
 
-Thanks,
-Zorro
+ 1. btrfs_search_slot() begins tree traversal with cow=1
+ 2. Node at level N needs COW (old generation or WRITTEN flag set)
+ 3. btrfs_cow_block() allocates new block, copies data, updates
+    parent pointer
+ 4. Traversal hits a condition requiring restart (node not cached,
+    lock contention, need higher write_lock_level)
+ 5. btrfs_release_path() releases all locks and references
+ 6. Memory pressure triggers writeback on the COW'd block
+ 7. lock_extent_buffer_for_io() clears EXTENT_BUFFER_DIRTY and sets
+    BTRFS_HEADER_FLAG_WRITTEN
+ 8. goto again - traversal restarts from root
+ 9. Traversal reaches the same tree node
+ 10. should_cow_block() sees WRITTEN flag, returns true
+ 11. btrfs_cow_block() allocates yet another new block, copies data,
+     updates parent pointer again, consuming another reservation
+ 12. Steps 4-11 repeat under sustained memory pressure
 
-> 
-> Thanks,
-> Qu
-> 
-> > Even though btrfs currently doesn't require special handling to get the correct block
-> > size, using this interface is more future-proof. It will help us to easily add specific
-> > logic later if btrfs ever needs it. Others are good to me,
-> > 
-> > Reviewed-by: Zorro Lang <zlang@redhat.com>
-> > 
-> > > +
-> > > +# Create a sparse file which is 2 * blocksize, then try a small write at
-> > > +# file offset 0 which should not be inlined.
-> > > +# Sync so that [0, 2K) range is written, then write a larger range which
-> > > +# should be able to be compressed.
-> > > +$XFS_IO_PROG -f -c "truncate $((2 * $blocksize))" -c "pwrite 0 2k" -c sync \
-> > > +		-c "pwrite 1m 1m" $SCRATCH_MNT/foobar >> $seqres.full
-> > > +ino=$(stat -c "%i" $SCRATCH_MNT/foobar)
-> > > +_scratch_unmount
-> > > +
-> > > +# Dump the fstree into seqres.full for debug.
-> > > +$BTRFS_UTIL_PROG inspect-internal dump-tree -t 5 $SCRATCH_DEV >> $seqres.full
-> > > +
-> > > +# Check the NOCOMPRESS flag of the inode.
-> > > +$BTRFS_UTIL_PROG inspect-internal dump-tree -t 5 $SCRATCH_DEV |\
-> > > +grep -A 4 -e "item .* key ($ino INODE_ITEM 0)" | grep -q NOCOMPRESS
-> > > +[ $? -eq 0 ] && echo "inode $ino has NOCOMPRESS flag"
-> > > +
-> > > +# Check the file extent at fileoffset 1m.
-> > > +$BTRFS_UTIL_PROG inspect-internal dump-tree -t 5 $SCRATCH_DEV |\
-> > > +grep -A 4 -e "item .* key ($ino EXTENT_DATA 1048576)" | grep -q "compression 0"
-> > > +[ $? -eq 0 ] && echo "inode $ino file offset 1M is not compressed"
-> > > +
-> > > +echo "Silence is golden"
-> > > +# success, all done
-> > > +_exit 0
-> > > diff --git a/tests/btrfs/343.out b/tests/btrfs/343.out
-> > > new file mode 100644
-> > > index 00000000..2eb30e4f
-> > > --- /dev/null
-> > > +++ b/tests/btrfs/343.out
-> > > @@ -0,0 +1,2 @@
-> > > +QA output created by 343
-> > > +Silence is golden
-> > > -- 
-> > > 2.51.2
-> > > 
-> > > 
-> > 
-> > 
-> 
-> 
+This series fixes the problem with two complementary approaches:
+
+Patch 1 implements Filipe's suggestion of overwriting in place. When
+should_cow_block() encounters a WRITTEN buffer whose generation matches
+the current transaction, it re-dirties the buffer and returns false
+instead of requesting a COW. This is crash-safe because the committed
+superblock does not reference buffers allocated in the current
+transaction. Log trees, zoned devices, FORCE_COW, relocation, and
+buffers mid-writeback are excluded. Beyond fixing the amplification bug,
+this is a general optimization for the entire transaction lifetime: any
+time writeback runs during a transaction, revisiting the same path no
+longer triggers unnecessary COW, reducing extent allocation overhead,
+memory copies,
+and space usage per transaction. This is especially valuable now that
+Qu's recent patch removed the btree_writepages 32M dirty threshold,
+allowing external callers (mm, cgroup) to trigger metadata writeback
+at any dirty level.
+
+Patch 2 inhibits writeback on COW'd buffers for the lifetime of the
+transaction handle. This prevents WRITTEN from being set while a
+handle holds a reference to the buffer, avoiding unnecessary re-COW
+at its source. Only WB_SYNC_NONE (background/periodic flusher
+writeback) is inhibited. WB_SYNC_ALL (data-integrity writeback from
+btrfs_sync_log() and btrfs_write_and_wait_transaction()) always
+proceeds, which is required for correctness in the fsync path where
+log tree blocks must be written while the inhibiting handle is still
+active.
+
+Both approaches are independently useful. The overwrite path is a
+general optimization that eliminates unnecessary COW across the entire
+transaction, not just within a single handle. Writeback inhibition
+prevents the problem from occurring in the first place and is the
+only fix for log trees and zoned devices where overwrite does not
+apply. Together they provide defense in depth against COW
+amplification.
+
+Patch 3 adds a tracepoint for tracking cow_count per search_slot
+call.
+
+Note: Boris's AS_KERNEL_FILE changes prevent cgroup-scoped reclaim
+from targeting extent buffer pages, making this harder to trigger via
+per-cgroup memory limits. I was able to reproduce the amplification
+using global memory pressure (drop_caches, root cgroup memory.reclaim,
+memory hog) with concurrent filesystem operations.
+
+Benchmark: concurrent filesystem operations under aggressive global
+memory pressure. COW counts measured via bpftrace.
+
+  Approach                   Max COW count   Num operations
+  -------                    -------------   --------------
+  Baseline                              35   -
+  Overwrite only                        19   ~same
+  Writeback inhibition only              5   ~2x
+  Combined (this series)                 4   ~2x
+
+Changes since v1:
+
+The v1 patch used a per-btrfs_search_slot() xarray to track COW'd
+buffers. Filipe pointed out this was too complex and too narrow in
+scope, and suggested overwriting in place instead. Qu raised the
+concern that other btrfs_cow_block() callers outside of search_slot
+would not be covered. Boris suggested transaction-handle-level scope
+as an alternative.
+
+v2 implements both overwrite-in-place and writeback inhibition at
+the transaction handle level. The per-search-slot xarray is replaced
+by a per-transaction-handle xarray, which covers all
+btrfs_force_cow_block() callers. Log trees are excluded from overwrite
+because btrfs_sync_log() immediately commits a superblock referencing
+them, and handled by writeback inhibition instead. The
+EXTENT_BUFFER_WRITEBACK check addresses Sun YangKai's observation
+about races with in-flight I/O.
+
+Leo Martins (3):
+  btrfs: skip COW for written extent buffers allocated in current
+    transaction
+  btrfs: inhibit extent buffer writeback to prevent COW amplification
+  btrfs: add tracepoint for COW amplification tracking
+
+ fs/btrfs/ctree.c             | 72 +++++++++++++++++++++++++++++++++---
+ fs/btrfs/extent_io.c         | 62 ++++++++++++++++++++++++++++++-
+ fs/btrfs/extent_io.h         |  5 +++
+ fs/btrfs/transaction.c       | 19 ++++++++++
+ fs/btrfs/transaction.h       |  2 +
+ include/trace/events/btrfs.h | 26 +++++++++++++
+ 6 files changed, 180 insertions(+), 6 deletions(-)
+
+-- 
+2.47.3
 
 
