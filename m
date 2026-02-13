@@ -1,242 +1,172 @@
-Return-Path: <linux-btrfs+bounces-21661-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21662-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id mJt5OQmyjmmPDwEAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21661-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Feb 2026 06:09:29 +0100
+	id sI79BJDMjmkRFAEAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21662-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Feb 2026 08:02:40 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 666B2132EF7
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Feb 2026 06:09:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C60F41335FC
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Feb 2026 08:02:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 471053069E6E
-	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Feb 2026 05:09:26 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id C3487307EC9D
+	for <lists+linux-btrfs@lfdr.de>; Fri, 13 Feb 2026 07:02:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A380257423;
-	Fri, 13 Feb 2026 05:09:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3CC12853FD;
+	Fri, 13 Feb 2026 07:02:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="r0pBBPht"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mtafr.prnet.org (mtafr.prnet.org [54.38.152.168])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4372423741;
-	Fri, 13 Feb 2026 05:09:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=54.38.152.168
+Received: from esa4.hgst.iphmx.com (esa4.hgst.iphmx.com [216.71.154.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDD3223536B;
+	Fri, 13 Feb 2026 07:02:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.71.154.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770959360; cv=none; b=oXkZi2kmUcnebiVojx3SjLm40BL98PUq4s/LlDAfwp9LhVm6rjc0M3PaZndlgMcyQ5Te8dQTI6Z0SnB2ByWJ8dJ9qsJste61dSshjag4Ylnq4gQKv22M0xb90SFF9M2koVqJujBGqXFWRSeD5BbcHaKREMwNGdHcLzi5SmIMF2c=
+	t=1770966122; cv=none; b=UE/RHYS4ngfsf991LXXCafdZnJagcZd1Hnleu+qJ4qRM9UEUIVRAQLBIJnY8X0SPe6mqTOuddi6ALiJbRI/imyeeFa3c7QrnZXhjWEimR8ZqaVc2xiP14UHMSoQKrLpffgWEYv5hxs7u239krGbVPUctZ0E6FbmAWnH5tLxT/CQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770959360; c=relaxed/simple;
-	bh=WV/Df1jsUQQro1skRJKShktWDst1esRMhl1pS//sdpI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=AF+G1je56Ss8yRZYS8SwxTPUGdIZJXK3e7JNjF8J5XaKuEDC9gDNO9byIJoKwUcRORjpvjz4apc16q5Dn6vBaEj15XPcX0docvGq0XcehBE54CnN7t3K6ty2tFfl27NxRuLROqRwiXwYKoo8koz6NLFRbHtEm1/J+VYDktjc+OI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=prnet.org; spf=pass smtp.mailfrom=prnet.org; arc=none smtp.client-ip=54.38.152.168
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=prnet.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=prnet.org
-Received: from secure.prnet.org (unknown [10.1.0.1])
-	by mtafr.prnet.org (Postfix) with ESMTP id 89CA92004D;
-	Fri, 13 Feb 2026 06:09:41 +0100 (CET)
-Received: from [IPV6:2001:7e8:cf00:bc01:8cac:7fff:fe9e:52] (unknown [IPv6:2001:7e8:cf00:bc01:8cac:7fff:fe9e:52])
-	by secure.prnet.org (Postfix) with ESMTPSA id BA84410003F;
-	Fri, 13 Feb 2026 06:09:15 +0100 (CET)
-Message-ID: <52187a89-d926-404c-9384-2a3e7508a8a3@prnet.org>
-Date: Fri, 13 Feb 2026 06:09:15 +0100
+	s=arc-20240116; t=1770966122; c=relaxed/simple;
+	bh=ydS4jE/FuR90d2+OxmMK7Gc0AAs69afw83mKljgmL04=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=UjxotQlOagVU7iVmMtDY8k71E5NLAWCqIvXwJNeY8JMPcdCs9Ax5Ko3u/KbfbN+JunFXTqd5CPkQKoQYwNyBVB64BxldmW6CtlXvGeGCh5zfoVid2pdy1S+9u6LICd2Fn+XNuH9jZVTI8mwgniElXvxyqzCD+P5wxR+HVWdXl+Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=r0pBBPht; arc=none smtp.client-ip=216.71.154.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1770966121; x=1802502121;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=ydS4jE/FuR90d2+OxmMK7Gc0AAs69afw83mKljgmL04=;
+  b=r0pBBPhtw/lCoSq7cNIMWA5ScAH6qgoej9BCeGyrioz273SjhxYfxakb
+   z+eGY0hKmr63l691Shu1fu7ABhrc0fS6uLT3UY7SEsNRDNQ3gto9P3jQz
+   UCmjFNrgLuJDWCvr8jCTijYlUWRjZYO7xlAuMSSdtNUbqWfo+Rg6BroSN
+   BHnYEVBjuh121zeHBh+o4BT2WtxTOi/9RargroXsOkLVoR2YxcF8C85v+
+   r4JWBHYcgK5EECFX0T+rht7hUb8p/AnjkNz9ykUJtHt3B5t8EabT/SGxI
+   wV4uCbFtI/Qs20KWvV+8JBVAmmt9ja45l8M4jz8hyg7uqSP2Ducbns2BQ
+   A==;
+X-CSE-ConnectionGUID: OoYhvgbnSiq0VS9jJ6cseA==
+X-CSE-MsgGUID: EOOOsnYfSuC5fOE2OVBAfg==
+X-IronPort-AV: E=Sophos;i="6.21,288,1763395200"; 
+   d="scan'208";a="137154150"
+Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep03.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 13 Feb 2026 15:01:54 +0800
+IronPort-SDR: 698ecc62_seVu63iXk2RRIOU4oE8YAnQnh3l5dteF4aYAw7ZstxUH7Di
+ 3RLO6UEgrXSYut/f72dmbMKnlILcJ4nenrEO7ow==
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep03.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 12 Feb 2026 23:01:55 -0800
+WDCIronportException: Internal
+Received: from wdap-yooxex5p9f.ad.shared (HELO neo.wdc.com) ([10.224.28.126])
+  by uls-op-cesaip01.wdc.com with ESMTP; 12 Feb 2026 23:01:52 -0800
+From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+To: Zorro Lang <zlang@redhat.com>
+Cc: linux-fsdevel@vger.kernel.org,
+	linux-btrfs@vger.kernel.org,
+	linux-xfs@vger.kernel.org,
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH 0/2] fstests: simplify per-fs _fixed_by_kernel_commit
+Date: Fri, 13 Feb 2026 08:01:46 +0100
+Message-ID: <20260213070148.37518-1-johannes.thumshirn@wdc.com>
+X-Mailer: git-send-email 2.53.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Orange PI 5 MAX: very unstable using kernel 6.19.0 and 6.18.10,
- 6.18.9 perfectly stable
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>, Qu Wenruo <wqu@suse.com>,
- LKML <linux-kernel@vger.kernel.org>, linux-rockchip@lists.infradead.org,
- Btrfs BTRFS <linux-btrfs@vger.kernel.org>
-References: <8ebe4d76-eb07-499b-b140-1f300c1b8d7e@prnet.org>
- <f95f0d27-5bee-4363-b0f0-75e95b2a470d@suse.com>
- <de166323-bb9d-4240-bc42-08ae32067284@prnet.org>
- <1ccd1b09-3a08-4cb0-8155-2cd4ac21c640@gmx.com>
-Content-Language: en-US
-From: David Arendt <admin@prnet.org>
-In-Reply-To: <1ccd1b09-3a08-4cb0-8155-2cd4ac21c640@gmx.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.46 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[wdc.com,quarantine];
+	R_DKIM_ALLOW(-0.20)[wdc.com:s=dkim.wdc.com];
 	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21661-lists,linux-btrfs=lfdr.de];
-	DMARC_NA(0.00)[prnet.org];
-	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_TO(0.00)[gmx.com,suse.com,vger.kernel.org,lists.infradead.org];
+	TAGGED_FROM(0.00)[bounces-21662-lists,linux-btrfs=lfdr.de];
 	TO_DN_SOME(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[admin@prnet.org,linux-btrfs@vger.kernel.org];
+	RCVD_TLS_LAST(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	RCVD_COUNT_FIVE(0.00)[5];
-	MID_RHS_MATCH_FROM(0.00)[];
-	R_DKIM_NA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[johannes.thumshirn@wdc.com,linux-btrfs@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[wdc.com:+];
+	PRECEDENCE_BULK(0.00)[];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 666B2132EF7
+	RCVD_COUNT_FIVE(0.00)[6];
+	RCPT_COUNT_FIVE(0.00)[5];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[wdc.com:mid,wdc.com:dkim,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: C60F41335FC
 X-Rspamd-Action: no action
 
-On 2/12/26 11:48 PM, Qu Wenruo wrote:
->
->
-> 在 2026/2/13 08:53, David Arendt 写道:
->> On 2/12/26 10:05 PM, Qu Wenruo wrote:
->>>
->>>
->>> 在 2026/2/13 06:41, David Arendt 写道:
->>>> Hello,
->>>>
->>>> I am using a Kubernetes Cluster with 3 Orange PI5 MAX nodes. The 
->>>> data is stored using a btrfs filesystem as backend. If using kernel 
->>>> 6.19.0 or kernel 6.18.10 I have experienced many crashes during 
->>>> high IO load on all 3 nodes. Reverting back to 6.18.9 solves the 
->>>> problems completely. Unfortunately the crashes are spontaneous 
->>>> reboots without leaving a trace in any logfile, so I have no 
->>>> stacktrace of them. After the crashes I have sometimes incorrect 
->>>> btrfs csums for a file but these may also be a result of a partial 
->>>> write due to the crash. On one node I had a btrfs error logged 
->>>> without crashing, but I am not sure if this is the root cause or a 
->>>> result of a prior crash. A scrub after reboot returned no error 
->>>> with 6.19.0.
->>>
->>> The offending tree dump items are:
->>>
->>> Feb 10 13:31:07 opi02 kernel:  item 92 key (13218356101120
->>> Feb 10 13:31:07 opi02 kernel:  item 93 key (13216208642048
->>> Feb 10 13:31:07 opi02 kernel:  item 94 key (13218356162560
->>>
->>> Obviously item 93 is smaller than all its previous and next item keys.
->>>
->>> hex(13218356101120) = 0xc05a36b8000
->>> hex(13216208642048) = 0xc05236be000
->>> hex(13218356162560) = 0xc05a36c7000
->>>
->>> It looks like something fliped, "0xc05a3" -> "0xc0523"
->>>
->>> 0xa -> 0x2 is exactly one bit flipped.
->>>
->>> So either the memory hardware has something wrong and resulting a 
->>> sticking bit (always 0), or there is something inside the kernel 
->>> touching memory it shouldn't.
->>>
->>> And this exactly matches the symptom, changing random bit of your 
->>> kernel, crash always expected.
->>>
->>>
->>> Can you run a memtest to make sure it is not hardware problems first?
->>
->> Hello,
->>
->> I don't know of anything like memtest86 for the arm64 platform for 
->> testing the whole memory, so I used the user space memtester to check 
->> the 14G of unused ram on all 3 machines while using kernel 6.18.10.
->>
->> Here is the result of the first iteration (same on every machine):
->>
->> memtester version 4.7.1 (64-bit)
->> Copyright (C) 2001-2024 Charles Cazabon.
->> Licensed under the GNU General Public License version 2 (only).
->>
->> pagesize is 4096
->> pagesizemask is 0xfffffffffffff000
->> want 14000MB (14680064000 bytes)
->> got  14000MB (14680064000 bytes), trying mlock ...locked.
->> Loop 1:
->>    Stuck Address       : ok
->>    Random Value        : ok
->>    Compare XOR         : ok
->>    Compare SUB         : ok
->>    Compare MUL         : ok
->>    Compare DIV         : ok
->>    Compare OR          : ok
->>    Compare AND         : ok
->>    Sequential Increment: ok
->>    Solid Bits          : ok
->>    Block Sequential    : ok
->>    Checkerboard        : ok
->>    Bit Spread          : ok
->>    Bit Flip            : ok
->>    Walking Ones        : ok
->>    Walking Zeroes      : ok
->>
->> I don't think it is hardware a failure as it is happening on 3 
->> different machines. Crashes occur somewhere between 30 minutes and 12 
->> hours on all 3 machines that have been running without a single crash 
->> for more than a year now with older kernel versions including 4 days 
->> with 6.18.9 and all version from 6.18.0 to 6.18.9, so it seems to be 
->> caused by something that has changed between 6.18.9 and 6.18.10.
->
-> Then I'm afraid you have to try bisecting.
->
-> On the other hand, I also have a arm64 board (Orion O6) as a VM host.
-> The testing arm64 VM is running a kernel very close to v6.19.0, but 
-> never hit such a crash/corruption.
->
-> So I'm wondering it may be some driver, specific to RK3588, that is 
-> corrupting memory randomly that caused the problem.
->
-> In the past (several years ago), we had amd sfh driver causing random 
-> corruptions in x86_64, and led to the exactly same problem (random 
-> crash, btrfs corruption detected etc).
-> So I guess it can be the same situation.
->
-> Thanks,
-> Qu
->
-Hello,
+Hi Zorro,
 
-I think prior to bisecting, I will rebuild 6.18.9 from source instead of 
-using the one compiled last week and let it run some days to be 100% 
-sure nothing on my build system changed leading to corrupted builds. I 
-am building using clang version 21.1.8. One notable change on my build 
-system between compiling 6.18.9 and 6.18.10 was an update from glibc 
-2.42 to glibc 2.43. Even if the kernel itself doesn't use the glibc, I 
-want to make sure that there is no bad interaction between llvm and the 
-new glibc leading to bad code generation in some corner cases.
+Christoph asked in https://lore.kernel.org/r/20260210155123.GA3552@lst.de
+to introduce a _fixed_by_fs_commit helper, that encapulates the
+ if [ $FSTYP" = fs ] && _fixed_by_kernel_commit XXXXXX "blah"
+pattern.
 
-If the resulting 6.18.9 kernel runs stable for a few days. I will 
-continue applying the patches between 6.18.9 and 6.18.10 one by one 
-beginning with the most susceptible ones letting it run always a day in 
-between to see when the problem is appearing. So it will probably take 
-some time before having a result.
+Here's my take on it. I also thought about adding more helpers like:
+- _fixed_by_btrfs_commit
+- _fixed_by_xfs_commit
+- _fixed_by_ext4_commit
+but not sure if this is going too far.
 
-Thanks,
+Johannes Thumshirn (2):
+  fstests: add _fixed_by_fs_commit helper
+  fstests: use _fixed_by_fs_commit where appropriate
 
-David Arendt
+ common/rc         |  9 +++++++++
+ tests/generic/211 |  2 +-
+ tests/generic/362 |  3 +--
+ tests/generic/363 | 10 ++++------
+ tests/generic/364 |  3 +--
+ tests/generic/365 | 15 ++++++---------
+ tests/generic/366 |  2 +-
+ tests/generic/367 |  2 +-
+ tests/generic/370 |  5 ++---
+ tests/generic/471 |  2 +-
+ tests/generic/562 |  3 +--
+ tests/generic/623 |  2 +-
+ tests/generic/631 |  3 +--
+ tests/generic/646 |  2 +-
+ tests/generic/649 |  2 +-
+ tests/generic/650 |  2 +-
+ tests/generic/695 |  2 +-
+ tests/generic/700 |  2 +-
+ tests/generic/701 |  2 +-
+ tests/generic/702 |  2 +-
+ tests/generic/703 |  3 +--
+ tests/generic/704 |  2 +-
+ tests/generic/706 |  3 +--
+ tests/generic/707 |  2 +-
+ tests/generic/708 |  3 +--
+ tests/generic/733 | 10 ++--------
+ tests/generic/736 |  2 +-
+ tests/generic/738 |  2 +-
+ tests/generic/741 |  2 +-
+ tests/generic/742 |  3 +--
+ tests/generic/748 |  2 +-
+ tests/generic/755 |  2 +-
+ tests/generic/757 |  2 +-
+ tests/generic/761 |  2 +-
+ tests/generic/763 |  2 +-
+ tests/generic/764 |  2 +-
+ tests/generic/766 |  8 +++-----
+ tests/generic/771 |  2 +-
+ tests/generic/779 |  2 +-
+ tests/generic/782 |  2 +-
+ tests/generic/784 |  2 +-
+ tests/generic/785 |  2 +-
+ 42 files changed, 62 insertions(+), 75 deletions(-)
 
->>
->> Thanks,
->>
->> David Arendt
->>
->>>
->>> Thanks,
->>> Qu
->>>
->>>
->>>>
->>>> Unfortunately I don't have more information at the moment.
->>>>
->>>> Thanks in advance,
->>>>
->>>> David Arendt
->>>>
->>>>
->>>
->>
->>
->
+-- 
+2.53.0
 
 
