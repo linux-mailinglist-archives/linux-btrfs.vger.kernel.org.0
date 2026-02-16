@@ -1,67 +1,67 @@
-Return-Path: <linux-btrfs+bounces-21678-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21679-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id SFEbLYhjkmmhtgEAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21678-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Feb 2026 01:23:36 +0100
+	id yP2BEj1mkmnstgEAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21679-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Feb 2026 01:35:09 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D84D314071C
-	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Feb 2026 01:23:35 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8EB214077E
+	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Feb 2026 01:35:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 252C23002F63
-	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Feb 2026 00:23:33 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 5733A3017C30
+	for <lists+linux-btrfs@lfdr.de>; Mon, 16 Feb 2026 00:34:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74CF21A23AC;
-	Mon, 16 Feb 2026 00:23:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3270A239086;
+	Mon, 16 Feb 2026 00:34:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mssola.com header.i=@mssola.com header.b="Ej1Yshya"
+	dkim=pass (2048-bit key) header.d=mssola.com header.i=@mssola.com header.b="imBVSjE4"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout-p-103.mailbox.org (mout-p-103.mailbox.org [80.241.56.161])
+Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [80.241.56.152])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0AD422256F;
-	Mon, 16 Feb 2026 00:23:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.161
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A87F2236F0;
+	Mon, 16 Feb 2026 00:34:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.152
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771201409; cv=none; b=ewCc20SzfdTTVEjs5eT2LRF5w4tKRTTsw0qYD+Voh6WRQv/I2Ucr9qjC/14RdRfFBhdD5m82JPxqv5vGGIm3imLVBaJftUUHrx9yLJL4JKPjN2ucCBc6tV+e7XEq05H4zJvRgwtV6VT+4TMvbh0vOw+JWQ9jSGvKKa2ariXi2hE=
+	t=1771202092; cv=none; b=i29G6XerVzvsQLST8KzIMiK9ky0VZFuiudI1hWwMCCXz+qNObvzcKsdf/M7X8lIhaH/Tv+kNuaei2Mw6fQuML8CL1FzLcnBMBbfC7UEKrQHpLfk20fPJsepbUddXp7HEDV17isZRZ/NQtskrMsHWCQf5UXnNJMcUSq1wCSBkAwI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771201409; c=relaxed/simple;
-	bh=75yXZQYYUW/j2rwOw1lzp3Dl0K1bElClMYuoKv++l+U=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=hlHx2Dd9RlLqVoXfZWpT0hiXVZMdOT8sFuXcRaOPfEFoSMCKRIZyVJD7uXZKP3GteHs3sOb4a/TUYUYR5NFT2aNiOt6DStmhmVOU0O3xzcy7y4o9GcznLTQgaa0VC3cr1WCfWGUJKLSxnsRytrovkuJ0eA5fg8PFqy1dI4naZYs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mssola.com; spf=fail smtp.mailfrom=mssola.com; dkim=pass (2048-bit key) header.d=mssola.com header.i=@mssola.com header.b=Ej1Yshya; arc=none smtp.client-ip=80.241.56.161
+	s=arc-20240116; t=1771202092; c=relaxed/simple;
+	bh=VqFvRxho8VA+YCnshjrjcmu5jJgtaDGAFs9DLGm9D/0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=CloOWGPNTlqq+5UJ1N/C5GWRZMpYJl6ZUpyz3FDrioTY3+zlUiCJnWRPUE1Fv9BGGEtV2rbKJPAKJiJlS/YXO5C/k1u3URUfn7ocGLpuHtJ3qMtBehBvVrcCk/aN1/o3pLzhVkDSm6Bk2kfD/RSfM2osgGEMFMMhJqkder4L1J4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mssola.com; spf=fail smtp.mailfrom=mssola.com; dkim=pass (2048-bit key) header.d=mssola.com header.i=@mssola.com header.b=imBVSjE4; arc=none smtp.client-ip=80.241.56.152
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mssola.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=mssola.com
-Received: from smtp102.mailbox.org (smtp102.mailbox.org [IPv6:2001:67c:2050:b231:465::102])
+Received: from smtp2.mailbox.org (smtp2.mailbox.org [IPv6:2001:67c:2050:b231:465::2])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mout-p-103.mailbox.org (Postfix) with ESMTPS id 4fDk5J2Y3xz9tWy;
-	Mon, 16 Feb 2026 01:23:16 +0100 (CET)
+	by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4fDkCB5slMz9vDZ;
+	Mon, 16 Feb 2026 01:28:22 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mssola.com; s=MBO0001;
-	t=1771201396;
+	t=1771201702;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding;
-	bh=mA66zdZr3R9Q3RU2aqPxaLZwEjVI0SzlOQ18aZ09PAA=;
-	b=Ej1YshyavVtiW+Rw4CpHLrNUaej0SAZsP1QyfCZZT5jswE7U0hexHxwxMHD4EuLwPOtBu6
-	s4O23eENx1Nk+wAsTFIAslciRu0oyY2sH2+q0cidaYnCuzVcXM+kHPBtY8cRSDMLELnzrZ
-	cGNAq6VS9m02eOkCetp5FZK2hnxs+trD3d9RqX6tskTIYRaVfFtlKVJXHHC6AHkblqy1gt
-	nldF45xY2ETVz5wVjgdEaQMZHYRockYz1JMDJXQ2sF3dDie64MXgtwaMgC5a0xX7qQjePP
-	uoLBAbpeJOiHb/X+kCvTu4FU/x90KpLdqbKqeQcIk3+VHisAx5KmjNdLJ5XzOw==
+	bh=3TnjK7qYNgBfJ/MTf8UmRV2LSkQ+Wf2L1+Dp7kyuKdQ=;
+	b=imBVSjE4Y1MKAL8U8hhAS8eE5WV0PsU6bfSzGm+bxlIDdaEOXv6xLo18MNluIatjjIgDp/
+	lld3+ub0Fwvzfd96j1gZeUlAxSRtCdnNrH1Y6gB+o2UBuHmlGE/eHA96OASSQ1wH/+NP7T
+	GEY9eG+I5XF7xMTFc16cUoRNRRF9UMVYFuY4yk6No0EdxzlzyP5si5r8x7w6mHQG36WFYA
+	JUz130HsZK/8JrzujOTxXRLbA+X+LdO5NXm7bj1PJjVDyBnSlNd2yAJahFb4EN7BHUCVHQ
+	yWhT+6jPQsxdducfgHPzYBVt7Z8XlppGgbMarKq4BzspXfm2LQXvmeTA3A+s3A==
 Authentication-Results: outgoing_mbo_mout;
 	dkim=none;
-	spf=softfail (outgoing_mbo_mout: 2001:67c:2050:b231:465::102 is neither permitted nor denied by domain of mssola@mssola.com) smtp.mailfrom=mssola@mssola.com
+	spf=softfail (outgoing_mbo_mout: 2001:67c:2050:b231:465::2 is neither permitted nor denied by domain of mssola@mssola.com) smtp.mailfrom=mssola@mssola.com
 From: =?UTF-8?q?Miquel=20Sabat=C3=A9=20Sol=C3=A0?= <mssola@mssola.com>
 To: dsterba@suse.com
 Cc: clm@fb.com,
 	linux-btrfs@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	=?UTF-8?q?Miquel=20Sabat=C3=A9=20Sol=C3=A0?= <mssola@mssola.com>
-Subject: [PATCH] btrfs: don't commit the super block when unmounting a shutdown filesystem
-Date: Mon, 16 Feb 2026 01:22:52 +0100
-Message-ID: <20260216002252.3831277-1-mssola@mssola.com>
+Subject: [PATCH] btrfs: report filesystem shutdown via fserror
+Date: Mon, 16 Feb 2026 01:28:06 +0100
+Message-ID: <20260216002806.3831884-1-mssola@mssola.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -71,18 +71,18 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.54 / 15.00];
+X-Spamd-Result: default: False [-0.25 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MIXED_CHARSET(0.63)[subject];
+	R_MIXED_CHARSET(0.91)[subject];
 	DMARC_POLICY_ALLOW(-0.50)[mssola.com,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	R_DKIM_ALLOW(-0.20)[mssola.com:s=MBO0001];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21678-lists,linux-btrfs=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-21679-lists,linux-btrfs=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_COUNT_THREE(0.00)[4];
@@ -95,52 +95,52 @@ X-Spamd-Result: default: False [-0.54 / 15.00];
 	DKIM_TRACE(0.00)[mssola.com:+];
 	TAGGED_RCPT(0.00)[linux-btrfs];
 	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,mssola.com:mid,mssola.com:dkim,mssola.com:email]
-X-Rspamd-Queue-Id: D84D314071C
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,mssola.com:mid,mssola.com:dkim,mssola.com:email]
+X-Rspamd-Queue-Id: E8EB214077E
 X-Rspamd-Action: no action
 
-When unmounting a filesystem we will try, among many other things, to
-commit the super block. On a filesystem that was shutdown, though, this
-will always fail with -EROFS as writes are forbidden on this context;
-and an error will be reported.
+Commit 347b7042fb26 ("Merge patch series "fs: generic file IO error
+reporting"") has introduced a common framework for reporting errors to
+fsnotify in a standard way.
 
-Don't commit the super block on this situation, which should be fine as
-the filesystem is frozen before shutdown and, therefore, it should be at
-a consistent state.
+One of the functions being introduced is 'fserror_report_shutdown' that,
+when combined with the experimental support for shutdown in btrfs, it
+means that user-space can also easily detect whenever a btrfs filesystem
+has been marked as shutdown.
 
 Signed-off-by: Miquel Sabaté Solà <mssola@mssola.com>
 ---
- fs/btrfs/disk-io.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
+Note that the for-next branch does not include the mentioned commit. I've
+built and tested this patch on top of current Linus' tree.
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index 600287ac8eb7..cd2ce6348d88 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -4380,9 +4380,18 @@ void __cold close_ctree(struct btrfs_fs_info *fs_info)
- 		 */
- 		btrfs_flush_workqueue(fs_info->delayed_workers);
- 
--		ret = btrfs_commit_super(fs_info);
--		if (ret)
--			btrfs_err(fs_info, "commit super ret %d", ret);
-+		/*
-+		 * If the filesystem is shutdown, then an attempt to commit the
-+		 * super block (or any write) will just fail. Since we freeze
-+		 * the filesystem before shutting it down, the filesystem should
-+		 * be in a consistent state and not committing the super block
-+		 * should be fine.
-+		 */
-+		if (!btrfs_is_shutdown(fs_info)) {
-+			ret = btrfs_commit_super(fs_info);
-+			if (ret)
-+				btrfs_err(fs_info, "commit super ret %d", ret);
-+		}
- 	}
- 
- 	kthread_stop(fs_info->transaction_kthread);
--- 
+ fs/btrfs/fs.h | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
+index 3de3b517810e..92fcebf5766e 100644
+--- a/fs/btrfs/fs.h
++++ b/fs/btrfs/fs.h
+@@ -33,6 +33,7 @@
+ #include "async-thread.h"
+ #include "block-rsv.h"
+ #include "messages.h"
++#include <linux/fserror.h>
+
+ struct inode;
+ struct super_block;
+@@ -1199,8 +1200,10 @@ static inline void btrfs_force_shutdown(struct btrfs_fs_info *fs_info)
+ 	 * So here we only mark the fs error without flipping it RO.
+ 	 */
+ 	WRITE_ONCE(fs_info->fs_error, -EIO);
+-	if (!test_and_set_bit(BTRFS_FS_STATE_EMERGENCY_SHUTDOWN, &fs_info->fs_state))
++	if (!test_and_set_bit(BTRFS_FS_STATE_EMERGENCY_SHUTDOWN, &fs_info->fs_state)) {
+ 		btrfs_crit(fs_info, "emergency shutdown");
++		fserror_report_shutdown(fs_info->sb, GFP_KERNEL);
++	}
+ }
+
+ /*
+--
 2.53.0
-
 
