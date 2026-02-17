@@ -1,142 +1,127 @@
-Return-Path: <linux-btrfs+bounces-21721-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21722-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id SEscLYG2lGlMHQIAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21721-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Feb 2026 19:42:09 +0100
+	id UIhSL1i5lGlmHQIAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21722-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Feb 2026 19:54:16 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 133AB14F465
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Feb 2026 19:42:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1319614F62A
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Feb 2026 19:54:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 6D2CD3013ABF
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Feb 2026 18:42:02 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 11A54301F310
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Feb 2026 18:54:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B25A374167;
-	Tue, 17 Feb 2026 18:42:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9412D372B59;
+	Tue, 17 Feb 2026 18:54:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gPd92joW"
+	dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b="49UseQPj"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail.burntcomma.com (mail2.burntcomma.com [217.169.27.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D9DB280A29
-	for <linux-btrfs@vger.kernel.org>; Tue, 17 Feb 2026 18:42:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B043B29898B
+	for <linux-btrfs@vger.kernel.org>; Tue, 17 Feb 2026 18:54:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.169.27.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771353720; cv=none; b=hpbIFLzj8atkDRAUiCti3hVMMO80qeTjcaHeTfZ/zoChcv8I2bt3My0K/MgphKJ5l7wK+kSKZd6mhbCfJR/+GRKZIlTwLN+asigIN+ks59qvXQXibST/3xQDRFJqAFCSibUjAoQ5DgNaZoeqhQo3gzyM/LhgCZxMz6m28+fa5w8=
+	t=1771354447; cv=none; b=jQ5xUqVaq4KWwBciwpI0OIksOWfYZxvEObNH4hQy5UerF8ePMbMA0PG+xp8+RrMZGz2cHHRCOW6pPT1NZHhVlV9Dp+CDdDo78L0SzJh/5tXCHkftSs4BB2Lm27vryrg3+FjFd6ln5p51MJK78LmG7nh+/eDWCKKrrjNbJwlM+Qg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771353720; c=relaxed/simple;
-	bh=58ucjnsgtO4BBjdoUmtLrzBrT06mCSjfVq0mFegGl6Y=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Xn6loRLjLn+9h7MyG0RbqXsooVrWJsi5g4engLODz2E5R2+iumOk9rurKIFWUW//ktTzdlDZOAPOYvjA+CjxfgwScSuQArv1kvRqqLfYNAwWlarQ96760mh8EXVXE9Fk3t4swENfMhSjYd7wM0NdmjgWFaL+cYC9w25do/Y+hmE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gPd92joW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44E1FC19425
-	for <linux-btrfs@vger.kernel.org>; Tue, 17 Feb 2026 18:42:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1771353720;
-	bh=58ucjnsgtO4BBjdoUmtLrzBrT06mCSjfVq0mFegGl6Y=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=gPd92joWXYjxbehFhGJLqFt+MPUfnERssHrc+lDJt7HuI9eG/ffH38Wchuma43iOS
-	 zXhhwIeE1PMk0ApCGe53v0WI9PCeb3Zmw4N/AAfeLlTihkDv8SVoSY2KUnY856W4IG
-	 4MtVLxv2vH3XX6UGW6bmlUW2Bc2y5sxEZvEtTWMNXmcsLUy3h/n8rmXgRCYmVnnyyW
-	 1yjZBTwmRDihjKzuTXOB/C3bXeujm82NpZuOg2rJfbCVJ2/ZgnczJewTYKZIVwbRm/
-	 y3Uf8vDrzrXHL5QXV2JTWwC5eL1rfCH6T3UlaLwFU4qby2RuWvG07qLfvQL7ui4mLL
-	 S7W8VzR/nsxcg==
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-6580dbdb41eso5921214a12.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 17 Feb 2026 10:42:00 -0800 (PST)
-X-Gm-Message-State: AOJu0YwOYHsnivLcGmlmn7+oC+D6AJwLwjCau0WkJ+/lGfvPRPC6R/VJ
-	8IsaH4Ng9CZZTNX6VDd41hsxGGR8vJBnXdpDrcEwgeqKlme+MDkMuoqN1E1UUIJYP1di7KYrosm
-	bu8wpErb4fB88Z9m85OxdWlwK0CWQsuw=
-X-Received: by 2002:a17:907:6d24:b0:b80:4103:537e with SMTP id
- a640c23a62f3a-b8fb451a74emr784171366b.53.1771353718633; Tue, 17 Feb 2026
- 10:41:58 -0800 (PST)
+	s=arc-20240116; t=1771354447; c=relaxed/simple;
+	bh=iAjVTptg1wSg4153Q86Ok/TalSlRKM5vCNqpsc3THcI=;
+	h=From:To:Cc:Subject:Date:Message-ID:Mime-Version; b=tB1BWWUnS38Q4BmLKQs8cilU4dIiRvjeV5wqOlRFwYBHj/EehBnZ5enm3/V85rgH6L5ibxlXjtv3zP6Y0hXYEsFvifwBFuoykCFSrEEtnpyoo8d1dlWVCCMZfiQ2vbIyLZB9Xx2NSxq0e43Rd7KJyr/kxczumNd4VDjqs/4bmG4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com; spf=pass smtp.mailfrom=harmstone.com; dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b=49UseQPj; arc=none smtp.client-ip=217.169.27.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=harmstone.com
+Received: from beren (beren.burntcomma.com [IPv6:2a02:8012:8cf0:0:ce28:aaff:fe0d:6db2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	by mail.burntcomma.com (Postfix) with ESMTPSA id 14FCF303131;
+	Tue, 17 Feb 2026 18:54:04 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=harmstone.com;
+	s=mail; t=1771354444;
+	bh=ckezU9CDSereNpkcYiqkt7lSN65/vIBUsJVAVK+vumQ=;
+	h=From:To:Cc:Subject:Date;
+	b=49UseQPjg30x0flRQVmIjIH/HjPsq0gjsQNtbJ//iQ4ku7AyYsdA6dHdb1nnZFU5M
+	 gU2U98BPB3VcTOesqNm5GxYRrrAzZMjnpXDLk+Ds5l0xh0sM62xmd4fHDrgt9BZLPJ
+	 YGBUxIbiG6rwMdVJ3cJpkhrjQJOOgcP0Fnsdiu88=
+From: Mark Harmstone <mark@harmstone.com>
+To: linux-btrfs@vger.kernel.org,
+	wqu@suse.com
+Cc: Mark Harmstone <mark@harmstone.com>
+Subject: [PATCH] btrfs: fix error message in btrfs_validate_super()
+Date: Tue, 17 Feb 2026 18:53:19 +0000
+Message-ID: <20260217185335.21013-1-mark@harmstone.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20260217182553.18091-1-mark@harmstone.com>
-In-Reply-To: <20260217182553.18091-1-mark@harmstone.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Tue, 17 Feb 2026 18:41:21 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H6QojXH+oiMu5KkdpmNyV8xDFXfBkPqb1Q=RyD3WxRd=A@mail.gmail.com>
-X-Gm-Features: AaiRm52gMLvy3C1Jq1HS1rni4cKqONt8BMWmRdupjM6x_ExPdV-tBzxm2idsBRY
-Message-ID: <CAL3q7H6QojXH+oiMu5KkdpmNyV8xDFXfBkPqb1Q=RyD3WxRd=A@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: fix error message in btrfs_delete_delayed_dir_index()
-To: Mark Harmstone <mark@harmstone.com>
-Cc: linux-btrfs@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.16 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_MISSING_CHARSET(0.50)[];
+	MV_CASE(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[harmstone.com,none];
+	R_DKIM_ALLOW(-0.20)[harmstone.com:s=mail];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21721-lists,linux-btrfs=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWO(0.00)[2];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	MISSING_XM_UA(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[fdmanana@kernel.org,linux-btrfs@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-21722-lists,linux-btrfs=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_THREE(0.00)[4];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_THREE(0.00)[3];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[mark@harmstone.com,linux-btrfs@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[harmstone.com:+];
 	TAGGED_RCPT(0.00)[linux-btrfs];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[harmstone.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,mail.gmail.com:mid,suse.com:email]
-X-Rspamd-Queue-Id: 133AB14F465
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,harmstone.com:mid,harmstone.com:dkim,harmstone.com:email]
+X-Rspamd-Queue-Id: 1319614F62A
 X-Rspamd-Action: no action
 
-On Tue, Feb 17, 2026 at 6:29=E2=80=AFPM Mark Harmstone <mark@harmstone.com>=
- wrote:
->
-> Fix the error message in btrfs_delete_delayed_dir_index() if
-> __btrfs_add_delayed_item() fails: the message says root, inode, index,
-> error, but we're actually passing index, root, inode, error.
->
-> Signed-off-by: Mark Harmstone <mark@harmstone.com>
-> Fixes: adc1ef55dc04 ("btrfs: add details to error messages at btrfs_delet=
-e_delayed_dir_index()")
+Fix the superblock offset mismatch error message in
+btrfs_validate_super(): we changed it so that it considers all the
+superblocks, but the message still assumes we're only looking at the
+first one.
 
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
+The change from %u to %llu is because we're changing from a constant to
+a u64.
 
-Pushed it to for-next, thanks.
+Signed-off-by: Mark Harmstone <mark@harmstone.com>
+Fixes: 069ec957c35e ("btrfs: Refactor btrfs_check_super_valid")
+---
+ fs/btrfs/disk-io.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> ---
->  fs/btrfs/delayed-inode.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
-> index 1739a0b29c49..2746841c167d 100644
-> --- a/fs/btrfs/delayed-inode.c
-> +++ b/fs/btrfs/delayed-inode.c
-> @@ -1657,7 +1657,7 @@ int btrfs_delete_delayed_dir_index(struct btrfs_tra=
-ns_handle *trans,
->         if (unlikely(ret)) {
->                 btrfs_err(trans->fs_info,
->  "failed to add delayed dir index item, root: %llu, inode: %llu, index: %=
-llu, error: %d",
-> -                         index, btrfs_root_id(node->root), node->inode_i=
-d, ret);
-> +                         btrfs_root_id(node->root), node->inode_id, inde=
-x, ret);
->                 btrfs_delayed_item_release_metadata(dir->root, item);
->                 btrfs_release_delayed_item(item);
->         }
-> --
-> 2.52.0
->
->
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 600287ac8eb7..f39008591631 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -2533,8 +2533,8 @@ int btrfs_validate_super(const struct btrfs_fs_info *fs_info,
+ 
+ 	if (unlikely(mirror_num >= 0 &&
+ 		     btrfs_super_bytenr(sb) != btrfs_sb_offset(mirror_num))) {
+-		btrfs_err(fs_info, "super offset mismatch %llu != %u",
+-			  btrfs_super_bytenr(sb), BTRFS_SUPER_INFO_OFFSET);
++		btrfs_err(fs_info, "super offset mismatch %llu != %llu",
++			  btrfs_super_bytenr(sb), btrfs_sb_offset(mirror_num));
+ 		ret = -EINVAL;
+ 	}
+ 
+-- 
+2.52.0
+
 
