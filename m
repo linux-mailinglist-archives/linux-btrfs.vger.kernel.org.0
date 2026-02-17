@@ -1,198 +1,248 @@
-Return-Path: <linux-btrfs+bounces-21707-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21708-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id QJqrKblslGkEDwIAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21707-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Feb 2026 14:27:21 +0100
+	id mJz5Nfh/lGmwFAIAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21708-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Feb 2026 15:49:28 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A05E14C8E4
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Feb 2026 14:27:21 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B8A414D4AD
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Feb 2026 15:49:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 7919E302AF2F
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Feb 2026 13:27:18 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6F90530479D6
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Feb 2026 14:48:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22D0436AB7F;
-	Tue, 17 Feb 2026 13:27:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DE942D1931;
+	Tue, 17 Feb 2026 14:48:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NESqdyBD"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="cz3swEMt"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 546E12DF6E9
-	for <linux-btrfs@vger.kernel.org>; Tue, 17 Feb 2026 13:27:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.221.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5161E31076A
+	for <linux-btrfs@vger.kernel.org>; Tue, 17 Feb 2026 14:48:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.221.51
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771334834; cv=pass; b=XxQ0vPz8l6vhPJV/QdStAKaxLAjL/meiNJA13eyxY9fYjCk0At0P2Glx1ZYCuKU3kRjA0FiwsU3eonMjPq8xWL4xHcfPh5bHmRDX0GzQwDiRJbz7vRcCD4E67OsS0SJX8S3KIyReCTTatwAcPeEK0XZ+zFOk6qVjXpxDvgAw4u8=
+	t=1771339715; cv=pass; b=RHn0llR2zwb1Dk/cJOtP8GNcYiXa6ANQTvqqkzDIe6PRQp1wNi5cwoR7ubBlQtrnUs/TV9zanQSGue8kfwtOrWzATx6ZJuzuzzdiIeghWXm2C5FBO8zqcBpZXpKn9sZOsO5K2EvB2w+MvuooKzMdzXedsF9JsBNKUk+82gTVX/A=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771334834; c=relaxed/simple;
-	bh=q5oVq95jqQQoO+Nm/H6qoKVVfjO/F3iq8iJp7dxOY7w=;
+	s=arc-20240116; t=1771339715; c=relaxed/simple;
+	bh=BdwdGKvnO7fFw0MoaFXmtoP5xcQ32uwyD+1ybxKNc1o=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tkmojxwH8pWPY042ulab9I2oWAc1VsiS41uTRsGhDCCH5o4W8ARltyBF8Ha+HOoiQ3VRCWnb/ZZpQifKmHVOL7dU95VhF5vhunVuKzvhvzqQTfOgOA6jMU7lVoD/l3MQKagxDCiMn8lYCgSmeSLyTs2bSBAlYRW4EDz3b8tku/o=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NESqdyBD; arc=pass smtp.client-ip=209.85.221.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-43638a3330dso3325381f8f.0
-        for <linux-btrfs@vger.kernel.org>; Tue, 17 Feb 2026 05:27:13 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1771334832; cv=none;
+	 To:Cc:Content-Type; b=ehbZeLIHNIsZ1jqlcNbm5sNeFSL4I5fIdMw/JJ38TPAsXlOg7kHIBgFZ/8w8QRXxVzKuJGnbwL5X7nBH/X5Wc/ii09ob1QGeFf7zj+ypBEdx2vCFck1Ui1JzOyBVLRJrRDyxdwCH8zkp0VFleKuIAkj0INIfnKfDfUmSl0gr7eQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=cz3swEMt; arc=pass smtp.client-ip=209.85.221.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-4376c0bffc1so3276813f8f.0
+        for <linux-btrfs@vger.kernel.org>; Tue, 17 Feb 2026 06:48:33 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1771339712; cv=none;
         d=google.com; s=arc-20240605;
-        b=ItynMGoldFlNQDwRS1szN5qM778y9btLuj1vOuxSsc9mln/GZY5CrMoop1dN26Kpw1
-         af51eh6b2OyM5DKR+bmoAiomEgJyIKRdmRxih6plnVS3lQMU3/T3cmdm3Qa9je16N5kr
-         6h8aMddFNjAxr9RaMePy2fQdIls371AZ95rJ6UxX8Q9r3Ce7A8uziHVCyKGl1GduZHhV
-         Xuv2eO3YzMy4/VKSd46TrL22PFAAr4HRWpNAtvktIx+yq59JF/AidPc/2XhH3jV13giF
-         tC0/A/5Fuzt1m49wFNDXLsXlr+s+YoShysvzZhbKeGcnQltQvGeHY6UQqbOqUVRmtbwa
-         BIzw==
+        b=EQARCxVJHclLFE7F9iu7CcAw06/ORIIE0c34zfQKLtTwT4QAy4dcbZdlxattWWUPW3
+         jIiH+cvwjJujV0t5keyWOgwpWjnRpkTZ+gXjJdzFQ1boBwAB1BMn6+1pg4mIRKJsCbzO
+         in4KFOPGXwEBzbUDstPJaqcM9aNLRmmnUz6fbPYguAVsKbEzR/ObhapaIeOXG8fzz9tY
+         uyoS/b+kOPRDzYyTDxs1Vvm8lu5YxrBQt8raehwcPfI4YjVPIrvkcnT0PbVnT29iVvk8
+         VqcoU5CZNv2dH284b6RlKWI12D4h1SrX75csXFsJRmD6OzqtteAyyO8qMTai0fnzmBC0
+         kqPQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=q5oVq95jqQQoO+Nm/H6qoKVVfjO/F3iq8iJp7dxOY7w=;
-        fh=IJqw0jwfch6qzPR2cBu33nZIkefiaMcknGKQyojXAtU=;
-        b=g3wr23c3WKYTzNSpvPaLR+AqJfdtLme4/v7H56gFCQhPt4zpx02OBBLSXkPCCv/X6A
-         xGONRqizbNTrAdruOKYmOlKJyIxYTZlHqo1/0wMpJl+4dFWduFPlpmJgWVT8dmxIt+4t
-         zqV01h52emQDoFuKRvUvINcu9NhqAF1/VcejLi1LTI0vnpqxpT2gzEICaWbE82WIKOqD
-         S5rMEsqRsrqw+iBnTP7hbvljQiLubn4qkgmWDNWSmZ78KLd+EDcMvIy9X0pvIa8SJyt6
-         kmi28J1LuXTcvGtwY7hdBJlG4EPC9dHhTo0BsvrtO78sWV/AhKqrbfYgfYz1ZBVkUaWg
-         VX5Q==;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature;
+        bh=eLr2cRWBw8S0/OXlKOzbRmg5bkPMrPDlaj10p1kdwTE=;
+        fh=rWtz7wAhCdHZZNEdmPTuHXbAphU3SZCuoBURWiq+fks=;
+        b=TT5KcoiCnZtzLsMftHEFvEOhGuiXZWV5mHGm7Rs36QsYvMGR9+P6dV7Rpbg1vyKq43
+         AIi7WWI/pBB0MyFPby+bUqe1wr4nj8fzN89RkmSAHaaR+rMqWRNIjvJ/Gzm2DAjfUO/G
+         OVKJNaSWEQFAbRrn0vjto4EO5JMvAY+qxpucWka5caCxhyki1C7amyzjUBv6kreD8WUV
+         VmdBJnYrJW0F5Zzv1A7VHU4/wr4sKe5zDqs1U87EtuZxNWMax514axCgyagALHrpM5pI
+         4oro8uaQBYKcD+lZx8sJBkYqhIunWyCEPJKaaKIBXKjcBbsVidtiYk3mveXx+9Y86cyk
+         pQ0Q==;
         darn=vger.kernel.org
 ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1771334832; x=1771939632; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=q5oVq95jqQQoO+Nm/H6qoKVVfjO/F3iq8iJp7dxOY7w=;
-        b=NESqdyBDUBdPzO/qTCuoUo6jqKEfI7dWKzhf7admbKHUKEfVT7l3Y/+4l75auvfuSn
-         Po9rOlOXCrb6ujJO2eQLx7mFUdB8V1ZLgFtUhgrpr0o1H8K2uog8fRkRRpt5owyAo7Ct
-         NhdF4lVBH2KDsPHy6plc2KC6aSjjeT7ozckKC/obumO5z9/d2eFMy0dECxfQjJPvIR+i
-         Cz8VJ+Z9462OqiO+yhhiuO5rLthG7GHKlxe1ZFWM6zVWGVcKI0E42ZLSSdoWj1SnVdtC
-         A535K9oHwDb6IGhOFzICsIE32/Gv5USdcYDp9DpoMpCa4InLCRiWN64HChvK6OM9+Anv
-         bmeA==
+        d=suse.com; s=google; t=1771339712; x=1771944512; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=eLr2cRWBw8S0/OXlKOzbRmg5bkPMrPDlaj10p1kdwTE=;
+        b=cz3swEMtk3PN2RvOTaW1z9hz0lQ4TdrxSP5U4gFFonwIFdUREVJHg2O0IHPFiUgqAI
+         /uLteasIn9nknhnHTDUkGJRc/i5uKsLd3jaXqFXT6zVXHjGWz3C3yloiJNOqXQcqBBsV
+         jCokeQ61LqCfTqKJ2wcPo/zgjmO2BiS6tkgRih/Gi0XRIYCABxADDHT98I2HVyvzU/A1
+         djJbUeL74d4jMn70Bev0C9NAjMdbKk7xepPqG4QNTrbsgHaylLMgTa9tfmO37CODknEu
+         +E1/4EBZQWP3owZXPGPNAZJoaJoGF/43yIGsyO5nvGgSTyu+nuWPqb8WztbMWQUYhWMi
+         OoWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771334832; x=1771939632;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=q5oVq95jqQQoO+Nm/H6qoKVVfjO/F3iq8iJp7dxOY7w=;
-        b=SOfQHnCpqPeCgfS5h9kKrcrvXSzDfS4DZJVzyI4j2D+kx20yN10FAgAZ3Gu40weyQ6
-         7R4419h4dAXFHPGXnZ/e7W0PGH7se4IP7jEa1whVWmMy7pkLShrZMqHGZ/9DdR7iiQZl
-         7BgM2hBMwyNVhcigmscwwibj5XGp1wVbJfvt1Uz/kwJCzndn9ewA3619wGiLDAe50v/m
-         4uyefXxPRf5eqUvpRvIyI3o5TeDdmCcvlo0zejXwCJIhMKx62zxs/Hw4pgA+ICYnDfRA
-         VZdTLHlSXTguXpgG413rd29SVID9KUbUhf9rnq0dPp2TdLt7w21BDXK3L/DkDnaPxSm+
-         MggQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUm/Xumb76Zue8ZTuT8vM45FN0sU175+Xmfd7/SqZp3Uz5vpKklZHuWjq32FQ+kSS+yByoFxdhlb9nqog==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzzoc5LqbdGWLDKFxPJRjI6cMydErH5QHGKQx3weLmsd/2rYPlO
-	U+CoUlQqrR0WbrrEVu/9p/nay5ZCB/BJ03e9WbrCW3xjZFHA9pVt3biIY0TNCMITibVL3muPd+3
-	2TluWKkkK+rHTdUdcqLBwXlnxmGvLxlI=
-X-Gm-Gg: AZuq6aIj5pvV/7FN/yIdZdZlX/906AhBiTWQWNEBV3IYkI1n4VIEH3z9eAsYPom4lhu
-	sYEWZs3S5kNproNH07f8oESlPZgvAAyHtS6BnXI59AgCpWD3FUS9V/HlDlbNb050d62HvCZs0Gm
-	zA7hDjKWGl6piIF7AGfyc6MLvJEv34ShtQ2P/z2wx4dfy6kDWJ3TaNxKEpXg5/p95RuvnnN76OL
-	/Jx2VYKNwVWGs3EbesiRFcRgoLFfTBKCTQ3wHZSL3Ry4x3M3yOR58rd9VgaM2LzcXw1JuOEm+zk
-	JW3Jx/0T
-X-Received: by 2002:a05:6000:40df:b0:436:8058:452 with SMTP id
- ffacd0b85a97d-4379dba36d1mr20165444f8f.44.1771334831515; Tue, 17 Feb 2026
- 05:27:11 -0800 (PST)
+        d=1e100.net; s=20230601; t=1771339712; x=1771944512;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eLr2cRWBw8S0/OXlKOzbRmg5bkPMrPDlaj10p1kdwTE=;
+        b=PYVRpmb4NKxBXQueuBeJYnJ4wAg1rrTU/lm8yQubD7ft3JAPqEPVlZyR8owJsyCAIX
+         WQnPPKWjT9ir1AA9EiVEVTF6nBUOFHphK2zI0a2XhvSJa7/P6Gj1ZhaDR6Qg5sU4PDr8
+         Et/M4xBMPuVmlfcjeUoLmID1SNW8IE+79V62pwhONqYyzUS0lKGj56bJ80ZiOuY5UHvQ
+         3q0jsNjwEeLRw/RJWc1IStSodOTJYeee+CVJ6Q0UoG6ghqYLY48lKGoNHgVqI6R+UYFl
+         Wk9RTssIM4+kp/fJs0wEE4NoYssG96UsPgLhvCm197x64DzO6VSdhENhSV197nEZxk+S
+         TG2g==
+X-Forwarded-Encrypted: i=1; AJvYcCXqi1IetzxR5zIC2MI+uWgiFXX/hRXZR/BCG0QC3xGDXE76MmoYV5VsQ+q1/KBQnEPlDJNuVwcJw6Vxgw==@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywm+uYlSvF2uggkkjOe3WC21IWk/HPeYX5lDyUgod8OSjytgVMm
+	fs0GKQLjPW/prRmxX8pInYAKakD04gwsgIwXmilEGS20aVKCtzXPwIZNeonAH91FC6qS2aTmNGz
+	4Z16v4P97qwLENwZe5KkxxLOldDb9iUf2UzZMgbcTejCivjbnAzbM
+X-Gm-Gg: AZuq6aLXvjfxHQjt2tP8StL/2P7dfxj0zo3C25IE8xlqLoorf5wofO987F5Z54nN2Z+
+	DOIIni50dQFK7lQqe+bPxDbg0R4JxMOTu9bdWQf5K+Q+fNHD/wAQxonuhjba4unlMvsAYFcd3AI
+	5lBltdmS6m7Ndc0LLC9cdtPHTmyffc/+Yo77Ih7T+sPabM/7uZtKj4mlBjReWloRBmLorseSyxX
+	kkPzDfchQUflXI6K2Vx11J9+yhtDlr+XXHGwvX5feyJ4HwyCCgerrR9BPXlsONl3DCYy99UiRvi
+	kbumaF0wpZJOPtc669HfLxXc/6fB49BwRZWzMT2lbA/4cD9SpY85Q6lXBpgCWX9j2xbDtyNh/mP
+	L7h0C
+X-Received: by 2002:a05:6000:1a8e:b0:435:8f88:7235 with SMTP id
+ ffacd0b85a97d-4379790e98amr27190797f8f.33.1771339711651; Tue, 17 Feb 2026
+ 06:48:31 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260114-tonyk-get_disk_uuid-v1-0-e6a319e25d57@igalia.com>
- <22b16e24-d10e-43f6-bc2b-eeaa94310e3a@igalia.com> <CAOQ4uxhbz7=XT=C3R8XqL0K_o7KwLKsoNwgk=qJGuw2375MTJw@mail.gmail.com>
- <0241e2c4-bf11-4372-9eda-cccaba4a6d7d@igalia.com> <CAOQ4uxi988PutUi=Owm5zf6NaCm90PUCJLu7dw8firH8305w-A@mail.gmail.com>
- <33c1ccbd-abbe-4278-8ab1-d7d645c8b6e8@igalia.com> <CAOQ4uxgCM=q29Vs+35y-2K9k7GP2A2NfPkuqCrUiMUHW+KhbWw@mail.gmail.com>
- <75a9247a-12f4-4066-9712-c70ab41c274f@igalia.com> <CAOQ4uxig==FAd=2hO0B_CVBDSuBwdqL-zaXkpf-QXn5iEL364g@mail.gmail.com>
- <CAOQ4uxg6dKr4XB3yAkfGd_ehZkBMcoNHiF5CeB9=3aca44yHRg@mail.gmail.com>
- <ee38734b-c4c3-4b96-8ff2-b4ce5730b57c@igalia.com> <8ab387b1-c4aa-40a5-946f-f4510d8afd02@igalia.com>
- <CAOQ4uxiRpwuyfj_Wy3Zj+HAi+jgQOq8nPQK8wmn6Hgsz-9i1fw@mail.gmail.com>
- <CAOQ4uxhHFvYNAgES9wpM_C-7GvfwXC2xet1ensfeQOyPJRAuNQ@mail.gmail.com>
- <05c37282-715e-4334-82e6-aea3241f15eb@igalia.com> <CAOQ4uxgzK7qYDFWYT62jH_zq8JkLGussD5ro4cKDqSNQqBiVUA@mail.gmail.com>
- <8bec19de-6e6e-418a-a256-5918bd835d98@igalia.com>
-In-Reply-To: <8bec19de-6e6e-418a-a256-5918bd835d98@igalia.com>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Tue, 17 Feb 2026 14:26:59 +0100
-X-Gm-Features: AaiRm50wzuTW2-Y09oQNfhcaN_Xf9kQsFW2GVozychJKf87k4BKo6-ETNYdwiV0
-Message-ID: <CAOQ4uxhpB-D+DaCVZ6-uZGM8WnsZ9Bkxdd4+f_EkvYnQ8xpvqQ@mail.gmail.com>
-Subject: Re: [PATCH 3/3] ovl: Use real disk UUID for origin file handles
-To: =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>
-Cc: Christoph Hellwig <hch@lst.de>, Chuck Lever <chuck.lever@oracle.com>, Jeff Layton <jlayton@kernel.org>, 
-	NeilBrown <neil@brown.name>, Olga Kornievskaia <okorniev@redhat.com>, Dai Ngo <Dai.Ngo@oracle.com>, 
-	Tom Talpey <tom@talpey.com>, Carlos Maiolino <cem@kernel.org>, Chris Mason <clm@fb.com>, 
-	David Sterba <dsterba@suse.com>, Miklos Szeredi <miklos@szeredi.hu>, 
-	Christian Brauner <brauner@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
-	linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org, linux-unionfs@vger.kernel.org, 
-	kernel-dev@igalia.com, vivek@collabora.com, 
-	Ludovico de Nittis <ludovico.denittis@collabora.com>
+References: <20260206182336.1397715-1-neelx@suse.com> <20260206182336.1397715-9-neelx@suse.com>
+ <64126c50-063e-40e4-a536-233cce94b65e@infradead.org>
+In-Reply-To: <64126c50-063e-40e4-a536-233cce94b65e@infradead.org>
+From: Daniel Vacek <neelx@suse.com>
+Date: Tue, 17 Feb 2026 15:48:20 +0100
+X-Gm-Features: AaiRm51hHUsbfTUEHtSwC9qIQM4TJ160IJ28Zz9PQrmVkFY3H02cMBpf6HPloMc
+Message-ID: <CAPjX3FfLFDS5Q32BzbhPgohsX250f8+JX_YbKPLVaGqVGcfV6g@mail.gmail.com>
+Subject: Re: [PATCH v6 08/43] fscrypt: add documentation about extent encryption
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, Eric Biggers <ebiggers@kernel.org>, 
+	"Theodore Y. Ts'o" <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>, Jens Axboe <axboe@kernel.dk>, 
+	David Sterba <dsterba@suse.com>, Jonathan Corbet <corbet@lwn.net>, linux-block@vger.kernel.org, 
+	linux-fscrypt@vger.kernel.org, linux-btrfs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-21707-lists,linux-btrfs=lfdr.de];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	RCPT_COUNT_TWELVE(0.00)[25];
+	MISSING_XM_UA(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCPT_COUNT_TWELVE(0.00)[14];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[amir73il@gmail.com,linux-btrfs@vger.kernel.org];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[neelx@suse.com,linux-btrfs@vger.kernel.org];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[igalia.com:email,mail.gmail.com:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 2A05E14C8E4
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,suse.com:email,suse.com:dkim,infradead.org:email,mail.gmail.com:mid,toxicpanda.com:email];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21708-lists,linux-btrfs=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
+	DKIM_TRACE(0.00)[suse.com:+]
+X-Rspamd-Queue-Id: 5B8A414D4AD
 X-Rspamd-Action: no action
 
-On Mon, Feb 16, 2026 at 4:59=E2=80=AFPM Andr=C3=A9 Almeida <andrealmeid@iga=
-lia.com> wrote:
->
-> Em 06/02/2026 10:12, Amir Goldstein escreveu:
-> > On Thu, Feb 5, 2026 at 9:34=E2=80=AFPM Andr=C3=A9 Almeida <andrealmeid@=
-igalia.com> wrote:
-> >>
-> >> Anyhow, I see that we are now too close to the merge window, and from =
-my
-> >> side we can delay this for 7.1 and merge it when it gets 100% clear th=
-at
-> >> this is the solution that we are looking for.
-> >>
+On Fri, 6 Feb 2026 at 19:43, Randy Dunlap <rdunlap@infradead.org> wrote:
+> On 2/6/26 10:22 AM, Daniel Vacek wrote:
+> > From: Josef Bacik <josef@toxicpanda.com>
 > >
-> > I pushed this patch to overlayfs-next branch.
-> > It is an internal logic change in overlayfs that does not conflict with
-> > other code, so there should not be a problem to send a PR on the
-> > second half of the 7.0 merge window if this is useful.
+> > Add a couple of sections to the fscrypt documentation about per-extent
+> > encryption.
 > >
-> > I think that the change itself makes sense because there was never
-> > a justification for the strict rule of both upper/lower on the same fs
-> > for uuid=3Doff, but I am still not going to send it without knowing tha=
-t
-> > someone finds this useful for their workload.
+> > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+> > Signed-off-by: Daniel Vacek <neelx@suse.com>
+> > ---
 > >
+> > v5: https://lore.kernel.org/linux-btrfs/7b2cc4dd423c3930e51b1ef5dd209164ff11c05a.1706116485.git.josef@toxicpanda.com/
+> >  * No changes since.
+> > ---
+> >  Documentation/filesystems/fscrypt.rst | 41 +++++++++++++++++++++++++++
+> >  1 file changed, 41 insertions(+)
+> >
+> > diff --git a/Documentation/filesystems/fscrypt.rst b/Documentation/filesystems/fscrypt.rst
+> > index 70af896822e1..8afec55dd913 100644
+> > --- a/Documentation/filesystems/fscrypt.rst
+> > +++ b/Documentation/filesystems/fscrypt.rst
+> > @@ -283,6 +283,21 @@ alternative master keys or to support rotating master keys.  Instead,
+> >  the master keys may be wrapped in userspace, e.g. as is done by the
+> >  `fscrypt <https://github.com/google/fscrypt>`_ tool.
+> >
+> > +Per-extent encryption keys
+> > +--------------------------
+> > +
+> > +For certain file systems, such as btrfs, it's desired to derive a
+> > +per-extent encryption key.  This is to enable features such as snapshots
+> > +and reflink, where you could have different inodes pointing at the same
+> > +extent.  When a new extent is created fscrypt randomly generates a
+> > +16-byte nonce and the file system stores it along side the extent.
 >
-> Hi Amir,
+>                                                alongside
 >
-> I can confirm that this is useful for my workload. After correctly
-> setting this flag for every mount, everything is working good and we can
-> bypass the random UUID issues. Thank you for your help!
+> > +Then, it uses a KDF (as described in `Key derivation function`_) to
+> > +derive the extent's key from the master key and nonce.
+> > +
+> > +Currently the inode's master key and encryption policy must match the
+> > +extent, so you cannot share extents between inodes that were encrypted
+> > +differently.
+> > +
+> >  DIRECT_KEY policies
+> >  -------------------
+> >
+> > @@ -1488,6 +1503,27 @@ by the kernel and is used as KDF input or as a tweak to cause
+> >  different files to be encrypted differently; see `Per-file encryption
+> >  keys`_ and `DIRECT_KEY policies`_.
+> >
+> > +Extent encryption context
+> > +-------------------------
+> > +
+> > +The extent encryption context mirrors the important parts of the above
+> > +`Encryption context`_, with a few ommisions.  The struct is defined as
+>
+>                                      omissions
+>
+> > +follows::
+> > +
+> > +        struct fscrypt_extent_context {
+> > +                u8 version;
+> > +                u8 encryption_mode;
+> > +                u8 master_key_identifier[FSCRYPT_KEY_IDENTIFIER_SIZE];
+> > +                u8 nonce[FSCRYPT_FILE_NONCE_SIZE];
+> > +        };
+> > +
+> > +Currently all fields much match the containing inode's encryption
+> > +context, with the exception of the nonce.
+> > +
+> > +Additionally extent encryption is only supported with
+> > +FSCRYPT_EXTENT_CONTEXT_V2 using the standard policy, all other policies
+>
+>                                                 policy; all other policies
+>
+> > +are disallowed.
+> > +
+> >  Data path changes
+> >  -----------------
+> >
+> > @@ -1511,6 +1547,11 @@ buffer.  Some filesystems, such as UBIFS, already use temporary
+> >  buffers regardless of encryption.  Other filesystems, such as ext4 and
+> >  F2FS, have to allocate bounce pages specially for encryption.
+> >
+> > +Inline encryption is not optional for extent encryption based file
+> > +systems, the amount of objects required to be kept around is too much.
+>
+>    systems; the amount of
 
-OK, PR sent.
+Thanks Randy. I'll amend all these in the next iteration.
 
-Thanks,
-Amir.
+--nX
+
+> > +Inline encryption handles the object lifetime details which results in a
+> > +cleaner implementation.
+> > +
+> >  Filename hashing and encoding
+> >  -----------------------------
+> >
+>
+> --
+> ~Randy
+>
 
