@@ -1,59 +1,59 @@
-Return-Path: <linux-btrfs+bounces-21726-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21727-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id KCDkI87XlGkgIQIAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21726-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Feb 2026 22:04:14 +0100
+	id kIwrF9zXlGkgIQIAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21727-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Feb 2026 22:04:28 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id CDEEC15091E
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Feb 2026 22:04:13 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F4A2150926
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Feb 2026 22:04:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E7B72301A3AA
-	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Feb 2026 21:04:08 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 1ACED3038D18
+	for <lists+linux-btrfs@lfdr.de>; Tue, 17 Feb 2026 21:04:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F1572D6E76;
-	Tue, 17 Feb 2026 21:04:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5454B2D6E76;
+	Tue, 17 Feb 2026 21:04:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="cCvdW09y"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="Wn2JreUD"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD1A51339B1
-	for <linux-btrfs@vger.kernel.org>; Tue, 17 Feb 2026 21:04:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C59B1339B1
+	for <linux-btrfs@vger.kernel.org>; Tue, 17 Feb 2026 21:04:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771362247; cv=none; b=puBaxs86tRx9S79SEiHdvRpYBQP8n9Rin5cDivgNBsx3m+2vraF4Bwjn899hGwZdLiy7+BAP9QDp5wmULdSdQZ8WGnAxI69rV2L316XYuuYukGuXcWf6kfH09C1rHeSFA2qytMU6dYEVTGb4xFmrpIC4nlro2nFXVaWPBiAW8G0=
+	t=1771362265; cv=none; b=uEMebRb0kCsX80mVLG8O1UtlE0NdpbrsAHeR5N0nTbnMSdXy85yecWlY/GahXekTYCluCQKJxwgmeAD1p/ygB1b5/iTeVpTW5ANlM7LD0jJ5HTH6BC6Qj93P9IAChGpCzz13XEqfqf8lVc2Uu92c9kbtkTil0TkTUlXqamg9I18=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771362247; c=relaxed/simple;
-	bh=0waZFoEwQuUD1q6v8jrZJW6yiP89FT3EM40B+Tuckvk=;
+	s=arc-20240116; t=1771362265; c=relaxed/simple;
+	bh=Aul8vrWOmbXjoRDTMTxQpF4g6v9uAVi2pvunzFUvCuI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=A5k9xMn2xQq2B+iKMjUNBK1k1LhFop0ezfVD5w0G9HJKPhlB8Z0gczTyRYQQE2jbLTg5/mZLPu1qgqOy9Wz79eLHXTAjYFduXgo2F4J6DgGTsZQxEvH6FsnZDyHxGuvqR9JU6dvrEnGcUXUPc87v3Tpm1q3anlrMjfGVw8fInXw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=cCvdW09y; arc=none smtp.client-ip=212.227.15.15
+	 In-Reply-To:Content-Type; b=pTgLJWuu4AkqFCpHiHRO3MZft+cnLL10trBJHwB1PHmPoEce9b7Lyn2zYiBiAswpnpn8mxNvS5fDJ5TcX1N1Q28Rmhrk3YBFmMWAhjflbhaPndobsNeXCFOSqMiLkaYC5SkNt2/1osACiTgr2g+rTaYWbeLGo2p6xdBERaFDgM8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=Wn2JreUD; arc=none smtp.client-ip=212.227.15.15
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1771362242; x=1771967042; i=quwenruo.btrfs@gmx.com;
-	bh=Ms5q+fVIB3SSpfPYVS+Bi8vA55IGunUFTnDbp+accCc=;
+	s=s31663417; t=1771362261; x=1771967061; i=quwenruo.btrfs@gmx.com;
+	bh=7DdMSp9L+wtESPwypZBXiBo8t45hDHFlCvd1V+NAFOI=;
 	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
 	 References:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding:cc:content-transfer-encoding:
 	 content-type:date:from:message-id:mime-version:reply-to:subject:
 	 to;
-	b=cCvdW09yGJ4ErE4RZyeu+sJXAlMw9SwyFeoaWGxRYp+OIAQuy2dFBfciSSHpKEJX
-	 697rFjnjr10kiL1PeMpvrAwj47v94ljHUsJdg5ILZwy48T2oLSrmFdLwlpO4pVYNz
-	 SZ7Lb/IWrmEoTkFsZUPyh/vD3hwb2LOpZO8wZo/ZLNacATddvkAabb7DQ671ensOe
-	 I7FJHStU6orqo7mioTxih4qzCPCH5HWwdhEEBTIWZVAgPDUjyT5hlsMpwdmzVQzll
-	 P6K0/gS49iYd9XMAT7BKvsXU8spoBIhTei0YtnUeEdw1kJXCAoBlCZScbvXixTPf5
-	 qBRW+n4zFEpAkzJDCA==
+	b=Wn2JreUDs7Vz1Ty64lezLZ4dbzbmF2dEVMsjNVQYb/rEV6ynW8f7eVDUfH/QHMao
+	 r1e2N7wuiv7vV/RMV+XOCQmU4WxLRrP0YbJPUYto1qZ2TNSySp+OpWmtSTWpsbgqn
+	 SJc0L8FIhAPdcBewf0sOW1EA7GLcOXQewJxQIgk96PnPNL9FJM/muZWsdcSS8yT2/
+	 tY2sn3ZGIt5IoUzmN61+Y/N78NbY0eTxdK1o5MIjI3VdGz3ST75zIgxytxRJ+4+ND
+	 GdFm2hDtGQrRQOzxTud/aiJWfFREtEvxUrIwkpO4/RHLyOca6B53PM5vOj5Z8yDox
+	 kxEHWXcSpFOWph+ivw==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MeCtZ-1vIpu90WOt-00p2x7; Tue, 17
- Feb 2026 22:04:02 +0100
-Message-ID: <b47c92d1-804a-4e8a-b1d7-1bc8297230ea@gmx.com>
-Date: Wed, 18 Feb 2026 07:33:59 +1030
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mo6v3-1vQZ9L42v5-00ajk3; Tue, 17
+ Feb 2026 22:04:21 +0100
+Message-ID: <f1d776e2-ef99-4662-b5ca-d929cf687feb@gmx.com>
+Date: Wed, 18 Feb 2026 07:34:18 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -61,10 +61,10 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: fix error message in check_extent_data_ref()
+Subject: Re: [PATCH] btrfs: fix error message in btrfs_validate_super()
 To: Mark Harmstone <mark@harmstone.com>, linux-btrfs@vger.kernel.org,
  wqu@suse.com
-References: <20260217180933.15805-1-mark@harmstone.com>
+References: <20260217185335.21013-1-mark@harmstone.com>
 Content-Language: en-US
 From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
@@ -91,98 +91,98 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
  +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
  HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <20260217180933.15805-1-mark@harmstone.com>
+In-Reply-To: <20260217185335.21013-1-mark@harmstone.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:IqdYvtqT4my5TuNno5KUefTyIwP1IiNFuKmyca8CayyJt9qNRfy
- bYoKIaIJ0IaYzf4RyP0xGcCJ3b4xkfIj9ule8RnuOWepqO1xQ30wz7IvEWTSoTQlgfOHSZX
- CgjPHjYLyzSoucbJpWRTLYpE6jMPyOecfnaTI0uSnxIB+4dXEAPGV/2IixF0uesFh6nYye2
- oIoKSxzsgcGR3w5yBo/wg==
+X-Provags-ID: V03:K1:IjuUKlLMZr+9l077iKK9KGoul82wgmotvJu/mWaP/kQoiwF2lKi
+ DJTGCEGc9MAEWdUtxTTk3JqqlqMycIXnAgEUjUKripGE5VG3CnpFxSbYHP51Hm0OmDeisAI
+ 7I3q1EaIsVo1nhTUBDwwpAqwobBinIH4QSjObkpPp+GFki94woCUzHnT5X+YMFHj2hJAXgB
+ xrBNZX9UJ9PHV07P9tILg==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:OJMCh/MWu3g=;5lYWhEi9GLg2zv1RhfH2bK/YLsj
- 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
- W2Cqx9WpRZsGkwuZNOEjDV904oPDZ
+UI-OutboundReport: notjunk:1;M01:P0:2Kx/KhtaSKc=;jVZgY2vO3DSf18Qa1IOMkMh26b9
+ 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
+ f5/K5CQAU/a501b+tQ1OOl094yrJE
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[gmx.com,quarantine];
 	R_DKIM_ALLOW(-0.20)[gmx.com:s=s31663417];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21726-lists,linux-btrfs=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-21727-lists,linux-btrfs=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
@@ -198,20 +198,24 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,suse.com:email,gmx.com:mid,gmx.com:dkim,harmstone.com:email]
-X-Rspamd-Queue-Id: CDEEC15091E
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,harmstone.com:email,gmx.com:mid,gmx.com:dkim]
+X-Rspamd-Queue-Id: 1F4A2150926
 X-Rspamd-Action: no action
 
 
 
-=E5=9C=A8 2026/2/18 04:39, Mark Harmstone =E5=86=99=E9=81=93:
-> Fix a copy-paste error in check_extent_data_ref(): we're printing root
-> as in the message above, we should be printing objectid.
+=E5=9C=A8 2026/2/18 05:23, Mark Harmstone =E5=86=99=E9=81=93:
+> Fix the superblock offset mismatch error message in
+> btrfs_validate_super(): we changed it so that it considers all the
+> superblocks, but the message still assumes we're only looking at the
+> first one.
+>=20
+> The change from %u to %llu is because we're changing from a constant to
+> a u64.
 >=20
 > Signed-off-by: Mark Harmstone <mark@harmstone.com>
-> Fixes: f333a3c7e832 ("btrfs: tree-checker: validate dref root and object=
-id")
+> Fixes: 069ec957c35e ("btrfs: Refactor btrfs_check_super_valid")
 
 Reviewed-by: Qu Wenruo <wqu@suse.com>
 
@@ -219,22 +223,24 @@ Thanks,
 Qu
 
 > ---
->   fs/btrfs/tree-checker.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+>   fs/btrfs/disk-io.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
 >=20
-> diff --git a/fs/btrfs/tree-checker.c b/fs/btrfs/tree-checker.c
-> index 9774779f060b..ac4c4573ee39 100644
-> --- a/fs/btrfs/tree-checker.c
-> +++ b/fs/btrfs/tree-checker.c
-> @@ -1740,7 +1740,7 @@ static int check_extent_data_ref(struct extent_buf=
-fer *leaf,
->   			     objectid > BTRFS_LAST_FREE_OBJECTID)) {
->   			extent_err(leaf, slot,
->   				   "invalid extent data backref objectid value %llu",
-> -				   root);
-> +				   objectid);
->   			return -EUCLEAN;
->   		}
->   		if (unlikely(!IS_ALIGNED(offset, leaf->fs_info->sectorsize))) {
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index 600287ac8eb7..f39008591631 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -2533,8 +2533,8 @@ int btrfs_validate_super(const struct btrfs_fs_inf=
+o *fs_info,
+>  =20
+>   	if (unlikely(mirror_num >=3D 0 &&
+>   		     btrfs_super_bytenr(sb) !=3D btrfs_sb_offset(mirror_num))) {
+> -		btrfs_err(fs_info, "super offset mismatch %llu !=3D %u",
+> -			  btrfs_super_bytenr(sb), BTRFS_SUPER_INFO_OFFSET);
+> +		btrfs_err(fs_info, "super offset mismatch %llu !=3D %llu",
+> +			  btrfs_super_bytenr(sb), btrfs_sb_offset(mirror_num));
+>   		ret =3D -EINVAL;
+>   	}
+>  =20
 
 
