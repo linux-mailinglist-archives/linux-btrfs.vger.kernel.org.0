@@ -1,207 +1,315 @@
-Return-Path: <linux-btrfs+bounces-21762-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21763-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id YJ8CIfPglWk4VwIAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21762-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Feb 2026 16:55:31 +0100
+	id qGYMK8/klWneVwIAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21763-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Feb 2026 17:11:59 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1F14157848
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Feb 2026 16:55:30 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D5D9157A05
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Feb 2026 17:11:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 30EE33005308
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Feb 2026 15:55:28 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A7027301ABB8
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Feb 2026 16:11:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2994A343D66;
-	Wed, 18 Feb 2026 15:55:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5404C33A9C5;
+	Wed, 18 Feb 2026 16:11:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b="vDWdy1hD"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="PfZdcMqY"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail.burntcomma.com (mail2.burntcomma.com [217.169.27.34])
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C07E3342503
-	for <linux-btrfs@vger.kernel.org>; Wed, 18 Feb 2026 15:55:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.169.27.34
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771430126; cv=none; b=nRNgpi79spurh3GWayQG0jcRXvxC+sNBbe5bK6AiBdPmIfqm2Knd/KCrZmRANMvVjP0m0+41Bjc49W7a65Ylyza8VmRjXm3RRI9XK8er+Artz1lx0EAyZSNrf2Pjb0iaoKN2fJ5jgYiY/4Df3pf89OuGLc8tY9UbMqvb4JEPDQQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771430126; c=relaxed/simple;
-	bh=I1it41f4+Jw9ou1GGOSrdrRftUmVt0NR6Fq12+gy80g=;
-	h=Message-ID:Date:Mime-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dUZ/qR8PB/f/K6y4FYZ3hgs0pCvMVSBkI2pjbo+l6rCWTe+fadkgi7D6BUdFF3qwmZd2O7pQGK2s/jyI2koQIz5DnJ23hMzyH++Xci5jaWzCkQeNp0hFGG6RX/2JngtOJGYfD07W4KJ00Bl1hWUqbLUjw8pv1Pr9T+GLKYBrtcc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com; spf=pass smtp.mailfrom=harmstone.com; dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b=vDWdy1hD; arc=none smtp.client-ip=217.169.27.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=harmstone.com
-Received: from [IPV6:2a02:8012:8cf0:0:ce28:aaff:fe0d:6db2] (beren.burntcomma.com [IPv6:2a02:8012:8cf0:0:ce28:aaff:fe0d:6db2])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256
-	 client-signature RSA-PSS (2048 bits) client-digest SHA256)
-	(Client CN "hellas", Issuer "burntcomma.com" (verified OK))
-	by mail.burntcomma.com (Postfix) with ESMTPS id DCDE730383F;
-	Wed, 18 Feb 2026 15:55:19 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=harmstone.com;
-	s=mail; t=1771430119;
-	bh=a5BMWqt3E+L/WJYGqbeWWJp8qzVxdmkjvGl/3xoYxKw=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=vDWdy1hDLbi054Rd+cylqXG9vyL2aub+VWLXeQxcXFC1RzJr3iwrxpFoDlC2i++Gp
-	 Y+dDaYJs/fwGLg2IZtG/+yzjzjRLtQtWkr9eHNesn0Qwt5GIJaM8i+Ci5NQRwvcazA
-	 L+iuEjq2Bso+J9q/he4kfpYuS96v5HCzc34TQ/qk=
-Message-ID: <408293e5-75f8-461b-9d0e-65ff95027a0b@harmstone.com>
-Date: Wed, 18 Feb 2026 15:55:19 +0000
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 275C12DC352
+	for <linux-btrfs@vger.kernel.org>; Wed, 18 Feb 2026 16:11:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.221.49
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1771431088; cv=pass; b=vCRbeRScKMFHwelrATHbgVSnniN0aGDcoBgtwU4InhX5cTmaHYKQTPeNnsKd0P+oTOCV6MnRZ/9xy35BuuoBIJQYeeh1c2HNgGe0XxyqZVa4UHopk0AaJkQFwyq3djEJVWMaQP+rUVzOANH9W7Rs0G1pA8vfyXf5/tVK2x/LEmQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1771431088; c=relaxed/simple;
+	bh=Dnfw3O7yWCnVIQEgDYrdHlr08rz6PxDdK3ndz6QSILY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Ry65adXxixAsJwjHjf8syfL5f2i8YNuPuxN3zQBWdmX3Ex+s7tp1mDZVlq3D9TMXefeZp8fFicnJcWBiz4J3bvfF61F405HCVauEWu4r3UcuHKyC4cLI0iN6ohf+Az/b2AWUEbBty/oiU/Uv3lAcSOHHmotY0AZVnEwtb/g9FEw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=PfZdcMqY; arc=pass smtp.client-ip=209.85.221.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-4362c635319so5389806f8f.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 18 Feb 2026 08:11:25 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1771431084; cv=none;
+        d=google.com; s=arc-20240605;
+        b=c7YcmiCV/Ien9HkKNVRBKcMxPRw03xsRe/yJ/wGhWzC2sz0vzjVgWpu3TlCdyvo6DG
+         JEr7Ok84FAsuCO4JCpnD6jFdYDA6SUX5PAF1BEZUotF2uXMDHxX+OLuqT4KGPXyhzfMz
+         RyOa4hF7QQsk2Oyz1pRi4cn/QESzLifn3dnRPAr23TC1XeDgse6b+0uljJm/y7HuWIzG
+         TtKu+aO0IKKeg5QMlZd3XTl9uaEACPzGmUDVD7lQWtIw6uO5XCO9aEOACsY5PN/wsfyV
+         fiJ/pnzrlqPsGhVF/CY8jFtZoR8l7+31Poj0cexkJbc1oGn8KO36tMeJQHMC12ikl6iv
+         T+Nw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature;
+        bh=npZADHZ7rRxwkGy8riawRonufvbdSCewmEnndlsCQtE=;
+        fh=FW7hVxjMLrQ0ckyxhZSyABkXCkN4g++cK6BCLPpD1WU=;
+        b=f/JUEOXrlgPPQ7oAhD4vwRro5PjjyrpowCmx9uYuEPGDfHHXhuscAmMcq7A/E4KMkL
+         xuL0L2HpHYAAAJkLhCeAnjQx7yLGqnuSQlClu/2b8cRwX3gm3CAUnwtE8KwgN94FcrrD
+         chYb0hGXJSU+y8L1vrgeLPq4tIJQW4VQMeovUJdqLg7qfejm5QNMsIPVUoItIf7IIAHX
+         O4ayY9U6OS+/LuZX270BuZYrjRaBx83+em6MW6Q7CyV6+D7ThwdKo5MMxXbPlK/sLXI+
+         xgWb2n6lMAkJK6DTe637Q2Xcu/OKvk9e7keW5hB5ZP0MQMOlgsI3zmNLfvYkCKipn3Oi
+         UAKA==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1771431084; x=1772035884; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=npZADHZ7rRxwkGy8riawRonufvbdSCewmEnndlsCQtE=;
+        b=PfZdcMqYwNT7onik+41pV0XW615Gz/ybTHKwKGbSkAOd6Mos1WFO7LFtssv3KsJMAR
+         XO1TRVb6Qo9qvBRRnOAWBFni1s0Zr1eQu98HHdBJLIqTgYGHCQqJovzdZJXq5RY7WgBA
+         KbyJMtBcWCKZLenWtLsvG4qStEZNU8jXJeRMurhR7RdIDttjb3aOAftogUIVGiwTD2ZU
+         nRghyuIC+NU7OcJgVdDcGZ5i7lez+7EHPkSZypqLabQ+eMSL1t2/DOfNeqwydh729w4J
+         vA4ZP+FZ3IjJp+guVfb6qPNiGwFesSdjS0Ey9sQ8kUrOWMHj0hurPFY7lF2535atr29C
+         kOOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1771431084; x=1772035884;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=npZADHZ7rRxwkGy8riawRonufvbdSCewmEnndlsCQtE=;
+        b=DhSIaJd7vh2LrhTvDOcbuaDyPAYkEdNhifQxhSCjf6s2CUixmnWAqz/bfbSHPKeGrM
+         BN0gxkYFe3xJGrHFt4m67WloFxCdzL0wHin7WtQQEGiXMWhTL8mmPzqEjcVtJlyBlqvX
+         J7fnx95U+uhdADFrY4TH8hWEHKIT3+0Iy7iLgbZgzqPouFphb3AF3vBGjGA8q5OG7xCH
+         eZbm1ef03+e6CDnDY7YWIjpLSKeQB6REWPlfrMtl6lHpE+y80QYza20rZ9cMdw1eLvGf
+         VkBmbTmZ93Nb787RtcaWwJnOZ7flwZJu62Ia06R8EMcNeAJbVfN0Zhnc2fzFZh8QTZxw
+         XDKg==
+X-Forwarded-Encrypted: i=1; AJvYcCU4x1V+M2JJE4zQfTGKz1rYgaou8bc0LJgoN3tIhkPgHyB9veeS/Q+LyTysc7vzFHnIeDgBESKoA0pGyw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YxdL9Jk2IbtP7ZyLHFD/LCMplm4PG8nRTfm5og4+oMYHAF7zNm5
+	dk2zcfePFCJr30qRE6OJYH4YbrVx1cAXb+y4PtkEVoCFaEfb9xsjCSAHR1GdhuAxTMV+dCAZza+
+	mGp29BJ/PH2/fCC3A8V++V62K2rHX7qYPqr3GGExFTw==
+X-Gm-Gg: AZuq6aImnx9WrHSaDsTtQFMd/lYLJ6fQB/lXm4QbbLRqn6zdus6UsM92/VMm2pC3zlr
+	63p/6l/70SFEm3XgHh05fFEOkclMqMHzRMNl9gx+HGCX1hoh93h898WPm8pJ0umk6e02wf5DlAM
+	qDvdBJsfX6i5WhxEuKXWGw9xK4dGltGJqJR4ZsSOIy+gZP8S1+t9SSHnsnrnKjqYLtEtAbNQplJ
+	SGmq9tFqcG4E9yWWyLcUeb89UF59nby1xORwuLcJF4f5kkTTE5dq/Mh7GljNFfvB7x/j84dYSMP
+	j8UVlumFDzf8lsyXfnkVh+uRlL0f+E8OxdF+up6M/prq9x5FRTviNqJOf82c+Df3Kh71OKZvyzk
+	7fTu0
+X-Received: by 2002:a05:6000:2dca:b0:437:6e63:9172 with SMTP id
+ ffacd0b85a97d-43958df3516mr4465105f8f.4.1771431084459; Wed, 18 Feb 2026
+ 08:11:24 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Subject: Re: [PATCH] btrfs: fix chunk map leaks in btrfs_map_block()
-To: Filipe Manana <fdmanana@kernel.org>
-Cc: linux-btrfs@vger.kernel.org, Chris Mason <clm@fb.com>
-References: <20260218143334.25014-1-mark@harmstone.com>
- <CAL3q7H4nVSx-cVS03APKyhus_wx+QcFdP_67WrV8gTnP6ApFNw@mail.gmail.com>
-Content-Language: en-US
-From: Mark Harmstone <mark@harmstone.com>
-Autocrypt: addr=mark@harmstone.com; keydata=
- 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
-In-Reply-To: <CAL3q7H4nVSx-cVS03APKyhus_wx+QcFdP_67WrV8gTnP6ApFNw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+References: <20260206182336.1397715-1-neelx@suse.com> <20260206182336.1397715-21-neelx@suse.com>
+ <20260208151928.3245396-1-clm@meta.com> <CAPjX3FdiskLiELriX5gE2YEDMMwz5QQbNDnkAuFVov1a=WL_jQ@mail.gmail.com>
+ <989433cb-4ab6-4a79-8dfc-9f5f542e2647@meta.com>
+In-Reply-To: <989433cb-4ab6-4a79-8dfc-9f5f542e2647@meta.com>
+From: Daniel Vacek <neelx@suse.com>
+Date: Wed, 18 Feb 2026 17:11:13 +0100
+X-Gm-Features: AaiRm52H6a8Dx1S_J50i9RFK-wqtAs4pqoNkIHGApsZEVneSHeR9ZFaJMuu2lQI
+Message-ID: <CAPjX3Ff3qBoBxWzZ+Tg5HgSSEPGrbmmGMmf5MtiE4iU8PtHUMw@mail.gmail.com>
+Subject: Re: [PATCH v6 20/43] btrfs: add fscrypt_info and encryption_type to ordered_extent
+To: Chris Mason <clm@meta.com>
+Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, Eric Biggers <ebiggers@kernel.org>, 
+	"Theodore Y. Ts'o" <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>, Jens Axboe <axboe@kernel.dk>, 
+	David Sterba <dsterba@suse.com>, linux-block@vger.kernel.org, 
+	linux-fscrypt@vger.kernel.org, linux-btrfs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MV_CASE(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[harmstone.com,none];
-	R_DKIM_ALLOW(-0.20)[harmstone.com:s=mail];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21762-lists,linux-btrfs=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_THREE(0.00)[3];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[mark@harmstone.com,linux-btrfs@vger.kernel.org];
-	DKIM_TRACE(0.00)[harmstone.com:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
-	TAGGED_RCPT(0.00)[linux-btrfs];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: A1F14157848
+	MIME_TRACE(0.00)[0:+];
+	MISSING_XM_UA(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[neelx@suse.com,linux-btrfs@vger.kernel.org];
+	TAGGED_RCPT(0.00)[linux-btrfs];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[toxicpanda.com:email,mail.gmail.com:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,suse.com:email,suse.com:dkim];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21763-lists,linux-btrfs=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
+	DKIM_TRACE(0.00)[suse.com:+]
+X-Rspamd-Queue-Id: 0D5D9157A05
 X-Rspamd-Action: no action
 
-On 18/02/2026 2.54 pm, Filipe Manana wrote:
-> On Wed, Feb 18, 2026 at 2:33 PM Mark Harmstone <mark@harmstone.com> wrote:
->>
->> Fix the two early returns in btrfs_map_block() so that we can no longer
->> fail to put the chunk map after getting it.
->>
->> Signed-off-by: Mark Harmstone <mark@harmstone.com>
->> Reported-by: Chris Mason <clm@fb.com>
-> 
-> So being a bug fix, this is the type of patch that should have a Fixes tag.
-> 
-> The commit that introduced the first leak is not in any released
-> kernel, so no stable releases are affected.
-> However it's still useful to have the Fixes tag here, because in case
-> someone decides to backport the offending commit, either upstream or
-> downstream, there are scripts in place to check if there are newer
-> commits that fix a bug in the former commit and therefore must be
-> backported as well.
-> 
-> But the second leak was introduced in a much older commit, from 2024,
-> and should be backported.
-> Se comments inline below.
-> 
-> Also, since this was reported publicly, please add a Link tag pointing
-> to the URL with the review.
-> 
->> ---
->>   fs/btrfs/volumes.c | 8 +++++---
->>   1 file changed, 5 insertions(+), 3 deletions(-)
->>
->> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
->> index 83e2834ea273..a1f0fccd552c 100644
->> --- a/fs/btrfs/volumes.c
->> +++ b/fs/btrfs/volumes.c
->> @@ -7082,7 +7082,7 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
->>
->>                  ret = btrfs_translate_remap(fs_info, &new_logical, length);
->>                  if (ret)
->> -                       return ret;
->> +                       goto out;
-> 
-> For this hunk:
-> 
-> Fixes: 18ba64992871 ("btrfs: redirect I/O for remapped block groups")
-> 
->>
->>                  if (new_logical != logical) {
->>                          btrfs_free_chunk_map(map);
->> @@ -7096,8 +7096,10 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info, enum btrfs_map_op op,
->>          }
->>
->>          num_copies = btrfs_chunk_map_num_copies(map);
->> -       if (io_geom.mirror_num > num_copies)
->> -               return -EINVAL;
->> +       if (io_geom.mirror_num > num_copies) {
->> +               ret = -EINVAL;
->> +               goto out;
->> +       }
-> 
-> For this hunk:
-> 
-> Fixes: 0ae653fbec2b ("btrfs: reduce chunk_map lookups in btrfs_map_block()")
-> 
-> I would suggest splitting this into 2 different patches, each one with
-> the respective Fixes tag so that the second leak can be backported
-> more easily.
+On Wed, 18 Feb 2026 at 16:50, Chris Mason <clm@meta.com> wrote:
+> On 2/18/26 10:29 AM, Daniel Vacek wrote:
+> > On Sun, 8 Feb 2026 at 16:20, Chris Mason <clm@meta.com> wrote:
+> >> Daniel Vacek <neelx@suse.com> wrote:
+> >>> From: Josef Bacik <josef@toxicpanda.com>
+> >>>
+> >>> We're going to need these to update the file extent items once the
+> >>> writes are complete.  Add them and add the pieces necessary to assign
+> >>> them and free everything.
+> >>>
+> >>
+> >> Hi everyone,
+> >>
+> >> I'm running the btrfs for-next branch, along with the encryption patch set
+> >> through my AI review prompts:
+> >>
+> >> https://github.com/masoncl/review-prompts
+> >>
+> >> I'm working on some btrfs specific instructions, but hopefully these reviews
+> >> are already useful.  I've kept the headers to make it easier to double check
+> >> that I'm actually replying to the right email, but please let me know if any
+> >> parts of this are incorrect:
+> >>
+> >> commit 61cd57301840de69a3f6573374d41ad4b4bcf348
+> >> Author: Josef Bacik <josef@toxicpanda.com>
+> >>
+> >> btrfs: add fscrypt_info and encryption_type to ordered_extent
+> >>
+> >> This commit adds encryption-related fields (encryption_type and
+> >> fscrypt_info) to struct btrfs_ordered_extent to support fscrypt
+> >> integration in btrfs.
+> >>
+> >>> diff --git a/fs/btrfs/ordered-data.c b/fs/btrfs/ordered-data.c
+> >>> index 5df02c707aee6..7a5701937184e 100644
+> >>> --- a/fs/btrfs/ordered-data.c
+> >>> +++ b/fs/btrfs/ordered-data.c
+> >>> @@ -192,6 +192,7 @@ static struct btrfs_ordered_extent *alloc_ordered_extent(
+> >>>       }
+> >>>       entry->inode = inode;
+> >>>       entry->compress_type = compress_type;
+> >>> +     entry->encryption_type = BTRFS_ENCRYPTION_NONE;
+> >>>       entry->truncated_len = (u64)-1;
+> >>>       entry->qgroup_rsv = qgroup_rsv;
+> >>
+> >> This isn't a bug, but the fscrypt_info field isn't explicitly initialized
+> >> to NULL here. While kmem_cache_zalloc() at line 175 does zero the memory,
+> >> all the other important fields in this function are explicitly initialized
+> >> (compress_type, encryption_type, truncated_len, qgroup_rsv, refs). Would
+> >> adding an explicit 'entry->fscrypt_info = NULL;' improve consistency?
+> >
+> > `entry->fscrypt_info` is set in the very next patch "[21/43] btrfs:
+> > plumb through setting the fscrypt_info for ordered extents". The
+> > series is meant to be applied as a whole. It's just factored into
+> > implementation steps.
+>
+> The prompts try to flag any patch series that don't follow best
+> practices around bisectability.  There isn't a ton of instruction about
+> what those best practices are beyond if commit A makes bug and then
+> commit B fixes the bug, flag it.
+>
+> This patch set is pretty unusual because you're trying to preserve
+> authorship for a number of people, and so there are a lot of small
+> judgement calls about when to change patches and when to fix them up
+> later.  I sent claude's comments to help highlight places we want to
+> decide things, but I don't think there's really a wrong decision.
 
-Thanks Filipe, I'll do just that. Please ignore this one.
+I understand that. I was checking every commit to ensure it builds
+correctly. But not really testing for bugs or regressions.
 
-> 
->>
->>          map_offset = logical - map->start;
->>          io_geom.raid56_full_stripe_start = (u64)-1;
->> --
->> 2.52.0
->>
->>
+> >
+> >>>       entry->flags = flags;
+> >>> @@ -630,6 +631,7 @@ void btrfs_put_ordered_extent(struct btrfs_ordered_extent *entry)
+> >>>               btrfs_add_delayed_iput(entry->inode);
+> >>>               list_for_each_entry_safe(sum, tmp, &entry->list, list)
+> >>>                       kvfree(sum);
+> >>> +             fscrypt_put_extent_info(entry->fscrypt_info);
+> >>>               kmem_cache_free(btrfs_ordered_extent_cache, entry);
+> >>>       }
+> >>>  }
+> >>> diff --git a/fs/btrfs/ordered-data.h b/fs/btrfs/ordered-data.h
+> >>> index 1e6b0b182b295..ce19198e7f844 100644
+> >>> --- a/fs/btrfs/ordered-data.h
+> >>> +++ b/fs/btrfs/ordered-data.h
+> >>> @@ -124,6 +124,9 @@ struct btrfs_ordered_extent {
+> >>>       /* compression algorithm */
+> >>>       int compress_type;
+> >>>
+> >>> +     /* encryption mode */
+> >>> +     u8 encryption_type;
+> >>> +
+> >>
+> >> This isn't a bug, but placing the u8 encryption_type field between two int
+> >> fields creates 3 bytes of padding. This is minor, but in a filesystem with
+> >> many ordered extents, it could add up. The current placement does have the
+> >> advantage of grouping encryption-related fields together logically, though.
+> >
+> > This was actually changed from int (as Dave suggested, IIRC). But I
+> > did not move it.
+> > I guess we can do this:
+> >
+> > --- a/fs/btrfs/ordered-data.h
+> > +++ b/fs/btrfs/ordered-data.h
+> > @@ -127,18 +127,18 @@ struct btrfs_ordered_extent {
+> >      /* flags (described above) */
+> >      unsigned long flags;
+> >
+> > -    /* compression algorithm */
+> > -    int compress_type;
+> > -
+> > -    /* encryption mode */
+> > -    u8 encryption_type;
+> > -
+> >      /* Qgroup reserved space */
+> >      int qgroup_rsv;
+> >
+> >      /* reference count */
+> >      refcount_t refs;
+> >
+> > +    /* compression algorithm */
+> > +    int compress_type;
+> > +
+> > +    /* encryption mode */
+> > +    u8 encryption_type;
+> > +
+>
+> Seems mostly the same?  I'd suggest paholing things to find a good spot.
 
+Hmm, that's what I did. There was a 4 bytes hole.
+Nah, I see. I just moved it. It's not a big deal then. The structure's
+size remains unchanged in either case. Still plugging a hole. Or am I
+missing something?
+
+> >      /* the inode we belong to */
+> >      struct btrfs_inode *inode;
+> >
+> >
+> >>>       /* Qgroup reserved space */
+> >>>       int qgroup_rsv;
+> >>>
+> >>> @@ -133,6 +136,9 @@ struct btrfs_ordered_extent {
+> >>>       /* the inode we belong to */
+> >>>       struct btrfs_inode *inode;
+> >>>
+> >>> +     /* the fscrypt_info for this extent, if necessary */
+> >>> +     struct fscrypt_extent_info *fscrypt_info;
+> >>> +
+> >>>       /* list of checksums for insertion when the extent io is done */
+> >>>       struct list_head list;
+> >>
+> >> How does btrfs_split_ordered_extent() handle the new fscrypt_info field?
+> >> Looking at that function in ordered-data.c, it calls alloc_ordered_extent()
+> >> which initializes encryption_type to BTRFS_ENCRYPTION_NONE and fscrypt_info
+> >> to NULL. If the original ordered extent has encryption_type set to
+> >
+> > Ditto. This is changed in the next patch [21/43].
+> > alloc_ordered_extent() correctly sets these fields.
+>
+> It seems unlikely that we're really going to maintain bisectability for
+> encryption being on in the middle of this patchset.  So this seems fine
+> to me as long as the bug doesn't impact encryption being off.
+
+Yeah, I think it should not. (Famous last words...)
+
+Thanks.
+
+--nX
+
+> -chris
+>
 
