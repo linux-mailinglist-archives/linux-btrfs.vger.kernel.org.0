@@ -1,180 +1,239 @@
-Return-Path: <linux-btrfs+bounces-21758-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21759-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id SkHFC+jSlWmqVAIAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21758-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Feb 2026 15:55:36 +0100
+	id uG5PObDUlWnFVAIAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21759-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Feb 2026 16:03:12 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4F5A157302
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Feb 2026 15:55:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 78B881573E1
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Feb 2026 16:03:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id E6371301E7D5
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Feb 2026 14:55:32 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id E5495302AF27
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Feb 2026 15:02:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C64F33E37C;
-	Wed, 18 Feb 2026 14:55:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A215A341058;
+	Wed, 18 Feb 2026 15:02:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R/kUrYvt"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="V+GnKqXK"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DB512D3ECA
-	for <linux-btrfs@vger.kernel.org>; Wed, 18 Feb 2026 14:55:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771426528; cv=none; b=WhHEtJmS/Ao0PE+U2VQXrr9botCJoZfUy54KbQtaoVWRZ2tXpxOGB0Y8N/HaNZyiEeOkMNnJGAJ9+fNb4JOOLFnNmixi3kXHAp3ayvuVmYfX/jaDScwth60xzv25Up5vW9QwDXw1eMubluAf12kz0kRZhaud65yjuBV9GgPMU8E=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771426528; c=relaxed/simple;
-	bh=gvZJfVnDCjwXj5GnMnyP1hdJI0IphI8xclg66jqKcKY=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D09FE340A69
+	for <linux-btrfs@vger.kernel.org>; Wed, 18 Feb 2026 15:02:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.128.42
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1771426965; cv=pass; b=VU3FVbnHO976JuJuBfQBXkziBPmP9+YZlhcd4XAATIMhwws1IgMogE4qfLPwGns26snI4Hh34EfQBqzs319DHY6AMHvmYAtKzXEO4689R740nBqUNd0g8j7vQ+Nmy4QYn9UIgHYLYEsIUkTG7hmHd+UiY2GObM75W4maIxn5sWE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1771426965; c=relaxed/simple;
+	bh=udw/ZyTsHuwFOVBESJ/+qihOlfdgJM950rv/L+IknkE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=r/BnLsO1Dm+iAY7BNwZh2W5wcwhTxj+nooYTLRNIbnYWpQH/o6mKWNU3PGlC+4i21DRUbFcWikppmjHOSOvRXHcVlwzHX5mWGgqZavuSF9I0TUSRYNHdiZ73RWRL/5sIPsNesz2BY2IQE8+p1fyA9jyOPJHj/0QmmflZYMHCIWo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R/kUrYvt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D1A4C19421
-	for <linux-btrfs@vger.kernel.org>; Wed, 18 Feb 2026 14:55:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1771426528;
-	bh=gvZJfVnDCjwXj5GnMnyP1hdJI0IphI8xclg66jqKcKY=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=R/kUrYvttgKHU/GxPv2AKnOabxPnfNx1yJFq9oxbIpA4xsy44xcHFrsGtWKPJ4weG
-	 QORKKH8uZYIQ9qC6ct/NCmnCzJoXnCgQ6F/RiHTiEB/NS424RjqulVNNtPNBkgkCGc
-	 0mlS0tYUsvbBv1VBkxjuJmDgwqvBWv9ZlSqEPl+iRNheG6DUZNT6UbxuqYdvuN4PDn
-	 h31pEIFreXv2cuxBZ6uPqJxPYr6QPtavyVdtyJ4YFlgjytoZ+QJjkhjYSgu+38q666
-	 Nw6OyS+xHfv9v7GF8x8XhpGkVpxufjGalVCXW3Ha6ZV37F+cxlEpT44yWS6LE874Xm
-	 HI/DeCWm0Tppg==
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-b883787268fso662002566b.3
-        for <linux-btrfs@vger.kernel.org>; Wed, 18 Feb 2026 06:55:28 -0800 (PST)
-X-Gm-Message-State: AOJu0Yx5vL5QF4O+3y9AEcNYzKZeNBorfKhDm+3gptf14fP5m4CGRW4W
-	bqTW9So3iEHvTZP3SEgHLhpNT1jm8VImai+cb556WXToz43N8xY89bHfO3LIG/2zgTpay3g5BiO
-	Kjo0WMT6/6CaMwRPHIV4l3sd98lKWLH4=
-X-Received: by 2002:a17:907:3f08:b0:b8e:de4e:8a9b with SMTP id
- a640c23a62f3a-b8fc3d4b306mr727000166b.65.1771426526821; Wed, 18 Feb 2026
- 06:55:26 -0800 (PST)
+	 To:Cc:Content-Type; b=mjcbdoa2wkjwh20v5C56y2NutykiFwqkdmLvon+hn8rwXs8sKKlbV8w7avmIIt/v05MynX9EHLMTzsSB7Bxj0hHzHT9+vsz8Wd55U6cOeaYr0o88vdjVrbXjUertHGi+J2PwL4xlONUmBrm10HNQXWi6KisJAeFI4/pkhgNFcyQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=V+GnKqXK; arc=pass smtp.client-ip=209.85.128.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-48373a4bca3so30084185e9.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 18 Feb 2026 07:02:42 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1771426961; cv=none;
+        d=google.com; s=arc-20240605;
+        b=TxbqHD1pjdj+bFCjacPj4FGhhkddhnkSfuRc7H6nfBNfmAtS4z1DVbcVG9LXGwZTzs
+         wQOdLNhd67oEWLrhuQXflTNQYBp/taV8LZaG9Mpids9YZtTzcoB/hYuzBTNKTCva/vt+
+         hz2b9PuDhAyJjhzcNDI/HkdVwreNRjc/L1qmYGIN4BPJnsxPVmWM/gmfHkMD8NSIvlSU
+         OM4i1lQ0nPitZfGb26cJOaXDVbNHNDNeGOEKX4go2movQlXYwpS0ZG5KJbKVjVgKdF8/
+         ObISTEreLEqUrFtGTY58Kzgj2xSwb73VOjpPc6e9qIP++Q+dt1tKqBPh8g0Qoib0a9IJ
+         m+AA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature;
+        bh=4f2knTNw8Y0yBkMXA6kc+4x2KQKgICuj4A91rn0T+Sg=;
+        fh=1monpwvYwye7QsOIVwSZ81I2Fu9dsv/VhHEBcZZu+Fw=;
+        b=H4mhEp4yr4VIt069f2dv4df0lXctgr0yyCM/4LgRiGrsW8JUQpDd0+hZEZkFgtB3Vf
+         EOysI7cmgUmYvB9gTzuh/sKP36Z+V2uga8Lt2mdr7mCIhTabs2+atSg0FyioysqwbHXi
+         kCpJUHa2554UoXBPCq8iTdtqhO+j96j4/nH3lSllEtQmdmf9Mn/kDLQswp1nB4qQ3ahW
+         emXLvDtrVHF0C8JG6OMCNZjxTHkCjCax2JtDyce3YTaO+dxZOnfKatdwkr5L8PMGEMpM
+         IJN0YjZRTZgBIbDP+KyEEtxo7Dfq4ru/zBwWG2r2PeQnvzb5DCIyTiTsWke30rQLlFp4
+         Wnpg==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1771426961; x=1772031761; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=4f2knTNw8Y0yBkMXA6kc+4x2KQKgICuj4A91rn0T+Sg=;
+        b=V+GnKqXK60xaSJp2fZlMcxdqrWZWlyuvIxe5b7z69Ycpo06PAVrcE3DCVe/4lZrO/h
+         a+LO52LcjnX8RPeBK38FQIbRW2t5p4QgITq+b/seBVc/nm8DgOLLqche7ucqkW+eNFTx
+         86b98NQeX+5wShMg78VxLBTt2Gb3pkePa66IxvmX9wLJtxCSESq+Z6XCorkI3JvF8p4h
+         JDybHtZvBeRBUu5TOfSx6DYsqOBLm76/FxdI0/8LkqE4wQJ6UVd2/wkTRxhETewCN9DT
+         rxOCv/fQG2yvP1X6FKrQGxkEixttaZJdnZ+xExYL17sx/PL1qn8HaPZwO669LT/7rci7
+         v2aQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1771426961; x=1772031761;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4f2knTNw8Y0yBkMXA6kc+4x2KQKgICuj4A91rn0T+Sg=;
+        b=feJ9B22/eN3BLt2Po325YKL0iG/QBB6pP52crdFsKCdXk7O09U8y8K/8gAyFPJhJvk
+         0quXbs75BkXe3PMD7OS285fuV8ioL0R/1Tca3m3NHs436RY+i5sK+4z7UT+duWOz7peI
+         h4Sp9M7CKajQleqFKwVuLpfyzEDtO1xyVNk8X08WNx09T9kCfS76bXDATXXgz6hwW8jF
+         zl8XUkMmeV+Jdawq8KEPtcnByLAiVWQuz2aBDTf/z/V5JcuhLduqk8HlcbKhg/V3lvdo
+         J/BKohbUS/FmvcZCseRF0uCx7rm5LaIqh2Z+lXgcJPiZBC7qq8jPNondq4vlU0f7Yokb
+         56aA==
+X-Forwarded-Encrypted: i=1; AJvYcCXspIBu4ClAO/VtQ5AoDHUWIv6+9DT+nhQE0/Z3L4km+Pyt51iEV64h1zvztPVXLdxuB7l84hKJ+S96EQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwcsSWz3DggmYuUL8CdfNe6gOXRIOz08NIY2cmp2TEtLX59ztTY
+	YOW3T7qNlkiFKdNcdcn84iL3PrfuPcJkRF4QD0Z57qeGtrqiZg1ZsSdNjVs5ke95N/3JitwcN2s
+	J5g6i2BJf4KFrnIcMXIpfyeI9WXuoYVS5pNqeMHEe5Q==
+X-Gm-Gg: AZuq6aK0jcJBh8mjo1vI36NuK5831S+aaNu2R2RqNJ4mSsIiJl/kRuDAfP+S5ErMfan
+	8DK3m4vMG09lhdn9VMPsvQGRzgWRYKcvENQdNQu/6XLzC9Zz7lLUdU7zUc6CCCABijE3MawKmje
+	WBo6RLPWr3GINj7qfI6BzYTP5dcbTLfk/rSXAoUpUJ6MOc+0Pe2r9xQU5L2kXso4541MIC++5OR
+	Gbfp6NghTMkeBrrQlMNX9cfZ5/lIuCjC9fvrz2KDjoThozrgXhBhJ1xAMckp1aTFHafgHOV93yQ
+	hhwawM4pbn/71T3YZsi8DxeJtHiyqezIsvIY5JQP0SOL309QgeR47M7lOiaoFlnYDYHLkc0rNpO
+	JJmiS
+X-Received: by 2002:a05:600c:1c25:b0:483:54cc:cd97 with SMTP id
+ 5b1f17b1804b1-48379bfc340mr230018315e9.36.1771426961169; Wed, 18 Feb 2026
+ 07:02:41 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260218143334.25014-1-mark@harmstone.com>
-In-Reply-To: <20260218143334.25014-1-mark@harmstone.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Wed, 18 Feb 2026 14:54:49 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H4nVSx-cVS03APKyhus_wx+QcFdP_67WrV8gTnP6ApFNw@mail.gmail.com>
-X-Gm-Features: AZwV_QiXgXOP51zAKWilY5nKRJnTUqKQ1M-NHheq0LTV8T9YHvH8e3ptZawJjRg
-Message-ID: <CAL3q7H4nVSx-cVS03APKyhus_wx+QcFdP_67WrV8gTnP6ApFNw@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: fix chunk map leaks in btrfs_map_block()
-To: Mark Harmstone <mark@harmstone.com>
-Cc: linux-btrfs@vger.kernel.org, Chris Mason <clm@fb.com>
+References: <20260206182336.1397715-1-neelx@suse.com> <20260206182336.1397715-17-neelx@suse.com>
+ <20260208152448.3300594-1-clm@meta.com>
+In-Reply-To: <20260208152448.3300594-1-clm@meta.com>
+From: Daniel Vacek <neelx@suse.com>
+Date: Wed, 18 Feb 2026 16:02:29 +0100
+X-Gm-Features: AaiRm50heuopm7EY7a7udAfEdRYxhS7H4B61tJOKCzqxGFffQrIvg06EGcnPVCY
+Message-ID: <CAPjX3FegzEdCxfBq4mqW2mP_GDDuyS4NOQqgDThWdAHhr2tCOg@mail.gmail.com>
+Subject: Re: [PATCH v6 16/43] btrfs: select encryption dependencies if FS_ENCRYPTION
+To: Chris Mason <clm@meta.com>
+Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, Eric Biggers <ebiggers@kernel.org>, 
+	"Theodore Y. Ts'o" <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>, Jens Axboe <axboe@kernel.dk>, 
+	David Sterba <dsterba@suse.com>, linux-block@vger.kernel.org, 
+	linux-fscrypt@vger.kernel.org, linux-btrfs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21758-lists,linux-btrfs=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_THREE(0.00)[3];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	MISSING_XM_UA(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[fdmanana@kernel.org,linux-btrfs@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-btrfs];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,harmstone.com:email,fb.com:email,mail.gmail.com:mid]
-X-Rspamd-Queue-Id: A4F5A157302
+	MIME_TRACE(0.00)[0:+];
+	MISSING_XM_UA(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[neelx@suse.com,linux-btrfs@vger.kernel.org];
+	TAGGED_RCPT(0.00)[linux-btrfs];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:dkim,toxicpanda.com:email,meta.com:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,mail.gmail.com:mid];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21759-lists,linux-btrfs=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
+	DKIM_TRACE(0.00)[suse.com:+]
+X-Rspamd-Queue-Id: 78B881573E1
 X-Rspamd-Action: no action
 
-On Wed, Feb 18, 2026 at 2:33=E2=80=AFPM Mark Harmstone <mark@harmstone.com>=
- wrote:
+On Sun, 8 Feb 2026 at 16:25, Chris Mason <clm@meta.com> wrote:
+> Daniel Vacek <neelx@suse.com> wrote:
+> > From: Josef Bacik <josef@toxicpanda.com>
+> >
+> > We need this to make sure the appropriate encryption algorithms are
+> > turned on in our config if we have FS_ENCRYPTION enabled, and
+> > additionally we only support inline encryption with the fallback block
+> > crypto, so we need to make sure we pull in those dependencies.
 >
-> Fix the two early returns in btrfs_map_block() so that we can no longer
-> fail to put the chunk map after getting it.
+> Hi everyone,
 >
-> Signed-off-by: Mark Harmstone <mark@harmstone.com>
-> Reported-by: Chris Mason <clm@fb.com>
-
-So being a bug fix, this is the type of patch that should have a Fixes tag.
-
-The commit that introduced the first leak is not in any released
-kernel, so no stable releases are affected.
-However it's still useful to have the Fixes tag here, because in case
-someone decides to backport the offending commit, either upstream or
-downstream, there are scripts in place to check if there are newer
-commits that fix a bug in the former commit and therefore must be
-backported as well.
-
-But the second leak was introduced in a much older commit, from 2024,
-and should be backported.
-Se comments inline below.
-
-Also, since this was reported publicly, please add a Link tag pointing
-to the URL with the review.
-
-> ---
->  fs/btrfs/volumes.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
+> I'm running the btrfs for-next branch, along with the encryption patch set
+> through my AI review prompts:
 >
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index 83e2834ea273..a1f0fccd552c 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -7082,7 +7082,7 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info, =
-enum btrfs_map_op op,
+> https://github.com/masoncl/review-prompts
 >
->                 ret =3D btrfs_translate_remap(fs_info, &new_logical, leng=
-th);
->                 if (ret)
-> -                       return ret;
-> +                       goto out;
-
-For this hunk:
-
-Fixes: 18ba64992871 ("btrfs: redirect I/O for remapped block groups")
-
+> I'm working on some btrfs specific instructions, but hopefully these reviews
+> are already useful.  I've kept the headers to make it easier to double check
+> that I'm actually replying to the right email, but please let me know if any
+> parts of this are incorrect:
 >
->                 if (new_logical !=3D logical) {
->                         btrfs_free_chunk_map(map);
-> @@ -7096,8 +7096,10 @@ int btrfs_map_block(struct btrfs_fs_info *fs_info,=
- enum btrfs_map_op op,
->         }
+> commit 0ab45d92f6f53371d87e1a302f09b56218d02546
+> Author: Josef Bacik <josef@toxicpanda.com>
 >
->         num_copies =3D btrfs_chunk_map_num_copies(map);
-> -       if (io_geom.mirror_num > num_copies)
-> -               return -EINVAL;
-> +       if (io_geom.mirror_num > num_copies) {
-> +               ret =3D -EINVAL;
-> +               goto out;
-> +       }
-
-For this hunk:
-
-Fixes: 0ae653fbec2b ("btrfs: reduce chunk_map lookups in btrfs_map_block()"=
-)
-
-I would suggest splitting this into 2 different patches, each one with
-the respective Fixes tag so that the second leak can be backported
-more easily.
-
+> btrfs: select encryption dependencies if FS_ENCRYPTION
 >
->         map_offset =3D logical - map->start;
->         io_geom.raid56_full_stripe_start =3D (u64)-1;
-> --
-> 2.52.0
+> This commit adds select statements for encryption-related dependencies when
+> FS_ENCRYPTION is enabled, including encryption algorithms, inline crypto, and
+> the block layer inline encryption fallback.
 >
+> > diff --git a/fs/btrfs/Kconfig b/fs/btrfs/Kconfig
+> > index ede184b6eda16..216a5707b099c 100644
+> > --- a/fs/btrfs/Kconfig
+> > +++ b/fs/btrfs/Kconfig
+> > @@ -16,6 +16,9 @@ config BTRFS_FS
+> >       select RAID6_PQ
+> >       select XOR_BLOCKS
+> >       select XXHASH
+> > +     select FS_ENCRYPTION_ALGS if FS_ENCRYPTION
+> > +     select FS_ENCRYPTION_INLINE_CRYPT if FS_ENCRYPTION
+> > +     select BLK_INLINE_ENCRYPTION_FALLBACK if FS_ENCRYPTION
+>
+> Are the dependencies for FS_ENCRYPTION_INLINE_CRYPT and
+> BLK_INLINE_ENCRYPTION_FALLBACK satisfied?
+>
+> Looking at fs/crypto/Kconfig:38, FS_ENCRYPTION_INLINE_CRYPT depends on
+> 'FS_ENCRYPTION && BLK_INLINE_ENCRYPTION'. Similarly, in block/Kconfig:204,
+> BLK_INLINE_ENCRYPTION_FALLBACK depends on 'BLK_INLINE_ENCRYPTION'.
+>
+> When BTRFS_FS=y with FS_ENCRYPTION=y but BLK_INLINE_ENCRYPTION=n (which is
+> valid), Kconfig will generate warnings:
+>
+>   WARNING: unmet direct dependencies detected for BLK_INLINE_ENCRYPTION_FALLBACK
+>   WARNING: unmet direct dependencies detected for FS_ENCRYPTION_INLINE_CRYPT
+>
+> The build will fail when compiling fs/crypto/inline_crypt.c because
+> BLK_INLINE_ENCRYPTION guards the required function definitions and struct
+> members:
+>
+>   fs/crypto/inline_crypt.c:259:15: error: implicit declaration of function
+>       'blk_crypto_derive_sw_secret'
+>   fs/crypto/inline_crypt.c:317:9: error: implicit declaration of function
+>       'bio_crypt_set_ctx'
+>   fs/crypto/inline_crypt.c:418:45: error: 'struct bio' has no member named
+>       'bi_crypt_context'
+>
+> Should BLK_INLINE_ENCRYPTION also be selected when FS_ENCRYPTION is enabled?
+
+That's correct.
+
+--- a/fs/btrfs/Kconfig
++++ b/fs/btrfs/Kconfig
+@@ -18,6 +18,7 @@ config BTRFS_FS
+     select XXHASH
+     select FS_ENCRYPTION_ALGS if FS_ENCRYPTION
+     select FS_ENCRYPTION_INLINE_CRYPT if FS_ENCRYPTION
++    select BLK_INLINE_ENCRYPTION if FS_ENCRYPTION
+     select BLK_INLINE_ENCRYPTION_FALLBACK if FS_ENCRYPTION
+     depends on PAGE_SIZE_LESS_THAN_256KB
+
+
+Thanks.
+
+--nX
+
+>   select BLK_INLINE_ENCRYPTION if FS_ENCRYPTION
+>   select FS_ENCRYPTION_ALGS if FS_ENCRYPTION
+>   select FS_ENCRYPTION_INLINE_CRYPT if FS_ENCRYPTION
+>   select BLK_INLINE_ENCRYPTION_FALLBACK if FS_ENCRYPTION
+>
+> >       depends on PAGE_SIZE_LESS_THAN_256KB
+> >
+> >       help
 >
 
