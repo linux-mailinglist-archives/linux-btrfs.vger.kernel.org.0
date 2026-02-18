@@ -1,140 +1,162 @@
-Return-Path: <linux-btrfs+bounces-21746-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21747-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MMRgFAWflWk3SwIAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21746-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Feb 2026 12:14:13 +0100
+	id 6DYqAryolWlVTAIAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21747-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Feb 2026 12:55:40 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84C49155D1D
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Feb 2026 12:14:12 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29B63156256
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Feb 2026 12:55:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id D4A173023044
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Feb 2026 11:14:09 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 534D5300A260
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Feb 2026 11:55:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A9123093CA;
-	Wed, 18 Feb 2026 11:14:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C96630F93D;
+	Wed, 18 Feb 2026 11:55:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b="Msb04wcs"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KFjewtGf"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail.burntcomma.com (mail2.burntcomma.com [217.169.27.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB219308F26
-	for <linux-btrfs@vger.kernel.org>; Wed, 18 Feb 2026 11:14:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.169.27.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D82C930F7F1
+	for <linux-btrfs@vger.kernel.org>; Wed, 18 Feb 2026 11:55:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771413245; cv=none; b=IwTfuvqFlw/ezygsmp6AKsmbirGJehjCXDVLCHbvkDKAwvu3grmBPL53onqvqAZ/38unC1gF4HonzxpTszQ4/FcgyF6sWNEGSlk3O0Q/gQiywrYvgweWv6+pfPjjMwObBD8hZYwYxLSHzPhde615wDSiekDWu8xiegkIOgBV91k=
+	t=1771415707; cv=none; b=D6PLMetKnTwGEWagpZfLs2oZ7KiWfoRnAZILNxiv84H/KiyFAX4N3RN7w2oc4i3vW4qjClPcMP2rCoMtMRVhWMcMuOAcO6rokYldunn/rtWMtf0iBjmPpXjn28XUFyUo2UUzzYzCdMSsy+2JZlQ7u8S1DjP+1nPVrCDrdCi/gmA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771413245; c=relaxed/simple;
-	bh=tN/o0kEf1vxppNamy8WE950/BoafebMHZALofF4RAvc=;
-	h=From:To:Cc:Subject:Date:Message-ID:Mime-Version; b=BjAHCRQENcIa/mioLX0zlpmzsy34iBqevw/GgvmkOl/OXKElEXF+lHbGisoLqVfr7j30QZ6w1WXfrFB1X3Q/m4diKPiodkk8kesEuEV48cK+lx4B67avwXj408z/V5gVt6yCcIshAnMljDc0nua/9RljQPygV5Xz+mffASC9fG4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com; spf=pass smtp.mailfrom=harmstone.com; dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b=Msb04wcs; arc=none smtp.client-ip=217.169.27.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=harmstone.com
-Received: from beren (beren.burntcomma.com [IPv6:2a02:8012:8cf0:0:ce28:aaff:fe0d:6db2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	by mail.burntcomma.com (Postfix) with ESMTPSA id B397A303658;
-	Wed, 18 Feb 2026 11:13:51 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=harmstone.com;
-	s=mail; t=1771413231;
-	bh=fSEGEAdb7AtbB9D0ARxOqBtynuN/JifSKJmGDoIkUUU=;
-	h=From:To:Cc:Subject:Date;
-	b=Msb04wcsp655JgVjXiMgtm1vmzMt0x7tm2wSdH6K9cs3WkZ70AFSzVRPfa2iFlYDV
-	 zto5HRBlGTJ2m/HtOPZ1goO3duS6zpzbfAvwyqVLH+xyJjcL+ci347uzvQQ4EB6svz
-	 2GJMCGHWkGcnT/vrdecWEMWVcmo0ksEFd75udkLs=
-From: Mark Harmstone <mark@harmstone.com>
-To: linux-btrfs@vger.kernel.org,
-	wqu@suse.com
-Cc: Mark Harmstone <mark@harmstone.com>
-Subject: [PATCH] btrfs: fix error messages in btrfs_check_features()
-Date: Wed, 18 Feb 2026 11:13:40 +0000
-Message-ID: <20260218111346.31243-1-mark@harmstone.com>
+	s=arc-20240116; t=1771415707; c=relaxed/simple;
+	bh=H3SbFsGBc6s0nvtC/pddpr4/mSC3Ksm9lju7J0UROZc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=nLBJCs4XLH8y0FggDRP/RRTjardeA0VxJl0H4RmJpIh4l7MzmgQwyzNxKAPFkpzAeQBz0RGzzgK+LL28yNnV//Ss7f+iH930J7HuBzwLu5/O27uXKy83ECpdl+GFO9qS4PWXNW6FXHyJ9CjsUU0Z5fjYfLldgetMS8Ja93Bpa+4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KFjewtGf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B853C19421
+	for <linux-btrfs@vger.kernel.org>; Wed, 18 Feb 2026 11:55:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1771415707;
+	bh=H3SbFsGBc6s0nvtC/pddpr4/mSC3Ksm9lju7J0UROZc=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=KFjewtGfvWg7xEYM9BsRSmPIKXd62wgQpQqzADFwDNQpUMuXMz60yHVi9WJDoqFKw
+	 z/iavmD+WDWnq9DhhGyLGd9zIF5JzMil80Enmb5YWKTiQ9Btdg64RB220vhNFzDoYo
+	 oxc8v+SzlYAv1qs7qVgfA/D2C8B42QCS2IPQ/8/dySHSTYfIOFnSXEEj2ir2sMlr0r
+	 pYAsgEEoXhiOMwt/7WlHHXs4eJp9BPMPY0sh+pLxz8L+3GxHtIlmvZiG8eVL5L8j4B
+	 XAZOoTic4OXgW5ywFQ/IB6MkBp0WVntpfUHmhuzic2hqDtvsd6qiSs18/8JoPp8iER
+	 B9Obx0MiANqcA==
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-b8f86167d39so686980366b.0
+        for <linux-btrfs@vger.kernel.org>; Wed, 18 Feb 2026 03:55:07 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCX4DBmM1V5EDEc0AA3ItCw39or2y+pbU2/1cxxXcI+c81p0o5O40zCInji0WUIETKFBiDHwx70Wr+a+yQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw4ZSt6B3TWR5ZxhAODcAwesRVWEDDYW9wclFmoy24Fsni05Uck
+	gnL2q+xZZVBt1XnhzXN6IBA9GQQ6XreUX3/JjK8vm8uL3opOkM/BMMQ1WgsE9lkouqOz+xQNv1C
+	BjPVR1vc37l/1f/2JXU54OfVB0ww5l0w=
+X-Received: by 2002:a17:906:9f92:b0:b8f:87a9:27b1 with SMTP id
+ a640c23a62f3a-b903daa5c44mr93423766b.3.1771415706091; Wed, 18 Feb 2026
+ 03:55:06 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+References: <20260216002806.3831884-1-mssola@mssola.com>
+In-Reply-To: <20260216002806.3831884-1-mssola@mssola.com>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Wed, 18 Feb 2026 11:54:28 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H4xgLyn5pSToEVj8MiqD4bohDwRYOMPeirqKQgCQ=pzfw@mail.gmail.com>
+X-Gm-Features: AaiRm50hARIKWmGDci402arraTpO22AIjkg2PEf6Sb4onsMF23L4j8kb-6e-Hvc
+Message-ID: <CAL3q7H4xgLyn5pSToEVj8MiqD4bohDwRYOMPeirqKQgCQ=pzfw@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: report filesystem shutdown via fserror
+To: =?UTF-8?B?TWlxdWVsIFNhYmF0w6kgU29sw6A=?= <mssola@mssola.com>
+Cc: dsterba@suse.com, clm@fb.com, linux-btrfs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	MV_CASE(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[harmstone.com,none];
-	R_DKIM_ALLOW(-0.20)[harmstone.com:s=mail];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21746-lists,linux-btrfs=lfdr.de];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_THREE(0.00)[3];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[mark@harmstone.com,linux-btrfs@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-21747-lists,linux-btrfs=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[harmstone.com:+];
-	TAGGED_RCPT(0.00)[linux-btrfs];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,harmstone.com:mid,harmstone.com:dkim,harmstone.com:email]
-X-Rspamd-Queue-Id: 84C49155D1D
+	DKIM_TRACE(0.00)[kernel.org:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	MISSING_XM_UA(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[fdmanana@kernel.org,linux-btrfs@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-btrfs];
+	RCPT_COUNT_FIVE(0.00)[5];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,suse.com:email]
+X-Rspamd-Queue-Id: 29B63156256
 X-Rspamd-Action: no action
 
-Commit d7f67ac9 introduced a regression when it comes to handling
-unsupported incompat or compat_ro flags. Beforehand we only printed the
-flags that we didn't recognize, afterwards we printed them all, which is
-less useful. Fix the error handling so it behaves like it used to.
+On Mon, Feb 16, 2026 at 3:01=E2=80=AFAM Miquel Sabat=C3=A9 Sol=C3=A0 <mssol=
+a@mssola.com> wrote:
+>
+> Commit 347b7042fb26 ("Merge patch series "fs: generic file IO error
+> reporting"") has introduced a common framework for reporting errors to
+> fsnotify in a standard way.
+>
+> One of the functions being introduced is 'fserror_report_shutdown' that,
+> when combined with the experimental support for shutdown in btrfs, it
+> means that user-space can also easily detect whenever a btrfs filesystem
+> has been marked as shutdown.
+>
+> Signed-off-by: Miquel Sabat=C3=A9 Sol=C3=A0 <mssola@mssola.com>
 
-Signed-off-by: Mark Harmstone <mark@harmstone.com>
-Fixes: d7f67ac9a928 ("btrfs: relax block-group-tree feature dependency checks")
----
- fs/btrfs/disk-io.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
-diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-index f39008591631..7478d1c50cca 100644
---- a/fs/btrfs/disk-io.c
-+++ b/fs/btrfs/disk-io.c
-@@ -3176,7 +3176,7 @@ int btrfs_check_features(struct btrfs_fs_info *fs_info, bool is_rw_mount)
- 	if (incompat & ~BTRFS_FEATURE_INCOMPAT_SUPP) {
- 		btrfs_err(fs_info,
- 		"cannot mount because of unknown incompat features (0x%llx)",
--		    incompat);
-+		    incompat & ~BTRFS_FEATURE_INCOMPAT_SUPP);
- 		return -EINVAL;
- 	}
- 
-@@ -3208,7 +3208,7 @@ int btrfs_check_features(struct btrfs_fs_info *fs_info, bool is_rw_mount)
- 	if (compat_ro_unsupp && is_rw_mount) {
- 		btrfs_err(fs_info,
- 	"cannot mount read-write because of unknown compat_ro features (0x%llx)",
--		       compat_ro);
-+		       compat_ro_unsupp);
- 		return -EINVAL;
- 	}
- 
-@@ -3221,7 +3221,7 @@ int btrfs_check_features(struct btrfs_fs_info *fs_info, bool is_rw_mount)
- 	    !btrfs_test_opt(fs_info, NOLOGREPLAY)) {
- 		btrfs_err(fs_info,
- "cannot replay dirty log with unsupported compat_ro features (0x%llx), try rescue=nologreplay",
--			  compat_ro);
-+			  compat_ro_unsupp);
- 		return -EINVAL;
- 	}
- 
--- 
-2.52.0
+Once the for-next branch is based on the next kernel rc that includes
+the new function, I can push the patch there.
 
+Thanks.
+
+> ---
+> Note that the for-next branch does not include the mentioned commit. I've
+> built and tested this patch on top of current Linus' tree.
+>
+>  fs/btrfs/fs.h | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+>
+> diff --git a/fs/btrfs/fs.h b/fs/btrfs/fs.h
+> index 3de3b517810e..92fcebf5766e 100644
+> --- a/fs/btrfs/fs.h
+> +++ b/fs/btrfs/fs.h
+> @@ -33,6 +33,7 @@
+>  #include "async-thread.h"
+>  #include "block-rsv.h"
+>  #include "messages.h"
+> +#include <linux/fserror.h>
+>
+>  struct inode;
+>  struct super_block;
+> @@ -1199,8 +1200,10 @@ static inline void btrfs_force_shutdown(struct btr=
+fs_fs_info *fs_info)
+>          * So here we only mark the fs error without flipping it RO.
+>          */
+>         WRITE_ONCE(fs_info->fs_error, -EIO);
+> -       if (!test_and_set_bit(BTRFS_FS_STATE_EMERGENCY_SHUTDOWN, &fs_info=
+->fs_state))
+> +       if (!test_and_set_bit(BTRFS_FS_STATE_EMERGENCY_SHUTDOWN, &fs_info=
+->fs_state)) {
+>                 btrfs_crit(fs_info, "emergency shutdown");
+> +               fserror_report_shutdown(fs_info->sb, GFP_KERNEL);
+> +       }
+>  }
+>
+>  /*
+> --
+> 2.53.0
+>
 
