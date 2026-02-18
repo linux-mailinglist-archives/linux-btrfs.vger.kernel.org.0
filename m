@@ -1,112 +1,112 @@
-Return-Path: <linux-btrfs+bounces-21752-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21753-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id aCa2GkC8lWntUQIAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21752-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Feb 2026 14:18:56 +0100
+	id CNGMNUzHlWkFUwIAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21753-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Feb 2026 15:06:04 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 124A11568E1
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Feb 2026 14:18:56 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A19A156F90
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Feb 2026 15:06:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9802330209CC
-	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Feb 2026 13:18:44 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id D53E5300BCBB
+	for <lists+linux-btrfs@lfdr.de>; Wed, 18 Feb 2026 14:05:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FCD02BD030;
-	Wed, 18 Feb 2026 13:18:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EA75330321;
+	Wed, 18 Feb 2026 14:05:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Onq8ALfd"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="dyNzfm15"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0605129A9E9
-	for <linux-btrfs@vger.kernel.org>; Wed, 18 Feb 2026 13:18:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C9843033DC
+	for <linux-btrfs@vger.kernel.org>; Wed, 18 Feb 2026 14:05:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.128.41
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771420722; cv=pass; b=BCzJPNB6rhYLQh6EyNSjmWSlj65Z+WzJtqCGxNkp5dNx2+p8FppOmroHW31dVIgP27ZWuNJiB230fwKl2ui1UptX830YQbUorsAE1ogy0AN2QHms55Y5ByrgAlzqYZ9V9zLzDsGjapomdH2parVwBaE9L8qNC9eeYnkuSOtA7k8=
+	t=1771423552; cv=pass; b=YqjBM7IoqhjrlqLLThuO2Btungm8yebjZFCL2r3Yv6BHRcPHly1aRjOV7WQVoN7wkvVeA/oNhqmmL9vNXM3E3fuECjSNUKUiTGzmBKTjBXeTnrd30LPosBt1Ao/tvWto+1QCiNmiZz22WKEUdqBtDJC8XdtsIaCJVR7UBRB4SYg=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771420722; c=relaxed/simple;
-	bh=sLMGR09zI4y3gpjzSi6grOOg7wQjmI4f5Efbabe2ap4=;
+	s=arc-20240116; t=1771423552; c=relaxed/simple;
+	bh=0IPQfandQcQcgM/09gru9lXRdDMyChSp6OWGiSUPAb0=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qItm2AlfxkFyzrxTnkuNDVY+cu2uPZUqhZGzEyK5BqLm4gfWxhFpuESxkmnu1mg7VQvu/t1tZgmifUHWkUK8ID/7ZTB5L5CIpziWqSVKJbR/uy3xeJ5XFYLZZmPh4u0oXUxmgaWwMvRRJ1m7O2RGhDuebE7jxd3bSUUwhnoTiIs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Onq8ALfd; arc=pass smtp.client-ip=209.85.221.41
+	 To:Cc:Content-Type; b=OlQv5n4dLXbnuZ9awXJDmOoQOBzGPzYaR2uWRkijZ20hsaXRFoNSjPs9ysbfwDFlVdlSUoeRbjBnIG0fVcAv6OyAiBAFlwRVcnUtABx5fXUkPQtnRylRECwQiTIdJfM7NT+WKGLsfuqwfo6BNe/Fb/qK2W5KBEO3fMVA7NOTe0Y=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=dyNzfm15; arc=pass smtp.client-ip=209.85.128.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-437711e9195so3752881f8f.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 18 Feb 2026 05:18:40 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1771420719; cv=none;
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-4838c15e3cbso22849305e9.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 18 Feb 2026 06:05:49 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1771423548; cv=none;
         d=google.com; s=arc-20240605;
-        b=Vh9F3I9u/d0lq8FX/jhHvTNL8wKzQFb5cANWZDGNEYXQrqcFaK0DYmen/7Y9TDVdN7
-         GEyqCohZbsF07EleHS8A55/pjb18hpCiKy74vhxbb9G8E2ASU8CX9XSqd1fPmY2ohzXq
-         uNb3BOx7PVhxGN6D8lPg/HafaRSDOmdJzweTY/WRzIVD28u5ZLxC8C2tR0fZYVsugjR6
-         SV/do9OEtqIspo/Bbra9PtfM45FUkJAWsi7r/YKtROxBKkt/LYKQbX5neLjyj0Gp5vyC
-         KmeQBCMxr8eRHjFm03VT9EuI8Za/cXQ51hE0qnjOFiC0EhmuBbyjYozKb17Nl8OcGB7F
-         PJ8g==
+        b=MX5E0wUIV0+SlP3qb1gNAdpbkVZPYGuuhcu0j3vdSnCLWfBrVsXuKRHxuIVWneGJmz
+         aFSDlJuMJ8d7ddwayV2z9oVhZIktNl75kWeAwAP2Gfe4o4lUiVh8ouz++pVJ1T4oFZFK
+         03tHGNz8zP6rFMSf9DtHUwAUwx1WOuhycRiDSkRsto5nZswTADMMY5C3KHs/X5LzWhm5
+         bF3iYddNeRResBegZGHtpws1ZeQDkVDyK77VzM/s1w4JsvcCG/GoYzPxctlvbfESwBIC
+         aC/eD8WIMKRb7VFd2bJlCE9kn2akTVHgKEUfjZHUdTmaL53NGM8jPro5P43kM7XXNxPw
+         AGJA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:dkim-signature;
-        bh=RHxjjrT8dDKAZN0w50HLXW8C36xUtCBdYdPVz0Pgsc8=;
-        fh=URVYzOLK82+plcOY+z8a4obkmzcOeB6nJS1N2jgGVR8=;
-        b=fcjNhRhwotkEJF92/2PERcZFFZiEK/bN0YuzMXpLFst8nnM8ijcmP8G2sfHJM2nua8
-         RG5B5lgMOgrinx1ekftLAxhDY2dHxb1gLiJUu/XxfadZW1/blbWrcG0r1qfdLbohNGGX
-         PfaJPvbko2/FTVSXcFiDBr6h5TRMupdSFA6VUnjxkKtxAoNjmb6hI6N/+dZpInGBrG+8
-         KbPjpvyptfjzlVrjmwgeDaXWSA1M3XpTyJsBpcWBP4jGxVVv3u8wc1UCaWo6u6/8mL1+
-         hGj3qZPxMbmZE/ttdPjBEJM6hB4z4lo+NLrz+9JXLX6wI3yHHsFint+dumdnZpczLB4n
-         k+7g==;
+        bh=ZG0K+ScZHI1JMARqHPSZnWOCAEhLzuWZYvaV9Vd0R8Y=;
+        fh=wJczvvPXKky6gIVtqIB1opAmdZC71lyXjpcnEUB8yXE=;
+        b=K7VF4fKEQUJy9gf2UWkmqaTV3yLuWDMa/BdxvN7SkdFnY19q8TYI59ixSu2BTWx7Yk
+         jAsWr5PlpqaOovMYzV17EAvSI6WYu7O/UPOfgKQtLP5ESA7lY+q62T4ZUJ/ctShY/5be
+         QXxutZMWoWELbxiM4cqLLPT7VSiY338UhZtsJI/N97xFH6LujQCFJnBiiUns9JFhtdAb
+         zydL985l4rmaxrdeHKFlweJWVOqpHkAbo6pS5tMubwe+U2yGeQcSNRjm0qLfilGVU+AV
+         L8Xo3xrIhuWzsI54KHaLITRoHHC6g6Pr/EOiOyp3XzS6kCxvPAD0a/UxpH9FIqBpPDaU
+         w0ng==;
         darn=vger.kernel.org
 ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1771420719; x=1772025519; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1771423548; x=1772028348; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=RHxjjrT8dDKAZN0w50HLXW8C36xUtCBdYdPVz0Pgsc8=;
-        b=Onq8ALfdPQu6Dgw3a15nKbA09J6rzOwkPAfTk8y9o9yjRD3hqfqxCygRhg/J1sLKfM
-         Zda5bkTSUgAHkYZ2+B2mAFmjB6ppVM8wLv27EGpnDQwFb+GlpW6Uyte60rYXZ/8e0ln2
-         EuVFhhGluTzk3tW/Fdrs2OW/oWgIN1edYnlXhbo7Uc3Q4n0yo/YISsXUI/5xk6YcwfeD
-         SU5IVMR1MzlTKb2N/eeJyfLmw6Kdf79yYFdTbCz1tAEq+u/4S+SBqsdpH833JE1w5Quh
-         4PWRWOUoT773pY2oqnObD4ayXyAnXLMsF8T4bkTlnQnul9dCmLQgJ4Oi+qw83KsFdXXR
-         t0ng==
+        bh=ZG0K+ScZHI1JMARqHPSZnWOCAEhLzuWZYvaV9Vd0R8Y=;
+        b=dyNzfm150yPWPRdOJcw6LyIJ4XntfMbNBXzov9rUmvcdHnJDvKWPkDWKM3TztbQvkE
+         pzEt9TUbqJp65oD4B77ioqUynrlzYLn4RZ+H64gYMUrB2MeWJd4s1rIK5JbOW2RD43UE
+         st7c9uQNIxiivA9EkzF1m38q0WkSvzgO2S2AzbYTuGk62vGvKWPRdnMxX+FTPBDarXgB
+         p9MkVWtwB3vh5JcDYLpxCA1oyzao1FNWEPWfybwJCOoybp6PybozGDyn40WyaQVRyAbm
+         ireEeWHy7PjmfuVBZX7ScZguZ+rcLi2uPECCeyQ3ZK4tQ+rg9aL351fOslGxCqx14fCf
+         j4rg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771420719; x=1772025519;
+        d=1e100.net; s=20230601; t=1771423548; x=1772028348;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=RHxjjrT8dDKAZN0w50HLXW8C36xUtCBdYdPVz0Pgsc8=;
-        b=HLyovtWHWeIXwDpHRt6hNlgGPvqdKDA7meaRPDyblQuS9mXCTDIb1KbMlPPLRaZ0eA
-         1wYYko8VTtuhos869fO13DTHMSg51HbgU2a0MKF/HK1K6L7gVL71Txt3GBzMAYU6YUHv
-         GYMcc0T01IOkb55Z8skN2Xm7gE99dnl97AWppMMfKGE9u6L5hxZfwku5h2mmFHzJt62p
-         SbXkjDMBKEV/pPdu5v7rrqqJ8fTpCfQnHuRHrw14vhsW35ya06Ak94H8y8sQQr2UjO5+
-         pgg5664s3SWXToBXkqHInTCb+jx48Wwp6uVL8BGrpQ/W66Ob29mZ7itdD+EMfCzr15f8
-         kbAA==
-X-Forwarded-Encrypted: i=1; AJvYcCXsXy89hZZwG/i8Q3Xpm39Pr6XrUY4bSy2F0Gd5RzWd6/Nz3XMqNFFkj0b2FhNdZUU24zFrqMS1Z4ME5g==@vger.kernel.org
-X-Gm-Message-State: AOJu0YyGqgTLk4EJpwH+c82X2R2WGy5cw3zgUHaWVk57ANa/XY+gw4+D
-	rngowd4KPuIqVw0Q5stSm0Ef/jXYHc9Myv6wLyO0w5uvUDB6wpI9PK+11lqf89lVjAik45EQb+p
-	OZ3obTPuHSrr5LIQZjnOB7B0goxxT7AqfdthJrD5Ziw==
-X-Gm-Gg: AZuq6aLAnRjl0d/RUN9U9EA6MUvgtuBq2rC0GqpxILBrrSlcU9gaWn/26exRttdgPfW
-	W5YXQ8kU2bQGCpbx0DmBvcI6c+rWq8G0eAWF34zGezXscEGR+0vwk9kk4cr+GEYJrScdbiQgKqi
-	4bZKpxFjRgIzOP+LgvyzgFWCJhgmmJTLZjGID9csjPMW7OC646ux3fKzAPR7+8DiOdS/O8MaLke
-	4pKXVSe8DFbKAk3iFeDryvDbKTONLoF4eOO7ADr4uzmtfitwLKXr5wYj7IswFQES8iIrMj2b0tt
-	9baSkGw9lolOicobXlJLVB+qR/0rj0may9s1+VH2mIjQZ+hGBYKIl7Lnwes6k8HIz379r8QFLvU
-	oa+U0
-X-Received: by 2002:a05:6000:26cd:b0:435:a815:dd8d with SMTP id
- ffacd0b85a97d-43796b04f57mr32979736f8f.55.1771420719317; Wed, 18 Feb 2026
- 05:18:39 -0800 (PST)
+        bh=ZG0K+ScZHI1JMARqHPSZnWOCAEhLzuWZYvaV9Vd0R8Y=;
+        b=Y0nENeQn/7N7S4EE3rcUe0Hf76Z3cDW7TW/1Z/agZrS5kSHFPNM1KZs7gKCfLk5dA5
+         jt4nAiXK/NiSo+l+TzfrYL6gxxVeriB7klCyKyfO5Wmqt0udxQ3IMDLvha7d6d7CgcLR
+         KbI+OKZeedqvAXsREvu+B0fdHT6FLHgsVUrceDHyy+mYFNrkIbRpoyVd5sITvBLSbA0e
+         P4OmuxI3F5xP0JxDMmwH8XaR/qlmY3YyavdAMbcwi1etLs4ggzrI9V4ILIzKlM70Zg9v
+         XseXcf/w1h3mMYlu39dozXyheAI9BjJg/+9Enk5tKMLWTX3c8BxfhUrxMcqdCkc5EA1Z
+         FHDA==
+X-Forwarded-Encrypted: i=1; AJvYcCWNZZrrE7WwQ3Wi38xNziZ1qtFot5D6cGPK6epHixbTfN40c7o1GbgX90C5HT2Mitq0ZtBPhzPtKv6kQw==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw8rO8kaHITtL8HAbniDiKk8DhbxEZIEI9SC6C1IuHdzHnRihxP
+	jVrJFZb5p5HvG6QYshJKjc3Y29udGp2mfYkWvbF8Gv4q6SE9e1vc23cg7h+roDtRsRFx+wRfnnf
+	wmOPO69NTXyPYqF0+0TA0x5mHEkkRh5htc4gMPOwhhA==
+X-Gm-Gg: AZuq6aIG8jSiDXdaiqct5Ic1hpRw25eWNVo5B/bGXhNicK7rA56UDMZPzMq76jkM3L8
+	eUegfP4UFqmHTJ7goTrbuiwDuJM8jgWcnajCLex7ZLSYH9QREjVCo4iQToAnO5LLz2v0YBs2S1R
+	s1mCfKOpEOWfLZ1rwvLvsiPpCF7GsDOunT0xFqaai5/2uqGpQNIRlyh+XCget+wiIctXTokmpD5
+	exuMIhgT43NZoajeYfBS2WvFpYSO+tvTWVCRoY19VVBpX5+dD/LcLCBszjA1SiCbXndiAsIdSQX
+	vsGkMlI9EIaTFtjgxu5TL6oDoYF07rGPxYvWUAe3SZvK8UWv9VGQufhhibme+gq5Q/QaPwtNtvi
+	j0GO7
+X-Received: by 2002:a05:600c:6912:b0:483:709e:f22d with SMTP id
+ 5b1f17b1804b1-4837108fc46mr300110235e9.27.1771423547925; Wed, 18 Feb 2026
+ 06:05:47 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260206182336.1397715-1-neelx@suse.com> <20260206182336.1397715-12-neelx@suse.com>
- <20260208153808.3476221-1-clm@meta.com>
-In-Reply-To: <20260208153808.3476221-1-clm@meta.com>
+References: <20260206182336.1397715-1-neelx@suse.com> <20260206182336.1397715-14-neelx@suse.com>
+ <20260208153607.3466929-1-clm@meta.com>
+In-Reply-To: <20260208153607.3466929-1-clm@meta.com>
 From: Daniel Vacek <neelx@suse.com>
-Date: Wed, 18 Feb 2026 14:18:28 +0100
-X-Gm-Features: AaiRm51fAAFTVBcqF-KI5-Lr8gaWIksaX5IH6JtEAzcWunIgDM49UiSlrdWV5YQ
-Message-ID: <CAPjX3FdXC5LX6UBmsCf6cdGquwsPrh3gp3OKj0NEerXkbFSd5w@mail.gmail.com>
-Subject: Re: [PATCH v6 11/43] btrfs: add inode encryption contexts
+Date: Wed, 18 Feb 2026 15:05:37 +0100
+X-Gm-Features: AaiRm510tlnOinFS7nG7T90JA_M8mhwdBINiTRaMYypuSLi3O4tUUbZEt6vztBA
+Message-ID: <CAPjX3FdE9nLWE12KRxpXyj9Hy-Z1JSmWcDMBgT0fuyQsfafAHw@mail.gmail.com>
+Subject: Re: [PATCH v6 13/43] btrfs: adapt readdir for encrypted and nokey names
 To: Chris Mason <clm@meta.com>
 Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, Eric Biggers <ebiggers@kernel.org>, 
 	"Theodore Y. Ts'o" <tytso@mit.edu>, Jaegeuk Kim <jaegeuk@kernel.org>, Jens Axboe <axboe@kernel.dk>, 
@@ -119,7 +119,7 @@ X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
 	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -127,7 +127,7 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	TO_DN_SOME(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	RCPT_COUNT_TWELVE(0.00)[14];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
@@ -135,22 +135,24 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[neelx@suse.com,linux-btrfs@vger.kernel.org];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,meta.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,suse.com:email,suse.com:dkim];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:dkim,mail.gmail.com:mid,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,osandov.com:email,meta.com:email];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21752-lists,linux-btrfs=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-21753-lists,linux-btrfs=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	DKIM_TRACE(0.00)[suse.com:+]
-X-Rspamd-Queue-Id: 124A11568E1
+X-Rspamd-Queue-Id: 4A19A156F90
 X-Rspamd-Action: no action
 
-On Sun, 8 Feb 2026 at 16:38, Chris Mason <clm@meta.com> wrote:
+On Sun, 8 Feb 2026 at 16:36, Chris Mason <clm@meta.com> wrote:
 > Daniel Vacek <neelx@suse.com> wrote:
 > > From: Omar Sandoval <osandov@osandov.com>
 > >
-> > fscrypt stores a context item with encrypted inodes that contains the
-> > related encryption information.  fscrypt provides an arbitrary blob for
-> > the filesystem to store, and it does not clearly fit into an existing
-> > structure, so this goes in a new item type.
+> > Deleting an encrypted file must always be permitted, even if the user
+> > does not have the appropriate key. Therefore, for listing an encrypted
+> > directory, so-called 'nokey' names are provided, and these nokey names
+> > must be sufficient to look up and delete the appropriate encrypted
+> > files. See 'struct fscrypt_nokey_name' for more information on the
+> > format of these names.
 >
 > Hi everyone,
 >
@@ -164,170 +166,144 @@ On Sun, 8 Feb 2026 at 16:38, Chris Mason <clm@meta.com> wrote:
 > that I'm actually replying to the right email, but please let me know if any
 > parts of this are incorrect:
 >
-> commit 2d6114c2937b897d844735aa16d5369e3ec6d135
+> commit e264482bd61ca8096981d81cc5e7c839284ac969
 > Author: Omar Sandoval <osandov@osandov.com>
 >
-> btrfs: add inode encryption contexts
+> btrfs: adapt readdir for encrypted and nokey names
 >
-> fscrypt stores a context item with encrypted inodes that contains the
-> related encryption information.  fscrypt provides an arbitrary blob for
-> the filesystem to store, and it does not clearly fit into an existing
-> structure, so this goes in a new item type.
+> This commit adapts the btrfs readdir implementation to handle encrypted
+> filenames and nokey names, enabling directory listing and deletion of
+> encrypted files even without the encryption key.
 >
-> > diff --git a/fs/btrfs/fscrypt.c b/fs/btrfs/fscrypt.c
-> > index 6cfba7d94e726..e9b024d671a22 100644
-> > --- a/fs/btrfs/fscrypt.c
-> > +++ b/fs/btrfs/fscrypt.c
+> > diff --git a/fs/btrfs/delayed-inode.c b/fs/btrfs/delayed-inode.c
+> > index 1739a0b29c49d..c19213fab3dda 100644
+> > --- a/fs/btrfs/delayed-inode.c
+> > +++ b/fs/btrfs/delayed-inode.c
 >
 > [ ... ]
 >
-> > @@ -1,10 +1,126 @@
-> >  // SPDX-License-Identifier: GPL-2.0
+> > @@ -1820,7 +1823,25 @@ bool btrfs_readdir_delayed_dir_index(struct dir_context *ctx,
+> >               d_type = fs_ftype_to_dtype(btrfs_dir_flags_to_ftype(di->type));
+> >               btrfs_disk_key_to_cpu(&location, &di->location);
 > >
-> > +#include <linux/iversion.h>
-> >  #include "ctree.h"
-> > +#include "accessors.h"
-> >  #include "btrfs_inode.h"
-> > +#include "disk-io.h"
-> > +#include "fs.h"
-> >  #include "fscrypt.h"
-> > +#include "ioctl.h"
-> > +#include "messages.h"
-> > +#include "transaction.h"
-> > +#include "xattr.h"
+> > -             over = !dir_emit(ctx, name, name_len, location.objectid, d_type);
+> > +             if (di->type & BTRFS_FT_ENCRYPTED) {
+> > +                     int ret;
+> > +                     struct fscrypt_str iname = FSTR_INIT(name, name_len);
 > > +
-> > +static int btrfs_fscrypt_get_context(struct inode *inode, void *ctx, size_t len)
+> > +                     fstr->len = fstr_len;
+> > +                     /*
+> > +                      * The hash is only used when the encryption key is not
+> > +                      * available. But if we have delayed insertions, then we
+> > +                      * must have the encryption key available or we wouldn't
+> > +                      * have been able to create entries in the directory.
+> > +                      * So, we don't calculate the hash.
+> > +                      */
+> > +                     ret = fscrypt_fname_disk_to_usr(inode, 0, 0, &iname, fstr);
+> > +                     if (ret)
+> > +                             return ret;
+> > +                     over = !dir_emit(ctx, fstr->name, fstr->len, location.objectid, d_type);
+> > +             } else {
+> > +                     over = !dir_emit(ctx, name, name_len, location.objectid, d_type);
+> > +             }
+>
+> Does the return statement at line 1840 cause silent error loss?
+>
+> The function btrfs_readdir_delayed_dir_index returns bool, but
+> 'return ret;' returns an int error code from fscrypt_fname_disk_to_usr.
+> Since ret is negative on error (e.g., -EUCLEAN from fname_decrypt
+> failures), this converts to 'true' in bool context.
+>
+> The caller btrfs_real_readdir at inode.c:6410 interprets true as "stop
+> iteration normally":
+>
+>     if (btrfs_readdir_delayed_dir_index(inode, &fstr, ctx, &ins_list))
+>         goto nopos;
+>
+> The nopos label at line 6417 sets ret = 0, which means readdir()
+> completes successfully with incomplete results when crypto operations
+> fail on encrypted directory entries.
+
+This still seems correct to me. While rebasing, however, I missed that
+the return type changed in 41e4ea0bf555 ("btrfs: make
+btrfs_readdir_delayed_dir_index() return a bool instead").
+If I'm not mistaken, we can just `return true;` here:
+
+--- a/fs/btrfs/delayed-inode.c
++++ b/fs/btrfs/delayed-inode.c
+@@ -1837,7 +1837,7 @@ bool btrfs_readdir_delayed_dir_index(const
+struct inode *inode,
+              */
+             ret = fscrypt_fname_disk_to_usr(inode, 0, 0, &iname, fstr);
+             if (ret)
+-                return ret;
++                return true;
+             over = !dir_emit(ctx, fstr->name, fstr->len,
+location.objectid, d_type);
+         } else {
+             over = !dir_emit(ctx, name, name_len, location.objectid, d_type);
+
+> [ ... ]
+>
+> > diff --git a/fs/btrfs/dir-item.c b/fs/btrfs/dir-item.c
+> > index 085a83ae9e62f..6e10dd4a4e9e1 100644
+> > --- a/fs/btrfs/dir-item.c
+> > +++ b/fs/btrfs/dir-item.c
+>
+> [ ... ]
+>
+> > @@ -227,6 +228,47 @@ struct btrfs_dir_item *btrfs_lookup_dir_item(struct btrfs_trans_handle *trans,
+> >       return di;
+> >  }
+> >
+> > +/*
+> > + * Lookup for a directory item by fscrypt_name.
+> > + *
+> > + * @trans:   The transaction handle to use.
+> > + * @root:    The root of the target tree.
+> > + * @path:    Path to use for the search.
+> > + * @dir:     The inode number (objectid) of the directory.
+> > + * @name:    The fscrypt_name associated to the directory entry
+> > + * @mod:     Used to indicate if the tree search is meant for a read only
+> > + *           lookup or for a deletion lookup, so its value should be 0 or
+> > + *           -1, respectively.
+> > + *
+> > + * Returns: NULL if the dir item does not exists, an error pointer if an error
+> > + * happened, or a pointer to a dir item if a dir item exists for the given name.
+> > + */
+> > +struct btrfs_dir_item *btrfs_lookup_dir_item_fname(struct btrfs_trans_handle *trans,
+> > +                                                struct btrfs_root *root,
+> > +                                                struct btrfs_path *path, u64 dir,
+> > +                                                struct fscrypt_name *name, int mod)
 > > +{
-> > +     struct btrfs_key key = {
-> > +             .objectid = btrfs_ino(BTRFS_I(inode)),
-> > +             .type = BTRFS_FSCRYPT_INODE_CTX_KEY,
-> > +             .offset = 0,
-> > +     };
-> > +     struct btrfs_path *path;
-> > +     struct extent_buffer *leaf;
-> > +     unsigned long ptr;
-> > +     int ret;
+> > +     struct btrfs_key key;
+> > +     struct btrfs_dir_item *di = NULL;
+> > +     int ret = 0;
 > > +
-> > +
-> > +     path = btrfs_alloc_path();
-> > +     if (!path)
-> > +             return -ENOMEM;
-> > +
-> > +     ret = btrfs_search_slot(NULL, BTRFS_I(inode)->root, &key, path, 0, 0);
-> > +     if (ret) {
-> > +             len = -ENOENT;
-> > +             goto out;
-> > +     }
-> > +
-> > +     leaf = path->nodes[0];
-> > +     ptr = btrfs_item_ptr_offset(leaf, path->slots[0]);
-> > +     /* fscrypt provides max context length, but it could be less */
-> > +     len = min_t(size_t, len, btrfs_item_size(leaf, path->slots[0]));
-> > +     read_extent_buffer(leaf, ctx, ptr, len);
-> > +
-> > +out:
-> > +     btrfs_free_path(path);
-> > +     return len;
-> > +}
-> > +
-> > +static int btrfs_fscrypt_set_context(struct inode *inode, const void *ctx,
-> > +                                  size_t len, void *fs_data)
-> > +{
-> > +     struct btrfs_trans_handle *trans = fs_data;
-> > +     struct btrfs_key key = {
-> > +             .objectid = btrfs_ino(BTRFS_I(inode)),
-> > +             .type = BTRFS_FSCRYPT_INODE_CTX_KEY,
-> > +             .offset = 0,
-> > +     };
-> > +     struct btrfs_path *path = NULL;
-> > +     struct extent_buffer *leaf;
-> > +     unsigned long ptr;
-> > +     int ret;
-> > +
-> > +     if (!trans)
-> > +             trans = btrfs_start_transaction(BTRFS_I(inode)->root, 2);
-> > +     if (IS_ERR(trans))
-> > +             return PTR_ERR(trans);
-> > +
-> > +     path = btrfs_alloc_path();
-> > +     if (!path) {
-> > +             ret = -ENOMEM;
-> > +             goto out_err;
-> > +     }
-> > +
-> > +     ret = btrfs_search_slot(trans, BTRFS_I(inode)->root, &key, path, 0, 1);
-> > +     if (ret < 0)
-> > +             goto out_err;
-> > +
-> > +     if (ret > 0) {
-> > +             btrfs_release_path(path);
-> > +             ret = btrfs_insert_empty_item(trans, BTRFS_I(inode)->root, path, &key, len);
-> > +             if (ret)
-> > +                     goto out_err;
-> > +     }
-> > +
-> > +     leaf = path->nodes[0];
-> > +     ptr = btrfs_item_ptr_offset(leaf, path->slots[0]);
-> > +
-> > +     len = min_t(size_t, len, btrfs_item_size(leaf, path->slots[0]));
-> > +     write_extent_buffer(leaf, ctx, ptr, len);
-> > +     btrfs_mark_buffer_dirty(trans, leaf);
-> > +     btrfs_release_path(path);
-> > +
-> > +     if (fs_data)
-> > +             return ret;
+> > +     key.objectid = dir;
+> > +     key.type = BTRFS_DIR_ITEM_KEY;
+> > +     key.offset = btrfs_name_hash(name->disk_name.name, name->disk_name.len);
+> > +     /* XXX get the right hash for no-key names */
 >
-> Does this code leak the path when fs_data is non-NULL?
+> Can this dereference a NULL pointer for long nokey names?
 >
-> In btrfs_fscrypt_set_context(), a path is allocated via btrfs_alloc_path()
-> but when fs_data is provided (during inode creation with a transaction
-> handle), the function returns here without calling btrfs_free_path(path).
+> When btrfs_unlink() calls fscrypt_setup_filename() with lookup=1 for a
+> nokey encrypted filename, fname->disk_name.name is NULL for long nokey
+> names (see fscrypt_setup_filename lines 370-375 in fs/crypto/fname.c).
 >
-> The btrfs_release_path() call above only releases internal references to
-> extent buffers and locks but does not free the path structure itself.
+> The call chain is: btrfs_unlink -> btrfs_unlink_inode ->
+> __btrfs_unlink_inode (line 4396) -> btrfs_lookup_dir_item_fname.
 >
-> This leak occurs on every encrypted inode creation. The fix would be to add
-> btrfs_free_path(path) before the return.
+> This passes NULL to btrfs_name_hash() at line 257, which calls
+> crc32c(NULL, len), causing a kernel crash. The XXX comment at line 258
+> acknowledges this is unhandled.
+>
+> Note: This issue is addressed in a later commit in the patch series
+> (fabad1c3ea821 'btrfs: handle nokey names').
 
-That's correct. Good catch!
-
---- a/fs/btrfs/fscrypt.c
-+++ b/fs/btrfs/fscrypt.c
-@@ -155,7 +155,7 @@ static int btrfs_fscrypt_set_context(struct inode
-*inode, const void *ctx,
-     btrfs_release_path(path);
-
-     if (fs_data)
--        return ret;
-+        goto out_err;
-
-     BTRFS_I(inode)->flags |= BTRFS_INODE_ENCRYPT;
-     btrfs_sync_inode_flags_to_i_flags(BTRFS_I(inode));
+Yes, this is handled right in the next commit.
 
 Thanks.
 
 --nX
-
-> > +
-> > +     BTRFS_I(inode)->flags |= BTRFS_INODE_ENCRYPT;
-> > +     btrfs_sync_inode_flags_to_i_flags(BTRFS_I(inode));
-> > +     inode_inc_iversion(inode);
-> > +     inode_set_ctime_current(inode);
-> > +     ret = btrfs_update_inode(trans, BTRFS_I(inode));
-> > +     if (ret)
-> > +             goto out_abort;
-> > +     btrfs_free_path(path);
-> > +     btrfs_end_transaction(trans);
-> > +     return 0;
-> > +out_abort:
-> > +     btrfs_abort_transaction(trans, ret);
-> > +out_err:
-> > +     if (!fs_data)
-> > +             btrfs_end_transaction(trans);
-> > +     btrfs_free_path(path);
-> > +     return ret;
-> > +}
->
-> [ ... ]
->
 
