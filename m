@@ -1,174 +1,167 @@
-Return-Path: <linux-btrfs+bounces-21770-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21771-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id KHigHnNslmlofAIAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21770-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Feb 2026 02:50:43 +0100
+	id sFaVCRvIlmkGmwIAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21771-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Feb 2026 09:21:47 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1993E15B721
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Feb 2026 02:50:42 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 482E115D05B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Feb 2026 09:21:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 5D6C0303DD70
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Feb 2026 01:50:11 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 6AA853002F4B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Feb 2026 08:21:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C077925CC40;
-	Thu, 19 Feb 2026 01:50:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAFB1336ECA;
+	Thu, 19 Feb 2026 08:21:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="fA+xBhBC";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="5rgt7+nD";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="ci9eqOcF";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="c96FfoJg"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="jfy48cbT";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="PeCuXevF"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9964A243968
-	for <linux-btrfs@vger.kernel.org>; Thu, 19 Feb 2026 01:50:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26AED33343F
+	for <linux-btrfs@vger.kernel.org>; Thu, 19 Feb 2026 08:21:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771465810; cv=none; b=G8/hwKhLE3f3VgfK4VVE2OI5bIWH8257TGixt7Zdj4JAAfBvuq25X6WiF1lHEkXxG+p4nhowOnh5OLiZVWH1nJu81kMJaBT6H6WjadWbHO6WrHQ47du9lBkOf3g/GJb1gp3BnbTeQAh3S5HrvkyMbdn9iQXokh/BmKLWKUSWNkI=
+	t=1771489297; cv=none; b=XKgOPAWTQ5rDGIaSAxKZ1aNp4obWlcJ3mRD/M9yX3nkZHZ+X98979+lN5Yx54OcA/XVqMkc4WuMZkzaaPnVRk8M3e50Us98EXdkPXTT/tO3SMUJYmU2+SO9St95eN3iV+IPq5hwBZM1LUr9wYLYf137dh/Sa4Av1GFhONyDUxYA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771465810; c=relaxed/simple;
-	bh=dCfg4uixRFv+wK+iwNgelIFRYO4mNA1/9sjq4lgB+74=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=XAuDjj4TJ0k5BE5qJ62Ha1V0jMNYmHaceoOTCIcKz4MrZzP6n7PeXtO+YOtNVXgXqmahVxARJa7Zo+3xfkPR7sWhS9m5FSlBeNCAva6dp7mGA79ZHVORDjDKhy67TYyQE4tPwizyhFUzuPKPTcRJ9flo6vqrD5/f7uP6n2pk9Hk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=fA+xBhBC; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=5rgt7+nD; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=ci9eqOcF; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=c96FfoJg; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	s=arc-20240116; t=1771489297; c=relaxed/simple;
+	bh=mgqGcFo6J2Xh9nou093RMS6OO0TS2OcLAh2tKqhFFP8=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=mbwtypgcqlwCbftd8YJypPMfk6ZDnOA3oewI71I5rIEW+6KlS+IuGqRDEd579EtEbkhBQXZu/ZIsOZViALtfB75mWgPCl8BacyX45tRecYaX311DIQkiNqDZeLQCHyJbeJSxfJ1luCsAVTadfoR0gSd27354JuXEAHsVOILbB8g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=jfy48cbT; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=PeCuXevF; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 4B7955BCCA
-	for <linux-btrfs@vger.kernel.org>; Thu, 19 Feb 2026 01:50:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1771465806; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:content-type:content-type;
-	bh=iK6AZ7GmVb8LEjEwewUDB9JDkJbQVRUvfScBPqm+Gt4=;
-	b=fA+xBhBCPRBEmaaOsClvLJeL2ghDJ8fmcQ7VwvC/UYwVAyo0UOLDNqXoxNFyxM6lgbgkLQ
-	jb2etk+F1esjB1PaKGe4EG36yj5+O4ob4n8rh+ixqC1508DIcLAahFgB3vywYpYYiWji8O
-	s0rhznM949h4CoIftzEpZYNoXvnPjow=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1771465806;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:content-type:content-type;
-	bh=iK6AZ7GmVb8LEjEwewUDB9JDkJbQVRUvfScBPqm+Gt4=;
-	b=5rgt7+nDq18nhLiq53AHMD6oqUFREImA8cQDcsK1sLYVFVsg5G2qbpnLJcfdeEukZkoteC
-	VBmANfFHtfZhGWDQ==
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 61D4F5BCC3
+	for <linux-btrfs@vger.kernel.org>; Thu, 19 Feb 2026 08:21:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1771489294; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=sTi3BlaIA5/Gfya0DWBcnnGqlsKSt/UnGnaZpDDhfro=;
+	b=jfy48cbTvTPfm4EaqwtPsxhz5mrhjnbV+LDgEJh4y3rV47/YHhK/fvgZL67f74mYkwEiSc
+	a+0kgqJ/0u0Mbu+v+JoehuRdSk/s7TXcHKthw4gTPr8oiaemckjjoCZiMSU71QmRu6hJaU
+	rquQKZM7MjcqHDa8uBnOPe4cQLVdvj0=
 Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=ci9eqOcF;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=c96FfoJg
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1771465805; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:content-type:content-type;
-	bh=iK6AZ7GmVb8LEjEwewUDB9JDkJbQVRUvfScBPqm+Gt4=;
-	b=ci9eqOcFlXk3y/g1CKZRg9AbHv0Z+Bu7B5CkcHclwu+/haQIceVw/L85GtztFVaFLmtmqW
-	LaYYs3NoQZOrDXAR4LwLAhF1udTcr3oxJAp5hPABal1dHCiuB5caaH9NLGhKfkF580pvTv
-	EO+kvNhUO1y3rsb6J4FljWn6Evfz6mw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1771465805;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:content-type:content-type;
-	bh=iK6AZ7GmVb8LEjEwewUDB9JDkJbQVRUvfScBPqm+Gt4=;
-	b=c96FfoJgZ27xCdjTfiqAy7tdduHp5ml7byLV0Rw7KH7Yc7da1kG5VdSxnDfnqCO2X9m/7l
-	ED6wvunDyHdO0NAg==
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1771489293; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=sTi3BlaIA5/Gfya0DWBcnnGqlsKSt/UnGnaZpDDhfro=;
+	b=PeCuXevFMpyYcMM2panWRFGoYfzqNXm0Qkk9jPZ77MKmMYYrwR/vp24y2HRSyP0PUDaGHf
+	rssZR9Xrgqn13OJuFtzaoEc//LmkIChpZWM7/tq4FhP6NerDX/lbN3zSBUzv9DWUdw0i6P
+	2hT+I+R/ZS7rLYZrcwUcJWjcIG/RxKI=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CADA43EA65
-	for <linux-btrfs@vger.kernel.org>; Thu, 19 Feb 2026 01:50:04 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 936023EA65
+	for <linux-btrfs@vger.kernel.org>; Thu, 19 Feb 2026 08:21:32 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id f2EuJUxslmkBWwAAD6G6ig
-	(envelope-from <rgoldwyn@suse.de>)
-	for <linux-btrfs@vger.kernel.org>; Thu, 19 Feb 2026 01:50:04 +0000
-Date: Wed, 18 Feb 2026 20:49:55 -0500
-From: Goldwyn Rodrigues <rgoldwyn@suse.de>
+	id tKRdFQzIlmkYZAAAD6G6ig
+	(envelope-from <wqu@suse.com>)
+	for <linux-btrfs@vger.kernel.org>; Thu, 19 Feb 2026 08:21:32 +0000
+From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v2] btrfs: trace use file_inode(file)->i_sb to calculate
- fs_info
-Message-ID: <apsgauiwdj2exslcb7wmy2womtf6suyzfwatnxk75tzseivm4q@e7wktzgzxmsd>
+Subject: [PATCH v2 0/4] btrfs: fix all bugs introduced in the compressed_folios[] removal
+Date: Thu, 19 Feb 2026 18:51:10 +1030
+Message-ID: <cover.1771488629.git.wqu@suse.com>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Flag: NO
-X-Spam-Score: -4.01
+Content-Transfer-Encoding: 8bit
+X-Spam-Score: -2.80
 X-Spam-Level: 
+X-Spam-Flag: NO
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[suse.de,none];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	DKIM_TRACE(0.00)[suse.com:+];
+	TAGGED_FROM(0.00)[bounces-21771-lists,linux-btrfs=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[suse.de:+];
-	RCPT_COUNT_ONE(0.00)[1];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21770-lists,linux-btrfs=lfdr.de];
+	RCPT_COUNT_ONE(0.00)[1];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	FROM_HAS_DN(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[rgoldwyn@suse.de,linux-btrfs@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[wqu@suse.com,linux-btrfs@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	RCVD_COUNT_FIVE(0.00)[6];
+	NEURAL_HAM(-0.00)[-0.999];
 	TO_DN_NONE(0.00)[];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	NEURAL_HAM(-0.00)[-0.998];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,suse.de:dkim,suse.com:email]
-X-Rspamd-Queue-Id: 1993E15B721
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,suse.com:mid,suse.com:dkim]
+X-Rspamd-Queue-Id: 482E115D05B
 X-Rspamd-Action: no action
 
-If overlay is used on top of btrfs, dentry->d_sb translates to overlay's
-super block and fsid assignment will lead to a crash.
+[CHANGELOG]
+v2:
+- Fix an unaligned bio size on x86_64 triggering btrfs/333
+  We can still have an unaligned size for the encoded write, in that
+  case we still need to roundup the bio to fs block boundary.
 
-Use file_inode(file)->i_sb to always get btrfs_sb.
+I'm a total idiot, that my usual 64K page sized arm64 VM is configured
+back to use 4K page size for bs > ps runs, but forgot to revert the
+config back.
 
-Changes since v1:
-  Changed subject to include trace
-  Use file_inode() to get inode pointer
+This makes all recent arm64 runs use 4K page size, making it almost
+no different than x86_64 runs.
 
-Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-Reviewed-by: Boris Burkov <boris@bur.io>
----
- include/trace/events/btrfs.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+This means the recent compressed_folios[] cleanup is not really properly
+tested for bs < ps cases at all.
+Thus all the regressions are not properly detected during the
+development.
 
-diff --git a/include/trace/events/btrfs.h b/include/trace/events/btrfs.h
-index 125bdc166bfe..92118df217b4 100644
---- a/include/trace/events/btrfs.h
-+++ b/include/trace/events/btrfs.h
-@@ -770,9 +770,9 @@ TRACE_EVENT(btrfs_sync_file,
- 
- 	TP_fast_assign(
- 		const struct dentry *dentry = file->f_path.dentry;
--		const struct inode *inode = d_inode(dentry);
-+		const struct inode *inode = file_inode(file);
- 
--		TP_fast_assign_fsid(btrfs_sb(file->f_path.dentry->d_sb));
-+		TP_fast_assign_fsid(btrfs_sb(inode->i_sb));
- 		__entry->ino		= btrfs_ino(BTRFS_I(inode));
- 		__entry->parent		= btrfs_ino(BTRFS_I(d_inode(dentry->d_parent)));
- 		__entry->datasync	= datasync;
+In fact commit e1bc83f8b157 ("btrfs: get rid of compressed_folios[] usage
+for encoded writes") introduced two bugs in just one go, one can even
+lead to data corruption for bs < ps cases.
+
+All bugs are caught by dded ASSERT()s, but some ASSERT()s are just
+incorrect in the first place, like patch 2~4.
+
+Meanwhile the first one can lead to data corruption if
+CONFIG_BTRFS_ASSERT is not selected, thus it will need higher priority.
+
+Again, very sorry for my super stupid arm64 kernel config error.
+
+Will no longer run 4K page sized kernel on that VM any more, and deploy
+a new VM for 4K page sized tests, with proper kernel string suffix to
+indicate the page size in the future.
+
+Qu Wenruo (4):
+  btrfs: fix a bug that makes encoded write bio larger than expected
+  btrfs: do not touch page cache for encoded writes
+  btrfs: fix an incorrect ASSERT() condition inside
+    zstd_decompress_bio()
+  btrfs: fix an incorrect ASSERT() condition inside lzo_decompress_bio()
+
+ fs/btrfs/compression.c | 11 ++++++++---
+ fs/btrfs/inode.c       |  7 ++++---
+ fs/btrfs/lzo.c         |  4 ++--
+ fs/btrfs/zstd.c        |  2 +-
+ 4 files changed, 15 insertions(+), 9 deletions(-)
+
 -- 
-2.53.0
+2.52.0
 
-
--- 
-Goldwyn
 
