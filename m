@@ -1,71 +1,72 @@
-Return-Path: <linux-btrfs+bounces-21788-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21789-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id sIUdNBlEl2kiwQIAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21788-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Feb 2026 18:10:49 +0100
+	id mNIQB0BFl2lMwQIAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21789-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Feb 2026 18:15:44 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36912160F7D
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Feb 2026 18:10:49 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB19516108E
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Feb 2026 18:15:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 707F8304C0BD
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Feb 2026 17:10:10 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id E09993012518
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Feb 2026 17:15:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2574334DB4C;
-	Thu, 19 Feb 2026 17:10:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5306534EF10;
+	Thu, 19 Feb 2026 17:15:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IH46DB4L"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KxJEFMtX"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8912C34E745
-	for <linux-btrfs@vger.kernel.org>; Thu, 19 Feb 2026 17:10:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0504244685
+	for <linux-btrfs@vger.kernel.org>; Thu, 19 Feb 2026 17:15:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771521005; cv=none; b=Tp5MB0ucfU558j4hEawIhKvm7lgqfjBzXgxVs1Qy1gAORG48FyGPcHuVDAP6nG4x0l7qJp9zIiMlmPiQS3LXkyLVzFzhh/t9UskFvQshikbXlN/tx5Uss1A6B7L/eGF902HZLRrqXjJjw0b/Wmp6EMq20I17zBT0YUMMJNIPKDo=
+	t=1771521326; cv=none; b=qngw0USTr+pGMt0o2kJM7DZCt1/cgztnpg0xXMqG5mglVM8O+IZ/+yfPzXFUuD9VhRKm+1VJoPXTYgkLIF/lqkGLLSw++aoGmC/t7ceiKPMkYZ9o7DvULXeZNenjjUuR5xathJheDMLEJs2I6zoBrEIZ9LyOJwZHPLGVx6fICgs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771521005; c=relaxed/simple;
-	bh=ck9K804QNP/rwwJBaOmHTlNlqPGP2lJLDxfXoyKREDQ=;
+	s=arc-20240116; t=1771521326; c=relaxed/simple;
+	bh=dQGJxa4QsccDIjIr93pXbgW3LfWs1hHJTSOJ6jGz5rw=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dtDPXHkfUWmpGJiTObbFhT6LIx1nyWlXGgbsrJS8xwmDk0izWzvy5Rl3BP4OdmILHjUFDD0OFNaVlOchH1KtkvEKD/rijAmLirsWN3klUGZo/wQbA3TChiHO7ZjtMF0bJiYufN4noSJKTwZuGhTsw2ZGLzdBUQ5pPSR61AD9mOM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IH46DB4L; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 06E46C4AF0B
-	for <linux-btrfs@vger.kernel.org>; Thu, 19 Feb 2026 17:10:05 +0000 (UTC)
+	 To:Cc:Content-Type; b=fZC/ws6XBGHWey3QQBfAWATpf0tjNwMtlLulNRV1jlmney1TT1T1MtxVi7cYfb5RKVtt40oNNxfp5xZVR/dL5wuHyhImpx4T87ldkpwTaY8+nY8rKNpR6s1brpGK2HfdAt8aHqjXfPDaPVMGJ/cWQNAji4OYsPYMPGVx1RhH1/A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KxJEFMtX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 487D5C116D0
+	for <linux-btrfs@vger.kernel.org>; Thu, 19 Feb 2026 17:15:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1771521005;
-	bh=ck9K804QNP/rwwJBaOmHTlNlqPGP2lJLDxfXoyKREDQ=;
+	s=k20201202; t=1771521326;
+	bh=dQGJxa4QsccDIjIr93pXbgW3LfWs1hHJTSOJ6jGz5rw=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=IH46DB4LbJ4JqlbLoO379Cg4Aw3AcHMEFisIR0seEshG++E6tFa92V1r3CTSDeU2L
-	 DiGgX4dpEGd6iTz+OASLd6YHHOrVAoss4UBfKTscipm5xBP6ktEQPSswvWj8mfceTR
-	 H3WBaV3Ddm258FzE+QoI3qssWY9IYn1k0oQTfoGQ2TBh83rJ/lAwgp7523kmpskXRF
-	 +vcbiFb1DHe3vbflIvgpMgfqeyEKl3TzXF3kxYB3mEigPuJNclmQk/GaQ3RyZqZRAS
-	 q+vBKiW/YjoPdFOdhCmJlbEfUQv7xQJM1SlhyXE9800ApU7ySFlT88Y1EvbLZKzPcV
-	 l7tdrIrHVhndQ==
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-65bfc858561so2172716a12.2
-        for <linux-btrfs@vger.kernel.org>; Thu, 19 Feb 2026 09:10:04 -0800 (PST)
-X-Gm-Message-State: AOJu0Yzlh6MtGg78m4UOeQUmir8/HFtsruhcchwjAL17d99vNf5y66X3
-	bC3WSUWtaiNXsFosvofMCwso0h4o7aKExIFUbXr1VxDOSzy2qpGVYVakBS0Fwad7VSRitowJz8K
-	V+4/t5cgKFl/yGj+92fC8Afx/941ORsc=
-X-Received: by 2002:a17:907:e158:b0:b90:45:e236 with SMTP id
- a640c23a62f3a-b9000460348mr514155966b.26.1771521003398; Thu, 19 Feb 2026
- 09:10:03 -0800 (PST)
+	b=KxJEFMtXs0ScnpJTXw9kOD1i/gliM/7fOaPW39NSdF7ld2gcREB6Fhuy9+s8Jy+/F
+	 IspJGF9KSfGvQF0zJRBUhSJfsVCaSUHmWpV3C70Tiu6m/Vo1kq8IotqQtrnrrYMwAk
+	 r3kZmNCNib1D78evfjI0WTj5/o0uQN59JFF0aIOarDvPjnEwb2AZ93dWs6FkF/mDKT
+	 y1hJdmueECq1WXy/LJXpIGJDc37Z4+xnJb/5ltKjimsVYiacHAEHslRSQR1+19w1xh
+	 FZg0CVo3PeWTxn3S9Je569NYYEJFNxzps3A7aFw0bvyI7yo5l4QlegRJU4Z46c6pAO
+	 Kt2emDfRiRZJQ==
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-65bebcbffe8so2116117a12.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 19 Feb 2026 09:15:26 -0800 (PST)
+X-Gm-Message-State: AOJu0YzuvrSQHuVbkmZv8cERgiDdUdtrjghsNQB+iEbLUH99pvahIHDQ
+	qP7N1RUnCrE03KZE7INu8DcWzYvdEjp+cQdb/JQOTc7/+V6lZ3ZjIrYrHOHuBsDr3U3O5zINuR1
+	Nw0wIz9nfbkSX0x3oaq8PnK8pG2zmnLE=
+X-Received: by 2002:a17:906:d552:b0:b87:368a:2bf7 with SMTP id
+ a640c23a62f3a-b903da48f1amr457415166b.13.1771521324735; Thu, 19 Feb 2026
+ 09:15:24 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260219162151.5567-1-mark@harmstone.com>
-In-Reply-To: <20260219162151.5567-1-mark@harmstone.com>
+References: <20260219163313.15888-1-mark@harmstone.com>
+In-Reply-To: <20260219163313.15888-1-mark@harmstone.com>
 From: Filipe Manana <fdmanana@kernel.org>
-Date: Thu, 19 Feb 2026 17:09:26 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H6rdJLMgMFG3gMtN2ngPjXZm-gpJ-iV=yiXNDQ2N95hJw@mail.gmail.com>
-X-Gm-Features: AZwV_QhZq1xka_N_GGQlTbOhOLgpVIK_3rjesieow0g1H3GF-DTmsSNUOHcEUlg
-Message-ID: <CAL3q7H6rdJLMgMFG3gMtN2ngPjXZm-gpJ-iV=yiXNDQ2N95hJw@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: fix transaction handle leaks in btrfs_last_identity_remap_gone()
+Date: Thu, 19 Feb 2026 17:14:47 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H60cQ_vdfv4rycH0nd--5cXA_y2pB+4GnFscNueF_heng@mail.gmail.com>
+X-Gm-Features: AaiRm53b2tPV0_gG4IchTeDGB5X2Wc8CKFNcIYYvyBlCJzsbWj4TDKtI4gujU0I
+Message-ID: <CAL3q7H60cQ_vdfv4rycH0nd--5cXA_y2pB+4GnFscNueF_heng@mail.gmail.com>
+Subject: Re: [PATCH] btrfs: add check in remove_range_from_remap_tree() for a
+ NULL block group
 To: Mark Harmstone <mark@harmstone.com>
 Cc: linux-btrfs@vger.kernel.org, Chris Mason <clm@fb.com>
 Content-Type: text/plain; charset="UTF-8"
@@ -75,7 +76,7 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
@@ -83,11 +84,11 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	FROM_HAS_DN(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
 	RCPT_COUNT_THREE(0.00)[3];
-	TAGGED_FROM(0.00)[bounces-21788-lists,linux-btrfs=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-21789-lists,linux-btrfs=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[fdmanana@kernel.org,linux-btrfs@vger.kernel.org];
@@ -96,36 +97,25 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	TAGGED_RCPT(0.00)[linux-btrfs];
 	NEURAL_HAM(-0.00)[-0.999];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,mail.gmail.com:mid,suse.com:email,harmstone.com:email]
-X-Rspamd-Queue-Id: 36912160F7D
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,harmstone.com:email,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,mail.gmail.com:mid]
+X-Rspamd-Queue-Id: AB19516108E
 X-Rspamd-Action: no action
 
-On Thu, Feb 19, 2026 at 4:24=E2=80=AFPM Mark Harmstone <mark@harmstone.com>=
+On Thu, Feb 19, 2026 at 4:33=E2=80=AFPM Mark Harmstone <mark@harmstone.com>=
  wrote:
 >
-> btrfs_abort_transaction(), unlike btrfs_commit_transaction(), doesn't
-> also free the transaction handle. Fix the instances in
-> btrfs_last_identity_remap_gone() where we're also leaking the
-> transaction on abort.
+> Add a check in remove_range_from_remap_tree() after we call
+> btrfs_lookup_block_group(), to check if it is NULL. This shouldn't
+> happen, but if it does we at least get an error rather than a segfault.
 >
-> This fixes a bug introduced in "btrfs: handle deletions from remapped
-> block group" in for-next.
+> This fixes a bug introduced in the patch "btrfs: handle deletions from
+> remapped block group" in for-next.
 
-In for-next and in Linus' tree already, commit
-979e1dc3d69e4c825eec05d05d9567b251f6ec23.
-Once you see David's pull request to Linus, you can assume the commit
-ID is stable and it will match the commit ID in Linus' tree once
-merged.
-
-So we can, and should, add here:
+Same comment as for the other patch, that change is already in Linus'
+tree, so we can and should add here a:
 
 Fixes: 979e1dc3d69e ("btrfs: handle deletions from remapped block group")
 
-With that added:
-
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-
-Thanks.
 
 >
 > Signed-off-by: Mark Harmstone <mark@harmstone.com>
@@ -137,36 +127,32 @@ ta.com/
 >  1 file changed, 3 insertions(+)
 >
 > diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
-> index 8a8a66112d42..f2abc5d625c1 100644
+> index f2abc5d625c1..679e551707f5 100644
 > --- a/fs/btrfs/relocation.c
 > +++ b/fs/btrfs/relocation.c
-> @@ -4715,6 +4715,7 @@ int btrfs_last_identity_remap_gone(struct btrfs_chu=
-nk_map *chunk_map,
->         ret =3D btrfs_remove_dev_extents(trans, chunk_map);
->         if (unlikely(ret)) {
->                 btrfs_abort_transaction(trans, ret);
-> +               btrfs_end_transaction(trans);
->                 return ret;
->         }
+> @@ -6003,6 +6003,9 @@ static int remove_range_from_remap_tree(struct btrf=
+s_trans_handle *trans,
+>                 struct btrfs_block_group *dest_bg;
 >
-> @@ -4724,6 +4725,7 @@ int btrfs_last_identity_remap_gone(struct btrfs_chu=
-nk_map *chunk_map,
->                 if (unlikely(ret)) {
->                         mutex_unlock(&trans->fs_info->chunk_mutex);
->                         btrfs_abort_transaction(trans, ret);
-> +                       btrfs_end_transaction(trans);
->                         return ret;
->                 }
->         }
-> @@ -4742,6 +4744,7 @@ int btrfs_last_identity_remap_gone(struct btrfs_chu=
-nk_map *chunk_map,
->         ret =3D remove_chunk_stripes(trans, chunk_map, path);
->         if (unlikely(ret)) {
->                 btrfs_abort_transaction(trans, ret);
-> +               btrfs_end_transaction(trans);
->                 return ret;
->         }
->
+>                 dest_bg =3D btrfs_lookup_block_group(fs_info, new_addr);
+> +               if (!dest_bg)
+> +                       return -EUCLEAN;
+
+Since this is a EUCLEAN and highly unexpected, we can use unlikely
+here, see: https://btrfs.readthedocs.io/en/latest/dev/Development-notes.htm=
+l
+
+With those two changes:
+
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+
+Thanks.
+
+> +
+>                 adjust_block_group_remap_bytes(trans, dest_bg, -overlap_l=
+ength);
+>                 btrfs_put_block_group(dest_bg);
+>                 ret =3D btrfs_add_to_free_space_tree(trans,
 > --
 > 2.52.0
 >
