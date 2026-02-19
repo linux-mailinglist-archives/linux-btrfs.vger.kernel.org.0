@@ -1,72 +1,72 @@
-Return-Path: <linux-btrfs+bounces-21778-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21779-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id sKB2Gp/4lmn4swIAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21778-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Feb 2026 12:48:47 +0100
+	id aJi1F735lmn4swIAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21779-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Feb 2026 12:53:33 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C903015E699
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Feb 2026 12:48:46 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id E2B1315E6F1
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Feb 2026 12:53:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 6D95B302AE02
-	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Feb 2026 11:48:23 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 793E83027950
+	for <lists+linux-btrfs@lfdr.de>; Thu, 19 Feb 2026 11:53:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B04D30B52C;
-	Thu, 19 Feb 2026 11:48:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFCF2334C05;
+	Thu, 19 Feb 2026 11:53:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XnnDACdA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cjK2nYZO"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACC822EAD1C
-	for <linux-btrfs@vger.kernel.org>; Thu, 19 Feb 2026 11:48:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C89F23BD06
+	for <linux-btrfs@vger.kernel.org>; Thu, 19 Feb 2026 11:53:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771501701; cv=none; b=N49XIuIbuQhzOYYTZ8YPrIoAHGr9ynhzrOFCgvyTxMgck+++SOSBNnzqGU5oyI5YtejYugWUvObMXSchBuNy2XXQtW7kZjYymVRIZQqFQrxJ10TapQHMIXITSOBWFvRuv6nEWbKZEvvX06rmEoTKUatE0kTow+knEa963IVQPX0=
+	t=1771502004; cv=none; b=KjdaWwjcq7UqPiz00CtGVdGnyCr5snGxKfHpkjiKB0HFfrpIB68eAwakF59UwSJnia9PbHLMv/t9BEG4oIlT+tIxYwHTehhHFcvHfVFTt45b/ToCnBjKG7EoAq9p2Pio1q2MG+23nw9EZs1LsOZ5NknplgRR3K8xP0ww3Be3BVA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771501701; c=relaxed/simple;
-	bh=4iYum1M+EGn3AfArpU6vHnRVKHWTGkWUnKoJ8blVoiw=;
+	s=arc-20240116; t=1771502004; c=relaxed/simple;
+	bh=dUgJq90gWpAVwFAycAPxDApLFqFIeBLeqUq3SOLkjvQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Mx/zM4QbUQh2ChjG11ce1hxJwdIWF9rKgv3wp5dm47vWQnJJB7oZeetjPzWaRcMQI9qwwTD0Eit70FLBphMdJj4hlWzj/7QCrH+e9/RadTGEqjeP1MTyG5YvWzCU75jY+Neg4j2Cq6fnX0IGUrYKzsrIiTXA3nNcmDmjuGRQKuk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XnnDACdA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4492AC4CEF7
-	for <linux-btrfs@vger.kernel.org>; Thu, 19 Feb 2026 11:48:21 +0000 (UTC)
+	 To:Cc:Content-Type; b=RED6VXQBkF9sE9vCIRaADrE1ADEjR/HDAEl9ysAZ0nGTOfiGzHKpSmlBshd0rUGSK9GCY7tGxAoNvRnl6BFxZfxYVzz+pmFF+dqiSMt+dM0JS/843SPGSQbKZxtJiWkr+XDmE8uOU++bPJa+8L+SEgXILfprXULMA+G/9QPfkhw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cjK2nYZO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C2225C4CEF7
+	for <linux-btrfs@vger.kernel.org>; Thu, 19 Feb 2026 11:53:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1771501701;
-	bh=4iYum1M+EGn3AfArpU6vHnRVKHWTGkWUnKoJ8blVoiw=;
+	s=k20201202; t=1771502003;
+	bh=dUgJq90gWpAVwFAycAPxDApLFqFIeBLeqUq3SOLkjvQ=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=XnnDACdATyI4swwqFa8SPpGV+V7NEOL0SJqHyMQEF9zoIKaBKLrerMlGUUD0cupZi
-	 NDNMSM79kz5DuPSj0CCU4sJAyMhCmbQlusYLVEmqRBKe4LGb4Kd/zIsKfXU9PDNLRw
-	 DCWZWIP6aTyVbMSROwj1hXHAx51aMsyjNWjyg2WXFFkRDUZ0RQoNVQvsLTKY8AKOED
-	 lOdKXYuqJmSzlggcNgmrwm8rGWe6t5imlIVJYM7XE7yHSWxwf8uP/8cnTUTb40KVYi
-	 2T48yceM1fAY7BppsZWehbScfmCFEPu3MFchJgqYMb2e7aBUT/Z2AD5jjn53b4lLkr
-	 EMCBjbNSdDxug==
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-b884ad1026cso140424966b.2
-        for <linux-btrfs@vger.kernel.org>; Thu, 19 Feb 2026 03:48:21 -0800 (PST)
-X-Gm-Message-State: AOJu0YyQzN3qIcFDidBDkIuJ58x+ADvaEY2dPXoyKkSIFsVJb+LmP+wX
-	hv+LtttPupcJXo9SmlOvcnwVExB+o8rcR/Or+oWdhm8eVMDSrbQVQYTf+E326u91+0aQJ0LGTvu
-	gxUpvNbzOD2f/ve5AfsBGp+q+kZD0niM=
-X-Received: by 2002:a17:907:3ea3:b0:b7a:2ba7:197e with SMTP id
- a640c23a62f3a-b903db66396mr293938366b.29.1771501699686; Thu, 19 Feb 2026
- 03:48:19 -0800 (PST)
+	b=cjK2nYZONeQ4BVnpgCvWdZLFUQMMpBAw6aovp2f5skQ/yCiBLuI5+KjHoaz/0yLUY
+	 /H+TsFCN+6o/qpVKzh3jqjfLlvb3gUfAijvhm6spJon3uobnrGsGx/RgQ2S5kga8Nv
+	 3SDqSQfJT+efGyS16+PzpLIzvzHkUKHEzdGUb3QfJCancnm5ZqXTrJeiOCZhqAArUg
+	 ALO2lPTCcHomW50+PLQQQBkid1MRFj7W3PS64zYjS5z6wT8NCKnbFysfILarUclJf1
+	 YglfyzQqKGcoEDWzFK3Xsv7Ninj2lV20VCeTkn2YujIQKxkDEtFcI1i+zzPLPRy881
+	 nV8UwAups+YYg==
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-b8876d1a39bso115092166b.1
+        for <linux-btrfs@vger.kernel.org>; Thu, 19 Feb 2026 03:53:23 -0800 (PST)
+X-Gm-Message-State: AOJu0YxHZ6RxfOsQV7Oq8kloYAPygHnTuVcki9D10I/N7rBoOpUQloFU
+	lZyH9SYrohpgQFxTDetCAJec/d8KzKmB4YSWrCmFqtU5fHpFxI0JK5br4O9WVWa4gk1sUznSY0R
+	y/n2IEblLL7HQ68axVOp7YKAK3VYkJXQ=
+X-Received: by 2002:a17:907:da17:b0:b8e:7e21:132c with SMTP id
+ a640c23a62f3a-b8fc3d36d19mr913732966b.59.1771502002178; Thu, 19 Feb 2026
+ 03:53:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <9cd4f22eb48de2ebca28146f6db26548a8a207e7.1766123622.git.wqu@suse.com>
-In-Reply-To: <9cd4f22eb48de2ebca28146f6db26548a8a207e7.1766123622.git.wqu@suse.com>
+References: <apsgauiwdj2exslcb7wmy2womtf6suyzfwatnxk75tzseivm4q@e7wktzgzxmsd> <CAL3q7H4ctE3ULy3EqNmKO-dX=WSM0Mn9wvgUvDs5XHqu9EiamQ@mail.gmail.com>
+In-Reply-To: <CAL3q7H4ctE3ULy3EqNmKO-dX=WSM0Mn9wvgUvDs5XHqu9EiamQ@mail.gmail.com>
 From: Filipe Manana <fdmanana@kernel.org>
-Date: Thu, 19 Feb 2026 11:47:42 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H7uCbcVxcTSK5hd-5_yApfCVarms0u8LGgV8RqX+s8+kw@mail.gmail.com>
-X-Gm-Features: AaiRm51acYvxmVX6IT8eItl-wmZqsAdHcYOZO3fSRkaQ-P0wqH7cHlLyU7D0EVU
-Message-ID: <CAL3q7H7uCbcVxcTSK5hd-5_yApfCVarms0u8LGgV8RqX+s8+kw@mail.gmail.com>
-Subject: Re: [PATCH] btrfs: mark qgroup inconsistent if dropping a large subvolume
-To: Qu Wenruo <wqu@suse.com>
+Date: Thu, 19 Feb 2026 11:52:45 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H4TbRbvPSgFYTq6KJT2L663PCceyB-yz04cJGNYorgNoQ@mail.gmail.com>
+X-Gm-Features: AZwV_QhCaxYDcclxV2C2xgFtubvkIl4vZobg6bVxBmTXGAbCdwis4t5H-d_K0Yg
+Message-ID: <CAL3q7H4TbRbvPSgFYTq6KJT2L663PCceyB-yz04cJGNYorgNoQ@mail.gmail.com>
+Subject: Re: [PATCH v2] btrfs: trace use file_inode(file)->i_sb to calculate fs_info
+To: Goldwyn Rodrigues <rgoldwyn@suse.de>
 Cc: linux-btrfs@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
@@ -74,12 +74,12 @@ X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21778-lists,linux-btrfs=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-21779-lists,linux-btrfs=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	RCPT_COUNT_TWO(0.00)[2];
@@ -87,7 +87,7 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[fdmanana@kernel.org,linux-btrfs@vger.kernel.org];
@@ -96,125 +96,106 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	TAGGED_RCPT(0.00)[linux-btrfs];
 	NEURAL_HAM(-0.00)[-0.999];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,mail.gmail.com:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: C903015E699
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,mail.gmail.com:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,suse.de:email]
+X-Rspamd-Queue-Id: E2B1315E6F1
 X-Rspamd-Action: no action
 
-On Fri, Dec 19, 2025 at 5:54=E2=80=AFAM Qu Wenruo <wqu@suse.com> wrote:
+On Thu, Feb 19, 2026 at 9:18=E2=80=AFAM Filipe Manana <fdmanana@kernel.org>=
+ wrote:
 >
-> Commit 011b46c30476 ("btrfs: skip subtree scan if it's too high to avoid
-> low stall in btrfs_commit_transaction()") tries to solves the problem of
+> On Thu, Feb 19, 2026 at 1:50=E2=80=AFAM Goldwyn Rodrigues <rgoldwyn@suse.=
+de> wrote:
+> >
+> > If overlay is used on top of btrfs, dentry->d_sb translates to overlay'=
+s
+> > super block and fsid assignment will lead to a crash.
+> >
+> > Use file_inode(file)->i_sb to always get btrfs_sb.
+> >
+> > Changes since v1:
+> >   Changed subject to include trace
+> >   Use file_inode() to get inode pointer
+>
+> Information about what changes between patch versions doesn't go into
+> the change log, it goes below the line marked as "---", as that's
+> irrelevant information to have in git, it's only useful for patch
+> reviews.
+>
+> This subject:
+>
+> "btrfs: trace use file_inode(file)->i_sb to calculate fs_info"
+>
+> is also odd, using a C expression, not saying where (which trace
+> event) and not saying what problem are we fixing but rather how are we
+> fixing the problem.
+>
+> I suggest something much more clear and concise such as:
+>
+> "btrfs: fix a crash in the trace event btrfs_sync_file()"
+>
+> One further comment below.
+>
+> >
+> > Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
+> > Reviewed-by: Qu Wenruo <wqu@suse.com>
+> > Reviewed-by: Boris Burkov <boris@bur.io>
+> > ---
+> >  include/trace/events/btrfs.h | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/include/trace/events/btrfs.h b/include/trace/events/btrfs.=
+h
+> > index 125bdc166bfe..92118df217b4 100644
+> > --- a/include/trace/events/btrfs.h
+> > +++ b/include/trace/events/btrfs.h
+> > @@ -770,9 +770,9 @@ TRACE_EVENT(btrfs_sync_file,
+> >
+> >         TP_fast_assign(
+> >                 const struct dentry *dentry =3D file->f_path.dentry;
+>
+> Shouldn't we also use file_dentry(file) here?
+>
+> I think we should, otherwise we get the same bug that was fixed in:
+>
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit=
+/?id=3Dde17e793b104d690e1d007dfc5cb6b4f649598ca
+>
+> > -               const struct inode *inode =3D d_inode(dentry);
+> > +               const struct inode *inode =3D file_inode(file);
+> >
+> > -               TP_fast_assign_fsid(btrfs_sb(file->f_path.dentry->d_sb)=
+);
+> > +               TP_fast_assign_fsid(btrfs_sb(inode->i_sb));
+> >                 __entry->ino            =3D btrfs_ino(BTRFS_I(inode));
+> >                 __entry->parent         =3D btrfs_ino(BTRFS_I(d_inode(d=
+entry->d_parent)));
+>
+> And here, why didn't you replace d_inode() with file_inode() like above?
 
-solves -> solve
+Actually I meant using dget_parent(dentry) to get the parent here, so
+it should be:
 
-> long transaction hang caused by large qgroup workload triggered by
-> dropping a large subtree.
->
-> But there is another situation where dropping a subvolume without any
-> snapshot can lead to the same problem.
->
-> The only difference is that non-shared subvolume dropping triggers a lot
-> of leaf rescan in one transaction. In theory btrfs_end_transaction()
-> should be able to commit a transaction due to various limits, but qgroup
-> workload is never part of the threshold.
+btrfs_ino(BTRFS_I(d_inode(dget_parent(dentry)))
 
-What do you mean by btrfs_end_transaction() should be able to commit a
-transaction?
-We never trigger transaction commits there.
+After the following replacement at the top as mentioned before:
+
+const struct dentry *dentry =3D file->f_path.dentry;
+
+with
+
+const struct dentry *dentry =3D file_dentry(file);
+
 
 
 >
-> So for now just follow the same drop_subtree_threshold for any subvolume
-> drop, so that we can avoid long transaction hang.
+> Thanks.
 >
-> Unfortunately this means any slightly large subvolume deletion will mark
-> qgroup inconsistent and needs a rescan.
->
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  fs/btrfs/extent-tree.c | 10 ++++++++++
->  fs/btrfs/qgroup.c      | 14 ++++++++++++++
->  fs/btrfs/qgroup.h      |  1 +
->  3 files changed, 25 insertions(+)
->
-> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-> index 1dcd69fe97ed..59fe3d89e910 100644
-> --- a/fs/btrfs/extent-tree.c
-> +++ b/fs/btrfs/extent-tree.c
-> @@ -6151,6 +6151,16 @@ int btrfs_drop_snapshot(struct btrfs_root *root, b=
-ool update_ref, bool for_reloc
->                 }
->         }
->
-> +       /*
-> +        * Not only high subtree can cause long qgroup workload,
-> +        * a lot of level 0 drop in a single transaction can also lead
-> +        * to a lot of qgroup load and freeze a transaction.
-
-I find this confusing. So it's saying that we can do a lot of heavy
-qgroup work if we drop a lot of trees that have a single node (root is
-a leaf, at level 0)?
-
-But the code added in this patch doesn't do anything about that, it
-only looks at a single root to drop by checking its level against
-fs_info->qgroup_drop_subtree_thres, which has a default value of 3.
-That paragraph gives the idea we will check if we have many roots to
-drop below the threshold and do something about it too, not just for
-the case of a root at or above the threshold.
-
-The code seems ok, it's just this comment and that part in the
-changelog doesn't make sense to me.
-Thanks.
-
-> +        *
-> +        * So check the level and if it's too high just mark qgroup
-> +        * inconsistent instead of a possible long transaction freeze.
-> +        */
-> +       btrfs_qgroup_check_subvol_drop(fs_info, level);
-> +
->         wc->restarted =3D test_bit(BTRFS_ROOT_DEAD_TREE, &root->state);
->         wc->level =3D level;
->         wc->shared_level =3D -1;
-> diff --git a/fs/btrfs/qgroup.c b/fs/btrfs/qgroup.c
-> index 14d393a5853d..4dfeed998c54 100644
-> --- a/fs/btrfs/qgroup.c
-> +++ b/fs/btrfs/qgroup.c
-> @@ -4953,3 +4953,17 @@ int btrfs_record_squota_delta(struct btrfs_fs_info=
- *fs_info,
->         spin_unlock(&fs_info->qgroup_lock);
->         return ret;
->  }
-> +
-> +void btrfs_qgroup_check_subvol_drop(struct btrfs_fs_info *fs_info, u8 le=
-vel)
-> +{
-> +       u8 drop_subtree_thres;
-> +
-> +       if (!btrfs_qgroup_full_accounting(fs_info))
-> +               return;
-> +       spin_lock(&fs_info->qgroup_lock);
-> +       drop_subtree_thres =3D fs_info->qgroup_drop_subtree_thres;
-> +       spin_unlock(&fs_info->qgroup_lock);
-> +
-> +       if (level >=3D drop_subtree_thres)
-> +               qgroup_mark_inconsistent(fs_info, "subvolume level reache=
-d threshold");
-> +}
-> diff --git a/fs/btrfs/qgroup.h b/fs/btrfs/qgroup.h
-> index a979fd59a4da..785ed16f5cc4 100644
-> --- a/fs/btrfs/qgroup.h
-> +++ b/fs/btrfs/qgroup.h
-> @@ -453,5 +453,6 @@ void btrfs_qgroup_destroy_extent_records(struct btrfs=
-_transaction *trans);
->  bool btrfs_check_quota_leak(const struct btrfs_fs_info *fs_info);
->  int btrfs_record_squota_delta(struct btrfs_fs_info *fs_info,
->                               const struct btrfs_squota_delta *delta);
-> +void btrfs_qgroup_check_subvol_drop(struct btrfs_fs_info *fs_info, u8 le=
-vel);
->
->  #endif
-> --
-> 2.52.0
->
->
+> >                 __entry->datasync       =3D datasync;
+> > --
+> > 2.53.0
+> >
+> >
+> > --
+> > Goldwyn
+> >
 
