@@ -1,152 +1,185 @@
-Return-Path: <linux-btrfs+bounces-21809-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21810-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id jy/2M4CLmGmeJgMAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21809-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Feb 2026 17:27:44 +0100
+	id ECt6MZKfmGnJKAMAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21810-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Feb 2026 18:53:22 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5C08169519
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Feb 2026 17:27:43 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 219A0169E57
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Feb 2026 18:53:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 51CE830439EB
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Feb 2026 16:27:42 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 7D6A93053652
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Feb 2026 17:53:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FF563451BA;
-	Fri, 20 Feb 2026 16:27:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB1A1365A13;
+	Fri, 20 Feb 2026 17:53:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b="DmnMv1bD"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ciRN6L9G";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="E6mcQAU3";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ciRN6L9G";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="E6mcQAU3"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail.burntcomma.com (mail2.burntcomma.com [217.169.27.34])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BBBC260565
-	for <linux-btrfs@vger.kernel.org>; Fri, 20 Feb 2026 16:27:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.169.27.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E06662EB860
+	for <linux-btrfs@vger.kernel.org>; Fri, 20 Feb 2026 17:53:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771604860; cv=none; b=V4XPlqUH67WswfigklU+v5MxaXnykxJzWJu/u0AKLEEmSzjYUo4W1CZt17SxrKPgl+tjlqa7veatFOPCnqs8Tq9/Jvy6+DKZnFz2gWO6uxkoXpdD5oT4ON7I+KH09blulet/vaREcvFIi00aZr0utjBhagK464j/qPGT+vVYnnM=
+	t=1771609994; cv=none; b=BfEgbgIfOD0hFoHzBfOXjqEfdHFRkLpapOGZJVnwCOXu3JMlulrWA8/mUS2QDewuxPW9UkQxY/YsIsqRIZWHEnxORzUfoi9F0iCzb/KlhF8gUXTqEtf6C7/YHZ4GPO/fbNKJ4otM4zkkPgKOCSvILMf8IjRlCqDJiSUZrALL9XY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771604860; c=relaxed/simple;
-	bh=zlUaIy6hqmUji6wSq8lAQpDyc9p03J+kFfA3PFMjIyw=;
-	h=Message-ID:Date:Mime-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WKRRw/KtmCqYC+mOwixe1QS/hK7PyPiTIc8WqB/3dPnAFMobgZvER1n+hylSaNWMMV5AJF/IIEwfWQ0ZHkwy/Cxp21PowKzpdu7ShTqymMCKIJdn+1HCFNRBcJagtPbk0LQQAeUDPM3UIiRKSMdcPPw706ib03WoRP7Umo10abs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com; spf=pass smtp.mailfrom=harmstone.com; dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b=DmnMv1bD; arc=none smtp.client-ip=217.169.27.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=harmstone.com
-Received: from [IPV6:2a02:8012:8cf0:0:ce28:aaff:fe0d:6db2] (beren.burntcomma.com [IPv6:2a02:8012:8cf0:0:ce28:aaff:fe0d:6db2])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256
-	 client-signature RSA-PSS (2048 bits) client-digest SHA256)
-	(Client CN "hellas", Issuer "burntcomma.com" (verified OK))
-	by mail.burntcomma.com (Postfix) with ESMTPS id 5A422304806;
-	Fri, 20 Feb 2026 16:27:28 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=harmstone.com;
-	s=mail; t=1771604848;
-	bh=t/3CMPZ2YSVQA8YJkJdGDxWKEKJqvsB4q2INfbJd6hY=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=DmnMv1bDcLHCWdCZKqKJq1G9d3djHbP5rzsmdxBeHdqUAvNLG3kMnwrrrsOfsle7c
-	 SyBBW5YcRQO56+gW1+q4RN9sN+72Tvni5ViIu44Kgl8fvVDBjHCNAMXtSyNRf8qTru
-	 CUEL9kHaeNH0heF9gqWbOW18LCh1eJuAOTH9thqk=
-Message-ID: <85740194-bcd5-486f-b7a2-f31613f85c9f@harmstone.com>
-Date: Fri, 20 Feb 2026 16:27:28 +0000
+	s=arc-20240116; t=1771609994; c=relaxed/simple;
+	bh=rMfq2sRAnt2+Yd1xurcAD+nvIESjaERzEr2M6zXCYIw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PAuUMJdFM9Zs2X17NNrZb1QXiENB1hLBM+3kC7/EeO8Vqt2xG5uKWOQy2AHSE9crvr0uf2HCaYvb8yGimFTjrw+k+Gfl3WRweM/5hqMpsy1y+TeBJkN0y0gO5RftiS1oMoQHZokQZB5lWQsjPFknmmoa7NOIOZIbgtWkkcPIP/0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ciRN6L9G; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=E6mcQAU3; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ciRN6L9G; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=E6mcQAU3; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 13B4F5BCCC;
+	Fri, 20 Feb 2026 17:53:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1771609991;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UYemnrDQNq02hlL30foHCYzUD8m4ThwLQ98LXTzTOOA=;
+	b=ciRN6L9GSjjOoln+LExnLMbOgjGv40u/OTmRptaNsxyl2SpeYTxsLT8eSpcOd3mpPb6RiP
+	Gtk/TTfZtIp1nwBuvjKOcz4dGbwj0tA5z4z0kere+y6qTfPB7qwOftOEyQj1/QxAI+/kdO
+	7eUL2pvglxHNMJmb452NXpKyP8gN/KA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1771609991;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UYemnrDQNq02hlL30foHCYzUD8m4ThwLQ98LXTzTOOA=;
+	b=E6mcQAU3Jj8mUYD1sjWf1wrRR62G6GuJRQf8n4bAnHBY8l+Or+tle7h5GUXEk3lJA5N8Wp
+	H7GOBfXzZGuMojAg==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1771609991;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UYemnrDQNq02hlL30foHCYzUD8m4ThwLQ98LXTzTOOA=;
+	b=ciRN6L9GSjjOoln+LExnLMbOgjGv40u/OTmRptaNsxyl2SpeYTxsLT8eSpcOd3mpPb6RiP
+	Gtk/TTfZtIp1nwBuvjKOcz4dGbwj0tA5z4z0kere+y6qTfPB7qwOftOEyQj1/QxAI+/kdO
+	7eUL2pvglxHNMJmb452NXpKyP8gN/KA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1771609991;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UYemnrDQNq02hlL30foHCYzUD8m4ThwLQ98LXTzTOOA=;
+	b=E6mcQAU3Jj8mUYD1sjWf1wrRR62G6GuJRQf8n4bAnHBY8l+Or+tle7h5GUXEk3lJA5N8Wp
+	H7GOBfXzZGuMojAg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DFD613EA65;
+	Fri, 20 Feb 2026 17:53:10 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id sFBwNoafmGl1eQAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Fri, 20 Feb 2026 17:53:10 +0000
+Date: Fri, 20 Feb 2026 18:53:09 +0100
+From: David Sterba <dsterba@suse.cz>
+To: fdmanana@kernel.org
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: stop printing condition result in assertion
+ failure messages
+Message-ID: <20260220175309.GK26902@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <9c3463215d864eb706860e7d9c853e34d4125408.1771515807.git.fdmanana@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Subject: Re: [PATCH] btrfs: fix chunk map leak in btrfs_map_block() after
- btrfs_translate_remap()
-To: dsterba@suse.cz
-Cc: linux-btrfs@vger.kernel.org, fdmanana@kernel.org, Chris Mason <clm@fb.com>
-References: <20260220131002.6269-1-mark@harmstone.com>
- <20260220155802.GJ26902@twin.jikos.cz>
-Content-Language: en-US
-From: Mark Harmstone <mark@harmstone.com>
-Autocrypt: addr=mark@harmstone.com; keydata=
- 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
-In-Reply-To: <20260220155802.GJ26902@twin.jikos.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9c3463215d864eb706860e7d9c853e34d4125408.1771515807.git.fdmanana@suse.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Score: -4.00
+X-Spam-Level: 
+X-Spam-Flag: NO
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MV_CASE(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[harmstone.com,none];
-	R_DKIM_ALLOW(-0.20)[harmstone.com:s=mail];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21809-lists,linux-btrfs=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21810-lists,linux-btrfs=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[harmstone.com:+];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	MISSING_XM_UA(0.00)[];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+	RCPT_COUNT_TWO(0.00)[2];
+	RCVD_TLS_LAST(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DMARC_NA(0.00)[suse.cz];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	HAS_REPLYTO(0.00)[dsterba@suse.cz];
+	RCVD_COUNT_FIVE(0.00)[6];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[dsterba@suse.cz,linux-btrfs@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	TO_DN_NONE(0.00)[];
+	NEURAL_HAM(-0.00)[-0.999];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[mark@harmstone.com,linux-btrfs@vger.kernel.org];
-	RCPT_COUNT_THREE(0.00)[4];
-	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	NEURAL_HAM(-0.00)[-1.000];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[fb.com:email,btrfs.readthedocs.io:url,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,harmstone.com:mid,harmstone.com:dkim,harmstone.com:email]
-X-Rspamd-Queue-Id: D5C08169519
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:replyto,suse.cz:dkim,suse.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 219A0169E57
 X-Rspamd-Action: no action
 
-On 20/02/2026 3.58 pm, David Sterba wrote:
-> On Fri, Feb 20, 2026 at 01:09:54PM +0000, Mark Harmstone wrote:
->> If the call to btrfs_translate_remap() in btrfs_map_block() returns an
->> error code, we were leaking the chunk map. Fix it by jumping to out
->> rather than returning directly.
->>
->> Signed-off-by: Mark Harmstone <mark@harmstone.com>
->> Fixes: 18ba64992871 ("btrfs: redirect I/O for remapped block groups")
->> Suggested-by: Chris Mason <clm@fb.com>
+On Thu, Feb 19, 2026 at 03:45:39PM +0000, fdmanana@kernel.org wrote:
+> From: Filipe Manana <fdmanana@suse.com>
 > 
-> If it's a but then it's Reported-by
+> It's useless to print the result of the condition, it's always 0 if the
+> assertion is triggered, so it doesn't provide any useful information.
+> Examples:
 > 
->> Link: https://lore.kernel.org/linux-btrfs/20260125125830.2352988-1-clm@meta.com/
+>    assertion failed: cb->bbio.bio.bi_iter.bi_size == disk_num_bytes :: 0, in inode.c:9991
+>    assertion failed: folio_test_writeback(folio) :: 0, in subpage.c:476
 > 
-> Please sort the tags according to
-> https://btrfs.readthedocs.io/en/latest/dev/Developer-s-FAQ.html#ordering
-> 
-> as it's been for a long time and saves me editing each patch. Thanks.
+> So stop printing that, it's always ":: 0" for any assertion triggered.
 
-Okay, I've edited the patches and pushed them with the tags in the right 
-order.
+I've put it there because of the single value conditions like
+
+	ASSERT(flag);
+
+In most cases the condition is compound and boolean so the result is not
+useful and there are also many cases with simple pointer value so the
+exact value is also not providing anything.
+
+For any case we want to know exact values or possibly of subexpressions
+too (like start + length or other calculations) we should use the
+extended ASSERT syntax.
+
+
+> Signed-off-by: Filipe Manana <fdmanana@suse.com>
+> ---
+>  fs/btrfs/messages.h | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/btrfs/messages.h b/fs/btrfs/messages.h
+> index 81f59afe4a99..17cdc14dc89d 100644
+> --- a/fs/btrfs/messages.h
+> +++ b/fs/btrfs/messages.h
+> @@ -141,11 +141,11 @@ do {										\
+>  	verify_assert_printk_format("check the format string" args);		\
+>  	if (!likely(cond)) {							\
+
+This should probably become "if (likely(!cond))" as mentioned recently.
 
