@@ -1,165 +1,152 @@
-Return-Path: <linux-btrfs+bounces-21808-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21809-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id SM3YEbuEmGnKJQMAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21808-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Feb 2026 16:58:51 +0100
+	id jy/2M4CLmGmeJgMAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21809-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Feb 2026 17:27:44 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9EE5B1691F0
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Feb 2026 16:58:50 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5C08169519
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Feb 2026 17:27:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 20CAB30980E6
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Feb 2026 15:58:15 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 51CE830439EB
+	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Feb 2026 16:27:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4502034AAE3;
-	Fri, 20 Feb 2026 15:58:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FF563451BA;
+	Fri, 20 Feb 2026 16:27:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Tn0uurDU";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="cnrl3e2S";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Tn0uurDU";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="cnrl3e2S"
+	dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b="DmnMv1bD"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail.burntcomma.com (mail2.burntcomma.com [217.169.27.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67B9A29B78F
-	for <linux-btrfs@vger.kernel.org>; Fri, 20 Feb 2026 15:58:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BBBC260565
+	for <linux-btrfs@vger.kernel.org>; Fri, 20 Feb 2026 16:27:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.169.27.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771603093; cv=none; b=J7etqZKJ6WmQ5KB89xHEBjk7QZSrPeSEeWBbTlhUkYGpXwtrKuG1W1FcAmpzKmzc56gSUOcILbx+ddlaskzgOzBKm4jQbkuEZX6pdSDk5WRbuoHakt+9K/pMuXBYZZAsmtxeIm7iDtN6k/ubi108yB5c1gpXBuUJHbuTJWqvuyg=
+	t=1771604860; cv=none; b=V4XPlqUH67WswfigklU+v5MxaXnykxJzWJu/u0AKLEEmSzjYUo4W1CZt17SxrKPgl+tjlqa7veatFOPCnqs8Tq9/Jvy6+DKZnFz2gWO6uxkoXpdD5oT4ON7I+KH09blulet/vaREcvFIi00aZr0utjBhagK464j/qPGT+vVYnnM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771603093; c=relaxed/simple;
-	bh=vnqq5jqn3ZJKbgpXNwBsBfRP292fnY4kTTe8+CWDOOg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MYDG9iyIJDP7muJnpDeLnQrKJ5nkfZIi+nzupmZf0dsyo+UA8oo5Pz0p17AL3zdg+ukIRSdZ/dBz2MBfUnBZ3v3qjRjpIPUhXVM7ynPA0W0+xHX7lb3NAUA5cvwP9pE/9pE8ddHQVERdaxNOltfD3qYVk2n/SZIXpI2f3/8p9/Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Tn0uurDU; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=cnrl3e2S; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Tn0uurDU; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=cnrl3e2S; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 811C53E6C9;
-	Fri, 20 Feb 2026 15:58:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1771603084;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YB9vcWuYOHDIOhDwlp5XO1FTJbF2wB7a/MNQ8u4RPLw=;
-	b=Tn0uurDU59+4jhtdnIf2Cqnqx9wIhPRNRp65O2l1n69ueiUeKY6913EoWWX0UAZ7WRhkLP
-	r0iXbtgEu+L5/C9QLrJ6p1p9oB72nJ4lhBfvPJK9ozevDyMqD0sxYnqQGDUG/i+obn3PuJ
-	Qb71JJEgoE/vpROq+BTfwVjw8cW47AQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1771603084;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YB9vcWuYOHDIOhDwlp5XO1FTJbF2wB7a/MNQ8u4RPLw=;
-	b=cnrl3e2SeWv5mYzLi9jR2E954hO3zxBbdlR+0ACOvWNaJy0ys7KIbGTLKN28s9sA+oCK2r
-	sFpu3Opr7mp1uEBw==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=Tn0uurDU;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=cnrl3e2S
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1771603084;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YB9vcWuYOHDIOhDwlp5XO1FTJbF2wB7a/MNQ8u4RPLw=;
-	b=Tn0uurDU59+4jhtdnIf2Cqnqx9wIhPRNRp65O2l1n69ueiUeKY6913EoWWX0UAZ7WRhkLP
-	r0iXbtgEu+L5/C9QLrJ6p1p9oB72nJ4lhBfvPJK9ozevDyMqD0sxYnqQGDUG/i+obn3PuJ
-	Qb71JJEgoE/vpROq+BTfwVjw8cW47AQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1771603084;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YB9vcWuYOHDIOhDwlp5XO1FTJbF2wB7a/MNQ8u4RPLw=;
-	b=cnrl3e2SeWv5mYzLi9jR2E954hO3zxBbdlR+0ACOvWNaJy0ys7KIbGTLKN28s9sA+oCK2r
-	sFpu3Opr7mp1uEBw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6401D3EA65;
-	Fri, 20 Feb 2026 15:58:04 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id UEE7GIyEmGnLAgAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Fri, 20 Feb 2026 15:58:04 +0000
-Date: Fri, 20 Feb 2026 16:58:03 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Mark Harmstone <mark@harmstone.com>
-Cc: linux-btrfs@vger.kernel.org, fdmanana@kernel.org,
-	Chris Mason <clm@fb.com>
-Subject: Re: [PATCH] btrfs: fix chunk map leak in btrfs_map_block() after
- btrfs_translate_remap()
-Message-ID: <20260220155802.GJ26902@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <20260220131002.6269-1-mark@harmstone.com>
+	s=arc-20240116; t=1771604860; c=relaxed/simple;
+	bh=zlUaIy6hqmUji6wSq8lAQpDyc9p03J+kFfA3PFMjIyw=;
+	h=Message-ID:Date:Mime-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=WKRRw/KtmCqYC+mOwixe1QS/hK7PyPiTIc8WqB/3dPnAFMobgZvER1n+hylSaNWMMV5AJF/IIEwfWQ0ZHkwy/Cxp21PowKzpdu7ShTqymMCKIJdn+1HCFNRBcJagtPbk0LQQAeUDPM3UIiRKSMdcPPw706ib03WoRP7Umo10abs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com; spf=pass smtp.mailfrom=harmstone.com; dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b=DmnMv1bD; arc=none smtp.client-ip=217.169.27.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=harmstone.com
+Received: from [IPV6:2a02:8012:8cf0:0:ce28:aaff:fe0d:6db2] (beren.burntcomma.com [IPv6:2a02:8012:8cf0:0:ce28:aaff:fe0d:6db2])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256
+	 client-signature RSA-PSS (2048 bits) client-digest SHA256)
+	(Client CN "hellas", Issuer "burntcomma.com" (verified OK))
+	by mail.burntcomma.com (Postfix) with ESMTPS id 5A422304806;
+	Fri, 20 Feb 2026 16:27:28 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=harmstone.com;
+	s=mail; t=1771604848;
+	bh=t/3CMPZ2YSVQA8YJkJdGDxWKEKJqvsB4q2INfbJd6hY=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=DmnMv1bDcLHCWdCZKqKJq1G9d3djHbP5rzsmdxBeHdqUAvNLG3kMnwrrrsOfsle7c
+	 SyBBW5YcRQO56+gW1+q4RN9sN+72Tvni5ViIu44Kgl8fvVDBjHCNAMXtSyNRf8qTru
+	 CUEL9kHaeNH0heF9gqWbOW18LCh1eJuAOTH9thqk=
+Message-ID: <85740194-bcd5-486f-b7a2-f31613f85c9f@harmstone.com>
+Date: Fri, 20 Feb 2026 16:27:28 +0000
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260220131002.6269-1-mark@harmstone.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Flag: NO
-X-Spam-Score: -4.21
-X-Spam-Level: 
+Mime-Version: 1.0
+Subject: Re: [PATCH] btrfs: fix chunk map leak in btrfs_map_block() after
+ btrfs_translate_remap()
+To: dsterba@suse.cz
+Cc: linux-btrfs@vger.kernel.org, fdmanana@kernel.org, Chris Mason <clm@fb.com>
+References: <20260220131002.6269-1-mark@harmstone.com>
+ <20260220155802.GJ26902@twin.jikos.cz>
+Content-Language: en-US
+From: Mark Harmstone <mark@harmstone.com>
+Autocrypt: addr=mark@harmstone.com; keydata=
+ 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
+In-Reply-To: <20260220155802.GJ26902@twin.jikos.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	MV_CASE(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[harmstone.com,none];
+	R_DKIM_ALLOW(-0.20)[harmstone.com:s=mail];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21808-lists,linux-btrfs=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21809-lists,linux-btrfs=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	DMARC_NA(0.00)[suse.cz];
-	TO_DN_SOME(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	HAS_REPLYTO(0.00)[dsterba@suse.cz];
-	RCVD_COUNT_FIVE(0.00)[6];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[dsterba@suse.cz,linux-btrfs@vger.kernel.org];
-	RCPT_COUNT_THREE(0.00)[4];
+	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[harmstone.com:+];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	MISSING_XM_UA(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[mark@harmstone.com,linux-btrfs@vger.kernel.org];
+	RCPT_COUNT_THREE(0.00)[4];
+	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	NEURAL_HAM(-0.00)[-0.999];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,suse.cz:replyto,suse.cz:dkim,fb.com:email,harmstone.com:email,twin.jikos.cz:mid,btrfs.readthedocs.io:url]
-X-Rspamd-Queue-Id: 9EE5B1691F0
+	NEURAL_HAM(-0.00)[-1.000];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[fb.com:email,btrfs.readthedocs.io:url,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,harmstone.com:mid,harmstone.com:dkim,harmstone.com:email]
+X-Rspamd-Queue-Id: D5C08169519
 X-Rspamd-Action: no action
 
-On Fri, Feb 20, 2026 at 01:09:54PM +0000, Mark Harmstone wrote:
-> If the call to btrfs_translate_remap() in btrfs_map_block() returns an
-> error code, we were leaking the chunk map. Fix it by jumping to out
-> rather than returning directly.
+On 20/02/2026 3.58 pm, David Sterba wrote:
+> On Fri, Feb 20, 2026 at 01:09:54PM +0000, Mark Harmstone wrote:
+>> If the call to btrfs_translate_remap() in btrfs_map_block() returns an
+>> error code, we were leaking the chunk map. Fix it by jumping to out
+>> rather than returning directly.
+>>
+>> Signed-off-by: Mark Harmstone <mark@harmstone.com>
+>> Fixes: 18ba64992871 ("btrfs: redirect I/O for remapped block groups")
+>> Suggested-by: Chris Mason <clm@fb.com>
 > 
-> Signed-off-by: Mark Harmstone <mark@harmstone.com>
-> Fixes: 18ba64992871 ("btrfs: redirect I/O for remapped block groups")
-> Suggested-by: Chris Mason <clm@fb.com>
+> If it's a but then it's Reported-by
+> 
+>> Link: https://lore.kernel.org/linux-btrfs/20260125125830.2352988-1-clm@meta.com/
+> 
+> Please sort the tags according to
+> https://btrfs.readthedocs.io/en/latest/dev/Developer-s-FAQ.html#ordering
+> 
+> as it's been for a long time and saves me editing each patch. Thanks.
 
-If it's a but then it's Reported-by
-
-> Link: https://lore.kernel.org/linux-btrfs/20260125125830.2352988-1-clm@meta.com/
-
-Please sort the tags according to
-https://btrfs.readthedocs.io/en/latest/dev/Developer-s-FAQ.html#ordering
-
-as it's been for a long time and saves me editing each patch. Thanks.
+Okay, I've edited the patches and pushed them with the tags in the right 
+order.
 
