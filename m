@@ -1,177 +1,113 @@
-Return-Path: <linux-btrfs+bounces-21813-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21815-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id +MfDK0jhmGmHNwMAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21813-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Feb 2026 23:33:44 +0100
+	id mHBbGSIJmWn1PAMAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21815-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Sat, 21 Feb 2026 02:23:46 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3676916B409
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Feb 2026 23:33:44 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 638DB16BB6F
+	for <lists+linux-btrfs@lfdr.de>; Sat, 21 Feb 2026 02:23:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id CD62B30BDD5F
-	for <lists+linux-btrfs@lfdr.de>; Fri, 20 Feb 2026 22:29:30 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 0EA44302C6FC
+	for <lists+linux-btrfs@lfdr.de>; Sat, 21 Feb 2026 01:21:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8EDE3115AE;
-	Fri, 20 Feb 2026 22:29:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72262325730;
+	Sat, 21 Feb 2026 01:20:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="OAZIkqoV";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="OAZIkqoV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J1PmOlop"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5521F30FC22
-	for <linux-btrfs@vger.kernel.org>; Fri, 20 Feb 2026 22:29:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2D50324B0C;
+	Sat, 21 Feb 2026 01:20:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771626568; cv=none; b=PJt1ZurIWEnRS9YNEb3ytCvEcyUtikvJ3UTaiDpqFTaFsHQ0fT0MHRBOxRG++kpJTVhex+SVSPyOTHkB+BHSK8cGQIg+PJPu2heUHISJqgAZUJKpT71bi9iRGO6x4VDfQ2ic6Pk6rl+CndO9lKvCedd+cikU17kEoTUxsf5/yrc=
+	t=1771636842; cv=none; b=G/uLyghjTrVPBG7HGiq+6brN00iTcrK9KiO0ALRrf7z1uwsAW0313Yu/PyJiNoeeYHv5KewEx5WEfo+Qrv4oFwUaLDrhSo2UifiLqT4BdcEVuM9Kj8GyUvKvchZNOCAN+FIpIzmv7cRupVi1IvG5kSK9Cw82CLygQE+5ZwnIDqE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771626568; c=relaxed/simple;
-	bh=nKMsexCF85Y1eZTQrpa5QezA3t2bRV0dSzUeaLliYvQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=cPrXmo2pk0ehW9qjRejlwXzPPx/6FCqjopWlPh1jMIJniEN7swT+E48YdBWVq3J6GHbtkioyVsKOpp92MV9tWiIMIrdqySq0aipsUn/tN87+2dg6nUGzbgQTCHOnUxYTjxjAnSl12JVT3QNK2qt02BcIRjnuzjBbImsZp4kFG84=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=OAZIkqoV; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=OAZIkqoV; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 716F95BCEE;
-	Fri, 20 Feb 2026 22:29:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1771626564; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=esINlBSxM7CG/fvquYVkUc3dvUJoACyMHKBUFpSCXiA=;
-	b=OAZIkqoViLWyQjzru4APnA3lQ7LJxqmw9F94x68RZNn26buuccPvQ4sifOb7lm1K2VymQP
-	03TiMxi0qxNM6UGdH0NNNblLaFDmQEB3nbxnZNdd3w01NEOIWPtvMI2ezz9VZc6gry3/vG
-	yVGdVkfaBiWypWRrHfqELPFmust23+w=
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=OAZIkqoV
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1771626564; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=esINlBSxM7CG/fvquYVkUc3dvUJoACyMHKBUFpSCXiA=;
-	b=OAZIkqoViLWyQjzru4APnA3lQ7LJxqmw9F94x68RZNn26buuccPvQ4sifOb7lm1K2VymQP
-	03TiMxi0qxNM6UGdH0NNNblLaFDmQEB3nbxnZNdd3w01NEOIWPtvMI2ezz9VZc6gry3/vG
-	yVGdVkfaBiWypWRrHfqELPFmust23+w=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5F8BE3EA65;
-	Fri, 20 Feb 2026 22:29:24 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id HXtMF0TgmGntDgAAD6G6ig
-	(envelope-from <dsterba@suse.com>); Fri, 20 Feb 2026 22:29:24 +0000
-From: David Sterba <dsterba@suse.com>
-To: torvalds@linux-foundation.org
-Cc: David Sterba <dsterba@suse.com>,
-	linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs fixes for 7.0-rc1
-Date: Fri, 20 Feb 2026 23:29:20 +0100
-Message-ID: <cover.1771614421.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.51.0
+	s=arc-20240116; t=1771636842; c=relaxed/simple;
+	bh=cEacp4oH0oUq7bhH9a/JdFyiSTbN7Fv1iaph87di5eo=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=t8xoOJBPdosT+aXXEQvTE3sxH0y3qERVwocqQdzis4sqjmiBjwhacLBcvzP34jeVXXiqbHfhzGQExRjN9AXDWSIrfG5nwRTh9rsA6taLumMRE8iZKmq+Oe9q0RxoxQjNorK34/bfaG9Rn2KkilaKZ3AIN8rSNHx0FzHmGRP2E/4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J1PmOlop; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 977C4C116C6;
+	Sat, 21 Feb 2026 01:20:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1771636842;
+	bh=cEacp4oH0oUq7bhH9a/JdFyiSTbN7Fv1iaph87di5eo=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=J1PmOlopRDWbl3SaQ/jRjEJuEcIlURcJTREji7WrCg5/DpIPtfcc+tliLs5tfO7Bj
+	 EjidHwrnPAJvg+A8dmNcflThq6Im4SD7DGjMa+DnovMTNua2q5P7KOUhu4lVYJpIKQ
+	 B63XCBtS3Q0m7fpDEsTd4pgZ2l9t9V+C+iHu4P3kH+L61EE2CpDgXcDL/OVoMDvfga
+	 GkipsdxbVG7JJCeGEJ//luwVENqzrPccvNv0ExZoYWfhYrJ6bl6twZnrPzhkORlN8v
+	 OLFCYduD8VIWb0+3GNiajUESoxW+Ict0KxO6lIpHcAk4t1uyld6Tm9pMZRHZhK4bcq
+	 Min354FIWXowQ==
+Received: from [10.30.226.235] (localhost [IPv6:::1])
+	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id B9E783808200;
+	Sat, 21 Feb 2026 01:20:51 +0000 (UTC)
+Subject: Re: [GIT PULL] Btrfs fixes for 7.0-rc1
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <cover.1771614421.git.dsterba@suse.com>
+References: <cover.1771614421.git.dsterba@suse.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <cover.1771614421.git.dsterba@suse.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-7.0-rc1-tag
+X-PR-Tracked-Commit-Id: ecb7c2484cfc83a93658907580035a8adf1e0a92
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: b3f1da2a4d851b8e1ccf932e52c6772fe2253a47
+Message-Id: <177163685022.969912.1396050829899129437.pr-tracker-bot@kernel.org>
+Date: Sat, 21 Feb 2026 01:20:50 +0000
+To: David Sterba <dsterba@suse.com>
+Cc: torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Flag: NO
-X-Spam-Score: -3.01
-X-Spam-Level: 
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21813-lists,linux-btrfs=lfdr.de];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	FROM_NEQ_ENVFROM(0.00)[dsterba@suse.com,linux-btrfs@vger.kernel.org];
-	RCPT_COUNT_THREE(0.00)[4];
-	PRECEDENCE_BULK(0.00)[];
-	TAGGED_RCPT(0.00)[linux-btrfs];
-	NEURAL_HAM(-0.00)[-1.000];
-	DKIM_TRACE(0.00)[suse.com:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 3676916B409
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21815-lists,linux-btrfs=lfdr.de];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_NO_DN(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[5];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[pr-tracker-bot@kernel.org,linux-btrfs@vger.kernel.org];
+	MISSING_XM_UA(0.00)[];
+	NEURAL_HAM(-0.00)[-0.999];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[linux-btrfs];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 638DB16BB6F
 X-Rspamd-Action: no action
 
-Hi,
+The pull request you sent on Fri, 20 Feb 2026 23:29:20 +0100:
 
-first batch of fixes that arrived after the code freeze. Please pull,
-thanks.
+> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-7.0-rc1-tag
 
-- multiple error handling fixes of unexpected conditions
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/b3f1da2a4d851b8e1ccf932e52c6772fe2253a47
 
-- reset block group size class once it becomes empty so its class can be
-  changed
+Thank you!
 
-- error message level adjustments
-
-- fixes of returned error values
-
-- use correct block reserve for delayed refs
-
-----------------------------------------------------------------
-The following changes since commit 161ab30da6899f31f8128cec7c833e99fa4d06d2:
-
-  btrfs: get rid of compressed_bio::compressed_folios[] (2026-02-03 07:59:07 +0100)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-7.0-rc1-tag
-
-for you to fetch changes up to ecb7c2484cfc83a93658907580035a8adf1e0a92:
-
-  btrfs: fix invalid leaf access in btrfs_quota_enable() if ref key not found (2026-02-18 15:25:54 +0100)
-
-----------------------------------------------------------------
-Adarsh Das (2):
-      btrfs: handle unexpected exact match in btrfs_set_inode_index_count()
-      btrfs: replace BUG() with error handling in __btrfs_balance()
-
-Filipe Manana (5):
-      btrfs: use the correct type to initialize block reserve for delayed refs
-      btrfs: change unaligned root messages to error level in btrfs_validate_super()
-      btrfs: fix lost return value on error in finish_verity()
-      btrfs: fix lost error return in btrfs_find_orphan_roots()
-      btrfs: fix invalid leaf access in btrfs_quota_enable() if ref key not found
-
-Jiasheng Jiang (1):
-      btrfs: reset block group size class when it becomes empty
-
-Qu Wenruo (1):
-      btrfs: do not ASSERT() when the fs flips RO inside btrfs_repair_io_failure()
-
- fs/btrfs/bio.c         |  8 +++++++-
- fs/btrfs/block-group.c | 10 ++++++++++
- fs/btrfs/block-rsv.c   |  7 ++++---
- fs/btrfs/disk-io.c     | 10 +++++-----
- fs/btrfs/inode.c       | 15 ++++++++++++---
- fs/btrfs/qgroup.c      | 11 +++++++----
- fs/btrfs/root-tree.c   |  2 +-
- fs/btrfs/transaction.c |  2 +-
- fs/btrfs/verity.c      |  2 +-
- fs/btrfs/volumes.c     | 10 ++++++++--
- 10 files changed, 56 insertions(+), 21 deletions(-)
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
