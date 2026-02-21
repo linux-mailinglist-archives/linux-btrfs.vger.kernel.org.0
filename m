@@ -1,140 +1,112 @@
-Return-Path: <linux-btrfs+bounces-21816-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21817-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id QJ3wE6kZmml2YgMAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21816-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Sat, 21 Feb 2026 21:46:33 +0100
+	id 0On8KgAcmmnZYgMAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21817-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Sat, 21 Feb 2026 21:56:32 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 046D616DD6C
-	for <lists+linux-btrfs@lfdr.de>; Sat, 21 Feb 2026 21:46:32 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 389CC16DDD0
+	for <lists+linux-btrfs@lfdr.de>; Sat, 21 Feb 2026 21:56:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 41256303325D
-	for <lists+linux-btrfs@lfdr.de>; Sat, 21 Feb 2026 20:46:17 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 0ECD53044B99
+	for <lists+linux-btrfs@lfdr.de>; Sat, 21 Feb 2026 20:56:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DC6E369209;
-	Sat, 21 Feb 2026 20:46:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D022C369212;
+	Sat, 21 Feb 2026 20:56:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mYFXhts0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="R83rW+PC"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4A5A1E7660;
-	Sat, 21 Feb 2026 20:46:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 244D11F5821;
+	Sat, 21 Feb 2026 20:56:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771706770; cv=none; b=d+cNKn6F1gyaRhj5KFOHlyf3wJnxzd2f0oQz1UeJpHkvqiiqDhg0BBT9MZHKQV174oFyxPtbO0BpPy5dpby/bkoMTgBvs+TNbOItLU55CFcXraVkNwkeSE2Rnm3Ax8fd7rXsikrRoRT5D7F1JKJPJuLkMGKgSJfBrMxGP5NZkwE=
+	t=1771707370; cv=none; b=jBJSpgY10HoYGGtLZ2z1siHYvC5gPBjy2wnFcHkJ3yDAbOJowZdslnlUIyq2a6eeEKao29TwSka1xLxhVNWCqKKxe3QoMQIAhYOrZQnlAki+tL7Y9CqpjRo+doQ09SONHSWH6VFzE0u9p3a4p3gtUESkfb6YTWdj5J+jAQAqgIA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771706770; c=relaxed/simple;
-	bh=1X5cYAl9kNylIb5ptLXnhArizU/ge+q4nUoOS+5gYfI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=j0kVBr+P8pqYA7oz2xkvqeiqO4COsdiMQ2d6bENQOj29TInzL5iVvOG2MvaVwvOdyPzWIzFMUjgEdW/n57NyhAKy4W/tRLk6lQhJwqEMdB6efj7Dkt675hz/OIc3KaKbdxOJP29tokJUEDi7RqXtBzlzUlRDcTm4OTeMC4fhjlw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mYFXhts0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08C82C4CEF7;
-	Sat, 21 Feb 2026 20:46:10 +0000 (UTC)
+	s=arc-20240116; t=1771707370; c=relaxed/simple;
+	bh=rsSXrdyQc75M2GNaYQZdLOdCAC0nOdlAv9gh6twIN4M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=iC0xSyOX3kk4W5UVvz4Z9jZqg8zUdaNlyL/H0dBsVSNZ7YxsJVB5WwR7Jsba9DeOEz2qUP64OWqwZpyivNsCnMfWJb8MWm4bzMLxmZzUSZeLAuj59OriEhWC14cZVtuRkmniu7FJQXZdhqomJ6t0cKTNJbr7fV+/POLz6IFpgh4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=R83rW+PC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 70505C4CEF7;
+	Sat, 21 Feb 2026 20:56:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1771706770;
-	bh=1X5cYAl9kNylIb5ptLXnhArizU/ge+q4nUoOS+5gYfI=;
-	h=From:To:Cc:Subject:Date:From;
-	b=mYFXhts07Y6/tToRzsac/gkp6Zir8RyBtx4TqE5IoqETTlUoSwHevQQS4bILvnwuE
-	 jjAWS/bAQkPf5XCwtyCHg6YxNmhJzFK30m/s/0OWY934eZvzQItzQeTvgDXR1OQJB2
-	 OnuM/ecYnnK3TRrJerpGd0UOId7RvhaXW9sSE+kLnEyDBxiFDXdvcl6i6qI7jveDzK
-	 2E8X0w8oUzaUmWEf1VOYL8C40nh+X7FaFY4bV2ZdGv/BKaDn18DwKVtqUrWiVG+50X
-	 HxE7HWyd4A44W79VyRgUy3an9i/vx/d83GI/z89t1uIyV4NZR2w51zJ3/Ko2QDstSW
-	 Cz4i+EICcV0HA==
+	s=k20201202; t=1771707369;
+	bh=rsSXrdyQc75M2GNaYQZdLOdCAC0nOdlAv9gh6twIN4M=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=R83rW+PCuqF4+GKyjgRmDSAyoPIY32hvDY3TWItfqw1b0NU6Fj1+9YKi2Z1KD8Ra7
+	 Zwlpw0i466ZVmH2mZkftkYZC0Qpzmfik4zhifneiyU3tARuq3ErJ+W4DxvFFKjg09M
+	 YAsYlarlZP+Rw1TSeHbNPM32z784KPW2bp9nTblNTpFTBE/pKcvavT1In4nxALfKrA
+	 2q+BidmFj8ybCFy6T0sMG8gbuArxOiG1wjXHlJWLpkENW8gBu4OkBVHaboaN+YnPs0
+	 R1JuiAlEDuGmIxs1J3GqC23C6zeJfwl08pDciQLT4IDvfEbpERJtArGCk7asppSa3c
+	 puGV6+0oRmrbw==
+Date: Sat, 21 Feb 2026 12:56:06 -0800
 From: Eric Biggers <ebiggers@kernel.org>
-To: fsverity@lists.linux.dev
-Cc: linux-fsdevel@vger.kernel.org,
-	Christoph Hellwig <hch@lst.de>,
-	Arnd Bergmann <arnd@arndb.de>,
-	linux-ext4@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	linux-btrfs@vger.kernel.org,
-	linux-xfs@vger.kernel.org,
-	Eric Biggers <ebiggers@kernel.org>
-Subject: [PATCH] fsverity: add dependency on 64K or smaller pages
-Date: Sat, 21 Feb 2026 12:45:25 -0800
-Message-ID: <20260221204525.30426-1-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.53.0
+To: Daniel Vacek <neelx@suse.com>
+Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+	"Theodore Y. Ts'o" <tytso@mit.edu>,
+	Jaegeuk Kim <jaegeuk@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+	David Sterba <dsterba@suse.com>, linux-block@vger.kernel.org,
+	linux-fscrypt@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 00/43] btrfs: add fscrypt support
+Message-ID: <20260221205606.GA23260@quark>
+References: <20260206182336.1397715-1-neelx@suse.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260206182336.1397715-1-neelx@suse.com>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
+	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21816-lists,linux-btrfs=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21817-lists,linux-btrfs=lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	MISSING_XM_UA(0.00)[];
+	NEURAL_HAM(-0.00)[-0.999];
+	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-btrfs@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	NEURAL_HAM(-0.00)[-1.000];
-	DKIM_TRACE(0.00)[kernel.org:+];
+	RCPT_COUNT_SEVEN(0.00)[11];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-btrfs];
 	TO_DN_SOME(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 046D616DD6C
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 389CC16DDD0
 X-Rspamd-Action: no action
 
-Currently, all filesystems that support fsverity (ext4, f2fs, and btrfs)
-cache the Merkle tree in the pagecache at a 64K aligned offset after the
-end of the file data.  This offset needs to be a multiple of the page
-size, which is guaranteed only when the page size is 64K or smaller.
+On Fri, Feb 06, 2026 at 07:22:32PM +0100, Daniel Vacek wrote:
+> Hello,
+> 
+> These are the remaining parts from former series [1] from Omar, Sweet Tea
+> and Josef.  Some bits of it were split into the separate set [2] before.
+> 
+> Notably, at this stage encryption is not supported with RAID5/6 setup
+> and send is also isabled for now.
 
-64K was chosen to be the "largest reasonable page size".  But it isn't
-the largest *possible* page size: the hexagon and powerpc ports of Linux
-support 256K pages, though that configuration is rarely used.
+Where does this series apply to?  There's no base-commit or git tree,
+and it doesn't apply to mainline or btrfs/for-next.
 
-For now, just disable support for FS_VERITY in these odd configurations
-to ensure it isn't used in cases where it would have incorrect behavior.
-
-Fixes: 671e67b47e9f ("fs-verity: add Kconfig and the helper functions for hashing")
-Reported-by: Christoph Hellwig <hch@lst.de>
-Closes: https://lore.kernel.org/r/20260119063349.GA643@lst.de
-Signed-off-by: Eric Biggers <ebiggers@kernel.org>
----
- fs/verity/Kconfig | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/fs/verity/Kconfig b/fs/verity/Kconfig
-index 76d1c5971b82..b20882963ffb 100644
---- a/fs/verity/Kconfig
-+++ b/fs/verity/Kconfig
-@@ -1,9 +1,12 @@
- # SPDX-License-Identifier: GPL-2.0
- 
- config FS_VERITY
- 	bool "FS Verity (read-only file-based authenticity protection)"
-+	# Filesystems cache the Merkle tree at a 64K aligned offset in the
-+	# pagecache.  That approach assumes the page size is at most 64K.
-+	depends on PAGE_SHIFT <= 16
- 	select CRYPTO_HASH_INFO
- 	select CRYPTO_LIB_SHA256
- 	select CRYPTO_LIB_SHA512
- 	help
- 	  This option enables fs-verity.  fs-verity is the dm-verity
-
-base-commit: 8934827db5403eae57d4537114a9ff88b0a8460f
--- 
-2.53.0
-
+- Eric
 
