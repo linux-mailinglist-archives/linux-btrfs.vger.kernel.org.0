@@ -1,180 +1,124 @@
-Return-Path: <linux-btrfs+bounces-21819-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21820-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id UDzQKqWammmTdgMAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21819-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Sun, 22 Feb 2026 06:56:53 +0100
+	id WvguFzv7mmntowMAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21820-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Sun, 22 Feb 2026 13:48:59 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 316C516E878
-	for <lists+linux-btrfs@lfdr.de>; Sun, 22 Feb 2026 06:56:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B3B9116F114
+	for <lists+linux-btrfs@lfdr.de>; Sun, 22 Feb 2026 13:48:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 07291301AA79
-	for <lists+linux-btrfs@lfdr.de>; Sun, 22 Feb 2026 05:56:35 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 75252301547C
+	for <lists+linux-btrfs@lfdr.de>; Sun, 22 Feb 2026 12:48:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2F7A1A262D;
-	Sun, 22 Feb 2026 05:56:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B4FF231C9F;
+	Sun, 22 Feb 2026 12:48:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b="Qmk0dIOM"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com [209.85.210.70])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0279813D8B1
-	for <linux-btrfs@vger.kernel.org>; Sun, 22 Feb 2026 05:56:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 894F917B43F;
+	Sun, 22 Feb 2026 12:48:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.149.199.84
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771739791; cv=none; b=nq8IwkXlLWgX0igEcXC7HEC00Izp6vOlCgXb2HUNbSjxekIieUSPIVScFrk5TK6e4ofZaR8sh8pgk5c5da3zbFCcTuAC6AHS1848NjHvSn4JO83gyoAFqNF9hN41O8fTX4kJVlL3nNeN1LJdYVQZdlVsXYC2J+yMu0Np7tfEkSU=
+	t=1771764521; cv=none; b=i7aJt24x13qUjIS3wB4BZ6Vq+rPNBZaA5/UDUoZ7mar8mPFz5+/S+wAvj5jc0vYs5duQSE7DjLKJyyV3mFLoBtxHl/voGzoKfdtWj/A24V81eU7614TUH8h5z9UfeDHYjgwmgcXEAWnB3Rf1Ol7A06Z4h5sw/haLAIhq7dhfFus=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771739791; c=relaxed/simple;
-	bh=1OdX+md+a1zz/20Xq4bHcBDaXb3cPGVdBdXHXlu7NT0=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=PLWOojAscB9m3hkAiqzyoPiuqK6lJcqCVjW4qV+59+NULGu5QIzUpN1IApnd2TJfCMBKrDU6sct6MxEIGlWgbMj0MSvcOay0YopiLFFytJo0YRHLtGIyrAjXFNM5Z94hMLcaQkGKQMhaJEca/ff2zneoLvzrL6kW4c0x2pq8whU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.210.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-ot1-f70.google.com with SMTP id 46e09a7af769-7d4d6edec7eso21465815a34.1
-        for <linux-btrfs@vger.kernel.org>; Sat, 21 Feb 2026 21:56:29 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771739789; x=1772344589;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rXQMWTzJZsG1fQtRoJmSsS973Erm0cV9X9ibsgEStvw=;
-        b=nWN9iuyKdbtwAmzTTOw13JYzRVbhoqkPXEGDU522gTrAKq427Nr5KLbiCzYtrhaH4h
-         lZ13MVQDTsLFDWzqPh+P3hmFBE0ec3MEyPF4sHMZQ0/xMRiQdioHtOSV9VSpTjFIhvnI
-         cOMEqKlg18XU1Osxhs3BxhWyMVWUkqy02kTWSA8P8bJ0rnhgWwuO6lqXSh6WpS4UO92O
-         jiIRTeMQQOvILzi1fNW0s4CaoLq+7pknzWcXJo37jf/Zb3MKv5lW9/EHKndg785duOvS
-         V6TJ2qoP1YdrY00kHFd7CRYsaKIsjNxi24KP0Rc+Mh1I1OZI/xW/2T3JX0DI38a5IKnE
-         Dq0w==
-X-Forwarded-Encrypted: i=1; AJvYcCV8MZt9nODakXukVhXajxE9NY5+ampUTWjrDuKmgaAVso5zIykfl6bgIrEcRsT/kE/0Vto9BpSKp2rg8g==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzJbB0s6fCc0sS54UdxcJrvLljg+bdfOWuPweHcgqimYQ+6jQ07
-	29S2VH1t1XlmwVvj1LQWw70xnZo/mG94pDEP+GCFJxciY84xnfAzKKYPnDID6Corh4akon0MZO+
-	3UGIKtgfBzpoqpvJp9os+EsxUqZmQMgdr1Ef1nZmPO8MjhTOe13hCsEvRXUA=
+	s=arc-20240116; t=1771764521; c=relaxed/simple;
+	bh=8ziw2Z47J3cWWIxD67JMP8hooLgeKjQaf5bGnOyQ4Ug=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=BLamBlkollVtFX3KVEuZ1icAqCW69d9pNnMdB1I/TjV/RPQlpE6rQ1VOaz0qFGnjQ0jstd4vJG27c2ky0VESgyd5RxuSFN/pmxT7+LKhf9RKv1ffLn4JFHe3fLv345sKvDdYDTa6h1piUS/tFitY9ijWdGPnfmTrh7YopEc7p2M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru; spf=pass smtp.mailfrom=ispras.ru; dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b=Qmk0dIOM; arc=none smtp.client-ip=83.149.199.84
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ispras.ru
+Received: from VelichayshiyPC.Dlink (unknown [92.101.134.175])
+	by mail.ispras.ru (Postfix) with ESMTPSA id A8922413A4B4;
+	Sun, 22 Feb 2026 12:48:29 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru A8922413A4B4
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
+	s=default; t=1771764509;
+	bh=k5gXoamKVQ8go7/vBbv6Nq/xRVeU9Ng9q2GcmtjPAyU=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Qmk0dIOMsHzAYcL9FqSsnfMdl4ybL9DlGHC0lBMaDlSbaCzRgd3U2pi6LdOTOpQX8
+	 96NoW0Qa7vOF3q0P/4P20UCfkGdRu6/a7y748YeW90iD2g0Q+vy/7XoikAfPUv82qZ
+	 o3Hrc8dqdtqOgvC8h48TTAf31ISfhK9qUU5zVSR8=
+From: Alexey Velichayshiy <a.velichayshiy@ispras.ru>
+To: a.velichayshiy@ispras.ru,
+	Chris Mason <clm@fb.com>
+Cc: Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>,
+	Filipe Manana <fdmanana@suse.com>,
+	linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-project@linuxtesting.org
+Subject: [PATCH] btrfs: Remove redundant nowait check in lock_extent_direct
+Date: Sun, 22 Feb 2026 15:47:23 +0300
+Message-ID: <20260222124758.953175-1-a.velichayshiy@ispras.ru>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6820:1c9f:b0:677:5e0a:a92b with SMTP id
- 006d021491bc7-679c424d590mr2280286eaf.13.1771739788897; Sat, 21 Feb 2026
- 21:56:28 -0800 (PST)
-Date: Sat, 21 Feb 2026 21:56:28 -0800
-In-Reply-To: <68ff35d4.050a0220.32483.0015.GAE@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <699a9a8c.a70a0220.2c38d7.016d.GAE@google.com>
-Subject: Re: [syzbot] [btrfs?] WARNING in lookup_inline_extent_backref (2)
-From: syzbot <syzbot+b0e66d3779134f468156@syzkaller.appspotmail.com>
-To: clm@fb.com, dsterba@suse.com, josef@toxicpanda.com, 
-	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com, wqu@suse.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.36 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=65722f41f7edc17e];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[ispras.ru,none];
+	R_MISSING_CHARSET(0.50)[];
 	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[ispras.ru:s=default];
 	MAILLIST(-0.15)[generic];
-	DMARC_POLICY_SOFTFAIL(0.10)[appspotmail.com : SPF not aligned (relaxed), No valid DKIM,none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21820-lists,linux-btrfs=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
-	TAGGED_FROM(0.00)[bounces-21819-lists,linux-btrfs=lfdr.de,b0e66d3779134f468156];
-	SUBJECT_HAS_QUESTION(0.00)[];
-	TAGGED_RCPT(0.00)[linux-btrfs];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[syzbot@syzkaller.appspotmail.com,linux-btrfs@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	TO_DN_NONE(0.00)[];
-	R_DKIM_NA(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[a.velichayshiy@ispras.ru,linux-btrfs@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[8];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,syzkaller.appspot.com:url,appspotmail.com:email,storage.googleapis.com:url]
-X-Rspamd-Queue-Id: 316C516E878
+	DKIM_TRACE(0.00)[ispras.ru:+];
+	TAGGED_RCPT(0.00)[linux-btrfs];
+	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,ispras.ru:mid,ispras.ru:dkim,ispras.ru:email]
+X-Rspamd-Queue-Id: B3B9116F114
 X-Rspamd-Action: no action
 
-syzbot has found a reproducer for the following issue on:
+The nowait flag is always false in this context, making the conditional
+check unnecessary. Simplify the code by directly assigning -ENOTBLK.
 
-HEAD commit:    d79526b89571 Merge tag 'spi-fix-v7.0-merge-window' of git:..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=11211fb2580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=65722f41f7edc17e
-dashboard link: https://syzkaller.appspot.com/bug?extid=b0e66d3779134f468156
-compiler:       Debian clang version 21.1.8 (++20251221033036+2078da43e25a-1~exp1~20251221153213.50), Debian LLD 21.1.8
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11a469e6580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16deeeaa580000
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/d900f083ada3/non_bootable_disk-d79526b8.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/49624ca295fd/vmlinux-d79526b8.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/b6bf3fe0601b/bzImage-d79526b8.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/bdd2b04fef16/mount_0.gz
-  fsck result: OK (log: https://syzkaller.appspot.com/x/fsck.log?x=11b2d95a580000)
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b0e66d3779134f468156@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-ret
-WARNING: fs/btrfs/extent-tree.c:837 at lookup_inline_extent_backref+0x143e/0x1980 fs/btrfs/extent-tree.c:837, CPU#0: syz.0.51/6188
-Modules linked in:
-CPU: 0 UID: 0 PID: 6188 Comm: syz.0.51 Not tainted syzkaller #0 PREEMPT(full) 
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
-RIP: 0010:lookup_inline_extent_backref+0x143e/0x1980 fs/btrfs/extent-tree.c:837
-Code: d8 48 8d 65 d8 5b 41 5c 41 5d 41 5e 41 5f 5d e9 48 80 cb 07 cc e8 52 e3 de fd bb fe ff ff ff 4c 8b 74 24 50 e9 af fe ff ff 90 <0f> 0b 90 48 8b 84 24 88 00 00 00 48 b9 00 00 00 00 00 fc ff df 80
-RSP: 0018:ffffc9000f436dc0 EFLAGS: 00010202
-RAX: 0000000000000001 RBX: 0000000000000001 RCX: 0000000000000000
-RDX: ffff88803cfb0000 RSI: 0000000000000001 RDI: 0000000000000000
-RBP: ffffc9000f436fe8 R08: 0000000000000000 R09: 1ffffd40002a7c88
-R10: dffffc0000000000 R11: fffff940002a7c89 R12: 0000000000530000
-R13: ffff888012fe3dc0 R14: 0000000000000009 R15: ffff888040dba000
-FS:  00007f51785dd6c0(0000) GS:ffff88808ca5b000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f51790e02c0 CR3: 0000000042618000 CR4: 0000000000352ef0
-Call Trace:
- <TASK>
- insert_inline_extent_backref+0xa8/0x300 fs/btrfs/extent-tree.c:1206
- __btrfs_inc_extent_ref+0x271/0xa00 fs/btrfs/extent-tree.c:1505
- run_delayed_tree_ref fs/btrfs/extent-tree.c:1771 [inline]
- run_one_delayed_ref fs/btrfs/extent-tree.c:1803 [inline]
- btrfs_run_delayed_refs_for_head fs/btrfs/extent-tree.c:2003 [inline]
- __btrfs_run_delayed_refs+0xf93/0x4240 fs/btrfs/extent-tree.c:2078
- btrfs_run_delayed_refs+0xe6/0x3b0 fs/btrfs/extent-tree.c:2190
- qgroup_account_snapshot fs/btrfs/transaction.c:1589 [inline]
- create_pending_snapshot+0x1141/0x3ac0 fs/btrfs/transaction.c:1872
- create_pending_snapshots+0x17c/0x1c0 fs/btrfs/transaction.c:1942
- btrfs_commit_transaction+0xf75/0x31a0 fs/btrfs/transaction.c:2439
- create_snapshot fs/btrfs/ioctl.c:779 [inline]
- btrfs_mksubvol+0x9bc/0x10a0 fs/btrfs/ioctl.c:857
- btrfs_mksnapshot+0xab/0xf0 fs/btrfs/ioctl.c:899
- __btrfs_ioctl_snap_create+0x52e/0x750 fs/btrfs/ioctl.c:1163
- btrfs_ioctl_snap_create_v2+0x1f8/0x3b0 fs/btrfs/ioctl.c:1242
- btrfs_ioctl+0xa62/0xd00 fs/btrfs/ioctl.c:-1
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:597 [inline]
- __se_sys_ioctl+0xfc/0x170 fs/ioctl.c:583
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0x14d/0xf80 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f5178f9c629
-Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 e8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f51785dd028 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007f5179216180 RCX: 00007f5178f9c629
-RDX: 0000200000001480 RSI: 0000000050009417 RDI: 0000000000000003
-RBP: 00007f5179032b39 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007f5179216218 R14: 00007f5179216180 R15: 00007ffc1c52f3d8
- </TASK>
-
-
+Signed-off-by: Alexey Velichayshiy <a.velichayshiy@ispras.ru>
 ---
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+ fs/btrfs/direct-io.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/btrfs/direct-io.c b/fs/btrfs/direct-io.c
+index 07e19e88ba4b..72a229c44833 100644
+--- a/fs/btrfs/direct-io.c
++++ b/fs/btrfs/direct-io.c
+@@ -107,7 +107,7 @@ static int lock_extent_direct(struct inode *inode, u64 lockstart, u64 lockend,
+ 			    test_bit(BTRFS_ORDERED_DIRECT, &ordered->flags))
+ 				btrfs_start_ordered_extent(ordered);
+ 			else
+-				ret = nowait ? -EAGAIN : -ENOTBLK;
++				ret = -ENOTBLK;
+ 			btrfs_put_ordered_extent(ordered);
+ 		} else {
+ 			/*
+-- 
+2.43.0
+
 
