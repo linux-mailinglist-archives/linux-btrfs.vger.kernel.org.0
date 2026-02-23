@@ -1,346 +1,221 @@
-Return-Path: <linux-btrfs+bounces-21830-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21831-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id AGAXOJQCnGn6+wMAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21830-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Feb 2026 08:32:36 +0100
+	id 2HMHDCQEnGlG/AMAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21831-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Feb 2026 08:39:16 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 532D9172B57
-	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Feb 2026 08:32:36 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92B90172C2D
+	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Feb 2026 08:39:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id B176330164A9
-	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Feb 2026 07:32:32 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 29C88301ABA3
+	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Feb 2026 07:39:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10FA720E334;
-	Mon, 23 Feb 2026 07:32:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D81034AAEA;
+	Mon, 23 Feb 2026 07:39:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="J/DDNgQq"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="HQjUeU53";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="DuoZqwgZ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5599F4F1
-	for <linux-btrfs@vger.kernel.org>; Mon, 23 Feb 2026 07:32:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3ACC520E334
+	for <linux-btrfs@vger.kernel.org>; Mon, 23 Feb 2026 07:38:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771831948; cv=none; b=gYX/f7vjOmbwYb7DKmqGixs47gUbuIkAoUG86Q8jkkVqdyy5sycyWBd+3q9zY7bZaxT5yDGf1Gj0a2xiBrbI9T+9VqYhR+jLFWtnVZwUbN6Xs7xYHThwei9ynZejDqJvptd0Rp5fR8jTx7EFtbIKjNo8mjTK/768arcgvPCmavA=
+	t=1771832340; cv=none; b=ZM1oqbIisMhJa0X/n+G67hZggiGZ7k2Nyx+XkU7X8j4EveaIp8bfU+5A5TZdORv177hgg2yXCcRQGBUiMPLlIcgMcEYPzZhwtPsBx0TbUUtJh1eKkJ9oFa2uAJEsehSsg5U255yd1zF13QgFzGodLW0UCWCYf9dt12sfTT2ko08=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771831948; c=relaxed/simple;
-	bh=OF9be7X2c+CrSHWkGImTLVOe+XhERGkt4RcFEGP1TVc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=h88qEgpYdNkKN0/AlNrXTP6MJLCNfi7nHg3t1mut7NF5pebKskEUk/7wJmudKQUyrBTgNWp5DV4TsvtOeb6Q7UJh8s8nJ3S52QCTzkIxfos/29QACKK7Ltvblg9/RGseAV+xAVAi5Y0stRoX9YFCbRp8RkNXEMEj16u6mK5B15k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=J/DDNgQq; arc=none smtp.client-ip=209.85.128.48
+	s=arc-20240116; t=1771832340; c=relaxed/simple;
+	bh=Kn7JOTrFsX3rsRxyQrxMBbXouELu4ecR4vO1d0YCK0Y=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=DTaoh6Caq/AJc+MHzE/XUxt5jjWSyc65IRcrO/bibEQ0VaVDZcHPqlKBOzr/dkldlV4NpUpeKrkmSwMCkHnV0/d4mK8mKPIwpdaJz1vc+F74fb8J8vccLZ1MAYgcSeDA8ZSU4Sas9MvojAdlrky3djAxG2BQfKTjesvvhDj/Ykc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=HQjUeU53; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=DuoZqwgZ; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-480706554beso48264405e9.1
-        for <linux-btrfs@vger.kernel.org>; Sun, 22 Feb 2026 23:32:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1771831945; x=1772436745; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=WTodfvk8epRCZVtWlExpXnS0Y5jqD9vde00LAiwiQwE=;
-        b=J/DDNgQqA2zVK1tN+zctESTbe6hfvnjhXvb4TD+YJDqtu5u/dkKf/8PkUl5stNTC4T
-         AQ8jixD5SlWyzHnkG+dNN3RkPYAbpozcwY4b9M1xnpaOfxA1dAdBiMbTq8w4AtuIOqam
-         UupVN1T4EZlX1VsUsFGskLkFYKh6aWX9Zg7op243GgWNRRUjHoPdqlN/QBVMJ1LiF/yu
-         PrdYbKYV6aPiyvOFsZcy5IUowaa7FqJrbFoLr3HfUaPck7Kss0tYpo7RQ6bU2DIOdrq2
-         DaNIOT7ZI1S5TGP+QlKkGs13AbvTalEZuvtn/roUeOtP+ll0znpVXDisgPipSnEnshbf
-         EJpw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771831945; x=1772436745;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:to:subject:user-agent:mime-version:date
-         :message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WTodfvk8epRCZVtWlExpXnS0Y5jqD9vde00LAiwiQwE=;
-        b=grX4/BWmiNY+Zuo5W63VgjPVbOHPcSLpTUP1TdoEmnBKuU80hxCLGjfHSE7+Pw8x2A
-         b3uh7LmPVTutEMbMJuv5mquN6Nj8/fUNMY6t/qP1l17gi21OvPgQDgPG5vFwVT8gD7EP
-         iHeYgZEQnLwAy9TADS7HQ2U4vxFaGEXSX+2YrFdqWmbtoN4mtDsGoAGyH/CrYhcFLy4Q
-         c5ahsPbvkdBXZ1W60cWgx8xtLPjZA5j/Ip+V8Ot2X3QZeC/8+pjZGNu+lMoX8fpQGa0U
-         qOwpYIqSbLqJSX4JeKdnDInvr4O1d3o6+Q4/nOv89YALjw000XFods5QzlkYC6xpnrGE
-         cgQA==
-X-Forwarded-Encrypted: i=1; AJvYcCUk5h33jqDdL3+aSNjUXNqR9zbu/+vCxfhSNzHP3nG2gLe5AE2Ky2/m83a9qJi4JTKmSZI9FYig+R6vHQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzQ3CeahEjUJxb0afuKUJjeg/M3yNLA5bI4wAuq1G7wlvzD5/d+
-	6L6O92DUrmwIIcLCCnY6RVekLuJlBgyKLis/EbBfhFZ2Ikj3jQBaGIsZgo7q4j/I7DrylI4mvjI
-	A1qZU/x0=
-X-Gm-Gg: AZuq6aLgLSRXquhqz6v7b9kr8YeSc33uG0bbQXmLqSGtPJdD3b7cwi37+C5MJcUWMR1
-	EIAk62tGRUB4YZFOpQaBz1qc1mxv2GmB6HS6xPDh+xm3xN6fI26JAN4nbDoAgIJ0RRWGiIF1u7Y
-	iJMuqbxZDndPkimpgug3ir2B5/jaz5+egAvMDBZzuv70eyX07imBI5t6qqtOd2aiBh0LfGmaXHP
-	IKrHAqnRAmOmI09ZqpJdLQrj89eMUGjHkDBzrOdnEO23LFvyj0Dc4YhExdiIZZkTHH9p+PTJohH
-	CruE5A0PUnlwlHNrcFJvBseH5fHSz58mb5A1rxXNpvl3C1T5rXTzFPYqGbOSSiFJS87rWLqxezp
-	a3RlqBF3sR/k7m3beJ11qRmDFnBSNWQEJVfrsh11hraBGkTVV8k/Q8qiWPZcotMHf4tfZpiix1p
-	Qv/9blB4h1MN+pk5YacO4EBTtl3I8J0MGBJEmbrHe24B0/WJOiu2s=
-X-Received: by 2002:a05:600c:3b10:b0:46e:4b79:551 with SMTP id 5b1f17b1804b1-483a963d233mr128757675e9.31.1771831944783;
-        Sun, 22 Feb 2026 23:32:24 -0800 (PST)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2ad750586e3sm67720425ad.90.2026.02.22.23.32.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 22 Feb 2026 23:32:24 -0800 (PST)
-Message-ID: <cb183999-6a95-456a-80f4-f703da298d74@suse.com>
-Date: Mon, 23 Feb 2026 18:02:20 +1030
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 61DF35BD01;
+	Mon, 23 Feb 2026 07:38:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1771832337; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=W42XKhZsQhmzyK8SDjBHJLBtL7/5ESUl08FLdmhIJCk=;
+	b=HQjUeU53Jf6AQ4Nkf2yXJj1RyvcTtgCVI6tffbigMxZWy5SWMwbHuSXjvcRWhdVYXL84O2
+	DsGHTsmlIdRvrHc7dvjC7XWfEYtN925JqfjJMtPPHx33bXYzmmYJ6O2Uv/tEV06SdAErru
+	q29yKEjehYStRxyHCt9C7gbWeV6P9nI=
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1771832336; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=W42XKhZsQhmzyK8SDjBHJLBtL7/5ESUl08FLdmhIJCk=;
+	b=DuoZqwgZ1eUUBUe/XRqF44JvOrHCadg30K/e3P3uNAPHR8FW9xFTuUOsaI8Cr7U7P/Hcrp
+	YJ5kBsjB1tjia/KyTkinPqqek/RbQyNnLfLUPJ0BXqkY05YQndFaOXnMMwiQYNyGrmID+x
+	a/G45IOo7LMGZmKv96hXV5T+kmo5L7E=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 885413EA68;
+	Mon, 23 Feb 2026 07:38:54 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id jjqyEQ4EnGn6KwAAD6G6ig
+	(envelope-from <wqu@suse.com>); Mon, 23 Feb 2026 07:38:54 +0000
+From: Qu Wenruo <wqu@suse.com>
+To: linux-btrfs@vger.kernel.org
+Cc: stable@vger.kernel.org,
+	Christoph Hellwig <hch@infradead.org>,
+	Filipe Manana <fdmanana@suse.com>,
+	David Sterba <dsterba@suse.com>
+Subject: [PATCH v6.12] btrfs: always fallback to buffered write if the inode requires checksum
+Date: Mon, 23 Feb 2026 18:08:32 +1030
+Message-ID: <8419975b6281ce4d112a3a5006c8ca3bc489a41b.1771832083.git.wqu@suse.com>
+X-Mailer: git-send-email 2.53.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Stuck on a BTRFS problem
-To: Phako <phako@free.fr>, linux-btrfs@vger.kernel.org
-References: <77535c20-da3e-4dfb-b3d7-9426c25b5da3@free.fr>
- <0211658c-8d28-46d1-8e41-21dc02cab276@suse.com>
- <b1c1247f-df00-4045-a508-fb9a5666114a@free.fr>
-Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <b1c1247f-df00-4045-a508-fb9a5666114a@free.fr>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Spam-Flag: NO
+X-Spam-Score: -2.80
+X-Spam-Level: 
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21830-lists,linux-btrfs=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWO(0.00)[2];
-	FREEMAIL_TO(0.00)[free.fr,vger.kernel.org];
-	DKIM_TRACE(0.00)[suse.com:+];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-21831-lists,linux-btrfs=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
+	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[wqu@suse.com,linux-btrfs@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	NEURAL_HAM(-0.00)[-0.998];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	MID_RHS_MATCH_FROM(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	DKIM_TRACE(0.00)[suse.com:+];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,suse.com:mid,suse.com:dkim]
-X-Rspamd-Queue-Id: 532D9172B57
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCPT_COUNT_FIVE(0.00)[5];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:dkim,suse.com:email,infradead.org:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 92B90172C2D
 X-Rspamd-Action: no action
 
+commit 968f19c5b1b7d5595423b0ac0020cc18dfed8cb5 upstream.
 
+[BUG]
+It is a long known bug that VM image on btrfs can lead to data csum
+mismatch, if the qemu is using direct-io for the image (this is commonly
+known as cache mode 'none').
 
-在 2026/2/23 17:17, Phako 写道:
-> Le 22/02/2026 à 22:36, Qu Wenruo a écrit :
->>
->>
->> 在 2026/2/22 23:33, Phako 写道:
->>> Hello
->>>
->>> I recently changed the 2x2TB disks I had on my NAS (hardware RAID) 
->>> with 2x16TB, after the migration (moved the data on an external HDD, 
->>> then moved them back on the new system)
->>> The actual configuration is a /dev/sda3 with a root and home subvolume.
->>>
->>> The OS is a Debian 13 stable with running the 6.12.73+deb13-amd64 kernel
->>>
->>> 2 days after the migration I noticed that one disk of the RAID array 
->>> had a enormous number of UDMA CRC errors (93976 errors), I then clean 
->>> the connection of the cables and HDDs and the CRC errors stopped 
->>> increasing.
->>> But a couple of day later, when I ran a btrfs scrub I get 5 csum 
->>> error on 1 file.
->>> I blamed the very bad cabling problem during the sync of the array 
->>> and the transfert of the data back and deleted the corrupted file and 
->>> copy it back from the external HDD.
->>> But 2 weeks later after another scrub a new file with 5 csum errors 
->>> is detected, and it's on the same physical address (590581006336) but 
->>> with a different logical address than the first one, but smart and 
->>> the RAID controller don't report physical error.
->>
->> Please provide the scrub dmesg, to make sure we're talking about the 
->> same "physical address".
->>
->> The reason I'm asking is, you later used "btrfs ins dump-tree" and 
->> passing the bytenr 590581006336.
->>
->> But if it's really physical address, passing it to "btrfs ins dump- 
->> tree" makes no sense, as that tool only accepts logical address.
->>
->> In that case, the csum mismatch is completely expected, as it may not 
->> even belongs to a metadata block group.
->>
->> Thanks,
->> Qu
-> 
-> 
-> Here is the scrub error output concerning the corrupted file_A.mp4 (now 
-> deleted)
+[CAUSE]
+Inside the VM, if the fs is EXT4 or XFS, or even NTFS from Windows, the
+fs is allowed to dirty/modify the folio even if the folio is under
+writeback (as long as the address space doesn't have AS_STABLE_WRITES
+flag inherited from the block device).
 
-So it's really physical address, and your "btrfs ins dump-tree" call on 
-whatever bytenr doesn't make any sense.
+This is a valid optimization to improve the concurrency, and since these
+filesystems have no extra checksum on data, the content change is not a
+problem at all.
 
-No matter if you're using logical nor physical bytenr, there is no 
-metadata block group for them, thus csum mismatch is expected.
+But the final write into the image file is handled by btrfs, which needs
+the content not to be modified during writeback, or the checksum will
+not match the data (checksum is calculated before submitting the bio).
 
-I have already submitted a patch to prevent end users passing wrong 
-numbers into "btrfs ins dump-tree":
+So EXT4/XFS/NTRFS assume they can modify the folio under writeback, but
+btrfs requires no modification, this leads to the false csum mismatch.
 
-https://lore.kernel.org/linux-btrfs/56d383400ae8a0ff20b5141baa1ab4068c5603ef.1771798449.git.wqu@suse.com/
+This is only a controlled example, there are even cases where
+multi-thread programs can submit a direct IO write, then another thread
+modifies the direct IO buffer for whatever reason.
 
+For such cases, btrfs has no sane way to detect such cases and leads to
+false data csum mismatch.
 
-Now let's go back to the original problem.
+[FIX]
+I have considered the following ideas to solve the problem:
 
-Firstly according to your kernel version, it looks like upstream v6.12 
-doesn't have the upstream commit 968f19c5b1b7 ("btrfs: always fallback 
-to buffered write if the inode requires checksum") backported.
+- Make direct IO to always skip data checksum
+  This not only requires a new incompatible flag, as it breaks the
+  current per-inode NODATASUM flag.
+  But also requires extra handling for no csum found cases.
 
-That means if your nas has some direct IO workload and the program 
-doesn't properly wait for the direct IO to finish before updating the 
-buffer in user space, it can lead to such data checksum mismatch.
+  And this also reduces our checksum protection.
 
-This is a long known problem and finally worked around upstream, but 
-unfortunately not backported to v6.12 yet.
-I'll need to submit it for backport soon.
+- Let hardware handle all the checksum
+  AKA, just nodatasum mount option.
+  That requires trust for hardware (which is not that trustful in a lot
+  of cases), and it's not generic at all.
 
+- Always fallback to buffered write if the inode requires checksum
+  This was suggested by Christoph, and is the solution utilized by this
+  patch.
 
-If that's not the case, and you always hit the same corruption at the 
-same physical address, it may really be the HDD.
+  The cost is obvious, the extra buffer copying into page cache, thus it
+  reduces the performance.
+  But at least it's still user configurable, if the end user still wants
+  the zero-copy performance, just set NODATASUM flag for the inode
+  (which is a common practice for VM images on btrfs).
 
+  Since we cannot trust user space programs to keep the buffer
+  consistent during direct IO, we have no choice but always falling back
+  to buffered IO.  At least by this, we avoid the more deadly false data
+  checksum mismatch error.
 
-Back to your forcing over-write question, the answer is unfortunately 
-no. Especially when data checksum is enabled, we have no way but COW new 
-writes.
+Cc: stable@vger.kernel.org # 6.12
+Suggested-by: Christoph Hellwig <hch@infradead.org>
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: Qu Wenruo <wqu@suse.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
+Signed-off-by: David Sterba <dsterba@suse.com>
+---
+ fs/btrfs/direct-io.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-You can try to delete the file, and hopes new file will be allocated 
-into the same location, but all you can do is only to hope.
-
-
-If you have a spare HDD, I'd recommend to remove involved files first, 
-making sure scrub passes.
-
-Then add the HDD to the existing fs, re-balance all data to RAID1, do 
-some extra writes, and wait to see if the problem happens again.
-
-If the problem happens that both copies have data checksum mismatch thus 
-unable to repair, it will be more like the direct IO bug.
-
-If only sda3 keeps throwing out errors but the other one is totally fine 
-(and btrfs can automatically use the correct copy to over-write the bad 
-one on sda3), then we know it's sda3 to blame.
-
-Thanks,
-Qu
-
-> 
-> 
-> Feb 09 15:51:16 nas01 kernel: BTRFS error (device sda3): unable to fixup 
-> (regular) error at logical 589498875904 on dev /dev/sda3 physical 
-> 590581006336
-> Feb 09 15:51:16 nas01 kernel: BTRFS warning (device sda3): checksum 
-> error at logical 589498875904 on dev /dev/sda3, physical 590581006336, 
-> root 257, inode 40442, offset 46055424, length 4096>
-> Feb 09 15:51:16 nas01 kernel: BTRFS error (device sda3): unable to fixup 
-> (regular) error at logical 589498875904 on dev /dev/sda3 physical 
-> 590581006336
-> Feb 09 15:51:16 nas01 kernel: BTRFS warning (device sda3): checksum 
-> error at logical 589498875904 on dev /dev/sda3, physical 590581006336, 
-> root 257, inode 40442, offset 46055424, length 4096>
-> Feb 09 15:51:16 nas01 kernel: BTRFS error (device sda3): unable to fixup 
-> (regular) error at logical 589498875904 on dev /dev/sda3 physical 
-> 590581006336
-> Feb 09 15:51:16 nas01 kernel: BTRFS warning (device sda3): checksum 
-> error at logical 589498875904 on dev /dev/sda3, physical 590581006336, 
-> root 257, inode 40442, offset 46055424, length 4096>
-> Feb 09 15:51:16 nas01 kernel: BTRFS error (device sda3): unable to fixup 
-> (regular) error at logical 589498875904 on dev /dev/sda3 physical 
-> 590581006336
-> Feb 09 15:51:16 nas01 kernel: BTRFS warning (device sda3): checksum 
-> error at logical 589498875904 on dev /dev/sda3, physical 590581006336, 
-> root 257, inode 40442, offset 46055424, length 4096>
-> Feb 09 15:51:16 nas01 kernel: BTRFS error (device sda3): unable to fixup 
-> (regular) error at logical 589498875904 on dev /dev/sda3 physical 
-> 590581006336
-> Feb 09 15:51:16 nas01 kernel: BTRFS warning (device sda3): checksum 
-> error at logical 589498875904 on dev /dev/sda3, physical 590581006336, 
-> root 257, inode 40442, offset 46055424, length 4096>
-> Feb 09 15:51:16 nas01 kernel: BTRFS error (device sda3): bdev /dev/sda3 
-> errs: wr 0, rd 0, flush 0, corrupt 1, gen 0
-> Feb 09 15:51:16 nas01 kernel: BTRFS error (device sda3): bdev /dev/sda3 
-> errs: wr 0, rd 0, flush 0, corrupt 2, gen 0
-> Feb 09 15:51:16 nas01 kernel: BTRFS error (device sda3): bdev /dev/sda3 
-> errs: wr 0, rd 0, flush 0, corrupt 3, gen 0
-> Feb 09 15:51:16 nas01 kernel: BTRFS error (device sda3): bdev /dev/sda3 
-> errs: wr 0, rd 0, flush 0, corrupt 4, gen 0
-> Feb 09 15:51:16 nas01 kernel: BTRFS error (device sda3): bdev /dev/sda3 
-> errs: wr 0, rd 0, flush 0, corrupt 5, gen 0
-> 
-> 
-> And days later, the scrub for the file_B.mp4 :
-> 
-> Feb 21 21:34:53 nas01 kernel: BTRFS error (device sda3): unable to fixup 
-> (regular) error at logical 3409178460160 on dev /dev/sda3 physical 
-> 590581006336
-> Feb 21 21:34:53 nas01 kernel: BTRFS warning (device sda3): checksum 
-> error at logical 3409178460160 on dev /dev/sda3, physical 590581006336, 
-> root 257, inode 230235, offset 31449088, length 4096>
-> Feb 21 21:34:53 nas01 kernel: BTRFS error (device sda3): unable to fixup 
-> (regular) error at logical 3409178460160 on dev /dev/sda3 physical 
-> 590581006336
-> Feb 21 21:34:53 nas01 kernel: BTRFS warning (device sda3): checksum 
-> error at logical 3409178460160 on dev /dev/sda3, physical 590581006336, 
-> root 257, inode 230235, offset 31449088, length 4096>
-> Feb 21 21:34:53 nas01 kernel: BTRFS error (device sda3): unable to fixup 
-> (regular) error at logical 3409178460160 on dev /dev/sda3 physical 
-> 590581006336
-> Feb 21 21:34:53 nas01 kernel: BTRFS warning (device sda3): checksum 
-> error at logical 3409178460160 on dev /dev/sda3, physical 590581006336, 
-> root 257, inode 230235, offset 31449088, length 4096>
-> Feb 21 21:34:53 nas01 kernel: BTRFS error (device sda3): unable to fixup 
-> (regular) error at logical 3409178460160 on dev /dev/sda3 physical 
-> 590581006336
-> Feb 21 21:34:53 nas01 kernel: BTRFS warning (device sda3): checksum 
-> error at logical 3409178460160 on dev /dev/sda3, physical 590581006336, 
-> root 257, inode 230235, offset 31449088, length 4096>
-> Feb 21 21:34:53 nas01 kernel: BTRFS error (device sda3): unable to fixup 
-> (regular) error at logical 3409178460160 on dev /dev/sda3 physical 
-> 590581006336
-> Feb 21 21:34:53 nas01 kernel: BTRFS warning (device sda3): checksum 
-> error at logical 3409178460160 on dev /dev/sda3, physical 590581006336, 
-> root 257, inode 230235, offset 31449088, length 4096>
-> Feb 21 21:34:53 nas01 kernel: BTRFS error (device sda3): bdev /dev/sda3 
-> errs: wr 0, rd 0, flush 0, corrupt 41, gen 0
-> Feb 21 21:34:53 nas01 kernel: BTRFS error (device sda3): bdev /dev/sda3 
-> errs: wr 0, rd 0, flush 0, corrupt 42, gen 0
-> Feb 21 21:34:53 nas01 kernel: BTRFS error (device sda3): bdev /dev/sda3 
-> errs: wr 0, rd 0, flush 0, corrupt 43, gen 0
-> Feb 21 21:34:53 nas01 kernel: BTRFS error (device sda3): bdev /dev/sda3 
-> errs: wr 0, rd 0, flush 0, corrupt 44, gen 0
-> Feb 21 21:34:53 nas01 kernel: BTRFS error (device sda3): bdev /dev/sda3 
-> errs: wr 0, rd 0, flush 0, corrupt 45, gen 0
+diff --git a/fs/btrfs/direct-io.c b/fs/btrfs/direct-io.c
+index 71984d7db839..af68d7ba866b 100644
+--- a/fs/btrfs/direct-io.c
++++ b/fs/btrfs/direct-io.c
+@@ -856,6 +856,22 @@ ssize_t btrfs_direct_write(struct kiocb *iocb, struct iov_iter *from)
+ 		btrfs_inode_unlock(BTRFS_I(inode), ilock_flags);
+ 		goto buffered;
+ 	}
++	/*
++	 * We can't control the folios being passed in, applications can write
++	 * to them while a direct IO write is in progress.  This means the
++	 * content might change after we calculated the data checksum.
++	 * Therefore we can end up storing a checksum that doesn't match the
++	 * persisted data.
++	 *
++	 * To be extra safe and avoid false data checksum mismatch, if the
++	 * inode requires data checksum, just fallback to buffered IO.
++	 * For buffered IO we have full control of page cache and can ensure
++	 * no one is modifying the content during writeback.
++	 */
++	if (!(BTRFS_I(inode)->flags & BTRFS_INODE_NODATASUM)) {
++		btrfs_inode_unlock(BTRFS_I(inode), ilock_flags);
++		goto buffered;
++	}
+ 
+ 	/*
+ 	 * The iov_iter can be mapped to the same file range we are writing to.
+-- 
+2.53.0
 
 
