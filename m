@@ -1,182 +1,216 @@
-Return-Path: <linux-btrfs+bounces-21826-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21829-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id uOSKHq2Nm2nm1wMAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21826-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Feb 2026 00:13:49 +0100
+	id YIGoGzP4m2mp+QMAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21829-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Feb 2026 07:48:19 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24BCB170B65
-	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Feb 2026 00:13:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C4EC517257E
+	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Feb 2026 07:48:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E7F06301808C
-	for <lists+linux-btrfs@lfdr.de>; Sun, 22 Feb 2026 23:13:36 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 7D05D3022692
+	for <lists+linux-btrfs@lfdr.de>; Mon, 23 Feb 2026 06:48:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65EC235C1A5;
-	Sun, 22 Feb 2026 23:13:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="QOmLkIrp";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="Rf9jSlbP"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37C823446AF;
+	Mon, 23 Feb 2026 06:48:11 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp4-g21.free.fr (smtp4-g21.free.fr [212.27.42.4])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93EC93C2F
-	for <linux-btrfs@vger.kernel.org>; Sun, 22 Feb 2026 23:13:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0898192B7D
+	for <linux-btrfs@vger.kernel.org>; Mon, 23 Feb 2026 06:48:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.27.42.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771802015; cv=none; b=niJ9Awdd+HtgfvhyCM2pm6Ee3LvE25uRqGUZf6dHZIm5OyDl3Hyvg9QfbhG+zbGLJmm0whp7I78MJ0n1VOB2XMQ3Eb8vzORGE4+vFC13kmm1VeWXiSSAbEWw7BLrfGak0MshuKvPkCV4tKUgGFYjTWk73jcSVuoHruXWLvdZSeo=
+	t=1771829290; cv=none; b=pEgFXCgvTFwUNWN9Tr9obbDL3+CkO+tUCmTS2bksSxsBMHxtQ4kqxphiIxN82wSi9jioW8MtJDR7eFJUqu278uxyzFvqKWQI5UJ1fBiDAvrdK3nEBY9eVfd7MJxhHu0637p4h9L8aj1DJRJ744V+Mnk+PQJKyCWA7AVrWW2y1AE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771802015; c=relaxed/simple;
-	bh=1Sr8vAgHffPsPcDhFMRggh9AvNDffcMeS4IPHjjADGk=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=fR+TCxNMIMkSEHSwtt9LF+zM7+t7Yb3XAgNMztuEXAsauROuSnVa9VBy7AUae0wxFyAgTquFPBkJuZDqrI1BKnm3zO99PTi392GWP01VyRbnEIxvES5wAqGsdwOzml3QOl8LKb0Nwgp3rAbOeUQt1mKyHQnOjqIyW0h8i3kWM2I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=QOmLkIrp; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=Rf9jSlbP; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id EE7EA3E962
-	for <linux-btrfs@vger.kernel.org>; Sun, 22 Feb 2026 23:13:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1771802011; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+fu3muSX3Fp1RZzYmjDQ8arf2jObpNVHAPGemrE56ns=;
-	b=QOmLkIrpBiRZX1cALOfGHTeDsf0JjG7WFZRQL45lpaYtu0vjKGWzATIMDkLB9/2/nonCTZ
-	CltTGkydnA88WeQBSgtTpTTVnaiSMbhrO9ej45MZneZWqNwJGuzvWcMapvTLpZqqZsvY/H
-	wHfdpTmGPwen4TyaZWBaxNSqklZhX/0=
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1771802010; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+fu3muSX3Fp1RZzYmjDQ8arf2jObpNVHAPGemrE56ns=;
-	b=Rf9jSlbPwPRoJTYHT7XjVhHO4wwIsUZDlcefhAtaZ9yG75b8gPviTlGo1xj/sAghMhUtLP
-	GvHNs1fs6qdQGJUMC95qz51759SI1R+8/DcdT5N0OTkcjpOKfqG+MfRlhPOfZhM5sxJbdp
-	Zq+xvNz7zo6+Vwe5C3PyxHVROH/Fv5M=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2B49A3EA68
-	for <linux-btrfs@vger.kernel.org>; Sun, 22 Feb 2026 23:13:29 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id iNmJN5mNm2n0NwAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Sun, 22 Feb 2026 23:13:29 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH 3/3] btrfs-progs: drop the 'const' qualifier from bconf_save_param()
-Date: Mon, 23 Feb 2026 09:43:00 +1030
-Message-ID: <3627dacff11c0f84b269cd0c7d07a3bdf4843c91.1771801832.git.wqu@suse.com>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <cover.1771801832.git.wqu@suse.com>
-References: <cover.1771801832.git.wqu@suse.com>
+	s=arc-20240116; t=1771829290; c=relaxed/simple;
+	bh=1/JYDQKrfFCvY/qHZGMSwKmrB35Ggd/HQzlTB0tNHOs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=k4wmLoLwrBBaT5JWlc90gVCu+/f4eC9CsfyRV+SsigoMo0Jc/zzOyUHOAO5OamyGdfSFNQBpLFlBkJjafFD7n15xG3Yn4vXFyeOKnRDohFXWQmYlIuJABInUGlrrCdTmUBUH+UyoKJ1u/7bXLsdjScwStO5Znd3oxCibCsPerOE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=free.fr; spf=pass smtp.mailfrom=free.fr; arc=none smtp.client-ip=212.27.42.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=free.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=free.fr
+Received: from [IPV6:2a01:e0a:156:6850:7018:89ff:fecb:6f21] (unknown [IPv6:2a01:e0a:156:6850:7018:89ff:fecb:6f21])
+	by smtp4-g21.free.fr (Postfix) with ESMTP id 390E019F5A5;
+	Mon, 23 Feb 2026 07:47:59 +0100 (CET)
+Message-ID: <b1c1247f-df00-4045-a508-fb9a5666114a@free.fr>
+Date: Mon, 23 Feb 2026 07:47:59 +0100
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: Stuck on a BTRFS problem
+To: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
+References: <77535c20-da3e-4dfb-b3d7-9426c25b5da3@free.fr>
+ <0211658c-8d28-46d1-8e41-21dc02cab276@suse.com>
+Content-Language: en-US, fr
+From: Phako <phako@free.fr>
+In-Reply-To: <0211658c-8d28-46d1-8e41-21dc02cab276@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Flag: NO
-X-Spam-Score: -2.80
-X-Spam-Level: 
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [0.04 / 15.00];
+	DMARC_POLICY_QUARANTINE(1.50)[free.fr : SPF not aligned (relaxed), No valid DKIM,quarantine];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
-	R_MISSING_CHARSET(0.50)[];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DKIM_TRACE(0.00)[suse.com:+];
-	TAGGED_FROM(0.00)[bounces-21826-lists,linux-btrfs=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-21829-lists,linux-btrfs=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
+	RCPT_COUNT_TWO(0.00)[2];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[wqu@suse.com,linux-btrfs@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
+	FREEMAIL_FROM(0.00)[free.fr];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[phako@free.fr,linux-btrfs@vger.kernel.org];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	RCVD_COUNT_FIVE(0.00)[6];
-	NEURAL_HAM(-0.00)[-0.999];
-	TO_DN_NONE(0.00)[];
+	NEURAL_HAM(-0.00)[-0.993];
+	MID_RHS_MATCH_FROM(0.00)[];
+	R_DKIM_NA(0.00)[];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:dkim,suse.com:email]
-X-Rspamd-Queue-Id: 24BCB170B65
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: C4EC517257E
 X-Rspamd-Action: no action
 
-[BUG]
-The latest GCC (15.2.1) will report the following warning:
+Le 22/02/2026 à 22:36, Qu Wenruo a écrit :
+> 
+> 
+> 在 2026/2/22 23:33, Phako 写道:
+>> Hello
+>>
+>> I recently changed the 2x2TB disks I had on my NAS (hardware RAID) 
+>> with 2x16TB, after the migration (moved the data on an external HDD, 
+>> then moved them back on the new system)
+>> The actual configuration is a /dev/sda3 with a root and home subvolume.
+>>
+>> The OS is a Debian 13 stable with running the 6.12.73+deb13-amd64 kernel
+>>
+>> 2 days after the migration I noticed that one disk of the RAID array 
+>> had a enormous number of UDMA CRC errors (93976 errors), I then clean 
+>> the connection of the cables and HDDs and the CRC errors stopped 
+>> increasing.
+>> But a couple of day later, when I ran a btrfs scrub I get 5 csum error 
+>> on 1 file.
+>> I blamed the very bad cabling problem during the sync of the array and 
+>> the transfert of the data back and deleted the corrupted file and copy 
+>> it back from the external HDD.
+>> But 2 weeks later after another scrub a new file with 5 csum errors is 
+>> detected, and it's on the same physical address (590581006336) but 
+>> with a different logical address than the first one, but smart and the 
+>> RAID controller don't report physical error.
+> 
+> Please provide the scrub dmesg, to make sure we're talking about the 
+> same "physical address".
+> 
+> The reason I'm asking is, you later used "btrfs ins dump-tree" and 
+> passing the bytenr 590581006336.
+> 
+> But if it's really physical address, passing it to "btrfs ins dump-tree" 
+> makes no sense, as that tool only accepts logical address.
+> 
+> In that case, the csum mismatch is completely expected, as it may not 
+> even belongs to a metadata block group.
+> 
+> Thanks,
+> Qu
 
- common/utils.c: In function 'bconf_save_param':
- common/utils.c:975:13: warning: assignment discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
-   975 |         tmp = strchr(str, '=');
-       |             ^
 
-[CAUSE]
-I believe the latest GCC has a more strict const qualifier checks, that
-any returned pointer that points into a const pointer should also
-have a 'const' qualifier.
+Here is the scrub error output concerning the corrupted file_A.mp4 (now 
+deleted)
 
-But in this particular case, we're even modifying the content of the
-original const string.
 
-This means we shouldn't really have 'const' qualifier for
-bconf_save_param() in the first place.
+Feb 09 15:51:16 nas01 kernel: BTRFS error (device sda3): unable to fixup 
+(regular) error at logical 589498875904 on dev /dev/sda3 physical 
+590581006336
+Feb 09 15:51:16 nas01 kernel: BTRFS warning (device sda3): checksum 
+error at logical 589498875904 on dev /dev/sda3, physical 590581006336, 
+root 257, inode 40442, offset 46055424, length 4096>
+Feb 09 15:51:16 nas01 kernel: BTRFS error (device sda3): unable to fixup 
+(regular) error at logical 589498875904 on dev /dev/sda3 physical 
+590581006336
+Feb 09 15:51:16 nas01 kernel: BTRFS warning (device sda3): checksum 
+error at logical 589498875904 on dev /dev/sda3, physical 590581006336, 
+root 257, inode 40442, offset 46055424, length 4096>
+Feb 09 15:51:16 nas01 kernel: BTRFS error (device sda3): unable to fixup 
+(regular) error at logical 589498875904 on dev /dev/sda3 physical 
+590581006336
+Feb 09 15:51:16 nas01 kernel: BTRFS warning (device sda3): checksum 
+error at logical 589498875904 on dev /dev/sda3, physical 590581006336, 
+root 257, inode 40442, offset 46055424, length 4096>
+Feb 09 15:51:16 nas01 kernel: BTRFS error (device sda3): unable to fixup 
+(regular) error at logical 589498875904 on dev /dev/sda3 physical 
+590581006336
+Feb 09 15:51:16 nas01 kernel: BTRFS warning (device sda3): checksum 
+error at logical 589498875904 on dev /dev/sda3, physical 590581006336, 
+root 257, inode 40442, offset 46055424, length 4096>
+Feb 09 15:51:16 nas01 kernel: BTRFS error (device sda3): unable to fixup 
+(regular) error at logical 589498875904 on dev /dev/sda3 physical 
+590581006336
+Feb 09 15:51:16 nas01 kernel: BTRFS warning (device sda3): checksum 
+error at logical 589498875904 on dev /dev/sda3, physical 590581006336, 
+root 257, inode 40442, offset 46055424, length 4096>
+Feb 09 15:51:16 nas01 kernel: BTRFS error (device sda3): bdev /dev/sda3 
+errs: wr 0, rd 0, flush 0, corrupt 1, gen 0
+Feb 09 15:51:16 nas01 kernel: BTRFS error (device sda3): bdev /dev/sda3 
+errs: wr 0, rd 0, flush 0, corrupt 2, gen 0
+Feb 09 15:51:16 nas01 kernel: BTRFS error (device sda3): bdev /dev/sda3 
+errs: wr 0, rd 0, flush 0, corrupt 3, gen 0
+Feb 09 15:51:16 nas01 kernel: BTRFS error (device sda3): bdev /dev/sda3 
+errs: wr 0, rd 0, flush 0, corrupt 4, gen 0
+Feb 09 15:51:16 nas01 kernel: BTRFS error (device sda3): bdev /dev/sda3 
+errs: wr 0, rd 0, flush 0, corrupt 5, gen 0
 
-[FIX]
-Drop the 'const' qualifier from @str parameter, as we're going to modify
-the string in that function.
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- common/utils.c | 2 +-
- common/utils.h | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+And days later, the scrub for the file_B.mp4 :
 
-diff --git a/common/utils.c b/common/utils.c
-index f183705edb8f..59e318282918 100644
---- a/common/utils.c
-+++ b/common/utils.c
-@@ -968,7 +968,7 @@ const char *bconf_param_value(const char *key)
- 	return NULL;
- }
- 
--void bconf_save_param(const char *str)
-+void bconf_save_param(char *str)
- {
- 	char *tmp;
- 
-diff --git a/common/utils.h b/common/utils.h
-index 1419850df387..d0bd062b75a5 100644
---- a/common/utils.h
-+++ b/common/utils.h
-@@ -118,7 +118,7 @@ void btrfs_config_init(void);
- void bconf_be_verbose(void);
- void bconf_be_quiet(void);
- void bconf_add_param(const char *key, const char *value);
--void bconf_save_param(const char *str);
-+void bconf_save_param(char *str);
- void bconf_set_dry_run(void);
- bool bconf_is_dry_run(void);
- const char *bconf_param_value(const char *key);
--- 
-2.53.0
-
+Feb 21 21:34:53 nas01 kernel: BTRFS error (device sda3): unable to fixup 
+(regular) error at logical 3409178460160 on dev /dev/sda3 physical 
+590581006336
+Feb 21 21:34:53 nas01 kernel: BTRFS warning (device sda3): checksum 
+error at logical 3409178460160 on dev /dev/sda3, physical 590581006336, 
+root 257, inode 230235, offset 31449088, length 4096>
+Feb 21 21:34:53 nas01 kernel: BTRFS error (device sda3): unable to fixup 
+(regular) error at logical 3409178460160 on dev /dev/sda3 physical 
+590581006336
+Feb 21 21:34:53 nas01 kernel: BTRFS warning (device sda3): checksum 
+error at logical 3409178460160 on dev /dev/sda3, physical 590581006336, 
+root 257, inode 230235, offset 31449088, length 4096>
+Feb 21 21:34:53 nas01 kernel: BTRFS error (device sda3): unable to fixup 
+(regular) error at logical 3409178460160 on dev /dev/sda3 physical 
+590581006336
+Feb 21 21:34:53 nas01 kernel: BTRFS warning (device sda3): checksum 
+error at logical 3409178460160 on dev /dev/sda3, physical 590581006336, 
+root 257, inode 230235, offset 31449088, length 4096>
+Feb 21 21:34:53 nas01 kernel: BTRFS error (device sda3): unable to fixup 
+(regular) error at logical 3409178460160 on dev /dev/sda3 physical 
+590581006336
+Feb 21 21:34:53 nas01 kernel: BTRFS warning (device sda3): checksum 
+error at logical 3409178460160 on dev /dev/sda3, physical 590581006336, 
+root 257, inode 230235, offset 31449088, length 4096>
+Feb 21 21:34:53 nas01 kernel: BTRFS error (device sda3): unable to fixup 
+(regular) error at logical 3409178460160 on dev /dev/sda3 physical 
+590581006336
+Feb 21 21:34:53 nas01 kernel: BTRFS warning (device sda3): checksum 
+error at logical 3409178460160 on dev /dev/sda3, physical 590581006336, 
+root 257, inode 230235, offset 31449088, length 4096>
+Feb 21 21:34:53 nas01 kernel: BTRFS error (device sda3): bdev /dev/sda3 
+errs: wr 0, rd 0, flush 0, corrupt 41, gen 0
+Feb 21 21:34:53 nas01 kernel: BTRFS error (device sda3): bdev /dev/sda3 
+errs: wr 0, rd 0, flush 0, corrupt 42, gen 0
+Feb 21 21:34:53 nas01 kernel: BTRFS error (device sda3): bdev /dev/sda3 
+errs: wr 0, rd 0, flush 0, corrupt 43, gen 0
+Feb 21 21:34:53 nas01 kernel: BTRFS error (device sda3): bdev /dev/sda3 
+errs: wr 0, rd 0, flush 0, corrupt 44, gen 0
+Feb 21 21:34:53 nas01 kernel: BTRFS error (device sda3): bdev /dev/sda3 
+errs: wr 0, rd 0, flush 0, corrupt 45, gen 0
 
