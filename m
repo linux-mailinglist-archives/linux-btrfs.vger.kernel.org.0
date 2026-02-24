@@ -1,324 +1,460 @@
-Return-Path: <linux-btrfs+bounces-21864-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21865-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id EHC6GhNpnWnBPwQAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21864-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Feb 2026 10:02:11 +0100
+	id iPIqGVhqnWnhPwQAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21865-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Feb 2026 10:07:36 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C6051842BB
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Feb 2026 10:02:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C85FD184407
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Feb 2026 10:07:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 8C33E30D3811
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Feb 2026 08:59:23 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 770D83106BBE
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Feb 2026 09:03:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05F62366821;
-	Tue, 24 Feb 2026 08:59:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF8D636A02D;
+	Tue, 24 Feb 2026 09:03:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mssola.com header.i=@mssola.com header.b="Wq23nPwv"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="asYDmCFY"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [80.241.56.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B14B1C3BF7;
-	Tue, 24 Feb 2026 08:59:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.172
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771923558; cv=none; b=B0B/Fh/lGDU2BIEAQT1v5vbPg/nLlwFum8JHwOttLMkBhkRpvtaFEOMrkMGd81xBjx0jgDzbCGls2Jl3H/Q1KXeP7P/ORCn21DduMB0+aDarnPbCewT6Lq7yePEgV6MfgBpZAVXSeKZOC1whCWGO818x5tbzQz9J4AlgGGmEFTU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771923558; c=relaxed/simple;
-	bh=5ADkG5GAITHJI3lgw3cG4MQ7/LEa3eeWJnLWS3YC02Q=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=COqtawk6mssb9vbzjzmtA4n/QtnACPs0h6i2HDS04/q/YdeuWkBwvh54m7Bi7n77Wpgd2DTx8V7YZSYd/YxVfrhh2tXUzcf04SLByC2IHGQOEtBeK2tDRvcAbZvAVYrj/zhDQHPS3bSL9S8lDzGn1i8SNKWshDWowlh5lD+LG0g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mssola.com; spf=fail smtp.mailfrom=mssola.com; dkim=pass (2048-bit key) header.d=mssola.com header.i=@mssola.com header.b=Wq23nPwv; arc=none smtp.client-ip=80.241.56.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mssola.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=mssola.com
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [IPv6:2001:67c:2050:b231:465::2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4fKs8r2jkFz9sWL;
-	Tue, 24 Feb 2026 09:59:08 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mssola.com; s=MBO0001;
-	t=1771923548;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/vRULpDVwsVgWl7LuoGsHbb9Mj55mUS7qOAuMZwFJxo=;
-	b=Wq23nPwvURv9/0TWWdnP8Fw5BN/uxi9mP4knQs699wJpsRnAZCDMGXDwArb/RksCxUjGV8
-	1Diziv98yKoTzHBZlQ9eNcHfKN8wSt/TVVmVH6V9W6rjag3gE7qfvCpEtD9xysV7gSZjf+
-	Zv13G4xSRFMeTcI1QF6SE7ogKrwb3pMHioEKBrosYap0+oFpJlePB+YC/mlq2k128eMwPU
-	z5aWOqib++a32uxqjdxV4VP3D6b8Mfe1l6WACnuk9bgyyOZQ54dZDYX5PO4Z/sf9jKNb77
-	dk9ibkmrTjeVBZDOXeeUd0tHTMNIFGiVBtDW93feINbICfq/5b115eHV8V766w==
-Authentication-Results: outgoing_mbo_mout;
-	dkim=none;
-	spf=softfail (outgoing_mbo_mout: 2001:67c:2050:b231:465::2 is neither permitted nor denied by domain of mssola@mssola.com) smtp.mailfrom=mssola@mssola.com
-From: =?utf-8?Q?Miquel_Sabat=C3=A9_Sol=C3=A0?= <mssola@mssola.com>
-To: Qu Wenruo <wqu@suse.com>
-Cc: Qu Wenruo <quwenruo.btrfs@gmx.com>,  dsterba@suse.com,  clm@fb.com,
-  naohiro.aota@wdc.com,  linux-btrfs@vger.kernel.org,
-  linux-kernel@vger.kernel.org,  kees@kernel.org
-Subject: Re: [PATCH] btrfs: replace kcalloc() calls to kzalloc_objs()
-In-Reply-To: <e21ea0cf-b392-487f-843f-962efedcf10c@suse.com> (Qu Wenruo's
-	message of "Tue, 24 Feb 2026 17:18:31 +1030")
-References: <20260223234451.277369-1-mssola@mssola.com>
-	<69c16813-5ac1-4756-ad42-41b4275e6aee@gmx.com>
-	<699d4704.050a0220.1a6450.86d7SMTPIN_ADDED_BROKEN@mx.google.com>
-	<e21ea0cf-b392-487f-843f-962efedcf10c@suse.com>
-Date: Tue, 24 Feb 2026 09:59:04 +0100
-Message-ID: <87qzqa5xgn.fsf@>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B454236681C
+	for <linux-btrfs@vger.kernel.org>; Tue, 24 Feb 2026 09:03:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.210.174
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1771923822; cv=pass; b=P/WODlmnxaJezoyd7Rcl04FoGPlX6sHIzz6gMsrlC0wDt5EblsIwBwvF3BvzURbZBjvi+mNWe9ThlunVefYmV3rnEX3zvLEPZ+A7f86zYQiaYNMCrg2cFnUZgZoKPhr7ksZZ36JiW2yTCiffiCmstJm2LB+FuIIKUtVruiJaPBY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1771923822; c=relaxed/simple;
+	bh=PIkbfT51VikyVhEwJGtusF9LabqRuzvO43m+tYKOj70=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=AM+/MkELCpE+Dhrcab+BrojADenjy4Eo3YKjoxJlyCa7b3tLSXHDhEpqWqzwXd/OEKJMok1po9PksGZX/bnsVDNb+KBrkVU1HU7mbOcKke/798MS1+wngGwsQSt8AyxceVCV3LMymqvcCByq45zGWoSPwPCfcMkr2zWeSopkuFc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=asYDmCFY; arc=pass smtp.client-ip=209.85.210.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-81df6a302b1so5054661b3a.2
+        for <linux-btrfs@vger.kernel.org>; Tue, 24 Feb 2026 01:03:40 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1771923820; cv=none;
+        d=google.com; s=arc-20240605;
+        b=YDVbUAajR1RWDXTwI95TrXvhkW0YjV6dGJFvKIHTBSFbQs1F0uu4WoQJPq7KqSIgu3
+         w8VcEgqHBTHlvGzCINAjZTSbvbdLfhhvibODOinfAeo/mrYL+ECjb127k/rk1eFXbuew
+         2PqhQLia46ROD5M77T/WFlR4oBgJBFiz3Ff8cyiKOK1GOeKCgDbEi3SKAD8/xeYCcQRK
+         6+1mP98Se1IPi3XBvFYkYtMYYSM7ismmZKx8SSGzLkaBDUsrWZjEmrVfSF347I25EVZ4
+         edDp5Cq8WadoagwQj+SRo5qpTVyV/rDDJcsQK/w9opJ8M1XMRhH00YBRKw80QsrqpENN
+         wi/A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=znIlhhnbagcz2zMsWF4Ooi2zRtDyYf/EmpmzlKC0Xmw=;
+        fh=pB/nojOpvdBEJuOkA30Miyvg7km7DHHu4zfYMsyYlhU=;
+        b=GfCCYPXEHY3Iwd3ffOcVuZQZ9fQ8sqVbjuEK3+iw38qwicauyJmUg7vlA0waa4UYSx
+         3GMnGFhpFBcb/da+ZWlsWotukPYUR1FRzk4asLJArj6WP3LAFyarQ6qMA/P289yNda1A
+         JfQZKKxziYdt4W11KkHhNmuS18NZW0lwyfIDColIAU3J//+jCFNuU0RLmKpk0DAl3VI2
+         2m6bvKavQ8hu23NvKW+7Mnu7sgmeeKCxDHsngttmSF4szaaTToM6rF5b8sH4TDXBWyFb
+         s6at6kU31atFqoSrx+szn6xw6qNY6civz3NhGgLuP7RTYoGNT71EgJwcf8Wtrldt4zZF
+         4A1A==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1771923820; x=1772528620; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=znIlhhnbagcz2zMsWF4Ooi2zRtDyYf/EmpmzlKC0Xmw=;
+        b=asYDmCFYEt0jhEg17LYwulqZGVozjctSdHr1nE5f9bM9nYCHBVCKpUYkoGxi89Jx4I
+         FcS7EvleeM/yPEji7u6CBar4NvyZ8KHQ97cfp956CjhbkSvaCI4qzf91M65GfR7Drl4V
+         en80R6NjFE9JjbDSy2cyHPNgjocHefvdnPc5A1R0H2lrLWUr0rKFikVrlx+xl3uC6o78
+         /BTGPJN58GKbf9zbHGpYsQGQmiTL5+72dua/3+/rVEENG3iNC/0TTcKvqDDEVQ/5y2Rg
+         /xy9BNEWZEA/aOggd4tSwrVDxEHlQ2V/O09PobxsesjCnL7DG3eeicrT5FO8H7DVPAOd
+         5Nfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1771923820; x=1772528620;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=znIlhhnbagcz2zMsWF4Ooi2zRtDyYf/EmpmzlKC0Xmw=;
+        b=sBUISrJAzp1939hOrpKkSa7oeLICICFeKndVMDfwr1GYBzGQ6VHvI0WuJwsvkgTd54
+         fSMVm5vPuB7IEDSMPWt2q7Z2NlAQzuRCLScyuiW8FapMNL2qBSEgQ3qPHlVGLw21z8JX
+         KvDfglrc/itHG87aDJYzkpCciiKbn05yAyODelcZofeHpnWp1rODmZfAEAf7Qxr1qWK7
+         /Bz8MhSDfNOwTCi+rIuJeL5EFmSCsHLht06cvTP+zeiokhSJnpcO7NsCLkCJNbgVC2Ez
+         FpDN6KWbuiI5YLrVSUXPcwlgg2vUEHYFNe9y9dyvtL/PvmCIlThLqRHAajy3+NLS1y4L
+         zOtw==
+X-Forwarded-Encrypted: i=1; AJvYcCWfatWPRnT5XDzS4S0ftN45BZo9eBVDswBF5qpYgBqOrZetQMout7sOINa8epAITuzC8OlTET9SBZ/Fcw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyEke2Bshj+ZUQnf52waQ6aLtM/OXmA9CPphTGLskFwTzRzhNY2
+	wC6ITK18+c1AyQ1k5KFtZ0C72OPVAvaLRimUYTryWG6n8Uft/WUTNlD8nmG8+IuEavSbepGv7Hj
+	8J48yWK/SiN6dfR//GEvlfbMaCoIuEr/NCrp2
+X-Gm-Gg: AZuq6aJYrUWwpLco/IL1LosQdqP0J4PZ5ldTe304+LepGMRlaQBHiDa5I4c5DFs3BL9
+	WF15ZIiHwMwzX8lLi8qC6YcW3OxwEeSqd2ol7/zNI6JB7l99yHEBkszjXT9CFM/l7IbIxAeajlY
+	8ToIIg2atNB2PPQrOGqdmWoafz8iEv6Yy6ZaaHt1aAhskpbsUYh5yDQoqnKgm3bKSXOUsBr6wCj
+	kAtesj3pzDStcbyuK1LH6kFp7TwmYTilEHcCC4p4tao+HY/TOsU+k4OcIkpWbUUGXaht8XrO6AH
+	F8dQUSYorAHcF06KwQFghmARf42Iwbk7xvgGLtsH
+X-Received: by 2002:a05:6a21:687:b0:394:427b:eab with SMTP id
+ adf61e73a8af0-39545e388f7mr9694233637.11.1771923819860; Tue, 24 Feb 2026
+ 01:03:39 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-	micalg=pgp-sha512; protocol="application/pgp-signature"
+References: <CAHzMYBSfK7Ms9W9rc1mzsyP0aRkXg=3G6VXuur15jm7OE2JoCA@mail.gmail.com>
+ <6e46e258-4589-4cb8-8548-036ad36884b5@wdc.com> <CAHzMYBSCtpHamhBCCgPf4WNDmY5-DOdnXJ8NMLf4C-CLL09oiA@mail.gmail.com>
+ <DGMZYSH7JG2W.1DBICE2W4XI3X@wdc.com>
+In-Reply-To: <DGMZYSH7JG2W.1DBICE2W4XI3X@wdc.com>
+From: Jorge Bastos <jorge.mrbastos@gmail.com>
+Date: Tue, 24 Feb 2026 09:03:30 +0000
+X-Gm-Features: AaiRm51eppf1FQJNMWMaA0DQDXwpAyj-8zJdQ29gJbl3XYxc1_aW16dDICaCd9A
+Message-ID: <CAHzMYBTUrh7XGkj3VD5rOew+8s_9D0U8bskureT2jZAx4wLWfQ@mail.gmail.com>
+Subject: Re: Btrfs with zoned devices
+To: Naohiro Aota <Naohiro.Aota@wdc.com>
+Cc: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>, Btrfs BTRFS <linux-btrfs@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.23 / 15.00];
-	SIGNED_PGP(-2.00)[];
-	INVALID_MSGID(1.70)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MIXED_CHARSET(0.83)[subject];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[mssola.com,none];
-	MIME_GOOD(-0.20)[multipart/signed,text/plain];
-	R_DKIM_ALLOW(-0.20)[mssola.com:s=MBO0001];
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
 	MAILLIST(-0.15)[generic];
+	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21864-lists,linux-btrfs=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+,1:+,2:~];
+	TO_DN_ALL(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-21865-lists,linux-btrfs=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[gmx.com,suse.com,fb.com,wdc.com,vger.kernel.org,kernel.org];
-	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[mssola@mssola.com,linux-btrfs@vger.kernel.org];
-	DKIM_TRACE(0.00)[mssola.com:+];
-	TAGGED_RCPT(0.00)[linux-btrfs];
-	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FROM_HAS_DN(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 4C6051842BB
+	RCPT_COUNT_THREE(0.00)[3];
+	NEURAL_HAM(-0.00)[-1.000];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jorgemrbastos@gmail.com,linux-btrfs@vger.kernel.org];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	MID_RHS_MATCH_FROMTLD(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	TAGGED_RCPT(0.00)[linux-btrfs];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,mail.gmail.com:mid]
+X-Rspamd-Queue-Id: C85FD184407
 X-Rspamd-Action: no action
 
---=-=-=
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Roger that, sorry I can't provide the debug info, I'm afraid it
+crashed ahgain, so the mount options didn't help, but there are some
+new erros before the crash this time, not sure if they help, hundreds
+of lines like these:
 
-Qu Wenruo @ 2026-02-24 17:18 +1030:
+Feb 24 08:32:26 Tower7 kernel: BTRFS error (device sdc): failed to run
+delalloc range, root=3D5 ino=3D2483 folio=3D288358400 submit_bitmap=3D0
+start=3D288358400 len=3D524288: -28
+Feb 24 08:32:26 Tower7 kernel: BTRFS error (device sdc):
+cow_file_range failed, root=3D5 inode=3D2481 start=3D739246080 len=3D524288
+cur_offset=3D739246080 cur_alloc_size=3D0: -28
+Feb 24 08:32:26 Tower7 kernel: BTRFS error (device sdc): failed to run
+delalloc range, root=3D5 ino=3D2481 folio=3D739246080 submit_bitmap=3D0
+start=3D739246080 len=3D524288: -28
+Feb 24 08:32:26 Tower7 kernel: BTRFS error (device sdc):
+cow_file_range failed, root=3D5 inode=3D2480 start=3D747634688 len=3D524288
+cur_offset=3D747634688 cur_alloc_size=3D0: -28
+Feb 24 08:32:26 Tower7 kernel: BTRFS error (device sdc): failed to run
+delalloc range, root=3D5 ino=3D2480 folio=3D747634688 submit_bitmap=3D0
+start=3D747634688 len=3D524288: -28
+Feb 24 08:32:26 Tower7 kernel: BTRFS error (device sdc):
+cow_file_range failed, root=3D5 inode=3D2477 start=3D862453760 len=3D524288
+cur_offset=3D862453760 cur_alloc_size=3D0: -28
+Feb 24 08:32:26 Tower7 kernel: BTRFS error (device sdc): failed to run
+delalloc range, root=3D5 ino=3D2477 folio=3D862453760 submit_bitmap=3D0
+start=3D862453760 len=3D524288: -28
+Feb 24 08:32:26 Tower7 kernel: BTRFS error (device sdc):
+cow_file_range failed, root=3D5 inode=3D2472 start=3D1995964416 len=3D52428=
+8
+cur_offset=3D1995964416 cur_alloc_size=3D0: -28
+Feb 24 08:32:26 Tower7 kernel: BTRFS error (device sdc): failed to run
+delalloc range, root=3D5 ino=3D2472 folio=3D1995964416 submit_bitmap=3D0
+start=3D1995964416 len=3D524288: -28
+Feb 24 08:32:26 Tower7 kernel: BTRFS error (device sdc):
+cow_file_range failed, root=3D5 inode=3D2479 start=3D726138880 len=3D524288
+cur_offset=3D726138880 cur_alloc_size=3D0: -28
+Feb 24 08:32:26 Tower7 kernel: BTRFS error (device sdc): failed to run
+delalloc range, root=3D5 ino=3D2479 folio=3D726138880 submit_bitmap=3D0
+start=3D726138880 len=3D524288: -28
+Feb 24 08:32:26 Tower7 kernel: BTRFS error (device sdc):
+cow_file_range failed, root=3D5 inode=3D2473 start=3D1681391616 len=3D52428=
+8
+cur_offset=3D1681391616 cur_alloc_size=3D0: -28
+Feb 24 08:32:26 Tower7 kernel: BTRFS error (device sdc): failed to run
+delalloc range, root=3D5 ino=3D2473 folio=3D1681391616 submit_bitmap=3D0
+start=3D1681391616 len=3D524288: -28
+Feb 24 08:32:27 Tower7 kernel: BTRFS error (device sdc):
+cow_file_range failed, root=3D5 inode=3D2471 start=3D2265972736 len=3D52428=
+8
+cur_offset=3D2265972736 cur_alloc_size=3D0: -28
+Feb 24 08:32:27 Tower7 kernel: BTRFS error (device sdc): failed to run
+delalloc range, root=3D5 ino=3D2471 folio=3D2265972736 submit_bitmap=3D0
+start=3D2265972736 len=3D524288: -28
+Feb 24 08:32:27 Tower7 kernel: BTRFS error (device sdc):
+cow_file_range failed, root=3D5 inode=3D2475 start=3D1724907520 len=3D52428=
+8
+cur_offset=3D1724907520 cur_alloc_size=3D0: -28
+Feb 24 08:32:27 Tower7 kernel: BTRFS error (device sdc): failed to run
+delalloc range, root=3D5 ino=3D2475 folio=3D1724907520 submit_bitmap=3D0
+start=3D1724907520 len=3D524288: -28
+Feb 24 08:32:27 Tower7 kernel: BTRFS error (device sdc):
+cow_file_range failed, root=3D5 inode=3D2474 start=3D1701314560 len=3D52428=
+8
+cur_offset=3D1701314560 cur_alloc_size=3D0: -28
+Feb 24 08:32:27 Tower7 kernel: BTRFS error (device sdc): failed to run
+delalloc range, root=3D5 ino=3D2474 folio=3D1701314560 submit_bitmap=3D0
+start=3D1701314560 len=3D524288:
 
-> =E5=9C=A8 2026/2/24 17:06, Miquel Sabat=C3=A9 Sol=C3=A0 =E5=86=99=E9=81=
-=93:
->> Qu Wenruo @ 2026-02-24 15:07 +1030:
->>
->>> =E5=9C=A8 2026/2/24 10:14, Miquel Sabat=C3=A9 Sol=C3=A0 =E5=86=99=E9=81=
-=93:
->>>> Commit 2932ba8d9c99 ("slab: Introduce kmalloc_obj() and family")
->>>> introduced, among many others, the kzalloc_objs() helper, which has so=
-me
->>>> benefits over kcalloc().
->>>> Cc: Kees Cook <kees@kernel.org>
->>>> Signed-off-by: Miquel Sabat=C3=A9 Sol=C3=A0 <mssola@mssola.com>
->>>> ---
->>>>    fs/btrfs/block-group.c       | 2 +-
->>>>    fs/btrfs/raid56.c            | 8 ++++----
->>>>    fs/btrfs/tests/zoned-tests.c | 2 +-
->>>>    fs/btrfs/volumes.c           | 6 ++----
->>>>    fs/btrfs/zoned.c             | 5 ++---
->>>>    5 files changed, 10 insertions(+), 13 deletions(-)
->>>> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
->>>> index 37bea850b3f0..8d85b4707690 100644
->>>> --- a/fs/btrfs/block-group.c
->>>> +++ b/fs/btrfs/block-group.c
->>>> @@ -2239,7 +2239,7 @@ int btrfs_rmap_block(struct btrfs_fs_info *fs_in=
-fo, u64 chunk_start,
->>>>    	if (map->type & BTRFS_BLOCK_GROUP_RAID56_MASK)
->>>>    		io_stripe_size =3D btrfs_stripe_nr_to_offset(nr_data_stripes(map)=
-);
->>>>    -	buf =3D kcalloc(map->num_stripes, sizeof(u64), GFP_NOFS);
->>>> +	buf =3D kzalloc_objs(*buf, map->num_stripes, GFP_NOFS);
->>>
->>> Not sure if we should use *buf for the type.
->>>
->>> I still remember we had some bugs related to incorrect type usage.
->> Considering the type of 'buf' and how kzalloc_objs() will resolve the
->> first argument '*buf', it should really just be equivalent to what was
->> written before.
+Then it crashed:
+
+Feb 24 08:32:30 Tower7 kernel: BTRFS: error (device sdc) in
+btrfs_commit_transaction:2536: errno=3D-11 unknown (Error while writing
+out transaction)
+Feb 24 08:32:30 Tower7 kernel: BTRFS info (device sdc state E): forced read=
+only
+Feb 24 08:32:30 Tower7 kernel: BTRFS warning (device sdc state E):
+Skipping commit of aborted transaction.
+Feb 24 08:32:30 Tower7 kernel: ------------[ cut here ]------------
+Feb 24 08:32:30 Tower7 kernel: BTRFS: Transaction aborted (error -11)
+Feb 24 08:32:30 Tower7 kernel: WARNING: CPU: 9 PID: 21919 at
+fs/btrfs/transaction.c:2021 btrfs_commit_transaction+0x994/0xb20
+Feb 24 08:32:30 Tower7 kernel: Modules linked in: br_netfilter
+nft_compat nf_conntrack_netlink xt_nat af_packet iptable_raw veth
+xt_conntrack bridge stp llc xfrm_user xfrm_algo xt_set ip_set
+xt_addrtype md_mod xt_MASQUERADE xt_tcpudp xt_mark tun nf_tables
+nfnetlink ip6table_nat iptable_nat nf_nat nf_conntrack nf_defrag_ipv6
+nf_defrag_ipv4 ipmi_devintf ip6table_filter ip6_tables iptable_filter
+ip_tables x_tables macvtap macvlan tap mlx5_core mlxfw tls igb
+intel_rapl_msr amd64_edac edac_mce_amd edac_core intel_rapl_common
+kvm_amd ast drm_shmem_helper drm_client_lib drm_kms_helper ipmi_ssif
+kvm ghash_clmulni_intel aesni_intel drm rapl acpi_cpufreq i2c_algo_bit
+backlight input_leds joydev led_class ccp i2c_piix4 i2c_smbus ses
+acpi_ipmi enclosure k10temp i2c_core ipmi_si button zfs(PO) spl(O)
+[last unloaded: mlxfw]
+Feb 24 08:32:30 Tower7 kernel: CPU: 9 UID: 0 PID: 21919 Comm:
+btrfs-transacti Tainted: P        W  O        6.18.9-Unraid #4
+PREEMPT(voluntary)
+Feb 24 08:32:30 Tower7 kernel: Tainted: [P]=3DPROPRIETARY_MODULE,
+[W]=3DWARN, [O]=3DOOT_MODULE
+Feb 24 08:32:30 Tower7 kernel: Hardware name: Supermicro Super
+Server/H11SSL-i, BIOS 2.4 12/27/2021
+Feb 24 08:32:30 Tower7 kernel: RIP: 0010:btrfs_commit_transaction+0x994/0xb=
+20
+Feb 24 08:32:30 Tower7 kernel: Code: ba ff 49 8b 7c 24 60 89 da 48 c7
+c6 2a 81 57 82 e8 81 14 a9 ff e8 2c ef ba ff eb 10 89 de 48 c7 c7 4b
+81 57 82 e8 6c d5 b1 ff <0f> 0b 41 b0 01 41 83 e0 01 89 d9 ba e5 07 00
+00 4c 89 e7 48 c7 c6
+Feb 24 08:32:30 Tower7 kernel: RSP: 0018:ffffc9002dde7de0 EFLAGS: 00010282
+Feb 24 08:32:30 Tower7 kernel: RAX: 0000000000000000 RBX:
+00000000fffffff5 RCX: 0000000000000002
+Feb 24 08:32:30 Tower7 kernel: RDX: 0000000000000027 RSI:
+ffffffff825f9e70 RDI: 00000000ffffffff
+Feb 24 08:32:30 Tower7 kernel: RBP: ffff8881d3244000 R08:
+0000000000000000 R09: 0000000000000000
+Feb 24 08:32:30 Tower7 kernel: R10: 0000000000000019 R11:
+00000000312d2072 R12: ffff88826fe59888
+Feb 24 08:32:30 Tower7 kernel: R13: ffff888302e73000 R14:
+ffff8881d3244000 R15: ffff88828da56300
+Feb 24 08:32:30 Tower7 kernel: FS:  0000000000000000(0000)
+GS:ffff88a0499bc000(0000) knlGS:0000000000000000
+Feb 24 08:32:30 Tower7 kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 00000000800=
+50033
+Feb 24 08:32:30 Tower7 kernel: CR2: 00001455a3905d88 CR3:
+000000026dba6000 CR4: 0000000000350ef0
+Feb 24 08:32:30 Tower7 kernel: Call Trace:
+Feb 24 08:32:30 Tower7 kernel: <TASK>
+Feb 24 08:32:30 Tower7 kernel: ? srso_return_thunk+0x5/0x5f
+Feb 24 08:32:30 Tower7 kernel: ? start_transaction+0x46e/0x5e0
+Feb 24 08:32:30 Tower7 kernel: ? hrtimer_nanosleep_restart+0x50/0x60
+Feb 24 08:32:30 Tower7 kernel: transaction_kthread+0xf0/0x170
+Feb 24 08:32:30 Tower7 kernel: ? __pfx_transaction_kthread+0x10/0x10
+Feb 24 08:32:30 Tower7 kernel: kthread+0x1ce/0x1e0
+Feb 24 08:32:30 Tower7 kernel: ? finish_task_switch.isra.0+0x13c/0x210
+Feb 24 08:32:30 Tower7 kernel: ? finish_task_switch.isra.0+0x139/0x210
+Feb 24 08:32:30 Tower7 kernel: ? __pfx_kthread+0x10/0x10
+Feb 24 08:32:30 Tower7 kernel: ? __pfx_kthread+0x10/0x10
+Feb 24 08:32:30 Tower7 kernel: ret_from_fork+0x24/0x130
+Feb 24 08:32:30 Tower7 kernel: ? __pfx_kthread+0x10/0x10
+Feb 24 08:32:30 Tower7 kernel: ret_from_fork_asm+0x1a/0x30
+Feb 24 08:32:30 Tower7 kernel: </TASK>
+Feb 24 08:32:30 Tower7 kernel: ---[ end trace 0000000000000000 ]---
+Feb 24 08:32:30 Tower7 kernel: BTRFS: error (device sdc state EA) in
+cleanup_transaction:2021: errno=3D-11 unknown
+
+On Tue, Feb 24, 2026 at 7:02=E2=80=AFAM Naohiro Aota <Naohiro.Aota@wdc.com>=
+ wrote:
 >
-> Good luck if you miss the '*' for a structure pointer, and compiler won't=
- give
-> you any warning.
+> On Tue Feb 24, 2026 at 1:03 AM JST, Jorge Bastos wrote:
+> > Thanks for the reply, I'm afraid I'm using a built kernel, and
+> > building my own with debug info is beyond my knowledge.
+> >
+> > Gemini believes the issue may be caused by too many open zones. I've
+> > monitored blkzone report output, and there are typically >100 zones in
+> > the 'Implicitly Open' or 'Explicitly Open' state, and I've seen it go
+> > over 120 before.
+> >
+> > I checked the queue limits for the device and
+> > /sys/block/sdb/queue/max_active_zones reports 0
+> > but
+> > /sys/block/sdb/queue/max_open_zones reports 128
+> >
+> > Could it be that btrfs is hitting the max_open_zones limit and
+> > receiving EAGAIN (-11) during btrfs_commit_transaction, possibly
+> > because it isn't self-limiting based on the max_open_zones value when
+> > max_active_zones is 0."
 >
-> I still remembered that Johannes exposed such bug for me.
-> Unfortunately I didn't have exact lore link for it.
-
-That's a good point. Fortunately for us, this is what I get if I remove
-the star with GCC 15.2:
-
-fs/btrfs/block-group.c:2242:13: error: assignment to 'u64 *' {aka 'long lon=
-g unsigned int *'} from incompatible pointer type 'u64 **' {aka 'long long =
-unsigned int **'} [-Wincompatible-pointer-types]
- 2242 |         buf =3D kmalloc_objs(buf, map->num_stripes, GFP_NOFS);
-      |
-
-Hence, it looks like these kinds of errors will be catched by the
-compiler with these new helpers. This doesn't mean that we are 100% safe
-from corner cases, but at least there are some guarantees.
-
+> Not really. Btrfs now limits by max_open_zones as below in zoned.c
 >
->>
->>>
->>> Another thing is, we may not want to use the kzalloc version.
->>> We don't want to waste CPU time just to zero out the content meanwhile =
-we're
->>> ensured to re-assign the contents.
->>>
->>> Thus kmalloc_objs() maybe better.
->> Yes, having a second look at this function, it looks like kmalloc_objs()
->> might just be enough. If you don't mind, I will add another commit in v2
->> translating kzalloc_objs() into kmalloc_objs() wherever I see we can do
->> this from the ones I've touched. This way we can easily revert in case
->> things go south :)
->>
->>>
->>> Thanks,
->>> Qu
->> Thanks,
->> Miquel
->>
->>>
->>>
->>>>    	if (!buf) {
->>>>    		ret =3D -ENOMEM;
->>>>    		goto out;
->>>> diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
->>>> index 02105d68accb..1ebfed8f0a0a 100644
->>>> --- a/fs/btrfs/raid56.c
->>>> +++ b/fs/btrfs/raid56.c
->>>> @@ -2110,8 +2110,8 @@ static int recover_sectors(struct btrfs_raid_bio=
- *rbio)
->>>>    	 * @unmap_array stores copy of pointers that does not get reordered
->>>>    	 * during reconstruction so that kunmap_local works.
->>>>    	 */
->>>> -	pointers =3D kcalloc(rbio->real_stripes, sizeof(void *), GFP_NOFS);
->>>> -	unmap_array =3D kcalloc(rbio->real_stripes, sizeof(void *), GFP_NOFS=
-);
->>>> +	pointers =3D kzalloc_objs(*pointers, rbio->real_stripes, GFP_NOFS);
->>>> +	unmap_array =3D kzalloc_objs(*unmap_array, rbio->real_stripes, GFP_N=
-OFS);
->>>>    	if (!pointers || !unmap_array) {
->>>>    		ret =3D -ENOMEM;
->>>>    		goto out;
->>>> @@ -2844,8 +2844,8 @@ static int recover_scrub_rbio(struct btrfs_raid_=
-bio *rbio)
->>>>    	 * @unmap_array stores copy of pointers that does not get reordered
->>>>    	 * during reconstruction so that kunmap_local works.
->>>>    	 */
->>>> -	pointers =3D kcalloc(rbio->real_stripes, sizeof(void *), GFP_NOFS);
->>>> -	unmap_array =3D kcalloc(rbio->real_stripes, sizeof(void *), GFP_NOFS=
-);
->>>> +	pointers =3D kzalloc_objs(*pointers, rbio->real_stripes, GFP_NOFS);
->>>> +	unmap_array =3D kzalloc_objs(*unmap_array, rbio->real_stripes, GFP_N=
-OFS);
->>>>    	if (!pointers || !unmap_array) {
->>>>    		ret =3D -ENOMEM;
->>>>    		goto out;
->>>> diff --git a/fs/btrfs/tests/zoned-tests.c b/fs/btrfs/tests/zoned-tests=
-.c
->>>> index da21c7aea31a..2bc3b14baa41 100644
->>>> --- a/fs/btrfs/tests/zoned-tests.c
->>>> +++ b/fs/btrfs/tests/zoned-tests.c
->>>> @@ -58,7 +58,7 @@ static int test_load_zone_info(struct btrfs_fs_info =
-*fs_info,
->>>>    		return -ENOMEM;
->>>>    	}
->>>>    -	zone_info =3D kcalloc(test->num_stripes, sizeof(*zone_info), GFP_=
-KERNEL);
->>>> +	zone_info =3D kzalloc_objs(*zone_info, test->num_stripes, GFP_KERNEL=
-);
->>>>    	if (!zone_info) {
->>>>    		test_err("cannot allocate zone info");
->>>>    		return -ENOMEM;
->>>> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
->>>> index e15e138c515b..c0cf8f7c5a8e 100644
->>>> --- a/fs/btrfs/volumes.c
->>>> +++ b/fs/btrfs/volumes.c
->>>> @@ -5499,8 +5499,7 @@ static int calc_one_profile_avail(struct btrfs_f=
-s_info *fs_info,
->>>>    		goto out;
->>>>    	}
->>>>    -	devices_info =3D kcalloc(fs_devices->rw_devices, sizeof(*devices_=
-info),
->>>> -			       GFP_NOFS);
->>>> +	devices_info =3D kzalloc_objs(*devices_info, fs_devices->rw_devices,=
- GFP_NOFS);
->>>>    	if (!devices_info) {
->>>>    		ret =3D -ENOMEM;
->>>>    		goto out;
->>>> @@ -6067,8 +6066,7 @@ struct btrfs_block_group *btrfs_create_chunk(str=
-uct btrfs_trans_handle *trans,
->>>>    	ctl.space_info =3D space_info;
->>>>    	init_alloc_chunk_ctl(fs_devices, &ctl);
->>>>    -	devices_info =3D kcalloc(fs_devices->rw_devices, sizeof(*devices_=
-info),
->>>> -			       GFP_NOFS);
->>>> +	devices_info =3D kzalloc_objs(*devices_info, fs_devices->rw_devices,=
- GFP_NOFS);
->>>>    	if (!devices_info)
->>>>    		return ERR_PTR(-ENOMEM);
->>>>    diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
->>>> index ab330ec957bc..851b0de7bed7 100644
->>>> --- a/fs/btrfs/zoned.c
->>>> +++ b/fs/btrfs/zoned.c
->>>> @@ -1697,8 +1697,7 @@ static int btrfs_load_block_group_raid10(struct =
-btrfs_block_group *bg,
->>>>    		return -EINVAL;
->>>>    	}
->>>>    -	raid0_allocs =3D kcalloc(map->num_stripes / map->sub_stripes,
->>>> sizeof(*raid0_allocs),
->>>> -			       GFP_NOFS);
->>>> +	raid0_allocs =3D kzalloc_objs(*raid0_allocs, map->num_stripes / map-=
->sub_stripes, GFP_NOFS);
->>>>    	if (!raid0_allocs)
->>>>    		return -ENOMEM;
->>>>    @@ -1916,7 +1915,7 @@ int btrfs_load_block_group_zone_info(struct
->>>> btrfs_block_group *cache, bool new)
->>>>      	cache->physical_map =3D map;
->>>>    -	zone_info =3D kcalloc(map->num_stripes, sizeof(*zone_info), GFP_N=
-OFS);
->>>> +	zone_info =3D kzalloc_objs(*zone_info, map->num_stripes, GFP_NOFS);
->>>>    	if (!zone_info) {
->>>>    		ret =3D -ENOMEM;
->>>>    		goto out;
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJiBAEBCgBMFiEEG6U8esk9yirP39qXlr6Mb9idZWUFAmmdaFgbFIAAAAAABAAO
-bWFudTIsMi41KzEuMTEsMiwyEhxtc3NvbGFAbXNzb2xhLmNvbQAKCRCWvoxv2J1l
-ZauYD/4o/02cnnllCz5WANeoJEgl3rFE5zkkVzezYb08CzQXmDmGgc2WnbJmqaEh
-27zXo9YZuIaBFJPV1lP6cyIsqYDtQyjhPlEcDnf4a41hK/Ycr2bCf0R31DJBTlH5
-0J0UzTQc8pcHkAg99JJUxPm9VIZWm3UneNYE4gm5JrjCH9cxcOFRrxzb/+LG3a1V
-d7kEXA4UzHDStRnrbO2pScLjjM4MCuka5ry7EjR54FIBu71f+nXXWVIAXb6Zrxpe
-uKQ4H874uuArlfhkC8rJf086Vo9KPioRC3CIIHGa4NwCpW06hZ64d135xYIDSjjU
-hZold4d7a3tqZEbIKoeGOrkQDvt9daDAb8qVHMjNjGkJi9gNk79Tcoy/DwvctJNy
-s4mVpJZSLJKxDwT4+O1bj+G2FYW+N9HYlG1jN9WckILvsTOOQAwuj13VSg/4TtVO
-FHH8qKP7F+G5iI5C1o1lLq+0VEyJQ/Xh+eqz7zBr52axD0GhhU5nvMUB+i1jxD5g
-aJjnKKIDkpamqPAQg6rBdWQkeAOEHKn6JHQDpZITkzI9me6lEnkl0gIc8rC+NlRq
-f39pG0vXhZuFGxLkrvJ0zEiu0DzJ4+ZldxG9U6sOOUsjgrjmNFYDqVlf76l+i+fZ
-+tvZWXNirU9sV5a7aQjyvCdbJMvV5qbr0N4f2QFozDeV7XuULQ==
-=LhvC
------END PGP SIGNATURE-----
---=-=-=--
+>         max_active_zones =3D min_not_zero(bdev_max_active_zones(bdev),
+>                                         bdev_max_open_zones(bdev));
+>
+> And, EAGAIN basically should be coming from
+> btrfs_check_meta_write_pointer() when there is a hole in a writing
+> region. Usually at the transaction commit phase, all metadata in the
+> writing region should be allocated and ready for sequential writing. So,
+> something wrong happens here either mis-ordering or mis-skipping a
+> block.
+>
+> >
+> > Thanks,
+> > Jorge
+> >
+> > On Mon, Feb 23, 2026 at 3:15=E2=80=AFPM Johannes Thumshirn
+> > <Johannes.Thumshirn@wdc.com> wrote:
+> >>
+> >> On 2/23/26 3:59 PM, Jorge Bastos wrote:
+> >> > Hi,
+> >> >
+> >> > I'm using a zoned device for the first time; it's a 27TB WD Ultrasta=
+r
+> >> > HC680, formatted with single data and DUP metadata.
+> >> >
+> >> > This will be used for non-critical WORM media data, but during the
+> >> > initial data load, using a single rsync thread, the filesystem crash=
+ed
+> >> > twice, 1st time after copying around 1.25T, 2nd time around 2.5T
+> >> > total.
+> >> >
+> >> > I'm now using some mount options suggested by LLMs, and it hasn't
+> >> > crashed so far, but it's not been long; currently at 3.58T used.
+> >> >
+> >> > mount -o rw,noatime,commit=3D60,flushoncommit,discard=3Dasync
+> >>
+> >> discard=3Dasync doesn't make a lot of sense on zoned and it will be ig=
+nored.
+> >>
+> >>
+> >> > My question is, are these mount options good for HM-SMR or do you
+> >> > recommend different ones, and could they help with the crashing?
+> >> >
+> >> >
+> >> > These were the crashes I saw, they look similar to me, and after
+> >> > unmounting and remounting, it worked again:
+> >>
+> >>
+> >> Yes these errors are transient (luckily).
+> >>
+> >>
+> >> > Kernel 6.18.9
+> >> > btrfs-progs v6.17.1
+> >> >
+> >> > 1st one:
+> >> >
+> >> > Feb 22 21:35:56 Tower7 kernel: BTRFS: error (device sdb) in
+> >> > btrfs_commit_transaction:2536: errno=3D-11 unknown (Error while writ=
+ing
+> >> > out transaction)
+> >> > Feb 22 21:35:56 Tower7 kernel: BTRFS info (device sdb state E): forc=
+ed readonly
+> >> > Feb 22 21:35:56 Tower7 kernel: BTRFS warning (device sdb state E):
+> >> > Skipping commit of aborted transaction.
+> >> > Feb 22 21:35:56 Tower7 kernel: ------------[ cut here ]------------
+> >> > Feb 22 21:35:56 Tower7 kernel: BTRFS: Transaction aborted (error -11=
+)
+> >> > Feb 22 21:35:56 Tower7 kernel: WARNING: CPU: 8 PID: 109946 at
+> >> > fs/btrfs/transaction.c:2021 btrfs_commit_transaction+0x994/0xb20
+> >> > Feb 22 21:35:56 Tower7 kernel: Modules linked in: md_mod br_netfilte=
+r
+> >> > nft_compat af_packet veth nf_conntrack_netlink xt_nat iptable_raw
+> >> > xt_conntrack bridge stp llc xfrm_user xfrm_algo xt_set ip_set
+> >> > xt_addrtype xt_MASQUERADE xt_tcpudp xt_mark tun nf_tables nfnetlink
+> >> > ip6table_nat iptable_nat nf_nat nf_conntrack nf_defrag_ipv6
+> >> > nf_defrag_ipv4 ipmi_devintf ip6table_filter ip6_tables iptable_filte=
+r
+> >> > ip_tables x_tables macvtap macvlan tap mlx5_core mlxfw tls igb
+> >> > intel_rapl_msr amd64_edac edac_mce_amd edac_core intel_rapl_common
+> >> > kvm_amd ast kvm drm_shmem_helper drm_client_lib drm_kms_helper
+> >> > ipmi_ssif ghash_clmulni_intel aesni_intel drm rapl acpi_cpufreq
+> >> > backlight i2c_algo_bit input_leds joydev led_class ccp i2c_piix4
+> >> > i2c_smbus acpi_ipmi ses enclosure i2c_core k10temp ipmi_si button
+> >> > zfs(PO) spl(O) [last unloaded: md_mod]
+> >> > Feb 22 21:35:56 Tower7 kernel: CPU: 8 UID: 0 PID: 109946 Comm:
+> >> > btrfs-transacti Tainted: P        W  O        6.18.9-Unraid #4
+> >> > PREEMPT(voluntary)
+> >> > Feb 22 21:35:56 Tower7 kernel: Tainted: [P]=3DPROPRIETARY_MODULE,
+> >> > [W]=3DWARN, [O]=3DOOT_MODULE
+> >> > Feb 22 21:35:56 Tower7 kernel: Hardware name: Supermicro Super
+> >> > Server/H11SSL-i, BIOS 2.4 12/27/2021
+> >> > Feb 22 21:35:56 Tower7 kernel: RIP: 0010:btrfs_commit_transaction+0x=
+994/0xb20
+> >> > Feb 22 21:35:56 Tower7 kernel: Code: ba ff 49 8b 7c 24 60 89 da 48 c=
+7
+> >> > c6 2a 81 57 82 e8 81 14 a9 ff e8 2c ef ba ff eb 10 89 de 48 c7 c7 4b
+> >> > 81 57 82 e8 6c d5 b1 ff <0f> 0b 41 b0 01 41 83 e0 01 89 d9 ba e5 07 =
+00
+> >> > 00 4c 89 e7 48 c7 c6
+> >> > Feb 22 21:35:56 Tower7 kernel: RSP: 0018:ffffc9003cac7de0 EFLAGS: 00=
+010282
+> >> > Feb 22 21:35:56 Tower7 kernel: RAX: 0000000000000000 RBX:
+> >> > 00000000fffffff5 RCX: 0000000000000002
+> >> > Feb 22 21:35:56 Tower7 kernel: RDX: 0000000000000027 RSI:
+> >> > ffffffff825f9e70 RDI: 00000000ffffffff
+> >> > Feb 22 21:35:56 Tower7 kernel: RBP: ffff88826a27d000 R08:
+> >> > 0000000000000000 R09: 0000000000000000
+> >> > Feb 22 21:35:56 Tower7 kernel: R10: 0000000000000000 R11:
+> >> > 00000000312d2072 R12: ffff888290a1b7e0
+> >> > Feb 22 21:35:56 Tower7 kernel: R13: ffff888249304c00 R14:
+> >> > ffff88826a27d000 R15: ffff888100ec6300
+> >> > Feb 22 21:35:56 Tower7 kernel: FS:  0000000000000000(0000)
+> >> > GS:ffff88a04997c000(0000) knlGS:0000000000000000
+> >> > Feb 22 21:35:56 Tower7 kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000=
+000080050033
+> >> > Feb 22 21:35:56 Tower7 kernel: CR2: 00007ffcad620af8 CR3:
+> >> > 00000001f5915000 CR4: 0000000000350ef0
+> >> > Feb 22 21:35:56 Tower7 kernel: Call Trace:
+> >> > Feb 22 21:35:56 Tower7 kernel: <TASK>
+> >> > Feb 22 21:35:56 Tower7 kernel: ? srso_return_thunk+0x5/0x5f
+> >> > Feb 22 21:35:56 Tower7 kernel: ? start_transaction+0x46e/0x5e0
+> >> > Feb 22 21:35:56 Tower7 kernel: ? hrtimer_nanosleep_restart+0x50/0x60
+> >> > Feb 22 21:35:56 Tower7 kernel: transaction_kthread+0xf0/0x170
+> >> > Feb 22 21:35:56 Tower7 kernel: ? __pfx_transaction_kthread+0x10/0x10
+> >> > Feb 22 21:35:56 Tower7 kernel: kthread+0x1ce/0x1e0
+> >> > Feb 22 21:35:56 Tower7 kernel: ? srso_return_thunk+0x5/0x5f
+> >> > Feb 22 21:35:56 Tower7 kernel: ? srso_return_thunk+0x5/0x5f
+> >> > Feb 22 21:35:56 Tower7 kernel: ? finish_task_switch.isra.0+0x139/0x2=
+10
+> >> > Feb 22 21:35:56 Tower7 kernel: ? __pfx_kthread+0x10/0x10
+> >> > Feb 22 21:35:56 Tower7 kernel: ? __pfx_kthread+0x10/0x10
+> >> > Feb 22 21:35:56 Tower7 kernel: ret_from_fork+0x24/0x130
+> >> > Feb 22 21:35:56 Tower7 kernel: ? __pfx_kthread+0x10/0x10
+> >> > Feb 22 21:35:56 Tower7 kernel: ret_from_fork_asm+0x1a/0x30
+> >> > Feb 22 21:35:56 Tower7 kernel: </TASK>
+> >> > Feb 22 21:35:56 Tower7 kernel: ---[ end trace 0000000000000000 ]---
+> >> > Feb 22 21:35:56 Tower7 kernel: BTRFS: error (device sdb state EA) in
+> >> > cleanup_transaction:2021: errno=3D-11 unknown
+> >>
+> >> The FS is trying to commit a transaction and something down the path i=
+s
+> >> returning EAGAIN. Would be interesting who did it.
+> >>
+> >> Do you have the debug info for this kernel, so we can find out where i=
+t
+> >> breaks?
+> >>
 
