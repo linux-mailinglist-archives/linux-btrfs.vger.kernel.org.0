@@ -1,187 +1,175 @@
-Return-Path: <linux-btrfs+bounces-21869-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21870-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 8MLLKwyZnWnwQgQAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21869-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Feb 2026 13:26:52 +0100
+	id qBYbCNKenWnwQgQAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21870-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Feb 2026 13:51:30 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31237186F11
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Feb 2026 13:26:52 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4195E1873BD
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Feb 2026 13:51:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 0301530E440B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Feb 2026 12:23:40 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id CED68300E19E
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Feb 2026 12:51:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E23F5395DAB;
-	Tue, 24 Feb 2026 12:23:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0311939A7FF;
+	Tue, 24 Feb 2026 12:51:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mssola.com header.i=@mssola.com header.b="kQZPllsR"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="JbkKXt2F"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [80.241.56.152])
+Received: from esa3.hgst.iphmx.com (esa3.hgst.iphmx.com [216.71.153.141])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51A4F396D07;
-	Tue, 24 Feb 2026 12:23:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.152
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B8CAE555
+	for <linux-btrfs@vger.kernel.org>; Tue, 24 Feb 2026 12:51:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.71.153.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771935814; cv=none; b=akZSMLnFOqataPDjDZbosjFNH9LRqWDR1y66C0nel5L474fDaaGSGODQ346SFyZpFcAhyiraak4jk2+6gOncWyCDzqrJ38vBx71iXHfPMAox6JSrT6adAbHRVtEkXyHOUwMEW6PjOLPU7cDhqagkgykR68cYvKRNoOgiw9TYts0=
+	t=1771937482; cv=none; b=eE2GqoSCPDDhQXR92lIgkUAZMAE5lUiFNVBxCnhbX6G3UhoGF5yxD8iN9hmTWZ19E/6qK4PiGx7oTgBASR2PBJ53PDMruo42xl2r6g5cv/GVtfJ1xaiPaH+ZrQ0plenUPA0zPtJvwMVCzBEoxk5FwwYRBS5T75pp1GXQ1trs6Pw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771935814; c=relaxed/simple;
-	bh=K9qUiyM7b+cdE5WG5gwPSRuoDd3PWM+m2lzFUBBPUOQ=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=K4OJUhbX3KLYkV1VMX9WG6GU4qk1nn6X7cO0rAIqytzipTUHM3OaWt79EOYPqths/OP52Mvg4UhXVXi6Wky/O2u+IH7pY/4bzb+8K7x/yy/JZSssRiP5Uk/EPLn6QOyEcaC4es9h8fOznjmvhda+vW+9xGl2sdW2MJ6X9AbwHb0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mssola.com; spf=fail smtp.mailfrom=mssola.com; dkim=pass (2048-bit key) header.d=mssola.com header.i=@mssola.com header.b=kQZPllsR; arc=none smtp.client-ip=80.241.56.152
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mssola.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=mssola.com
-Received: from smtp102.mailbox.org (smtp102.mailbox.org [10.196.197.102])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4fKxhZ4q2dz9vgB;
-	Tue, 24 Feb 2026 13:23:26 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mssola.com; s=MBO0001;
-	t=1771935806;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+VBzFxT6O1k4eu2DAgcXff+p4lk62ry7+QtHjgPmCNI=;
-	b=kQZPllsROb8SOeXE0sQeIGsoTC3+AfG5mv3iAnof8C1Yzyf9L2SI+ZTliH04yI0F45uesb
-	Mm/a1ru5yeIQox4IUiKqnCw5CUvfVcqlRFo1Xp7gUcEOC4pVstUi8tcbHkB4SRwnI31KLM
-	4t8tF9mXlu1xtl2lLb9xJo2nV2UgWj13HzOf9cmYbWEvhx/bvUoKK1UbX3iD4XjDwzRElV
-	hpqoH3kb110HkYjMh93QH6ntoFKqVZMqyHQzBUFeoc41bQkVTQQ9QrITx45YpuxoBnPoP0
-	6E8Fl+I/o7dNxc8UxbZM1Vdre5Q8A91vSiylkRoBL4aGqo5/KcUkqSI/ja0taQ==
-From: =?utf-8?Q?Miquel_Sabat=C3=A9_Sol=C3=A0?= <mssola@mssola.com>
-To: David Sterba <dsterba@suse.cz>
-Cc: Kees Cook <kees@kernel.org>,  dsterba@suse.com,  clm@fb.com,
-  naohiro.aota@wdc.com,  linux-btrfs@vger.kernel.org,
-  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] btrfs: replace kcalloc() calls to kzalloc_objs()
-In-Reply-To: <20260224112905.GQ26902@suse.cz> (David Sterba's message of "Tue,
-	24 Feb 2026 12:29:05 +0100")
-References: <20260223234451.277369-1-mssola@mssola.com>
-	<202602231603.4F93301E@keescook>
-	<699d43e6.170a0220.3a6e96.a235SMTPIN_ADDED_BROKEN@mx.google.com>
-	<20260224112905.GQ26902@suse.cz>
-Date: Tue, 24 Feb 2026 13:23:22 +0100
-Message-ID: <871pias539.fsf@>
+	s=arc-20240116; t=1771937482; c=relaxed/simple;
+	bh=gi3jJC6yjVQqNxSW4LBtXBmJes0lvGVMYbqKK9FbNxI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=QGQsreGmhtPduGGcfv3RBi+PDG6RwlLYTo48lgAMi9/d6rU/Rkpiz9slJIXp97lhSAcjhyI80Op2/tQBmukVTch1YrK50s10yLt7lT5GFRRR5fxkXNsaMNERyYi21UQihuaMVANk6Vq813AmLGEgu4LKHa9vy2uZ21Ush0UoR5Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=JbkKXt2F; arc=none smtp.client-ip=216.71.153.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1771937481; x=1803473481;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=gi3jJC6yjVQqNxSW4LBtXBmJes0lvGVMYbqKK9FbNxI=;
+  b=JbkKXt2FxOl2YzIo4zxjHtmphcMk2h7fRxRDxKImoISDAcmWXpTh0BAe
+   hs8ZdlnfWi8oMK0fI1BLePgotRv5ZGEn2CyZHbLwHgkdrg154M4x2l8XE
+   JnhKVpJDlLDkNKqhX5gXCsPhK1eZlkKwm6ECes0tC0XCbYuaJctuQ5RRk
+   8e02bCfOisnEoNOtNuo0FgXJcKsyrfOXF6L0/V5pzQqSHJimvqGuJoFct
+   XoLCNL03CP/719/EhfRbhQDtK4O934SU95/2b3EGlG2Y3WMO+1iXfaY/q
+   UMQgR0ruflsh3H3b7ffk1GZvLWR3CH1mr3BrxMFakYegxF05ayFK++TaM
+   A==;
+X-CSE-ConnectionGUID: sKg3F/S/TQmhGaN3euqH4g==
+X-CSE-MsgGUID: ZdQ7FXa5TuOMr8NDKajqfA==
+X-IronPort-AV: E=Sophos;i="6.21,308,1763395200"; 
+   d="scan'208";a="141881877"
+Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep03.wdc.com) ([199.255.45.15])
+  by ob1.hgst.iphmx.com with ESMTP; 24 Feb 2026 20:51:21 +0800
+IronPort-SDR: 699d9ec8_OLkOw+A7bjtTDp0qUb0PzHZ3zrxhAWgyWU4/vspdpjC0Vih
+ 7BH07s2SR30pQleo7WcMDEiicn3uxbDgj6KKLFQ==
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep03.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 24 Feb 2026 04:51:20 -0800
+WDCIronportException: Internal
+Received: from wdap-1nkveyfids.ad.shared (HELO neo.wdc.com) ([10.224.28.151])
+  by uls-op-cesaip01.wdc.com with ESMTP; 24 Feb 2026 04:51:19 -0800
+From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+To: linux-btrfs@vger.kernel.org
+Cc: Filipe Manana <fdmanana@suse.com>,
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>
+Subject: [PATCH] btrfs: zoned: move btrfs_zoned_reserve_data_reloc_bg after kthread start
+Date: Tue, 24 Feb 2026 13:51:13 +0100
+Message-ID: <20260224125113.14831-1-johannes.thumshirn@wdc.com>
+X-Mailer: git-send-email 2.53.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-	micalg=pgp-sha512; protocol="application/pgp-signature"
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.23 / 15.00];
-	SIGNED_PGP(-2.00)[];
-	INVALID_MSGID(1.70)[];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MIXED_CHARSET(0.83)[subject];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[mssola.com,none];
-	MIME_GOOD(-0.20)[multipart/signed,text/plain];
-	R_DKIM_ALLOW(-0.20)[mssola.com:s=MBO0001];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[wdc.com,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_DKIM_ALLOW(-0.20)[wdc.com:s=dkim.wdc.com];
 	MAILLIST(-0.15)[generic];
+	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21869-lists,linux-btrfs=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+,1:+,2:~];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	URIBL_MULTI_FAIL(0.00)[mssola.com:server fail,tor.lore.kernel.org:server fail];
-	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[mssola@mssola.com,linux-btrfs@vger.kernel.org];
-	DKIM_TRACE(0.00)[mssola.com:+];
-	TAGGED_RCPT(0.00)[linux-btrfs];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21870-lists,linux-btrfs=lfdr.de];
+	RCPT_COUNT_THREE(0.00)[3];
+	DKIM_TRACE(0.00)[wdc.com:+];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	TO_DN_SOME(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[johannes.thumshirn@wdc.com,linux-btrfs@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[mssola.com:dkim,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 31237186F11
+	RCVD_COUNT_FIVE(0.00)[6];
+	TAGGED_RCPT(0.00)[linux-btrfs];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 4195E1873BD
 X-Rspamd-Action: no action
 
---=-=-=
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+btrfs_zoned_reserve_data_reloc_bg() is called on each mount of a file
+system and allocates a new block-group, to assign it to be the dedicated
+relocation target, if no pre-existing usable block-group for this task is
+found.
 
-David Sterba @ 2026-02-24 12:29 +01:
+If for some reason the transaction is aborted, btrfs_end_transaction()
+will wake up the transaction kthread. But the transaction kthread is not
+yet initialized at the time btrfs_zoned_reserve_data_reloc_bg() is
+called, leading to the follwing NULL-pointer dereference:
 
-> On Tue, Feb 24, 2026 at 07:23:25AM +0100, Miquel Sabat=C3=A9 Sol=C3=A0 wr=
-ote:
->> Kees Cook @ 2026-02-23 16:06 -08:
->>
->> > On Tue, Feb 24, 2026 at 12:44:51AM +0100, Miquel Sabat=C3=A9 Sol=C3=A0=
- wrote:
->> >> diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
->> >> index 02105d68accb..1ebfed8f0a0a 100644
->> >> --- a/fs/btrfs/raid56.c
->> >> +++ b/fs/btrfs/raid56.c
->> >> @@ -2110,8 +2110,8 @@ static int recover_sectors(struct btrfs_raid_bi=
-o *rbio)
->> >>  	 * @unmap_array stores copy of pointers that does not get reordered
->> >>  	 * during reconstruction so that kunmap_local works.
->> >>  	 */
->> >> -	pointers =3D kcalloc(rbio->real_stripes, sizeof(void *), GFP_NOFS);
->> >> -	unmap_array =3D kcalloc(rbio->real_stripes, sizeof(void *), GFP_NOF=
-S);
->> >> +	pointers =3D kzalloc_objs(*pointers, rbio->real_stripes, GFP_NOFS);
->> >> +	unmap_array =3D kzalloc_objs(*unmap_array, rbio->real_stripes, GFP_=
-NOFS);
->> >>  	if (!pointers || !unmap_array) {
->> >>  		ret =3D -ENOMEM;
->> >>  		goto out;
->> >
->> > Just as a style option, I wanted to point out (for at least the above,
->> > I didn't check the rest), you can do the definition and declaration at
->> > once with "auto" and put the type in the alloc:
->> >
->> > 	auto pointers =3D kzalloc_objs(void *, rbio->real_stripes, GFP_NOFS);
->> >
->> > But either way is fine. :) This patch looks good to me!
->>
->> I personally don't mind either way, but I don't what's the policy around
->> using "auto" in btrfs.
->
-> So far it hasn't been used and as with all the other syntax updates it's
-> up to debate and eventually start using it or not.  I'd need to see
-> examples where it's better than not using it, apart from macros.
-> In C the explicit types are everywhere and are I think always simple,
-> unlike in C++ where 'auto' can hide something very complex.
+ RSP: 0018:ffffc9000c617c98 EFLAGS: 00010046
+ RAX: 0000000000000000 RBX: 000000000000073c RCX: 0000000000000002
+ RDX: 0000000000000001 RSI: 0000000000000003 RDI: 0000000000000001
+ RBP: 0000000000000207 R08: ffffffff8223c71d R09: 0000000000000635
+ R10: ffff888108588000 R11: 0000000000000003 R12: 0000000000000003
+ R13: 000000000000073c R14: 0000000000000000 R15: ffff888114dd6000
+ FS:  00007f2993745840(0000) GS:ffff8882b508d000(0000) knlGS:0000000000000000
+ CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ CR2: 000000000000073c CR3: 0000000121a82006 CR4: 0000000000770eb0
+ PKRU: 55555554
+ Call Trace:
+  <TASK>
+  try_to_wake_up (./include/linux/spinlock.h:557 kernel/sched/core.c:4106)
+  __btrfs_end_transaction (fs/btrfs/transaction.c:1115 (discriminator 2))
+  btrfs_zoned_reserve_data_reloc_bg (fs/btrfs/zoned.c:2840)
+  open_ctree (fs/btrfs/disk-io.c:3588)
+  btrfs_get_tree.cold (fs/btrfs/super.c:982 fs/btrfs/super.c:1944 fs/btrfs/super.c:2087 fs/btrfs/super.c:2121)
+  vfs_get_tree (fs/super.c:1752)
+  __do_sys_fsconfig (fs/fsopen.c:231 fs/fsopen.c:295 fs/fsopen.c:473)
+  do_syscall_64 (arch/x86/entry/syscall_64.c:63 (discriminator 1) arch/x86/entry/syscall_64.c:94 (discriminator 1))
+  entry_SYSCALL_64_after_hwframe (arch/x86/entry/entry_64.S:131)
+ RIP: 0033:0x7f299392740e
 
-In this case, I'd say we can skip the use of 'auto', at least for these
-patches. Using it wouldn't help much, and it's more coherent with the
-rest of the codebase to stick with explicit typing.
+Move the call to btrfs_zoned_reserve_data_reloc_bg() after the
+transaction_kthread has been initialized to fix this problem.
 
-Also, using 'auto' in this case would mean to remove the declaration
-from the top of the function, which would break the style for this and
-many other functions from the btrfs code.
+Fixes: 694ce5e143d6 ("btrfs: zoned: reserve data_reloc block group on mount")
+Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+---
+This supersedes https://lore.kernel.org/r/20260223143820.89931-1-johannes.thumshirn@wdc.com
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
+ fs/btrfs/disk-io.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
------BEGIN PGP SIGNATURE-----
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 73ddde973532..428b135a890d 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -3583,7 +3583,6 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
+ 		}
+ 	}
+ 
+-	btrfs_zoned_reserve_data_reloc_bg(fs_info);
+ 	btrfs_free_zone_cache(fs_info);
+ 
+ 	btrfs_check_active_zone_reservation(fs_info);
+@@ -3611,6 +3610,8 @@ int __cold open_ctree(struct super_block *sb, struct btrfs_fs_devices *fs_device
+ 		goto fail_cleaner;
+ 	}
+ 
++	btrfs_zoned_reserve_data_reloc_bg(fs_info);
++
+ 	ret = btrfs_read_qgroup_config(fs_info);
+ 	if (ret)
+ 		goto fail_trans_kthread;
+-- 
+2.53.0
 
-iQJiBAEBCgBMFiEEG6U8esk9yirP39qXlr6Mb9idZWUFAmmdmDobFIAAAAAABAAO
-bWFudTIsMi41KzEuMTEsMiwyEhxtc3NvbGFAbXNzb2xhLmNvbQAKCRCWvoxv2J1l
-ZaMvEADAIABTslAFtMr6s58fDwEYFRs074BYaiTXckwVos4CvZRPedRj2vLLct0+
-yn/zwadPZdxtN87SYuQqvnrmVHu9E0SnGLrvFtYjXv6lGv0v920sRKyuPzwEFW4x
-hT+fV9J/bgueM1Jh1+769yp8whm7I3NJX8rIuR4IckB29pORYODa4jYg5wqtQ/Nl
-y/sT4UR8vqEggOsLYiP/W2AI8mIXLOUOHj7D4zzcDErP1DtdwBXfHrIB/kVvau9K
-XxRW4orQwsbmqvgVFRbQ9hzivyenCoYfusT1Y8hL9RLIUFcGaQPrdbiEW4K/Cpjm
-TWskGlAqed6eMrlktz7Tjog4G3mp12fgcqM+5yHYLZ1c2W+6b1y3HkehOhHlllI9
-MVoI45ERt1yQfXnnaHSb4twn+clZU3ZbUwgrxut1oSdW0xIGFPINBYj8iR8IyOx9
-7cWrdUxjnGU9YcDiF9E59nkVbHwHDazJGskhZGUv4135joFRvETSCr5LXfbIaFmG
-GjGUuKuZZyESE05cIBnX5oxHBquPJIprZ8UPzH+4TBuu7/97v7m7vqQDVOx6DK1p
-a6DLEtySttVThc6jWZNb03GqoLZUOyhRUFZdEhffGLHLNTti2RfYocEWCh2qN8sn
-rVU3uGUvFsS7HB+eCDB4N7wY827vJdLNg/5RheRWnVXLzzwyag==
-=Trwz
------END PGP SIGNATURE-----
---=-=-=--
 
