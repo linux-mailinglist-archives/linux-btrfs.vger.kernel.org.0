@@ -1,186 +1,155 @@
-Return-Path: <linux-btrfs+bounces-21884-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21885-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id oNamBXDJnWl9SAQAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21884-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Feb 2026 16:53:20 +0100
+	id 4HOEMWnanWk0SQQAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21885-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Feb 2026 18:05:45 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB4FE1895D6
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Feb 2026 16:53:19 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C50918A472
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Feb 2026 18:05:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 80470304FF59
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Feb 2026 15:53:17 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 4D665320E79C
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Feb 2026 16:57:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 594C53A6403;
-	Tue, 24 Feb 2026 15:53:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 954F63A9616;
+	Tue, 24 Feb 2026 16:57:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ExOWNS6k";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="efZazxD8";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ExOWNS6k";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="efZazxD8"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp4-g21.free.fr (smtp4-g21.free.fr [212.27.42.4])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26A3D299931
-	for <linux-btrfs@vger.kernel.org>; Tue, 24 Feb 2026 15:53:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.27.42.4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F8DB3A9014
+	for <linux-btrfs@vger.kernel.org>; Tue, 24 Feb 2026 16:57:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771948393; cv=none; b=qg2dsJf5qJFJhrWszOHthe2Y4j47y814nrUG7s+uKS9M0fQdIhW/jQfiQSN0xAXdvTs88Y1011VkGzEsESybrAa3z9kkMUnM7ferzKYqAXvK730ibsyQb/jTXgJxAHTCu7GHJk9A/8h0/tnP0jLV3O+08AoYmgWNeHitOzEHCvY=
+	t=1771952229; cv=none; b=MprNAZuhDcDaeuvC/1aI1Go1pYRC2jHWikbFOXcfpVDqBnY3HXnvz0CgWM0zAP/DG7MxZkMUJO2CcuahN2ZW/ttT9WWDc2kLcyxYl4N69cDqMawGYXdlQ8pA6ootk9WN3wivCXITihbFSvjcMiG5vtZpgqXaCPhROhiGe8MprTQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771948393; c=relaxed/simple;
-	bh=Mp7sz3ZuBmVmXm5wWFNe4I0wlyo3gqdi2THO9KHYwQw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=bgJ/wJAceg+wUjyTUmcL7ZD1RI+e+xKsnheVFJS/PM+0cGoG+lf+hT27ieeVcc3CXb8LWwdSnxqJuHJzAVS/tD0+AV1F2DKV6DTPuaeeto8wbHtjLIHujSVDOrwN72ELgG924yTkYf+wsEY5dNQionJWdrZq8iNL4x4fYIrG8fM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=free.fr; spf=pass smtp.mailfrom=free.fr; arc=none smtp.client-ip=212.27.42.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=free.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=free.fr
-Received: from [IPV6:2a01:e0a:156:6850:7018:89ff:fecb:6f21] (unknown [IPv6:2a01:e0a:156:6850:7018:89ff:fecb:6f21])
-	by smtp4-g21.free.fr (Postfix) with ESMTP id 3EC4419F5B2;
-	Tue, 24 Feb 2026 16:53:08 +0100 (CET)
-Message-ID: <2f7fe549-676d-45fb-b97a-82096027c89c@free.fr>
-Date: Tue, 24 Feb 2026 16:53:08 +0100
+	s=arc-20240116; t=1771952229; c=relaxed/simple;
+	bh=iNXXyJcpCizCtc8eWlCcV3MiMwFPprAij8g7u/gG+tI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AL1vD7GAlf3YaIxVsKRH8Jmu4NJR6I2Tq8u/wxEkDFnQgKpMsS/wOQ86q5/apfcxEcEy2nFIZK8KXA5fuZejaXDyH30wZKvgVO7wt3uOF1F8cGyj/4CeeCpK3WNCcKTcxoIDUlcxLXfqGdoySyGr/qAv53y3LQrLig/v4Mb6Yco=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ExOWNS6k; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=efZazxD8; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ExOWNS6k; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=efZazxD8; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id B1D5E5BCEE;
+	Tue, 24 Feb 2026 16:57:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1771952225;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=20F2P/N5R7RFsLy/D/Uafv5Pss6/5v2JoW18iJJjU9c=;
+	b=ExOWNS6kKDT0xPTLaoNxeQK0nId60wcTS6jqUPdrHZlC29PiFnuPJJEBS5rRRV66x5hScX
+	jmZf885zenHW+rjLngs9BTbVxC+HtcFrGkxDg7KtGN3IyEsUNa74HlCnf/7sXHb3OvzVAy
+	05ISdyawuFdH/1bH4jLy8BM2vrtYZDM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1771952225;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=20F2P/N5R7RFsLy/D/Uafv5Pss6/5v2JoW18iJJjU9c=;
+	b=efZazxD8ssIELET5fzKWNcWveAVhMzPF4dLEP7yTIwFHZ6RY8s8rVmDFtdH+S5WtsexU12
+	QlfByJXgniNDoSCA==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=ExOWNS6k;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=efZazxD8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1771952225;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=20F2P/N5R7RFsLy/D/Uafv5Pss6/5v2JoW18iJJjU9c=;
+	b=ExOWNS6kKDT0xPTLaoNxeQK0nId60wcTS6jqUPdrHZlC29PiFnuPJJEBS5rRRV66x5hScX
+	jmZf885zenHW+rjLngs9BTbVxC+HtcFrGkxDg7KtGN3IyEsUNa74HlCnf/7sXHb3OvzVAy
+	05ISdyawuFdH/1bH4jLy8BM2vrtYZDM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1771952225;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=20F2P/N5R7RFsLy/D/Uafv5Pss6/5v2JoW18iJJjU9c=;
+	b=efZazxD8ssIELET5fzKWNcWveAVhMzPF4dLEP7yTIwFHZ6RY8s8rVmDFtdH+S5WtsexU12
+	QlfByJXgniNDoSCA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9471C3EA68;
+	Tue, 24 Feb 2026 16:57:05 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id dfUWJGHYnWnVagAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Tue, 24 Feb 2026 16:57:05 +0000
+Date: Tue, 24 Feb 2026 17:57:04 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Goldwyn Rodrigues <rgoldwyn@suse.de>
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH] btrfs: use inode->i_sb to calculate fs_info
+Message-ID: <20260224165704.GY26902@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <djynzzkwdfzqq6rks5njvhjexmje2zoofffkx2qtectxlyv53f@r54cgbf5l2b3>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Stuck on a BTRFS problem
-To: Qu Wenruo <wqu@suse.com>, linux-btrfs@vger.kernel.org
-References: <77535c20-da3e-4dfb-b3d7-9426c25b5da3@free.fr>
- <0211658c-8d28-46d1-8e41-21dc02cab276@suse.com>
- <b1c1247f-df00-4045-a508-fb9a5666114a@free.fr>
- <cb183999-6a95-456a-80f4-f703da298d74@suse.com>
- <deb56ee2-b5d6-4beb-9554-05da125dde54@free.fr>
- <51597107-5a23-4f15-9481-b4d58e18bbe1@suse.com>
-Content-Language: en-US, fr
-From: Phako <phako@free.fr>
-In-Reply-To: <51597107-5a23-4f15-9481-b4d58e18bbe1@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <djynzzkwdfzqq6rks5njvhjexmje2zoofffkx2qtectxlyv53f@r54cgbf5l2b3>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Flag: NO
+X-Spam-Score: -4.21
+X-Spam-Level: 
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.04 / 15.00];
-	DMARC_POLICY_QUARANTINE(1.50)[free.fr : SPF not aligned (relaxed), No valid DKIM,quarantine];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21884-lists,linux-btrfs=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-21885-lists,linux-btrfs=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCPT_COUNT_TWO(0.00)[2];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	FREEMAIL_FROM(0.00)[free.fr];
+	DMARC_NA(0.00)[suse.cz];
+	TO_DN_SOME(0.00)[];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	HAS_REPLYTO(0.00)[dsterba@suse.cz];
+	RCVD_COUNT_FIVE(0.00)[6];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[dsterba@suse.cz,linux-btrfs@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[phako@free.fr,linux-btrfs@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	NEURAL_HAM(-0.00)[-1.000];
-	MID_RHS_MATCH_FROM(0.00)[];
-	R_DKIM_NA(0.00)[];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: AB4FE1895D6
+	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,suse.cz:replyto,suse.cz:dkim,twin.jikos.cz:mid,suse.com:email]
+X-Rspamd-Queue-Id: 2C50918A472
 X-Rspamd-Action: no action
 
-Le 23/02/2026 à 22:35, Qu Wenruo a écrit :
+On Mon, Feb 09, 2026 at 02:11:37PM -0500, Goldwyn Rodrigues wrote:
+> If overlay is used on top of btrfs, dentry->d_sb translates to overlay's
+> super block and fsid assignment will lead to a crash.
 > 
+> Use inode->i_sb to calculate btrfs_sb.
 > 
-> 在 2026/2/24 02:11, Phako 写道:
->> Le 23/02/2026 à 08:32, Qu Wenruo a écrit :
-> [...]
->>
->> I get that you might think this issue is not BTRFS related, but I'm 
->> still not 100% sure of what is the cause of the error. So I'm still 
->> having a couple of questions to rule out wrong hypothesis or direct me 
->> on the right track:
->>
->> Do you think that if I copy a good copy of file_B.mp4 over the corrupt 
->> file_B.mp4 (eg: cat b.mp4 > b_corrupt.mp4) it will overwrite the 
->> metadata and the same physical LBAs?
-> 
-> The metadata is not involved. It's fully the data part (and its checksum).
-> 
-> And unfortunately, a full over-write doesn't not guarantee the new data 
-> will be written into the same the location.
-> 
->> Are there any btrfs commands I could run before and/or after to check 
->> if it worked, and to map this reported corrupt logical blocks with 
->> actual LBAs?
-> 
-> But if you have the correct original file, you can try to manually over- 
-> write the data, using "btrfs-map-logical" command to calculate the on- 
-> disk physical LBA, then using whatever tool (dd for example) to directly 
-> write the content into that physical address.
-> 
-> Using your previous scrub dmesg as an example:
-> 
->  > Feb 09 16:18:02 soleil kernel: BTRFS warning (device sda3): csum failed
->  > root 257 ino 40442 off 46100480 csum 0xc9e01f9a expected csum 0xb20f9f0e
->  > mirror 1
-> 
-> 
-> The first line of "csum failed" shows exactly where the corruption is in 
-> the file (subvolume 257, inode number 40442, file offset 46100480).
-> 
-> Then you can use fiemap to map the file offset to the btrfs logical 
-> address:
-> 
->   $ xfs_io -c "fiemap 46100480 4096" <path_to_the_file>
-> 
-> It would show something like this (just an example, not matching your 
-> output):
-> 
-> Filesystem type is: 9123683e
-> File size of /mnt/btrfs/foobar is 1048576 (256 blocks of 4096 bytes)
->   ext:     logical_offset:        physical_offset: length:   expected: 
-> flags:
->     0:        0..     255:       3328..      3583:    256: last,eof
-> /mnt/btrfs/foobar: 1 extent found
-> 
-> The "logical_offset" part is the offset inside the file, the 
-> "physical_offset" is the logical address inside btrfs.
-> The unit is a block (4096 bytes shown after the filesystem type line).
-> 
-> The range should cover your 46100480 file offset.
-> 
-> You need to grab the btrfs logical address by converting the number.
-> 
-> Then with the logical bytenr, you can convert it to the physical address 
-> by using "btrfs-map-logical"
-> 
->   $ btrfs-map-logical -l <logical> <device>
-> 
-> It will output something like this:
-> 
->   $ btrfs-map-logical -l 13635584 test.img
->   mirror 1 logical 13631488 physical 13635584 device test.img
-> 
-> The number 13631488 is 3329 * 4096, corresponding to the file offset 4K 
-> of my previous example.
-> 
-> 
-> The resulted physical bytenr and device is where you should write the 
-> data into.
-> 
-> 
-> This can be very complex, so please paste the output of "$ xfs_io -c 
-> "fiemap 46100480 4096" <path_to_the_file>" first, then we can figure the 
-> exact command to use in the next step.
+> Signed-off-by: Goldwyn Rodrigues <rgoldwyn@suse.com>
 
-The output I get is quite different, more terse:
-$ xfs_io -c "fiemap 31494144 4096" 'file_B.mp4'
-file_B.mp4:
-         0: [0..87103]: 6658490256..6658577359
-
-And when I do 6658490257*4096=27273176092672
-I get an error.
-$ btrfs-map-logical -l 27273176092672 /dev/sda3
-ERROR: failed to find any extent at [27273176092672,27273176109056)
-
-
-
+Added to for-next, thanks.
 
