@@ -1,201 +1,182 @@
-Return-Path: <linux-btrfs+bounces-21875-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21876-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id aJuTJ/iynWnURAQAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21875-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Feb 2026 15:17:28 +0100
+	id kE11AhK0nWnURAQAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21876-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Feb 2026 15:22:10 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16AB218842A
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Feb 2026 15:17:28 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 775401884F1
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Feb 2026 15:22:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 9C58430BB285
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Feb 2026 14:15:33 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id CF7F83061528
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Feb 2026 14:21:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 114B03A0B17;
-	Tue, 24 Feb 2026 14:15:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 049313A0B26;
+	Tue, 24 Feb 2026 14:21:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="qTzF+9VM";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="oZkvMy3R";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="qTzF+9VM";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="oZkvMy3R"
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="Dw6i0uu/";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="D4HqaUh8"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fhigh-b3-smtp.messagingengine.com (fhigh-b3-smtp.messagingengine.com [202.12.124.154])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C4883A0B19
-	for <linux-btrfs@vger.kernel.org>; Tue, 24 Feb 2026 14:15:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30E4D3806A5;
+	Tue, 24 Feb 2026 14:21:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771942526; cv=none; b=cg7KoOD2f/IGlwfFtOrln12ZVS/Wjb7MfXVxQXfFU6t9JcpfdK7MvHLaNvU9dZMslcu572wQ4eGl5vc9v6GZSq3dRyrQKf6moe9IHGoN9Ou8lK5ip5qk9M77sjlNEIz0OhXw99n2cOhIWuVGmwONmYm3YohmGm5/m1g8uFLRrj0=
+	t=1771942912; cv=none; b=oLV2f2sT4Jn+k9BKsHGR9BG4U+ziJL/P0GwuRO65DKRk02v3srud6Lyx4FVj9pMdQwTCBxf6B7PpPbCEbTS0hQjdh4/rWMkD96MIzxABsls2mlwXOKvAD6HeJg90Cic/GKwRZfUZMZtfDbOt/bK12wI0aSLsLUS6UUaQcp/p+h0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771942526; c=relaxed/simple;
-	bh=YWzT27GS7htk4EN7GnRcNRL8iBhAzS6NUtJj60P+6ag=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KnaP/8IEyi8VphUe/CwV1Knw5hMXwI3G243XaNVZ/83/sOLKDO0oi7SDELWv8URPE4T1hpg+kOzSfXfo+6/Y3zud0UXeEkyWUNbTvUQHN6tOnkz5DRQV46yCcNrFEJKNnu28WXKXyXuzZrYh68gy67v4X0MTVRHruy6wUcHuE3I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=qTzF+9VM; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=oZkvMy3R; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=qTzF+9VM; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=oZkvMy3R; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 633EF3F266;
-	Tue, 24 Feb 2026 14:15:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1771942523;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zxT3NvpIEQ8mtVSPt7WteBMlXyGfjfK3I8sXJgRTfGU=;
-	b=qTzF+9VMSMv39W64NciVLM/yWQXFSGD7GCbu7POZqaB2H9DeskSQLAg68hm7qn4Y0f0QbA
-	XYHs9B9QB9lNXfS0GLtvWwmzDaryALgUyYTxS4xoVVSUv9K0ynA7+TQ1AhCePGpjaeb/kA
-	zRYYfxIPXDSnUo4Kw7tfFxcV9mpgSZY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1771942523;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zxT3NvpIEQ8mtVSPt7WteBMlXyGfjfK3I8sXJgRTfGU=;
-	b=oZkvMy3RkzpNNZ2V7aju52DaHqUXVaShnPJG3xA75XUIxGmVCr1wpp0kShMPPdXKusi/YD
-	y1bGbBf9JXRAUTDQ==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1771942523;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zxT3NvpIEQ8mtVSPt7WteBMlXyGfjfK3I8sXJgRTfGU=;
-	b=qTzF+9VMSMv39W64NciVLM/yWQXFSGD7GCbu7POZqaB2H9DeskSQLAg68hm7qn4Y0f0QbA
-	XYHs9B9QB9lNXfS0GLtvWwmzDaryALgUyYTxS4xoVVSUv9K0ynA7+TQ1AhCePGpjaeb/kA
-	zRYYfxIPXDSnUo4Kw7tfFxcV9mpgSZY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1771942523;
-	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
-	 cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zxT3NvpIEQ8mtVSPt7WteBMlXyGfjfK3I8sXJgRTfGU=;
-	b=oZkvMy3RkzpNNZ2V7aju52DaHqUXVaShnPJG3xA75XUIxGmVCr1wpp0kShMPPdXKusi/YD
-	y1bGbBf9JXRAUTDQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 45A1E3EA68;
-	Tue, 24 Feb 2026 14:15:23 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Au/YEHuynWk8PAAAD6G6ig
-	(envelope-from <dsterba@suse.cz>); Tue, 24 Feb 2026 14:15:23 +0000
-Date: Tue, 24 Feb 2026 15:15:18 +0100
-From: David Sterba <dsterba@suse.cz>
-To: Qu Wenruo <wqu@suse.com>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 1/2] btrfs: introduce a common helper to calculate the
- size of a bio
-Message-ID: <20260224141518.GV26902@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-References: <cover.1771558832.git.wqu@suse.com>
- <4392c94fea9644702e3985c30cf0a30c434aa3d5.1771558832.git.wqu@suse.com>
+	s=arc-20240116; t=1771942912; c=relaxed/simple;
+	bh=ZY+nfMr6N8IaewZoqjPoliXxqmewibNuEHGDuir7EuE=;
+	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=JMDrUxqbjctkEvVeQLnNWbe0CHEFAB1KSt50yTBffxANcUBPUXvNSOW9zV+gCrqP/C5PFm/vb6ZX9oYnNfNJ9k/RxevPDMDcR6de2uxZsid9iHcy9oWYq3F9MCJzDl2gJoBbYU7Gx1eRy3wE0pBqFwzUupahPiaFaCQhtIkpr84=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=Dw6i0uu/; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=D4HqaUh8; arc=none smtp.client-ip=202.12.124.154
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
+	by mailfhigh.stl.internal (Postfix) with ESMTP id 25C857A0226;
+	Tue, 24 Feb 2026 09:21:49 -0500 (EST)
+Received: from phl-imap-02 ([10.202.2.81])
+  by phl-compute-04.internal (MEProxy); Tue, 24 Feb 2026 09:21:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1771942908;
+	 x=1772029308; bh=e7mI4HpymDX2XCi9sMPC+TZYyqhUHKoWZGamGdWnans=; b=
+	Dw6i0uu/cjeEym7qYZbcV8bbha2FtlwyYgq98MmQZqr9KnjS7uBJ4hF+w6kyjMN+
+	bIN0I3pvhaTGXGpghd+AU6p1IzWQmMUNvi8eO+KMu0/fKJNMsxegOGEJCQ6JKneu
+	qe3bcHcIv7bKTWquIdIRbkdwoR+yTBzVW1EAPemTTlsZUZp3+w3Ano3SvDT01HwP
+	V2dHh8ZJfhfdjqS6vORYmFDEj8laqorkj3VTnI80bAOBnAOpG9TRNLKtvvfU5xGR
+	GzIGCzPzCn0bTWbqKTWoR8sGZUkYXgR6TPLK1Gjbf0DnJS4Fk+oqbUMo7LqzGMSO
+	Ih26J+iGO+eOzBON2feLDA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1771942908; x=
+	1772029308; bh=e7mI4HpymDX2XCi9sMPC+TZYyqhUHKoWZGamGdWnans=; b=D
+	4HqaUh8ITDXZbf8GK/kuAZjp9g2RXYdcMFppjI76TauqgBYNL3QajIOvip1Ta2T4
+	BUK1vx3YdzsOYxTzlvB+vJlwOTx3QiIhTLaB6TRaGQHZ7OisD/d8cOgy+d12mdNz
+	8b3xly9bkniq4Wm8un21kIRQw7y79aXUJKjkStnvFxTrfZsHRvzEzCJY4dyULPgS
+	r6Xn3Yn2TWglH8F7zZmfjdnEW8l2o5vcnIbzSfWyrIixTOrk7pNw+YHzLBkSetVs
+	es8nkshXWMIpsNJsH/dbRFovvp4lwVIAbWCkr0YNU7QWiMsNI2ZMl+Oq7S//hPga
+	xzw6B12IRUF89fO5d0h/g==
+X-ME-Sender: <xms:_LOdaSWdBJ6d23xA0gDoZ7AJ1ksEorJId6drmWVQ-JIWEnnJFb_a8w>
+    <xme:_LOdaZb60DzGpTE1wrdOAJ5HezkD5jJEgEqKl1_TSU_SCzvq8gFJLLzw1PkAwoams
+    dfd83hhAI8pGRUoeMlePlJOd6zYlddVMP68cy-JHA-X9sCWC88xwXc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddvgedtfeelucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
+    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
+    gurhepofggfffhvfevkfgjfhfutgfgsehtjeertdertddtnecuhfhrohhmpedftehrnhgu
+    uceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrthhtvg
+    hrnhepfefhheetffduvdfgieeghfejtedvkeetkeejfeekkeelffejteevvdeghffhiefh
+    necuffhomhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtne
+    curfgrrhgrmhepmhgrihhlfhhrohhmpegrrhhnugesrghrnhgusgdruggvpdhnsggprhgt
+    phhtthhopeelpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopegvsghighhgvghrsh
+    eskhgvrhhnvghlrdhorhhgpdhrtghpthhtohepfhhsvhgvrhhithihsehlihhsthhsrdhl
+    ihhnuhigrdguvghvpdhrtghpthhtoheplhhinhhugidqfhdvfhhsqdguvghvvghlsehlih
+    hsthhsrdhsohhurhgtvghfohhrghgvrdhnvghtpdhrtghpthhtohephhgthheslhhsthdr
+    uggvpdhrtghpthhtohepughsthgvrhgsrgesshhushgvrdgtiidprhgtphhtthhopehlih
+    hnuhigqdgsthhrfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhi
+    nhhugidqvgigthegsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinh
+    hugidqfhhsuggvvhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehl
+    ihhnuhigqdigfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhg
+X-ME-Proxy: <xmx:_LOdaa7nX9WLv9NNYiBHorlVQMKcXox6-7zviO9ey-NUi0MDxSOmgg>
+    <xmx:_LOdacEJ1j4w7csTmSvFz7YWPT_a5R9BfV4xOvGcjR8A5jm0YCOCdQ>
+    <xmx:_LOdaVBPTPMXIHVJD2d5a-PEzLE7qts4oy3tQduIfiShOP8Wjo_0mw>
+    <xmx:_LOdaRwr-AYw4bHcPBNKh-ClEujeHtarlQpPAgkzGWJ24ya_brYw0g>
+    <xmx:_LOdaZG7S_rCFNDrmhQ92Qg41ztV-CaW2xJNisZLfsqAmdktFGh1mpsF>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id 180EC70006A; Tue, 24 Feb 2026 09:21:48 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4392c94fea9644702e3985c30cf0a30c434aa3d5.1771558832.git.wqu@suse.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
-X-Spam-Score: -4.00
-X-Spam-Level: 
-X-Spam-Flag: NO
+X-ThreadId: AcHQldxZr-js
+Date: Tue, 24 Feb 2026 15:19:35 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "David Sterba" <dsterba@suse.cz>, "Eric Biggers" <ebiggers@kernel.org>
+Cc: fsverity@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+ "Christoph Hellwig" <hch@lst.de>, linux-ext4@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net, linux-btrfs@vger.kernel.org,
+ linux-xfs@vger.kernel.org
+Message-Id: <d02f6b7c-76d5-4239-8a32-8163797a81b0@app.fastmail.com>
+In-Reply-To: <20260224135507.GT26902@twin.jikos.cz>
+References: <20260221204525.30426-1-ebiggers@kernel.org>
+ <20260224135507.GT26902@twin.jikos.cz>
+Subject: Re: [PATCH] fsverity: add dependency on 64K or smaller pages
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-2.15 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	DMARC_POLICY_ALLOW(-0.50)[arndb.de,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[arndb.de:s=fm3,messagingengine.com:s=fm3];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
+	XM_UA_NO_VERSION(0.01)[];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21875-lists,linux-btrfs=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWO(0.00)[2];
-	FROM_HAS_DN(0.00)[];
-	DMARC_NA(0.00)[suse.cz];
-	TO_DN_SOME(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	HAS_REPLYTO(0.00)[dsterba@suse.cz];
-	RCVD_COUNT_FIVE(0.00)[6];
-	REPLYTO_ADDR_EQ_FROM(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[dsterba@suse.cz,linux-btrfs@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-21876-lists,linux-btrfs=lfdr.de];
+	DKIM_TRACE(0.00)[arndb.de:+,messagingengine.com:+];
+	RCVD_TLS_LAST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	TAGGED_RCPT(0.00)[linux-btrfs];
+	FROM_NEQ_ENVFROM(0.00)[arnd@arndb.de,linux-btrfs@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	RCVD_COUNT_FIVE(0.00)[6];
+	RCPT_COUNT_SEVEN(0.00)[9];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,suse.com:email,twin.jikos.cz:mid,suse.cz:replyto,suse.cz:dkim]
-X-Rspamd-Queue-Id: 16AB218842A
+	TAGGED_RCPT(0.00)[linux-btrfs];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[lst.de:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,arndb.de:dkim,messagingengine.com:dkim,app.fastmail.com:mid]
+X-Rspamd-Queue-Id: 775401884F1
 X-Rspamd-Action: no action
 
-On Fri, Feb 20, 2026 at 02:11:50PM +1030, Qu Wenruo wrote:
-> We have several call sites doing the same work to calculate the size of
-> a bio:
-> 
-> 	struct bio_vec *bvec;
-> 	u32 bio_size = 0;
-> 	int i;
-> 
-> 	bio_for_each_bvec_all(bvec, bio, i)
-> 		bio_size += bvec->bv_len;
-> 
-> We can use a common helper instead of open-coding it everywhere.
-> 
-> This also allows us to constify the @bio_size variables used in all the
-> call sites.
-> 
-> Signed-off-by: Qu Wenruo <wqu@suse.com>
-> ---
->  fs/btrfs/misc.h   | 15 +++++++++++----
->  fs/btrfs/raid56.c |  9 ++-------
->  fs/btrfs/scrub.c  | 22 ++++------------------
->  3 files changed, 17 insertions(+), 29 deletions(-)
-> 
-> diff --git a/fs/btrfs/misc.h b/fs/btrfs/misc.h
-> index 12c5a9d6564f..189c25cc5eff 100644
-> --- a/fs/btrfs/misc.h
-> +++ b/fs/btrfs/misc.h
-> @@ -52,15 +52,22 @@ static inline phys_addr_t bio_iter_phys(struct bio *bio, struct bvec_iter *iter)
->  	     (paddr = bio_iter_phys((bio), (iter)), 1);			\
->  	     bio_advance_iter_single((bio), (iter), (blocksize)))
->  
-> -/* Initialize a bvec_iter to the size of the specified bio. */
-> -static inline struct bvec_iter init_bvec_iter_for_bio(struct bio *bio)
-> +/* Can only be called on a non-cloned bio. */
+On Tue, Feb 24, 2026, at 14:55, David Sterba wrote:
+> On Sat, Feb 21, 2026 at 12:45:25PM -0800, Eric Biggers wrote:
+>> Currently, all filesystems that support fsverity (ext4, f2fs, and btrfs)
+>> cache the Merkle tree in the pagecache at a 64K aligned offset after the
+>> end of the file data.  This offset needs to be a multiple of the page
+>> size, which is guaranteed only when the page size is 64K or smaller.
+>> 
+>> 64K was chosen to be the "largest reasonable page size".  But it isn't
+>> the largest *possible* page size: the hexagon and powerpc ports of Linux
+>> support 256K pages, though that configuration is rarely used.
+>> 
+>> For now, just disable support for FS_VERITY in these odd configurations
+>> to ensure it isn't used in cases where it would have incorrect behavior.
+>> 
+>> Fixes: 671e67b47e9f ("fs-verity: add Kconfig and the helper functions for hashing")
+>> Reported-by: Christoph Hellwig <hch@lst.de>
+>> Closes: https://lore.kernel.org/r/20260119063349.GA643@lst.de
+>> Signed-off-by: Eric Biggers <ebiggers@kernel.org>
+>
+> Makes sense to me, we have "depends on PAGE_SIZE_LESS_THAN_256KB" since
+> somebody tried to use btrfs on the 256K system.
 
-Please also add an ASSERT for that.
+I wonder if we should just drop the configuration entirely. There
+are very few users on either PowerPC44x (officially orphaned, but
+I know users) and Hexagon (officially supported, but no hardware
+available outside of Qualcomm). My impression is that this was
+implemented purely because the hardware can do it, not because
+anyone actually wants to use 256K pages.
 
-> +static inline u32 bio_get_size(struct bio *bio)
+I see that commit "e12401222f74 powerpc/44x: Support for 256KB
+PAGE_SIZE" mentions how one has to patch the linker to support
+larger than 64K pages, and I see that both powerpc and hexagon
+linkers still hardcode the section alignment to 64K pages, for
+obvious reasons.
 
-				  const ...
-
->  {
->  	struct bio_vec *bvec;
-> -	u32 bio_size = 0;
-> +	u32 ret = 0;
->  	int i;
->  
->  	bio_for_each_bvec_all(bvec, bio, i)
-> -		bio_size += bvec->bv_len;
-> +		ret += bvec->bv_len;
-> +	return ret;
-> +}
-
-Reviewed-by: David Sterba <dsterba@suse.com>
+      Arnd
 
