@@ -1,59 +1,58 @@
-Return-Path: <linux-btrfs+bounces-21855-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21856-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id eGGKBQornWmfNAQAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21855-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Feb 2026 05:37:30 +0100
+	id +JFWFS0snWmwNAQAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21856-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Feb 2026 05:42:21 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EE85181AFB
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Feb 2026 05:37:29 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0625181B64
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Feb 2026 05:42:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 3A2183004683
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Feb 2026 04:37:26 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 3CC7D301FC92
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Feb 2026 04:42:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32A2D27A927;
-	Tue, 24 Feb 2026 04:37:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A54827B340;
+	Tue, 24 Feb 2026 04:42:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="sE8ZYw65"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="iy07t+uZ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 717545464D;
-	Tue, 24 Feb 2026 04:37:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02ECF1C6FF5;
+	Tue, 24 Feb 2026 04:42:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771907842; cv=none; b=RsypzuC9K+RepxpuIRxhZhv5wmYXb/L5QCZNfSaa/W5yc3MMzRt7bf2DniqfSScA79lSulqJHVYEoYE9IQl6j7Bp9XXdqT0JVIYfYA0pN3JsapIWjsHBL+s7f8SC8wJOYJWGbhaTIBERnyTCEx2z/+vsEfJyeUtzVfXtdhqXfUs=
+	t=1771908136; cv=none; b=F19STYgv5GYc2o6lO11KfAwuMg0qV1mNmmHXeECDXU4srZtNzZzTV4RvcuCgKP9iv7r+lkGnI6vLiktmSJjdEViN/h9uUPeyFOFakVKfNh0rWGtuQ0bJ6blNdoYCuw2ixaUGOoZ+8nyuBVLETA57DkgsNlPm3GrTwoqsGnkWnEc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771907842; c=relaxed/simple;
-	bh=JpLrFeImJU8tPL6K7qWOC1iXesPu4dm+wJhCNETFhy0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nt44FKd6jK/xBRMFMaUR15WXnytNgZc559em8aKQvSSmy+azEt65F51mO9wgDXZcFJPwJvS5FpVjlFQJapkPDhP57wjVCHX/VfX5+5x7BuAC2I8LK09++7ZRyyqYxIrCq05VvNEJjSd8cR1AUGZ8MBsDD5GIhmFulJbWH+X3bvw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=sE8ZYw65; arc=none smtp.client-ip=212.227.15.15
+	s=arc-20240116; t=1771908136; c=relaxed/simple;
+	bh=5EFJ7nSVg+sMgTfOu5tsvE+ZcfKOelHCkmqgUjA9c30=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=p88n9YNZvFmuZ1/3nYcYf8KM0tqXXSx6nnkAO4USnlUZaq6SzgAU8i99sCYagWubemEuI599IJL5GlQ34STAWZ3SmUP+G/INtJ45tm5IchsSzOmAVA6mqhO666JDCe6VwtEZi1xOKqdR0GXv+U8v+UaivOxPd7ovPyYlCFI2Cco=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=iy07t+uZ; arc=none smtp.client-ip=212.227.15.18
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1771907836; x=1772512636; i=quwenruo.btrfs@gmx.com;
-	bh=pbRqie850jaDuaCgPyIG9KW2UJjTEeN29JkMfA3PO3s=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=sE8ZYw65GXV5wCQO31vwYfioWhNahsoxpV6z3VXAr8fhN6S8JgYFhcuLpZBleewW
-	 A7tMlxkHHRliQscqWi4X3BnMhJQhXbcNyd3s+HYku7B7NkXjq3PcO6xKDJ4h4DXvx
-	 NjvRpTDZB9MTA6e+3XyryZf850psDfsQcdfZb2ATybBqcEXPrn6VACBKAql9n6FuO
-	 eX3wG/s/Pz8hrn4ZbjVzurb5ZYIxh/8ASfcm5RJ6mDZ+8C2bwKOQuhpX9h3si8iTS
-	 p8N8lZrFZgphooaxJ4dCAoGhcb37XJC80vGk2+hCnj7ipqJGTSVDW+WciynuGhyYG
-	 n2uFSGhT7hpLfxk3vQ==
+	s=s31663417; t=1771908133; x=1772512933; i=quwenruo.btrfs@gmx.com;
+	bh=5EFJ7nSVg+sMgTfOu5tsvE+ZcfKOelHCkmqgUjA9c30=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:From:To:
+	 Cc:References:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 cc:content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=iy07t+uZNMSmu0NdHBKf9+8AnM7bw/Cszmj7G4tdYnkNKvVCOW5YUFTsn8jKoHzo
+	 lqTfhv5TDpbjnj3YcnTB86W0a54jITy6J9WitgXs7TnrqXnzG82TQu2E0Ld8+0IF8
+	 PIyJfLuqogbZBaMkjOfKkI9kQ5AZUrAByN8suEJKbnv7YLcvSUl6a1t0XVLlSTqJ4
+	 5szkUeFaffXUtYOivPbZAcY5g4Re0ypxvZm9N/PKKjCUFzNU88xRZtHPROUdxILsF
+	 jZCGxbnHMS2TcOfhbUycZEP5pCpHdlWese3iJCCVi3SQ/xdxycyJJvQk/CnoUYbEa
+	 nU5+2q6ofSnsQNW6RA==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MoO2E-1vNrBE0U12-00e3jF; Tue, 24
- Feb 2026 05:37:16 +0100
-Message-ID: <69c16813-5ac1-4756-ad42-41b4275e6aee@gmx.com>
-Date: Tue, 24 Feb 2026 15:07:10 +1030
+Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1Mlw3N-1vUjDj2nnH-00ZVQL; Tue, 24
+ Feb 2026 05:42:13 +0100
+Message-ID: <3c295815-6359-472c-9703-c755b4623aed@gmx.com>
+Date: Tue, 24 Feb 2026 15:12:07 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -62,13 +61,14 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH] btrfs: replace kcalloc() calls to kzalloc_objs()
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 To: =?UTF-8?Q?Miquel_Sabat=C3=A9_Sol=C3=A0?= <mssola@mssola.com>,
  dsterba@suse.com
 Cc: clm@fb.com, naohiro.aota@wdc.com, linux-btrfs@vger.kernel.org,
  linux-kernel@vger.kernel.org, kees@kernel.org
 References: <20260223234451.277369-1-mssola@mssola.com>
+ <69c16813-5ac1-4756-ad42-41b4275e6aee@gmx.com>
 Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
 Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
  8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
@@ -93,98 +93,98 @@ Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
  +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
  HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <20260223234451.277369-1-mssola@mssola.com>
+In-Reply-To: <69c16813-5ac1-4756-ad42-41b4275e6aee@gmx.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:/wWBGrFGsIZbgvjptbhA/IDEhTtpYz+1MtxnW7HSRXix0B1Aigd
- H9CmKkP8vOZ5JirnGqJZulkmVu7E2Piik0cPphEJ7AT1owl7RMc51dej9akFDa2YKmaCkNM
- Z7WHQAgELrcAfNaN+NOcvzHMiqnC5k1yvOs+Ze99bOY7KG8560SGxTBUVzOQY6no3P3aQxb
- nzK/Dkk0Bo3LxGrNwAa/w==
+X-Provags-ID: V03:K1:3CWsIshAAWYr5s/Uyn/hpWcUg1rL8eLRfTjdq5kC86SM7W1vDgj
+ 0W1PVnJZ9ge9Y6qF7kcHjyqArA3saen+gVMN1dTPqOQL4E4jHyer5IlEA0Wr5dt8M0bod2C
+ ZOr/kS6Emhb2WxCkgYqQINb1OQmdhYtx4JReDqvgois75voDjUNLIlTckDmb2Co+m/kcPUv
+ NNOB21z5edI5Oo55ZT2yw==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:jjWMC0v+UQo=;Uo2sM3eRTG2PUuLz0We/Bx10YtY
- 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
- 2P+56Az4=
+UI-OutboundReport: notjunk:1;M01:P0:Z23M3bs3/Ok=;zIxphjHJlBx9xaIYc8eqx8h/Tgw
+ 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
+ ppm9HVME=
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[gmx.com,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	R_DKIM_ALLOW(-0.20)[gmx.com:s=s31663417];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21855-lists,linux-btrfs=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-21856-lists,linux-btrfs=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
@@ -197,163 +197,208 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[quwenruo.btrfs@gmx.com,linux-btrfs@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[linux-btrfs];
 	RCPT_COUNT_SEVEN(0.00)[7];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,mssola.com:email]
-X-Rspamd-Queue-Id: 3EE85181AFB
+	DBL_BLOCKED_OPENRESOLVER(0.00)[mssola.com:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: B0625181B64
 X-Rspamd-Action: no action
 
 
 
-=E5=9C=A8 2026/2/24 10:14, Miquel Sabat=C3=A9 Sol=C3=A0 =E5=86=99=E9=81=93=
-:
-> Commit 2932ba8d9c99 ("slab: Introduce kmalloc_obj() and family")
-> introduced, among many others, the kzalloc_objs() helper, which has some
-> benefits over kcalloc().
+=E5=9C=A8 2026/2/24 15:07, Qu Wenruo =E5=86=99=E9=81=93:
 >=20
-> Cc: Kees Cook <kees@kernel.org>
-> Signed-off-by: Miquel Sabat=C3=A9 Sol=C3=A0 <mssola@mssola.com>
-> ---
->   fs/btrfs/block-group.c       | 2 +-
->   fs/btrfs/raid56.c            | 8 ++++----
->   fs/btrfs/tests/zoned-tests.c | 2 +-
->   fs/btrfs/volumes.c           | 6 ++----
->   fs/btrfs/zoned.c             | 5 ++---
->   5 files changed, 10 insertions(+), 13 deletions(-)
 >=20
-> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-> index 37bea850b3f0..8d85b4707690 100644
-> --- a/fs/btrfs/block-group.c
-> +++ b/fs/btrfs/block-group.c
-> @@ -2239,7 +2239,7 @@ int btrfs_rmap_block(struct btrfs_fs_info *fs_info=
-, u64 chunk_start,
->   	if (map->type & BTRFS_BLOCK_GROUP_RAID56_MASK)
->   		io_stripe_size =3D btrfs_stripe_nr_to_offset(nr_data_stripes(map));
->  =20
-> -	buf =3D kcalloc(map->num_stripes, sizeof(u64), GFP_NOFS);
-> +	buf =3D kzalloc_objs(*buf, map->num_stripes, GFP_NOFS);
+> =E5=9C=A8 2026/2/24 10:14, Miquel Sabat=C3=A9 Sol=C3=A0 =E5=86=99=E9=81=
+=93:
+>> Commit 2932ba8d9c99 ("slab: Introduce kmalloc_obj() and family")
+>> introduced, among many others, the kzalloc_objs() helper, which has som=
+e
+>> benefits over kcalloc().
+>>
+>> Cc: Kees Cook <kees@kernel.org>
+>> Signed-off-by: Miquel Sabat=C3=A9 Sol=C3=A0 <mssola@mssola.com>
+>> ---
+>> =C2=A0 fs/btrfs/block-group.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 2 +=
+-
+>> =C2=A0 fs/btrfs/raid56.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 | 8 ++++----
+>> =C2=A0 fs/btrfs/tests/zoned-tests.c | 2 +-
+>> =C2=A0 fs/btrfs/volumes.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 | 6 ++----
+>> =C2=A0 fs/btrfs/zoned.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 | 5 ++---
+>> =C2=A0 5 files changed, 10 insertions(+), 13 deletions(-)
+>>
+>> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+>> index 37bea850b3f0..8d85b4707690 100644
+>> --- a/fs/btrfs/block-group.c
+>> +++ b/fs/btrfs/block-group.c
+>> @@ -2239,7 +2239,7 @@ int btrfs_rmap_block(struct btrfs_fs_info=20
+>> *fs_info, u64 chunk_start,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (map->type & BTRFS_BLOCK_GROUP_RAID56=
+_MASK)
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 io_stripe_size =
+=3D=20
+>> btrfs_stripe_nr_to_offset(nr_data_stripes(map));
+>> -=C2=A0=C2=A0=C2=A0 buf =3D kcalloc(map->num_stripes, sizeof(u64), GFP_=
+NOFS);
+>> +=C2=A0=C2=A0=C2=A0 buf =3D kzalloc_objs(*buf, map->num_stripes, GFP_NO=
+FS);
+>=20
+> Not sure if we should use *buf for the type.
+>=20
+> I still remember we had some bugs related to incorrect type usage.
+>=20
+> Another thing is, we may not want to use the kzalloc version.
+> We don't want to waste CPU time just to zero out the content meanwhile=
+=20
+> we're ensured to re-assign the contents.
+>=20
+> Thus kmalloc_objs() maybe better.
 
-Not sure if we should use *buf for the type.
+Sorry I only mean for some particular call sites, like this one.
 
-I still remember we had some bugs related to incorrect type usage.
-
-Another thing is, we may not want to use the kzalloc version.
-We don't want to waste CPU time just to zero out the content meanwhile=20
-we're ensured to re-assign the contents.
-
-Thus kmalloc_objs() maybe better.
+Not all call sites can be converted to kmalloc version, and will need=20
+proper inspection one by one.
 
 Thanks,
 Qu
 
-
->   	if (!buf) {
->   		ret =3D -ENOMEM;
->   		goto out;
-> diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
-> index 02105d68accb..1ebfed8f0a0a 100644
-> --- a/fs/btrfs/raid56.c
-> +++ b/fs/btrfs/raid56.c
-> @@ -2110,8 +2110,8 @@ static int recover_sectors(struct btrfs_raid_bio *=
-rbio)
->   	 * @unmap_array stores copy of pointers that does not get reordered
->   	 * during reconstruction so that kunmap_local works.
->   	 */
-> -	pointers =3D kcalloc(rbio->real_stripes, sizeof(void *), GFP_NOFS);
-> -	unmap_array =3D kcalloc(rbio->real_stripes, sizeof(void *), GFP_NOFS);
-> +	pointers =3D kzalloc_objs(*pointers, rbio->real_stripes, GFP_NOFS);
-> +	unmap_array =3D kzalloc_objs(*unmap_array, rbio->real_stripes, GFP_NOF=
-S);
->   	if (!pointers || !unmap_array) {
->   		ret =3D -ENOMEM;
->   		goto out;
-> @@ -2844,8 +2844,8 @@ static int recover_scrub_rbio(struct btrfs_raid_bi=
-o *rbio)
->   	 * @unmap_array stores copy of pointers that does not get reordered
->   	 * during reconstruction so that kunmap_local works.
->   	 */
-> -	pointers =3D kcalloc(rbio->real_stripes, sizeof(void *), GFP_NOFS);
-> -	unmap_array =3D kcalloc(rbio->real_stripes, sizeof(void *), GFP_NOFS);
-> +	pointers =3D kzalloc_objs(*pointers, rbio->real_stripes, GFP_NOFS);
-> +	unmap_array =3D kzalloc_objs(*unmap_array, rbio->real_stripes, GFP_NOF=
-S);
->   	if (!pointers || !unmap_array) {
->   		ret =3D -ENOMEM;
->   		goto out;
-> diff --git a/fs/btrfs/tests/zoned-tests.c b/fs/btrfs/tests/zoned-tests.c
-> index da21c7aea31a..2bc3b14baa41 100644
-> --- a/fs/btrfs/tests/zoned-tests.c
-> +++ b/fs/btrfs/tests/zoned-tests.c
-> @@ -58,7 +58,7 @@ static int test_load_zone_info(struct btrfs_fs_info *f=
-s_info,
->   		return -ENOMEM;
->   	}
->  =20
-> -	zone_info =3D kcalloc(test->num_stripes, sizeof(*zone_info), GFP_KERNE=
-L);
-> +	zone_info =3D kzalloc_objs(*zone_info, test->num_stripes, GFP_KERNEL);
->   	if (!zone_info) {
->   		test_err("cannot allocate zone info");
->   		return -ENOMEM;
-> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-> index e15e138c515b..c0cf8f7c5a8e 100644
-> --- a/fs/btrfs/volumes.c
-> +++ b/fs/btrfs/volumes.c
-> @@ -5499,8 +5499,7 @@ static int calc_one_profile_avail(struct btrfs_fs_=
-info *fs_info,
->   		goto out;
->   	}
->  =20
-> -	devices_info =3D kcalloc(fs_devices->rw_devices, sizeof(*devices_info)=
-,
-> -			       GFP_NOFS);
-> +	devices_info =3D kzalloc_objs(*devices_info, fs_devices->rw_devices, G=
-FP_NOFS);
->   	if (!devices_info) {
->   		ret =3D -ENOMEM;
->   		goto out;
-> @@ -6067,8 +6066,7 @@ struct btrfs_block_group *btrfs_create_chunk(struc=
-t btrfs_trans_handle *trans,
->   	ctl.space_info =3D space_info;
->   	init_alloc_chunk_ctl(fs_devices, &ctl);
->  =20
-> -	devices_info =3D kcalloc(fs_devices->rw_devices, sizeof(*devices_info)=
-,
-> -			       GFP_NOFS);
-> +	devices_info =3D kzalloc_objs(*devices_info, fs_devices->rw_devices, G=
-FP_NOFS);
->   	if (!devices_info)
->   		return ERR_PTR(-ENOMEM);
->  =20
-> diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-> index ab330ec957bc..851b0de7bed7 100644
-> --- a/fs/btrfs/zoned.c
-> +++ b/fs/btrfs/zoned.c
-> @@ -1697,8 +1697,7 @@ static int btrfs_load_block_group_raid10(struct bt=
-rfs_block_group *bg,
->   		return -EINVAL;
->   	}
->  =20
-> -	raid0_allocs =3D kcalloc(map->num_stripes / map->sub_stripes, sizeof(*=
-raid0_allocs),
-> -			       GFP_NOFS);
-> +	raid0_allocs =3D kzalloc_objs(*raid0_allocs, map->num_stripes / map->s=
-ub_stripes, GFP_NOFS);
->   	if (!raid0_allocs)
->   		return -ENOMEM;
->  =20
-> @@ -1916,7 +1915,7 @@ int btrfs_load_block_group_zone_info(struct btrfs_=
-block_group *cache, bool new)
->  =20
->   	cache->physical_map =3D map;
->  =20
-> -	zone_info =3D kcalloc(map->num_stripes, sizeof(*zone_info), GFP_NOFS);
-> +	zone_info =3D kzalloc_objs(*zone_info, map->num_stripes, GFP_NOFS);
->   	if (!zone_info) {
->   		ret =3D -ENOMEM;
->   		goto out;
+>=20
+> Thanks,
+> Qu
+>=20
+>=20
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!buf) {
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D -ENOMEM;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto out;
+>> diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
+>> index 02105d68accb..1ebfed8f0a0a 100644
+>> --- a/fs/btrfs/raid56.c
+>> +++ b/fs/btrfs/raid56.c
+>> @@ -2110,8 +2110,8 @@ static int recover_sectors(struct btrfs_raid_bio=
+=20
+>> *rbio)
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * @unmap_array stores copy of poin=
+ters that does not get reordered
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * during reconstruction so that ku=
+nmap_local works.
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
+>> -=C2=A0=C2=A0=C2=A0 pointers =3D kcalloc(rbio->real_stripes, sizeof(voi=
+d *), GFP_NOFS);
+>> -=C2=A0=C2=A0=C2=A0 unmap_array =3D kcalloc(rbio->real_stripes, sizeof(=
+void *), GFP_NOFS);
+>> +=C2=A0=C2=A0=C2=A0 pointers =3D kzalloc_objs(*pointers, rbio->real_str=
+ipes, GFP_NOFS);
+>> +=C2=A0=C2=A0=C2=A0 unmap_array =3D kzalloc_objs(*unmap_array, rbio->re=
+al_stripes,=20
+>> GFP_NOFS);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!pointers || !unmap_array) {
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D -ENOMEM;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto out;
+>> @@ -2844,8 +2844,8 @@ static int recover_scrub_rbio(struct=20
+>> btrfs_raid_bio *rbio)
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * @unmap_array stores copy of poin=
+ters that does not get reordered
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * during reconstruction so that ku=
+nmap_local works.
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
+>> -=C2=A0=C2=A0=C2=A0 pointers =3D kcalloc(rbio->real_stripes, sizeof(voi=
+d *), GFP_NOFS);
+>> -=C2=A0=C2=A0=C2=A0 unmap_array =3D kcalloc(rbio->real_stripes, sizeof(=
+void *), GFP_NOFS);
+>> +=C2=A0=C2=A0=C2=A0 pointers =3D kzalloc_objs(*pointers, rbio->real_str=
+ipes, GFP_NOFS);
+>> +=C2=A0=C2=A0=C2=A0 unmap_array =3D kzalloc_objs(*unmap_array, rbio->re=
+al_stripes,=20
+>> GFP_NOFS);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!pointers || !unmap_array) {
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D -ENOMEM;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto out;
+>> diff --git a/fs/btrfs/tests/zoned-tests.c b/fs/btrfs/tests/zoned-tests.=
+c
+>> index da21c7aea31a..2bc3b14baa41 100644
+>> --- a/fs/btrfs/tests/zoned-tests.c
+>> +++ b/fs/btrfs/tests/zoned-tests.c
+>> @@ -58,7 +58,7 @@ static int test_load_zone_info(struct btrfs_fs_info=
+=20
+>> *fs_info,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -ENOMEM;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>> -=C2=A0=C2=A0=C2=A0 zone_info =3D kcalloc(test->num_stripes, sizeof(*zo=
+ne_info),=20
+>> GFP_KERNEL);
+>> +=C2=A0=C2=A0=C2=A0 zone_info =3D kzalloc_objs(*zone_info, test->num_st=
+ripes, GFP_KERNEL);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!zone_info) {
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 test_err("cannot=
+ allocate zone info");
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -ENOMEM;
+>> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+>> index e15e138c515b..c0cf8f7c5a8e 100644
+>> --- a/fs/btrfs/volumes.c
+>> +++ b/fs/btrfs/volumes.c
+>> @@ -5499,8 +5499,7 @@ static int calc_one_profile_avail(struct=20
+>> btrfs_fs_info *fs_info,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto out;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>> -=C2=A0=C2=A0=C2=A0 devices_info =3D kcalloc(fs_devices->rw_devices,=20
+>> sizeof(*devices_info),
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 GFP_NOFS);
+>> +=C2=A0=C2=A0=C2=A0 devices_info =3D kzalloc_objs(*devices_info, fs_dev=
+ices-=20
+>> >rw_devices, GFP_NOFS);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!devices_info) {
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D -ENOMEM;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto out;
+>> @@ -6067,8 +6066,7 @@ struct btrfs_block_group=20
+>> *btrfs_create_chunk(struct btrfs_trans_handle *trans,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ctl.space_info =3D space_info;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 init_alloc_chunk_ctl(fs_devices, &ctl);
+>> -=C2=A0=C2=A0=C2=A0 devices_info =3D kcalloc(fs_devices->rw_devices,=20
+>> sizeof(*devices_info),
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 GFP_NOFS);
+>> +=C2=A0=C2=A0=C2=A0 devices_info =3D kzalloc_objs(*devices_info, fs_dev=
+ices-=20
+>> >rw_devices, GFP_NOFS);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!devices_info)
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ERR_PTR(-=
+ENOMEM);
+>> diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
+>> index ab330ec957bc..851b0de7bed7 100644
+>> --- a/fs/btrfs/zoned.c
+>> +++ b/fs/btrfs/zoned.c
+>> @@ -1697,8 +1697,7 @@ static int btrfs_load_block_group_raid10(struct=
+=20
+>> btrfs_block_group *bg,
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -EINVAL;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>> -=C2=A0=C2=A0=C2=A0 raid0_allocs =3D kcalloc(map->num_stripes / map->su=
+b_stripes,=20
+>> sizeof(*raid0_allocs),
+>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 GFP_NOFS);
+>> +=C2=A0=C2=A0=C2=A0 raid0_allocs =3D kzalloc_objs(*raid0_allocs, map->n=
+um_stripes /=20
+>> map->sub_stripes, GFP_NOFS);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!raid0_allocs)
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return -ENOMEM;
+>> @@ -1916,7 +1915,7 @@ int btrfs_load_block_group_zone_info(struct=20
+>> btrfs_block_group *cache, bool new)
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 cache->physical_map =3D map;
+>> -=C2=A0=C2=A0=C2=A0 zone_info =3D kcalloc(map->num_stripes, sizeof(*zon=
+e_info), GFP_NOFS);
+>> +=C2=A0=C2=A0=C2=A0 zone_info =3D kzalloc_objs(*zone_info, map->num_str=
+ipes, GFP_NOFS);
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (!zone_info) {
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D -ENOMEM;
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto out;
+>=20
+>=20
 
 
