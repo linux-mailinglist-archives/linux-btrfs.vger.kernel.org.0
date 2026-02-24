@@ -1,84 +1,59 @@
-Return-Path: <linux-btrfs+bounces-21861-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21862-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id NMJbHtFJnWmLOQQAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21861-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Feb 2026 07:48:49 +0100
+	id iA4ZN0VLnWmhOQQAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21862-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Feb 2026 07:55:01 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1DED182887
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Feb 2026 07:48:48 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79236182954
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Feb 2026 07:55:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id CDC4330734CB
-	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Feb 2026 06:48:42 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 7658F308AF58
+	for <lists+linux-btrfs@lfdr.de>; Tue, 24 Feb 2026 06:54:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE18A2F12AF;
-	Tue, 24 Feb 2026 06:48:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F79D3093B8;
+	Tue, 24 Feb 2026 06:54:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="U7o2gveB"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="rWjLWq2K"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BED71367
-	for <linux-btrfs@vger.kernel.org>; Tue, 24 Feb 2026 06:48:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0A632D876B;
+	Tue, 24 Feb 2026 06:54:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771915721; cv=none; b=rie2UYPMftx2yi204cjFixmP3iMfokfzeZ2TBJv0OiYtDxqzfSi7tiv8/+7/8DAd2Vpnq98hbkLy2pt7zYs3aDZJ4y7xe+Fc7dcWgMth/hDte7SRZQE54BrVFdJ8RVs9XQ28VsDyvg2+rsNGLGyosx730BQXNtlq8CtwBPEyC28=
+	t=1771916053; cv=none; b=FWLZu8mIHQCF56W9LCQTmJbltcHHBZIullRIBEbQa3apd0aCOHCEdpODZDgwH4YO6WLaMDsxQS7ovkbHxgMJIBgnwQh+lIbSxP8nlXYJp/pN0V7SJZsTxdxSgnGRHUwIKilQZ7an/m3IMN9N5+qTWG5EZu0IJvHXnrc/tgAbcW4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771915721; c=relaxed/simple;
-	bh=4ylNWypsuhx9LHDaDg5URq458OpvPkDs+SiHtlMIjPQ=;
+	s=arc-20240116; t=1771916053; c=relaxed/simple;
+	bh=Y60RAmW0GzjKTfUVq289aIIw1lFrj5Uxu9Vgtgd/fg8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iQVfbheNzQuGGbGcLP/OdafqzWfHtaoqG5p52E/xV5XaiH3chThw4VGhYzHFiKcQnSBw9B45QnbbJXSEmOLaWcbTGRlyHsSvPNEXIzS5FwD0hSS0D/6n3ptrwoVkM8TwcQY9ZzpxUqoAQIqelq9YfcrMRGnswrKEvGhsAxYvaFQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=U7o2gveB; arc=none smtp.client-ip=209.85.128.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-483703e4b08so40601015e9.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 23 Feb 2026 22:48:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1771915718; x=1772520518; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=mI0ID9dgFA9CTGmtCf5PFRmxKnR+sAq5iQ25NnzfaF0=;
-        b=U7o2gveBx+cv6B825V5kJYF3lfwHzNfibIR9nJWdXRHzCidHwwlCZBwamCDKuV50kE
-         Rmq7S9CIsHIE/C5OgO1s3ZRvei/rkX+HBng82dYt1Qm9x457fGWN43bIStfDhB1b/Vx6
-         JrYqJP8UT2aWufvZ7TQq5J/5K3DTklncNu7zKEUqV3c1V7rSh5c/2WveItb4IE6vPPtY
-         Dv3t/TCtg/kxo+HklOU+DBv4jsgpAZFwrkmwePHNWK2rFNqJkEXiMUr0CAyYcFzQAZg2
-         a5+WyOYcjDzV+CMSh+OildN3gJSHZ4ah3jPY/kL4Wo1q98JYQ7C5POtDm7k1zQTymfis
-         JJFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771915718; x=1772520518;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mI0ID9dgFA9CTGmtCf5PFRmxKnR+sAq5iQ25NnzfaF0=;
-        b=UwTjTx/VZi8EZ+dTXFHNOBxXT1yjHSa3/5j2Gx6RQsRWIiYIh0efrJUU1up+e1HwG0
-         ybg9mbqp2PrbVfi45fRJOE7mgS5/2M7/Ij8RjLW+Q6U4eAr65lAGmqjYQhYlbWoTLZux
-         DAimJMJOk+QHY5Z2BATixXP48ES2GxrsMD8AtjOH12geMmEq1rWBDeSXnpWpjAGhDz93
-         Cu+IuqBdbnqyjdMCfB9gIzuN8bDYpV8m+lKaKWm7/MzeHzh2WpanCFf75U4OpkC1ijki
-         H9hIBuXZGCvi73WSZRkN9/TXKwZ21yq64BkxTgbiPK3psmgiiq4cnOu+Ui52G52OC6oF
-         G+pw==
-X-Forwarded-Encrypted: i=1; AJvYcCU+4/HlR1RJeB6pKzn46ZEtMF2m3D0P8ixKQHhadDPSTYRrJo4/mcYjTk+fv8hRoi3joWMT5bVg8zVbcA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxGgsw6kXqLtZzKK9nLmATe9Gr3uwEedbBFF3IeeLaWcAO34D50
-	IbH4vX/ACnNY6XY2UexE8TD/j6S+QXLLbRNK2gfHj29JWdtS+SfCAIzAu7dg7on40oI=
-X-Gm-Gg: AZuq6aL6TMOUizSZ0/3KPR6WfvkzYjlWR2RP/YSBIjFfAjpWs6nulVa/PdZOU8Quuoj
-	y28Ae00vdVqRg01v9xt2Vz+qehSKI8QDRU8jDlGMyNU6lrVFZXVLWqO2kUtpUkZxNGJmOAaMPp7
-	DvvcnYWUktVAEQHt3UNJnmhc5+aAg9MgT39RNRbE2vZpc/l9qevhITTf4aZ9iGvXGWYpVG2D/qZ
-	iPNQCj1HtjC89orCoA0Qw6oRlYzcqpuIrUuKoiSrm3PunvI8cFQafRZ60hmf6nlzPVVDp5ydCGv
-	ndc055xBpeBrlvUO507Y46MWuv+2TDUjwhJtbA4Gx6vBpTCKUEyssO8fOe0E4DrWv5A9sUmUkf6
-	UPLjNdlawfwZWfEMibiBRGBpOOY4Zxcqxif2SJkm8JsWjKq9gFUV/hRiKeka/8eJo9qVg8Ht9Fy
-	TkhqdJoUgaDVlI9pzfvqTQPMGla0IXu2ddAAZINZohdFq97oVNTsY=
-X-Received: by 2002:a05:600c:6c87:b0:47d:52ef:c572 with SMTP id 5b1f17b1804b1-4839fe8e8b4mr181446105e9.1.1771915717564;
-        Mon, 23 Feb 2026 22:48:37 -0800 (PST)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2ad97d6132asm12997805ad.68.2026.02.23.22.48.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Feb 2026 22:48:37 -0800 (PST)
-Message-ID: <e21ea0cf-b392-487f-843f-962efedcf10c@suse.com>
-Date: Tue, 24 Feb 2026 17:18:31 +1030
+	 In-Reply-To:Content-Type; b=SY+vWmFBMJ4770yCjwcl64YqVjUFlaoxzupM8gGmqRgprUMKVfeZ/Wpq+A4WNPpEdMDf8KUF4CrRqFA4x1iKEvRxM/u8+/fNVjh4CPsxXlpC1sg3Vl9H44WevF/Xm3AFmgUnvi5U+V18aMaitViONQ3l5miJ6VwbfWiZbRLgyV4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=rWjLWq2K; arc=none smtp.client-ip=212.227.17.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1771916049; x=1772520849; i=quwenruo.btrfs@gmx.com;
+	bh=Y60RAmW0GzjKTfUVq289aIIw1lFrj5Uxu9Vgtgd/fg8=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=rWjLWq2KPeLi7zR5K7A9yUZzkZbHzy2tJ2w4AGq23yQNO/9Oh12OOJaVx11re/yl
+	 U54n14Xm1bwb+sZqEoRaZHOmmuz67AOzJ0/QSzHZpfU9l457CJT1/k5FElZggjeWC
+	 20Vs6dfOG5+V99bz1hOU4hLUsOWfj6yPpndpXwzp11tdsp3s5lGN0bMIEwMq4cNZr
+	 eDUo+4cF7yJqeCXBCE3tXMcsEGPvgmEL/8ONRgG5Up0Xfq7qSG9o/9TCLaoiTOWMS
+	 EWHgI0YknUO0IftBUXkEs0h303id4kvLiVrCKPkjvFxNyv7f1GXEnKbt0ywpEcRbE
+	 QM+E0vn4MSTxyxWDDw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [172.16.0.229] ([159.196.52.54]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MIMfc-1vy8MW3OWi-007Vp4; Tue, 24
+ Feb 2026 07:54:09 +0100
+Message-ID: <c1394e2e-fa7b-496f-9fb2-3e88e9d42044@gmx.com>
+Date: Tue, 24 Feb 2026 17:24:04 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -88,218 +63,189 @@ MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH] btrfs: replace kcalloc() calls to kzalloc_objs()
 To: =?UTF-8?Q?Miquel_Sabat=C3=A9_Sol=C3=A0?= <mssola@mssola.com>,
- Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: dsterba@suse.com, clm@fb.com, naohiro.aota@wdc.com,
- linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org, kees@kernel.org
+ Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+Cc: "dsterba@suse.com" <dsterba@suse.com>, "clm@fb.com" <clm@fb.com>,
+ Naohiro Aota <Naohiro.Aota@wdc.com>,
+ "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "kees@kernel.org" <kees@kernel.org>
 References: <20260223234451.277369-1-mssola@mssola.com>
- <69c16813-5ac1-4756-ad42-41b4275e6aee@gmx.com>
- <699d4704.050a0220.1a6450.86d7SMTPIN_ADDED_BROKEN@mx.google.com>
+ <076d767a-48f3-4c71-87d5-5c304513f9a8@wdc.com> <87wm0263lz.fsf@>
 Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
  xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
  8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
  1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
  9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
  gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <699d4704.050a0220.1a6450.86d7SMTPIN_ADDED_BROKEN@mx.google.com>
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
+ sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
+ xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
+ naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
+ tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
+ 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
+ VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
+ CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
+ B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
+ Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
+ +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
+ HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
+In-Reply-To: <87wm0263lz.fsf@>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:OJadpglRSfHM3dAY6akhAitKdg2KanBNCt16yZmWCH2PQIwrPtb
+ 6mmi9Ga77LDDlnff7HEjqHDfuDz/fVHfCjIQQ7RNv/ySblhXPOj4XsPy+UaUyfrkOqXRKSs
+ WD6QfRR6JQStqtDBtLqwaW4Di8RAeVz9zq36laeVHIYgFfP1QNFRuTg/fOHwquYpYVsVYX0
+ KKTfg2Qpvk/y2DOLQtAlg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:sX8DBJj/ZT4=;hMIHTCtGjzeu80iFSVdu1v/zVBT
+ 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
+ uOTm3VtHmSX0/mgY8=
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10];
+	DMARC_POLICY_ALLOW(-0.50)[gmx.com,quarantine];
+	R_DKIM_ALLOW(-0.20)[gmx.com:s=s31663417];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[suse.com:+];
-	FROM_HAS_DN(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_TO(0.00)[mssola.com,gmx.com];
-	TAGGED_FROM(0.00)[bounces-21861-lists,linux-btrfs=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-btrfs];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[wqu@suse.com,linux-btrfs@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-21862-lists,linux-btrfs=lfdr.de];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_FIVE(0.00)[5];
+	RCVD_COUNT_THREE(0.00)[4];
+	FREEMAIL_FROM(0.00)[gmx.com];
+	TO_DN_SOME(0.00)[];
+	DKIM_TRACE(0.00)[gmx.com:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[quwenruo.btrfs@gmx.com,linux-btrfs@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	MID_RHS_MATCH_FROM(0.00)[];
-	NEURAL_HAM(-0.00)[-0.999];
+	TAGGED_RCPT(0.00)[linux-btrfs];
 	RCPT_COUNT_SEVEN(0.00)[8];
-	TO_DN_SOME(0.00)[]
-X-Rspamd-Queue-Id: E1DED182887
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,gmx.com:mid,gmx.com:dkim]
+X-Rspamd-Queue-Id: 79236182954
 X-Rspamd-Action: no action
 
 
 
-在 2026/2/24 17:06, Miquel Sabaté Solà 写道:
-> Qu Wenruo @ 2026-02-24 15:07 +1030:
-> 
->> 在 2026/2/24 10:14, Miquel Sabaté Solà 写道:
+=E5=9C=A8 2026/2/24 17:16, Miquel Sabat=C3=A9 Sol=C3=A0 =E5=86=99=E9=81=93=
+:
+> Johannes Thumshirn @ 2026-02-24 06:32 GMT:
+>=20
+>> On 2/24/26 12:45 AM, Miquel Sabat=C3=A9 Sol=C3=A0 wrote:
 >>> Commit 2932ba8d9c99 ("slab: Introduce kmalloc_obj() and family")
->>> introduced, among many others, the kzalloc_objs() helper, which has some
+>>> introduced, among many others, the kzalloc_objs() helper, which has so=
+me
 >>> benefits over kcalloc().
->>> Cc: Kees Cook <kees@kernel.org>
->>> Signed-off-by: Miquel Sabaté Solà <mssola@mssola.com>
->>> ---
->>>    fs/btrfs/block-group.c       | 2 +-
->>>    fs/btrfs/raid56.c            | 8 ++++----
->>>    fs/btrfs/tests/zoned-tests.c | 2 +-
->>>    fs/btrfs/volumes.c           | 6 ++----
->>>    fs/btrfs/zoned.c             | 5 ++---
->>>    5 files changed, 10 insertions(+), 13 deletions(-)
->>> diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
->>> index 37bea850b3f0..8d85b4707690 100644
->>> --- a/fs/btrfs/block-group.c
->>> +++ b/fs/btrfs/block-group.c
->>> @@ -2239,7 +2239,7 @@ int btrfs_rmap_block(struct btrfs_fs_info *fs_info, u64 chunk_start,
->>>    	if (map->type & BTRFS_BLOCK_GROUP_RAID56_MASK)
->>>    		io_stripe_size = btrfs_stripe_nr_to_offset(nr_data_stripes(map));
->>>    -	buf = kcalloc(map->num_stripes, sizeof(u64), GFP_NOFS);
->>> +	buf = kzalloc_objs(*buf, map->num_stripes, GFP_NOFS);
->>
->> Not sure if we should use *buf for the type.
->>
->> I still remember we had some bugs related to incorrect type usage.
-> 
-> Considering the type of 'buf' and how kzalloc_objs() will resolve the
-> first argument '*buf', it should really just be equivalent to what was
-> written before.
+>> Namely?
+>=20
+> I didn't want to repeat the arguments from the quoted commit
+> 2932ba8d9c99 ("slab: Introduce kmalloc_obj() and family"). Namely:
 
-Good luck if you miss the '*' for a structure pointer, and compiler 
-won't give you any warning.
+If you assume every btrfs developer is aware of all slab/mm/vfs/whatever=
+=20
+subsystem development, then I'd say you're wrong.
 
-I still remembered that Johannes exposed such bug for me.
-Unfortunately I didn't have exact lore link for it.
+Thus you should mention the commit (which is not yet in our developmenet=
+=20
+tree), and at least have a short reason on the benefit.
 
-> 
->>
->> Another thing is, we may not want to use the kzalloc version.
->> We don't want to waste CPU time just to zero out the content meanwhile we're
->> ensured to re-assign the contents.
->>
->> Thus kmalloc_objs() maybe better.
-> 
-> Yes, having a second look at this function, it looks like kmalloc_objs()
-> might just be enough. If you don't mind, I will add another commit in v2
-> translating kzalloc_objs() into kmalloc_objs() wherever I see we can do
-> this from the ones I've touched. This way we can easily revert in case
-> things go south :)
-> 
->>
->> Thanks,
->> Qu
-> 
-> Thanks,
-> Miquel
-> 
->>
->>
->>>    	if (!buf) {
->>>    		ret = -ENOMEM;
->>>    		goto out;
->>> diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
->>> index 02105d68accb..1ebfed8f0a0a 100644
->>> --- a/fs/btrfs/raid56.c
->>> +++ b/fs/btrfs/raid56.c
->>> @@ -2110,8 +2110,8 @@ static int recover_sectors(struct btrfs_raid_bio *rbio)
->>>    	 * @unmap_array stores copy of pointers that does not get reordered
->>>    	 * during reconstruction so that kunmap_local works.
->>>    	 */
->>> -	pointers = kcalloc(rbio->real_stripes, sizeof(void *), GFP_NOFS);
->>> -	unmap_array = kcalloc(rbio->real_stripes, sizeof(void *), GFP_NOFS);
->>> +	pointers = kzalloc_objs(*pointers, rbio->real_stripes, GFP_NOFS);
->>> +	unmap_array = kzalloc_objs(*unmap_array, rbio->real_stripes, GFP_NOFS);
->>>    	if (!pointers || !unmap_array) {
->>>    		ret = -ENOMEM;
->>>    		goto out;
->>> @@ -2844,8 +2844,8 @@ static int recover_scrub_rbio(struct btrfs_raid_bio *rbio)
->>>    	 * @unmap_array stores copy of pointers that does not get reordered
->>>    	 * during reconstruction so that kunmap_local works.
->>>    	 */
->>> -	pointers = kcalloc(rbio->real_stripes, sizeof(void *), GFP_NOFS);
->>> -	unmap_array = kcalloc(rbio->real_stripes, sizeof(void *), GFP_NOFS);
->>> +	pointers = kzalloc_objs(*pointers, rbio->real_stripes, GFP_NOFS);
->>> +	unmap_array = kzalloc_objs(*unmap_array, rbio->real_stripes, GFP_NOFS);
->>>    	if (!pointers || !unmap_array) {
->>>    		ret = -ENOMEM;
->>>    		goto out;
->>> diff --git a/fs/btrfs/tests/zoned-tests.c b/fs/btrfs/tests/zoned-tests.c
->>> index da21c7aea31a..2bc3b14baa41 100644
->>> --- a/fs/btrfs/tests/zoned-tests.c
->>> +++ b/fs/btrfs/tests/zoned-tests.c
->>> @@ -58,7 +58,7 @@ static int test_load_zone_info(struct btrfs_fs_info *fs_info,
->>>    		return -ENOMEM;
->>>    	}
->>>    -	zone_info = kcalloc(test->num_stripes, sizeof(*zone_info), GFP_KERNEL);
->>> +	zone_info = kzalloc_objs(*zone_info, test->num_stripes, GFP_KERNEL);
->>>    	if (!zone_info) {
->>>    		test_err("cannot allocate zone info");
->>>    		return -ENOMEM;
->>> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
->>> index e15e138c515b..c0cf8f7c5a8e 100644
->>> --- a/fs/btrfs/volumes.c
->>> +++ b/fs/btrfs/volumes.c
->>> @@ -5499,8 +5499,7 @@ static int calc_one_profile_avail(struct btrfs_fs_info *fs_info,
->>>    		goto out;
->>>    	}
->>>    -	devices_info = kcalloc(fs_devices->rw_devices, sizeof(*devices_info),
->>> -			       GFP_NOFS);
->>> +	devices_info = kzalloc_objs(*devices_info, fs_devices->rw_devices, GFP_NOFS);
->>>    	if (!devices_info) {
->>>    		ret = -ENOMEM;
->>>    		goto out;
->>> @@ -6067,8 +6066,7 @@ struct btrfs_block_group *btrfs_create_chunk(struct btrfs_trans_handle *trans,
->>>    	ctl.space_info = space_info;
->>>    	init_alloc_chunk_ctl(fs_devices, &ctl);
->>>    -	devices_info = kcalloc(fs_devices->rw_devices, sizeof(*devices_info),
->>> -			       GFP_NOFS);
->>> +	devices_info = kzalloc_objs(*devices_info, fs_devices->rw_devices, GFP_NOFS);
->>>    	if (!devices_info)
->>>    		return ERR_PTR(-ENOMEM);
->>>    diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
->>> index ab330ec957bc..851b0de7bed7 100644
->>> --- a/fs/btrfs/zoned.c
->>> +++ b/fs/btrfs/zoned.c
->>> @@ -1697,8 +1697,7 @@ static int btrfs_load_block_group_raid10(struct btrfs_block_group *bg,
->>>    		return -EINVAL;
->>>    	}
->>>    -	raid0_allocs = kcalloc(map->num_stripes / map->sub_stripes,
->>> sizeof(*raid0_allocs),
->>> -			       GFP_NOFS);
->>> +	raid0_allocs = kzalloc_objs(*raid0_allocs, map->num_stripes / map->sub_stripes, GFP_NOFS);
->>>    	if (!raid0_allocs)
->>>    		return -ENOMEM;
->>>    @@ -1916,7 +1915,7 @@ int btrfs_load_block_group_zone_info(struct
->>> btrfs_block_group *cache, bool new)
->>>      	cache->physical_map = map;
->>>    -	zone_info = kcalloc(map->num_stripes, sizeof(*zone_info), GFP_NOFS);
->>> +	zone_info = kzalloc_objs(*zone_info, map->num_stripes, GFP_NOFS);
->>>    	if (!zone_info) {
->>>    		ret = -ENOMEM;
->>>    		goto out;
+>=20
+>> Internal introspection of the allocated type now becomes possible,
+>> allowing for future alignment-aware choices to be made by the
+>> allocator and future hardening work that can be type sensitive.
+>=20
+> Should I put this in the commit message as well, regardless of the
+> commit explaining this being quoted?
+>=20
+> There's also the argument of dropping 'sizeof' to be more ergonomic. To
+> me, though, and considering how these helpers have been applied
+> tree-wide, I see this change more as aligning us with this recent
+> tree-wide move, which also affected btrfs (see commit 69050f8d6d07
+> "treewide: Replace kmalloc with kmalloc_obj for non-scalar types").
 
 
