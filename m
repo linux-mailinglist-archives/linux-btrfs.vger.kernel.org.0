@@ -1,477 +1,313 @@
-Return-Path: <linux-btrfs+bounces-21936-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21937-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id cF7rBMJ9n2mrcQQAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21936-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Feb 2026 23:54:58 +0100
+	id 8FaVN4eJn2nMcgQAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21937-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Feb 2026 00:45:11 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54C4519E7E1
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Feb 2026 23:54:57 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5722319EFD6
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Feb 2026 00:45:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id ADE6C3044A46
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Feb 2026 22:53:45 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id CD0CC30683A5
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Feb 2026 23:44:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC50636657E;
-	Wed, 25 Feb 2026 22:53:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 182F33859E1;
+	Wed, 25 Feb 2026 23:44:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="dK19h5b+";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="dK19h5b+"
+	dkim=pass (2048-bit key) header.d=columbia.edu header.i=@columbia.edu header.b="NZaA/URT"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-00364e01.pphosted.com (mx0a-00364e01.pphosted.com [148.163.135.74])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66773366060
-	for <linux-btrfs@vger.kernel.org>; Wed, 25 Feb 2026 22:53:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EC2A3783AB
+	for <linux-btrfs@vger.kernel.org>; Wed, 25 Feb 2026 23:44:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.135.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772060024; cv=none; b=bTMHjYvNkbP9ZazVbafK4NC+jSnplP/K2lWJbRez7NgrWrFEcyOMKqYPBPbde7N/XNQA2SGUcQ12wE/lH2juxfRy8+Ogh0igPcElgO6FFkzavL5Kal8X2xjYOcTj7m/vr3mqKeAv+FAA/QbWHuUn3taw3hQOXds7RlnYt9v+WTo=
+	t=1772063084; cv=none; b=F7AgcyrIicXe8R0yeKHiOqtpISkVdtGd9qpX5f69n5NzClycziYLcSN4nGGBBCCDnJD7xr+B5l/AOVBtdFhoIooIB81SI/N7ExceNsgrlt0T8hDW1jOrfzzGjaeb1/lltxh0Uuif+GsxQGVTmEti/lDFu5fgYSH6Aup+dwfiGxs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772060024; c=relaxed/simple;
-	bh=pTJU2QC+76zjndDSfhOz9HIaCqosGK7WzIDfw7YSjvY=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=MdMUcGD3fNJ6iIsuuGBntlGQcgIDHMOpqoiGKPxDseB0cm79F7wLKmG+FYdW2vzRuKiNHJzIYA9W5DexFAtaXifVnx6FrpExjvmuAnK/dh4Bw3U5J1PE52QgpokZDIGHAccBGu4o/rIrtMrX0lEKHBRubCjxMEl7lyhPLhMJ6kk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=dK19h5b+; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=dK19h5b+; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 997E95BDB0
-	for <linux-btrfs@vger.kernel.org>; Wed, 25 Feb 2026 22:53:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1772060020; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=2kTfwwtBHWsthhOsVdgByqLwrMeX/Yf4RdD8JCJSxQ0=;
-	b=dK19h5b+uefCxZZbvzsMw5p7n++gM3aKZRkylbYJUa+ncO9YtyJ8chG/+Bjtx0ii0+CSfL
-	/YFnj/9eL/sV3u67k7xF3F09m9cqGmsobix0z+bzVv4govX/dwOWUwcBCkUy+U57P6AhOG
-	IqSQhdx10O8WJo74BWb88xl2/NjHnIY=
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=dK19h5b+
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1772060020; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=2kTfwwtBHWsthhOsVdgByqLwrMeX/Yf4RdD8JCJSxQ0=;
-	b=dK19h5b+uefCxZZbvzsMw5p7n++gM3aKZRkylbYJUa+ncO9YtyJ8chG/+Bjtx0ii0+CSfL
-	/YFnj/9eL/sV3u67k7xF3F09m9cqGmsobix0z+bzVv4govX/dwOWUwcBCkUy+U57P6AhOG
-	IqSQhdx10O8WJo74BWb88xl2/NjHnIY=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C934D3EA65
-	for <linux-btrfs@vger.kernel.org>; Wed, 25 Feb 2026 22:53:39 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 1JV0InN9n2mAXAAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Wed, 25 Feb 2026 22:53:39 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v4] btrfs: extract inlined creation into a dedicated delalloc helper
-Date: Thu, 26 Feb 2026 09:23:18 +1030
-Message-ID: <83385ea5fbacd4a044928147b4505c4980e306de.1772058054.git.wqu@suse.com>
-X-Mailer: git-send-email 2.53.0
+	s=arc-20240116; t=1772063084; c=relaxed/simple;
+	bh=RPYa8SOtCEMGYvfhLiG7oMZP0LUGjYMFBvMU/E6aYSQ=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=Mtzc0IgdPKsg9aWiISz8uCrdwRPgu/Ry0zKi/AHeZ44RRqvn6KtW9EcQwEkendUGkkn/WT3gTsHj3WS+UOczis1ptB1gUrYjx27v0D5FNHdF8QV0yI9Qi1f8j63ZgpQSedNcQIIBE5Kkp0Z3v47xFaYDsxysVk4o0ZiAnQvHv+Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=columbia.edu; spf=pass smtp.mailfrom=columbia.edu; dkim=pass (2048-bit key) header.d=columbia.edu header.i=@columbia.edu header.b=NZaA/URT; arc=none smtp.client-ip=148.163.135.74
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=columbia.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=columbia.edu
+Received: from pps.filterd (m0167069.ppops.net [127.0.0.1])
+	by mx0a-00364e01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 61PNNBpO1399656
+	for <linux-btrfs@vger.kernel.org>; Wed, 25 Feb 2026 18:44:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=columbia.edu; h=
+	cc:content-transfer-encoding:content-type:date:from:message-id
+	:mime-version:subject:to; s=pps01; bh=05jgbknsbqZP1uCdgxmv7u4HMp
+	tdcfek0XZsU81eJwo=; b=NZaA/URTtN755x3xQdd19/fuZUZtYv1FQpcevc3XwH
+	GiJ5HRxGcY9iy/OYljXRxusFlBguMsPnyZDcmgj6ga3FB3ZEB6s8V8MYK1RQkRqs
+	73E3y2Il0kMvjM1FeCKvErS6Ge1o+L/OrnSKHrzy/0gMDrz4XGhlptm9EW5EZsiN
+	KbNXNDLUxHRAHYoImMhwtPfSo5MKLD5TPNctjPWYbFCDuzg3+QLXfj4h+8nzvl+h
+	eF35anfVfxgICHTPN/s3s6nvmvXB97+RSUwbstEdYahxR2kI4oqGBDlsjZPhkjFA
+	35Gntn163Y2SMifNAIheBj42FBACqKtXgkrnpRQmM3NQ==
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com [209.85.219.69])
+	by mx0a-00364e01.pphosted.com (PPS) with ESMTPS id 4chx6v6b9b-1
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
+	for <linux-btrfs@vger.kernel.org>; Wed, 25 Feb 2026 18:44:41 -0500 (EST)
+Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-899b4ce513cso24881136d6.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 25 Feb 2026 15:44:41 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1772063080; x=1772667880;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=05jgbknsbqZP1uCdgxmv7u4HMptdcfek0XZsU81eJwo=;
+        b=i3kdF7DVmq1csldA6iMXwdUBLW5+4ulHYYh1dvnrvKcRI9UIuOTz7y36wU9VzmVm5X
+         NllbcLU5xorSiLH2k7fs//6NCRZ05+ttnSOsIYR8r0cUIMfz33jZtbUZaGVLxmmPKYbX
+         sKvgFR0WFJ5QFvSLCmEvfk+xhc493H1kFjxKNvULL4fKHTBOvFTpOijxbqkzR7dmunGH
+         4eOsTQJ88SqgkBbvEpnCz1hqh/T05hwyz+KtNSuRZzpkmI+fQx8U4MF21aEZioH9gWko
+         7NhQawkeYRccF0G1v5L+W+MT3wdzig00V+8EcddBRGfmLXUceFQNU6ysj7qUSk9/sJMe
+         moZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX09QOFNUywUdtuo4XU8a7tZBjA5d+t82Fm1AM/fKNn+M7kYLLTdL8IUqxjWToNvr6TWH4TTdkRQ7lBhA==@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywc3NdUnCTEzcI7KDp6ioGIxhKb0bCZxaq61zlDvzx6Ae05IMFP
+	xhP6hW9yP/NAfyEgg2tUJY7r+c7SKO0sKyBcZEuReQl1KSr90EKK7vacqAVWZ4HAdjgxR9spTAF
+	QWMUnUoctIC4xeICh9rtL9FooQOFk6upXl2rRXr7aNVyNfYzMArAZfKO6hkVN
+X-Gm-Gg: ATEYQzx/IQbv0ZX18P1GFbRZYzB2zn5HCVP6e6vbyjAykiMmdudBtp88bpppwp81zti
+	FgAKRRB96OIx6QjUCxweaxqiiz0iUZQqRvBdMnKgSWgI/cWfPkFMxiGDnmBLKf98XelF8oGJMI/
+	GB2ARGtWyuiybRt28FPRtZG8NNgr6dyOBrfvKGB0bldH4aFMo5PQa/GaXKE3WSJSSG4slRrO+kF
+	1YouqfEuVYbyo+8wwRy6B2q48TQkUWnmG+DxwgjA4wHFFXClPO6xmNkrAHAUgd4YP0uspGLLWZT
+	1cdH1wFx5ejecztJNBfK3sdu5TsYRpMay5LTjS8B6dhqDF0aUAsYXOVCwVA3CRKR/ewG3zQgh/P
+	OpGPx+K6EfV1Ec6FPb3pSxyvO7cv74CBg
+X-Received: by 2002:a05:6214:4387:b0:894:663f:cb4b with SMTP id 6a1803df08f44-89979e31f4amr253355046d6.7.1772063080184;
+        Wed, 25 Feb 2026 15:44:40 -0800 (PST)
+X-Received: by 2002:a05:6214:4387:b0:894:663f:cb4b with SMTP id 6a1803df08f44-89979e31f4amr253353936d6.7.1772063079588;
+        Wed, 25 Feb 2026 15:44:39 -0800 (PST)
+Received: from [127.0.1.1] ([216.158.158.246])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-899c738d80bsm3357606d6.41.2026.02.25.15.44.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Feb 2026 15:44:39 -0800 (PST)
+From: Tal Zussman <tz2294@columbia.edu>
+Subject: [PATCH v2 0/4] mm: Remove stray references to pagevec
+Date: Wed, 25 Feb 2026 18:44:24 -0500
+Message-Id: <20260225-pagevec_cleanup-v2-0-716868cc2d11@columbia.edu>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Flag: NO
-X-Spam-Score: -3.01
-X-Spam-Level: 
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAFiJn2kC/3WNQQ6CMBBFr0JmbQ0dsBpX3sMQU9oBJkFoWttoS
+ O9uZe/yveS/v0EgzxTgWm3gKXHgdSmAhwrMpJeRBNvCgDWqGvEknB4pkXmYmfQSnbDt2Uhl+np
+ AC2XlPA383ov3rvDE4bX6z36Q5M/+byUppGguhNiqRjUWb2ad47NnfSQbocs5fwEZhc9ksQAAA
+ A==
+X-Change-ID: 20260225-pagevec_cleanup-d47c16cb0f2d
+To: David Howells <dhowells@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@kernel.org>,
+        Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
+        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+        Vlastimil Babka <vbabka@kernel.org>, Mike Rapoport <rppt@kernel.org>,
+        Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>,
+        Chris Li <chrisl@kernel.org>, Kairui Song <kasong@tencent.com>,
+        Kemeng Shi <shikemeng@huaweicloud.com>, Nhat Pham <nphamcs@gmail.com>,
+        Baoquan He <bhe@redhat.com>, Barry Song <baohua@kernel.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>, Jan Kara <jack@suse.cz>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>, Theodore Ts'o <tytso@mit.edu>
+Cc: Andreas Dilger <adilger.kernel@dilger.ca>,
+        Paulo Alcantara <pc@manguebit.org>,
+        Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>,
+        Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>,
+        Joseph Qi <joseph.qi@linux.alibaba.com>,
+        Steve French <sfrench@samba.org>,
+        Ronnie Sahlberg <ronniesahlberg@gmail.com>,
+        Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
+        Bharath SM <bharathsm@microsoft.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Tvrtko Ursulin <tursulin@ursulin.net>, Chris Mason <clm@fb.com>,
+        David Sterba <dsterba@suse.com>, Ilya Dryomov <idryomov@gmail.com>,
+        Alex Markuze <amarkuze@redhat.com>,
+        Viacheslav Dubeyko <slava@dubeyko.com>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Oscar Salvador <osalvador@suse.de>,
+        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Chuck Lever <chuck.lever@oracle.com>, Jeff Layton <jlayton@kernel.org>,
+        NeilBrown <neil@brown.name>, Olga Kornievskaia <okorniev@redhat.com>,
+        Dai Ngo <Dai.Ngo@oracle.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        John Hubbard <jhubbard@nvidia.com>, Peter Xu <peterx@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeel.butt@linux.dev>, Jann Horn <jannh@google.com>,
+        Pedro Falcato <pfalcato@suse.de>,
+        Brendan Jackman <jackmanb@google.com>, Zi Yan <ziy@nvidia.com>,
+        Hugh Dickins <hughd@google.com>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Yuanchu Xie <yuanchu@google.com>, Wei Xu <weixugc@google.com>,
+        Qi Zheng <zhengqi.arch@bytedance.com>, linux-afs@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        nvdimm@lists.linux.dev, linux-ext4@vger.kernel.org,
+        netfs@lists.linux.dev, linux-nfs@vger.kernel.org,
+        ocfs2-devel@lists.linux.dev, linux-cifs@vger.kernel.org,
+        samba-technical@lists.samba.org, dri-devel@lists.freedesktop.org,
+        intel-gfx@lists.freedesktop.org, linux-btrfs@vger.kernel.org,
+        ceph-devel@vger.kernel.org, gfs2@lists.linux.dev,
+        linux-nilfs@vger.kernel.org, linux-xfs@vger.kernel.org,
+        cgroups@vger.kernel.org, Tal Zussman <tz2294@columbia.edu>
+X-Mailer: b4 0.14.3-dev-d7477
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1772063077; l=3877;
+ i=tz2294@columbia.edu; s=20250528; h=from:subject:message-id;
+ bh=RPYa8SOtCEMGYvfhLiG7oMZP0LUGjYMFBvMU/E6aYSQ=;
+ b=N/1edh2L6XTHkwD9ieSfOXn9kYa5DYTkRpLgb6W+Pjo3fqU/OShuTpJ0EUyLfSHC66PI9wcY+
+ BU8+4Nx0zdtBWryBzWRqlHj5gGJzMg+bWxBXZztU9BaHETUf5RWJ+Bm
+X-Developer-Key: i=tz2294@columbia.edu; a=ed25519;
+ pk=BIj5KdACscEOyAC0oIkeZqLB3L94fzBnDccEooxeM5Y=
+X-Proofpoint-GUID: 8t3wS9BDlxX2htMExU5aAK4wCeN3D60z
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMjI1MDIyNyBTYWx0ZWRfX4AhKYBhYlaMO
+ H/F5uMjys3N0eLTJGqULMSLyXKiprJBiJNRw64Ve+rQ8gkSwLaxad9qhddMBTekSDoMyTe9Xd3f
+ j1L3ymjkOjQjPKBl+N9e+UKZLYgCqqPIb7X3ijdZmNRrCYXXuAME1EV60Z4/z5YSUhhDcmnTcEg
+ /JsGvOSOG4GGTyUFEtbO2F/XhbAcPE0fciRZ+aq4hu2bbqGM1HttcTmfcdpWXdPpXHPsB5hnRT9
+ BLxHPG4ARyKfqaq2t4xYAFs5jE1/pYZhy4vwRVJsJH6hnFPqX4nBAwTHaMmbb1KevIivKO78G/H
+ 7SnDVxcZAGJW8roMkAIwOs38sndJuc7rDZrfm5F0jjAJvjaeQ9LEmHhGDXd4e4tLWYbq0SksAZl
+ Sl2MtnpbCXxU71A8K5Bu0mhrdnLZ8Skms5s+lHe46rNJCJnB2ftHQFw5t0u9kVlQpu2Xa5RXEpc
+ QySAUeLmwA5IWO2ggRQ==
+X-Authority-Analysis: v=2.4 cv=FqMIPmrq c=1 sm=1 tr=0 ts=699f8969 cx=c_pps
+ a=wEM5vcRIz55oU/E2lInRtA==:117 a=mD05b5UW6KhLIDvowZ5dSQ==:17
+ a=IkcTkHD0fZMA:10 a=HzLeVaNsDn8A:10 a=x7bEGLp0ZPQA:10
+ a=VkNPw1HP01LnGYTKEx00:22 a=Da8U98TiO7q1upZEImrf:22 a=JR4YdQiviy7OQf72WyZ1:22
+ a=VwQbUJbxAAAA:8 a=C2eTfLYCeeefI48a-yAA:9 a=QEXdDO2ut3YA:10
+ a=OIgjcC2v60KrkQgK7BGD:22
+X-Proofpoint-ORIG-GUID: 8t3wS9BDlxX2htMExU5aAK4wCeN3D60z
+X-Proofpoint-Virus-Version: vendor=nai engine=6800 definitions=11712
+ signatures=596818
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ phishscore=0 priorityscore=1501 malwarescore=0 adultscore=0 impostorscore=10
+ spamscore=0 bulkscore=10 lowpriorityscore=10 clxscore=1011 suspectscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2602130000 definitions=main-2602250227
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	DMARC_POLICY_ALLOW(-0.50)[columbia.edu,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[columbia.edu:s=pps01];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DKIM_TRACE(0.00)[suse.com:+];
-	TAGGED_FROM(0.00)[bounces-21936-lists,linux-btrfs=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[dilger.ca,manguebit.org,kernel.org,fasheh.com,evilplan.org,linux.alibaba.com,samba.org,gmail.com,microsoft.com,talpey.com,linux.intel.com,suse.de,ffwll.ch,intel.com,ursulin.net,fb.com,suse.com,redhat.com,dubeyko.com,linux.dev,oracle.com,brown.name,ziepe.ca,nvidia.com,cmpxchg.org,google.com,bytedance.com,lists.infradead.org,vger.kernel.org,lists.sourceforge.net,kvack.org,lists.linux.dev,lists.samba.org,lists.freedesktop.org,columbia.edu];
+	FREEMAIL_TO(0.00)[redhat.com,auristor.com,kernel.org,linux-foundation.org,oracle.com,google.com,suse.com,tencent.com,huaweicloud.com,gmail.com,infradead.org,intel.com,suse.cz,zeniv.linux.org.uk,mit.edu];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21937-lists,linux-btrfs=lfdr.de];
+	DKIM_TRACE(0.00)[columbia.edu:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[columbia.edu:mid,columbia.edu:dkim,columbia.edu:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns];
+	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[wqu@suse.com,linux-btrfs@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[tz2294@columbia.edu,linux-btrfs@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	RCVD_COUNT_FIVE(0.00)[6];
-	NEURAL_HAM(-0.00)[-1.000];
-	TO_DN_NONE(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	RCPT_COUNT_GT_50(0.00)[97];
+	MID_RHS_MATCH_FROM(0.00)[];
+	NEURAL_HAM(-0.00)[-0.989];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 54C4519E7E1
+	RCVD_COUNT_SEVEN(0.00)[7]
+X-Rspamd-Queue-Id: 5722319EFD6
 X-Rspamd-Action: no action
 
-Currently we call cow_file_range_inline() in different situations, from
-regular cow_file_range() to compress_file_range().
+struct pagevec was removed in commit 1e0877d58b1e ("mm: remove struct
+pagevec"). Remove any stray references to it and rename relevant files
+and macros accordingly.
 
-This is because inline extent creation has different conditions based on
-whether it's a compressed one or not.
+While at it, remove unnecessary #includes of pagevec.h (now
+folio_batch.h) in .c files. There are probably more of these that could
+be removed in .h files, but those are more complex to verify.
 
-But on the other hand, inline extent creation shouldn't be so
-distributed, we can just have a dedicated branch in
-btrfs_run_delalloc_range().
-
-It will become more obvious for compressed inline cases, it makes no
-sense to go through all the complex async extent mechanism just to
-inline a single block.
-
-So here we introduce a dedicated run_delalloc_inline() helper, and
-remove all inline related handling from cow_file_range() and
-compress_file_range().
-
-There is a special update to inode_need_compress(), that a new
-@check_inline parameter is introduced.
-This is to allow inline specific checks to be done inside
-run_delalloc_inline(), which allows single block compression, but
-other call sites should always reject single block compression.
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
-Changelog:
-v4:
-- Reorder with the patch "btrfs: do compressed bio size roundup and zeroing in one go"
-  That patch is a pure cleanup, should not depend on this intrusive
-  patch.
+Changes in v2:
+- Add tags from Matthew, David, and Chris (thanks!).
+- Add 3 new patches with more cleanups.
+- Link to v1: https://lore.kernel.org/r/20260225-pagevec_cleanup-v1-1-38e2246363d2@columbia.edu
 
-- Remove the comment of ret > 0 case of cow_file_range()
-  As that function can no longer create inlined extent.
-
-v3:
-- Fix a grammar error in the commit message
-
-v2:
-- Fix a bug exposed in btrfs/344
-  Where the inode_need_compress() check allows single block to be
-  compressed.
-  Update inode_need_compress() to accept a new @check_inline parameter,
-  so that only inode_need_compress() in run_delalloc_inline() will allow
-  single block to be compressed, meanwhile all other call sites will
-  reject single block compression.
-
-- Fix a leak of extent_state
 ---
- fs/btrfs/inode.c | 205 ++++++++++++++++++++++-------------------------
- 1 file changed, 95 insertions(+), 110 deletions(-)
+Tal Zussman (4):
+      mm: Remove stray references to struct pagevec
+      fs: Remove unncessary pagevec.h includes
+      folio_batch: Rename pagevec.h to folio_batch.h
+      folio_batch: Rename PAGEVEC_SIZE to FOLIO_BATCH_SIZE
 
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 46acfd16e817..9148ec4a1d19 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -74,7 +74,6 @@
- #include "delayed-inode.h"
- 
- #define COW_FILE_RANGE_KEEP_LOCKED	(1UL << 0)
--#define COW_FILE_RANGE_NO_INLINE	(1UL << 1)
- 
- struct btrfs_iget_args {
- 	u64 ino;
-@@ -703,55 +702,6 @@ static noinline int __cow_file_range_inline(struct btrfs_inode *inode,
- 	return ret;
- }
- 
--static noinline int cow_file_range_inline(struct btrfs_inode *inode,
--					  struct folio *locked_folio,
--					  u64 offset, u64 end,
--					  size_t compressed_size,
--					  int compress_type,
--					  struct folio *compressed_folio,
--					  bool update_i_size)
--{
--	struct extent_state *cached = NULL;
--	unsigned long clear_flags = EXTENT_DELALLOC | EXTENT_DELALLOC_NEW |
--		EXTENT_DEFRAG | EXTENT_DO_ACCOUNTING | EXTENT_LOCKED;
--	u64 size = min_t(u64, i_size_read(&inode->vfs_inode), end + 1);
--	int ret;
--
--	if (!can_cow_file_range_inline(inode, offset, size, compressed_size))
--		return 1;
--
--	btrfs_lock_extent(&inode->io_tree, offset, end, &cached);
--	ret = __cow_file_range_inline(inode, size, compressed_size,
--				      compress_type, compressed_folio,
--				      update_i_size);
--	if (ret > 0) {
--		btrfs_unlock_extent(&inode->io_tree, offset, end, &cached);
--		return ret;
--	}
--
--	/*
--	 * In the successful case (ret == 0 here), cow_file_range will return 1.
--	 *
--	 * Quite a bit further up the callstack in extent_writepage(), ret == 1
--	 * is treated as a short circuited success and does not unlock the folio,
--	 * so we must do it here.
--	 *
--	 * In the failure case, the locked_folio does get unlocked by
--	 * btrfs_folio_end_all_writers, which asserts that it is still locked
--	 * at that point, so we must *not* unlock it here.
--	 *
--	 * The other two callsites in compress_file_range do not have a
--	 * locked_folio, so they are not relevant to this logic.
--	 */
--	if (ret == 0)
--		locked_folio = NULL;
--
--	extent_clear_unlock_delalloc(inode, offset, end, locked_folio, &cached,
--				     clear_flags, PAGE_UNLOCK |
--				     PAGE_START_WRITEBACK | PAGE_END_WRITEBACK);
--	return ret;
--}
--
- struct async_extent {
- 	u64 start;
- 	u64 ram_size;
-@@ -797,7 +747,7 @@ static int add_async_extent(struct async_chunk *cow, u64 start, u64 ram_size,
-  * options, defragmentation, properties or heuristics.
-  */
- static inline int inode_need_compress(struct btrfs_inode *inode, u64 start,
--				      u64 end)
-+				      u64 end, bool check_inline)
- {
- 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
- 
-@@ -812,8 +762,9 @@ static inline int inode_need_compress(struct btrfs_inode *inode, u64 start,
- 	 * and will always fallback to regular write later.
- 	 */
- 	if (end + 1 - start <= fs_info->sectorsize &&
--	    (start > 0 || end + 1 < inode->disk_i_size))
-+	    (!check_inline || (start > 0 || end + 1 < inode->disk_i_size)))
- 		return 0;
-+
- 	/* Defrag ioctl takes precedence over mount options and properties. */
- 	if (inode->defrag_compress == BTRFS_DEFRAG_DONT_COMPRESS)
- 		return 0;
-@@ -928,7 +879,6 @@ static void compress_file_range(struct btrfs_work *work)
- 		container_of(work, struct async_chunk, work);
- 	struct btrfs_inode *inode = async_chunk->inode;
- 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
--	struct address_space *mapping = inode->vfs_inode.i_mapping;
- 	struct compressed_bio *cb = NULL;
- 	u64 blocksize = fs_info->sectorsize;
- 	u64 start = async_chunk->start;
-@@ -1000,7 +950,7 @@ static void compress_file_range(struct btrfs_work *work)
- 	 * been flagged as NOCOMPRESS.  This flag can change at any time if we
- 	 * discover bad compression ratios.
- 	 */
--	if (!inode_need_compress(inode, start, end))
-+	if (!inode_need_compress(inode, start, end, false))
- 		goto cleanup_and_bail_uncompressed;
- 
- 	if (0 < inode->defrag_compress && inode->defrag_compress < BTRFS_NR_COMPRESS_TYPES) {
-@@ -1021,35 +971,6 @@ static void compress_file_range(struct btrfs_work *work)
- 	total_compressed = cb->bbio.bio.bi_iter.bi_size;
- 	total_in = cur_len;
- 
--	/*
--	 * Try to create an inline extent.
--	 *
--	 * If we didn't compress the entire range, try to create an uncompressed
--	 * inline extent, else a compressed one.
--	 *
--	 * Check cow_file_range() for why we don't even try to create inline
--	 * extent for the subpage case.
--	 */
--	if (total_in < actual_end)
--		ret = cow_file_range_inline(inode, NULL, start, end, 0,
--					    BTRFS_COMPRESS_NONE, NULL, false);
--	else
--		ret = cow_file_range_inline(inode, NULL, start, end, total_compressed,
--					    compress_type,
--					    bio_first_folio_all(&cb->bbio.bio), false);
--	if (ret <= 0) {
--		cleanup_compressed_bio(cb);
--		if (ret < 0)
--			mapping_set_error(mapping, -EIO);
--		return;
--	}
--	/*
--	 * If a single block at file offset 0 cannot be inlined, fall back to
--	 * regular writes without marking the file incompressible.
--	 */
--	if (start == 0 && end <= blocksize)
--		goto cleanup_and_bail_uncompressed;
--
- 	/*
- 	 * We aren't doing an inline extent. Round the compressed size up to a
- 	 * block size boundary so the allocator does sane things.
-@@ -1427,11 +1348,6 @@ static int cow_one_range(struct btrfs_inode *inode, struct folio *locked_folio,
-  *
-  * When this function fails, it unlocks all folios except @locked_folio.
-  *
-- * When this function successfully creates an inline extent, it returns 1 and
-- * unlocks all folios including locked_folio and starts I/O on them.
-- * (In reality inline extents are limited to a single block, so locked_folio is
-- * the only folio handled anyway).
-- *
-  * When this function succeed and creates a normal extent, the folio locking
-  * status depends on the passed in flags:
-  *
-@@ -1475,25 +1391,6 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
- 	ASSERT(num_bytes <= btrfs_super_total_bytes(fs_info->super_copy));
- 
- 	inode_should_defrag(inode, start, end, num_bytes, SZ_64K);
--
--	if (!(flags & COW_FILE_RANGE_NO_INLINE)) {
--		/* lets try to make an inline extent */
--		ret = cow_file_range_inline(inode, locked_folio, start, end, 0,
--					    BTRFS_COMPRESS_NONE, NULL, false);
--		if (ret <= 0) {
--			/*
--			 * We succeeded, return 1 so the caller knows we're done
--			 * with this page and already handled the IO.
--			 *
--			 * If there was an error then cow_file_range_inline() has
--			 * already done the cleanup.
--			 */
--			if (ret == 0)
--				ret = 1;
--			goto done;
--		}
--	}
--
- 	alloc_hint = btrfs_get_extent_allocation_hint(inode, start, num_bytes);
- 
- 	/*
-@@ -1571,7 +1468,6 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
- 	}
- 	extent_clear_unlock_delalloc(inode, orig_start, end, locked_folio, &cached,
- 				     EXTENT_LOCKED | EXTENT_DELALLOC, page_ops);
--done:
- 	if (done_offset)
- 		*done_offset = end;
- 	return ret;
-@@ -1874,7 +1770,7 @@ static int fallback_to_cow(struct btrfs_inode *inode,
- 	 * a locked folio, which can race with writeback.
- 	 */
- 	ret = cow_file_range(inode, locked_folio, start, end, NULL,
--			     COW_FILE_RANGE_NO_INLINE | COW_FILE_RANGE_KEEP_LOCKED);
-+			     COW_FILE_RANGE_KEEP_LOCKED);
- 	ASSERT(ret != 1);
- 	return ret;
- }
-@@ -2425,6 +2321,80 @@ static bool should_nocow(struct btrfs_inode *inode, u64 start, u64 end)
- 	return false;
- }
- 
-+/*
-+ * Return 0 if an inlined extent is created successfully.
-+ * Return <0 if critical error happened.
-+ * Return >0 if an inline extent can not be created.
-+ */
-+static int run_delalloc_inline(struct btrfs_inode *inode, struct folio *locked_folio)
-+{
-+	struct btrfs_fs_info *fs_info = inode->root->fs_info;
-+	struct compressed_bio *cb = NULL;
-+	struct extent_state *cached = NULL;
-+	const u64 i_size = i_size_read(&inode->vfs_inode);
-+	const u32 blocksize = fs_info->sectorsize;
-+	int compress_type = fs_info->compress_type;
-+	int compress_level = fs_info->compress_level;
-+	u32 compressed_size = 0;
-+	int ret;
-+
-+	ASSERT(folio_pos(locked_folio) == 0);
-+
-+	if (btrfs_inode_can_compress(inode) &&
-+	    inode_need_compress(inode, 0, blocksize, true)) {
-+		if (inode->defrag_compress > 0 &&
-+		    inode->defrag_compress < BTRFS_NR_COMPRESS_TYPES) {
-+			compress_type = inode->defrag_compress;
-+			compress_level = inode->defrag_compress_level;
-+		} else if (inode->prop_compress) {
-+			compress_type = inode->prop_compress;
-+		}
-+		cb = btrfs_compress_bio(inode, 0, blocksize, compress_type, compress_level, 0);
-+		if (IS_ERR(cb)) {
-+			cb = NULL;
-+			/* Just fall back to non-compressed case. */
-+		} else {
-+			compressed_size = cb->bbio.bio.bi_iter.bi_size;
-+		}
-+	}
-+	if (!can_cow_file_range_inline(inode, 0, i_size, compressed_size)) {
-+		if (cb)
-+			cleanup_compressed_bio(cb);
-+		return 1;
-+	}
-+
-+	btrfs_lock_extent(&inode->io_tree, 0, blocksize - 1, &cached);
-+	if (cb)
-+		ret = __cow_file_range_inline(inode, i_size, compressed_size, compress_type,
-+					      bio_first_folio_all(&cb->bbio.bio), false);
-+	else
-+		ret = __cow_file_range_inline(inode, i_size, 0, BTRFS_COMPRESS_NONE,
-+					      NULL, false);
-+	/*
-+	 * In the successful case (ret == 0 here), run_delalloc_inline() will return 1.
-+	 *
-+	 * Quite a bit further up the callstack in extent_writepage(), ret == 1
-+	 * is treated as a short circuited success and does not unlock the folio,
-+	 * so we must do it here.
-+	 *
-+	 * For failure case, the @locked_folio does get unlocked by
-+	 * btrfs_folio_end_lock_bitmap(), so we must *not* unlock it here.
-+	 *
-+	 * So if ret == 0, we let extent_clear_unlock_delalloc() to unlock the
-+	 * folio by passing NULL as @locked_folio.
-+	 * Otherwise pass @locked_folio as usual.
-+	 */
-+	if (ret == 0)
-+		locked_folio = NULL;
-+	extent_clear_unlock_delalloc(inode, 0, blocksize - 1, locked_folio, &cached,
-+				     EXTENT_DELALLOC | EXTENT_DELALLOC_NEW | EXTENT_DEFRAG |
-+				     EXTENT_DO_ACCOUNTING | EXTENT_LOCKED,
-+				     PAGE_UNLOCK | PAGE_START_WRITEBACK | PAGE_END_WRITEBACK);
-+	if (cb)
-+		cleanup_compressed_bio(cb);
-+	return ret;
-+}
-+
- /*
-  * Function to process delayed allocation (create CoW) for ranges which are
-  * being touched for the first time.
-@@ -2441,11 +2411,26 @@ int btrfs_run_delalloc_range(struct btrfs_inode *inode, struct folio *locked_fol
- 	ASSERT(!(end <= folio_pos(locked_folio) ||
- 		 start >= folio_next_pos(locked_folio)));
- 
-+	if (start == 0 && end + 1 <= inode->root->fs_info->sectorsize &&
-+	    end + 1 >= inode->disk_i_size) {
-+		int ret;
-+
-+		ret = run_delalloc_inline(inode, locked_folio);
-+		if (ret < 0)
-+			return ret;
-+		if (ret == 0)
-+			return 1;
-+		/*
-+		 * Continue regular handling if we can not create an
-+		 * inlined extent.
-+		 */
-+	}
-+
- 	if (should_nocow(inode, start, end))
- 		return run_delalloc_nocow(inode, locked_folio, start, end);
- 
- 	if (btrfs_inode_can_compress(inode) &&
--	    inode_need_compress(inode, start, end) &&
-+	    inode_need_compress(inode, start, end, false) &&
- 	    run_delalloc_compressed(inode, locked_folio, start, end, wbc))
- 		return 1;
- 
+ MAINTAINERS                                |  1 +
+ drivers/gpu/drm/drm_gem.c                  |  2 +-
+ drivers/gpu/drm/i915/gem/i915_gem_shmem.c  |  2 +-
+ drivers/gpu/drm/i915/gt/intel_gtt.h        |  2 +-
+ drivers/gpu/drm/i915/i915_gpu_error.c      |  2 +-
+ fs/afs/internal.h                          |  1 -
+ fs/afs/write.c                             |  1 -
+ fs/btrfs/compression.c                     |  2 +-
+ fs/btrfs/extent_io.c                       |  6 +++---
+ fs/btrfs/tests/extent-io-tests.c           |  2 +-
+ fs/buffer.c                                |  2 +-
+ fs/ceph/addr.c                             |  2 +-
+ fs/dax.c                                   |  1 -
+ fs/ext4/file.c                             |  1 -
+ fs/ext4/inode.c                            |  2 +-
+ fs/ext4/page-io.c                          |  1 -
+ fs/ext4/readpage.c                         |  1 -
+ fs/f2fs/checkpoint.c                       |  2 +-
+ fs/f2fs/compress.c                         |  2 +-
+ fs/f2fs/data.c                             |  2 +-
+ fs/f2fs/f2fs.h                             |  2 --
+ fs/f2fs/file.c                             |  1 -
+ fs/f2fs/node.c                             |  2 +-
+ fs/gfs2/aops.c                             |  2 +-
+ fs/hugetlbfs/inode.c                       |  2 +-
+ fs/mpage.c                                 |  1 -
+ fs/netfs/buffered_write.c                  |  1 -
+ fs/nfs/blocklayout/blocklayout.c           |  1 -
+ fs/nfs/dir.c                               |  1 -
+ fs/nilfs2/btree.c                          |  2 +-
+ fs/nilfs2/page.c                           |  2 +-
+ fs/nilfs2/segment.c                        |  2 +-
+ fs/ocfs2/refcounttree.c                    |  1 -
+ fs/ramfs/file-nommu.c                      |  2 +-
+ fs/smb/client/connect.c                    |  1 -
+ fs/smb/client/file.c                       |  1 -
+ include/linux/{pagevec.h => folio_batch.h} | 16 ++++++++--------
+ include/linux/folio_queue.h                |  8 ++++----
+ include/linux/iomap.h                      |  2 +-
+ include/linux/sunrpc/svc.h                 |  2 +-
+ include/linux/swap.h                       |  2 --
+ include/linux/writeback.h                  |  2 +-
+ mm/filemap.c                               |  2 +-
+ mm/gup.c                                   |  2 +-
+ mm/memcontrol.c                            |  2 +-
+ mm/mlock.c                                 |  2 +-
+ mm/page-writeback.c                        |  2 +-
+ mm/page_alloc.c                            |  2 +-
+ mm/shmem.c                                 |  6 +++---
+ mm/swap.c                                  |  4 ++--
+ mm/swap_state.c                            |  4 ++--
+ mm/truncate.c                              |  8 ++++----
+ mm/vmscan.c                                |  2 +-
+ 53 files changed, 56 insertions(+), 73 deletions(-)
+---
+base-commit: 957a3fab8811b455420128ea5f41c51fd23eb6c7
+change-id: 20260225-pagevec_cleanup-d47c16cb0f2d
+
+Best regards,
 -- 
-2.53.0
+Tal Zussman <tz2294@columbia.edu>
 
 
