@@ -1,222 +1,380 @@
-Return-Path: <linux-btrfs+bounces-21929-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21930-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 8CgVHT8tn2lXZQQAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21929-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Feb 2026 18:11:27 +0100
+	id aBNACDown2lXZQQAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21930-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Feb 2026 18:24:10 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A6B319B4D9
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Feb 2026 18:11:26 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id A868219B800
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Feb 2026 18:24:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 4F0E63012B72
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Feb 2026 17:11:26 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 0BB2730292FD
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Feb 2026 17:23:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D535B2517AC;
-	Wed, 25 Feb 2026 17:11:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 727EF363C79;
+	Wed, 25 Feb 2026 17:23:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LQr6CjY8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SjTYMPwV"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 617F13E8C54
-	for <linux-btrfs@vger.kernel.org>; Wed, 25 Feb 2026 17:11:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C26492744F
+	for <linux-btrfs@vger.kernel.org>; Wed, 25 Feb 2026 17:23:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772039476; cv=none; b=nBsZK2UVW8jfa7pdF6OqgsiMJT12vIyzGs9vFy0VaNwR1/pEeGojfG5xSVzBRBQuEC3tzXQ6QGGR5bAcA/zuypm9RLLIrZjn+e6lV5DAs0ouZegen0L0bl0yVWpj5Umi+M77fy73XeJ3Dt+LXDQhxrrEcE0Z3w7l60N8QhhfIv4=
+	t=1772040221; cv=none; b=huE396UrpBWp7UXL7Y6IX1UZsQ19L6Bm+48cFiAlpUsJ6xD4nfluF67mmgiRIiezh9/dO0O+eDT+e6zoPtEUjP3qXKxS5vqgk0AcGG7G7Y8cJPzZjJ61xNuQ4KnyXNDKPyZNc6kyNsOHYN27D9KPU08O788NslM4DZaE/fsLN7g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772039476; c=relaxed/simple;
-	bh=uPTqY9JgO/N3hTjOibB1QSaxUILQmEOeelzPayjTk/k=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=C3CvILUOyQE5o1ho/SOzA2mgaTrr+7hm/wdcch9T2yRwDsWb9hEvh4EGBm9yducW03bWAajZ3pD3CI+LH7hx1OL5KSWwgpfMdMLwjMkTK3ZvXgXON54vv9kdk4S2H4YQ2btrfG8DfyazeZzAxxPXD3Acv9s/rcFsjOy/cELSW6M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LQr6CjY8; arc=none smtp.client-ip=209.85.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-48371119eacso81183075e9.2
-        for <linux-btrfs@vger.kernel.org>; Wed, 25 Feb 2026 09:11:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1772039473; x=1772644273; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FIssFQ2vzW/kmoN9DVV+0qSa2AsjIM2tskzI7Qx/Me8=;
-        b=LQr6CjY8TtDOQx+Vv1A1W28IXTraePHaxC8M6KKLC2Y2NFFORZ2UZcPvzcdpzBeXyD
-         w4VKkLyHQ0PGc70TWaCEKbKJwFvxuP9XDad0FxLKqjcqHfOmcQ+UihE1pYpFgGiuWt13
-         fT/Qgl3lybJbsOKir8FkNcNGRuqtPIdBVLQgP4HGyLS4EgqciKiAP5XeW4cKreKNuzCY
-         sawai24HqKBCZSoqPpVC+Wknfg3fwvV/JYWURcvWIqiprrecOZZ8wkCg4M0YX8X80cea
-         gh+pKhoxL6nslmtmN9fd6GrNEuUiqIejXM8QYpFhrX8f+W2RCJ3tUYzkwc9KkM3BqO8G
-         0PZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772039473; x=1772644273;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=FIssFQ2vzW/kmoN9DVV+0qSa2AsjIM2tskzI7Qx/Me8=;
-        b=WDUCgtlstEuXmNajpO7YDrCzH4LxwT5XF0xx2t7O7Kgp19zmFWPtZbDhd7sczTaaPQ
-         SpOneYi0GQZ+143yaG1I0P8iDCSnWYVuGp8aNWb4w8Kr/PnNcKS1uqfxrdYWh3jQ3fQ7
-         dybcyfKoS3vfDHsu1i/YooZia4G0jtbVX55A+zQIv5oXT/Lxj/sfxdxKAf9Zvft0Tp36
-         000lEEU867NxlVke90k/FCD7LkOBKsy2rOSXNM52inThn+IrYaB1bn4KAvdAFCEuakVP
-         t5+6uSU2nK82LWeTWgYX5BknBSerOSyw6zCF9ncPU35ScKZpz/UdGfdWgwv5rcD/kGsy
-         1/cA==
-X-Forwarded-Encrypted: i=1; AJvYcCWAFk9s0x0wEw90HZ/CJCohk24eZkX2hGhyMZ0o4givy1KFhIPQVs9FFBbdv/16Y/R1UzkIT70pUkSUEA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzujhT4Z826MT/rRrHRXDf91l+Kr1/UgPwzqNAOeS2WIW8sSTfe
-	OHUsXowL7Htqxh93XhHa8FiRoZoa8pzWXpj/ToAC/kw5WVHWv+1SUco0
-X-Gm-Gg: ATEYQzw4xolzWO13SKOj/QUgiWy1rEqqqwwT4Gp9wqcsc5qAphlpOFFqEAVwtjzIvGl
-	dt1fA9ocMQHQOjBb6jjq7pZn6y0JYknKL7nGogr5ZgDO+TvO6GNNsX7ErdfKzJ85hm11rV3SZ7t
-	rMBAFpsOC1DRwidf5/qblwyw3dWgF14i7KXMhImpQ50P5QbD2Sht5hGQ+qZsMjj3bm3IWnY1+9X
-	jyIhKjTYgXzPCvdql60mVHGeRkp47tnXnLWfJ4uk+kKlsgodUzibpV79kDH9rQkslBHT/W5MQ9r
-	HAC7gewld0Ngow2elCuHVcOU3wmObgFUvvzz2BHmj0npPvLYeCbYYSkqhTDgYcqOWHXAJwqeiJT
-	DZpQpGTMSCxmEfSXxk/gAIbF3o8ma816loRSPMIvKMWRcQwwgGsumaalFxyWNFDMpIxpjEI+5cL
-	2g/QHK9oWncwavCjdQ08u2596GiZ6cIoAzeyjAQRrzCG/e1ajS5fEtzIlF6GQz86Fr
-X-Received: by 2002:a05:600c:450c:b0:47d:73a4:45a7 with SMTP id 5b1f17b1804b1-483a96377b1mr274706305e9.24.1772039472364;
-        Wed, 25 Feb 2026 09:11:12 -0800 (PST)
-Received: from pumpkin (82-69-66-36.dsl.in-addr.zen.co.uk. [82.69.66.36])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-483bd68826asm128499385e9.0.2026.02.25.09.11.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Feb 2026 09:11:11 -0800 (PST)
-Date: Wed, 25 Feb 2026 17:11:10 +0000
-From: David Laight <david.laight.linux@gmail.com>
-To: David Sterba <dsterba@suse.cz>
-Cc: Qu Wenruo <quwenruo.btrfs@gmx.com>, Miquel =?UTF-8?B?U2FiYXTDqSBTb2w=?=
- =?UTF-8?B?w6A=?= <mssola@mssola.com>, dsterba@suse.com, clm@fb.com,
- naohiro.aota@wdc.com, linux-btrfs@vger.kernel.org,
- linux-kernel@vger.kernel.org, kees@kernel.org
-Subject: Re: [PATCH] btrfs: replace kcalloc() calls to kzalloc_objs()
-Message-ID: <20260225171110.171fad8d@pumpkin>
-In-Reply-To: <20260225144446.GE26902@twin.jikos.cz>
-References: <20260223234451.277369-1-mssola@mssola.com>
-	<69c16813-5ac1-4756-ad42-41b4275e6aee@gmx.com>
-	<20260224145555.44a8096d@pumpkin>
-	<20260225144446.GE26902@twin.jikos.cz>
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; arm-unknown-linux-gnueabihf)
+	s=arc-20240116; t=1772040221; c=relaxed/simple;
+	bh=msMUgh12c1NbV4nVgyb4dqVackJAtU60iLEfQSgqAwg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=grng8HmZA0W3WL1MezUgzUClN5w78OLfL9YvnXWl8/nbmWlGX9ptPlnogtThwOlvglywIzV0GSVWWLUVDry3BOYP7MiYEZqxTVkBMX1dv9zlWqCF1MJsW3WMU4iU201YXL0GTnjUQ9YsOJk6NScKE1w8TgjRqxIYK6UY7BXv4+o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SjTYMPwV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66BC8C19421
+	for <linux-btrfs@vger.kernel.org>; Wed, 25 Feb 2026 17:23:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1772040221;
+	bh=msMUgh12c1NbV4nVgyb4dqVackJAtU60iLEfQSgqAwg=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=SjTYMPwV0SqvzBX6tI130+LljxMJsBy1cTTKnt3lLslzi5em1fQMjtHhiWw5YcHlU
+	 IBE4QO45M+blNZ9j7ivNMnz4F0CKBcHKeTE0lwm7SSP6EJPBsHDLulxKYBX40SNhWM
+	 gJY+1tfx/8tavlyx+31mP3uu3fkmUmXYwG5bWKGBukRC3i0Am/t4Mz2Q1nb/h+DTm2
+	 0b4LKhtaTZm17yMa9Apb8YV0GlEJ5axePoYCZhXjN4GGlRHGdUMRCA3tpJssK+Xzn3
+	 vDQ5l9cHtprbowlYNx93ed9OnK17sULeBFW6M0601cowf3eGiUp28TLMTqH9mNwwa8
+	 cyP6CjCjyWTcA==
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-b7cf4a975d2so1214945066b.2
+        for <linux-btrfs@vger.kernel.org>; Wed, 25 Feb 2026 09:23:41 -0800 (PST)
+X-Gm-Message-State: AOJu0Yw5Z2Nsu2XGM0HDBCkK+QWYcvtGm3L4OmmT2bVYt/FGamgYotgr
+	YSJbiguuVeFqzzP6rH4SGRPDxNZQ26NXOcNZ/FGxw7DvtK5OnHYDL96m6+Sn52mn5GsT2bM4bLN
+	H3yP/uHMMGBTU36Dl02kNuhQ796bDx+U=
+X-Received: by 2002:a17:907:3d12:b0:b86:e937:d097 with SMTP id
+ a640c23a62f3a-b9081b23ddemr1141127966b.38.1772040219822; Wed, 25 Feb 2026
+ 09:23:39 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+References: <14fc2404e55d99e9d3a4f95e3e825678dc2422a0.1771971643.git.boris@bur.io>
+ <CAL3q7H51BA98vD0VZYYEu+tdzLhHm6H69dTSCHeED17wNC8D2A@mail.gmail.com> <20260225170921.GA682210@zen.localdomain>
+In-Reply-To: <20260225170921.GA682210@zen.localdomain>
+From: Filipe Manana <fdmanana@kernel.org>
+Date: Wed, 25 Feb 2026 17:23:02 +0000
+X-Gmail-Original-Message-ID: <CAL3q7H6bVZquyvod=_YjNw1vRBSCQscWSrb5mVEZ1YhLBS8e9Q@mail.gmail.com>
+X-Gm-Features: AaiRm52TubgBm2hQOgjhdTWEySzEajotzj0vBsNzyxmZLTzRGZTaLT_rSVmROpc
+Message-ID: <CAL3q7H6bVZquyvod=_YjNw1vRBSCQscWSrb5mVEZ1YhLBS8e9Q@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] btrfs: set BTRFS_ROOT_ORPHAN_CLEANUP during subvol create
+To: Boris Burkov <boris@bur.io>
+Cc: linux-btrfs@vger.kernel.org, kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21929-lists,linux-btrfs=lfdr.de];
-	FREEMAIL_CC(0.00)[gmx.com,mssola.com,suse.com,fb.com,wdc.com,vger.kernel.org,kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	TO_DN_SOME(0.00)[];
+	RCPT_COUNT_THREE(0.00)[3];
+	TAGGED_FROM(0.00)[bounces-21930-lists,linux-btrfs=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[davidlaightlinux@gmail.com,linux-btrfs@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[fdmanana@kernel.org,linux-btrfs@vger.kernel.org];
+	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	RCPT_COUNT_SEVEN(0.00)[9];
+	NEURAL_HAM(-0.00)[-1.000];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,gmx.com:email,suse.cz:email,mssola.com:email]
-X-Rspamd-Queue-Id: 1A6B319B4D9
+	DBL_BLOCKED_OPENRESOLVER(0.00)[bur.io:email,mail.gmail.com:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: A868219B800
 X-Rspamd-Action: no action
 
-On Wed, 25 Feb 2026 15:44:46 +0100
-David Sterba <dsterba@suse.cz> wrote:
+On Wed, Feb 25, 2026 at 5:08=E2=80=AFPM Boris Burkov <boris@bur.io> wrote:
+>
+> On Wed, Feb 25, 2026 at 12:21:43PM +0000, Filipe Manana wrote:
+> > On Tue, Feb 24, 2026 at 10:25=E2=80=AFPM Boris Burkov <boris@bur.io> wr=
+ote:
+> > >
+> > > We have recently observed a number of subvolumes with broken dentries=
+.
+> > > ls-ing the parent dir looks like:
+> > >
+> > > drwxrwxrwt 1 root root 16 Jan 23 16:49 .
+> > > drwxr-xr-x 1 root root 24 Jan 23 16:48 ..
+> > > d????????? ? ?    ?     ?            ? broken_subvol
+> > >
+> > > and similarly stat-ing the file fails.
+> > >
+> > > In this state, deleting the subvol fails with ENOENT, but attempting =
+to
+> > > create a new file or subvol over it errors out with EEXIST and even
+> > > aborts the fs. Which leaves us a bit stuck.
+> > >
+> > > dmesg contains a single notable error message reading:
+> > > "could not do orphan cleanup -2"
+> > >
+> > > 2 is ENOENT and the error comes from the failure handling path of
+> > > btrfs_orphan_cleanup(), with the stack leading back up to
+> > > btrfs_lookup().
+> > >
+> > > btrfs_lookup
+> > > btrfs_lookup_dentry
+> > > btrfs_orphan_cleanup // prints that message and returns -ENOENT
+> > >
+> > > After some detailed inspection of the internal state, it became clear
+> > > that:
+> > > - there are no orphan items for the subvol
+> > > - the subvol is otherwise healthy looking, it is not half-deleted or
+> > >   anything, there is no drop progress, etc.
+> > > - the subvol was created a while ago and does the meaningful first
+> > >   btrfs_orphan_cleanup() call that sets BTRFS_ROOT_ORPHAN_CLEANUP muc=
+h
+> > >   later.
+> > > - after btrfs_orphan_cleanup() fails, btrfs_lookup_dentry() returns -=
+ENOENT,
+> > >   which results in a negative dentry for the subvolume via
+> > >   d_splice_alias(NULL, dentry), leading to the observed behavior. The
+> > >   bug can be mitigated by dropping the dentry cache, at which point w=
+e
+> > >   can successfully delete the subvolume if we want.
+> > >
+> > > i.e.,
+> > > btrfs_lookup()
+> > >   btrfs_lookup_dentry()
+> > >     if (!sb_rdonly(inode->vfs_inode)->vfs_inode)
+> > >     btrfs_orphan_cleanup(sub_root)
+> > >       test_and_set_bit(BTRFS_ROOT_ORPHAN_CLEANUP)
+> > >       btrfs_search_slot() // finds orphan item for inode N
+> > >       ...
+> > >       prints "could not do orphan cleanup -2"
+> > >   if (inode =3D=3D ERR_PTR(-ENOENT))
+> > >     inode =3D NULL;
+> > >   return d_splice_alias(NULL, dentry) // NEGATIVE DENTRY for valid su=
+bvolume
+> > >
+> > > btrfs_orphan_cleanup() does test_and_set_bit(BTRFS_ROOT_ORPHAN_CLEANU=
+P)
+> > > on the root when it runs, so it cannot run more than once on a given
+> > > root, so something else must run concurrently. However, the obvious
+> > > routes to deleting an orphan when nlinks goes to 0 should not be able=
+ to
+> > > run without first doing a lookup into the subvolume, which should run
+> > > btrfs_orphan_cleanup() and set the bit.
+> > >
+> > > The final important observation is that create_subvol() calls
+> > > d_instantiate_new() but does not set BTRFS_ROOT_ORPHAN_CLEANUP, so if
+> > > the dentry cache gets dropped, the next lookup into the subvolume wil=
+l
+> > > make a real call into btrfs_orphan_cleanup() for the first time. This
+> > > opens up the possibility of concurrently deleting the inode/orphan it=
+ems
+> > > but most typical evict() paths will be holding a reference on the par=
+ent
+> > > dentry (child dentry holds parent->d_lockref.count via dget in
+> > > d_alloc(), released in __dentry_kill()) and prevent the parent from
+> > > being removed from the dentry cache.
+> > >
+> > > The one exception is delayed iputs. Ordered extent creation calls
+> > > igrab() on the inode. If the file is unlinked and closed while those
+> > > refs are held, iput() in __dentry_kill() decrements i_count but does
+> > > not trigger eviction (i_count > 0). The child dentry is freed and the
+> > > subvol dentry's d_lockref.count drops to 0, making it evictable while
+> > > the inode is still alive.
+> > >
+> > > Since there are two races (the race between writeback and unlink and
+> > > the race between lookup and delayed iputs), and there are too many mo=
+ving
+> > > parts, the following three diagrams show the complete picture.
+> > > (Only the second and third are races)
+> > >
+> > > Phase 1:
+> > > Create Subvol in dentry cache without BTRFS_ROOT_ORPHAN_CLEANUP set
+> > >
+> > > btrfs_mksubvol()
+> > >   lookup_one_len()
+> > >     __lookup_slow()
+> > >       d_alloc_parallel()
+> > >         __d_alloc() // d_lockref.count =3D 1
+> > >   create_subvol(dentry)
+> > >     // doesn't touch the bit..
+> > >     d_instantiate_new(dentry, inode) // dentry in cache with d_lockre=
+f.count =3D=3D 1
+> > >
+> > > Phase 2:
+> > > Create a delayed iput for a file in the subvol but leave the subvol i=
+n
+> > > state where its dentry can be evicted (d_lockref.count =3D=3D 0)
+> > >
+> > > T1 (task)                    T2 (writeback)                   T3 (OE =
+workqueue)
+> > >
+> > > write() // dirty pages
+> > >                               btrfs_writepages()
+> > >                                 btrfs_run_delalloc_range()
+> > >                                   cow_file_range()
+> > >                                     btrfs_alloc_ordered_extent()
+> > >                                       igrab() // i_count: 1 -> 2
+> > > btrfs_unlink_inode()
+> > >   btrfs_orphan_add()
+> > > close()
+> > >   __fput()
+> > >     dput()
+> > >       finish_dput()
+> > >         __dentry_kill()
+> > >           dentry_unlink_inode()
+> > >             iput() // 2 -> 1
+> > >           --parent->d_lockref.count // 1 -> 0; evictable
+> >
+> > So my previous comment from v1 still stands:
+> >
+> > "Where does this decrement of parent->d_lockref.count happens exactly?
+> >
+> > I don't see it immediately in iput(), or iput_final(). Please put the
+> > full call chain."
+>
+> Sorry, I should have replied in greater detail. I added some callstack
+> context above dput but didn't clarify anything about __dentry_kill where
+> the real details are.
+>
+> On current for-next I see teh decrement at fs/dcache.c:690 in
+> __dentry_kill() inside a conditional:
+>
+>   if (parent && --parent->d_lockref.count) {
+>   ...
+>   }
+>
+> I have never figured out a perfect way to mix function calls and
+> statements in these race diagrams with nesting and such, but I probably
+> should have written out the conditional? I tried to have it nested at
+> the "stuff inside __dentry_kill level" but after iput (which I also
+> wanted to put to show the inode ref count)
+>
+> Let me know if you have any suggestions for how I can change it to make
+> it more clear!
 
-> On Tue, Feb 24, 2026 at 02:55:55PM +0000, David Laight wrote:
-> > On Tue, 24 Feb 2026 15:07:10 +1030
-> > Qu Wenruo <quwenruo.btrfs@gmx.com> wrote:
-> >  =20
-> > > =E5=9C=A8 2026/2/24 10:14, Miquel Sabat=C3=A9 Sol=C3=A0 =E5=86=99=E9=
-=81=93: =20
-> > > > Commit 2932ba8d9c99 ("slab: Introduce kmalloc_obj() and family")
-> > > > introduced, among many others, the kzalloc_objs() helper, which has=
- some
-> > > > benefits over kcalloc().
-> > > >=20
-> > > > Cc: Kees Cook <kees@kernel.org>
-> > > > Signed-off-by: Miquel Sabat=C3=A9 Sol=C3=A0 <mssola@mssola.com>
-> > > > ---
-> > > >   fs/btrfs/block-group.c       | 2 +-
-> > > >   fs/btrfs/raid56.c            | 8 ++++----
-> > > >   fs/btrfs/tests/zoned-tests.c | 2 +-
-> > > >   fs/btrfs/volumes.c           | 6 ++----
-> > > >   fs/btrfs/zoned.c             | 5 ++---
-> > > >   5 files changed, 10 insertions(+), 13 deletions(-)
-> > > >=20
-> > > > diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-> > > > index 37bea850b3f0..8d85b4707690 100644
-> > > > --- a/fs/btrfs/block-group.c
-> > > > +++ b/fs/btrfs/block-group.c
-> > > > @@ -2239,7 +2239,7 @@ int btrfs_rmap_block(struct btrfs_fs_info *fs=
-_info, u64 chunk_start,
-> > > >   	if (map->type & BTRFS_BLOCK_GROUP_RAID56_MASK)
-> > > >   		io_stripe_size =3D btrfs_stripe_nr_to_offset(nr_data_stripes(ma=
-p));
-> > > >  =20
-> > > > -	buf =3D kcalloc(map->num_stripes, sizeof(u64), GFP_NOFS);
-> > > > +	buf =3D kzalloc_objs(*buf, map->num_stripes, GFP_NOFS);   =20
-> > >=20
-> > > Not sure if we should use *buf for the type.
-> > >=20
-> > > I still remember we had some bugs related to incorrect type usage. =20
-> >=20
-> > The global change really ought to have used u64 to add the type-check.
-> > Otherwise it will have added 'very hard to find' bugs in the very code
-> > it is trying to make better.
-> >=20
-> > Using *buf for the type might be a reasonable pattern for new code. =20
->=20
-> I find this a bit contradictory: I agree that using *buf as the argument
-> can cause bugs hard to find, yet the next sentence recommends to use it.
+Ok, you can add:
 
-The issue is that mechanically changing:
-	buf =3D kzalloc(sizeof(type),...);
-to:
-	buf =3D kzalloc_obj(*buf, ...);
-is that you've silently changed the size of the allocated memory
-if 'type' wasn't actually the correct type.
-Whereas changing it so:
-	buf =3D kzalloc_obj(type, ...);
-will give a compiler error if/when the types don't match.
-(There may be places where this is exactly what is intended.)
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
 
-For a big mechanical change you really want to err on the side of caution.
+Thanks.
 
-For new code it is a bit different.
-kzalloc_obj() will pick up silly mistakes, so both:
-	auto buf =3D kzalloc_obj(type, ...);
-and:
-	type *buf =3D kzalloc_obj(*buf, ...);
-are reasonable patterns.
-The former may actually read better as 'allocate an object of this type'
-and doesn't require that you replicate the type.
-
-	David
-
->=20
-> This kzalloc_obj way is new I'm analyzing what would be a good pattern
-> and so far I don't like the "*buf" style of 1st argument. As the
-> function is really a macro it does not dereference it but it still
-> appears as it does.
->=20
-> Writing the type explicitly looks still more like a C to me. Types in
-> arguments are in helpers like container_of or rb_entry and it makes it
-> obvious that there's something special while for the kzalloc_obj I need
-> to remember it.
->=20
-> The whole thing would read better as "allocate object of type", so I'm
-> probably going to convert it to this pattern in btrfs code.
-
+>
+> Thanks,
+> Boris
+>
+> >
+> > Thanks.
+> >
+> >
+> >
+> > >                                                                 finis=
+h_ordered_fn()
+> > >                                                                   btr=
+fs_finish_ordered_io()
+> > >                                                                     b=
+trfs_put_ordered_extent()
+> > >                                                                      =
+ btrfs_add_delayed_iput()
+> > >
+> > > Phase 3:
+> > > Once the delayed iput is pending and the subvol dentry is evictable,
+> > > the shrinker can free it, causing the next lookup to go through
+> > > btrfs_lookup() and call btrfs_orphan_cleanup() for the first time.
+> > > If the cleaner kthread processes the delayed iput concurrently, the
+> > > two race:
+> > >
+> > >   T1 (shrinker)              T2 (cleaner kthread)                    =
+      T3 (lookup)
+> > >
+> > >   super_cache_scan()
+> > >     prune_dcache_sb()
+> > >       __dentry_kill()
+> > >       // subvol dentry freed
+> > >                               btrfs_run_delayed_iputs()
+> > >                                 iput()  // i_count -> 0
+> > >                                   evict()  // sets I_FREEING
+> > >                                     btrfs_evict_inode()
+> > >                                       // truncation loop
+> > >                                                                      =
+       btrfs_lookup()
+> > >                                                                      =
+         btrfs_lookup_dentry()
+> > >                                                                      =
+           btrfs_orphan_cleanup()
+> > >                                                                      =
+             // first call (bit never set)
+> > >                                                                      =
+             btrfs_iget()
+> > >                                                                      =
+               // blocks on I_FREEING
+> > >
+> > >                                       btrfs_orphan_del()
+> > >                                       // inode freed
+> > >                                                                      =
+               // returns -ENOENT
+> > >                                                                      =
+             btrfs_del_orphan_item()
+> > >                                                                      =
+               // -ENOENT
+> > >                                                                      =
+           // "could not do orphan cleanup -2"
+> > >                                                                      =
+       d_splice_alias(NULL, dentry)
+> > >                                                                      =
+       // negative dentry for valid subvol
+> > >
+> > > The most straightforward fix is to ensure the invariant that a dentry
+> > > for a subvolume can exist if and only if that subvolume has
+> > > BTRFS_ROOT_ORPHAN_CLEANUP set on its root (and is known to have no
+> > > orphans or ran btrfs_orphan_cleanup()).
+> > >
+> > > Signed-off-by: Boris Burkov <boris@bur.io>
+> > > ---
+> > > Changelog:
+> > > v2:
+> > > - fixed some typographical errors in the commit message.
+> > > - improved the commit message with more callstacks / details.
+> > >
+> > > ---
+> > >  fs/btrfs/ioctl.c | 7 +++++++
+> > >  1 file changed, 7 insertions(+)
+> > >
+> > > diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
+> > > index b8db877be61cc..77f7db18c6ca5 100644
+> > > --- a/fs/btrfs/ioctl.c
+> > > +++ b/fs/btrfs/ioctl.c
+> > > @@ -672,6 +672,13 @@ static noinline int create_subvol(struct mnt_idm=
+ap *idmap,
+> > >                 goto out;
+> > >         }
+> > >
+> > > +       /*
+> > > +        * Subvolumes have orphans cleaned on first dentry lookup. A =
+new
+> > > +        * subvolume cannot have any orphans, so we should set the bi=
+t before we
+> > > +        * add the subvolume dentry to the dentry cache, so that it i=
+s in the
+> > > +        * same state as a subvolume after first lookup.
+> > > +        */
+> > > +       set_bit(BTRFS_ROOT_ORPHAN_CLEANUP, &new_root->state);
+> > >         d_instantiate_new(dentry, new_inode_args.inode);
+> > >         new_inode_args.inode =3D NULL;
+> > >
+> > > --
+> > > 2.47.3
+> > >
+> > >
 
