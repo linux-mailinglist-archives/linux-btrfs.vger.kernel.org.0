@@ -1,85 +1,85 @@
-Return-Path: <linux-btrfs+bounces-21904-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21905-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id eNroLY6RnmnTWAQAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21904-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Feb 2026 07:07:10 +0100
+	id sBNJGy+UnmmXWQQAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21905-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Feb 2026 07:18:23 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58242192450
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Feb 2026 07:07:10 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09F2A1924D2
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Feb 2026 07:18:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 4DBAB3039DC5
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Feb 2026 06:07:09 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 87B28303FACB
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Feb 2026 06:17:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B93F82F2918;
-	Wed, 25 Feb 2026 06:07:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D64332C15AC;
+	Wed, 25 Feb 2026 06:17:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OIM5XuaQ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PnrLYDYC"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f65.google.com (mail-wm1-f65.google.com [209.85.128.65])
+Received: from mail-wm1-f67.google.com (mail-wm1-f67.google.com [209.85.128.67])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C4BC2D9EC4
-	for <linux-btrfs@vger.kernel.org>; Wed, 25 Feb 2026 06:07:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8ACDC199FD3
+	for <linux-btrfs@vger.kernel.org>; Wed, 25 Feb 2026 06:17:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.67
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771999625; cv=none; b=sCgiflZW9S0Q3dXVh/e0D4uGeeK/zDmlT0Su7/z/yiYzUeB+ggyRBZI8C9uURsEvE+ImyExYsNW+mvc2H9YIzl8Wg9StUr1yvuKCSM9cMw9TSWHZMvdnkLXd5sEKsbfk9npC3YZe2noc26V7UfDLve2dKgqPxdSbOFoHiu/of+U=
+	t=1772000260; cv=none; b=ABm3+DzW2JxTWdD6o371+TC2S/Am5JACwbtO+nWDZpvJ+wHOLOZz42ZKUUSHhUiQZGfsHl9IN2QjGf+pzGIj5lzFWnJsL3QyLJ/jg+uzQg2OqK4twx3MSfX6dhrfVKLmHlFjPd3ATy8WHdP96Nd6oZs/wR6tav2x17TPzb0NUyI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771999625; c=relaxed/simple;
-	bh=Q8MoV3esw6tldlzcn3PSTeLevvVyUBBS3Gu9GwUHGpg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=AWoz+sJV1pCzcGklMJSyJ5ZCxJ72+l3ugV55zIkCnsbWLXY7XsNC0xJLy2Yos1p5F/0srFWRzU21XCyYEyUOITXfhhkP0voya/S3er+eGezH3AHZ4TPyzgPj3Hj9uBBMx/ZbacKIURs+rp2PeVmRHEJCSYhpy1eoxr0KeqHd5x4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OIM5XuaQ; arc=none smtp.client-ip=209.85.128.65
+	s=arc-20240116; t=1772000260; c=relaxed/simple;
+	bh=pvr9qH2bqbP35Wd+owJmbTZ7Fg+AL1bHfKgrCXn3IRc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=YEMxGZzfrusXQCURKr24Una/KsTHaHUwpb/if/h9zYsXfnpN+fXWmoFruJ4SupirE1gQKKinCLwungpgOLxdjdEWC4MOxs9PRrET2kNzKW72VkugM0Ycb2gN5+U+RK4S5nZ9IHptNlJgV9T/6HKYb/UUKa7adN8VhQjVBCHvMKU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PnrLYDYC; arc=none smtp.client-ip=209.85.128.67
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f65.google.com with SMTP id 5b1f17b1804b1-4836cd6e0d4so7319585e9.3
-        for <linux-btrfs@vger.kernel.org>; Tue, 24 Feb 2026 22:07:03 -0800 (PST)
+Received: by mail-wm1-f67.google.com with SMTP id 5b1f17b1804b1-483ad568d68so4500615e9.2
+        for <linux-btrfs@vger.kernel.org>; Tue, 24 Feb 2026 22:17:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1771999622; x=1772604422; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1772000257; x=1772605057; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=fuN9Dg3DNRfT5EYG1jOag3eiqgO92nSIK/H+MCfvhXY=;
-        b=OIM5XuaQ8ysb0WvyEywDTqwk2S+xF6debv2izg0vb0wTvbBNfva1+42YxP07E6ICQM
-         KYHwcejDEcQUcQYZy/xhbSk+TtClpuP8MgLOFsNobSfh27bPAZ7oC5ZkjDfYZl+ApXmW
-         HJs8M8KbW6lxeJmD4xOuGpzDgTlTc6NghZFIDJ0kMviGCXyTSMIHCzFfZD5LnNJ+qokD
-         rkz+VnJuO1vOsqVdihmUiFSjIdymo4vvehSbY/qlYXlcNN87eENt0FClAKWdpW4HZbDm
-         fbfoHg/PqIoquwS5X2THhp65QZzy/+Y81WT8UnUu6+KWF8A91pI/S5zxmI0tM4iJ+1Z1
-         eMkg==
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9Lml4s3WkJnBnwOnwr+d0MU68jowa/Sft8FTejev/Bo=;
+        b=PnrLYDYCcq80oiRXhwVKJgW5hUNdOVMtJc2cxRUOA6lJs2p4wVsdtXZ6vbmpPsZqur
+         hqoHjU+ep+UG3o1Iddq3in0IHoezViYXXwrLiD55Gu4ota/2ek3PsDvBF/RnePlyFlDj
+         zTDBXzisCVqMuBzX277KGGEm4uR9Oj85hilz0OdbwD0owYr5sp0MncRBduQsLtuFR76Q
+         oDIBVEDfYCvZl+LNF+a1SdCJetwR1MLi0vSKZSmaLCcUDOpMHuxp2fo++NHlBZeKnmbd
+         SHK+PFPCV3I2wFn8Wok5ffIgp9aSzzbL+ZSbwBjxJFGnKG0rC8/c5xieL/C/LmNV57Wi
+         lQAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771999622; x=1772604422;
+        d=1e100.net; s=20230601; t=1772000257; x=1772605057;
         h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=fuN9Dg3DNRfT5EYG1jOag3eiqgO92nSIK/H+MCfvhXY=;
-        b=OYOw1t91aEz2NEtbj8i7yUJlPVcq01YpPgokinGpfBgsQKv6ClwEwnO7O2+PNXcOYG
-         LsTN7VEhkNMtxyEdCRfgmISwAS02nDRKBYUK7dmvBIqlUgJEXzuIwklqDOjGfIjFR8sH
-         YY5zSBa0i4iD435yy+Uzoc1U/c03nZ7g8soJbWXYB70iaWN/A6buaWUSYKOUBuhH34lL
-         cHdrgeBZB4hNZa50ljk3XlUbKot9s1H5SOOgoeLlcQNHUPKlrOozXGZjEwvUE0h9h8A5
-         Xcay5fsifTc7Q9qg23cKnIWnrOO7cZfEFmcZfN6XZr5cQVWPsYJCLGNV/VC+Ww1DU+Lz
-         Ml1Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVXNK3uJ5+aibePEceSKu3vFNATx1At7R4sbm5ijeaTnxpINC5k72HnEpV30e2WeIQD50Z6cN0XgrrTFg==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyv2K933Kj+lLor7BHoC9rEkux3xD77EcDCxmICDW4lhZEFUKqE
-	o/c3qID55dAVxBamFJbEY33IB9Ebdye4lczjsBMT96ZscltdgoqI8+2W
-X-Gm-Gg: ATEYQzyJhCYSkXKUN/toqvo2a55y1AssWhwwGfcTXOvkcQc/8i7eI6C4tWApYDLckf2
-	lz2N9mfJrCBsVVzSv88FvjXhUAFzK7JvjFJsBs9M8bLnQQuWmD9Nv+TbcrvkUunHEWV+5Q7jumN
-	/8HXnbgdDgDSRJJ6FRSdOTiCIGrtjwpR/gaE36wnI/7Dv1Jw6YZMD37SwTys9RmgR91BeXVDUZc
-	/VB/WK0ZRZ0udrdEeKxEzwGpGHJD1PgTWzaRyA22/KZSE5INQuJWL9I5W4aHVzbn3U1QE80HG+V
-	KuBBhgDBbY+DzAyxb4AsLIVVhJ747Zh6HU+Z/P9aMyyk3ijYTuHJ8mSVRze4E4IpEY9P/tG7BiQ
-	0BixmvN/kjplLUZgpGeHJRIbz1RVQTkbkqmQXL1nfwmBQUCqxKFs1I0sM52/a8aGQGxgkhe5E1I
-	g38Ft+p2iPaWCnfwSm9EiusRUrp+AQpzFTfpnabq3S+E4hyrlp9pErPyao8dSCVyqZJmk4xJA9p
-	7RWag==
-X-Received: by 2002:a05:600c:1988:b0:480:6612:253 with SMTP id 5b1f17b1804b1-483a962e4demr132745175e9.3.1771999621484;
-        Tue, 24 Feb 2026 22:07:01 -0800 (PST)
+        bh=9Lml4s3WkJnBnwOnwr+d0MU68jowa/Sft8FTejev/Bo=;
+        b=GYxciyB9QvI0TykKeUkaTnfJaJRnmsYiY4IH5PxuzvqZXH0LqRGhsWvFnI9AMkXeEG
+         IwFhh2SpPHFnKh52uY2q+OZLRxUWA/OeDWKbh5NRPMThWrcqGmSSNGpOPi6PHmDDqyVI
+         HatbENq1Wveh1c/GPPpkPZFVeBr7AByfvqkhRsA7F5tXcm1cE4nn9OP2Vsb0UljdVsfs
+         R5s9orRlEQdaYj+C6CXzzbHklTORhdaELcoK/+GedWYPSv3KLPu/LLcKwQHJbYu/J1BL
+         r3MnKX3nLrxq2TOGGAUySIzOjWYF2CijOkrjVfUegLBf2PzsewPCfOgoWW7au7Yzz+qg
+         ABkQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVFCjS1jisONhgcazQtHSXndYbOwHwLL6oBbqgSLgnSJT1vyCqIOi5a889b90cf8zdy9O0U83BMjM/B4w==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwfRnQDfuJuSgoGIU6BlVS6Sbjli4X/n27ls1APRcXUZLf3AevW
+	YHB4CcdWHIQIGv6BDM1ko28+1FIUDkPE1VQEBhyOBIwOn4iX06i+9G70+B+LdYvRV+XjiA==
+X-Gm-Gg: ATEYQzxpXLrzVlEolFLZ8tOwtewfyqXbf4xQT5OcwSkRTyyZamBI6kx++j5aqXDM/ww
+	tp38/Jb/hQctMHveGN/RFxbGnxsjdkjCxbQsnQARNfiE5p8enlF/QZkkFVS/vaP7lE0Tnzzh5AR
+	IPCWf1NCXm/5hDsWZ+IzaXXk7rbQQQEzC019lByqTBKXQQZtYkkfKll46eDOoWLqq35+9ARGCv4
+	Jor8XO6o4Dy9L8HjAblNNr7vmT445o0SKRL7p2yuzVi0Cs1KMueHyrVfPUYPjrVDJnii8jdXE10
+	ds1oOAvTRTLxjsWVE16KPP766NKuGVv7gNYBxy99uuZhuX5hAlETzYBrK0ErrKPNHGjmG697VuV
+	StW8vmUCiJDXOOaI8hzyStuWhVzqdlPuNQbhYZ3wFpvkf1hr67fF7zoA6wlOLUWBjNfP//3u6ue
+	ek/17zSjpVM3Cw/JL207Ps7MHkTQ3G9CegirpSNZPqVu5NHazYMLAjKDnW48/kPPCkUqXfQBFIY
+	mu4fA==
+X-Received: by 2002:a05:6000:2008:b0:439:909f:c596 with SMTP id ffacd0b85a97d-439909fc8e6mr577356f8f.2.1772000256719;
+        Tue, 24 Feb 2026 22:17:36 -0800 (PST)
 Received: from ?IPV6:2408:8239:502:5512:18a9:8974:b792:9a40? ([140.238.217.67])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-483bfcb318fsm5509575e9.6.2026.02.24.22.06.56
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-43987f3ed03sm10811221f8f.16.2026.02.24.22.17.30
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Feb 2026 22:07:01 -0800 (PST)
-Message-ID: <060df404-3e39-4637-88f4-ffd42fcddc26@gmail.com>
-Date: Wed, 25 Feb 2026 14:06:51 +0800
+        Tue, 24 Feb 2026 22:17:36 -0800 (PST)
+Message-ID: <8b4f2be8-169d-4e10-a47f-b534ab0ebac6@gmail.com>
+Date: Wed, 25 Feb 2026 14:17:24 +0800
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -87,259 +87,326 @@ List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/3] btrfs: skip COW for written extent buffers
- allocated in current transaction
+Subject: Re: [PATCH v3 2/3] btrfs: inhibit extent buffer writeback to prevent
+ COW amplification
 To: Leo Martins <loemra.dev@gmail.com>, linux-btrfs@vger.kernel.org,
  kernel-team@fb.com
+Cc: Filipe Manana <fdmanana@suse.com>
 References: <cover.1771884128.git.loemra.dev@gmail.com>
- <4ce911a475b998ddf76951629ad203e6440ab0ca.1771884128.git.loemra.dev@gmail.com>
+ <cc847a35e26cc4dfad18c59e3c525cea507ff440.1771884128.git.loemra.dev@gmail.com>
 Content-Language: en-US
 From: Sun YangKai <sunk67188@gmail.com>
-In-Reply-To: <4ce911a475b998ddf76951629ad203e6440ab0ca.1771884128.git.loemra.dev@gmail.com>
+In-Reply-To: <cc847a35e26cc4dfad18c59e3c525cea507ff440.1771884128.git.loemra.dev@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
 	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21904-lists,linux-btrfs=lfdr.de];
-	FROM_HAS_DN(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21905-lists,linux-btrfs=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
 	FREEMAIL_TO(0.00)[gmail.com,vger.kernel.org,fb.com];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	FREEMAIL_FROM(0.00)[gmail.com];
+	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCPT_COUNT_THREE(0.00)[4];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[sunk67188@gmail.com,linux-btrfs@vger.kernel.org];
-	RCPT_COUNT_THREE(0.00)[3];
+	DKIM_TRACE(0.00)[gmail.com:+];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-btrfs];
 	MID_RHS_MATCH_FROM(0.00)[];
+	FREEMAIL_FROM(0.00)[gmail.com];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 58242192450
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,suse.com:email]
+X-Rspamd-Queue-Id: 09F2A1924D2
 X-Rspamd-Action: no action
 
 
 
 On 2026/2/25 03:22, Leo Martins wrote:
-> When memory pressure causes writeback of a recently COW'd buffer,
-> btrfs sets BTRFS_HEADER_FLAG_WRITTEN on it. Subsequent
-> btrfs_search_slot() restarts then see the WRITTEN flag and re-COW
-> the buffer unnecessarily, causing COW amplification that can exhaust
-> block reservations and degrade throughput.
+> Inhibit writeback on COW'd extent buffers for the lifetime of the
+> transaction handle, preventing background writeback from setting
+> BTRFS_HEADER_FLAG_WRITTEN and causing unnecessary re-COW.
 > 
-> Overwriting in place is crash-safe because the committed superblock
-> does not reference buffers allocated in the current (uncommitted)
-> transaction, so no on-disk tree points to this block yet.
+> COW amplification occurs when background writeback flushes an extent
+> buffer that a transaction handle is still actively modifying. When
+> lock_extent_buffer_for_io() transitions a buffer from dirty to
+> writeback, it sets BTRFS_HEADER_FLAG_WRITTEN, marking the block as
+> having been persisted to disk at its current bytenr. Once WRITTEN is
+> set, should_cow_block() must either COW the block again or overwrite
+> it in place, both of which are unnecessary overhead when the buffer
+> is still being modified by the same handle that allocated it. By
+> inhibiting background writeback on actively-used buffers, WRITTEN is
+> never set while a transaction handle holds a reference to the buffer,
+> avoiding this overhead entirely.
 > 
-> When should_cow_block() encounters a WRITTEN buffer whose generation
-> matches the current transaction, instead of requesting a COW, re-dirty
-> the buffer and re-register its range in the transaction's dirty_pages.
+> Add an atomic_t writeback_inhibitors counter to struct extent_buffer,
+> which fits in an existing 6-byte hole without increasing struct size.
+> When a buffer is COW'd in btrfs_force_cow_block(), call
+> btrfs_inhibit_eb_writeback() to store the eb in the transaction
+> handle's writeback_inhibited_ebs xarray (keyed by eb->start), take a
+> reference, and increment writeback_inhibitors. The function handles
+> dedup (same eb inhibited twice by the same handle) and replacement
+> (different eb at the same logical address). Allocation failure is
+> graceful: the buffer simply falls back to the pre-existing behavior
+> where it may be written back and re-COW'd.
 > 
-> Both are necessary because btrfs tracks dirty metadata through two
-> independent mechanisms. set_extent_buffer_dirty() sets the
-> EXTENT_BUFFER_DIRTY flag and the buffer_tree xarray PAGECACHE_TAG_DIRTY
-> mark, which is what background writeback (btree_write_cache_pages) uses
-> to find and write dirty buffers. The transaction's dirty_pages io tree
-> is a separate structure used by btrfs_write_and_wait_transaction() at
-> commit time to ensure all buffers allocated during the transaction are
-> persisted. The dirty_pages range was originally registered in
-> btrfs_init_new_buffer() when the block was first allocated. Normally
-> dirty_pages is only cleared at commit time by
-> btrfs_write_and_wait_transaction(), but if qgroups are enabled and
-> snapshots are being created, qgroup_account_snapshot() may have already
-> called btrfs_write_and_wait_transaction() and released the range before
-> the final commit-time call.
+> In lock_extent_buffer_for_io(), when writeback_inhibitors is non-zero
+> and the writeback mode is WB_SYNC_NONE, skip the buffer. WB_SYNC_NONE
+> is used by the VM flusher threads for background and periodic
+> writeback, which are the only paths that cause COW amplification by
+> opportunistically writing out dirty extent buffers mid-transaction.
+> Skipping these is safe because the buffers remain dirty in the page
+> cache and will be written out at transaction commit time.
 > 
-> Keep BTRFS_HEADER_FLAG_WRITTEN set so that btrfs_free_tree_block()
-> correctly pins the block if it is freed later.
+> WB_SYNC_ALL must always proceed regardless of writeback_inhibitors.
+> This is required for correctness in the fsync path: btrfs_sync_log()
+> writes log tree blocks via filemap_fdatawrite_range() (WB_SYNC_ALL)
+> while the transaction handle that inhibited those same blocks is still
+> active. Without the WB_SYNC_ALL bypass, those inhibited log tree
+> blocks would be silently skipped, resulting in an incomplete log on
+> disk and corruption on replay. btrfs_write_and_wait_transaction()
+> also uses WB_SYNC_ALL via filemap_fdatawrite_range(); for that path,
+> inhibitors are already cleared beforehand, but the bypass ensures
+> correctness regardless.
 > 
-> Relax the lockdep assertion in btrfs_mark_buffer_dirty() from
-> btrfs_assert_tree_write_locked() to lockdep_assert_held() so that it
-> accepts either a read or write lock. should_cow_block() may be called
-> from btrfs_search_slot() when only a read lock is held (nodes above
-> write_lock_level are read-locked). The write lock assertion previously
-> documented the caller convention that buffer content was being modified
-> under exclusive access, but btrfs_mark_buffer_dirty() and
-> set_extent_buffer_dirty() themselves only perform independently
-> synchronized operations: atomic bit ops on bflags, folio_mark_dirty()
-> (kernel-internal folio locking), xarray mark updates (xarray spinlock),
-> and percpu counter updates. The read lock is sufficient because it
-> prevents lock_extent_buffer_for_io() from acquiring the write lock and
-> racing on the dirty state. Since rw_semaphore permits concurrent
-> readers, multiple threads can enter btrfs_mark_buffer_dirty()
-> simultaneously for the same buffer; this is safe because
-> test_and_set_bit(EXTENT_BUFFER_DIRTY) ensures only one thread performs
-> the full dirty state transition.
-> 
-> Remove the CONFIG_BTRFS_DEBUG assertion in set_extent_buffer_dirty()
-> that checked folio_test_dirty() after marking the buffer dirty. This
-> assertion assumed exclusive access (only one thread in
-> set_extent_buffer_dirty() at a time), which held when the only caller
-> was btrfs_mark_buffer_dirty() under write lock. With concurrent readers
-> calling through should_cow_block(), a thread that loses the
-> test_and_set_bit race sees was_dirty=true and skips the folio dirty
-> marking, but the winning thread may not have called
-> btrfs_meta_folio_set_dirty() yet, causing the assertion to fire. This
-> is a benign race: the winning thread will complete the folio dirty
-> marking, and no writeback can clear it while readers hold their locks.
-> 
-> Hoist the EXTENT_BUFFER_WRITEBACK, BTRFS_HEADER_FLAG_RELOC, and
-> BTRFS_ROOT_FORCE_COW checks before the WRITTEN block since they apply
-> regardless of whether the buffer has been written back. This
-> consolidates the exclusion logic and simplifies the WRITTEN path to
-> only handle log trees and zoned devices. Moving the RELOC checks
-> before the smp_mb__before_atomic() barrier is safe because both
-> btrfs_root_id() (immutable) and BTRFS_HEADER_FLAG_RELOC (set at COW
-> time under tree lock) are stable values not subject to concurrent
-> modification; the barrier is only needed for BTRFS_ROOT_FORCE_COW
-> which is set concurrently by create_pending_snapshot().
-> 
-> Exclude cases where in-place overwrite is not safe:
->   - EXTENT_BUFFER_WRITEBACK: buffer is mid-I/O
->   - Zoned devices: require sequential writes
->   - Log trees: log blocks are immediately referenced by a committed
->     superblock via btrfs_sync_log(), so overwriting could corrupt the
->     committed log
->   - BTRFS_ROOT_FORCE_COW: snapshot in progress
->   - BTRFS_HEADER_FLAG_RELOC: block being relocated
+> Uninhibit in __btrfs_end_transaction() before atomic_dec(num_writers)
+> to prevent a race where the committer proceeds while buffers are still
+> inhibited. Also uninhibit in btrfs_commit_transaction() before writing
+> and in cleanup_transaction() for the error path.
 > 
 > Signed-off-by: Leo Martins <loemra.dev@gmail.com>
-
-Thanks! Looks good now. Currently we only early return true in 
-should_cow_block(), making the overall logic easier to follow.
-
-And the commit message and comments are quite detailed and helpful.
-
-Reviewed-by: Sun YangKai <sunk67188@gmail.com>
-
+> Reviewed-by: Filipe Manana <fdmanana@suse.com>
 > ---
->   fs/btrfs/ctree.c     | 56 ++++++++++++++++++++++++++++++++++++++------
->   fs/btrfs/disk-io.c   |  2 +-
->   fs/btrfs/extent_io.c |  4 ----
->   3 files changed, 50 insertions(+), 12 deletions(-)
+>   fs/btrfs/ctree.c       |  4 +++
+>   fs/btrfs/extent_io.c   | 63 +++++++++++++++++++++++++++++++++++++++++-
+>   fs/btrfs/extent_io.h   |  6 ++++
+>   fs/btrfs/transaction.c | 19 +++++++++++++
+>   fs/btrfs/transaction.h |  3 ++
+>   5 files changed, 94 insertions(+), 1 deletion(-)
 > 
 > diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-> index 7267b2502665..0e02b7b14adc 100644
+> index 0e02b7b14adc..d4da65bb9096 100644
 > --- a/fs/btrfs/ctree.c
 > +++ b/fs/btrfs/ctree.c
-> @@ -599,9 +599,9 @@ int btrfs_force_cow_block(struct btrfs_trans_handle *trans,
->   	return ret;
->   }
->   
-> -static inline bool should_cow_block(const struct btrfs_trans_handle *trans,
-> +static inline bool should_cow_block(struct btrfs_trans_handle *trans,
->   				    const struct btrfs_root *root,
-> -				    const struct extent_buffer *buf)
-> +				    struct extent_buffer *buf)
->   {
->   	if (btrfs_is_testing(root->fs_info))
->   		return false;
-> @@ -621,7 +621,11 @@ static inline bool should_cow_block(const struct btrfs_trans_handle *trans,
->   	if (btrfs_header_generation(buf) != trans->transid)
->   		return true;
->   
-> -	if (btrfs_header_flag(buf, BTRFS_HEADER_FLAG_WRITTEN))
-> +	if (test_bit(EXTENT_BUFFER_WRITEBACK, &buf->bflags))
-> +		return true;
+> @@ -590,6 +590,10 @@ int btrfs_force_cow_block(struct btrfs_trans_handle *trans,
+>   		btrfs_tree_unlock(buf);
+>   	free_extent_buffer_stale(buf);
+>   	btrfs_mark_buffer_dirty(trans, cow);
 > +
-> +	if (btrfs_root_id(root) != BTRFS_TREE_RELOC_OBJECTID &&
-> +	    btrfs_header_flag(buf, BTRFS_HEADER_FLAG_RELOC))
->   		return true;
+> +	/* Inhibit writeback on the COW'd buffer for this transaction handle. */
+> +	btrfs_inhibit_eb_writeback(trans, cow);
+> +
+>   	*cow_ret = cow;
+>   	return 0;
 >   
->   	/* Ensure we can see the FORCE_COW bit. */
-> @@ -629,11 +633,49 @@ static inline bool should_cow_block(const struct btrfs_trans_handle *trans,
->   	if (test_bit(BTRFS_ROOT_FORCE_COW, &root->state))
->   		return true;
->   
-> -	if (btrfs_root_id(root) == BTRFS_TREE_RELOC_OBJECTID)
-> -		return false;
-> +	if (btrfs_header_flag(buf, BTRFS_HEADER_FLAG_WRITTEN)) {
-> +		/*
-> +		 * The buffer was allocated in this transaction and has been
-> +		 * written back to disk (WRITTEN is set). Normally we'd COW
-> +		 * it again, but since the committed superblock doesn't
-> +		 * reference this buffer (it was allocated in this transaction),
-> +		 * we can safely overwrite it in place.
-> +		 *
-> +		 * We keep BTRFS_HEADER_FLAG_WRITTEN set. The block has been
-> +		 * persisted at this bytenr and will be again after the
-> +		 * in-place update. This is important so that
-> +		 * btrfs_free_tree_block() correctly pins the block if it is
-> +		 * freed later (e.g., during tree rebalancing or FORCE_COW).
-> +		 *
-> +		 * Log trees and zoned devices cannot use this optimization:
-> +		 * - Log trees: log blocks are written and immediately
-> +		 *   referenced by a committed superblock via
-> +		 *   btrfs_sync_log(), bypassing the normal transaction
-> +		 *   commit. Overwriting in place could corrupt the
-> +		 *   committed log.
-> +		 * - Zoned devices: require sequential writes.
-> +		 */
-> +		if (btrfs_root_id(root) == BTRFS_TREE_LOG_OBJECTID ||
-> +		    btrfs_is_zoned(root->fs_info))
-> +			return true;
->   
-> -	if (btrfs_header_flag(buf, BTRFS_HEADER_FLAG_RELOC))
-> -		return true;
-> +		/*
-> +		 * Re-register this block's range in the current transaction's
-> +		 * dirty_pages so that btrfs_write_and_wait_transaction()
-> +		 * writes it. The range was originally registered when the
-> +		 * block was allocated. Normally dirty_pages is only cleared
-> +		 * at commit time by btrfs_write_and_wait_transaction(), but
-> +		 * if qgroups are enabled and snapshots are being created,
-> +		 * qgroup_account_snapshot() may have already called
-> +		 * btrfs_write_and_wait_transaction() and released the range
-> +		 * before the final commit-time call.
-> +		 */
-> +		btrfs_set_extent_bit(&trans->transaction->dirty_pages,
-> +				     buf->start,
-> +				     buf->start + buf->len - 1,
-> +				     EXTENT_DIRTY, NULL);
-> +		btrfs_mark_buffer_dirty(trans, buf);
-> +	}
->   
->   	return false;
->   }
-> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
-> index 32fffb0557e5..bee8f76fbfea 100644
-> --- a/fs/btrfs/disk-io.c
-> +++ b/fs/btrfs/disk-io.c
-> @@ -4491,7 +4491,7 @@ void btrfs_mark_buffer_dirty(struct btrfs_trans_handle *trans,
->   #endif
->   	/* This is an active transaction (its state < TRANS_STATE_UNBLOCKED). */
->   	ASSERT(trans->transid == fs_info->generation);
-> -	btrfs_assert_tree_write_locked(buf);
-> +	lockdep_assert_held(&buf->lock);
->   	if (unlikely(transid != fs_info->generation)) {
->   		btrfs_abort_transaction(trans, -EUCLEAN);
->   		btrfs_crit(fs_info,
 > diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index dfc17c292217..ff1fc699a6ca 100644
+> index ff1fc699a6ca..e04e42a81978 100644
 > --- a/fs/btrfs/extent_io.c
 > +++ b/fs/btrfs/extent_io.c
-> @@ -3791,10 +3791,6 @@ void set_extent_buffer_dirty(struct extent_buffer *eb)
->   					 eb->len,
->   					 eb->fs_info->dirty_metadata_batch);
->   	}
-> -#ifdef CONFIG_BTRFS_DEBUG
-> -	for (int i = 0; i < num_extent_folios(eb); i++)
-> -		ASSERT(folio_test_dirty(eb->folios[i]));
-> -#endif
+> @@ -1940,7 +1940,9 @@ static noinline_for_stack bool lock_extent_buffer_for_io(struct extent_buffer *e
+>   	 * of time.
+>   	 */
+>   	spin_lock(&eb->refs_lock);
+> -	if (test_and_clear_bit(EXTENT_BUFFER_DIRTY, &eb->bflags)) {
+> +	if ((wbc->sync_mode == WB_SYNC_ALL ||
+> +	     atomic_read(&eb->writeback_inhibitors) == 0) &&
+> +	    test_and_clear_bit(EXTENT_BUFFER_DIRTY, &eb->bflags)) {
+>   		XA_STATE(xas, &fs_info->buffer_tree, eb->start >> fs_info->nodesize_bits);
+>   		unsigned long flags;
+>   
+> @@ -2999,6 +3001,64 @@ static inline void btrfs_release_extent_buffer(struct extent_buffer *eb)
+>   	kmem_cache_free(extent_buffer_cache, eb);
 >   }
 >   
->   void clear_extent_buffer_uptodate(struct extent_buffer *eb)
+> +/*
+> + * btrfs_inhibit_eb_writeback - Inhibit writeback on buffer during transaction.
+> + * @trans: transaction handle that will own the inhibitor
+> + * @eb: extent buffer to inhibit writeback on
+> + *
+> + * Attempts to track this extent buffer in the transaction's inhibited set.
+> + * If memory allocation fails, the buffer is simply not tracked. It may
+> + * be written back and need re-COW, which is the original behavior.
+> + * This is acceptable since inhibiting writeback is an optimization.
+> + */
+> +void btrfs_inhibit_eb_writeback(struct btrfs_trans_handle *trans,
+> +				struct extent_buffer *eb)
+> +{
+> +	unsigned long index = eb->start >> trans->fs_info->nodesize_bits;
+> +	void *old;
+> +
+> +	/* Check if already inhibited by this handle. */
+> +	old = xa_load(&trans->writeback_inhibited_ebs, index);
+> +	if (old == eb)
+> +		return;
+> +
+> +	/* Take reference for the xarray entry. */
+> +	refcount_inc(&eb->refs);
+> +
+> +	old = xa_store(&trans->writeback_inhibited_ebs, index, eb, GFP_NOFS);
+> +	if (xa_is_err(old)) {
+> +		/* Allocation failed, just skip inhibiting this buffer. */
+> +		free_extent_buffer(eb);
+> +		return;
+> +	}
+> +
+> +	/* Handle replacement of different eb at same index. */
+> +	if (old && old != eb) {
+> +		struct extent_buffer *old_eb = old;
+> +
+> +		atomic_dec(&old_eb->writeback_inhibitors);
+> +		free_extent_buffer(old_eb);
+> +	}
+> +
+> +	atomic_inc(&eb->writeback_inhibitors);
+> +}
+> +
+> +/*
+> + * btrfs_uninhibit_all_eb_writeback - Uninhibit writeback on all buffers.
+> + * @trans: transaction handle to clean up
+> + */
+> +void btrfs_uninhibit_all_eb_writeback(struct btrfs_trans_handle *trans)
+> +{
+> +	struct extent_buffer *eb;
+> +	unsigned long index;
+> +
+> +	xa_for_each(&trans->writeback_inhibited_ebs, index, eb) {
+> +		atomic_dec(&eb->writeback_inhibitors);
+> +		free_extent_buffer(eb);
+> +	}
+> +	xa_destroy(&trans->writeback_inhibited_ebs);
+> +}
+> +
+>   static struct extent_buffer *__alloc_extent_buffer(struct btrfs_fs_info *fs_info,
+>   						   u64 start)
+>   {
+> @@ -3009,6 +3069,7 @@ static struct extent_buffer *__alloc_extent_buffer(struct btrfs_fs_info *fs_info
+>   	eb->len = fs_info->nodesize;
+>   	eb->fs_info = fs_info;
+>   	init_rwsem(&eb->lock);
+> +	atomic_set(&eb->writeback_inhibitors, 0);
+>   
+>   	btrfs_leak_debug_add_eb(eb);
+>   
+> diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
+> index 73571d5d3d5a..fb68fbd4866c 100644
+> --- a/fs/btrfs/extent_io.h
+> +++ b/fs/btrfs/extent_io.h
+> @@ -102,6 +102,8 @@ struct extent_buffer {
+>   	/* >= 0 if eb belongs to a log tree, -1 otherwise */
+>   	s8 log_index;
+>   	u8 folio_shift;
+> +	/* Inhibits WB_SYNC_NONE writeback when > 0. */
+> +	atomic_t writeback_inhibitors;
+
+I might be missing something here, but I'm curious whether this atomic 
+counter can ever go above 1. If not, and it's strictly binary, perhaps 
+using atomic_set(1/0) instead of atomic_inc/dec would make the intent 
+clearer?
+
+Otherwise looks good. Thanks.
+
+>   	struct rcu_head rcu_head;
+>   
+>   	struct rw_semaphore lock;
+> @@ -381,4 +383,8 @@ void btrfs_extent_buffer_leak_debug_check(struct btrfs_fs_info *fs_info);
+>   #define btrfs_extent_buffer_leak_debug_check(fs_info)	do {} while (0)
+>   #endif
+>   
+> +void btrfs_inhibit_eb_writeback(struct btrfs_trans_handle *trans,
+> +			       struct extent_buffer *eb);
+> +void btrfs_uninhibit_all_eb_writeback(struct btrfs_trans_handle *trans);
+> +
+>   #endif
+> diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
+> index f4cc9e1a1b93..a9a22629b49d 100644
+> --- a/fs/btrfs/transaction.c
+> +++ b/fs/btrfs/transaction.c
+> @@ -15,6 +15,7 @@
+>   #include "misc.h"
+>   #include "ctree.h"
+>   #include "disk-io.h"
+> +#include "extent_io.h"
+>   #include "transaction.h"
+>   #include "locking.h"
+>   #include "tree-log.h"
+> @@ -688,6 +689,8 @@ start_transaction(struct btrfs_root *root, unsigned int num_items,
+>   		goto alloc_fail;
+>   	}
+>   
+> +	xa_init(&h->writeback_inhibited_ebs);
+> +
+>   	/*
+>   	 * If we are JOIN_NOLOCK we're already committing a transaction and
+>   	 * waiting on this guy, so we don't need to do the sb_start_intwrite
+> @@ -1083,6 +1086,13 @@ static int __btrfs_end_transaction(struct btrfs_trans_handle *trans,
+>   	if (trans->type & __TRANS_FREEZABLE)
+>   		sb_end_intwrite(info->sb);
+>   
+> +	/*
+> +	 * Uninhibit extent buffer writeback before decrementing num_writers,
+> +	 * since the decrement wakes the committing thread which needs all
+> +	 * buffers uninhibited to write them to disk.
+> +	 */
+> +	btrfs_uninhibit_all_eb_writeback(trans);
+> +
+>   	WARN_ON(cur_trans != info->running_transaction);
+>   	WARN_ON(atomic_read(&cur_trans->num_writers) < 1);
+>   	atomic_dec(&cur_trans->num_writers);
+> @@ -2110,6 +2120,7 @@ static void cleanup_transaction(struct btrfs_trans_handle *trans, int err)
+>   	if (!test_bit(BTRFS_FS_RELOC_RUNNING, &fs_info->flags))
+>   		btrfs_scrub_cancel(fs_info);
+>   
+> +	btrfs_uninhibit_all_eb_writeback(trans);
+>   	kmem_cache_free(btrfs_trans_handle_cachep, trans);
+>   }
+>   
+> @@ -2556,6 +2567,14 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
+>   	    fs_info->cleaner_kthread)
+>   		wake_up_process(fs_info->cleaner_kthread);
+>   
+> +	/*
+> +	 * Uninhibit writeback on all extent buffers inhibited during this
+> +	 * transaction before writing them to disk. Inhibiting prevented
+> +	 * writeback while the transaction was building, but now we need
+> +	 * them written.
+> +	 */
+> +	btrfs_uninhibit_all_eb_writeback(trans);
+> +
+>   	ret = btrfs_write_and_wait_transaction(trans);
+>   	if (unlikely(ret)) {
+>   		btrfs_err(fs_info, "error while writing out transaction: %d", ret);
+> diff --git a/fs/btrfs/transaction.h b/fs/btrfs/transaction.h
+> index 18ef069197e5..7d70fe486758 100644
+> --- a/fs/btrfs/transaction.h
+> +++ b/fs/btrfs/transaction.h
+> @@ -12,6 +12,7 @@
+>   #include <linux/time64.h>
+>   #include <linux/mutex.h>
+>   #include <linux/wait.h>
+> +#include <linux/xarray.h>
+>   #include "btrfs_inode.h"
+>   #include "delayed-ref.h"
+>   
+> @@ -162,6 +163,8 @@ struct btrfs_trans_handle {
+>   	struct btrfs_fs_info *fs_info;
+>   	struct list_head new_bgs;
+>   	struct btrfs_block_rsv delayed_rsv;
+> +	/* Extent buffers with writeback inhibited by this handle. */
+> +	struct xarray writeback_inhibited_ebs;
+>   };
+>   
+>   /*
 
 
