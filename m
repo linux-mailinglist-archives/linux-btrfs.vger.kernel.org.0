@@ -1,412 +1,258 @@
-Return-Path: <linux-btrfs+bounces-21905-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21906-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id sBNJGy+UnmmXWQQAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21905-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Feb 2026 07:18:23 +0100
+	id oPP1OXqcnmkZWgQAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21906-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Feb 2026 07:53:46 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09F2A1924D2
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Feb 2026 07:18:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4165A1928B7
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Feb 2026 07:53:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 87B28303FACB
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Feb 2026 06:17:41 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id EB42B310768B
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Feb 2026 06:48:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D64332C15AC;
-	Wed, 25 Feb 2026 06:17:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7555D2BE7C6;
+	Wed, 25 Feb 2026 06:48:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PnrLYDYC"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="XeK1+CBl";
+	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="p3VtPnSO"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f67.google.com (mail-wm1-f67.google.com [209.85.128.67])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from esa5.hgst.iphmx.com (esa5.hgst.iphmx.com [216.71.153.144])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8ACDC199FD3
-	for <linux-btrfs@vger.kernel.org>; Wed, 25 Feb 2026 06:17:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.67
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772000260; cv=none; b=ABm3+DzW2JxTWdD6o371+TC2S/Am5JACwbtO+nWDZpvJ+wHOLOZz42ZKUUSHhUiQZGfsHl9IN2QjGf+pzGIj5lzFWnJsL3QyLJ/jg+uzQg2OqK4twx3MSfX6dhrfVKLmHlFjPd3ATy8WHdP96Nd6oZs/wR6tav2x17TPzb0NUyI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772000260; c=relaxed/simple;
-	bh=pvr9qH2bqbP35Wd+owJmbTZ7Fg+AL1bHfKgrCXn3IRc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YEMxGZzfrusXQCURKr24Una/KsTHaHUwpb/if/h9zYsXfnpN+fXWmoFruJ4SupirE1gQKKinCLwungpgOLxdjdEWC4MOxs9PRrET2kNzKW72VkugM0Ycb2gN5+U+RK4S5nZ9IHptNlJgV9T/6HKYb/UUKa7adN8VhQjVBCHvMKU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PnrLYDYC; arc=none smtp.client-ip=209.85.128.67
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f67.google.com with SMTP id 5b1f17b1804b1-483ad568d68so4500615e9.2
-        for <linux-btrfs@vger.kernel.org>; Tue, 24 Feb 2026 22:17:38 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 961AC75801
+	for <linux-btrfs@vger.kernel.org>; Wed, 25 Feb 2026 06:48:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=216.71.153.144
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1772002133; cv=fail; b=CjCyqArYlEFWtUo6Vzj5fa8fQZLcW+fWFf2RcPSCmPxsEhos+5EqrMbgNagTnEcfCPxeJjx5976/V6TshfFgvzly+GqG4bSiAeg1jC6u3CfXrOf1zHyQIN/mtjeSt0EbWzgmZSM7yBICdjUPoNx0aVbwPpRQaZVI6n2k+QO6e2Y=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1772002133; c=relaxed/simple;
+	bh=XhMhnH/Js+dgOAL4DuWPC3jpPluZPNcVELkaeP/uWb8=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=DTPWOxiyJr0v+jEIlxFQqjhaTKjqNBs5eVXt+DNdyoIz6l/5BxAfPugudZ5WuGQ29CO35/BVNioneMCDgbrz7r555aBzi9elUlXcQ5cPXM+GCVGonXzoMxU0bBsyylqdEx7Ja+uUtykcgIgoqLkRoHw0K4yXtZi1AKDs2CF7qlY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=XeK1+CBl; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=p3VtPnSO; arc=fail smtp.client-ip=216.71.153.144
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1772002132; x=1803538132;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=XhMhnH/Js+dgOAL4DuWPC3jpPluZPNcVELkaeP/uWb8=;
+  b=XeK1+CBlX5tifMjcfhgTI8bKkeMT2fPytt3KN3bqq60HmfuJ2P13abDX
+   aX7odhsNc/Z3YRQTjtOLQ0MG/ted9Eo5UPXC6XoR/wcogbyv8V+O7G1s6
+   kdZ8RyXpP7ZZPhI1SUsyb2TQGfhmoeC1K347FPtS3eRsrnavIfY79ua8J
+   d5SEz/5p6/qR5yR6YItAURO9v8K2Ju2zVY+KaD9261MsJgI280HxkchTv
+   ewVQuqq7OlNkqFPVpVVGqa66FBaws0IRZlKZc+gvIOVnSE5d60qkuLCli
+   U320f+3sKlto8Oko4SvY/4Sad3Lek35xx9zXqAoPm1Jx2QikFjryh9Izi
+   g==;
+X-CSE-ConnectionGUID: NO4tl/QvRIWAOSO3UuQqPg==
+X-CSE-MsgGUID: NJLmJWZWQxK1ng43D/2Izg==
+X-IronPort-AV: E=Sophos;i="6.21,310,1763395200"; 
+   d="scan'208";a="141026960"
+Received: from mail-northcentralusazon11013067.outbound.protection.outlook.com (HELO CH4PR04CU002.outbound.protection.outlook.com) ([40.107.201.67])
+  by ob1.hgst.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 25 Feb 2026 14:48:46 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=ZAuf0AOHm/ruAeW1AT3VfmtC4+vYjEYbPrGedXWqt/YrsqZqBp4zqyN+6h0ekEkEpqU2R6IKeWO7ysptcc7OBMXPwxnig0zYVC5S4iDz26juFUHmsYkTf/1MrmBHYZKC1DtDsIT3xd7gSVyFd+4RAFtJzYvRchJc3vE98krXRAJJr+/WTfs5n0+/TcP+s7octYwAP0y+BHUbLKy+8ZI5L1/ORRGRet1ISHXwld3TwcK6b3mAirg5MwYgq8LUDGQSZDLS7KuLFWkQWVS5ig1HhTNU+5Z0fD7cmTWSbQo9zrTFMP5Xtuezn985EJLwHuTOzHRlezOYh97Gin3HTwY6Ag==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=XhMhnH/Js+dgOAL4DuWPC3jpPluZPNcVELkaeP/uWb8=;
+ b=sTajqg1ZeezmCFQ5mQu749S9sSnO8CEx1otC0uB9WF9H6ugRR3oAf8cy5lOIWiP3mp1dMk/XNa5COfVup8YEL+DcVvjrroSRut1qI5gsTVV8qk5wAgbmTr4hhI3iChqJl4cmx9E/XQ1ykqT+I1mwP/eAe/GI7QnHDOL9MzMWa0stlYBl6CTN6fUVKc20nv9tjkpJzy5H+QdzVyGIK5OPbNO5ZD+YL5WyQvxSD9JXWe1pwFjYVsUIHVxZnj5mBKdlH7RWEwedUtfWIAVVQJaqxFX3/L4dw25a5WUM6QDiQM1SlbgwMP7JEkfwu+gh4EMXcwV/TANp4KhQbJ8AFtn5PA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1772000257; x=1772605057; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=9Lml4s3WkJnBnwOnwr+d0MU68jowa/Sft8FTejev/Bo=;
-        b=PnrLYDYCcq80oiRXhwVKJgW5hUNdOVMtJc2cxRUOA6lJs2p4wVsdtXZ6vbmpPsZqur
-         hqoHjU+ep+UG3o1Iddq3in0IHoezViYXXwrLiD55Gu4ota/2ek3PsDvBF/RnePlyFlDj
-         zTDBXzisCVqMuBzX277KGGEm4uR9Oj85hilz0OdbwD0owYr5sp0MncRBduQsLtuFR76Q
-         oDIBVEDfYCvZl+LNF+a1SdCJetwR1MLi0vSKZSmaLCcUDOpMHuxp2fo++NHlBZeKnmbd
-         SHK+PFPCV3I2wFn8Wok5ffIgp9aSzzbL+ZSbwBjxJFGnKG0rC8/c5xieL/C/LmNV57Wi
-         lQAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772000257; x=1772605057;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9Lml4s3WkJnBnwOnwr+d0MU68jowa/Sft8FTejev/Bo=;
-        b=GYxciyB9QvI0TykKeUkaTnfJaJRnmsYiY4IH5PxuzvqZXH0LqRGhsWvFnI9AMkXeEG
-         IwFhh2SpPHFnKh52uY2q+OZLRxUWA/OeDWKbh5NRPMThWrcqGmSSNGpOPi6PHmDDqyVI
-         HatbENq1Wveh1c/GPPpkPZFVeBr7AByfvqkhRsA7F5tXcm1cE4nn9OP2Vsb0UljdVsfs
-         R5s9orRlEQdaYj+C6CXzzbHklTORhdaELcoK/+GedWYPSv3KLPu/LLcKwQHJbYu/J1BL
-         r3MnKX3nLrxq2TOGGAUySIzOjWYF2CijOkrjVfUegLBf2PzsewPCfOgoWW7au7Yzz+qg
-         ABkQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVFCjS1jisONhgcazQtHSXndYbOwHwLL6oBbqgSLgnSJT1vyCqIOi5a889b90cf8zdy9O0U83BMjM/B4w==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwfRnQDfuJuSgoGIU6BlVS6Sbjli4X/n27ls1APRcXUZLf3AevW
-	YHB4CcdWHIQIGv6BDM1ko28+1FIUDkPE1VQEBhyOBIwOn4iX06i+9G70+B+LdYvRV+XjiA==
-X-Gm-Gg: ATEYQzxpXLrzVlEolFLZ8tOwtewfyqXbf4xQT5OcwSkRTyyZamBI6kx++j5aqXDM/ww
-	tp38/Jb/hQctMHveGN/RFxbGnxsjdkjCxbQsnQARNfiE5p8enlF/QZkkFVS/vaP7lE0Tnzzh5AR
-	IPCWf1NCXm/5hDsWZ+IzaXXk7rbQQQEzC019lByqTBKXQQZtYkkfKll46eDOoWLqq35+9ARGCv4
-	Jor8XO6o4Dy9L8HjAblNNr7vmT445o0SKRL7p2yuzVi0Cs1KMueHyrVfPUYPjrVDJnii8jdXE10
-	ds1oOAvTRTLxjsWVE16KPP766NKuGVv7gNYBxy99uuZhuX5hAlETzYBrK0ErrKPNHGjmG697VuV
-	StW8vmUCiJDXOOaI8hzyStuWhVzqdlPuNQbhYZ3wFpvkf1hr67fF7zoA6wlOLUWBjNfP//3u6ue
-	ek/17zSjpVM3Cw/JL207Ps7MHkTQ3G9CegirpSNZPqVu5NHazYMLAjKDnW48/kPPCkUqXfQBFIY
-	mu4fA==
-X-Received: by 2002:a05:6000:2008:b0:439:909f:c596 with SMTP id ffacd0b85a97d-439909fc8e6mr577356f8f.2.1772000256719;
-        Tue, 24 Feb 2026 22:17:36 -0800 (PST)
-Received: from ?IPV6:2408:8239:502:5512:18a9:8974:b792:9a40? ([140.238.217.67])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-43987f3ed03sm10811221f8f.16.2026.02.24.22.17.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Feb 2026 22:17:36 -0800 (PST)
-Message-ID: <8b4f2be8-169d-4e10-a47f-b534ab0ebac6@gmail.com>
-Date: Wed, 25 Feb 2026 14:17:24 +0800
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=XhMhnH/Js+dgOAL4DuWPC3jpPluZPNcVELkaeP/uWb8=;
+ b=p3VtPnSOz4+oHMoerwBmUY3dU3sKEAohPvf029KBX+mn71JHpwHUUybBqPMCihuSBZhSwkLwaT9vWi9tHJtBZNoB5iTVStpsCc5LqmmRCL4Szdso4KN1Ua55P9RgAbtgzA4eHUYKL/2sHMeC9oGLDGb64vbPqfGSzeA/xzzFwOU=
+Received: from LV8PR04MB8984.namprd04.prod.outlook.com (2603:10b6:408:18b::13)
+ by CH2PR04MB7095.namprd04.prod.outlook.com (2603:10b6:610:9e::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9654.10; Wed, 25 Feb
+ 2026 06:48:44 +0000
+Received: from LV8PR04MB8984.namprd04.prod.outlook.com
+ ([fe80::14a1:5b7a:6cf4:31a3]) by LV8PR04MB8984.namprd04.prod.outlook.com
+ ([fe80::14a1:5b7a:6cf4:31a3%3]) with mapi id 15.20.9654.007; Wed, 25 Feb 2026
+ 06:48:44 +0000
+From: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To: Filipe Manana <fdmanana@kernel.org>
+CC: "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>, Filipe Manana
+	<fdmanana@suse.com>
+Subject: Re: [PATCH] btrfs: zoned: move btrfs_zoned_reserve_data_reloc_bg
+ after kthread start
+Thread-Topic: [PATCH] btrfs: zoned: move btrfs_zoned_reserve_data_reloc_bg
+ after kthread start
+Thread-Index: AQHcpYxIYpEUyvt5Rkee1TIPD1eIHrWR58QAgAEStAA=
+Date: Wed, 25 Feb 2026 06:48:44 +0000
+Message-ID: <098d71c2-ef87-40bd-bb97-c770c0e199f9@wdc.com>
+References: <20260224125113.14831-1-johannes.thumshirn@wdc.com>
+ <CAL3q7H5+v__wrqe3gj-E0PE_09-S7ZHERnFLO5LEPcjKwS1DJQ@mail.gmail.com>
+In-Reply-To:
+ <CAL3q7H5+v__wrqe3gj-E0PE_09-S7ZHERnFLO5LEPcjKwS1DJQ@mail.gmail.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Mozilla Thunderbird
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: LV8PR04MB8984:EE_|CH2PR04MB7095:EE_
+x-ms-office365-filtering-correlation-id: 4e8f96fb-415a-4e69-4501-08de7439eb44
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|376014|19092799006|10070799003|1800799024|366016|38070700021;
+x-microsoft-antispam-message-info:
+ =?utf-8?B?NVdHcHV6YzZvR1dtbENaNXVqMG15TnFOQjZMM1BrUU9Td1M3bTFwcThKLytq?=
+ =?utf-8?B?NXdnakxmTVFkeVZFci9Sc1orTVVzdk5ydTRIV1EyYWNxWTNvYUtYd3llWi9B?=
+ =?utf-8?B?VjFYN3JKUk9QdEI1WE1pcUlHVThSUnh4bzdmL2tBRUN5UzlpT1BvUGlyVGlE?=
+ =?utf-8?B?bUE5alNDQjBEVjlOR2ZtbzcxalhiZ2ZnWUF3N21EQld4Z2twVklFTWJSU1hG?=
+ =?utf-8?B?RnVTSFVYQUpJUGlKcXBIeXBhSzNZVzV0Vjk1TzJPZXpjTkZqb2thSFpKTDZV?=
+ =?utf-8?B?ZWJNeld5K0hmYldlV0RhaVdVWXJpeWpUdnAzQUFVV0FUbjVhbExGR0JvL0kr?=
+ =?utf-8?B?WE1sWnpoQVRQdng5YXdOQ0tQc2JiU3A0KzQwWEZ6RFJIYlNCT0FieWQxRW1o?=
+ =?utf-8?B?SlRaTXpZS1o4YndlVk12VTY0bUFSN3dvNXo2QzgzNWN0OGwyTGhONUJnVlUw?=
+ =?utf-8?B?cVlONVl1b1FibDFxSzh5cENJdW1aQ1VKdjNuSDVZUTJBM1Q2RUVxN0J4YXk3?=
+ =?utf-8?B?Yy8zWmZaTW8xNDY1ek1zZ04rVStHVGIycGU5MHZ1bk1CUWN2dFNkaGpzRVI3?=
+ =?utf-8?B?S25RKzZ5cEpKNkpMdmcvWDc2SEdObk13YjQrelo4OWFaSWdFNkR5RUplbEQr?=
+ =?utf-8?B?U2hHK2lXNXBwWHNYeWlUSUdXMnFhejJXMWxlSGpLRzErMXNUQ0VKViszV1Fn?=
+ =?utf-8?B?SFRvWjMwRHZsT2tMblhmMThreEVyVXQwb1oxMDNpeFVZb1ZvczNvaldtY3Nx?=
+ =?utf-8?B?bThBRFN0b3g5VnVNaGhtekJlV3V5N0xIL3ljb2VvSEVFZmZKNkVVQjIxZlBj?=
+ =?utf-8?B?NGxPZjhkb1NrdkFXdHpHcHVNcnAwNzFwS1V5NldBSTBRamhkVXhWdTlTNTJU?=
+ =?utf-8?B?amNFRFgrV0xaMjllWEpYOFpSWW10eU00Vk0zTG5UUW1kRURyQkZpWjkvOEND?=
+ =?utf-8?B?U2dQRTl4TE12OXFvWVhJS0VGandxZ0dOS2x3MDlVZHNqTmMzUzBVNGVscHVm?=
+ =?utf-8?B?TGliOXhRa1p5RVlmdkNiM0tmaHJpV2FBSEhyT29XL05OSFkzaDZYVWEvTjNa?=
+ =?utf-8?B?eEpaeTg1akdWYWx3cDR5cmZnU2hHZDhRYjBDN2h3bTNicEJwZldwUHR2Q1BQ?=
+ =?utf-8?B?THJ2OFNTSnNOZkxSWWRlRlM4VXUzOVlXeHhIbWF0RnBqRk85c2FpYXNDTWJT?=
+ =?utf-8?B?dnZMNXVmbDFtQlBhWEgwd3FqN2xPeWFZaE82RlN0S1FQL2xQWitJa2dCZkU3?=
+ =?utf-8?B?Y1hXZzJqTXJDWWg0Qi81UTA2TjhCbXdCTFpoSVMwd2k0YU5KTkRQdjJONFZ2?=
+ =?utf-8?B?aldXbk5rM0M4Mk5ZSUtKY3liSFBLaGY4ekVRNjQxZ1lsZzVFMEI1UUVvb3Rm?=
+ =?utf-8?B?VjYzSWljcnBiQUNBc0lhVkllZ1RvTlZSY3MrSzFBbCsvZXIwRjBoQm90d1NN?=
+ =?utf-8?B?SHVvMm8vUStnaW5LVUtjSENjY2lyeGE4VEY0ME1yK0l5UmZmZjR3RjVucnpW?=
+ =?utf-8?B?NFZiRHUvcGpGS0p1QS90cWw3SDlicjd4QWYzMG0yeks0dVlFdWhXTnNBck5u?=
+ =?utf-8?B?bWdCMmxEakJrZy9zU0pNWUtiRHJRcS81LzlrVW5MUmFwN3RNUFM1OW1nWU5h?=
+ =?utf-8?B?U212UjJLSjRYelQwMlRPb0R5K3hyckV6YTU2QzhJcGdnQVJtMjRWT0FzYmR6?=
+ =?utf-8?B?NFpLeGRYT0ltRG1kbmg2S3A0RjZNUUIwMTNWWkVWbk1JSHI5WkNSNmRLam03?=
+ =?utf-8?B?Zi9vTjNzT2JQYTdES2hFTHB2SjJnUVBhblFQaExOb1Fxb2tTVkxQMk5vMW8v?=
+ =?utf-8?B?V3FxUE5meXZxQnNvUktvUmNHQ1drbFR1QU5HbTNPMDhoSnpjWXBIbkhxOFc2?=
+ =?utf-8?B?OUU0N3hhT0hUVTFsY093andjd09UV1lsYmpuVVMvaHBWYkw0ZXI2bUxpakxU?=
+ =?utf-8?B?U3ZlSG5RT3IvQTJnK0hXZE15N29kZnhjU2JYR0M1dlJxbElQMXcvTzBvK0Zp?=
+ =?utf-8?B?WXVWbTZVQ01SaGJSTnQyclc2bVBXQ3RLT1BMamtBWkI1MG16WGh2c1d4MjA0?=
+ =?utf-8?B?MVpIWDllbzQ4NnRra2pyaE9UTHlUZ3pCZWZWdzRwWDcxVkhIRm5Sc1MvUnF0?=
+ =?utf-8?B?dHhhVkVuZjNEZHVMNWIyTmpsZ1lmRkZuQVlKQXJzeFlZVzJhRDJycG9qaE91?=
+ =?utf-8?Q?tqThA5tWja1wxu5VxDN/1ig=3D?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV8PR04MB8984.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(19092799006)(10070799003)(1800799024)(366016)(38070700021);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 2
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?eTA5QkxzeVc3SkpoTWtON0pzUTRUN3lLd0Y0eDVsS2trS0hxUXlxajhBNG11?=
+ =?utf-8?B?aFlYQzBwYWZXSGVBWjZvYVlwY25mRFFYL3JrQnJEN2pwZXJPZ0hBR25pUUhE?=
+ =?utf-8?B?WkE2Z0NvWi8vZ2JXb21CV1J6eFg3ci9iN2wwSy9QVU95aHNRRE00RCt3Q29X?=
+ =?utf-8?B?bVZiNGxFTzh1NkE4T1BmRm1Dc0hDSnJia0s4SzdaQlcwckRNc2hqSlR0bUt1?=
+ =?utf-8?B?d014UGRxK0JWeGE5Ry83K1kwZU4xeEdYWEFaRG9hRTVRMVBLWldjTE1qTUt2?=
+ =?utf-8?B?YUJWRGVaRUEzVjJRdzEwN0xhZDdSelY2UThKRERyN0JDMERwUzQwdkRRMC9U?=
+ =?utf-8?B?c1BZVlpvS1o0UlhNeFdqOSt0T2V3UWVXWU1LR3pSbXlQdDg2MG9uN1FxTVYx?=
+ =?utf-8?B?cXJnMHNQMTV6dy9sSTNUNG9kanJPZnpBVEVncTlTTUtpNVBqY0lhZmxDcDJr?=
+ =?utf-8?B?TWczalpJU3ZTWi9Qc3JzeFpNY0hGSEIrZkdHejBmdmV5aDF2RVNhRmRGWlZG?=
+ =?utf-8?B?VDNPdXN4YnFseXd6cXlWZGFpVGZTMUhobXNZMDlreWZjN1V6OEVDWnJpRDU1?=
+ =?utf-8?B?akhnUElMOXlUSXRJK3RnNmVGL2huZEVEMzJoQUlQaWRJaVBadjNvLzNiNWZJ?=
+ =?utf-8?B?VDJpTHF3Tmo3SEd4T1JKMGR4M0psdjYyOTd2V3I3S09yVmVlZUxGSFFKQ2pm?=
+ =?utf-8?B?VVZKenRVdFRJWmsrbGxZRDNsZE9TbWRQaTNsZGJSMVJDYS9vdGt2bThXbUtn?=
+ =?utf-8?B?SWNBalY3b3NpdGJsenFGNXVJTW5mL0lXV3N0V3VqOFdnbkFGUTNMRUdqVGtM?=
+ =?utf-8?B?ZExmc0tZWlJ5V0tSTjZ1UXozcUo3WEN2aFJUY3lVMWMwc25sMDArSkN3SjBs?=
+ =?utf-8?B?RzhXVkJlMmtQbm5jNGZhTElxQUFTY2NMKzdBTTZrUXhLNEZPSFdxUGE4VHZL?=
+ =?utf-8?B?K2kvb1gzZWEraklIallVUFVVc0M1aE5zYjdFS3UwdUgwSk0rRTQxMmV5U2Fr?=
+ =?utf-8?B?TUZPL2R1UjYyUDRDWTRoSWFSeCs4QW00aDdic2w0aGxWaHViQ2J6WmVGUnkz?=
+ =?utf-8?B?SkRFQ2ZsSVZyWVJycnRmZVRPT3hTY1F1VnlzdG5EdEtGcXZQYmF6cHYrYjNr?=
+ =?utf-8?B?aWR3OVNCb1Uxd01TWVBNemNRUGVZZ3VCY3RZcERTOEdsa3M0YmFXcW1UMjlT?=
+ =?utf-8?B?VVM4bFNuMWQrWStuTWNiTEF6bzJuOGxZVzRpK3dpSW8waVBDbWNGWjVLNVZN?=
+ =?utf-8?B?dmI4b2dhR3ZKd0dnQzhpZjgvN1Y1SjVtM0lyS05VV3JCUlo0NEVRZkZJaGl1?=
+ =?utf-8?B?M1dNM1FtQXFmVVBCSjRLV3lCVDFEV3ZicVhHT2xKWC9MckZmUW9wc3BFMHp6?=
+ =?utf-8?B?SHNDWWhzU05vZmIvUHVJT1N1QloySE92ckg4Nno5VnV4N2Fzc1ZsUndLSnY4?=
+ =?utf-8?B?Nmh4UHh5QlJVWWtUcHRJSVo3emZCOTZpR0JubE05dmY3dzZKNXBRS2dJYVZi?=
+ =?utf-8?B?cHk4UGxhbm9ZZnk1YlMzMmZZMU9yRDlqM3NmMVV0aUlqODBLOWY0aEFXUXNQ?=
+ =?utf-8?B?L3JJM1lqSjRaSWhjeCtHdWtSUmNzcCtHaW5MTTVwZzlQYXB1WnRpQWN4djVV?=
+ =?utf-8?B?dzVQMEhLNTdseVd0VSsrYzdXV0JNeDhiL21yRmxITzFuY056T0ROZlVseUY4?=
+ =?utf-8?B?dnFpL2d6Y0x1eC9XNTZSM1RycGs3ZDV2amQzdVJCdEY0alRwRTYvZ3dFNTl4?=
+ =?utf-8?B?RUVmazhwK2lDMUVqM0Ntamloc3l4dktmeCt3bG82ei96Zzd3a3YvRFdMYmNP?=
+ =?utf-8?B?SExKU2hQa1VuNGhjY0JDL0k5aFRYOEdZY1NMZDM2c3NqQnNFckJ3dGZzRFBx?=
+ =?utf-8?B?VGE5bEJqVWx3OVBTKzAyVzc2U216TXJadVZjenhnTUljSzhBN3NmSWN2b2RP?=
+ =?utf-8?B?RDdFMnZwZmx4aHk4YVM2Wm5FejBXRmQxNlFhQjFOZFdGNW82ekZXVEV3OWFV?=
+ =?utf-8?B?OC9CckJYLzJpOHMvWVQ5TGdTKy80RlpUMUNHRE1zd3NRT29yd2RKQUh3ZGx1?=
+ =?utf-8?B?M2x5UDNSc2FoODVxMWp1ZmtLNW4rRjIzM3pYTFVORnhId1Qvd1JvQ0NNTnds?=
+ =?utf-8?B?cVdDMENpTjk0clN0QlAweVkxbTR1ZGdOSGFRSENVT0ZORER5ZFZid28zMHZU?=
+ =?utf-8?B?eWl6NGJDU2ZhbGtEaXVyKzdhNklXKy93YTV5aWhCNnJjZzIxekI4SGJFaGZU?=
+ =?utf-8?B?Y3gvUUtObzJlVzBlQTRLcm1vT2ZBV2VSY2lMb3R2NnJsSUkxZW5YSTMrTzh3?=
+ =?utf-8?B?a2N2WVd4ak5YL0JBbWM3MU5zS0Y3ZmJFelZyOWxxM0JpWjR2elBucWV1K3Qr?=
+ =?utf-8?Q?aDGH7yR4FGfPfhSTCXqeV4CZ1RC2CFgc+ne51tLHqZtkx?=
+x-ms-exchange-antispam-messagedata-1: 4LRH5Eoc6J9SPvG5+1SBCFVb02Diurre8zk=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <D6F31A574BFDDB49A87BBC4DB2068EC1@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/3] btrfs: inhibit extent buffer writeback to prevent
- COW amplification
-To: Leo Martins <loemra.dev@gmail.com>, linux-btrfs@vger.kernel.org,
- kernel-team@fb.com
-Cc: Filipe Manana <fdmanana@suse.com>
-References: <cover.1771884128.git.loemra.dev@gmail.com>
- <cc847a35e26cc4dfad18c59e3c525cea507ff440.1771884128.git.loemra.dev@gmail.com>
-Content-Language: en-US
-From: Sun YangKai <sunk67188@gmail.com>
-In-Reply-To: <cc847a35e26cc4dfad18c59e3c525cea507ff440.1771884128.git.loemra.dev@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	JZ5rkRTJ/cKuecg99RCj02HpIgCQ35j2UBTRuKSWRAbkgzZE3bd+AfvsF2GRfGpaA9qq/27M+SBwD7zvWVSztaBWJP47YUjU6ukRmTZ3JDcltZs5WODedwJJMVAzCqrGoLbvk1VtUYL97BRHoArdT2hO7YImUFeXrAiBGrpXNZitli0XxGFS5P7jWwQREyNbxzZc0r4lsndgDOJcO9ThD4H3SdkpaXuqOFrJkGLn9bXGZythdn0lQIoYglMCB0nvy7VbIl9xQnDnDIeOTUESWvdMZ1FnkbVOkU5/qThBxv5hFNBpQ3+J8YipzInBhty/TthMRW1u60GFJ314bk6WbDngIbKJvJrQPDVpWT+I1o3rEsnxjienmrSY6Dm0RoBOHmtJ2DRXPVMsMTelOe9Iv6WydpbQCZ1OSOd8ZUFAq2/BFA1pA9210WiSWSwIrhh6xdGC8KeEroOmGgTIbh09tshk+Hc5ttzlCSHlIYjhyV5KGKBXfLTc4IigBUDKJQsgWTZSsSC1Yu8EJ0CGtFOchkaCMM1AFvGfEvl8p9FYmBITHaISfybqD8eLMDK22bEq35IsEbuOvuxmDPeWMzOq3PKvBls6o5yQuTtzmuAQh0V2XsGYgiZRXKMGYFfbA5qa
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: LV8PR04MB8984.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4e8f96fb-415a-4e69-4501-08de7439eb44
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Feb 2026 06:48:44.1797
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 9eFZqI4IxbhT/8HMaferw1DsVfMQ9oiX/IitH0q0zzY0VASkhNPUNFfu4MJGs49GQsl6Hc0kwHEIvfgK5bqV+sCvRV5bP+rsXv/U9QmMNoM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR04MB7095
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
+X-Spamd-Result: default: False [2.94 / 15.00];
+	DMARC_POLICY_QUARANTINE(1.50)[wdc.com : SPF not aligned (relaxed), DKIM not aligned (relaxed),quarantine];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	MIME_BASE64_TEXT_BOGUS(1.00)[];
+	R_DKIM_ALLOW(-0.20)[sharedspace.onmicrosoft.com:s=selector2-sharedspace-onmicrosoft-com];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
+	MIME_BASE64_TEXT(0.10)[];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21905-lists,linux-btrfs=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com,vger.kernel.org,fb.com];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21906-lists,linux-btrfs=lfdr.de];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
+	DKIM_MIXED(0.00)[];
 	TO_DN_SOME(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	RCPT_COUNT_THREE(0.00)[4];
-	RCVD_COUNT_FIVE(0.00)[5];
+	R_DKIM_REJECT(0.00)[wdc.com:s=dkim.wdc.com];
+	DKIM_TRACE(0.00)[wdc.com:-,sharedspace.onmicrosoft.com:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[sunk67188@gmail.com,linux-btrfs@vger.kernel.org];
-	DKIM_TRACE(0.00)[gmail.com:+];
+	FROM_NEQ_ENVFROM(0.00)[Johannes.Thumshirn@wdc.com,linux-btrfs@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-btrfs];
 	MID_RHS_MATCH_FROM(0.00)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,suse.com:email]
-X-Rspamd-Queue-Id: 09F2A1924D2
+	RCPT_COUNT_THREE(0.00)[3];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 4165A1928B7
 X-Rspamd-Action: no action
 
-
-
-On 2026/2/25 03:22, Leo Martins wrote:
-> Inhibit writeback on COW'd extent buffers for the lifetime of the
-> transaction handle, preventing background writeback from setting
-> BTRFS_HEADER_FLAG_WRITTEN and causing unnecessary re-COW.
-> 
-> COW amplification occurs when background writeback flushes an extent
-> buffer that a transaction handle is still actively modifying. When
-> lock_extent_buffer_for_io() transitions a buffer from dirty to
-> writeback, it sets BTRFS_HEADER_FLAG_WRITTEN, marking the block as
-> having been persisted to disk at its current bytenr. Once WRITTEN is
-> set, should_cow_block() must either COW the block again or overwrite
-> it in place, both of which are unnecessary overhead when the buffer
-> is still being modified by the same handle that allocated it. By
-> inhibiting background writeback on actively-used buffers, WRITTEN is
-> never set while a transaction handle holds a reference to the buffer,
-> avoiding this overhead entirely.
-> 
-> Add an atomic_t writeback_inhibitors counter to struct extent_buffer,
-> which fits in an existing 6-byte hole without increasing struct size.
-> When a buffer is COW'd in btrfs_force_cow_block(), call
-> btrfs_inhibit_eb_writeback() to store the eb in the transaction
-> handle's writeback_inhibited_ebs xarray (keyed by eb->start), take a
-> reference, and increment writeback_inhibitors. The function handles
-> dedup (same eb inhibited twice by the same handle) and replacement
-> (different eb at the same logical address). Allocation failure is
-> graceful: the buffer simply falls back to the pre-existing behavior
-> where it may be written back and re-COW'd.
-> 
-> In lock_extent_buffer_for_io(), when writeback_inhibitors is non-zero
-> and the writeback mode is WB_SYNC_NONE, skip the buffer. WB_SYNC_NONE
-> is used by the VM flusher threads for background and periodic
-> writeback, which are the only paths that cause COW amplification by
-> opportunistically writing out dirty extent buffers mid-transaction.
-> Skipping these is safe because the buffers remain dirty in the page
-> cache and will be written out at transaction commit time.
-> 
-> WB_SYNC_ALL must always proceed regardless of writeback_inhibitors.
-> This is required for correctness in the fsync path: btrfs_sync_log()
-> writes log tree blocks via filemap_fdatawrite_range() (WB_SYNC_ALL)
-> while the transaction handle that inhibited those same blocks is still
-> active. Without the WB_SYNC_ALL bypass, those inhibited log tree
-> blocks would be silently skipped, resulting in an incomplete log on
-> disk and corruption on replay. btrfs_write_and_wait_transaction()
-> also uses WB_SYNC_ALL via filemap_fdatawrite_range(); for that path,
-> inhibitors are already cleared beforehand, but the bypass ensures
-> correctness regardless.
-> 
-> Uninhibit in __btrfs_end_transaction() before atomic_dec(num_writers)
-> to prevent a race where the committer proceeds while buffers are still
-> inhibited. Also uninhibit in btrfs_commit_transaction() before writing
-> and in cleanup_transaction() for the error path.
-> 
-> Signed-off-by: Leo Martins <loemra.dev@gmail.com>
-> Reviewed-by: Filipe Manana <fdmanana@suse.com>
-> ---
->   fs/btrfs/ctree.c       |  4 +++
->   fs/btrfs/extent_io.c   | 63 +++++++++++++++++++++++++++++++++++++++++-
->   fs/btrfs/extent_io.h   |  6 ++++
->   fs/btrfs/transaction.c | 19 +++++++++++++
->   fs/btrfs/transaction.h |  3 ++
->   5 files changed, 94 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-> index 0e02b7b14adc..d4da65bb9096 100644
-> --- a/fs/btrfs/ctree.c
-> +++ b/fs/btrfs/ctree.c
-> @@ -590,6 +590,10 @@ int btrfs_force_cow_block(struct btrfs_trans_handle *trans,
->   		btrfs_tree_unlock(buf);
->   	free_extent_buffer_stale(buf);
->   	btrfs_mark_buffer_dirty(trans, cow);
-> +
-> +	/* Inhibit writeback on the COW'd buffer for this transaction handle. */
-> +	btrfs_inhibit_eb_writeback(trans, cow);
-> +
->   	*cow_ret = cow;
->   	return 0;
->   
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index ff1fc699a6ca..e04e42a81978 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -1940,7 +1940,9 @@ static noinline_for_stack bool lock_extent_buffer_for_io(struct extent_buffer *e
->   	 * of time.
->   	 */
->   	spin_lock(&eb->refs_lock);
-> -	if (test_and_clear_bit(EXTENT_BUFFER_DIRTY, &eb->bflags)) {
-> +	if ((wbc->sync_mode == WB_SYNC_ALL ||
-> +	     atomic_read(&eb->writeback_inhibitors) == 0) &&
-> +	    test_and_clear_bit(EXTENT_BUFFER_DIRTY, &eb->bflags)) {
->   		XA_STATE(xas, &fs_info->buffer_tree, eb->start >> fs_info->nodesize_bits);
->   		unsigned long flags;
->   
-> @@ -2999,6 +3001,64 @@ static inline void btrfs_release_extent_buffer(struct extent_buffer *eb)
->   	kmem_cache_free(extent_buffer_cache, eb);
->   }
->   
-> +/*
-> + * btrfs_inhibit_eb_writeback - Inhibit writeback on buffer during transaction.
-> + * @trans: transaction handle that will own the inhibitor
-> + * @eb: extent buffer to inhibit writeback on
-> + *
-> + * Attempts to track this extent buffer in the transaction's inhibited set.
-> + * If memory allocation fails, the buffer is simply not tracked. It may
-> + * be written back and need re-COW, which is the original behavior.
-> + * This is acceptable since inhibiting writeback is an optimization.
-> + */
-> +void btrfs_inhibit_eb_writeback(struct btrfs_trans_handle *trans,
-> +				struct extent_buffer *eb)
-> +{
-> +	unsigned long index = eb->start >> trans->fs_info->nodesize_bits;
-> +	void *old;
-> +
-> +	/* Check if already inhibited by this handle. */
-> +	old = xa_load(&trans->writeback_inhibited_ebs, index);
-> +	if (old == eb)
-> +		return;
-> +
-> +	/* Take reference for the xarray entry. */
-> +	refcount_inc(&eb->refs);
-> +
-> +	old = xa_store(&trans->writeback_inhibited_ebs, index, eb, GFP_NOFS);
-> +	if (xa_is_err(old)) {
-> +		/* Allocation failed, just skip inhibiting this buffer. */
-> +		free_extent_buffer(eb);
-> +		return;
-> +	}
-> +
-> +	/* Handle replacement of different eb at same index. */
-> +	if (old && old != eb) {
-> +		struct extent_buffer *old_eb = old;
-> +
-> +		atomic_dec(&old_eb->writeback_inhibitors);
-> +		free_extent_buffer(old_eb);
-> +	}
-> +
-> +	atomic_inc(&eb->writeback_inhibitors);
-> +}
-> +
-> +/*
-> + * btrfs_uninhibit_all_eb_writeback - Uninhibit writeback on all buffers.
-> + * @trans: transaction handle to clean up
-> + */
-> +void btrfs_uninhibit_all_eb_writeback(struct btrfs_trans_handle *trans)
-> +{
-> +	struct extent_buffer *eb;
-> +	unsigned long index;
-> +
-> +	xa_for_each(&trans->writeback_inhibited_ebs, index, eb) {
-> +		atomic_dec(&eb->writeback_inhibitors);
-> +		free_extent_buffer(eb);
-> +	}
-> +	xa_destroy(&trans->writeback_inhibited_ebs);
-> +}
-> +
->   static struct extent_buffer *__alloc_extent_buffer(struct btrfs_fs_info *fs_info,
->   						   u64 start)
->   {
-> @@ -3009,6 +3069,7 @@ static struct extent_buffer *__alloc_extent_buffer(struct btrfs_fs_info *fs_info
->   	eb->len = fs_info->nodesize;
->   	eb->fs_info = fs_info;
->   	init_rwsem(&eb->lock);
-> +	atomic_set(&eb->writeback_inhibitors, 0);
->   
->   	btrfs_leak_debug_add_eb(eb);
->   
-> diff --git a/fs/btrfs/extent_io.h b/fs/btrfs/extent_io.h
-> index 73571d5d3d5a..fb68fbd4866c 100644
-> --- a/fs/btrfs/extent_io.h
-> +++ b/fs/btrfs/extent_io.h
-> @@ -102,6 +102,8 @@ struct extent_buffer {
->   	/* >= 0 if eb belongs to a log tree, -1 otherwise */
->   	s8 log_index;
->   	u8 folio_shift;
-> +	/* Inhibits WB_SYNC_NONE writeback when > 0. */
-> +	atomic_t writeback_inhibitors;
-
-I might be missing something here, but I'm curious whether this atomic 
-counter can ever go above 1. If not, and it's strictly binary, perhaps 
-using atomic_set(1/0) instead of atomic_inc/dec would make the intent 
-clearer?
-
-Otherwise looks good. Thanks.
-
->   	struct rcu_head rcu_head;
->   
->   	struct rw_semaphore lock;
-> @@ -381,4 +383,8 @@ void btrfs_extent_buffer_leak_debug_check(struct btrfs_fs_info *fs_info);
->   #define btrfs_extent_buffer_leak_debug_check(fs_info)	do {} while (0)
->   #endif
->   
-> +void btrfs_inhibit_eb_writeback(struct btrfs_trans_handle *trans,
-> +			       struct extent_buffer *eb);
-> +void btrfs_uninhibit_all_eb_writeback(struct btrfs_trans_handle *trans);
-> +
->   #endif
-> diff --git a/fs/btrfs/transaction.c b/fs/btrfs/transaction.c
-> index f4cc9e1a1b93..a9a22629b49d 100644
-> --- a/fs/btrfs/transaction.c
-> +++ b/fs/btrfs/transaction.c
-> @@ -15,6 +15,7 @@
->   #include "misc.h"
->   #include "ctree.h"
->   #include "disk-io.h"
-> +#include "extent_io.h"
->   #include "transaction.h"
->   #include "locking.h"
->   #include "tree-log.h"
-> @@ -688,6 +689,8 @@ start_transaction(struct btrfs_root *root, unsigned int num_items,
->   		goto alloc_fail;
->   	}
->   
-> +	xa_init(&h->writeback_inhibited_ebs);
-> +
->   	/*
->   	 * If we are JOIN_NOLOCK we're already committing a transaction and
->   	 * waiting on this guy, so we don't need to do the sb_start_intwrite
-> @@ -1083,6 +1086,13 @@ static int __btrfs_end_transaction(struct btrfs_trans_handle *trans,
->   	if (trans->type & __TRANS_FREEZABLE)
->   		sb_end_intwrite(info->sb);
->   
-> +	/*
-> +	 * Uninhibit extent buffer writeback before decrementing num_writers,
-> +	 * since the decrement wakes the committing thread which needs all
-> +	 * buffers uninhibited to write them to disk.
-> +	 */
-> +	btrfs_uninhibit_all_eb_writeback(trans);
-> +
->   	WARN_ON(cur_trans != info->running_transaction);
->   	WARN_ON(atomic_read(&cur_trans->num_writers) < 1);
->   	atomic_dec(&cur_trans->num_writers);
-> @@ -2110,6 +2120,7 @@ static void cleanup_transaction(struct btrfs_trans_handle *trans, int err)
->   	if (!test_bit(BTRFS_FS_RELOC_RUNNING, &fs_info->flags))
->   		btrfs_scrub_cancel(fs_info);
->   
-> +	btrfs_uninhibit_all_eb_writeback(trans);
->   	kmem_cache_free(btrfs_trans_handle_cachep, trans);
->   }
->   
-> @@ -2556,6 +2567,14 @@ int btrfs_commit_transaction(struct btrfs_trans_handle *trans)
->   	    fs_info->cleaner_kthread)
->   		wake_up_process(fs_info->cleaner_kthread);
->   
-> +	/*
-> +	 * Uninhibit writeback on all extent buffers inhibited during this
-> +	 * transaction before writing them to disk. Inhibiting prevented
-> +	 * writeback while the transaction was building, but now we need
-> +	 * them written.
-> +	 */
-> +	btrfs_uninhibit_all_eb_writeback(trans);
-> +
->   	ret = btrfs_write_and_wait_transaction(trans);
->   	if (unlikely(ret)) {
->   		btrfs_err(fs_info, "error while writing out transaction: %d", ret);
-> diff --git a/fs/btrfs/transaction.h b/fs/btrfs/transaction.h
-> index 18ef069197e5..7d70fe486758 100644
-> --- a/fs/btrfs/transaction.h
-> +++ b/fs/btrfs/transaction.h
-> @@ -12,6 +12,7 @@
->   #include <linux/time64.h>
->   #include <linux/mutex.h>
->   #include <linux/wait.h>
-> +#include <linux/xarray.h>
->   #include "btrfs_inode.h"
->   #include "delayed-ref.h"
->   
-> @@ -162,6 +163,8 @@ struct btrfs_trans_handle {
->   	struct btrfs_fs_info *fs_info;
->   	struct list_head new_bgs;
->   	struct btrfs_block_rsv delayed_rsv;
-> +	/* Extent buffers with writeback inhibited by this handle. */
-> +	struct xarray writeback_inhibited_ebs;
->   };
->   
->   /*
-
+T24gMi8yNC8yNiAzOjI2IFBNLCBGaWxpcGUgTWFuYW5hIHdyb3RlOg0KPiBBZGRpbmcgYSBjb21t
+ZW50IGFib3ZlIGxpa2U6ICAiU3RhcnRzIGEgdHJhbnNhY3Rpb24sIG11c3QgYmUgY2FsbGVkDQo+
+IGFmdGVyIHRoZSB0cmFuc2FjdGlvbiBrdGhyZWFkIGlzIGluaXRpYWxpemVkLiINCj4gV291bGQg
+aGVscCBwcmV2ZW50IHJlaW50cm9kdWNpbmcgdGhlIGJ1ZyBpZiB3ZSBnZXQgYSByZWZhY3Rvcmlu
+ZyBpbg0KPiB0aGUgZnV0dXJlIHRoYXQgbW92ZXMgaXQgYXJvdW5kDQoNCkkndmUgYWRkZWQgdGhl
+IGNvbW1lbnQgaW4gZm9yLW5leHQuDQoNClRoYW5rcw0KDQo=
 
