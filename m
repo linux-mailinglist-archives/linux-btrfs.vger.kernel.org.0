@@ -1,59 +1,59 @@
-Return-Path: <linux-btrfs+bounces-21911-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21912-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id OF3yJ0HRnmnwXQQAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21911-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Feb 2026 11:38:57 +0100
+	id oOC1HlPRnmnwXQQAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21912-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Feb 2026 11:39:15 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18A80195DDD
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Feb 2026 11:38:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C333A195DE4
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Feb 2026 11:39:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 97D6530CE445
-	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Feb 2026 10:35:51 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id B840D30DDE01
+	for <lists+linux-btrfs@lfdr.de>; Wed, 25 Feb 2026 10:36:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88966392C56;
-	Wed, 25 Feb 2026 10:35:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3D35392C40;
+	Wed, 25 Feb 2026 10:36:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b="LL2N5C2v"
+	dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b="tx0hXFeZ"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from mail.burntcomma.com (mail2.burntcomma.com [217.169.27.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1989B392C28
-	for <linux-btrfs@vger.kernel.org>; Wed, 25 Feb 2026 10:35:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D90E288C3F
+	for <linux-btrfs@vger.kernel.org>; Wed, 25 Feb 2026 10:35:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.169.27.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772015749; cv=none; b=SMFhxQ/af/tGOY1caBuec3ViqRjg2exKIfUdtLr3IB8cZYkEMUNKPDYP/dV07WNTp9YhI4QoCpugjtWgBlyXxihmXlM4xXoV5OwFd6e2paaDNMFxismTFjyW8zKoUIReC7C2AknT7+4QZD58sv9F2KA+rGNRIHw2yb0sN7Lx7Rs=
+	t=1772015761; cv=none; b=Z1xjzJ/1+I3h4bZ/wNIDtACOZ1ndSGsRRrb35hTmN+tD7ZITuliQTgimRz2Yf1lFKsoaWYEnCVncD8SRSg8C2zfibWMhupo7NWIrX+HCkqh4MZomxK7cluUpA401VJ6dVEm0IBnD7VNGKahlB7ySUe6QVppH5DCvx8ZjehbwUFA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772015749; c=relaxed/simple;
-	bh=rQMZb17AmZe8MelEYng6HviPHhEikUP5it68QLXt6FQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:Mime-Version; b=LPCQRTVkAJ1gIWM4s8F5C/wmarRAeG2oufh2K1wJDRFpYOz+JXmCSx16nM3sGOUKlDUO/Ftl18z7mk8MQgVr5F4zFggAe71mTOzRvUsUABAqZ7ZYoVL/PITDgVHmpfL5xqRGJtWmqvTkU1z29CMH7nvI7mQ5E1J1BdcSC1zX/AI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com; spf=pass smtp.mailfrom=harmstone.com; dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b=LL2N5C2v; arc=none smtp.client-ip=217.169.27.34
+	s=arc-20240116; t=1772015761; c=relaxed/simple;
+	bh=plPTjm/UtOHxg93kqgEO7JdF/oAnYfxwdBVrmMT5iNY=;
+	h=From:To:Cc:Subject:Date:Message-ID:Mime-Version; b=KjHaomzmKIaD8dM23j0ZCyvCSibX6XX2KRc3HSKi6NS9v6y0KUGD9+tnT/gUoGE5kqL0YrIxNrrKa0sU2g6Xyi1T2nmjR7muxsdBzWQD3MNn6Grsddjh3NnvClHLYwyBVaJt8J7doNWJwVHZe6DW7SF19MfQbTD6aZnIgnFujVc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com; spf=pass smtp.mailfrom=harmstone.com; dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b=tx0hXFeZ; arc=none smtp.client-ip=217.169.27.34
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=harmstone.com
 Received: from beren (beren.burntcomma.com [IPv6:2a02:8012:8cf0:0:ce28:aaff:fe0d:6db2])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(Client did not present a certificate)
-	by mail.burntcomma.com (Postfix) with ESMTPSA id 26D4B306F2A;
-	Wed, 25 Feb 2026 10:35:37 +0000 (GMT)
+	by mail.burntcomma.com (Postfix) with ESMTPSA id 5C00A306F2C;
+	Wed, 25 Feb 2026 10:35:58 +0000 (GMT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=harmstone.com;
-	s=mail; t=1772015737;
-	bh=5UgOqhlwQqFt+d7OaLRFnswkKl7lhQBDOxCdJvxrnsg=;
+	s=mail; t=1772015758;
+	bh=jCmEJ6uLDLh3gU9qwkbmqNJHU00cf/DCNuLzKToXM3Q=;
 	h=From:To:Cc:Subject:Date;
-	b=LL2N5C2vNNCO0yuC5g52jPsVKbsBbcxOiQPUTUdXyWmvwXmXoVu6Zbbds2CgWX4kF
-	 49gMmBH6wAOQjnG8eo7f8GhfinvRGQqJBIuYYSM5cv4MgirrHGOI2md3JSF/RhFJs/
-	 4UPNMhsmv41rQwwlpkF9PnxnHHxj13QFqr9+ZYRc=
+	b=tx0hXFeZV/s3ai3+/sqZ1h6o8Q1H7qN1BT5B+snJEaYB3z7PZnI124Dqb7BNYYajg
+	 noyAqoRmieyx2UC0G7ya24YGAI7q9K3ydiQefydHKjpqUbcP/hIHPrjyyHIrIEylk5
+	 Kzvb7zyat/+aH/vP0ON+QarJNl1PgG/FrbWUamP4=
 From: Mark Harmstone <mark@harmstone.com>
 To: linux-btrfs@vger.kernel.org,
 	boris@bur.io
 Cc: Mark Harmstone <mark@harmstone.com>,
 	Chris Mason <clm@fb.com>
-Subject: [PATCH] btrfs: fix potential segfault in balance_remap_chunks()
-Date: Wed, 25 Feb 2026 10:35:31 +0000
-Message-ID: <20260225103535.18430-1-mark@harmstone.com>
+Subject: [PATCH] btrfs: fix use-after-free in move_existing_remap()
+Date: Wed, 25 Feb 2026 10:35:51 +0000
+Message-ID: <20260225103557.18457-1-mark@harmstone.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -68,7 +68,7 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	DMARC_POLICY_ALLOW(-0.50)[harmstone.com,none];
 	R_MISSING_CHARSET(0.50)[];
 	MV_CASE(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64];
 	R_DKIM_ALLOW(-0.20)[harmstone.com:s=mail];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -76,7 +76,7 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-21911-lists,linux-btrfs=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-21912-lists,linux-btrfs=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	DKIM_TRACE(0.00)[harmstone.com:+];
@@ -86,59 +86,50 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	FROM_NEQ_ENVFROM(0.00)[mark@harmstone.com,linux-btrfs@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
 	RCPT_COUNT_THREE(0.00)[4];
-	NEURAL_HAM(-0.00)[-0.998];
+	NEURAL_HAM(-0.00)[-0.999];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-btrfs];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,fb.com:email,harmstone.com:mid,harmstone.com:dkim,harmstone.com:email]
-X-Rspamd-Queue-Id: 18A80195DDD
+	DBL_BLOCKED_OPENRESOLVER(0.00)[fb.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,harmstone.com:mid,harmstone.com:dkim,harmstone.com:email]
+X-Rspamd-Queue-Id: C333A195DE4
 X-Rspamd-Action: no action
 
-Fix a potential segfault in balance_remap_chunks(): if we quit early
-because btrfs_inc_block_group_ro() fails, all the remaining items in the
-chunks list will still have their bg value set to NULL. It's thus not
-safe to dereference this pointer without checking first.
+Fix a potential use-after-free in move_existing_remap(): we're calling
+btrfs_put_block_group() on dest_bg, then passing it to
+btrfs_add_block_group_free_space() a few lines later.
 
-Link: https://lore.kernel.org/linux-btrfs/20260125120717.1578828-1-clm@meta.com/
+Link: https://lore.kernel.org/linux-btrfs/20260125123908.2096548-1-clm@meta.com/
 Reported-by: Chris Mason <clm@fb.com>
-Fixes: 81e5a4551c32 ("btrfs: allow balancing remap tree")
+Fixes: bbea42dfb91f ("btrfs: move existing remaps before relocating block group")
 Signed-off-by: Mark Harmstone <mark@harmstone.com>
 ---
- fs/btrfs/volumes.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
+ fs/btrfs/relocation.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
-index e15e138c515b..18911cdd2895 100644
---- a/fs/btrfs/volumes.c
-+++ b/fs/btrfs/volumes.c
-@@ -4288,17 +4288,19 @@ static int balance_remap_chunks(struct btrfs_fs_info *fs_info, struct btrfs_path
+diff --git a/fs/btrfs/relocation.c b/fs/btrfs/relocation.c
+index cc80760ba5e7..5a8644667620 100644
+--- a/fs/btrfs/relocation.c
++++ b/fs/btrfs/relocation.c
+@@ -4295,14 +4295,17 @@ static int move_existing_remap(struct btrfs_fs_info *fs_info,
+ 	bg_needs_free_space = test_bit(BLOCK_GROUP_FLAG_NEEDS_FREE_SPACE,
+ 				       &dest_bg->runtime_flags);
+ 	mutex_unlock(&dest_bg->free_space_lock);
+-	btrfs_put_block_group(dest_bg);
  
- 		rci = list_first_entry(chunks, struct remap_chunk_info, list);
- 
--		spin_lock(&rci->bg->lock);
--		is_unused = !btrfs_is_block_group_used(rci->bg);
--		spin_unlock(&rci->bg->lock);
-+		if (rci->bg) {
-+			spin_lock(&rci->bg->lock);
-+			is_unused = !btrfs_is_block_group_used(rci->bg);
-+			spin_unlock(&rci->bg->lock);
- 
--		if (is_unused)
--			btrfs_mark_bg_unused(rci->bg);
-+			if (is_unused)
-+				btrfs_mark_bg_unused(rci->bg);
- 
--		if (rci->made_ro)
--			btrfs_dec_block_group_ro(rci->bg);
-+			if (rci->made_ro)
-+				btrfs_dec_block_group_ro(rci->bg);
- 
--		btrfs_put_block_group(rci->bg);
-+			btrfs_put_block_group(rci->bg);
+ 	if (bg_needs_free_space) {
+ 		ret = btrfs_add_block_group_free_space(trans, dest_bg);
+-		if (unlikely(ret))
++		if (unlikely(ret)) {
++			btrfs_put_block_group(dest_bg);
+ 			goto end;
 +		}
+ 	}
  
- 		list_del(&rci->list);
- 		kfree(rci);
++	btrfs_put_block_group(dest_bg);
++
+ 	ret = btrfs_remove_from_free_space_tree(trans, dest_addr, dest_length);
+ 	if (unlikely(ret)) {
+ 		btrfs_remove_from_free_space_tree(trans, new_addr, dest_length);
 -- 
 2.52.0
 
