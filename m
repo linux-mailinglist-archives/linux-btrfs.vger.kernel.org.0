@@ -1,236 +1,278 @@
-Return-Path: <linux-btrfs+bounces-21954-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21955-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id IMNlINIXoGmzfgQAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21954-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Feb 2026 10:52:18 +0100
+	id AGHxJQcboGmzfgQAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21955-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Feb 2026 11:05:59 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E2F61A3C7B
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Feb 2026 10:52:17 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38AB71A3F27
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Feb 2026 11:05:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 12E4730288F0
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Feb 2026 09:51:24 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 8173E3042084
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Feb 2026 10:05:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3165A394469;
-	Thu, 26 Feb 2026 09:51:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JyABDGjX"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCE0C3A1E94;
+	Thu, 26 Feb 2026 10:05:28 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-yw1-f193.google.com (mail-yw1-f193.google.com [209.85.128.193])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx3.molgen.mpg.de (mx3.molgen.mpg.de [141.14.17.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52A6E314B61
-	for <linux-btrfs@vger.kernel.org>; Thu, 26 Feb 2026 09:51:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DE213A4F3A;
+	Thu, 26 Feb 2026 10:05:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.14.17.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772099478; cv=none; b=E0DqdrsD0wWG2LtL0GOk6Oyapp87WaH8Hg0xHkubqXZEO+pnjqBPIwo7lLsWTJmK2U8zyhYH1ENpl/VPVucRoE5NCrFncfAPKz7nHrektAHEwr1MTtQAem11yUirV9KbMFGWuBUIOZN6WOBpZKS4+jDXighTDNwK3gu6LbnCRww=
+	t=1772100328; cv=none; b=TC4HV17Pn63cCtsRKBsZ1xMPaGALHdxODfu6HwgbKzCmHYxcPdrToYsPObHmKsZ9PyZrSO3oOE6cOM4VDEG+7vVWU1o2J0TFF7L68wr2obIVcbJDy7+Rlx6ewD944jOiPNLX5x4CHEAG7fs1qBGxMtIFdl4QnbziwzmEyWfiRLU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772099478; c=relaxed/simple;
-	bh=8nLB0/mCMwzrnCK+gFk36QPwb/+fvVmRqUXFTRxukiQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KMVpM8INk8aZStPx7qqiCC6jc6GyoMNOhZa9rNTqi9dY3eC7M77KIWaz33U0d8xOfp2Fb/ibDZ44lTvobSkeTdgIA7dUB4TOe+975H8x+QGZ0neUnaMkJpZ5xYABPrfUtfo7wJzsATUv+1GkHM++bW87VeVkka+7thDr7GSzj18=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JyABDGjX; arc=none smtp.client-ip=209.85.128.193
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f193.google.com with SMTP id 00721157ae682-7927261a3acso4631697b3.0
-        for <linux-btrfs@vger.kernel.org>; Thu, 26 Feb 2026 01:51:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1772099476; x=1772704276; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gXCXxMA/z+f1JchSyKDgOD1B3ht0W1oLunni6gQeQqQ=;
-        b=JyABDGjXQqVmESOvkCY+NVF1/cxeH7gnFOO34ITwRBgORdRP4Stezth651kvIgBdNi
-         X0Fi9oLDymH5DtU45v7Zs1fWhNpjzHnsYjtPG32bNP9b2IFvGkqV4ZGzpy4YHPMBE3yN
-         vobmSqo2cYlHg1fvUdnNiL/6qypXm7xp8x6t18QE1OJv/oZma6KzJALtELIBB/+eMIsW
-         elESf6ZOYnzIs6DHruYIqpLGKXo82TPWran1f+/DWhQwRDySV4buSLJ149yzMxZC2ZXQ
-         qJ90LtuhJy/3MFcvDBnzBJqQJz8CtU3hhK1YBLyjrF8R2+22OGEADnGcPQ1VZeS3zHCL
-         bVeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772099476; x=1772704276;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=gXCXxMA/z+f1JchSyKDgOD1B3ht0W1oLunni6gQeQqQ=;
-        b=Q5OwXF5neMQVZviMjslAFbBw8tHPTp55H38IoeReR00tIBsL4axzR32cuXJXwHYZ1p
-         qq3+nWB0UOI+wm9CnicWYV20SGqiDpDyHjBAEKH9yI5lwXcmNWvwmhK/tO4ZazxazjoF
-         vYb4rbQHEH3zmPbkhITF1zOvaXL/1MFxRUIoYfIOUm16YzSUcC9AC2ZdJkMz/GNYSKyH
-         2X7gEP5EOjsVTVTIARrG1un8p+3Q+UEr/Ue8CggIxxVjNjIQ+IJZkRpxk5K+JReEj7iw
-         3m0RhtQepu/wseYk+J7XT3+pXfpgWaecQgA+11NoNhA/bh6RBgIOsUcwFShN9SEfpeN1
-         oIpw==
-X-Gm-Message-State: AOJu0YyfbgI2TO7qoYOoKOOeAvE8hcE602d8jBUQsx+wFXXXiONHWF8e
-	EIAI/sGEwP5a7NrwlhrKJXiYcTwwph5lCDtDy0s+cYi5woNOKHs1cRZHIDM4VAZJ
-X-Gm-Gg: ATEYQzxWVr4Qcz9gilZRJk6QmxVrMTZRS0XpnE3BibiA3XBMJrWHbH3ffm9cUYaB65f
-	03Zt6/KEeUEj66BoPxyVWMTXt99T29OngOQqLgJpEqmwu5FM9RWvxAzvt3ruMckcg6xIW56/nYP
-	AlW7O7NYX83z3iknMah31PstZx+C3yHONGtdjH5DCA/ho650ku9ZtrkjfCRg5hDQNLLTKCvJTG6
-	fESrJ5TS/joq/ks6jWWTu0rJRINgsgRyJVc+xDH9bvCI5JIogIOLTGtBiNOPcH/Ds2dOuyXCGb2
-	UbeH3RcTmIJWWsWogyHHZLugs5PlAfdg4Qv+aKg8lqkPnVSZY3bpjHE2eyEi+f423clfrMDyiQW
-	mARBrX+fB0DZbmfJerTLErUpSo2AJ5K06J7A/s0WkqX9Vvlt4wP+yOguWCQCIWNoElCsVpe9W9i
-	RJUwCqHDiGmFroU/5Xrg==
-X-Received: by 2002:a05:690c:389:b0:796:357a:9ae7 with SMTP id 00721157ae682-7986ff8dd68mr30383667b3.51.1772099476083;
-        Thu, 26 Feb 2026 01:51:16 -0800 (PST)
-Received: from localhost ([2a03:2880:25ff:40::])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-79876bf8183sm7092327b3.30.2026.02.26.01.51.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Feb 2026 01:51:15 -0800 (PST)
-From: Leo Martins <loemra.dev@gmail.com>
-To: linux-btrfs@vger.kernel.org,
-	kernel-team@fb.com
-Cc: Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH v4 3/3] btrfs: add tracepoint for search slot restart tracking
-Date: Thu, 26 Feb 2026 01:51:08 -0800
-Message-ID: <29af2660c8c3946d422f57910ec50916463a345b.1772097864.git.loemra.dev@gmail.com>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <cover.1772097864.git.loemra.dev@gmail.com>
-References: <cover.1772097864.git.loemra.dev@gmail.com>
+	s=arc-20240116; t=1772100328; c=relaxed/simple;
+	bh=Jr71TEpuefliB8XSf5nWXwoG0tj6pv/9i9Mu40e8vMc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:Cc:From:
+	 In-Reply-To:Content-Type; b=Eq0DOPAB10eaRXThNxhi9TWp082YYnEJGPGSMy9t8g572UXTwV0xVt1U5j7vn/KnIJKD0craxlkq0CUqS8VRno5YtXrYefFGy2hYtW5+Eb0ZtzwZQA446XVWim7Jppq07y+/LeG75ZA1Y7VGWeRsKIzGYnk73V2B70PuRY+BU/8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de; spf=pass smtp.mailfrom=molgen.mpg.de; arc=none smtp.client-ip=141.14.17.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=molgen.mpg.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=molgen.mpg.de
+Received: from [10.108.10.175] (unknown [194.94.98.184])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: pmenzel)
+	by mx.molgen.mpg.de (Postfix) with ESMTPSA id 95D5A4C4430406;
+	Thu, 26 Feb 2026 11:04:24 +0100 (CET)
+Message-ID: <5b8c1811-c9d9-469a-b8d0-992814a11b9a@molgen.mpg.de>
+Date: Thu, 26 Feb 2026 11:04:23 +0100
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] block: remove bdev_nonrot()
+To: Damien Le Moal <dlemoal@kernel.org>
+References: <20260226075448.2229655-1-dlemoal@kernel.org>
+Content-Language: en-US
+Cc: Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+ Song Liu <song@kernel.org>, Yu Kuai <yukuai@fnnas.com>,
+ linux-raid@vger.kernel.org, "Martin K . Petersen"
+ <martin.petersen@oracle.com>, linux-scsi@vger.kernel.org,
+ target-devel@vger.kernel.org, David Sterba <dsterba@suse.com>,
+ linux-btrfs@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+ linux-ext4@vger.kernel.org, Andreas Dilger <adilger.kernel@dilger.ca>,
+ Andrew Morton <akpm@linux-foundation.org>, Chris Li <chrisl@kernel.org>,
+ Kairui Song <kasong@tencent.com>, linux-mm@kvack.org
+From: Paul Menzel <pmenzel@molgen.mpg.de>
+In-Reply-To: <20260226075448.2229655-1-dlemoal@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-1.46 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21954-lists,linux-btrfs=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_THREE(0.00)[3];
-	FROM_NEQ_ENVFROM(0.00)[loemradev@gmail.com,linux-btrfs@vger.kernel.org];
-	MID_RHS_MATCH_FROM(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_COUNT_FIVE(0.00)[5];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	TAGGED_RCPT(0.00)[linux-btrfs];
-	FREEMAIL_FROM(0.00)[gmail.com];
+	TAGGED_FROM(0.00)[bounces-21955-lists,linux-btrfs=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	DMARC_NA(0.00)[mpg.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_THREE(0.00)[4];
+	RCPT_COUNT_TWELVE(0.00)[18];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,suse.com:email]
-X-Rspamd-Queue-Id: 9E2F61A3C7B
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[pmenzel@molgen.mpg.de,linux-btrfs@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	NEURAL_HAM(-0.00)[-0.999];
+	MID_RHS_MATCH_FROM(0.00)[];
+	R_DKIM_NA(0.00)[];
+	TAGGED_RCPT(0.00)[linux-btrfs];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,mpg.de:email]
+X-Rspamd-Queue-Id: 38AB71A3F27
 X-Rspamd-Action: no action
 
-Add a btrfs_search_slot_restart tracepoint that fires at each restart
-site in btrfs_search_slot(), recording the root, tree level, and
-reason for the restart. This enables tracking search slot restarts
-which contribute to COW amplification under memory pressure.
+Dear Damien,
 
-The four restart reasons are:
- - write_lock: insufficient write lock level, need to restart with
-   higher lock
- - setup_nodes: node setup returned -EAGAIN
- - slot_zero: insertion at slot 0 requires higher write lock level
- - read_block: read_block_for_search returned -EAGAIN (block not
-   cached or lock contention)
 
-COW counts are already tracked by the existing trace_btrfs_cow_block()
-tracepoint. The per-restart-site tracepoint avoids counter overhead
-in the critical path when tracepoints are disabled, and provides
-richer per-event information that bpftrace scripts can aggregate into
-counts, histograms, and per-root breakdowns.
+Thank you for your patch.
 
-Signed-off-by: Leo Martins <loemra.dev@gmail.com>
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
----
- fs/btrfs/ctree.c             | 10 ++++++++--
- include/trace/events/btrfs.h | 24 ++++++++++++++++++++++++
- 2 files changed, 32 insertions(+), 2 deletions(-)
 
-diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
-index 46a715c95bc8..19f1fafeebb6 100644
---- a/fs/btrfs/ctree.c
-+++ b/fs/btrfs/ctree.c
-@@ -2164,6 +2164,7 @@ int btrfs_search_slot(struct btrfs_trans_handle *trans, struct btrfs_root *root,
- 			    p->nodes[level + 1])) {
- 				write_lock_level = level + 1;
- 				btrfs_release_path(p);
-+				trace_btrfs_search_slot_restart(root, level, "write_lock");
- 				goto again;
- 			}
- 
-@@ -2226,8 +2227,10 @@ int btrfs_search_slot(struct btrfs_trans_handle *trans, struct btrfs_root *root,
- 		p->slots[level] = slot;
- 		ret2 = setup_nodes_for_search(trans, root, p, b, level, ins_len,
- 					      &write_lock_level);
--		if (ret2 == -EAGAIN)
-+		if (ret2 == -EAGAIN) {
-+			trace_btrfs_search_slot_restart(root, level, "setup_nodes");
- 			goto again;
-+		}
- 		if (ret2) {
- 			ret = ret2;
- 			goto done;
-@@ -2243,6 +2246,7 @@ int btrfs_search_slot(struct btrfs_trans_handle *trans, struct btrfs_root *root,
- 		if (slot == 0 && ins_len && write_lock_level < level + 1) {
- 			write_lock_level = level + 1;
- 			btrfs_release_path(p);
-+			trace_btrfs_search_slot_restart(root, level, "slot_zero");
- 			goto again;
- 		}
- 
-@@ -2256,8 +2260,10 @@ int btrfs_search_slot(struct btrfs_trans_handle *trans, struct btrfs_root *root,
- 		}
- 
- 		ret2 = read_block_for_search(root, p, &b, slot, key);
--		if (ret2 == -EAGAIN && !p->nowait)
-+		if (ret2 == -EAGAIN && !p->nowait) {
-+			trace_btrfs_search_slot_restart(root, level, "read_block");
- 			goto again;
-+		}
- 		if (ret2) {
- 			ret = ret2;
- 			goto done;
-diff --git a/include/trace/events/btrfs.h b/include/trace/events/btrfs.h
-index 125bdc166bfe..abf1b73ee60f 100644
---- a/include/trace/events/btrfs.h
-+++ b/include/trace/events/btrfs.h
-@@ -1110,6 +1110,30 @@ TRACE_EVENT(btrfs_cow_block,
- 		  __entry->cow_level)
- );
- 
-+TRACE_EVENT(btrfs_search_slot_restart,
-+
-+	TP_PROTO(const struct btrfs_root *root, int level,
-+		 const char *reason),
-+
-+	TP_ARGS(root, level, reason),
-+
-+	TP_STRUCT__entry_btrfs(
-+		__field(	u64,	root_objectid		)
-+		__field(	int,	level			)
-+		__string(	reason,	reason			)
-+	),
-+
-+	TP_fast_assign_btrfs(root->fs_info,
-+		__entry->root_objectid	= btrfs_root_id(root);
-+		__entry->level		= level;
-+		__assign_str(reason);
-+	),
-+
-+	TP_printk_btrfs("root=%llu(%s) level=%d reason=%s",
-+		  show_root_type(__entry->root_objectid),
-+		  __entry->level, __get_str(reason))
-+);
-+
- TRACE_EVENT(btrfs_space_reservation,
- 
- 	TP_PROTO(const struct btrfs_fs_info *fs_info, const char *type, u64 val,
--- 
-2.47.3
+Am 26.02.26 um 08:54 schrieb Damien Le Moal:
+> bdev_nonrot() is simply the negative return value of bdev_rot().
+> So replace all call sites of bdev_nonrot() with calls to bdev_rot()
+> and remove bdev_nonrot().
 
+Is the generated code different now?
+
+Is it worth the change, as it looks quite subjective if you prefer the 
+one or the other way?
+
+> Signed-off-by: Damien Le Moal <dlemoal@kernel.org>
+> ---
+>   drivers/md/raid1.c                  | 2 +-
+>   drivers/md/raid10.c                 | 2 +-
+>   drivers/md/raid5.c                  | 2 +-
+>   drivers/target/target_core_file.c   | 2 +-
+>   drivers/target/target_core_iblock.c | 2 +-
+>   fs/btrfs/volumes.c                  | 4 ++--
+>   fs/ext4/mballoc-test.c              | 2 +-
+>   fs/ext4/mballoc.c                   | 2 +-
+>   include/linux/blkdev.h              | 5 -----
+>   mm/swapfile.c                       | 2 +-
+>   10 files changed, 10 insertions(+), 15 deletions(-)
+> 
+> diff --git a/drivers/md/raid1.c b/drivers/md/raid1.c
+> index 181400e147c0..cda6af0712b9 100644
+> --- a/drivers/md/raid1.c
+> +++ b/drivers/md/raid1.c
+> @@ -1878,7 +1878,7 @@ static bool raid1_add_conf(struct r1conf *conf, struct md_rdev *rdev, int disk,
+>   	if (info->rdev)
+>   		return false;
+>   
+> -	if (bdev_nonrot(rdev->bdev)) {
+> +	if (!bdev_rot(rdev->bdev)) {
+>   		set_bit(Nonrot, &rdev->flags);
+>   		WRITE_ONCE(conf->nonrot_disks, conf->nonrot_disks + 1);
+>   	}
+> diff --git a/drivers/md/raid10.c b/drivers/md/raid10.c
+> index 0653b5d8545a..cfbd345805ca 100644
+> --- a/drivers/md/raid10.c
+> +++ b/drivers/md/raid10.c
+> @@ -806,7 +806,7 @@ static struct md_rdev *read_balance(struct r10conf *conf,
+>   		if (!do_balance)
+>   			break;
+>   
+> -		nonrot = bdev_nonrot(rdev->bdev);
+> +		nonrot = !bdev_rot(rdev->bdev);
+>   		has_nonrot_disk |= nonrot;
+>   		pending = atomic_read(&rdev->nr_pending);
+>   		if (min_pending > pending && nonrot) {
+> diff --git a/drivers/md/raid5.c b/drivers/md/raid5.c
+> index a8e8d431071b..ba9d6d05b089 100644
+> --- a/drivers/md/raid5.c
+> +++ b/drivers/md/raid5.c
+> @@ -7541,7 +7541,7 @@ static struct r5conf *setup_conf(struct mddev *mddev)
+>   	rdev_for_each(rdev, mddev) {
+>   		if (test_bit(Journal, &rdev->flags))
+>   			continue;
+> -		if (bdev_nonrot(rdev->bdev)) {
+> +		if (!bdev_rot(rdev->bdev)) {
+>   			conf->batch_bio_dispatch = false;
+>   			break;
+>   		}
+> diff --git a/drivers/target/target_core_file.c b/drivers/target/target_core_file.c
+> index 3ae1f7137d9d..d6e3e5214652 100644
+> --- a/drivers/target/target_core_file.c
+> +++ b/drivers/target/target_core_file.c
+> @@ -173,7 +173,7 @@ static int fd_configure_device(struct se_device *dev)
+>   		 */
+>   		dev->dev_attrib.max_write_same_len = 0xFFFF;
+>   
+> -		if (bdev_nonrot(bdev))
+> +		if (!bdev_rot(bdev))
+>   			dev->dev_attrib.is_nonrot = 1;
+>   	} else {
+>   		if (!(fd_dev->fbd_flags & FBDF_HAS_SIZE)) {
+> diff --git a/drivers/target/target_core_iblock.c b/drivers/target/target_core_iblock.c
+> index 3c92f94497b4..1087d1d17c36 100644
+> --- a/drivers/target/target_core_iblock.c
+> +++ b/drivers/target/target_core_iblock.c
+> @@ -148,7 +148,7 @@ static int iblock_configure_device(struct se_device *dev)
+>   	else
+>   		dev->dev_attrib.max_write_same_len = 0xFFFF;
+>   
+> -	if (bdev_nonrot(bd))
+> +	if (!bdev_rot(bd))
+>   		dev->dev_attrib.is_nonrot = 1;
+>   
+>   	target_configure_write_atomic_from_bdev(&dev->dev_attrib, bd);
+> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
+> index 6fb0c4cd50ff..c6e49eb74f3a 100644
+> --- a/fs/btrfs/volumes.c
+> +++ b/fs/btrfs/volumes.c
+> @@ -694,7 +694,7 @@ static int btrfs_open_one_device(struct btrfs_fs_devices *fs_devices,
+>   			set_bit(BTRFS_DEV_STATE_WRITEABLE, &device->dev_state);
+>   	}
+>   
+> -	if (!bdev_nonrot(file_bdev(bdev_file)))
+> +	if (bdev_rot(file_bdev(bdev_file)))
+>   		fs_devices->rotating = true;
+>   
+>   	if (bdev_max_discard_sectors(file_bdev(bdev_file)))
+> @@ -2919,7 +2919,7 @@ int btrfs_init_new_device(struct btrfs_fs_info *fs_info, const char *device_path
+>   
+>   	atomic64_add(device->total_bytes, &fs_info->free_chunk_space);
+>   
+> -	if (!bdev_nonrot(device->bdev))
+> +	if (bdev_rot(device->bdev))
+>   		fs_devices->rotating = true;
+>   
+>   	orig_super_total_bytes = btrfs_super_total_bytes(fs_info->super_copy);
+> diff --git a/fs/ext4/mballoc-test.c b/fs/ext4/mballoc-test.c
+> index 9fbdf6a09489..b9f22e3a8d5c 100644
+> --- a/fs/ext4/mballoc-test.c
+> +++ b/fs/ext4/mballoc-test.c
+> @@ -72,7 +72,7 @@ static int mbt_mb_init(struct super_block *sb)
+>   	ext4_fsblk_t block;
+>   	int ret;
+>   
+> -	/* needed by ext4_mb_init->bdev_nonrot(sb->s_bdev) */
+> +	/* needed by ext4_mb_init->bdev_rot(sb->s_bdev) */
+>   	sb->s_bdev = kzalloc_obj(*sb->s_bdev);
+>   	if (sb->s_bdev == NULL)
+>   		return -ENOMEM;
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index 20e9fdaf4301..8a4dfe19878c 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -3836,7 +3836,7 @@ int ext4_mb_init(struct super_block *sb)
+>   		spin_lock_init(&lg->lg_prealloc_lock);
+>   	}
+>   
+> -	if (bdev_nonrot(sb->s_bdev))
+> +	if (!bdev_rot(sb->s_bdev))
+>   		sbi->s_mb_max_linear_groups = 0;
+>   	else
+>   		sbi->s_mb_max_linear_groups = MB_DEFAULT_LINEAR_LIMIT;
+> diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+> index d463b9b5a0a5..e439d6fa8484 100644
+> --- a/include/linux/blkdev.h
+> +++ b/include/linux/blkdev.h
+> @@ -1467,11 +1467,6 @@ static inline bool bdev_rot(struct block_device *bdev)
+>   	return blk_queue_rot(bdev_get_queue(bdev));
+>   }
+>   
+> -static inline bool bdev_nonrot(struct block_device *bdev)
+> -{
+> -	return !bdev_rot(bdev);
+> -}
+> -
+>   static inline bool bdev_synchronous(struct block_device *bdev)
+>   {
+>   	return bdev->bd_disk->queue->limits.features & BLK_FEAT_SYNCHRONOUS;
+> diff --git a/mm/swapfile.c b/mm/swapfile.c
+> index 94af29d1de88..60e21414624b 100644
+> --- a/mm/swapfile.c
+> +++ b/mm/swapfile.c
+> @@ -3460,7 +3460,7 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
+>   	if (si->bdev && bdev_synchronous(si->bdev))
+>   		si->flags |= SWP_SYNCHRONOUS_IO;
+>   
+> -	if (si->bdev && bdev_nonrot(si->bdev)) {
+> +	if (si->bdev && !bdev_rot(si->bdev)) {
+>   		si->flags |= SWP_SOLIDSTATE;
+>   	} else {
+>   		atomic_inc(&nr_rotate_swap);
+
+My point above aside, the diff looks good.
+
+Reviewed-by: Paul Menzel <pmenzel@molgen.mpg.de>
+
+
+Kind regards,
+
+Paul
 
