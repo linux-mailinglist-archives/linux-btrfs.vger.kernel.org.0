@@ -1,205 +1,158 @@
-Return-Path: <linux-btrfs+bounces-22013-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-22014-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 4HWzN7tqoGk3jgQAu9opvQ
-	(envelope-from <linux-btrfs+bounces-22013-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Feb 2026 16:46:03 +0100
+	id AGn7MSSAoGnWkQQAu9opvQ
+	(envelope-from <linux-btrfs+bounces-22014-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Feb 2026 18:17:24 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7D9D1A90BC
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Feb 2026 16:46:03 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id E17551AC1D9
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Feb 2026 18:17:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 30F053072BE8
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Feb 2026 15:44:05 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id B44AA3229D6F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Feb 2026 16:47:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E7B641322A;
-	Thu, 26 Feb 2026 15:43:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A035450913;
+	Thu, 26 Feb 2026 16:21:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="BFOz5yqx";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Fc2ByHch"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dmniOUpY"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from flow-a8-smtp.messagingengine.com (flow-a8-smtp.messagingengine.com [103.168.172.143])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40E7B3F23D7;
-	Thu, 26 Feb 2026 15:43:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.143
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F87C43C04B
+	for <linux-btrfs@vger.kernel.org>; Thu, 26 Feb 2026 16:21:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772120637; cv=none; b=exhMYR5bVN8UZgvJSA5f+PegLIJHmhGAHGggwdTb+8sgyz9kx3Q8c5PWsnl9mDux5wRAuWqLm0YD1PtKj8AjpcSDLDlarY9rR556lgkxJ+KvLeKh9OJ84p5OpgmA/V+4ldXaNoae24g5nP/sf2a5ZycqZplnJH+DATwvgiQmuJc=
+	t=1772122895; cv=none; b=CZDwPelreo0v/OK8CA7h4qvx7O/LhIDctgK0AiUeK+pabdncgi3CQrJ6FRZLbAu3X8vvDwfCttG4YVHjmKgJiCLwBtpGW1IQeDZwv3ZbIC1+539mP6hxzeT2DtBa5k3pRQdi3wlrWwlm00MtoL7IPEA72Pa6GKwyI00vH1wk6lg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772120637; c=relaxed/simple;
-	bh=zaIt+6c5Z6aF5nOzcYBB7QJkaXuFxNxAQjsZxA8CeFs=;
-	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=g+6q2aNlB2JwDgGhAh/NfCTcvMCUSyFcfJn+E2sTopOVyXh/fRZ7nKXEqeCZKtcHAkSFXogZKe1+BxlTVCPlAUFzsGt/6Z1yuuTWQCn11Bm9t6wUdokmgaI99e0UGasH//0Msd/TyR2Y3EcaqDi1fo+ujYsDSHznm2QzYeSBfS8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=BFOz5yqx; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Fc2ByHch; arc=none smtp.client-ip=103.168.172.143
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
-Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
-	by mailflow.phl.internal (Postfix) with ESMTP id 702FC1380BA9;
-	Thu, 26 Feb 2026 10:43:55 -0500 (EST)
-Received: from phl-imap-02 ([10.202.2.81])
-  by phl-compute-04.internal (MEProxy); Thu, 26 Feb 2026 10:43:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1772120635;
-	 x=1772127835; bh=5NKb8s5uQsJxGoQ2AVBEtObpQ/CvaKcz4OqTIpIkbmc=; b=
-	BFOz5yqxSmg9S50IsSdLRGyQHw6zGY1eOdKa+Po1ZziBbN2GJ+4j9GfSK2vBzpb8
-	jke/0DjjeJ1N27rCrrDV17hYarBNm1Yv5Ef3DpswEsW5lXmy5P2MpCy6/j4n03oF
-	6AXtPA/NP2OgKRV62bfh5y074ZgZyuVK80kBotJiI5viaax3nK4TDXtsz7/fmWKi
-	Idb44puvspjnRxIVW8rRiXroKSe3UOJgw6SBDrDW/b4nrdVt9gRrGH0VYyTCCFI+
-	MaLql0ByGC1lAPGvtsNQy7knHDrJrYmiw6Z0TH7LP/fMQ/mbjchvlBUub+fpzM0z
-	AwgDVPMDWtHsSHNybdc70Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1772120635; x=
-	1772127835; bh=5NKb8s5uQsJxGoQ2AVBEtObpQ/CvaKcz4OqTIpIkbmc=; b=F
-	c2ByHch3ij59MUwgdS2tUPIb02ImNYf+PdWdDaqtx5ATw62eUpliVMY8iV5D7hR3
-	wYi0CHEzfkgh/mmBuCbJYAChbEOC/Yi8PJeN5l62Iy2psmFsZrqPUq0n/+vZEsQO
-	qYjytQD72iqh1ghXwEeBJ+WUnvc4Fp1Jeo/4mgECJRniva5kBNFlm6iANF8sqab6
-	oNPUlMV1dQUyv+GQi7/PfCZFIvgRRn3B9r6NcepO1/wYvQBeHCR1LEsGxh1+Og4p
-	FYPE0U4hjheq9evedYJAexwrwIPKQjOD7fllTYCzxyIBPwHANOFBQd6w9WsyZAmJ
-	opoR4yIXQlrQwxqExmjlA==
-X-ME-Sender: <xms:N2qgaaQjbD4lDTTpYYJW04n5-N_REynhDJNOjDcAsLpq8XoFDTIP1Q>
-    <xme:N2qgaalYz6oAwIkXti0ilmTZ4SAWzxEhI78J-NBiOcz8jBnpIMTvnyc8aM72hc_ES
-    ARSAHBEQvzfvqva9WEslWopqCs96M2xP3m79vrzlriTC5w2htjwEyM>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddvgeeigeefucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepofggfffhvfevkfgjfhfutgfgsehtjeertdertddtnecuhfhrohhmpedftehrnhgu
-    uceuvghrghhmrghnnhdfuceorghrnhgusegrrhhnuggsrdguvgeqnecuggftrfgrthhtvg
-    hrnhephfdthfdvtdefhedukeetgefggffhjeeggeetfefggfevudegudevledvkefhvdei
-    necuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghrnh
-    gusegrrhhnuggsrdguvgdpnhgspghrtghpthhtohephedtpdhmohguvgepshhmthhpohhu
-    thdprhgtphhtthhopegsphesrghlihgvnhekrdguvgdprhgtphhtthhopegtrghtrghlih
-    hnrdhmrghrihhnrghssegrrhhmrdgtohhmpdhrtghpthhtoheplhhinhhugiesrghrmhhl
-    ihhnuhigrdhorhhgrdhukhdprhgtphhtthhopegrnhhtohhnrdhivhgrnhhovhestggrmh
-    gsrhhiughgvghgrhgvhihsrdgtohhmpdhrtghpthhtohepphgrlhhmvghrsegurggssggv
-    lhhtrdgtohhmpdhrtghpthhtohepuggrvhgvmhesuggrvhgvmhhlohhfthdrnhgvthdprh
-    gtphhtthhopegrohhusegvvggtshdrsggvrhhkvghlvgihrdgvughupdhrtghpthhtohep
-    mhhpvgesvghllhgvrhhmrghnrdhiugdrrghupdhrtghpthhtoheptghlmhesfhgsrdgtoh
-    hm
-X-ME-Proxy: <xmx:N2qgaUJWUEXUlLEjkxtJWtWBvZvargLkJYDYLT1WCObuQQIhrpl4jg>
-    <xmx:N2qgabuNvv7e3NmdoP0u_IPqZN1TMDnyqD0tO35lBUa_NaOCzbSmCg>
-    <xmx:N2qgaRqz5OOPUoSW-rsw8dZEHVicCLZG3p0s42DHReFDaNuct761aw>
-    <xmx:N2qgafV0jsQUaX0mdJgZVSo50cBCHJXR9outsNs-5KBrOO1PzPsRXw>
-    <xmx:O2qgafUJmIOfDaRuA5FfQ3utukV1YK4slK3UAvn21GEOucPhAX52tGfc>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id A0F9D700065; Thu, 26 Feb 2026 10:43:51 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
+	s=arc-20240116; t=1772122895; c=relaxed/simple;
+	bh=pOav+RWUo+tIL4K3WyminI+GAIz3DxvGhLgbVk6hNqA=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Mc+rsGblSXx5GgdQTe4NW6SXEu6WrHDCltmKtacWVPqarAarPiXFF7kYVAXnNHXJGebxhMDVU9r2lzIIICqQkCydjcB50JMsaYA//GZDVP9AWuRudjj3A0AS073/FLDx4emnijfj4BuUj1KRWNj9irezlfUv5HstD9gDOh3H7MI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dmniOUpY; arc=none smtp.client-ip=209.85.208.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-3870d178a9aso8007091fa.0
+        for <linux-btrfs@vger.kernel.org>; Thu, 26 Feb 2026 08:21:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1772122891; x=1772727691; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9i6OR9L/2JEII0FDOqkHjM/vIFngVooiK7atGXQPLJ0=;
+        b=dmniOUpYx+QG/fobn+vWrZcCNwyYex5AKcZV8leRniz7ef6f5ie9chuPuSMWg/1q8Y
+         Zg58JvW22zSwnbvnCPQj7YHpwPS9wPKyjo2zmFWs59P7BhEWLzrJDRxgAfIhmQDNacUo
+         hyi9kyagSlxkccCerwLf30Uh88gfSCN1+K4N+tyWFj/4Ef13tNAhSj8Gyp8Enj2jnoZF
+         J4Zsi/HEu0Y76niW3yNgjwZFROYpargXPHYyfTtj86o2sVTViqyzERJvf7LZMLjHwQMy
+         9e/vqYhi5pD7mFJUmL70QOzCY3AcOkv2PJrbTquBhtBxyLbjXoLeEGeSisgyjowCmgwu
+         8vYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1772122891; x=1772727691;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=9i6OR9L/2JEII0FDOqkHjM/vIFngVooiK7atGXQPLJ0=;
+        b=u1W521lgpKsvzeJR2KymW5gHNrVkwSozqh2z6AL/UCpI20zvhGoYcfpb4MzaOOgQsS
+         GpqMJSwsO+EhjPhQhIN0GqMo5NxXhrIjdu94LJtzbr2kmoY4oPTvIwKxwI4bwjdVQaGg
+         DMA7y665cEx3EcVfa40Vd9I8/UQV2IO84Y3W2H9wo3XlViB29EL4EvjPTv0SLQoytUS6
+         D6bo4wIkM/nww25ueiosFoOAz8Tqk3FGttxT8u+Y3NO3h7eNU3YrsTHesEInWbGBJBui
+         ZqVgppjWZd0TbVgGD9zRw9bpHIaWuBdCT6RbO3/LVKiv9dTl2QHCvCoBhGmuBHBe4yue
+         TfQQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVP2kHjMPJcN80oWFRn8HLVlaMm1j1ArD1upbM3v/hmEmup15Kv/5AqoZsJxIoVVf5C8GbS3Z9gojAhCg==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy+j8DguaFeYcNPL4pEyeWHXkwP3T8hgNCsNx33pDDx8Vk/iSU1
+	93+fXDSQFvaibars00DTos5T8dX81kcTr4noSDRwG3eEF79TYKfh6LQO
+X-Gm-Gg: ATEYQzy/+cbagNRtW2BwFv8zyZcaMtWk7usCo0MOu+Ji9wzkJhdtOh2TrPqCRWm3bL2
+	u6brib6kGikQRawd/cXEOL2X5/CSpGKEqrN1q2vkeU9J7/RktIu3x+MnfjVLTR/6ZmtRzXMv/zO
+	6rJEGK8RsTqel29f/8QB+JU7QXZorM7qie0YICKBVh1ulUDnWarGm5oDPBiBSMvyXRzJWlUvQGg
+	7pTMgYOaVbpDgBgfXNOMAHprEihvF6/cy3Muhs35J9jlGNVuLot+N0NuiVlxr2tsiSXNJCGVCb3
+	zxZ2SDVoBVf3aM4H20FEu0s6N8iUSLj5fsJ9yzsQOgihUjk68D9nFLZvjfzc53/y2s2mxh7iY9n
+	deVpeszkw4/7/uuuQ7QDUNxT3cnAEZeR5Q7O5vRbeTHZHJwzA4tQ725eDqaA2IDnjwI22CG6DKt
+	yU9Xzpyf3rHkm2qCfos1VFd+xw5sEsw/70bQ==
+X-Received: by 2002:a05:651c:4210:b0:388:3d86:473 with SMTP id 38308e7fff4ca-389f2f55ee1mr7937691fa.9.1772122890871;
+        Thu, 26 Feb 2026 08:21:30 -0800 (PST)
+Received: from localhost ([188.234.148.119])
+        by smtp.gmail.com with ESMTPSA id 38308e7fff4ca-389f2f4b356sm7855121fa.2.2026.02.26.08.21.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Feb 2026 08:21:26 -0800 (PST)
+From: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+To: harry.yoo@oracle.com
+Cc: chris.bainbridge@gmail.com,
+	vbabka@suse.cz,
+	surenb@google.com,
+	dsterba@suse.cz,
+	hao.li@linux.dev,
+	leitao@debian.org,
+	Liam.Howlett@oracle.com,
+	zhao1.liu@intel.com,
+	linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-btrfs@vger.kernel.org,
+	regressions@lists.linux.dev,
+	Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+Subject: Re: [REGRESSION] kswapd0: page allocation failure (bisected to "slab: add sheaves to most caches")
+Date: Thu, 26 Feb 2026 21:20:52 +0500
+Message-ID: <20260226162052.36121-1-mikhail.v.gavrilov@gmail.com>
+X-Mailer: git-send-email 2.53.0
+In-Reply-To: <aZ5aAlDDpUoZxx_g@hyeyoo>
+References: <aZ5aAlDDpUoZxx_g@hyeyoo>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ThreadId: AQu7KcbS869J
-Date: Thu, 26 Feb 2026 16:40:21 +0100
-From: "Arnd Bergmann" <arnd@arndb.de>
-To: "Christoph Hellwig" <hch@lst.de>,
- "Andrew Morton" <akpm@linux-foundation.org>
-Cc: "Richard Henderson" <richard.henderson@linaro.org>,
- "Matt Turner" <mattst88@gmail.com>,
- "Magnus Lindholm" <linmag7@gmail.com>,
- "Russell King" <linux@armlinux.org.uk>,
- "Catalin Marinas" <catalin.marinas@arm.com>,
- "Will Deacon" <will@kernel.org>, "Huacai Chen" <chenhuacai@kernel.org>,
- "WANG Xuerui" <kernel@xen0n.name>,
- "Madhavan Srinivasan" <maddy@linux.ibm.com>,
- "Michael Ellerman" <mpe@ellerman.id.au>,
- "Nicholas Piggin" <npiggin@gmail.com>,
- "Christophe Leroy" <chleroy@kernel.org>,
- "Paul Walmsley" <pjw@kernel.org>, "Palmer Dabbelt" <palmer@dabbelt.com>,
- "Albert Ou" <aou@eecs.berkeley.edu>, "Alexandre Ghiti" <alex@ghiti.fr>,
- "Heiko Carstens" <hca@linux.ibm.com>,
- "Vasily Gorbik" <gor@linux.ibm.com>,
- "Alexander Gordeev" <agordeev@linux.ibm.com>,
- "Christian Borntraeger" <borntraeger@linux.ibm.com>,
- "Sven Schnelle" <svens@linux.ibm.com>,
- "David S . Miller" <davem@davemloft.net>,
- "Andreas Larsson" <andreas@gaisler.com>,
- "Richard Weinberger" <richard@nod.at>,
- "Anton Ivanov" <anton.ivanov@cambridgegreys.com>,
- "Johannes Berg" <johannes@sipsolutions.net>,
- "Thomas Gleixner" <tglx@kernel.org>, "Ingo Molnar" <mingo@redhat.com>,
- "Borislav Petkov" <bp@alien8.de>,
- "Dave Hansen" <dave.hansen@linux.intel.com>, x86@kernel.org,
- "H. Peter Anvin" <hpa@zytor.com>,
- "Herbert Xu" <herbert@gondor.apana.org.au>,
- "Dan Williams" <dan.j.williams@intel.com>, "Chris Mason" <clm@fb.com>,
- "David Sterba" <dsterba@suse.com>, "Song Liu" <song@kernel.org>,
- "Yu Kuai" <yukuai@fnnas.com>, "Li Nan" <linan122@huawei.com>,
- linux-alpha@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, loongarch@lists.linux.dev,
- linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
- linux-s390@vger.kernel.org, sparclinux@vger.kernel.org,
- linux-um@lists.infradead.org, linux-crypto@vger.kernel.org,
- linux-btrfs@vger.kernel.org, Linux-Arch <linux-arch@vger.kernel.org>,
- linux-raid@vger.kernel.org
-Message-Id: <29afa24a-f659-481b-b5a8-7b8b9e009755@app.fastmail.com>
-In-Reply-To: <20260226151106.144735-10-hch@lst.de>
-References: <20260226151106.144735-1-hch@lst.de>
- <20260226151106.144735-10-hch@lst.de>
-Subject: Re: [PATCH 09/25] xor: move generic implementations out of asm-generic/xor.h
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.15 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[arndb.de,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
-	R_DKIM_ALLOW(-0.20)[arndb.de:s=fm3,messagingengine.com:s=fm3];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	XM_UA_NO_VERSION(0.01)[];
-	FREEMAIL_CC(0.00)[linaro.org,gmail.com,armlinux.org.uk,arm.com,kernel.org,xen0n.name,linux.ibm.com,ellerman.id.au,dabbelt.com,eecs.berkeley.edu,ghiti.fr,davemloft.net,gaisler.com,nod.at,cambridgegreys.com,sipsolutions.net,redhat.com,alien8.de,linux.intel.com,zytor.com,gondor.apana.org.au,intel.com,fb.com,suse.com,fnnas.com,huawei.com,vger.kernel.org,lists.infradead.org,lists.linux.dev,lists.ozlabs.org];
-	TAGGED_FROM(0.00)[bounces-22013-lists,linux-btrfs=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-22014-lists,linux-btrfs=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	FREEMAIL_CC(0.00)[gmail.com,suse.cz,google.com,linux.dev,debian.org,oracle.com,intel.com,vger.kernel.org,kvack.org,lists.linux.dev];
+	RCPT_COUNT_TWELVE(0.00)[14];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[arndb.de:+,messagingengine.com:+];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[arnd@arndb.de,linux-btrfs@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_GT_50(0.00)[54];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[mikhailvgavrilov@gmail.com,linux-btrfs@vger.kernel.org];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	NEURAL_HAM(-0.00)[-0.994];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[messagingengine.com:dkim,app.fastmail.com:mid,lst.de:email,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: A7D9D1A90BC
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[oracle.com:email,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: E17551AC1D9
 X-Rspamd-Action: no action
 
-On Thu, Feb 26, 2026, at 16:10, Christoph Hellwig wrote:
-> Move the generic implementations from asm-generic/xor.h to
-> per-implementaion .c files in lib/raid.
+On Wed, Feb 25, 2026, Harry Yoo <harry.yoo@oracle.com> wrote:
+> Slab fix is submitted here, please feel free to test:
 >
-> Note that this would cause the second xor_block_8regs instance created by
-> arch/arm/lib/xor-neon.c to be generated instead of discarded as dead
-> code, so add a NO_TEMPLATE symbol to disable it for this case.
->
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> https://lore.kernel.org/linux-mm/20260223133322.16705-1-harry.yoo@oracle.com
 
-Acked-by: Arnd Bergmann <arnd@arndb.de> # for asm-generic
-> 
-> -#pragma GCC diagnostic ignored "-Wunused-variable"
-> -#include <asm-generic/xor.h>
-> +#define NO_TEMPLATE
-> +#include "../../../lib/raid/xor/xor-8regs.c"
+No page allocation failures after 33 hours of uptime under normal
+desktop workload with memory pressure (64GB RAM, btrfs + zram swap,
+Chrome with many tabs, AMD GPU).
 
-The #include is slightly ugly, but I see it gets better in a later patch,
-and is clearly worth it either way.
+Previously without this patch, I was seeing failures from both
+kswapd0/btrfs and chrome/amdgpu callers within 10 hours.
 
-The rest of the series looks good to me as well. I had a brief
-look at each patch, but nothing to complain about.
+  Kernel: 7.0.0-rc1 (commit 7dff99b35460 + this patch)
+  Hardware: ASUS ROG STRIX B650E-I, AMD Ryzen, 64GB RAM
 
-     Arnd
+Tested-by: Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
 
