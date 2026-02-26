@@ -1,53 +1,53 @@
-Return-Path: <linux-btrfs+bounces-21991-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21986-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id GGieNv9koGkejQQAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21991-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Feb 2026 16:21:35 +0100
+	id wCR8IeZooGm+jQQAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21986-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Feb 2026 16:38:14 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 733431A8877
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Feb 2026 16:21:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 25A5C1A8D9F
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Feb 2026 16:38:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9CA6F31D06B0
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Feb 2026 15:14:00 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 960CD31A8C29
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Feb 2026 15:12:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89BAE40B6C7;
-	Thu, 26 Feb 2026 15:11:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 752F63EFD1D;
+	Thu, 26 Feb 2026 15:11:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="UWlx2aQX"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="URePQ71d"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C981A3ED12B;
-	Thu, 26 Feb 2026 15:11:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4039F3ED113;
+	Thu, 26 Feb 2026 15:11:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772118712; cv=none; b=r2TpLsR4vCxyMEew2nBCpRstKMbWNP2cWaTMlLorRE88KoaaM1blx7vGGQXZ+nTcFo4jwtjhX6p3pl0V+2HkX1jwuk0+o4WV48REcfJm6lr701aPAd6KEC4qb709UHtd4MNheyjmRM5jcXJvUupLXHOGJdconLLj+QleZzNAMTw=
+	t=1772118702; cv=none; b=nJ1c6QOvUi134OSRrK1gzj5nfybXAM18++f3PSk/52mi2nlB/9TCvdI4XSTFXPs51htSozAQtY/X1i8dBYdrNYKHPQAEmsiUS3f1bwiOcRav0c9gKOMm+kNASVU2JckblOpMfxNmQnb5jdqhf5Omxm9De+DqNVqyBe42vuLUVTQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772118712; c=relaxed/simple;
-	bh=jUtVm1Rf7JOGz4LmP8y/DP4SURG9c7LcQziH6LkHkZw=;
+	s=arc-20240116; t=1772118702; c=relaxed/simple;
+	bh=kkLhTX8SNEP6fadb6HiDEIQ5D5FAdu8ib06EqlKUntA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=utVBw7TRhHS8Nw5Ay74aqX7gSAkzRPY+wKyATxwudZJeUoL0D/P4jY181TGlBLrHRnLtrgfumRO0FJ9lTPle5didMzeXQHeF7zTr/JK0iByA6N9LCs54ugHLfWlc+Way5VaRWTAfOTtEDJ60ukB1ZusaxmKxyZ+qJl/dasZZSqA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=UWlx2aQX; arc=none smtp.client-ip=198.137.202.133
+	 MIME-Version; b=YSubBXv63i6EtDuy+RkMvKz3svYnQByii05nqBwlhQGhUgN+DSvGTCNWhfmONS8YZWe0J4lzMMtn8yN0o9T7G/V5Z/onICM2NxzM7RAr0bRH+SBwfIp0h9I+oY7pHPvs+92MvK80J5vXXFH1G7a1oStET1gy+iaT5x/VKfbjPy4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=URePQ71d; arc=none smtp.client-ip=198.137.202.133
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender
 	:Reply-To:Content-Type:Content-ID:Content-Description;
-	bh=8SFAAXJP1oJfa/3lZX/8e4dND94zooHILcdc+qXS2PE=; b=UWlx2aQX7+I5jhBsL1ur96gEDD
-	F1ApAr+kLKJJXFWZ8yGweCxQnqnlRFj8YYYWcsPkhsA55s0l4a9adlrUHJnSOJ1KmF7w/iqybktB+
-	SAiSzTUqnUoNLrkfktxBv6U6bDYHYCexRKVLVn3VyhGXRSC6pA43Mt2Yp62xCGaUwdvIszrjlz1fd
-	M/N9kS7v7H/vFSRk0hXqEI/NXjCGKUg5N6UNXchlbtSCwpm/wq+Gc7kxFinGZ4QIJg7/W1/BPb8N1
-	pQu7+Iswt2inOesa11lKpYDfB1QcN5cNL4R72idHXrYlZubhGMLq3yBo59JEyhOZGmM6+3UHmbEId
-	uqPGcxMQ==;
+	bh=uWVTxVXofLMNGO7crXJ27khW3O1RifHdgil+Iut8nqA=; b=URePQ71dMeGUGa1CdsTZ/NWEcU
+	kN7dqnbo+IzYt3fKmhdSuC1u4M2JlRpUp43VemPG2p9a8/X3pJTAmS286DayguZoIDqV7DNCh1Lr9
+	04AkA3PabrFV1Mog+67HBx1F6PkOEbIO+WDokW7MRWklmqx8pINKSn+zvu12BeHbdB6aRWzLtLyUP
+	e3qCRYeMLvojSKA7IgpEyu4XiRAzp1GCOh1K3OUjqgd5L4kg7pFHo07P+HGRtUew16mP0ZWekmYbW
+	OYdfZGW8Aw+NzDr5qC2Au5lsmLuRDqKVA6UIwN941qa5z0Y+Vb7w41AVKv0i/1x6e12Sp4p1TR0Jb
+	vNeljVKA==;
 Received: from [4.28.11.157] (helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vvd1D-00000006PyK-4AqV;
-	Thu, 26 Feb 2026 15:11:12 +0000
+	id 1vvd1F-00000006PyU-0jJQ;
+	Thu, 26 Feb 2026 15:11:13 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Richard Henderson <richard.henderson@linaro.org>,
@@ -103,9 +103,9 @@ Cc: Richard Henderson <richard.henderson@linaro.org>,
 	linux-btrfs@vger.kernel.org,
 	linux-arch@vger.kernel.org,
 	linux-raid@vger.kernel.org
-Subject: [PATCH 03/25] um/xor: don't override XOR_SELECT_TEMPLATE
-Date: Thu, 26 Feb 2026 07:10:15 -0800
-Message-ID: <20260226151106.144735-4-hch@lst.de>
+Subject: [PATCH 04/25] xor: move to lib/raid/
+Date: Thu, 26 Feb 2026 07:10:16 -0800
+Message-ID: <20260226151106.144735-5-hch@lst.de>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20260226151106.144735-1-hch@lst.de>
 References: <20260226151106.144735-1-hch@lst.de>
@@ -130,7 +130,7 @@ X-Spamd-Result: default: False [-0.06 / 15.00];
 	HAS_LIST_UNSUB(-0.01)[];
 	MIME_TRACE(0.00)[0:+];
 	FREEMAIL_CC(0.00)[linaro.org,gmail.com,armlinux.org.uk,arm.com,kernel.org,xen0n.name,linux.ibm.com,ellerman.id.au,dabbelt.com,eecs.berkeley.edu,ghiti.fr,davemloft.net,gaisler.com,nod.at,cambridgegreys.com,sipsolutions.net,redhat.com,alien8.de,linux.intel.com,zytor.com,gondor.apana.org.au,intel.com,fb.com,suse.com,arndb.de,fnnas.com,huawei.com,vger.kernel.org,lists.infradead.org,lists.linux.dev,lists.ozlabs.org];
-	TAGGED_FROM(0.00)[bounces-21991-lists,linux-btrfs=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-21986-lists,linux-btrfs=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
@@ -145,46 +145,111 @@ X-Spamd-Result: default: False [-0.06 / 15.00];
 	TAGGED_RCPT(0.00)[linux-btrfs];
 	NEURAL_HAM(-0.00)[-0.999];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,infradead.org:dkim,lst.de:mid,lst.de:email]
-X-Rspamd-Queue-Id: 733431A8877
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,lst.de:mid,lst.de:email,infradead.org:dkim]
+X-Rspamd-Queue-Id: 25A5C1A8D9F
 X-Rspamd-Action: no action
 
-XOR_SELECT_TEMPLATE is only ever called with a NULL argument, so all the
-ifdef'ery doesn't do anything.  With our without this, the time travel
-mode should work fine on CPUs that support AVX2, as the AVX2
-implementation is forced in this case, and won't work otherwise.
+Move the RAID XOR code to lib/raid/ as it has nothing to do with the
+crypto API.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- arch/um/include/asm/xor.h | 10 ----------
- 1 file changed, 10 deletions(-)
+ crypto/Kconfig                          | 2 --
+ crypto/Makefile                         | 1 -
+ lib/Kconfig                             | 1 +
+ lib/Makefile                            | 2 +-
+ lib/raid/Kconfig                        | 3 +++
+ lib/raid/Makefile                       | 2 ++
+ lib/raid/xor/Makefile                   | 5 +++++
+ crypto/xor.c => lib/raid/xor/xor-core.c | 0
+ 8 files changed, 12 insertions(+), 4 deletions(-)
+ create mode 100644 lib/raid/Kconfig
+ create mode 100644 lib/raid/Makefile
+ create mode 100644 lib/raid/xor/Makefile
+ rename crypto/xor.c => lib/raid/xor/xor-core.c (100%)
 
-diff --git a/arch/um/include/asm/xor.h b/arch/um/include/asm/xor.h
-index 647fae200c5d..c9ddedc19301 100644
---- a/arch/um/include/asm/xor.h
-+++ b/arch/um/include/asm/xor.h
-@@ -4,21 +4,11 @@
+diff --git a/crypto/Kconfig b/crypto/Kconfig
+index e2b4106ac961..5cdb1b25ae87 100644
+--- a/crypto/Kconfig
++++ b/crypto/Kconfig
+@@ -2,8 +2,6 @@
+ #
+ # Generic algorithms support
+ #
+-config XOR_BLOCKS
+-	tristate
  
- #ifdef CONFIG_64BIT
- #undef CONFIG_X86_32
--#define TT_CPU_INF_XOR_DEFAULT (AVX_SELECT(&xor_block_sse_pf64))
- #else
- #define CONFIG_X86_32 1
--#define TT_CPU_INF_XOR_DEFAULT (AVX_SELECT(&xor_block_8regs))
- #endif
+ #
+ # async_tx api: hardware offloaded memory transfer/transform support
+diff --git a/crypto/Makefile b/crypto/Makefile
+index 04e269117589..795c2eea51fe 100644
+--- a/crypto/Makefile
++++ b/crypto/Makefile
+@@ -196,7 +196,6 @@ obj-$(CONFIG_CRYPTO_ECRDSA) += ecrdsa_generic.o
+ #
+ # generic algorithms and the async_tx api
+ #
+-obj-$(CONFIG_XOR_BLOCKS) += xor.o
+ obj-$(CONFIG_ASYNC_CORE) += async_tx/
+ obj-$(CONFIG_ASYMMETRIC_KEY_TYPE) += asymmetric_keys/
+ crypto_simd-y := simd.o
+diff --git a/lib/Kconfig b/lib/Kconfig
+index 0f2fb9610647..5be57adcd454 100644
+--- a/lib/Kconfig
++++ b/lib/Kconfig
+@@ -138,6 +138,7 @@ config TRACE_MMIO_ACCESS
  
- #include <asm/cpufeature.h>
- #include <../../x86/include/asm/xor.h>
--#include <linux/time-internal.h>
--
--#ifdef CONFIG_UML_TIME_TRAVEL_SUPPORT
--#undef XOR_SELECT_TEMPLATE
--/* pick an arbitrary one - measuring isn't possible with inf-cpu */
--#define XOR_SELECT_TEMPLATE(x)	\
--	(time_travel_mode == TT_MODE_INFCPU ? TT_CPU_INF_XOR_DEFAULT : x)
--#endif
+ source "lib/crc/Kconfig"
+ source "lib/crypto/Kconfig"
++source "lib/raid/Kconfig"
  
- #endif
+ config XXHASH
+ 	tristate
+diff --git a/lib/Makefile b/lib/Makefile
+index 1b9ee167517f..84da412a044f 100644
+--- a/lib/Makefile
++++ b/lib/Makefile
+@@ -120,7 +120,7 @@ endif
+ obj-$(CONFIG_DEBUG_INFO_REDUCED) += debug_info.o
+ CFLAGS_debug_info.o += $(call cc-option, -femit-struct-debug-detailed=any)
+ 
+-obj-y += math/ crc/ crypto/ tests/ vdso/
++obj-y += math/ crc/ crypto/ tests/ vdso/ raid/
+ 
+ obj-$(CONFIG_GENERIC_IOMAP) += iomap.o
+ obj-$(CONFIG_HAS_IOMEM) += iomap_copy.o devres.o
+diff --git a/lib/raid/Kconfig b/lib/raid/Kconfig
+new file mode 100644
+index 000000000000..4b720f3454a2
+--- /dev/null
++++ b/lib/raid/Kconfig
+@@ -0,0 +1,3 @@
++
++config XOR_BLOCKS
++	tristate
+diff --git a/lib/raid/Makefile b/lib/raid/Makefile
+new file mode 100644
+index 000000000000..382f2d1694bd
+--- /dev/null
++++ b/lib/raid/Makefile
+@@ -0,0 +1,2 @@
++
++obj-y				+= xor/
+diff --git a/lib/raid/xor/Makefile b/lib/raid/xor/Makefile
+new file mode 100644
+index 000000000000..7bca0ce8e90a
+--- /dev/null
++++ b/lib/raid/xor/Makefile
+@@ -0,0 +1,5 @@
++# SPDX-License-Identifier: GPL-2.0
++
++obj-$(CONFIG_XOR_BLOCKS)	+= xor.o
++
++xor-y				+= xor-core.o
+diff --git a/crypto/xor.c b/lib/raid/xor/xor-core.c
+similarity index 100%
+rename from crypto/xor.c
+rename to lib/raid/xor/xor-core.c
 -- 
 2.47.3
 
