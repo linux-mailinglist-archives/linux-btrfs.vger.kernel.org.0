@@ -1,53 +1,53 @@
-Return-Path: <linux-btrfs+bounces-21993-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21994-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id KChrMG5poGm+jQQAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21993-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Feb 2026 16:40:30 +0100
+	id uBS4KlxloGnrjAQAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21994-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Feb 2026 16:23:08 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B8521A8E93
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Feb 2026 16:40:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 104141A8958
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Feb 2026 16:23:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id BF3AC31E2081
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Feb 2026 15:14:36 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D1716319B87D
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Feb 2026 15:14:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73FB240FDA4;
-	Thu, 26 Feb 2026 15:11:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9C9640F8C2;
+	Thu, 26 Feb 2026 15:11:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="gnGa0wLP"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="mclJUjX1"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 606583ED127;
-	Thu, 26 Feb 2026 15:11:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 709103F23AE;
+	Thu, 26 Feb 2026 15:11:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772118714; cv=none; b=HE0twK1KVUckBbCpP4vCFxBng1gvtLYHCUj/uODNKYjaoIuh7pnHbygJv8yDcCBuQLEVH25YBNLSzxyh6KzCNcHUkRbo6V3dVT/RRmdDdBO6AIFlNZPk8KfHOS0EfFWTCziJlorRoQYL5RmQNY1Obod9RlNff+XbCmNGaHLCw90=
+	t=1772118715; cv=none; b=pWU35ZYP676ZauyTmdDYc7SH3MPAHwNrlC6y7WnEw1MdZBaopcTxgAWsNpmbWVrA29a52PGpsrY7R6FU9QB3Slfxf0ayYdaSsX/qmYnO6O3XXpXzEI/W4TQUeM0q7Y5mTgxnpg/jHwsMJi+mxbZsfD/4UdTBrPH+LxKBWw8g2GI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772118714; c=relaxed/simple;
-	bh=ugHhCn8K+zeD26eFJSJ69L8iIPvQM/xCwBj0pGf6ets=;
+	s=arc-20240116; t=1772118715; c=relaxed/simple;
+	bh=/cXx3GXEqzVzyXgNzJdKZ+PUE6WTF7vPmrYZCdFEXyQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BcMbKwgrHMVLtmqKkUpdYmxC2szd2v09+sCkM9ePg4xgq0RhJtAGziHd9YDtfhtzZLt3KCKBiqhaUeQrwoK17VXSywJJSUMQdLZu+RYYO3K++hMRufmW9n8WMjaxCplJFX3qLVjJ7ihbyjNmCR4bunrCxsE1yniPmqbjbgKumpg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=gnGa0wLP; arc=none smtp.client-ip=198.137.202.133
+	 MIME-Version; b=ko0yT7zsnQF+vvxgA03Sq4LW6eaapeIgKIUXYkko/r25WYXvPZ6KtQV6Zc3qjEXrItjubnry9Xg7NxrA4wPfyOCZnO6uzC3XQ8jxKlVp0fgU4xEwL0VhQKDGyexypJ6LAQSW+vvVsrAqN75RhKWTdkAwgRDgQ8AK7/4lU/sATGA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=mclJUjX1; arc=none smtp.client-ip=198.137.202.133
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=lst.de
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
 	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender
 	:Reply-To:Content-Type:Content-ID:Content-Description;
-	bh=ry2shtzl2BSBD299Iewxm9iaU+3NWMfzJH2Uml5DqNo=; b=gnGa0wLPI6wVx3kQ08+Q4uDnu1
-	jZGGCd7cML1XJI27YEEtpc053OllePBGCM/MUVd9DStH2pUt/Re8e6HUtHjPuc8saeH5LI24tx1hh
-	iT4gbkXf6jpNisPEBWTRTXAQx1Fovzgp7PwOFcjpusbexi8K/9USh6Tez7AUZa2xTSshJ6shXhJ92
-	BgWYtOvc+Rfu0EK1U5xEayrXBCDXWFpi/lxJ6jli4KVP675zPa5IQ2b/TujlmwQFIWMfGpppPW4s0
-	lxBP5DC1RIpZjD7svrm9f4x1EXAL4zropdUE8Z7f5RdL3jkiSjQC0zDbA/BJBpf9gWOXWJY3KxQV5
-	KyyyBakw==;
+	bh=xcdl+EonEYx62Kkp9SBgkssysY5Ou4OoWS7skyJ9hvk=; b=mclJUjX1kfJX2ZQIr58CqJZwTs
+	eyixLWghgmnS078p6BoAdPR9/fTRm3qsLPCe8N2QeEgPpK/k8Ig65tLocOxMvZmEbfouSvy7hAW2y
+	NAq+Z0kdc3Ca6VSPZWKy/3eYesGK6hf+WuHfiq/VQaeo43giSn+ByzTs7ijS0khL5w86jQWT7mg5T
+	r+MFXlD1uL8n7ZMfX3CXImbnQYg2JRNNF38mBzwEJyOfbBZXztyU8/9hLho3e3+xPaZktND+aosKR
+	E1Igx6Ttb5drLs41YwYw/qg9iVXJU3KyG71BHUUd0ZjI8dZx20c9uRGk2MIrGXl3ViTK9/PrW+xfm
+	hDFrhk8A==;
 Received: from [4.28.11.157] (helo=localhost)
 	by bombadil.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vvd1P-00000006QAd-2YwI;
-	Thu, 26 Feb 2026 15:11:23 +0000
+	id 1vvd1R-00000006QD5-045M;
+	Thu, 26 Feb 2026 15:11:25 +0000
 From: Christoph Hellwig <hch@lst.de>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Richard Henderson <richard.henderson@linaro.org>,
@@ -103,9 +103,9 @@ Cc: Richard Henderson <richard.henderson@linaro.org>,
 	linux-btrfs@vger.kernel.org,
 	linux-arch@vger.kernel.org,
 	linux-raid@vger.kernel.org
-Subject: [PATCH 11/25] arm: move the XOR code to lib/raid/
-Date: Thu, 26 Feb 2026 07:10:23 -0800
-Message-ID: <20260226151106.144735-12-hch@lst.de>
+Subject: [PATCH 12/25] arm64: move the XOR code to lib/raid/
+Date: Thu, 26 Feb 2026 07:10:24 -0800
+Message-ID: <20260226151106.144735-13-hch@lst.de>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20260226151106.144735-1-hch@lst.de>
 References: <20260226151106.144735-1-hch@lst.de>
@@ -123,14 +123,14 @@ X-Spamd-Result: default: False [-0.06 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
 	R_DKIM_ALLOW(-0.20)[infradead.org:s=bombadil.20210309];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	DMARC_POLICY_SOFTFAIL(0.10)[lst.de : SPF not aligned (relaxed), DKIM not aligned (relaxed),none];
 	HAS_LIST_UNSUB(-0.01)[];
 	MIME_TRACE(0.00)[0:+];
 	FREEMAIL_CC(0.00)[linaro.org,gmail.com,armlinux.org.uk,arm.com,kernel.org,xen0n.name,linux.ibm.com,ellerman.id.au,dabbelt.com,eecs.berkeley.edu,ghiti.fr,davemloft.net,gaisler.com,nod.at,cambridgegreys.com,sipsolutions.net,redhat.com,alien8.de,linux.intel.com,zytor.com,gondor.apana.org.au,intel.com,fb.com,suse.com,arndb.de,fnnas.com,huawei.com,vger.kernel.org,lists.infradead.org,lists.linux.dev,lists.ozlabs.org];
-	TAGGED_FROM(0.00)[bounces-21993-lists,linux-btrfs=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-21994-lists,linux-btrfs=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
@@ -145,8 +145,8 @@ X-Spamd-Result: default: False [-0.06 / 15.00];
 	TAGGED_RCPT(0.00)[linux-btrfs];
 	NEURAL_HAM(-0.00)[-0.999];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[lst.de:mid,lst.de:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linaro.org:email,infradead.org:dkim]
-X-Rspamd-Queue-Id: 1B8521A8E93
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,lst.de:mid,lst.de:email,infradead.org:dkim,kylinos.cn:email]
+X-Rspamd-Queue-Id: 104141A8958
 X-Rspamd-Action: no action
 
 Move the optimized XOR into lib/raid and include it it in the main
@@ -154,173 +154,43 @@ xor.ko instead of building a separate module for it.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- arch/arm/include/asm/xor.h                    | 190 +-----------------
- arch/arm/lib/Makefile                         |   5 -
- lib/raid/xor/Makefile                         |   8 +
- lib/raid/xor/arm/xor-neon-glue.c              |  58 ++++++
- {arch/arm/lib => lib/raid/xor/arm}/xor-neon.c |  10 +-
- lib/raid/xor/arm/xor.c                        | 136 +++++++++++++
- 6 files changed, 205 insertions(+), 202 deletions(-)
- create mode 100644 lib/raid/xor/arm/xor-neon-glue.c
- rename {arch/arm/lib => lib/raid/xor/arm}/xor-neon.c (74%)
- create mode 100644 lib/raid/xor/arm/xor.c
+ arch/arm64/include/asm/xor.h                  | 58 +------------------
+ arch/arm64/lib/Makefile                       |  6 --
+ lib/raid/xor/Makefile                         |  5 ++
+ lib/raid/xor/arm64/xor-neon-glue.c            | 57 ++++++++++++++++++
+ .../lib => lib/raid/xor/arm64}/xor-neon.c     | 21 ++-----
+ 5 files changed, 69 insertions(+), 78 deletions(-)
+ create mode 100644 lib/raid/xor/arm64/xor-neon-glue.c
+ rename {arch/arm64/lib => lib/raid/xor/arm64}/xor-neon.c (95%)
 
-diff --git a/arch/arm/include/asm/xor.h b/arch/arm/include/asm/xor.h
-index b2dcd49186e2..989c55872ef6 100644
---- a/arch/arm/include/asm/xor.h
-+++ b/arch/arm/include/asm/xor.h
-@@ -1,198 +1,12 @@
+diff --git a/arch/arm64/include/asm/xor.h b/arch/arm64/include/asm/xor.h
+index bfa6122f55ce..81718f010761 100644
+--- a/arch/arm64/include/asm/xor.h
++++ b/arch/arm64/include/asm/xor.h
+@@ -1,73 +1,21 @@
  /* SPDX-License-Identifier: GPL-2.0-only */
  /*
-- *  arch/arm/include/asm/xor.h
+- * arch/arm64/include/asm/xor.h
 - *
-  *  Copyright (C) 2001 Russell King
+  * Authors: Jackie Liu <liuyun01@kylinos.cn>
+  * Copyright (C) 2018,Tianjin KYLIN Information Technology Co., Ltd.
   */
+ 
+-#include <linux/hardirq.h>
  #include <asm-generic/xor.h>
 -#include <asm/hwcap.h>
- #include <asm/neon.h>
+ #include <asm/simd.h>
  
--#define __XOR(a1, a2) a1 ^= a2
--
--#define GET_BLOCK_2(dst) \
--	__asm__("ldmia	%0, {%1, %2}" \
--		: "=r" (dst), "=r" (a1), "=r" (a2) \
--		: "0" (dst))
--
--#define GET_BLOCK_4(dst) \
--	__asm__("ldmia	%0, {%1, %2, %3, %4}" \
--		: "=r" (dst), "=r" (a1), "=r" (a2), "=r" (a3), "=r" (a4) \
--		: "0" (dst))
--
--#define XOR_BLOCK_2(src) \
--	__asm__("ldmia	%0!, {%1, %2}" \
--		: "=r" (src), "=r" (b1), "=r" (b2) \
--		: "0" (src)); \
--	__XOR(a1, b1); __XOR(a2, b2);
--
--#define XOR_BLOCK_4(src) \
--	__asm__("ldmia	%0!, {%1, %2, %3, %4}" \
--		: "=r" (src), "=r" (b1), "=r" (b2), "=r" (b3), "=r" (b4) \
--		: "0" (src)); \
--	__XOR(a1, b1); __XOR(a2, b2); __XOR(a3, b3); __XOR(a4, b4)
--
--#define PUT_BLOCK_2(dst) \
--	__asm__ __volatile__("stmia	%0!, {%2, %3}" \
--		: "=r" (dst) \
--		: "0" (dst), "r" (a1), "r" (a2))
--
--#define PUT_BLOCK_4(dst) \
--	__asm__ __volatile__("stmia	%0!, {%2, %3, %4, %5}" \
--		: "=r" (dst) \
--		: "0" (dst), "r" (a1), "r" (a2), "r" (a3), "r" (a4))
--
--static void
--xor_arm4regs_2(unsigned long bytes, unsigned long * __restrict p1,
--	       const unsigned long * __restrict p2)
--{
--	unsigned int lines = bytes / sizeof(unsigned long) / 4;
--	register unsigned int a1 __asm__("r4");
--	register unsigned int a2 __asm__("r5");
--	register unsigned int a3 __asm__("r6");
--	register unsigned int a4 __asm__("r10");
--	register unsigned int b1 __asm__("r8");
--	register unsigned int b2 __asm__("r9");
--	register unsigned int b3 __asm__("ip");
--	register unsigned int b4 __asm__("lr");
--
--	do {
--		GET_BLOCK_4(p1);
--		XOR_BLOCK_4(p2);
--		PUT_BLOCK_4(p1);
--	} while (--lines);
--}
--
--static void
--xor_arm4regs_3(unsigned long bytes, unsigned long * __restrict p1,
--	       const unsigned long * __restrict p2,
--	       const unsigned long * __restrict p3)
--{
--	unsigned int lines = bytes / sizeof(unsigned long) / 4;
--	register unsigned int a1 __asm__("r4");
--	register unsigned int a2 __asm__("r5");
--	register unsigned int a3 __asm__("r6");
--	register unsigned int a4 __asm__("r10");
--	register unsigned int b1 __asm__("r8");
--	register unsigned int b2 __asm__("r9");
--	register unsigned int b3 __asm__("ip");
--	register unsigned int b4 __asm__("lr");
--
--	do {
--		GET_BLOCK_4(p1);
--		XOR_BLOCK_4(p2);
--		XOR_BLOCK_4(p3);
--		PUT_BLOCK_4(p1);
--	} while (--lines);
--}
--
--static void
--xor_arm4regs_4(unsigned long bytes, unsigned long * __restrict p1,
--	       const unsigned long * __restrict p2,
--	       const unsigned long * __restrict p3,
--	       const unsigned long * __restrict p4)
--{
--	unsigned int lines = bytes / sizeof(unsigned long) / 2;
--	register unsigned int a1 __asm__("r8");
--	register unsigned int a2 __asm__("r9");
--	register unsigned int b1 __asm__("ip");
--	register unsigned int b2 __asm__("lr");
--
--	do {
--		GET_BLOCK_2(p1);
--		XOR_BLOCK_2(p2);
--		XOR_BLOCK_2(p3);
--		XOR_BLOCK_2(p4);
--		PUT_BLOCK_2(p1);
--	} while (--lines);
--}
--
--static void
--xor_arm4regs_5(unsigned long bytes, unsigned long * __restrict p1,
--	       const unsigned long * __restrict p2,
--	       const unsigned long * __restrict p3,
--	       const unsigned long * __restrict p4,
--	       const unsigned long * __restrict p5)
--{
--	unsigned int lines = bytes / sizeof(unsigned long) / 2;
--	register unsigned int a1 __asm__("r8");
--	register unsigned int a2 __asm__("r9");
--	register unsigned int b1 __asm__("ip");
--	register unsigned int b2 __asm__("lr");
--
--	do {
--		GET_BLOCK_2(p1);
--		XOR_BLOCK_2(p2);
--		XOR_BLOCK_2(p3);
--		XOR_BLOCK_2(p4);
--		XOR_BLOCK_2(p5);
--		PUT_BLOCK_2(p1);
--	} while (--lines);
--}
--
--static struct xor_block_template xor_block_arm4regs = {
--	.name	= "arm4regs",
--	.do_2	= xor_arm4regs_2,
--	.do_3	= xor_arm4regs_3,
--	.do_4	= xor_arm4regs_4,
--	.do_5	= xor_arm4regs_5,
--};
--
 -#ifdef CONFIG_KERNEL_MODE_NEON
 -
--extern struct xor_block_template const xor_block_neon_inner;
+-extern struct xor_block_template const xor_block_inner_neon;
 -
 -static void
 -xor_neon_2(unsigned long bytes, unsigned long * __restrict p1,
 -	   const unsigned long * __restrict p2)
 -{
--	kernel_neon_begin();
--	xor_block_neon_inner.do_2(bytes, p1, p2);
--	kernel_neon_end();
+-	scoped_ksimd()
+-		xor_block_inner_neon.do_2(bytes, p1, p2);
 -}
 -
 -static void
@@ -328,9 +198,8 @@ index b2dcd49186e2..989c55872ef6 100644
 -	   const unsigned long * __restrict p2,
 -	   const unsigned long * __restrict p3)
 -{
--	kernel_neon_begin();
--	xor_block_neon_inner.do_3(bytes, p1, p2, p3);
--	kernel_neon_end();
+-	scoped_ksimd()
+-		xor_block_inner_neon.do_3(bytes, p1, p2, p3);
 -}
 -
 -static void
@@ -339,9 +208,8 @@ index b2dcd49186e2..989c55872ef6 100644
 -	   const unsigned long * __restrict p3,
 -	   const unsigned long * __restrict p4)
 -{
--	kernel_neon_begin();
--	xor_block_neon_inner.do_4(bytes, p1, p2, p3, p4);
--	kernel_neon_end();
+-	scoped_ksimd()
+-		xor_block_inner_neon.do_4(bytes, p1, p2, p3, p4);
 -}
 -
 -static void
@@ -351,77 +219,90 @@ index b2dcd49186e2..989c55872ef6 100644
 -	   const unsigned long * __restrict p4,
 -	   const unsigned long * __restrict p5)
 -{
--	kernel_neon_begin();
--	xor_block_neon_inner.do_5(bytes, p1, p2, p3, p4, p5);
--	kernel_neon_end();
+-	scoped_ksimd()
+-		xor_block_inner_neon.do_5(bytes, p1, p2, p3, p4, p5);
 -}
 -
--static struct xor_block_template xor_block_neon = {
--	.name	= "neon",
--	.do_2	= xor_neon_2,
--	.do_3	= xor_neon_3,
--	.do_4	= xor_neon_4,
+-static struct xor_block_template xor_block_arm64 = {
+-	.name   = "arm64_neon",
+-	.do_2   = xor_neon_2,
+-	.do_3   = xor_neon_3,
+-	.do_4   = xor_neon_4,
 -	.do_5	= xor_neon_5
 -};
--
--#endif /* CONFIG_KERNEL_MODE_NEON */
-+extern struct xor_block_template xor_block_arm4regs;
-+extern struct xor_block_template xor_block_neon;
++extern struct xor_block_template xor_block_arm64;
++void __init xor_neon_init(void);
  
  #define arch_xor_init arch_xor_init
  static __always_inline void __init arch_xor_init(void)
-diff --git a/arch/arm/lib/Makefile b/arch/arm/lib/Makefile
-index 0ca5aae1bcc3..9295055cdfc9 100644
---- a/arch/arm/lib/Makefile
-+++ b/arch/arm/lib/Makefile
-@@ -39,9 +39,4 @@ endif
- $(obj)/csumpartialcopy.o:	$(obj)/csumpartialcopygeneric.S
- $(obj)/csumpartialcopyuser.o:	$(obj)/csumpartialcopygeneric.S
+ {
++	xor_neon_init();
+ 	xor_register(&xor_block_8regs);
+ 	xor_register(&xor_block_32regs);
+ 	if (cpu_has_neon())
+ 		xor_register(&xor_block_arm64);
+ }
+-
+-#endif /* ! CONFIG_KERNEL_MODE_NEON */
+diff --git a/arch/arm64/lib/Makefile b/arch/arm64/lib/Makefile
+index 633e5223d944..448c917494f3 100644
+--- a/arch/arm64/lib/Makefile
++++ b/arch/arm64/lib/Makefile
+@@ -5,12 +5,6 @@ lib-y		:= clear_user.o delay.o copy_from_user.o		\
+ 		   memset.o memcmp.o strcmp.o strncmp.o strlen.o	\
+ 		   strnlen.o strchr.o strrchr.o tishift.o
  
--ifeq ($(CONFIG_KERNEL_MODE_NEON),y)
--  CFLAGS_xor-neon.o		+= $(CC_FLAGS_FPU)
--  obj-$(CONFIG_XOR_BLOCKS)	+= xor-neon.o
+-ifeq ($(CONFIG_KERNEL_MODE_NEON), y)
+-obj-$(CONFIG_XOR_BLOCKS)	+= xor-neon.o
+-CFLAGS_xor-neon.o		+= $(CC_FLAGS_FPU)
+-CFLAGS_REMOVE_xor-neon.o	+= $(CC_FLAGS_NO_FPU)
 -endif
 -
+ lib-$(CONFIG_ARCH_HAS_UACCESS_FLUSHCACHE) += uaccess_flushcache.o
+ 
  obj-$(CONFIG_FUNCTION_ERROR_INJECTION) += error-inject.o
 diff --git a/lib/raid/xor/Makefile b/lib/raid/xor/Makefile
-index 6d03c27c37c7..fb760edae54b 100644
+index fb760edae54b..3c13851219e5 100644
 --- a/lib/raid/xor/Makefile
 +++ b/lib/raid/xor/Makefile
-@@ -9,3 +9,11 @@ xor-y				+= xor-8regs-prefetch.o
- xor-y				+= xor-32regs-prefetch.o
+@@ -12,8 +12,13 @@ xor-$(CONFIG_ALPHA)		+= alpha/xor.o
+ xor-$(CONFIG_ARM)		+= arm/xor.o
+ ifeq ($(CONFIG_ARM),y)
+ xor-$(CONFIG_KERNEL_MODE_NEON)	+= arm/xor-neon.o arm/xor-neon-glue.o
++else
++xor-$(CONFIG_KERNEL_MODE_NEON)	+= arm64/xor-neon.o arm64/xor-neon-glue.o
+ endif
  
- xor-$(CONFIG_ALPHA)		+= alpha/xor.o
-+xor-$(CONFIG_ARM)		+= arm/xor.o
-+ifeq ($(CONFIG_ARM),y)
-+xor-$(CONFIG_KERNEL_MODE_NEON)	+= arm/xor-neon.o arm/xor-neon-glue.o
-+endif
+ 
+ CFLAGS_arm/xor-neon.o		+= $(CC_FLAGS_FPU)
+ CFLAGS_REMOVE_arm/xor-neon.o	+= $(CC_FLAGS_NO_FPU)
 +
-+
-+CFLAGS_arm/xor-neon.o		+= $(CC_FLAGS_FPU)
-+CFLAGS_REMOVE_arm/xor-neon.o	+= $(CC_FLAGS_NO_FPU)
-diff --git a/lib/raid/xor/arm/xor-neon-glue.c b/lib/raid/xor/arm/xor-neon-glue.c
++CFLAGS_arm64/xor-neon.o		+= $(CC_FLAGS_FPU)
++CFLAGS_REMOVE_arm64/xor-neon.o	+= $(CC_FLAGS_NO_FPU)
+diff --git a/lib/raid/xor/arm64/xor-neon-glue.c b/lib/raid/xor/arm64/xor-neon-glue.c
 new file mode 100644
-index 000000000000..c7b162b383a2
+index 000000000000..067a2095659a
 --- /dev/null
-+++ b/lib/raid/xor/arm/xor-neon-glue.c
-@@ -0,0 +1,58 @@
++++ b/lib/raid/xor/arm64/xor-neon-glue.c
+@@ -0,0 +1,57 @@
 +// SPDX-License-Identifier: GPL-2.0-only
 +/*
-+ *  Copyright (C) 2001 Russell King
++ * Authors: Jackie Liu <liuyun01@kylinos.cn>
++ * Copyright (C) 2018,Tianjin KYLIN Information Technology Co., Ltd.
 + */
++
 +#include <linux/raid/xor_impl.h>
++#include <asm/simd.h>
 +#include <asm/xor.h>
 +
-+extern struct xor_block_template const xor_block_neon_inner;
++extern struct xor_block_template const xor_block_inner_neon;
 +
 +static void
 +xor_neon_2(unsigned long bytes, unsigned long * __restrict p1,
 +	   const unsigned long * __restrict p2)
 +{
-+	kernel_neon_begin();
-+	xor_block_neon_inner.do_2(bytes, p1, p2);
-+	kernel_neon_end();
++	scoped_ksimd()
++		xor_block_inner_neon.do_2(bytes, p1, p2);
 +}
 +
 +static void
@@ -429,9 +310,8 @@ index 000000000000..c7b162b383a2
 +	   const unsigned long * __restrict p2,
 +	   const unsigned long * __restrict p3)
 +{
-+	kernel_neon_begin();
-+	xor_block_neon_inner.do_3(bytes, p1, p2, p3);
-+	kernel_neon_end();
++	scoped_ksimd()
++		xor_block_inner_neon.do_3(bytes, p1, p2, p3);
 +}
 +
 +static void
@@ -440,9 +320,8 @@ index 000000000000..c7b162b383a2
 +	   const unsigned long * __restrict p3,
 +	   const unsigned long * __restrict p4)
 +{
-+	kernel_neon_begin();
-+	xor_block_neon_inner.do_4(bytes, p1, p2, p3, p4);
-+	kernel_neon_end();
++	scoped_ksimd()
++		xor_block_inner_neon.do_4(bytes, p1, p2, p3, p4);
 +}
 +
 +static void
@@ -452,198 +331,74 @@ index 000000000000..c7b162b383a2
 +	   const unsigned long * __restrict p4,
 +	   const unsigned long * __restrict p5)
 +{
-+	kernel_neon_begin();
-+	xor_block_neon_inner.do_5(bytes, p1, p2, p3, p4, p5);
-+	kernel_neon_end();
++	scoped_ksimd()
++		xor_block_inner_neon.do_5(bytes, p1, p2, p3, p4, p5);
 +}
 +
-+struct xor_block_template xor_block_neon = {
-+	.name	= "neon",
-+	.do_2	= xor_neon_2,
-+	.do_3	= xor_neon_3,
-+	.do_4	= xor_neon_4,
++struct xor_block_template xor_block_arm64 = {
++	.name   = "arm64_neon",
++	.do_2   = xor_neon_2,
++	.do_3   = xor_neon_3,
++	.do_4   = xor_neon_4,
 +	.do_5	= xor_neon_5
 +};
-diff --git a/arch/arm/lib/xor-neon.c b/lib/raid/xor/arm/xor-neon.c
-similarity index 74%
-rename from arch/arm/lib/xor-neon.c
-rename to lib/raid/xor/arm/xor-neon.c
-index b5be50567991..c9d4378b0f0e 100644
---- a/arch/arm/lib/xor-neon.c
-+++ b/lib/raid/xor/arm/xor-neon.c
-@@ -1,16 +1,9 @@
+diff --git a/arch/arm64/lib/xor-neon.c b/lib/raid/xor/arm64/xor-neon.c
+similarity index 95%
+rename from arch/arm64/lib/xor-neon.c
+rename to lib/raid/xor/arm64/xor-neon.c
+index 8fffebfa17b2..8d2d185090db 100644
+--- a/arch/arm64/lib/xor-neon.c
++++ b/lib/raid/xor/arm64/xor-neon.c
+@@ -1,14 +1,13 @@
  // SPDX-License-Identifier: GPL-2.0-only
  /*
-- * linux/arch/arm/lib/xor-neon.c
+- * arch/arm64/lib/xor-neon.c
 - *
-  * Copyright (C) 2013 Linaro Ltd <ard.biesheuvel@linaro.org>
+  * Authors: Jackie Liu <liuyun01@kylinos.cn>
+  * Copyright (C) 2018,Tianjin KYLIN Information Technology Co., Ltd.
   */
  
 -#include <linux/raid/xor.h>
- #include <linux/raid/xor_impl.h>
 -#include <linux/module.h>
--
--MODULE_DESCRIPTION("NEON accelerated XOR implementation");
--MODULE_LICENSE("GPL");
- 
- #ifndef __ARM_NEON__
- #error You should compile this file with '-march=armv7-a -mfloat-abi=softfp -mfpu=neon'
-@@ -27,7 +20,7 @@ MODULE_LICENSE("GPL");
- #endif
- 
- #define NO_TEMPLATE
--#include "../../../lib/raid/xor/xor-8regs.c"
-+#include "../xor-8regs.c"
- 
- struct xor_block_template const xor_block_neon_inner = {
- 	.name	= "__inner_neon__",
-@@ -36,4 +29,3 @@ struct xor_block_template const xor_block_neon_inner = {
- 	.do_4	= xor_8regs_4,
- 	.do_5	= xor_8regs_5,
- };
--EXPORT_SYMBOL(xor_block_neon_inner);
-diff --git a/lib/raid/xor/arm/xor.c b/lib/raid/xor/arm/xor.c
-new file mode 100644
-index 000000000000..2263341dbbcd
---- /dev/null
-+++ b/lib/raid/xor/arm/xor.c
-@@ -0,0 +1,136 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ *  Copyright (C) 2001 Russell King
-+ */
 +#include <linux/raid/xor_impl.h>
++#include <linux/cache.h>
+ #include <asm/neon-intrinsics.h>
 +#include <asm/xor.h>
-+
-+#define __XOR(a1, a2) a1 ^= a2
-+
-+#define GET_BLOCK_2(dst) \
-+	__asm__("ldmia	%0, {%1, %2}" \
-+		: "=r" (dst), "=r" (a1), "=r" (a2) \
-+		: "0" (dst))
-+
-+#define GET_BLOCK_4(dst) \
-+	__asm__("ldmia	%0, {%1, %2, %3, %4}" \
-+		: "=r" (dst), "=r" (a1), "=r" (a2), "=r" (a3), "=r" (a4) \
-+		: "0" (dst))
-+
-+#define XOR_BLOCK_2(src) \
-+	__asm__("ldmia	%0!, {%1, %2}" \
-+		: "=r" (src), "=r" (b1), "=r" (b2) \
-+		: "0" (src)); \
-+	__XOR(a1, b1); __XOR(a2, b2);
-+
-+#define XOR_BLOCK_4(src) \
-+	__asm__("ldmia	%0!, {%1, %2, %3, %4}" \
-+		: "=r" (src), "=r" (b1), "=r" (b2), "=r" (b3), "=r" (b4) \
-+		: "0" (src)); \
-+	__XOR(a1, b1); __XOR(a2, b2); __XOR(a3, b3); __XOR(a4, b4)
-+
-+#define PUT_BLOCK_2(dst) \
-+	__asm__ __volatile__("stmia	%0!, {%2, %3}" \
-+		: "=r" (dst) \
-+		: "0" (dst), "r" (a1), "r" (a2))
-+
-+#define PUT_BLOCK_4(dst) \
-+	__asm__ __volatile__("stmia	%0!, {%2, %3, %4, %5}" \
-+		: "=r" (dst) \
-+		: "0" (dst), "r" (a1), "r" (a2), "r" (a3), "r" (a4))
-+
-+static void
-+xor_arm4regs_2(unsigned long bytes, unsigned long * __restrict p1,
-+	       const unsigned long * __restrict p2)
-+{
-+	unsigned int lines = bytes / sizeof(unsigned long) / 4;
-+	register unsigned int a1 __asm__("r4");
-+	register unsigned int a2 __asm__("r5");
-+	register unsigned int a3 __asm__("r6");
-+	register unsigned int a4 __asm__("r10");
-+	register unsigned int b1 __asm__("r8");
-+	register unsigned int b2 __asm__("r9");
-+	register unsigned int b3 __asm__("ip");
-+	register unsigned int b4 __asm__("lr");
-+
-+	do {
-+		GET_BLOCK_4(p1);
-+		XOR_BLOCK_4(p2);
-+		PUT_BLOCK_4(p1);
-+	} while (--lines);
-+}
-+
-+static void
-+xor_arm4regs_3(unsigned long bytes, unsigned long * __restrict p1,
-+	       const unsigned long * __restrict p2,
-+	       const unsigned long * __restrict p3)
-+{
-+	unsigned int lines = bytes / sizeof(unsigned long) / 4;
-+	register unsigned int a1 __asm__("r4");
-+	register unsigned int a2 __asm__("r5");
-+	register unsigned int a3 __asm__("r6");
-+	register unsigned int a4 __asm__("r10");
-+	register unsigned int b1 __asm__("r8");
-+	register unsigned int b2 __asm__("r9");
-+	register unsigned int b3 __asm__("ip");
-+	register unsigned int b4 __asm__("lr");
-+
-+	do {
-+		GET_BLOCK_4(p1);
-+		XOR_BLOCK_4(p2);
-+		XOR_BLOCK_4(p3);
-+		PUT_BLOCK_4(p1);
-+	} while (--lines);
-+}
-+
-+static void
-+xor_arm4regs_4(unsigned long bytes, unsigned long * __restrict p1,
-+	       const unsigned long * __restrict p2,
-+	       const unsigned long * __restrict p3,
-+	       const unsigned long * __restrict p4)
-+{
-+	unsigned int lines = bytes / sizeof(unsigned long) / 2;
-+	register unsigned int a1 __asm__("r8");
-+	register unsigned int a2 __asm__("r9");
-+	register unsigned int b1 __asm__("ip");
-+	register unsigned int b2 __asm__("lr");
-+
-+	do {
-+		GET_BLOCK_2(p1);
-+		XOR_BLOCK_2(p2);
-+		XOR_BLOCK_2(p3);
-+		XOR_BLOCK_2(p4);
-+		PUT_BLOCK_2(p1);
-+	} while (--lines);
-+}
-+
-+static void
-+xor_arm4regs_5(unsigned long bytes, unsigned long * __restrict p1,
-+	       const unsigned long * __restrict p2,
-+	       const unsigned long * __restrict p3,
-+	       const unsigned long * __restrict p4,
-+	       const unsigned long * __restrict p5)
-+{
-+	unsigned int lines = bytes / sizeof(unsigned long) / 2;
-+	register unsigned int a1 __asm__("r8");
-+	register unsigned int a2 __asm__("r9");
-+	register unsigned int b1 __asm__("ip");
-+	register unsigned int b2 __asm__("lr");
-+
-+	do {
-+		GET_BLOCK_2(p1);
-+		XOR_BLOCK_2(p2);
-+		XOR_BLOCK_2(p3);
-+		XOR_BLOCK_2(p4);
-+		XOR_BLOCK_2(p5);
-+		PUT_BLOCK_2(p1);
-+	} while (--lines);
-+}
-+
-+struct xor_block_template xor_block_arm4regs = {
-+	.name	= "arm4regs",
-+	.do_2	= xor_arm4regs_2,
-+	.do_3	= xor_arm4regs_3,
-+	.do_4	= xor_arm4regs_4,
-+	.do_5	= xor_arm4regs_5,
-+};
+ 
+ static void xor_arm64_neon_2(unsigned long bytes, unsigned long * __restrict p1,
+ 	const unsigned long * __restrict p2)
+@@ -179,7 +178,6 @@ struct xor_block_template xor_block_inner_neon __ro_after_init = {
+ 	.do_4	= xor_arm64_neon_4,
+ 	.do_5	= xor_arm64_neon_5,
+ };
+-EXPORT_SYMBOL(xor_block_inner_neon);
+ 
+ static inline uint64x2_t eor3(uint64x2_t p, uint64x2_t q, uint64x2_t r)
+ {
+@@ -317,22 +315,11 @@ static void xor_arm64_eor3_5(unsigned long bytes,
+ 	} while (--lines > 0);
+ }
+ 
+-static int __init xor_neon_init(void)
++void __init xor_neon_init(void)
+ {
+ 	if (cpu_have_named_feature(SHA3)) {
+ 		xor_block_inner_neon.do_3 = xor_arm64_eor3_3;
+ 		xor_block_inner_neon.do_4 = xor_arm64_eor3_4;
+ 		xor_block_inner_neon.do_5 = xor_arm64_eor3_5;
+ 	}
+-	return 0;
+ }
+-module_init(xor_neon_init);
+-
+-static void __exit xor_neon_exit(void)
+-{
+-}
+-module_exit(xor_neon_exit);
+-
+-MODULE_AUTHOR("Jackie Liu <liuyun01@kylinos.cn>");
+-MODULE_DESCRIPTION("ARMv8 XOR Extensions");
+-MODULE_LICENSE("GPL");
 -- 
 2.47.3
 
