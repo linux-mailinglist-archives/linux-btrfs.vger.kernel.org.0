@@ -1,156 +1,142 @@
-Return-Path: <linux-btrfs+bounces-21956-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21957-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MLkWMkwwoGnUgAQAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21956-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Feb 2026 12:36:44 +0100
+	id wClOLDc8oGmagwQAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21957-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Feb 2026 13:27:35 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB3021A52D4
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Feb 2026 12:36:43 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BDA81A5AC9
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Feb 2026 13:27:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id CB5FA3054DE2
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Feb 2026 11:34:47 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 50EA330240BB
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Feb 2026 12:27:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 429DF3081C2;
-	Thu, 26 Feb 2026 11:34:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74E4D37BE95;
+	Thu, 26 Feb 2026 12:27:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=zadara.com header.i=@zadara.com header.b="VkzZYR4N"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NvFgvUl/"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DC0C374736
-	for <linux-btrfs@vger.kernel.org>; Thu, 26 Feb 2026 11:34:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA804221FDE;
+	Thu, 26 Feb 2026 12:27:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772105681; cv=none; b=qB01TRj1j2ujdMeFLMY9lchUWWBIMOLuTPuOmdJGnOYFz5TlVHwMFOKSes/uU8VTCferDTdoLgnZyYX4ykqd7D+EXZzDZQ+A7YTFiSzENcIjyE+lzVBemeOIQaEW7S5Say5lXy8aA/xB972hq4KxmCriQJxXQD03g3VDzKhVTRY=
+	t=1772108844; cv=none; b=Hk1IJ9amIrEasbZSWA87KteJyHkbm4fVvh/k0F8ivn3e8L6yi/AsNthVZio5Rohrapp2hRuvzK2oil56RPxQ7L2ZyY5fwlW0rP7affkhw9UaxnUs7+DH+udRbO7Ux5kh4VN61Z7tSuSYvp/BzXAPQmLfbe/6D7HdkjPdYgyRxT0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772105681; c=relaxed/simple;
-	bh=6Y/ZHWycFLYVmA+Jd3wBe0w7vKKuKhuYGbw5Uc3Rzps=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mAtfCtTWjixai2NOlFNtwbgoCauuu4HNjX9bFbwBRP7JAtokS1q9XdHf1p9Oew1yeHVQvjh2xO15dA6pTDnhaTVICIYb1tyFoEvoQi6iBg9SmIjHBYlfyjEh9305C9I0riTgsLD6Ve90XiVW1iRZIwGF1tZHaPw1aJaZRc9iTyk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zadara.com; spf=pass smtp.mailfrom=zadarastorage.com; dkim=pass (2048-bit key) header.d=zadara.com header.i=@zadara.com header.b=VkzZYR4N; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zadara.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zadarastorage.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-4398c7083d7so669436f8f.3
-        for <linux-btrfs@vger.kernel.org>; Thu, 26 Feb 2026 03:34:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=zadara.com; s=google; t=1772105678; x=1772710478; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=0zKmi7cuHNqc3CCp1GvK7BQ1K+6B23dh+tsdIvDxd9U=;
-        b=VkzZYR4NGYeTItRVPSTLyz0oFXCWozpNeVeG4YME1GabQGlk9RYA/6scRMNzS9GZNp
-         sqWAeKhzZilFSBtB+T+3rpUct5fD7VbaHyTeRXN+M5EanVNZFz3uE+4J7GnBpzp1Pz7E
-         2QFFdARD2e9yO8Qrzfr16sSZhhsDc5IwoyVTKbbhSbWiAVGt7Puszme0T5Ml7L1r5Cvi
-         eGjdIrbGbUm4fL5WTTicVPIghdP0YEuc3E6l4wW3GA1PxH8r2vvx0uL9pKZ0Kytr9U9R
-         pa7Qf3lHj4tq3fXp4zr7QdySHmy1MDMqWPhlddfntOFXeqK/YG/qOoHzSGNz9uSNLjOt
-         u39g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772105678; x=1772710478;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0zKmi7cuHNqc3CCp1GvK7BQ1K+6B23dh+tsdIvDxd9U=;
-        b=bYFxNqGq7GXZj0JkNkoXJsqdnQAAcjh6tw69LgtkRYxDSTm0m93YiG7QFviPuUNdcp
-         1f1I+ukoY9cNV9ZFoGyPGaMra07+6RTgQZUufrHhKK7LpsirH1Pt7VFuRhxuJcMGv0Uc
-         Q/Z7BFCiB4TggI//NqYp4pyPTsM4mes6zbDgoQTs/MALj/ON3+YCMVxrZ4oh/byWl/vS
-         aOQQOdW/gBlxwbxJmLTBcHv1pMTikAyOuy1LhWmrVz4ZhgMeRsT+Z5ge3ukYYanXPyev
-         P4Mfw4uUarK5Ac3FGCLljuwmIv9teSv3Ve5Xv3+yLCXFRlO5XU1IiJ+xoNCtBxCFlVnd
-         vLaA==
-X-Gm-Message-State: AOJu0YzUmXlLy1/s+torLQVO8e+Kvh5pVjciqoJ8EVtfl0nyZ4wvhbx/
-	dZx2VRy5KhV6ksMpisrW8effElNXPDQXqoqz+s+yLYGDESFFg7BuaEjtPB3kmigYG/l4lwAVVrB
-	4fJSz
-X-Gm-Gg: ATEYQzwLvd8R1iJTaMqF+bSynGJE1oIOR6bor+qmGDMN6klsKKUZwUcKA52+bf/0NgS
-	fJsqQ9lu9pmzlqknIfMKCG7Ue1/2RRiS8HznLZnSEq7wE7ahn3qpd/1DytaWR+6JWzPU9NJXp7l
-	u7hwMZQYt7dAFXnKbsIaeMw8qEvi+3khPsl5daXEchqVgEy/EqomO75dehMrff9cInJ7bWMG5mf
-	I8Avk48LxxRYFur7AzOnGGr490jWs6Ha32KabSInmt2Jufxm6QszRJFQrX8MJNnwpHJZs1O1rul
-	yBEBu/MiByrUpWXIOs2NgxFSlQf/ckAv8azwiIQ36utxlQEvKZgwxfRuC1CLH/t6s1l5mN+x5su
-	I4o78G12XXV7JsRQX/fDU6fCDZkcxES9W103QAJhvvo9uuxyefg1VNXxCxI5TbCxvnkPfH05yyF
-	nIpXJ1buJdPcCDdQWMu3oGeL68f1WfMQg=
-X-Received: by 2002:a5d:5c89:0:b0:439:95c3:fecb with SMTP id ffacd0b85a97d-43997f39f1emr3902538f8f.44.1772105677806;
-        Thu, 26 Feb 2026 03:34:37 -0800 (PST)
-Received: from alex-ws.. ([82.166.81.77])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-43970d40004sm40481267f8f.21.2026.02.26.03.34.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Feb 2026 03:34:37 -0800 (PST)
-From: Alex Lyakas <alex.lyakas@zadara.com>
-To: linux-btrfs@vger.kernel.org
-Cc: alex.lyakas@zadara.com
-Subject: [PATCH-RFC] btrfs: for unclustered allocation don't consider ffe_ctl->empty_cluster
-Date: Thu, 26 Feb 2026 13:34:19 +0200
-Message-ID: <20260226113419.28687-1-alex.lyakas@zadara.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1772108844; c=relaxed/simple;
+	bh=5T+IKcLz2704l+thlo/byfxXLDEQDyBPlzAy3ljbSP0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=lHvIU1MlLSyJFqmWSCiz+qwWT1xHrLGzYIdgfbbF0rbZaJWGZMWMfJ0/Y3FVXldJxY6fWiLQyT6K7ZUnOzXzcsNXlSonGkrEtN8VNsBmTOd+DNuXJ2BPpEfBs59wAOrH9JXZJxAVRjzpmDB8dfZ/PwuzUGYQnekRsyBCqMGGD14=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NvFgvUl/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A89BDC116C6;
+	Thu, 26 Feb 2026 12:27:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1772108844;
+	bh=5T+IKcLz2704l+thlo/byfxXLDEQDyBPlzAy3ljbSP0=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=NvFgvUl/Gmd7Ib+ARBt25ipXp5pIiv2hgkau3BRoYATgfHu/UsUKS6MS5ICemS0Fw
+	 0i70eii95alNsBRUcoszLwc3XgYjoSBa4b9jP6/SxoVW6mrd5dcaOV681+kQPNLzU1
+	 EJLsEcBkHdzm96LYd47JRFokryUyWobwS2gVUQJp0KnwA5YvauJkBodP4SzNgmLfi5
+	 qc8NwR+j5ZC9gRVs55dP1j63u+avEVnVtr9dIoxY5bqRShhLjXsFRs+Vl6JYffGJEl
+	 JE3KKSFAN8Y59fVnENBj3W5QuzYOwUoUScORc8lYCXKZnLLVuqXsMyDRPSJ80uWlpZ
+	 WS29jVsLBp/Dg==
+Message-ID: <a2993605-2cdb-42b2-85fc-b071f07af4c3@kernel.org>
+Date: Thu, 26 Feb 2026 21:27:19 +0900
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] block: remove bdev_nonrot()
+To: Paul Menzel <pmenzel@molgen.mpg.de>
+Cc: Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+ Song Liu <song@kernel.org>, Yu Kuai <yukuai@fnnas.com>,
+ linux-raid@vger.kernel.org, "Martin K . Petersen"
+ <martin.petersen@oracle.com>, linux-scsi@vger.kernel.org,
+ target-devel@vger.kernel.org, David Sterba <dsterba@suse.com>,
+ linux-btrfs@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+ linux-ext4@vger.kernel.org, Andreas Dilger <adilger.kernel@dilger.ca>,
+ Andrew Morton <akpm@linux-foundation.org>, Chris Li <chrisl@kernel.org>,
+ Kairui Song <kasong@tencent.com>, linux-mm@kvack.org
+References: <20260226075448.2229655-1-dlemoal@kernel.org>
+ <5b8c1811-c9d9-469a-b8d0-992814a11b9a@molgen.mpg.de>
+Content-Language: en-US
+From: Damien Le Moal <dlemoal@kernel.org>
+Organization: Western Digital Research
+In-Reply-To: <5b8c1811-c9d9-469a-b8d0-992814a11b9a@molgen.mpg.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[zadara.com,none];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
-	R_DKIM_ALLOW(-0.20)[zadara.com:s=google];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DKIM_TRACE(0.00)[zadara.com:+];
-	TAGGED_FROM(0.00)[bounces-21956-lists,linux-btrfs=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-21957-lists,linux-btrfs=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWO(0.00)[2];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	HAS_ORG_HEADER(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	RCPT_COUNT_TWELVE(0.00)[18];
 	MIME_TRACE(0.00)[0:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[alex.lyakas@zadara.com,linux-btrfs@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[dlemoal@kernel.org,linux-btrfs@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	RCVD_COUNT_FIVE(0.00)[5];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	NEURAL_HAM(-0.00)[-1.000];
-	TO_DN_NONE(0.00)[];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,zadara.com:mid,zadara.com:dkim,zadara.com:email]
-X-Rspamd-Queue-Id: CB3021A52D4
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 4BDA81A5AC9
 X-Rspamd-Action: no action
 
-I encountered an issue when performing unclustered allocation for metadata:
+On 2/26/26 19:04, Paul Menzel wrote:
+> Dear Damien,
+> 
+> 
+> Thank you for your patch.
+> 
+> 
+> Am 26.02.26 um 08:54 schrieb Damien Le Moal:
+>> bdev_nonrot() is simply the negative return value of bdev_rot().
+>> So replace all call sites of bdev_nonrot() with calls to bdev_rot()
+>> and remove bdev_nonrot().
+> 
+> Is the generated code different now?
 
-free_space_ctl->free_space = 2MB
-ffe_ctl->num_bytes = 4096
-ffe_ctl->empty_cluster = 2MB
-ffe_ctl->empty_size = 0
+I did not check but I doubt there is any difference at all.
 
-So early check for free_space_ctl->free_space skips the block group, even though
-it has enough space to do the allocation.
-I think when doing unclustered allocation we should not look at ffe_ctl->empty_cluster.
+This is more about having a single helper function for bdevs that is consistent
+with the helper for request queues (blk_queue_rot()) which directly reflects the
+setting of a block device BLK_FEAT_ROTATIONAL queue feature. This way is also in
+my opinion simpler as you do not get your brain overheating when seeing things
+like "!bdev_nonrot()" :)
+  > Is it worth the change, as it looks quite subjective if you prefer the
+> one or the other way?
 
-I tested this on stable kernel 6.6.
+I think it is a nice cleanup, but I will let Jens and other maintainers decide
+on the worth of this patch.
 
-Signed-off-by: Alex Lyakas <alex.lyakas@zadara.com>
----
- fs/btrfs/extent-tree.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> My point above aside, the diff looks good.
+> 
+> Reviewed-by: Paul Menzel <pmenzel@molgen.mpg.de>
 
-diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-index 03cf9f242c70..84b340a67882 100644
---- a/fs/btrfs/extent-tree.c
-+++ b/fs/btrfs/extent-tree.c
-@@ -3885,7 +3885,7 @@ static int find_free_extent_unclustered(struct btrfs_block_group *bg,
- 		free_space_ctl = bg->free_space_ctl;
- 		spin_lock(&free_space_ctl->tree_lock);
- 		if (free_space_ctl->free_space <
--		    ffe_ctl->num_bytes + ffe_ctl->empty_cluster +
-+		    ffe_ctl->num_bytes +
- 		    ffe_ctl->empty_size) {
- 			ffe_ctl->total_free_space = max_t(u64,
- 					ffe_ctl->total_free_space,
+Thanks.
+
 -- 
-2.43.0
-
+Damien Le Moal
+Western Digital Research
 
