@@ -1,216 +1,145 @@
-Return-Path: <linux-btrfs+bounces-22033-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-22034-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id OAJfB5XBoGlPmQQAu9opvQ
-	(envelope-from <linux-btrfs+bounces-22033-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Feb 2026 22:56:37 +0100
+	id 6IcXN6HCoGmEmQQAu9opvQ
+	(envelope-from <linux-btrfs+bounces-22034-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Feb 2026 23:01:05 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
 Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F7921B01A4
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Feb 2026 22:56:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 805DE1B0214
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Feb 2026 23:01:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id EDC9C3012BF7
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Feb 2026 21:56:33 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id B8C523014FCC
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Feb 2026 22:00:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32EB746AEE9;
-	Thu, 26 Feb 2026 21:56:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="qrkjXBtI";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="NSPAGp1b"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC70B478E5B;
+	Thu, 26 Feb 2026 22:00:51 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fhigh-a8-smtp.messagingengine.com (fhigh-a8-smtp.messagingengine.com [103.168.172.159])
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EF9B46AEEC
-	for <linux-btrfs@vger.kernel.org>; Thu, 26 Feb 2026 21:56:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.159
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD5452EBBA9;
+	Thu, 26 Feb 2026 22:00:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772142988; cv=none; b=E54016WPLlxC0qDpsGqoEC+UhSmU0vi9E4ynr3GaxMbH69azt8tc+SDfDClZdZzavYmVqg6hlK5doY8Oz1r+Z/VQKssMFEiogeGccfGdjugp1L3S7JC+vZcmEImVt3eq+JYk6bJvYWT4Vt8Yr/k2meg6P6tYyauc0ppcWcoPkj0=
+	t=1772143251; cv=none; b=NVnfvqo4VqSlJEpliBiyCyswY1QshlCNn3UKc97cWJ4d+NAa+9PxgDRcbDGU8NDPz7Z4yTGozN8gJfrGZNxpMQXY6JTs/GTjLX6SKAbe6FkgncVBq2A24gNbO9Q+/SLKFsLZuBG3YS7ehsyR8v4aSUwZHDHSAOT9E8deTXIlP5I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772142988; c=relaxed/simple;
-	bh=+SrI1otzB7hjSKhkftGbKrNe4wBMKlq7ryIXsN0Izus=;
+	s=arc-20240116; t=1772143251; c=relaxed/simple;
+	bh=bHoctQII+LashGyqjlg7r/KCKOXEmPVxQqcyFL0nddc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NWRjFHc7iYgF6XNv8cSTuQLYkwewbnQjCizgo+kHoBON9utlrzoMWYgG+mcycfFef07ATUyIol8+/6aJNwAJHQ70x9NislCrtONJrerb3VK7r4ZmxbOLLbeTlBPqFE+42VmiVX9XtaROuzksPy/vZgGd4XWwX/7Q6C2fAXELk+0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=qrkjXBtI; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=NSPAGp1b; arc=none smtp.client-ip=103.168.172.159
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-03.internal (phl-compute-03.internal [10.202.2.43])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id 56B301400206;
-	Thu, 26 Feb 2026 16:56:26 -0500 (EST)
-Received: from phl-frontend-03 ([10.202.2.162])
-  by phl-compute-03.internal (MEProxy); Thu, 26 Feb 2026 16:56:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-transfer-encoding:content-type:content-type:date:date
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1772142986;
-	 x=1772229386; bh=pgeiKx5RTeio+qAwVl+bCimtIqVS5YyyClOHKldbjt8=; b=
-	qrkjXBtI7NwQpKOXOqx1pBKq0ZKNos28eBrUDB2TiDsCuHwKrpndsVEb/GGzp911
-	8xLt/NV03OCN4KS73h/CezXV5Jd9rlQlKw1knIbTz5KLK9+2U9aqrGzDINq1/+xO
-	KGQLJloDIEwxF2WWu9uglp3h6z/2vUBq3BdMkgvIkDfzfcv/AOk0g2ahmcmvk/pv
-	BEGzcaX1wl7xGnuOMInlYAxHZA2CfyWejSwlUYr6FicxeCBxbdaA/k+fvU0DNf72
-	V+Qv0JtsW69GZ+r1HhJQ8kJxE2NukAE+yGe6t4GUyIUEsyL1e6pTNty0/PI+UDcH
-	q2QCeIYeb8Nkyrn053bIQw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1772142986; x=
-	1772229386; bh=pgeiKx5RTeio+qAwVl+bCimtIqVS5YyyClOHKldbjt8=; b=N
-	SPAGp1bJVZFrhaCWam/uoh8/GhnhYYgq+gVqmgMvRs68BVPqC5mzf9dmZVvqUMhJ
-	1bPYRRHHyeC/GQ2gKqz6mM3dlt82rCZ8mdy5KfnW7zIsZsAw6NYriFNI5s6zl9WE
-	DQVADwLNg+5lWyKvdKJ6N0ycX2jZUBvf/a2xt9K4C49njDCAsSJ0D6vT/bHgosqu
-	/IV9s5RVkrSZou4kK6Mop7kvzCI1rT6KDptrF87Y3wjwifmo3CzJg+gkMk5G6xxU
-	gUSwkHCCfzEwBMhUmUZyJA/QOCnR2c6HWhb3TvuqaM2oWWD85vkV0gLAeKL8ycpS
-	1JlIre2Fj/f4XA865S2qg==
-X-ME-Sender: <xms:isGgaTPRv7L0qNaZvHqOnzbjV1a4_abt50mq_EsChiBg_o6w3PSnUg>
-    <xme:isGgaT-EN1-C_I5sUhiohzO502fQ64cYbPNom3eqvm6iFehssnU5xwMSBRNvXNaYC
-    N5XEgG1oEMG7BwiD-fURy8AYaI9k6aMxRewvv04y0EcNaN6R8O32dQ>
-X-ME-Received: <xmr:isGgaf7e0Cuhss4Rx_NSEf5UUj0TW9v0QC1jfUlnDHZ1PhUo013wuSga7qNvTHN_LrZsVChe5ORSsEagmo2pYagpPPo>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddvgeejvdduucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepfffhvfevuffkfhggtggugfgjsehtkeertddttdejnecuhfhrohhmpeeuohhrihhs
-    uceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhephe
-    fhudehgfekhedufedvtefgteelueeigfefhfefgeejkeefhefhgfekjefhvdehnecuffho
-    mhgrihhnpehkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrh
-    grmhepmhgrihhlfhhrohhmpegsohhrihhssegsuhhrrdhiohdpnhgspghrtghpthhtohep
-    vddpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepfhgumhgrnhgrnhgrsehkvghrnh
-    gvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdgsthhrfhhssehvghgvrhdrkhgvrhhn
-    vghlrdhorhhg
-X-ME-Proxy: <xmx:isGgaS1vSU409YcSO0MYlWlrhvQ1A78L3zYcMKhXEqxMeEKLOfJRZg>
-    <xmx:isGgaeBBabzmOrAptIRHDFJaNZgkMbljmIDUqmVOmhRxmXU3cjGhCg>
-    <xmx:isGgac03GGIzFwkGGefgmbXOqQ_JAP0wfj0XGriW3jO-1gfjBcFCZg>
-    <xmx:isGgaQujApmJjRKZAaoIV86j-XAC8TuvbfJgbdgCxqvTqt-1l02vBA>
-    <xmx:isGgaVByDwrcL1Wzd4gB6xlj7V-9VrzQRVF3zpCC9KYzP1JqCSZHwhv_>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 26 Feb 2026 16:56:25 -0500 (EST)
-Date: Thu, 26 Feb 2026 13:57:18 -0800
-From: Boris Burkov <boris@bur.io>
-To: Filipe Manana <fdmanana@kernel.org>
-Cc: linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH 0/5] btrfs: fix exploits that allow malicious users to
- turn fs into RO mode
-Message-ID: <20260226215718.GB3111707@zen.localdomain>
-References: <cover.1772105193.git.fdmanana@suse.com>
- <20260226191009.GB2996252@zen.localdomain>
- <CAL3q7H5QVSU6nPt3H27keGWNpjJNG9nzQphjSQZmK8uU9KXt1g@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=AMHehlyxHwd7SFyUimgJQ6FndAMt32xIsSEx7LjfMZL5MtYXIoB+FgeF6okyI9R4vsZTSg4sfGm19vq82kZ5qH3Ews0NFGUvMxXBMdaUDisj+tzny2yyxG8pFbZT2KA5zplkGSMTCbC6q8haM4/v/6aHvoqme58xAm3FqM0c62s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id 3731168C4E; Thu, 26 Feb 2026 23:00:39 +0100 (CET)
+Date: Thu, 26 Feb 2026 23:00:38 +0100
+From: hch <hch@lst.de>
+To: Richard Weinberger <richard@nod.at>
+Cc: hch <hch@lst.de>, Andrew Morton <akpm@linux-foundation.org>,
+	Richard Henderson <richard.henderson@linaro.org>,
+	Matt Turner <mattst88@gmail.com>,
+	Magnus Lindholm <linmag7@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Catalin Marinas <catalin.marinas@arm.com>, will <will@kernel.org>,
+	Huacai Chen <chenhuacai@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
+	Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>, davem <davem@davemloft.net>,
+	Andreas Larsson <andreas@gaisler.com>,
+	anton ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Thomas Gleixner <tglx@kernel.org>, mingo <mingo@redhat.com>,
+	bp <bp@alien8.de>, dave hansen <dave.hansen@linux.intel.com>,
+	x86 <x86@kernel.org>, hpa <hpa@zytor.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	dan j williams <dan.j.williams@intel.com>, Chris Mason <clm@fb.com>,
+	David Sterba <dsterba@suse.com>, Arnd Bergmann <arnd@arndb.de>,
+	Song Liu <song@kernel.org>, Yu Kuai <yukuai@fnnas.com>,
+	Li Nan <linan122@huawei.com>,
+	linux-alpha <linux-alpha@vger.kernel.org>,
+	linux-kernel <linux-kernel@vger.kernel.org>,
+	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+	loongarch <loongarch@lists.linux.dev>,
+	linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+	linux-riscv <linux-riscv@lists.infradead.org>,
+	linux-s390 <linux-s390@vger.kernel.org>,
+	sparclinux <sparclinux@vger.kernel.org>,
+	linux-um <linux-um@lists.infradead.org>,
+	Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+	linux-btrfs <linux-btrfs@vger.kernel.org>,
+	linux-arch <linux-arch@vger.kernel.org>,
+	linux-raid <linux-raid@vger.kernel.org>
+Subject: Re: [PATCH 03/25] um/xor: don't override XOR_SELECT_TEMPLATE
+Message-ID: <20260226220038.GA15172@lst.de>
+References: <20260226151106.144735-1-hch@lst.de> <20260226151106.144735-4-hch@lst.de> <445921547.2198.1772142326749.JavaMail.zimbra@nod.at>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAL3q7H5QVSU6nPt3H27keGWNpjJNG9nzQphjSQZmK8uU9KXt1g@mail.gmail.com>
+In-Reply-To: <445921547.2198.1772142326749.JavaMail.zimbra@nod.at>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-1.36 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_DKIM_ALLOW(-0.20)[bur.io:s=fm1,messagingengine.com:s=fm3];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
+	DMARC_POLICY_SOFTFAIL(0.10)[lst.de : SPF not aligned (relaxed), No valid DKIM,none];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-22033-lists,linux-btrfs=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_TWO(0.00)[2];
-	DMARC_NA(0.00)[bur.io];
-	DKIM_TRACE(0.00)[bur.io:+,messagingengine.com:+];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[lst.de,linux-foundation.org,linaro.org,gmail.com,armlinux.org.uk,arm.com,kernel.org,xen0n.name,linux.ibm.com,ellerman.id.au,dabbelt.com,eecs.berkeley.edu,ghiti.fr,davemloft.net,gaisler.com,cambridgegreys.com,sipsolutions.net,redhat.com,alien8.de,linux.intel.com,zytor.com,gondor.apana.org.au,intel.com,fb.com,suse.com,arndb.de,fnnas.com,huawei.com,vger.kernel.org,lists.infradead.org,lists.linux.dev,lists.ozlabs.org];
+	TAGGED_FROM(0.00)[bounces-22034-lists,linux-btrfs=lfdr.de];
+	TO_DN_ALL(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[boris@bur.io,linux-btrfs@vger.kernel.org];
-	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
+	FROM_HAS_DN(0.00)[];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,messagingengine.com:dkim,bur.io:email,bur.io:dkim,zen.localdomain:mid]
-X-Rspamd-Queue-Id: 7F7921B01A4
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[hch@lst.de,linux-btrfs@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_GT_50(0.00)[55];
+	R_DKIM_NA(0.00)[];
+	NEURAL_HAM(-0.00)[-0.997];
+	MID_RHS_MATCH_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[lst.de:mid,lst.de:email,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 805DE1B0214
 X-Rspamd-Action: no action
 
-On Thu, Feb 26, 2026 at 09:18:06PM +0000, Filipe Manana wrote:
-> On Thu, Feb 26, 2026 at 7:09â€¯PM Boris Burkov <boris@bur.io> wrote:
-> >
-> > On Thu, Feb 26, 2026 at 02:33:57PM +0000, fdmanana@kernel.org wrote:
-> > > From: Filipe Manana <fdmanana@suse.com>
-> > >
-> > > We have a couple scenarios that regular users can exploit to trigger a
-> > > transaction abort and turn a filesystem into RO mode, causing some
-> > > disruption. The first 2 patches fix these, the remainder are just a few
-> > > trivial and cleanups.
-> >
-> > Bug fixes and cleanups look good. No need to abort in these cases as you
-> > have shown.
-> > Reviewed-by: Boris Burkov <boris@bur.io>
-> >
-> > But on the topic of security, or malicious users:
-> >
-> > How is this sort of attack conceptually different from simply filling
-> > up the filesystem with fallocates then doing random metadata operations
-> > until we ENOSPC and go readonly?
+On Thu, Feb 26, 2026 at 10:45:26PM +0100, Richard Weinberger wrote:
+> ----- Ursprüngliche Mail -----
+> > Von: "hch" <hch@lst.de>
+> > XOR_SELECT_TEMPLATE is only ever called with a NULL argument, so all the
+> > ifdef'ery doesn't do anything.  With our without this, the time travel
+> > mode should work fine on CPUs that support AVX2, as the AVX2
+> > implementation is forced in this case, and won't work otherwise.
 > 
-> What makes you think that users causing an ENOSPC that triggers a
-> transaction abort isn't an issue?
+> IIRC Johannes added XOR_SELECT_TEMPLATE() here to skip
+> the template selection logic because it didn't work with time travel mode.
 > 
-> If we know of any intentional way to trigger that, we should definitely fix it.
-> Even some weeks ago I fixed such a case reported by a user when
-> running bonnie++:
-> 
-> https://lore.kernel.org/linux-btrfs/SA1PR18MB56922F690C5EC2D85371408B998FA@SA1PR18MB5692.namprd18.prod.outlook.com/
-> 
-> We often see users reporting that sort of issue, but we don't know the
-> workloads, how to reproduce and the state of their fs most of the
-> time.
-> 
-> >
-> > What about if the attacker also exploits the behavior of the extent
-> > allocator to try to produce fragmentation driven metadata ENOSPCs
-> > aborts?
-> 
-> Do you know of a way to do that?
-> If you do, we should fix it.
-> 
-> No matter what a user does, especially a non-privileged user, it
-> should not trigger transaction aborts in an easy way (or anything else
-> bad, like memory leaks, use-after-frees, NULL pointer derefs, etc).
+> Johannes, can you please test whether this change does not break
+> time travel mode?
 
-Fair enough, I like this stance.
+I'm pretty sure that was the intent, but as I wrote above it worked
+and still works on AVX-supporting CPUs by chance, and already doesn't
+on older CPUs, and unless my git blaming went wrong someewhere already
+didn't when this was originally added.
 
-Looks like I had too low of an opinion of our intended ENOSPC
-guarantees :)
-
-> 
-> Thanks.
-> 
-> >
-> > Thanks,
-> > Boris
-> >
-> > >
-> > > Filipe Manana (5):
-> > >   btrfs: fix transaction abort on file creation due to name hash collision
-> > >   btrfs: fix transaction abort when snapshotting received subvolumes
-> > >   btrfs: stop checking for -EEXIST return value from btrfs_uuid_tree_add()
-> > >   btrfs: remove duplicated uuid tree existence check in btrfs_uuid_tree_add()
-> > >   btrfs: remove pointless error check in btrfs_check_dir_item_collision()
-> > >
-> > >  fs/btrfs/dir-item.c    |  4 +---
-> > >  fs/btrfs/inode.c       | 19 +++++++++++++++++++
-> > >  fs/btrfs/ioctl.c       |  2 +-
-> > >  fs/btrfs/transaction.c | 18 +++++++++++++++++-
-> > >  fs/btrfs/uuid-tree.c   |  5 +----
-> > >  5 files changed, 39 insertions(+), 9 deletions(-)
-> > >
-> > > --
-> > > 2.47.2
-> > >
 
