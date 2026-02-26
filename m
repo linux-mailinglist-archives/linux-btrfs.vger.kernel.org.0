@@ -1,56 +1,57 @@
-Return-Path: <linux-btrfs+bounces-21974-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-21975-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id cN/WOG9boGm3igQAu9opvQ
-	(envelope-from <linux-btrfs+bounces-21974-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Feb 2026 15:40:47 +0100
+	id uMB9Nt1boGm3igQAu9opvQ
+	(envelope-from <linux-btrfs+bounces-21975-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Feb 2026 15:42:37 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6EC281A7C04
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Feb 2026 15:40:47 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73EF51A7C66
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Feb 2026 15:42:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id BB8BA305C4B7
-	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Feb 2026 14:34:50 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 3235B3025E3B
+	for <lists+linux-btrfs@lfdr.de>; Thu, 26 Feb 2026 14:42:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF5C83D349A;
-	Thu, 26 Feb 2026 14:34:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA4143D6673;
+	Thu, 26 Feb 2026 14:42:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TYExvKRA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C/IfueHe"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 956CC3AE70B;
-	Thu, 26 Feb 2026 14:34:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 190E83D1CBE;
+	Thu, 26 Feb 2026 14:42:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772116482; cv=none; b=M6mhiq4rnKejvD55aLcFKCLY1FEKP3+jdAbL7mCN5WKLiFRNWHuOG0BRkOBC/33zo/+CY1iQWRm7RDoRUxLdT1LmW4iPifeWIEuNFSC7gIcTY+7aC0l4OuVUMZ6A+LnVL5OoME0pcjIzriQU/TP5WGC8IP+Den13Ywm5rykb3tQ=
+	t=1772116922; cv=none; b=I6fIQWvDBo9r2H/N9Ag2M6BR50znMY9MB7acICnNLK10n1UZJdOkT0TiFUy8XCFIpJZBWWatsJI0Kx3pxOYyTbRCRPBQl6JO98j6nukoSq+qI9T6Mc9GK/ZeC0Vwk6vyFldJLzqi6dE28JRuMTVYmZPFAe/lpQc6fAGJbIRK4q0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772116482; c=relaxed/simple;
-	bh=3nw3YRu3uJvkoRXJ9kLQefkKsleGkFcH6F7lOzIUJos=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Ac5nZyqOIX8bG3Ea2c5EaZU2IkUmqG3EUcLHsas2upo16DIqwCEE9UW1P6bSwqoJ8L9QFC3iBzHakLZpOXWaKx9cUSr5iLdbQVeh7jX6S+kx1+BtSxuuSTEGQtES0HPg9kt1BlglgOXXhMUYZEiRB/id/ChSEJQBxiG2PV+9Yv4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TYExvKRA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69805C116C6;
-	Thu, 26 Feb 2026 14:34:41 +0000 (UTC)
+	s=arc-20240116; t=1772116922; c=relaxed/simple;
+	bh=PZEH3868/PTa3lGS3LIKMKOTqR8foArFIj+pwsdzmnY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=bW9iVgjjyOQGWHGhPqUfDieNrF2mvPUwqfpLhEeGOF1OXchpWt7BMWlXdcw+pHLq1t+ORX3Mn6mBihqcYp/ybOlDB8SAu4aRix1HPoyGwNuynZerft/624NgVJWnzDCc6u2xb83NGH+YkLqSYnNo1Z/QPy9PUtC/TIKXCJpRwcg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C/IfueHe; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7DC7C116C6;
+	Thu, 26 Feb 2026 14:42:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772116482;
-	bh=3nw3YRu3uJvkoRXJ9kLQefkKsleGkFcH6F7lOzIUJos=;
+	s=k20201202; t=1772116921;
+	bh=PZEH3868/PTa3lGS3LIKMKOTqR8foArFIj+pwsdzmnY=;
 	h=From:To:Cc:Subject:Date:From;
-	b=TYExvKRApfyb4QrglNhzrGXxqDLEQnb8TWOiqEzLnwWCkZ3RRZ8TLBxXZV5hnzDrJ
-	 mady8kgiUZC+YvFw+vjeF1lYIZfC03vEFm/gSr5f+zqnf+ou6nfkSRGn9L9VCT6DW2
-	 xzbm/FAvHpf0EluhXWmB8j6kylhFOAqhMqJ/7g2SIgnSfsFMmakvdaj1rydf8LG0Md
-	 pbAb9wVwbtT99cBQzsu8umPbECBzdK0ckhLpCNh9x/oolrXnCvAEiHqiTn6+OX8PQc
-	 KgxkCvhoofIMWFTIMd8ogCAZTew80cOeFCV8dnb9Iqe3mqjF1vn0xQqwTkTQZTLCgy
-	 H9xIC94sNwwXw==
-From: fdmanana@kernel.org
+	b=C/IfueHe4JhDFrgbr7y4s0DesCIUIpevAj2G7tL+KvCyuoq7gLyIwZfbT4+E7sNvm
+	 DdLBZS5c2D0kC8MyTbdArdISuVHLxz0Xi8bR63FA/933AfpDe/YW4fbaXjq+TttMMH
+	 BRUZaiclyFgVXZci2UpGJp+donyiyxkSjUan29TVR9du5SuU4QS9DjKQ7Beb1e9Dkc
+	 60H2T0826vaFi5JUBzM8HEkA/NyYyMedy/Nf/Jslauus6PjknrpOT7AJAKWpCxTQ4a
+	 uKYNhwa0c6gn1etkdN7+t05hO3hDupwiQoDI1x2Fe1v/NG4CS76ie45hurbLNfcJZg
+	 qDeuSOkr2dVxA==
+From: Anand Jain <asj@kernel.org>
 To: fstests@vger.kernel.org
 Cc: linux-btrfs@vger.kernel.org,
-	Filipe Manana <fdmanana@suse.com>
-Subject: [PATCH] btrfs: test create a bunch of files with name hash collision
-Date: Thu, 26 Feb 2026 14:34:37 +0000
-Message-ID: <a1e2690efeb8570651894567d80511144424fb5e.1772106022.git.fdmanana@suse.com>
-X-Mailer: git-send-email 2.47.2
+	linux-ext4@vger.kernel.org,
+	linux-xfs@vger.kernel.org
+Subject: [PATCH 0/9] fstests: add test coverage for cloned filesystem ids
+Date: Thu, 26 Feb 2026 22:41:41 +0800
+Message-ID: <cover.1772095513.git.asj@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -59,164 +60,100 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
+	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-21974-lists,linux-btrfs=lfdr.de];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_THREE(0.00)[3];
-	FROM_NO_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[fdmanana@kernel.org,linux-btrfs@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-21975-lists,linux-btrfs=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_NONE(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[asj@kernel.org,linux-btrfs@vger.kernel.org];
+	RCPT_COUNT_THREE(0.00)[4];
+	PRECEDENCE_BULK(0.00)[];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 6EC281A7C04
+	NEURAL_HAM(-0.00)[-0.999];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	MIME_TRACE(0.00)[0:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 73EF51A7C66
 X-Rspamd-Action: no action
 
-From: Filipe Manana <fdmanana@suse.com>
+This series adds fstests infrastructure and test cases to verify correct
+filesystem identity behaviour when a filesystem is cloned (e.g. via
+block-level copy), covering inotify, fanotify, f_fsid, libblkid, IMA,
+and exportfs file handles.
 
-Test that if we create a high number of files with a name that results in
-a hash collision, the filesystem is not turned to RO due to a transaction
-abort. This could be exploited by malicious users to disrupt a system.
+  - SCRATCH_DEV_POOL support extended to non-Btrfs filesystems
+  - _mkfs_scratch_sized_clone() helper to create a cloned filesystem
+  - _clone_mount_option() helper to apply per-filesystem clone mount options
 
-This exercies a bug fixed by the following kernel patch:
+New tests verify:
+  - inotify and fanotify events are isolated between cloned filesystems
+  - f_fsid is unique across cloned filesystem instances
+  - libblkid correctly resolves duplicate UUIDs to distinct devices
+  - IMA distinct identity for each cloned filesystem
+  - exportfs file handles resolve correctly on cloned filesystems
 
- "btrfs: fix transaction abort on file creation due to name hash collision"
+Testing:
+  Requires kernel patches [1] for all tests to pass.
+   [1] https://lore.kernel.org/linux-btrfs/cover.1772095546.git.asj@kernel.org/
 
-Signed-off-by: Filipe Manana <fdmanana@suse.com>
----
- tests/btrfs/346     | 95 +++++++++++++++++++++++++++++++++++++++++++++
- tests/btrfs/346.out |  3 ++
- 2 files changed, 98 insertions(+)
- create mode 100755 tests/btrfs/346
- create mode 100644 tests/btrfs/346.out
+Anand Jain (9):
+  fstests: allow SCRATCH_DEV_POOL for non-Btrfs filesystems
+  fstests: add _mkfs_scratch_clone() helper
+  fstests: add _clone_mount_option() helper
+  fstests: add test for inotify isolation on cloned devices
+  fstests: verify fanotify isolation on cloned filesystems
+  fstests: verify f_fsid for cloned filesystems
+  fstests: verify libblkid resolution of duplicate UUIDs
+  fstests: verify IMA isolation on cloned filesystems
+  fstests: verify exportfs file handles on cloned filesystems
 
-diff --git a/tests/btrfs/346 b/tests/btrfs/346
-new file mode 100755
-index 00000000..ef301ef7
---- /dev/null
-+++ b/tests/btrfs/346
-@@ -0,0 +1,95 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2026 SUSE S.A.  All Rights Reserved.
-+#
-+# FS QA Test 346
-+#
-+# Test that if we create a high number of files with a name that results in a
-+# hash collision, the filesystem is not turned to RO due to a transaction abort.
-+# This could be exploited by malicious users to disrupt a system.
-+#
-+. ./common/preamble
-+_begin_fstest auto quick subvol
-+
-+_require_scratch
-+_require_btrfs_support_sectorsize 4096
-+
-+_fixed_by_kernel_commit xxxxxxxxxxxx \
-+	"btrfs: fix transaction abort on file creation due to name hash collision"
-+
-+# Use a 4K node/leaf size to make the test faster and require less file names
-+# that trigger a crc32c hash collision.
-+_scratch_mkfs -n 4K >> $seqres.full 2>&1 || _fail "mkfs failed"
-+_scratch_mount
-+
-+# List of names that result in the same crc32c hash for btrfs.
-+declare -a names=(
-+	'foobar'
-+	'%a8tYkxfGMLWRGr55QSeQc4PBNH9PCLIvR6jZnkDtUUru1t@RouaUe_L:@xGkbO3nCwvLNYeK9vhE628gss:T$yZjZ5l-Nbd6CbC$M=hqE-ujhJICXyIxBvYrIU9-TDC'
-+	'AQci3EUB%shMsg-N%frgU:02ByLs=IPJU0OpgiWit5nexSyxZDncY6WB:=zKZuk5Zy0DD$Ua78%MelgBuMqaHGyKsJUFf9s=UW80PcJmKctb46KveLSiUtNmqrMiL9-Y0I_l5Fnam04CGIg=8@U:Z'
-+	'CvVqJpJzueKcuA$wqwePfyu7VxuWNN3ho$p0zi2H8QFYK$7YlEqOhhb%:hHgjhIjW5vnqWHKNP4'
-+	'ET:vk@rFU4tsvMB0$C_p=xQHaYZjvoF%-BTc%wkFW8yaDAPcCYoR%x$FH5O:'
-+	'HwTon%v7SGSP4FE08jBwwiu5aot2CFKXHTeEAa@38fUcNGOWvE@Mz6WBeDH_VooaZ6AgsXPkVGwy9l@@ZbNXabUU9csiWrrOp0MWUdfi$EZ3w9GkIqtz7I_eOsByOkBOO'
-+	'Ij%2VlFGXSuPvxJGf5UWy6O@1svxGha%b@=%wjkq:CIgE6u7eJOjmQY5qTtxE2Rjbis9@us'
-+	'KBkjG5%9R8K9sOG8UTnAYjxLNAvBmvV5vz3IiZaPmKuLYO03-6asI9lJ_j4@6Xo$KZicaLWJ3Pv8XEwVeUPMwbHYWwbx0pYvNlGMO9F:ZhHAwyctnGy%_eujl%WPd4U2BI7qooOSr85J-C2V$LfY'
-+	'NcRfDfuUQ2=zP8K3CCF5dFcpfiOm6mwenShsAb_F%n6GAGC7fT2JFFn:c35X-3aYwoq7jNX5$ZJ6hI3wnZs$7KgGi7wjulffhHNUxAT0fRRLF39vJ@NvaEMxsMO'
-+	'Oj42AQAEzRoTxa5OuSKIr=A_lwGMy132v4g3Pdq1GvUG9874YseIFQ6QU'
-+	'Ono7avN5GjC:_6dBJ_'
-+	'WHmN2gnmaN-9dVDy4aWo:yNGFzz8qsJyJhWEWcud7$QzN2D9R0efIWWEdu5kwWr73NZm4=@CoCDxrrZnRITr-kGtU_cfW2:%2_am'
-+	'WiFnuTEhAG9FEC6zopQmj-A-$LDQ0T3WULz%ox3UZAPybSV6v1Z$b4L_XBi4M4BMBtJZpz93r9xafpB77r:lbwvitWRyo$odnAUYlYMmU4RvgnNd--e=I5hiEjGLETTtaScWlQp8mYsBovZwM2k'
-+	'XKyH=OsOAF3p%uziGF_ZVr$ivrvhVgD@1u%5RtrV-gl_vqAwHkK@x7YwlxX3qT6WKKQ%PR56NrUBU2dOAOAdzr2=5nJuKPM-T-$ZpQfCL7phxQbUcb:BZOTPaFExc-qK-gDRCDW2'
-+	'd3uUR6OFEwZr%ns1XH_@tbxA@cCPmbBRLdyh7p6V45H$P2$F%w0RqrD3M0g8aGvWpoTFMiBdOTJXjD:JF7=h9a_43xBywYAP%r$SPZi%zDg%ql-KvkdUCtF9OLaQlxmd'
-+	'ePTpbnit%hyNm@WELlpKzNZYOzOTf8EQ$sEfkMy1VOfIUu3coyvIr13-Y7Sv5v-Ivax2Go_GQRFMU1b3362nktT9WOJf3SpT%z8sZmM3gvYQBDgmKI%%RM-G7hyrhgYflOw%z::ZRcv5O:lDCFm'
-+	'evqk743Y@dvZAiG5J05L_ROFV@$2%rVWJ2%3nxV72-W7$e$-SK3tuSHA2mBt$qloC5jwNx33GmQUjD%akhBPu=VJ5g$xhlZiaFtTrjeeM5x7dt4cHpX0cZkmfImndYzGmvwQG:$euFYmXn$_2rA9mKZ'
-+	'gkgUtnihWXsZQTEkrMAWIxir09k3t7jk_IK25t1:cy1XWN0GGqC%FrySdcmU7M8MuPO_ppkLw3=Dfr0UuBAL4%GFk2$Ma10V1jDRGJje%Xx9EV2ERaWKtjpwiZwh0gCSJsj5UL7CR8RtW5opCVFKGGy8Cky'
-+	'hNgsG_8lNRik3PvphqPm0yEH3P%%fYG:kQLY=6O-61Wa6nrV_WVGR6TLB09vHOv%g4VQRP8Gzx7VXUY1qvZyS'
-+	'isA7JVzN12xCxVPJZ_qoLm-pTBuhjjHMvV7o=F:EaClfYNyFGlsfw-Kf%uxdqW-kwk1sPl2vhbjyHU1A6$hz'
-+	'kiJ_fgcdZFDiOptjgH5PN9-PSyLO4fbk_:u5_2tz35lV_iXiJ6cx7pwjTtKy-XGaQ5IefmpJ4N_ZqGsqCsKuqOOBgf9LkUdffHet@Wu'
-+	'lvwtxyhE9:%Q3UxeHiViUyNzJsy:fm38pg_b6s25JvdhOAT=1s0$pG25x=LZ2rlHTszj=gN6M4zHZYr_qrB49i=pA--@WqWLIuX7o1S_SfS@2FSiUZN'
-+	'rC24cw3UBDZ=5qJBUMs9e$=S4Y94ni%Z8639vnrGp=0Hv4z3dNFL0fBLmQ40=EYIY:Z=SLc@QLMSt2zsss2ZXrP7j4='
-+	'uwGl2s-fFrf@GqS=DQqq2I0LJSsOmM%xzTjS:lzXguE3wChdMoHYtLRKPvfaPOZF2fER@j53evbKa7R%A7r4%YEkD=kicJe@SFiGtXHbKe4gCgPAYbnVn'
-+	'UG37U6KKua2bgc:IHzRs7BnB6FD:2Mt5Cc5NdlsW%$1tyvnfz7S27FvNkroXwAW:mBZLA1@qa9WnDbHCDmQmfPMC9z-Eq6QT0jhhPpqyymaD:R02ghwYo%yx7SAaaq-:x33LYpei$5g8DMl3C'
-+	'y2vjek0FE1PDJC0qpfnN:x8k2wCFZ9xiUF2ege=JnP98R%wxjKkdfEiLWvQzmnW'
-+	'8-HCSgH5B%K7P8_jaVtQhBXpBk:pE-$P7ts58U0J@iR9YZntMPl7j$s62yAJO@_9eanFPS54b=UTw$94C-t=HLxT8n6o9P=QnIxq-f1=Ne2dvhe6WbjEQtc'
-+	'YPPh:IFt2mtR6XWSmjHptXL_hbSYu8bMw-JP8@PNyaFkdNFsk$M=xfL6LDKCDM-mSyGA_2MBwZ8Dr4=R1D%7-mCaaKGxb990jzaagRktDTyp'
-+	'9hD2ApKa_t_7x-a@GCG28kY:7$M@5udI1myQ$x5udtggvagmCQcq9QXWRC5hoB0o-_zHQUqZI5rMcz_kbMgvN5jr63LeYA4Cj-c6F5Ugmx6DgVf@2Jqm%MafecpgooqreJ53P-QTS'
-+)
-+
-+# Now create files with all those names in the same parent directory.
-+# It should not fail since a 4K leaf has enough space for them.
-+for name in "${names[@]}"; do
-+	touch $SCRATCH_MNT/$name
-+done
-+
-+# Now add one more file name that causes a crc32c hash collision.
-+# This should fail, but it should not cause a transaction abort and turn the
-+# filesystem into RO mode (which could be exploited by malicious users).
-+touch $SCRATCH_MNT/'W6tIm-VK2@BGC@IBfcgg6j_p:pxp_QUqtWpGD5Ok_GmijKOJJt' \
-+      >> $seqres.full 2>&1
-+[ $? -eq 0 ] && echo "should not have been able to create file"
-+
-+# Check that we are able to create another file, with a name that does not cause
-+# a crc32c hash collision.
-+echo -n "hello world" > $SCRATCH_MNT/baz
-+
-+# Unmount and mount again, verify file baz exists and with the right content.
-+_scratch_cycle_mount
-+echo "File baz content: $(cat $SCRATCH_MNT/baz)"
-+
-+# Now try to create a subvolume with the same name that causes a hash collision.
-+# It should fail, but it shouldn't trigger a transaction abort and turns the
-+# filesystem to RO mode. Subvolume creation takes a different code path.
-+$BTRFS_UTIL_PROG subvolume create \
-+	$SCRATCH_MNT/'W6tIm-VK2@BGC@IBfcgg6j_p:pxp_QUqtWpGD5Ok_GmijKOJJt' \
-+		>> $seqres.full 2>&1
-+[ $? -eq 0 ] && echo "should not have been able to subvolume"
-+
-+# Check that we are able to create another file, with a name that does not cause
-+# a crc32c hash collision.
-+echo -n "yada yada" > $SCRATCH_MNT/xyz
-+
-+# Unmount and mount again, verify file xyz exists and with the right content.
-+_scratch_cycle_mount
-+echo "File xyz content: $(cat $SCRATCH_MNT/xyz)"
-+
-+_exit 0
-diff --git a/tests/btrfs/346.out b/tests/btrfs/346.out
-new file mode 100644
-index 00000000..e1b82cbd
---- /dev/null
-+++ b/tests/btrfs/346.out
-@@ -0,0 +1,3 @@
-+QA output created by 346
-+File baz content: hello world
-+File xyz content: yada yada
+ .gitignore            |   1 +
+ common/config         |   1 +
+ common/rc             |  55 ++++++++++++++++++-----
+ src/Makefile          |   2 +-
+ src/fanotify.c        |  66 +++++++++++++++++++++++++++
+ tests/generic/790     |  78 ++++++++++++++++++++++++++++++++
+ tests/generic/790.out |   7 +++
+ tests/generic/791     |  86 +++++++++++++++++++++++++++++++++++
+ tests/generic/791.out |   7 +++
+ tests/generic/792     |  57 ++++++++++++++++++++++++
+ tests/generic/792.out |   7 +++
+ tests/generic/793     |  73 ++++++++++++++++++++++++++++++
+ tests/generic/793.out |  22 +++++++++
+ tests/generic/794     | 101 ++++++++++++++++++++++++++++++++++++++++++
+ tests/generic/794.out |  10 +++++
+ tests/generic/795     |  67 ++++++++++++++++++++++++++++
+ tests/generic/795.out |   2 +
+ 17 files changed, 629 insertions(+), 13 deletions(-)
+ create mode 100644 src/fanotify.c
+ create mode 100644 tests/generic/790
+ create mode 100644 tests/generic/790.out
+ create mode 100644 tests/generic/791
+ create mode 100644 tests/generic/791.out
+ create mode 100644 tests/generic/792
+ create mode 100644 tests/generic/792.out
+ create mode 100644 tests/generic/793
+ create mode 100644 tests/generic/793.out
+ create mode 100644 tests/generic/794
+ create mode 100644 tests/generic/794.out
+ create mode 100644 tests/generic/795
+ create mode 100644 tests/generic/795.out
+
 -- 
-2.47.2
+2.43.0
 
 
