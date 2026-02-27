@@ -1,194 +1,167 @@
-Return-Path: <linux-btrfs+bounces-22073-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-22074-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id IGVdHTu3oWm+vwQAu9opvQ
-	(envelope-from <linux-btrfs+bounces-22073-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Feb 2026 16:24:43 +0100
+	id SG4BNM7AoWnPwAQAu9opvQ
+	(envelope-from <linux-btrfs+bounces-22074-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Feb 2026 17:05:34 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 236A91B9B8D
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Feb 2026 16:24:42 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA01D1BA81F
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Feb 2026 17:05:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id EB66630AEC8B
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Feb 2026 15:19:54 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 1333B306BEF6
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Feb 2026 15:51:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5DC643DA52;
-	Fri, 27 Feb 2026 15:18:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CC2C4418F9;
+	Fri, 27 Feb 2026 15:51:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mssola.com header.i=@mssola.com header.b="I5Mwv879"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="O7xfHkJq"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout-p-202.mailbox.org (mout-p-202.mailbox.org [80.241.56.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33A7643D4EE;
-	Fri, 27 Feb 2026 15:18:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.172
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772205508; cv=none; b=gEoyLJOCneZBZmYoJ4JXdnm06y/SzdFM8JySoqrfHttF+d5q6/dpMMf1+yu33KChHEN4Bk8/Ix8AQaRKhMJ6sRSWVqvfYKn1YCeINeYFgLfFtIkUQ7GLdGwQj3L6R4iC4JTi8HyzJNTsBJzevIWVrszxkVXBb5erJcOGZdKckB8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772205508; c=relaxed/simple;
-	bh=fl7jQGTvsC3ojATpqZT9R/QFVdjDoWbg5HqK9AjFOnE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=UyJHldF6D/bmA1KWtCKM1OeKwRkXyKbJc5HHF5qgXwU4RMzrZKSMQCWerNHij0sZf4HaFvM3QfTGd/tlu23NcFwXFJG6aU9c8vjPldwDM9n3iAu4VZL36E3IR/tCu+wu2UWAdDHGQZB5x7WngR7+3vr32kq23ajPUhVbihKBryQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mssola.com; spf=fail smtp.mailfrom=mssola.com; dkim=pass (2048-bit key) header.d=mssola.com header.i=@mssola.com header.b=I5Mwv879; arc=none smtp.client-ip=80.241.56.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mssola.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=mssola.com
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [IPv6:2001:67c:2050:b231:465::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-202.mailbox.org (Postfix) with ESMTPS id 4fMsR144x0z9tdd;
-	Fri, 27 Feb 2026 16:18:21 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mssola.com; s=MBO0001;
-	t=1772205501;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Z2gr55nK34t+qwZft7veoNCYKCfapDhr2mloccIQd3E=;
-	b=I5Mwv879ZWzdczKLrD32izj+kLCCQzBirrw7tLJMIVlLkg6vO0zzXBV3K7zxi1dZ1neRpw
-	3DwbQX/cqyTQfi0inpIkCQilGfyzWkkdF+pqqdyyroMBqWAB7iiq0kc0nSMoQelPaC4yEa
-	ZMJ9z6vzC4iO+2tgYwMKLowI7tvYTJYGrk7E46y0vzpjZzIL02imX52t1Bsc6j1MzN0s/V
-	hqXqduQhELyVoSCa9mGxau7PhAyLylsPjRFo+S2TBSDVEC0lZw55GSye5pNhASJk370J2Z
-	jzLWgPDqUdeAJXEyvBe9Of+LjCQG57saoBpVCEURMJZhTxFLi9rZu0b/soOPpw==
-Authentication-Results: outgoing_mbo_mout;
-	dkim=none;
-	spf=softfail (outgoing_mbo_mout: 2001:67c:2050:b231:465::1 is neither permitted nor denied by domain of mssola@mssola.com) smtp.mailfrom=mssola@mssola.com
-From: =?UTF-8?q?Miquel=20Sabat=C3=A9=20Sol=C3=A0?= <mssola@mssola.com>
-To: dsterba@suse.com
-Cc: clm@fb.com,
-	linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	=?UTF-8?q?Miquel=20Sabat=C3=A9=20Sol=C3=A0?= <mssola@mssola.com>
-Subject: [PATCH 2/2] btrfs: return early if allocations fail on raid56
-Date: Fri, 27 Feb 2026 16:17:59 +0100
-Message-ID: <20260227151759.704838-3-mssola@mssola.com>
-In-Reply-To: <20260227151759.704838-1-mssola@mssola.com>
-References: <20260227151759.704838-1-mssola@mssola.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB4BE4418D5
+	for <linux-btrfs@vger.kernel.org>; Fri, 27 Feb 2026 15:51:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.128.53
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1772207474; cv=pass; b=A6gFdgs/qN/vHAi6zrP7ziJYVSIojcI5j5X+OqQJW9kEqY7BvcDzKDxzBW8U00u15bErpJcLq18weUIo+9R0rbBxCgMsEQ158QflcF7aAlbSq6pXKfJYPIIy6xrxONjnoJ+zvxYfQ5i7oYxVk03uCQioKMa1ML+okB7jjOAGvh4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1772207474; c=relaxed/simple;
+	bh=C2dXB1sxCI7Pk9wL8pHCeBM7riM5637FJHGRurs2elQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ceR9C6mH7XLqjf2Y9U1JiOdRZQ2bS1QWLaEWsKeAdWvoRqQ7PDZR9bNCWhrANm67EHA8DvqoBsv90B+ODbjQEg2uP72UlqdHOEPut+uA1xeyRlwnB42QZq7SCymOP/VH7DQTNYgcJfc8pIKBUPuPR9fFoj6lzPIRuax5/8vfrnk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=O7xfHkJq; arc=pass smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-48374014a77so25395025e9.3
+        for <linux-btrfs@vger.kernel.org>; Fri, 27 Feb 2026 07:51:10 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1772207469; cv=none;
+        d=google.com; s=arc-20240605;
+        b=AgMSaQoF7U20qydqWA1YgehfAwYutwCBtrpBB4OV2HHzMp/6PCXqrwzf017H4A3NYT
+         ElxuddidzUxCySZZQRkxZW3XonhePI9qXuAhuT1/3Jpd8iZZPcEi+0mRmVVi++TYUFAc
+         aQ10ysYgbzZ9nx0Jy9ezHEndjCO82koW5TcqqkhrmAOEy2OXO/UnN+buBoTyRLp+Chk+
+         4Ec8aKlM/7t7YEa4nFwgoEZx7PHPsh4s6rpNd/CyXrB8SRcA2Hate350wEtMXc7IclP6
+         wYpxzkuhK+pcKKuMs5ZcVZei0PFAchudnBpCgwch2zafwmb9w8msYo+rc4bCEfk157FX
+         faNA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature;
+        bh=rdJol8PThaHnFzgvtP9ZLYZ64xJsOVkwosdclABQFrk=;
+        fh=TyMaR7i+QZx0uC8/cfCNlduVtDkoNnlxX2meDQoFHBA=;
+        b=Vbfkc/omB/U7TMyviXZAkspya12hdo2X6MOf+QZms2/lItxo1oTCFRO8hXpQMPBoNI
+         InFn3moE7UHfJMi/2QA7QXJTSv8SPUOK8crTIBvRJzXBH4+NczV/SPOIte2RUd+khos8
+         Hu0zghGmJlq3gijCJvuEfuI1TKgRt6WGqCDA0I/fZzAFRMmDuorNeso3qnYLdN+6WZ/M
+         1a21fzRSr4Yda2Qyzb4Cs01MWlkSWxMP2hEgkwfQvQ2jbnr0CheTBsbVizMkWtZ3SXVj
+         63i+09RVYvHdsIbwnc41jlI24paH0lMxACDMLIqg0GvFtbTcmC9O2qITK3kar2pmj0HO
+         E/JQ==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1772207469; x=1772812269; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=rdJol8PThaHnFzgvtP9ZLYZ64xJsOVkwosdclABQFrk=;
+        b=O7xfHkJqIj7ysBjltL+OEuC7IvVKrnNE/caIfi4So4zLwms0AvlloqnR4SaSsbCDZR
+         iN5wiC+rxAHlSLUT9rMACdeNPTXynI0oS3IBvZkP0iwHAB2V41FMXNtUHT5ApUcvP8OK
+         9NW4oK8f3opDJUA2V9DW2OC1iQQrpgxWCky12CG5Xa1DnqU9Vcu0bW401OIN92YJpFdW
+         T3FEmUHB6nB+AywKA20yuam/TrIySGBysDmP9NW0WyRY5APuYfNd96qDCGqBa8wEU55O
+         h4SRqYxkRS/Wr1gxZPonSBmuR2Go40C0sztGPllflGuYHBfM/m4rB+pic5ux5krWgIYv
+         cwhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1772207469; x=1772812269;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rdJol8PThaHnFzgvtP9ZLYZ64xJsOVkwosdclABQFrk=;
+        b=LD00vUuZ1yPzbihHdzVQjEyvBreZLoFtlu4MR9049Zlzj9779B+8K0ZuOMiN6Ixqwu
+         j2nzIg0nFE3tO6PVN8UFZf327hFDoKIT5FPbGbKM1Okay5YMc2u4Ajb8YiNb6+L7xdYE
+         SZf/XO2oPx9Ee4j9RLBQ4JqJUQTWfS87jtJnV9vajynj5j+HXr6dyKuErj6gS0yRZRpp
+         PkSMZhjC593xbmC2RkTxb4ow5jXWx1B4uNIeBQ5whkVpw9bdJ9/d6mMsTepjlZ+pJo+D
+         YMYbBOyQmNuX12ADISi43B9Hgx4JGeUZf3ABvZgY291z9NzbeX8JYESDp8zBkHAo1sOa
+         /DLQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWnEDbtvszVW4OCZyi2QKxDGG2QirSKjOme9oum2+Qw2nHPCHGA/4O0owjlqj+QWivWS7aIhCBTy8fODw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwDG+f50OOZC7V6cUlcaVTy1OzQme9p4OLdpuv1lEgujRt/4S90
+	2GFXAP++wXaY6cRykMW6bNLqyn88pxYvBi9hlvz6K1RSDWYhHeOftd1XYHG8Br1eECJNNCjmN+X
+	PB5rn1OXoCFdrLoHGeKh5j9+5Ia4ssaPwTmMJHKtIww==
+X-Gm-Gg: ATEYQzw8e7yTPT0cYiA+ZrP9S4rUpwVJReNL9gJtNhzhpGeia95MSDuDi61+dW2v2q7
+	N9zU6VvwsuCT0yPYYK2hhMNE2vG5cNW5mHX+K45qiT4hD0fugdfpz4b8fgrh7eoonV1HLvIqvV0
+	EKgygmQoiT9mPvndAmbH1lUW19HgE044y57FGH5v+hL8Hx1BLNU8xnhndWPbuSuA92C3sncaTA/
+	wE36KUoLCgMvpgAc7Bs2pD+LJvWD6gwZqVqPzBeeHjEbJ/davqU9UNbQu8wlJ6qiRt+gZhxXlzY
+	FMAIILNYDE71Sok6S27geJCx/sxTMaEBvs4sl6+GDw0O9vzHkBTgKtZkgCH8Ou5cU6vaJ7dPCoY
+	fsVte
+X-Received: by 2002:a05:600c:154b:b0:477:5af7:6fa with SMTP id
+ 5b1f17b1804b1-483c9c2059bmr44092495e9.32.1772207469176; Fri, 27 Feb 2026
+ 07:51:09 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20260206182336.1397715-1-neelx@suse.com> <20260221205606.GA23260@quark>
+In-Reply-To: <20260221205606.GA23260@quark>
+From: Daniel Vacek <neelx@suse.com>
+Date: Fri, 27 Feb 2026 16:50:57 +0100
+X-Gm-Features: AaiRm50Djn6O6G3P77GWwQPmb2f1tOFDkZh63lAskdXhiotebz4l7KeZVsyYZpU
+Message-ID: <CAPjX3Fet5M2C=1TDNRhrqmanvJ2=aFdtQXfXK7MuxiOkz2rNUw@mail.gmail.com>
+Subject: Re: [PATCH v6 00/43] btrfs: add fscrypt support
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, "Theodore Y. Ts'o" <tytso@mit.edu>, 
+	Jaegeuk Kim <jaegeuk@kernel.org>, Jens Axboe <axboe@kernel.dk>, David Sterba <dsterba@suse.com>, 
+	linux-block@vger.kernel.org, linux-fscrypt@vger.kernel.org, 
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.49 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MIXED_CHARSET(0.67)[subject];
-	DMARC_POLICY_ALLOW(-0.50)[mssola.com,none];
-	R_DKIM_ALLOW(-0.20)[mssola.com:s=MBO0001];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22073-lists,linux-btrfs=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_THREE(0.00)[4];
-	TO_DN_SOME(0.00)[];
+	TAGGED_FROM(0.00)[bounces-22074-lists,linux-btrfs=lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[suse.com:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[mssola@mssola.com,linux-btrfs@vger.kernel.org];
-	DKIM_TRACE(0.00)[mssola.com:+];
+	FROM_NEQ_ENVFROM(0.00)[neelx@suse.com,linux-btrfs@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	RCPT_COUNT_FIVE(0.00)[5];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,mssola.com:mid,mssola.com:dkim,mssola.com:email]
-X-Rspamd-Queue-Id: 236A91B9B8D
+	RCPT_COUNT_SEVEN(0.00)[11];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,mail.gmail.com:mid,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: EA01D1BA81F
 X-Rspamd-Action: no action
 
-In both the recover_sectors() and the recover_scrub_rbio() functions we
-initialized two pointers by allocating them, and then returned early if
-either of them failed. But we can simply allocate the first one and do
-the check, and repeat for the second pointer. This way we return earlier
-on allocation failures, and we don't perform unneeded kfree() calls.
+On Sat, 21 Feb 2026 at 21:56, Eric Biggers <ebiggers@kernel.org> wrote:
+> On Fri, Feb 06, 2026 at 07:22:32PM +0100, Daniel Vacek wrote:
+> > Hello,
+> >
+> > These are the remaining parts from former series [1] from Omar, Sweet Tea
+> > and Josef.  Some bits of it were split into the separate set [2] before.
+> >
+> > Notably, at this stage encryption is not supported with RAID5/6 setup
+> > and send is also isabled for now.
+>
+> Where does this series apply to?  There's no base-commit or git tree,
+> and it doesn't apply to mainline or btrfs/for-next.
 
-Signed-off-by: Miquel Sabaté Solà <mssola@mssola.com>
----
- fs/btrfs/raid56.c | 29 ++++++++++++++++++-----------
- 1 file changed, 18 insertions(+), 11 deletions(-)
+Hi Eric,
 
-diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
-index e31d57d6ab1e..c8ece97259e3 100644
---- a/fs/btrfs/raid56.c
-+++ b/fs/btrfs/raid56.c
-@@ -2094,8 +2094,8 @@ static int recover_vertical(struct btrfs_raid_bio *rbio, int sector_nr,
- 
- static int recover_sectors(struct btrfs_raid_bio *rbio)
- {
--	void **pointers = NULL;
--	void **unmap_array = NULL;
-+	void **pointers;
-+	void **unmap_array;
- 	int sectornr;
- 	int ret = 0;
- 
-@@ -2105,11 +2105,15 @@ static int recover_sectors(struct btrfs_raid_bio *rbio)
- 	 * @unmap_array stores copy of pointers that does not get reordered
- 	 * during reconstruction so that kunmap_local works.
- 	 */
-+
- 	pointers = kzalloc_objs(void *, rbio->real_stripes, GFP_NOFS);
-+	if (!pointers)
-+		return -ENOMEM;
-+
- 	unmap_array = kzalloc_objs(void *, rbio->real_stripes, GFP_NOFS);
--	if (!pointers || !unmap_array) {
--		ret = -ENOMEM;
--		goto out;
-+	if (!unmap_array) {
-+		kfree(pointers);
-+		return -ENOMEM;
- 	}
- 
- 	if (rbio->operation == BTRFS_RBIO_READ_REBUILD) {
-@@ -2126,7 +2130,6 @@ static int recover_sectors(struct btrfs_raid_bio *rbio)
- 			break;
- 	}
- 
--out:
- 	kfree(pointers);
- 	kfree(unmap_array);
- 	return ret;
-@@ -2828,8 +2831,8 @@ static inline int is_data_stripe(struct btrfs_raid_bio *rbio, int stripe)
- 
- static int recover_scrub_rbio(struct btrfs_raid_bio *rbio)
- {
--	void **pointers = NULL;
--	void **unmap_array = NULL;
-+	void **pointers;
-+	void **unmap_array;
- 	int sector_nr;
- 	int ret = 0;
- 
-@@ -2839,11 +2842,15 @@ static int recover_scrub_rbio(struct btrfs_raid_bio *rbio)
- 	 * @unmap_array stores copy of pointers that does not get reordered
- 	 * during reconstruction so that kunmap_local works.
- 	 */
-+
- 	pointers = kzalloc_objs(void *, rbio->real_stripes, GFP_NOFS);
-+	if (!pointers)
-+		return -ENOMEM;
-+
- 	unmap_array = kzalloc_objs(void *, rbio->real_stripes, GFP_NOFS);
--	if (!pointers || !unmap_array) {
--		ret = -ENOMEM;
--		goto out;
-+	if (!unmap_array) {
-+		kfree(pointers);
-+		return -ENOMEM;
- 	}
- 
- 	for (sector_nr = 0; sector_nr < rbio->stripe_nsectors; sector_nr++) {
--- 
-2.53.0
+My apologies, I did not explicitly mention the base. I'll do it next time.
+This was based on for-next @20260127 (commit 80dbfe6512d9c).
+Since then, some changes occurred that will require additional
+touches. No wonder it does not apply anymore.
 
+Daniel
+
+> - Eric
 
