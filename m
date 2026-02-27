@@ -1,171 +1,145 @@
-Return-Path: <linux-btrfs+bounces-22055-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-22056-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id iM1oKNZKoWn7rwQAu9opvQ
-	(envelope-from <linux-btrfs+bounces-22055-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Feb 2026 08:42:14 +0100
+	id YNRJLGpNoWkfsAQAu9opvQ
+	(envelope-from <linux-btrfs+bounces-22056-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Feb 2026 08:53:14 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E7B01B40A1
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Feb 2026 08:42:14 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8E121B4205
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Feb 2026 08:53:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D637B30E6CA4
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Feb 2026 07:40:37 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 1844530670B6
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Feb 2026 07:53:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22F9D36D4EC;
-	Fri, 27 Feb 2026 07:40:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92E1E3603DD;
+	Fri, 27 Feb 2026 07:53:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b="olls9gHq"
+	dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b="AZoPzIoQ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from sipsolutions.net (s3.sipsolutions.net [168.119.38.16])
+Received: from canpmsgout07.his.huawei.com (canpmsgout07.his.huawei.com [113.46.200.222])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42B323290CA;
-	Fri, 27 Feb 2026 07:40:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=168.119.38.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD670364046
+	for <linux-btrfs@vger.kernel.org>; Fri, 27 Feb 2026 07:52:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=113.46.200.222
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772178034; cv=none; b=EG9OjANfqOQ/X5RsplimQjEXNRRHmUvdlUiO1b8QNmMyCdtxTMgf2QhfAbFQ5Zx218q3QyHAdtj/oCUZP8GDAEn/kbbW0921N1XfmmXF26+IJiPRiIXDUQT9UMtmzeTtMsjdfqwyYac9lWK5e4sC8CMjxjF5ZGcO2yf1grWVuQQ=
+	t=1772178780; cv=none; b=KBEd+EBFZF1J2H/4E9URRYZm2eggCEh9F5oepy9+x8pLjIrL2wPcsRFkeS2+ZoF2FV5zuEp6uDeEeoT1NCczsrerl7EZ+rCQeBO47+qryGoA0zw4ZEXboxPwqy5fuM73qT9W9lIvQ2dISRzhD8ToCo09bJrs8J9JRTwuE19LQkA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772178034; c=relaxed/simple;
-	bh=6TeB+wxnECTY0tW0ZKEAuaK+iy41tgHYSXrYQbS68lU=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=p2bBCehUPWRt0WmV+q9r40cU80XRtl3eWzk3mjO9qe8fi0g2KkIZdHQbN2GvF7yQqHMjAFX45nOcr79FVamfOk6ey2kmYszRkzOH2cF/CHEDWgx+CImXPuh5IHWaAWTNdQkV6sBhMrsz3Z/29UwIeuXyp7NDKVDbNZ8dsOiZ+h4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net; spf=pass smtp.mailfrom=sipsolutions.net; dkim=pass (2048-bit key) header.d=sipsolutions.net header.i=@sipsolutions.net header.b=olls9gHq; arc=none smtp.client-ip=168.119.38.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sipsolutions.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sipsolutions.net
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=sipsolutions.net; s=mail; h=MIME-Version:Content-Transfer-Encoding:
-	Content-Type:References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-To:
-	Resent-Cc:Resent-Message-ID; bh=V6J0SL9RsbUQWhN8iu+ey8pLnEs4VtLYMczUYtzIoAc=;
-	t=1772178033; x=1773387633; b=olls9gHq4SfXvD7rB7T8SpHOijo2QBHoX6MRNp3DUbo+0Im
-	y+q06hN04UokGh0RMfdWm1bYFHKotymTHTa1+GjC7ZCe9l8+McnJ5AS76iQnFZdD3wIA5nOR/cg+k
-	8mTWhwYPXLtuFofRu8uph/xh82gjsE6JsS8m7BbSPM0AW+jUdVwDOKgniqinilyZzKsJrQNNw0Y1V
-	CqVnb2bf8xsLxTVcXNAnoiny1SFp+03CShFkZt4M+0+1i8G97TFjPLnTj58ZaSPJtdh/Lx9ZNj8ds
-	mUhPCVLTDnmgVy1evl8fzWNhiXKjnq4cBZTCGmJtBl7XRJudvEpAWYezHg0MCAXw==;
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.98.2)
-	(envelope-from <johannes@sipsolutions.net>)
-	id 1vvsRx-00000003Eus-2oGQ;
-	Fri, 27 Feb 2026 08:39:49 +0100
-Message-ID: <4f69d30f952bc374e69f44786f662886c30058e9.camel@sipsolutions.net>
-Subject: Re: [PATCH 03/25] um/xor: don't override XOR_SELECT_TEMPLATE
-From: Johannes Berg <johannes@sipsolutions.net>
-To: Richard Weinberger <richard@nod.at>, hch <hch@lst.de>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Richard Henderson	
- <richard.henderson@linaro.org>, Matt Turner <mattst88@gmail.com>, Magnus
- Lindholm <linmag7@gmail.com>, Russell King <linux@armlinux.org.uk>, Catalin
- Marinas	 <catalin.marinas@arm.com>, will <will@kernel.org>, Huacai Chen	
- <chenhuacai@kernel.org>, WANG Xuerui <kernel@xen0n.name>, Madhavan
- Srinivasan	 <maddy@linux.ibm.com>, Michael Ellerman <mpe@ellerman.id.au>,
- Nicholas Piggin	 <npiggin@gmail.com>, "Christophe Leroy (CS GROUP)"
- <chleroy@kernel.org>,  Paul Walmsley	 <pjw@kernel.org>, Palmer Dabbelt
- <palmer@dabbelt.com>, Albert Ou	 <aou@eecs.berkeley.edu>, Alexandre Ghiti
- <alex@ghiti.fr>, Heiko Carstens	 <hca@linux.ibm.com>, Vasily Gorbik
- <gor@linux.ibm.com>, Alexander Gordeev	 <agordeev@linux.ibm.com>, Christian
- Borntraeger <borntraeger@linux.ibm.com>,  Sven Schnelle
- <svens@linux.ibm.com>, davem <davem@davemloft.net>, Andreas Larsson
- <andreas@gaisler.com>,  anton ivanov <anton.ivanov@cambridgegreys.com>,
- Thomas Gleixner <tglx@kernel.org>, mingo <mingo@redhat.com>,  bp
- <bp@alien8.de>, dave hansen <dave.hansen@linux.intel.com>, x86
- <x86@kernel.org>, hpa	 <hpa@zytor.com>, Herbert Xu
- <herbert@gondor.apana.org.au>, dan j williams	 <dan.j.williams@intel.com>,
- Chris Mason <clm@fb.com>, David Sterba	 <dsterba@suse.com>, Arnd Bergmann
- <arnd@arndb.de>, Song Liu <song@kernel.org>,  Yu Kuai <yukuai@fnnas.com>,
- Li Nan <linan122@huawei.com>, linux-alpha <linux-alpha@vger.kernel.org>, 
- linux-kernel <linux-kernel@vger.kernel.org>, linux-arm-kernel
- <linux-arm-kernel@lists.infradead.org>,  loongarch
- <loongarch@lists.linux.dev>, linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
- linux-riscv	 <linux-riscv@lists.infradead.org>, linux-s390
- <linux-s390@vger.kernel.org>,  sparclinux <sparclinux@vger.kernel.org>,
- linux-um <linux-um@lists.infradead.org>, Linux Crypto Mailing List
- <linux-crypto@vger.kernel.org>, linux-btrfs <linux-btrfs@vger.kernel.org>,
- linux-arch	 <linux-arch@vger.kernel.org>, linux-raid
- <linux-raid@vger.kernel.org>, Ard Biesheuvel <ardb@kernel.org>
-Date: Fri, 27 Feb 2026 08:39:47 +0100
-In-Reply-To: <445921547.2198.1772142326749.JavaMail.zimbra@nod.at>
-References: <20260226151106.144735-1-hch@lst.de>
-	 <20260226151106.144735-4-hch@lst.de>
-	 <445921547.2198.1772142326749.JavaMail.zimbra@nod.at>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.58.3 (3.58.3-1.fc43) 
+	s=arc-20240116; t=1772178780; c=relaxed/simple;
+	bh=EK9KNMzHwm/R/cTS5Sun58lrs3tNVlHHrxvcWnwDSyo=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=T19DzMjVsCQAUK3obUNOLkNc6kCLPvkdU58TZF6txth2emkVpC6I/20l+9jksgKB3l11y/tpKBtau6IRxnVTYU8mG+JcENKOpY1UgZT2Am3RiiASew8EIqJTCDtHuOFIXP9XFedFmwOyddvjNelHYibsGeowDgKmC0YS5rAZW6I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; dkim=pass (1024-bit key) header.d=huawei.com header.i=@huawei.com header.b=AZoPzIoQ; arc=none smtp.client-ip=113.46.200.222
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
+	c=relaxed/relaxed; q=dns/txt;
+	h=From;
+	bh=PRc9ukZtwVwtHbO04bCb0JrPDsA4ylgs9/y+sacRlgs=;
+	b=AZoPzIoQ74Y4QXOw8XWe1d6yYqHPv8nhnETX+S7/JHLZitWjuaHFltNvfsrA9NpgtPPTiY3uG
+	CRM9Y/q4G9AjVkMKZhBx9ZBDtmGuKM8a/VKZvqd6ybAPNH8vd2i9SA/6lhm1m5JW4sUQ2tSPQCx
+	OcXmzYPW3uhYYpXsC0u4iWM=
+Received: from mail.maildlp.com (unknown [172.19.162.92])
+	by canpmsgout07.his.huawei.com (SkyGuard) with ESMTPS id 4fMgRM533FzLlV6;
+	Fri, 27 Feb 2026 15:47:59 +0800 (CST)
+Received: from kwepemr500015.china.huawei.com (unknown [7.202.195.162])
+	by mail.maildlp.com (Postfix) with ESMTPS id 983C340562;
+	Fri, 27 Feb 2026 15:52:47 +0800 (CST)
+Received: from huawei.com (10.90.53.73) by kwepemr500015.china.huawei.com
+ (7.202.195.162) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Fri, 27 Feb
+ 2026 15:52:47 +0800
+From: Hongbo Li <lihongbo22@huawei.com>
+To: <clm@fb.com>, <dsterba@suse.com>, <josef@toxicpanda.com>, <wqu@suse.com>
+CC: <lihongbo22@huawei.com>, <fdmanana@suse.com>,
+	<linux-btrfs@vger.kernel.org>, <sashal@kernel.org>
+Subject: [PATCH 6.6 v2] btrfs: free path if inline extents in range_is_hole_in_parent()
+Date: Fri, 27 Feb 2026 15:52:19 +0800
+Message-ID: <20260227075219.2594937-1-lihongbo22@huawei.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20260227064414.2314529-1-lihongbo22@huawei.com>
+References: <20260227064414.2314529-1-lihongbo22@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-malware-bazaar: not-scanned
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: kwepems500002.china.huawei.com (7.221.188.17) To
+ kwepemr500015.china.huawei.com (7.202.195.162)
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[sipsolutions.net,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[sipsolutions.net:s=mail];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[huawei.com,quarantine];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[huawei.com:s=dkim];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[linux-foundation.org,linaro.org,gmail.com,armlinux.org.uk,arm.com,kernel.org,xen0n.name,linux.ibm.com,ellerman.id.au,dabbelt.com,eecs.berkeley.edu,ghiti.fr,davemloft.net,gaisler.com,cambridgegreys.com,redhat.com,alien8.de,linux.intel.com,zytor.com,gondor.apana.org.au,intel.com,fb.com,suse.com,arndb.de,fnnas.com,huawei.com,vger.kernel.org,lists.infradead.org,lists.linux.dev,lists.ozlabs.org];
-	TAGGED_FROM(0.00)[bounces-22055-lists,linux-btrfs=lfdr.de];
+	FROM_NEQ_ENVFROM(0.00)[lihongbo22@huawei.com,linux-btrfs@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-22056-lists,linux-btrfs=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	DKIM_TRACE(0.00)[sipsolutions.net:+];
-	TO_DN_ALL(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_GT_50(0.00)[55];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[johannes@sipsolutions.net,linux-btrfs@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	NEURAL_HAM(-0.00)[-1.000];
+	DKIM_TRACE(0.00)[huawei.com:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	NEURAL_HAM(-0.00)[-0.999];
+	TO_DN_NONE(0.00)[];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sipsolutions.net:mid,sipsolutions.net:dkim,lst.de:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 4E7B01B40A1
+	RCVD_COUNT_FIVE(0.00)[6];
+	MIME_TRACE(0.00)[0:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,huawei.com:mid,huawei.com:dkim,huawei.com:email]
+X-Rspamd-Queue-Id: C8E121B4205
 X-Rspamd-Action: no action
 
-On Thu, 2026-02-26 at 22:45 +0100, Richard Weinberger wrote:
-> ----- Urspr=C3=BCngliche Mail -----
-> > Von: "hch" <hch@lst.de>
-> > XOR_SELECT_TEMPLATE is only ever called with a NULL argument, so all th=
-e
-> > ifdef'ery doesn't do anything.  With our without this, the time travel
-> > mode should work fine on CPUs that support AVX2, as the AVX2
-> > implementation is forced in this case, and won't work otherwise.
->=20
-> IIRC Johannes added XOR_SELECT_TEMPLATE() here to skip
-> the template selection logic because it didn't work with time travel mode=
-.
->=20
-> Johannes, can you please test whether this change does not break
-> time travel mode?
+Commit f2dc6ab3a14c ("btrfs: send: check for inline extents in
+range_is_hole_in_parent()") is a patch backported directly from
+mainline to 6.6, it does not free the path in the inline extents case.
 
-It does work, even if it reports nonsense (as you'd expect):
+The original patch in mainline does not have this problem because
+the former commit 4ca6f24a52c4 ("btrfs: more trivial BTRFS_PATH_AUTO_FREE
+conversions") in 6.18-rc1 introduced scope-based auto-cleanup which
+avoids this issue. Since some dependencies are missing and cannot
+be directly backported, we choose to use a goto statement to avoid
+the memory leak in inline extents case.
 
-xor: measuring software checksum speed
-   prefetch64-sse  : 12816000 MB/sec
-   sse             : 12816000 MB/sec
-xor: using function: prefetch64-sse (12816000 MB/sec)
+Fixes: f2dc6ab3a14c ("btrfs: send: check for inline extents in range_is_hole_in_parent()")
+Signed-off-by: Hongbo Li <lihongbo22@huawei.com>
+---
+Changes since v1:
+  - Update commit message as Wenruo pointed out.
+  - Link to v1: https://lore.kernel.org/all/20260227064414.2314529-1-lihongbo22@huawei.com/
+---
+ fs/btrfs/send.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-I think it works now because the loop is using ktime and is bounded by
-REPS, since commit c055e3eae0f1 ("crypto: xor - use ktime for template
-benchmarking").
+diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
+index 6768e2231d61..b107a33dfd4d 100644
+--- a/fs/btrfs/send.c
++++ b/fs/btrfs/send.c
+@@ -6545,8 +6545,10 @@ static int range_is_hole_in_parent(struct send_ctx *sctx,
+ 		extent_end = btrfs_file_extent_end(path);
+ 		if (extent_end <= start)
+ 			goto next;
+-		if (btrfs_file_extent_type(leaf, fi) == BTRFS_FILE_EXTENT_INLINE)
+-			return 0;
++		if (btrfs_file_extent_type(leaf, fi) == BTRFS_FILE_EXTENT_INLINE) {
++			ret = 0;
++			goto out;
++		}
+ 		if (btrfs_file_extent_disk_bytenr(leaf, fi) == 0) {
+ 			search_start = extent_end;
+ 			goto next;
+-- 
+2.34.1
 
-The RAID speed select still hangs, but we've gotten that removed via
-Kconfig, so that's already handled. Perhaps raid6_choose_gen() should
-use a similar algorithm? But for UML it doesn't really matter since
-CONFIG_RAID6_PQ_BENCHMARK exists.
-
-
-As far as AVX2 is concerned, yeah, I guess that was a bug, but evidently
-nobody (who configured time-travel) ever cared - what _did_ matter
-though in practice is that the boot not get stuck entirely... Two
-completely separate issues.
-
-johannes
 
