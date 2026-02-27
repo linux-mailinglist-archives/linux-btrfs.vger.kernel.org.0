@@ -1,82 +1,82 @@
-Return-Path: <linux-btrfs+bounces-22045-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-22047-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id uAVZG9EQoWlDqAQAu9opvQ
-	(envelope-from <linux-btrfs+bounces-22045-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Feb 2026 04:34:41 +0100
+	id KPLYNOcQoWlDqAQAu9opvQ
+	(envelope-from <linux-btrfs+bounces-22047-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Feb 2026 04:35:03 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17D6B1B24A0
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Feb 2026 04:34:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 80D011B24AE
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Feb 2026 04:35:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 42AB530D952C
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Feb 2026 03:34:21 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id AFE4130E784A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Feb 2026 03:34:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3DE232FA37;
-	Fri, 27 Feb 2026 03:34:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C4D833030C;
+	Fri, 27 Feb 2026 03:34:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="nIJjxKi3";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="nIJjxKi3"
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ZalIgS0J";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ZalIgS0J"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D64B232F774
-	for <linux-btrfs@vger.kernel.org>; Fri, 27 Feb 2026 03:34:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD2B732F766
+	for <linux-btrfs@vger.kernel.org>; Fri, 27 Feb 2026 03:34:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772163260; cv=none; b=GOoY96uq1FiQK4U2xJdvoAInSDwkVuUj8xCotmr7EIYH1t7NNSUz2gzZKM632YT60u2gpVPI84lavMCCvM5/tidFFt8j71cRCGxkh9oFO+Mxe1AtVwbvf2W8GnzcMUEJiFGIqzQMFb7J7Ivzu1VYdNw+Yw/Rpn7vK8TFoW7GwFQ=
+	t=1772163265; cv=none; b=PbP8OuX7x4hudj3zJ0sln0EVTVuvzsgosJrfyc9mtuuu6YiHipRC8hXQBpg9UAF/H1Uju5JdGMpkIBj/D+m14KqBDHjv7AalB92jB3ZeJw1smtuTStNCF6/Dy/lOvAJ70BGJ0rDRGwjcM9oTGDztL6BX2WEW5UAhfbbkKzlHS3o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772163260; c=relaxed/simple;
-	bh=BbAiRHikspyezYA5Lwt3Pffx5Uyt5GXkdSYJoWV+7fk=;
+	s=arc-20240116; t=1772163265; c=relaxed/simple;
+	bh=ZB0gtVmxZKTun+y+qsPBLdRJfnaxmwYYX7i6hhVPWzE=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=IWFhR4H4i2MNicYGytPwQMnX+pPRS0Wvgh8w636cy6xOqXoLKtlWJg8owHrkpZU48rNTn8kj16kMsVaQ/TAZ0djczraFp1uJkbVmrQZhVmuKhJzT/ecc7jPTf1glhwVAHfiffFnoQ5pvycDL+LsZDmK+9rL2ccQwopKBB8ogrj4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=nIJjxKi3; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=nIJjxKi3; arc=none smtp.client-ip=195.135.223.131
+	 MIME-Version; b=Loew2BA0IRVRhhK5v5kFMGQMh0cFHXGYB39as7ESycAQpyO1ZFy6BkRMdaadA3MQ3+96bW8Ja/Fctfv/il30b+HEVHHELQQw+DLK2eQHjwqBXb64sVSAr8S4xBH7P7TvAXmrP+PJObPWLZYXfM8PlQx8fqbn3MrwkAsIdOlXcPY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ZalIgS0J; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ZalIgS0J; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 299295CEAA
-	for <linux-btrfs@vger.kernel.org>; Fri, 27 Feb 2026 03:34:17 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 6B4755CEAF
+	for <linux-btrfs@vger.kernel.org>; Fri, 27 Feb 2026 03:34:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1772163257; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1772163258; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=9ICaBzNi0eKi00rCEOHMdiXLHUHR9VwsrwNblifrr84=;
-	b=nIJjxKi3sPX3EiqAmHzlPfaacbhoNCcWWBtt4TzgiUHXSuk7RMU0BppiNzt2RqjsEGXyMV
-	MKo2+3FojCYD2xyDwB6CBeOwzBBoXkRW8ZbAap57Q/TfaVu39un9I9MOm/Ha9sadXojTzR
-	8nAAQ6ORcVqnhkSfapgi36wAqCQwYZk=
+	bh=3gp3QhwTuGC3d/rUIXY1wG68bezpKD0PyB/6p1Lzrcc=;
+	b=ZalIgS0J105gFB2BrYeBnUTIism/ks6q3n4oF1HoyQe6pQxZOqAULx7GQ63KuBlaXHQLDI
+	myQZNr4ZjY0wKzpzvqABBJOAj6pAwE5VVVfcpuGBlvP1kLyu70c2TDwkgsOwBwpNd7Tiim
+	ZeBG5LHyshV46iiUWJO/krGAjL5F9OI=
 Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=nIJjxKi3
+	dkim=pass header.d=suse.com header.s=susede1 header.b=ZalIgS0J
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1772163257; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	t=1772163258; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=9ICaBzNi0eKi00rCEOHMdiXLHUHR9VwsrwNblifrr84=;
-	b=nIJjxKi3sPX3EiqAmHzlPfaacbhoNCcWWBtt4TzgiUHXSuk7RMU0BppiNzt2RqjsEGXyMV
-	MKo2+3FojCYD2xyDwB6CBeOwzBBoXkRW8ZbAap57Q/TfaVu39un9I9MOm/Ha9sadXojTzR
-	8nAAQ6ORcVqnhkSfapgi36wAqCQwYZk=
+	bh=3gp3QhwTuGC3d/rUIXY1wG68bezpKD0PyB/6p1Lzrcc=;
+	b=ZalIgS0J105gFB2BrYeBnUTIism/ks6q3n4oF1HoyQe6pQxZOqAULx7GQ63KuBlaXHQLDI
+	myQZNr4ZjY0wKzpzvqABBJOAj6pAwE5VVVfcpuGBlvP1kLyu70c2TDwkgsOwBwpNd7Tiim
+	ZeBG5LHyshV46iiUWJO/krGAjL5F9OI=
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5E0AE3EA69
-	for <linux-btrfs@vger.kernel.org>; Fri, 27 Feb 2026 03:34:16 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A0B433EA69
+	for <linux-btrfs@vger.kernel.org>; Fri, 27 Feb 2026 03:34:17 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id mGjyB7gQoWmcNAAAD6G6ig
+	id OCMyGLkQoWmcNAAAD6G6ig
 	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Fri, 27 Feb 2026 03:34:16 +0000
+	for <linux-btrfs@vger.kernel.org>; Fri, 27 Feb 2026 03:34:17 +0000
 From: Qu Wenruo <wqu@suse.com>
 To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v2 3/4] btrfs: move larger data folios out of experimental features
-Date: Fri, 27 Feb 2026 14:03:45 +1030
-Message-ID: <0d8fe02f58ccbc0c53714ea45b0a4303f2ee8206.1772162871.git.wqu@suse.com>
+Subject: [PATCH v2 4/4] btrfs: move block size < page size support out of experimental features
+Date: Fri, 27 Feb 2026 14:03:46 +1030
+Message-ID: <448e4807eee903170d498c049d6e26da026326cf.1772162871.git.wqu@suse.com>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <cover.1772162871.git.wqu@suse.com>
 References: <cover.1772162871.git.wqu@suse.com>
@@ -102,7 +102,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	DKIM_TRACE(0.00)[suse.com:+];
-	TAGGED_FROM(0.00)[bounces-22045-lists,linux-btrfs=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-22047-lists,linux-btrfs=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
 	RCPT_COUNT_ONE(0.00)[1];
@@ -118,55 +118,54 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	TO_DN_NONE(0.00)[];
 	TAGGED_RCPT(0.00)[linux-btrfs];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:dkim,suse.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 17D6B1B24A0
+X-Rspamd-Queue-Id: 80D011B24AE
 X-Rspamd-Action: no action
 
-This feature is introduced in v6.17 under experimental, and we had
-several small bugs related or exposed by that feature:
+Commit 2ccfaf736909 ("btrfs: support all block sizes which is no larger
+than page size") has expanded the supported block size to any block size
+that is no larger than page size.
 
- e9e3b22ddfa7 ("btrfs: fix beyond-EOF write handling")
- 18de34daa7c6 ("btrfs: truncate ordered extent when skipping writeback past i_size")
+But that support is still only for experimental builds, and it has been
+two releases without any reported bug.
 
-Otherwise the feature is being frequently tested by btrfs developers.
+We can safely move that feature out of experimental features.
 
-The latest fix only arrived in v6.19, after two releases I think it's time
-to move this feature out of experimental.
+Now only bs > ps support is still under experimental features.
 
 Signed-off-by: Qu Wenruo <wqu@suse.com>
 ---
- fs/btrfs/Kconfig       | 2 +-
- fs/btrfs/btrfs_inode.h | 2 --
- 2 files changed, 1 insertion(+), 3 deletions(-)
+ fs/btrfs/fs.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/fs/btrfs/Kconfig b/fs/btrfs/Kconfig
-index 5e75438e0b73..d0451cf93849 100644
---- a/fs/btrfs/Kconfig
-+++ b/fs/btrfs/Kconfig
-@@ -110,7 +110,7 @@ config BTRFS_EXPERIMENTAL
+diff --git a/fs/btrfs/fs.c b/fs/btrfs/fs.c
+index d7e7011a48c2..ed3bd3cf4524 100644
+--- a/fs/btrfs/fs.c
++++ b/fs/btrfs/fs.c
+@@ -129,12 +129,10 @@ void btrfs_csum_final(struct btrfs_csum_ctx *ctx, u8 *out)
+ /*
+  * We support the following block sizes for all systems:
+  *
+- * - MIN_BLOCKSIZE (4K)
+- *   This is the most common block size. For PAGE SIZE > 4K cases the subpage
+- *   mode is used.
++ * - [MIN_BLOCKSIZE, PAGE_SIZE]
+  *
+- * - PAGE_SIZE
+- *   The straightforward block size to support.
++ * - (PAGE_SIZE, MAX_BLOCKSIZE]
++ *   For experimental builds and no HIGHMEM.
+  */
+ bool __attribute_const__ btrfs_supported_blocksize(u32 blocksize)
+ {
+@@ -142,7 +140,7 @@ bool __attribute_const__ btrfs_supported_blocksize(u32 blocksize)
+ 	ASSERT(is_power_of_2(blocksize) && blocksize >= BTRFS_MIN_BLOCKSIZE &&
+ 	       blocksize <= BTRFS_MAX_BLOCKSIZE);
  
- 	  - extent tree v2 - complex rework of extent tracking
- 
--	  - large folio and block size (> page size) support
-+	  - large block size (> page size) support
- 
- 	  - asynchronous checksum generation for data writes
- 
-diff --git a/fs/btrfs/btrfs_inode.h b/fs/btrfs/btrfs_inode.h
-index 55c272fe5d92..01b147fa9801 100644
---- a/fs/btrfs/btrfs_inode.h
-+++ b/fs/btrfs/btrfs_inode.h
-@@ -532,11 +532,9 @@ static inline void btrfs_set_inode_mapping_order(struct btrfs_inode *inode)
- 	ASSERT(is_data_inode(inode));
- 
- 	/* We only allow BITS_PER_LONGS blocks for each bitmap. */
--#ifdef CONFIG_BTRFS_EXPERIMENTAL
- 	mapping_set_folio_order_range(inode->vfs_inode.i_mapping,
- 				      inode->root->fs_info->block_min_order,
- 				      inode->root->fs_info->block_max_order);
--#endif
- }
- 
- void btrfs_calculate_block_csum_folio(struct btrfs_fs_info *fs_info,
+-	if (blocksize == PAGE_SIZE || blocksize == BTRFS_MIN_BLOCKSIZE)
++	if (blocksize <= PAGE_SIZE)
+ 		return true;
+ #ifdef CONFIG_BTRFS_EXPERIMENTAL
+ 	/*
 -- 
 2.53.0
 
