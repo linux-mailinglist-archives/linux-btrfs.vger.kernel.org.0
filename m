@@ -1,203 +1,204 @@
-Return-Path: <linux-btrfs+bounces-22057-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-22058-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id iGeoNddNoWkfsAQAu9opvQ
-	(envelope-from <linux-btrfs+bounces-22057-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Feb 2026 08:55:03 +0100
+	id 8H84NO9foWm0sQQAu9opvQ
+	(envelope-from <linux-btrfs+bounces-22058-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Feb 2026 10:12:15 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E3301B4269
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Feb 2026 08:55:03 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46F1E1B4F70
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Feb 2026 10:12:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id DE51A30398A5
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Feb 2026 07:54:57 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 559FF3078FB4
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Feb 2026 09:12:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3644F366DDA;
-	Fri, 27 Feb 2026 07:54:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD5A23B9605;
+	Fri, 27 Feb 2026 09:11:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="bhJV6ysm"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="WsV8TR6r"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BD66355F3F
-	for <linux-btrfs@vger.kernel.org>; Fri, 27 Feb 2026 07:54:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BECA93B52E4;
+	Fri, 27 Feb 2026 09:11:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772178896; cv=none; b=kjpmWv+8oisWbsVxjROIUd4CP4TgP8FEL1GBOKrFmVtuKznCwQJpBfYaa46Jfh9Z5hN5zVjwxI4PMdJeXn+pQtEXilcry/ksckZ6IYrkVGek9WISSFc4zLFhBknvklLEDkBg6NmKI6ucjQ6CbRlHCnW8SyZe380CtBHUuwQAes8=
+	t=1772183518; cv=none; b=Dya5oVm8fHtF3M/8CZqs5cZ5fnsuQQj1L8siJ+3/cmGhl6wFKq4b9NMoxOWIECszDSLlpQMgY8+PhXEIWDCGv6xEAq7hRJ7L2tZlbr4RqklOSfvaQpBgQ4fMld7uomO8eLw70cUVnfIkow+lwhcRXrhiObR5UY7MYcFWBBNYdJs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772178896; c=relaxed/simple;
-	bh=4ZTr7FQxKDz4LmkWgj7zCVzzum0lSbRawBmzB0U8wjw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZcVmo9CN0uDhviHQ21T2XzvJz2+Sl8GFuYZTgijuWLNRMY78vKeibwQScR/iSeD9v7pF866Jiz9Gm703yroK33gvPU2VvzZOTmenePBG2hQvqpY1gTtEsoQV26hzlTTTCYBw2lh1wLbsa0/J/GWXx2r34FtXCgTsrqXyjex8HZQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=bhJV6ysm; arc=none smtp.client-ip=209.85.128.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-48336a6e932so10373305e9.3
-        for <linux-btrfs@vger.kernel.org>; Thu, 26 Feb 2026 23:54:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1772178893; x=1772783693; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=w/xMRxnL2BX2Rnk4naDgtwltFfBDf8nsYh6ytOouWC4=;
-        b=bhJV6ysmwrKV3NJBc6IlJj2jklggrKpjqfRFNpNrR/1dq1PG7zfrQqwfNjoMeeX+eq
-         rJXIxAcV6OmkFz8rx791ycU5oCpzdINJYZUzHU1yIjRX2PIZK1xfaQqNzGXsjyCKxN4k
-         vkSDin+ypiRFvYfVJgMDKPzqyt2akymMOYK6W5+1Nr5LSTszl2IibMgbLGVMwUE2blta
-         Q+ezlgj9KqGUpgdZUm+pohqhWj/WicvyTGVmC2YdKFIG8/m5Z6QzflSahqACuN3cSrrq
-         OGeI7pBcdjEa67Gzg9uxPit/FpicI33f3tFsFEvvBMJh0AUXdVeUK91rP2nhlHF4V4uB
-         bR/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772178893; x=1772783693;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=w/xMRxnL2BX2Rnk4naDgtwltFfBDf8nsYh6ytOouWC4=;
-        b=oLX/V98CmYQPZm41ZQzZ/zg0xIsvqTvugcRNctsGCLirv+l4gFXZNq9q+opqh10FGP
-         mn9A2/S5lmTqDPK16OM1CfEvDu5A5T8eHf2FQGzF05s7ru8Y0eLsRK3YKztJrWVSyYnI
-         N1kZ2N+u1c4JgRyCf0gbTFQjOZYaAD+VJZI/WuO+cj+WNfzOeefZnXmNlssrbW20X2G3
-         rGqABO7bAjksSCcS4ZGpSoKEPhfMh65PRwTK2TO6GouT8JpDtB3Y7pOlxqGxlogSP4Ms
-         taAM0u5fWt4aWxqjEp3DwK263IDAWn24BPUUr2rOPijUpWQzaC3H7jMypXia0TcVBJuT
-         9w5A==
-X-Forwarded-Encrypted: i=1; AJvYcCWOcy9R9hq22D1IcddK4BjPgftw9oNDZ2XYhBZ7LLT+bVMVRGtz2qbDnPi0NjN27397/eAePyjaqoDpGw==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy78KPs5dkQ0dVmPPTZhEEjdRHpi1p0dm3BQdo4ndvWkVgNGAQF
-	rfcwVL8xmHDXCaaA74pTQNrfchvTInl/vG1+DogDfNhZp4NxYC0GaN/wHuyLonTfsTQ=
-X-Gm-Gg: ATEYQzwWwINlvfm+D2i24sYiEzW7DqIGcpLGlQPZEgC2FiKypr0YGh813Y2RuCIzqY6
-	DeLkKsGDEatf+UDtY3UV6uhvEc8Z7prPJMputD044OhhMGBfghEaSoUV1O7XLwmHucYJXltINKc
-	TPxZSeqpVWbnz9tTGC01L2m+xvrPG5hJa0kI3KxDboc/9DBwzfJEyGw1t1s8n+dsu4IRcVTpWFW
-	F623r2K6aPpQgnORzsDHIp2CxzSnuZBRi7qhX3G6qIZYpA1iliDXQDh2mUigccnBptFDmPdNgDV
-	8Ng49VpiGLngH8OhCXclRPPRGEl/db9RQuc+B5hl19Y2Qf10aL3o0DVw75pJj9A3MCeqcvh2mFS
-	jPTK/rK35cNCHktK7ogNxGv33RRWjmrDycUBMgF5444LvTtQ4NklTrCHkGTjnsxg2DdjMrrIUcF
-	imms9do/fARi/PnS6S+V4F10ba+Ex1Gm8QgpDqIeE4vVGhyaoLKHQ=
-X-Received: by 2002:a05:600c:46cf:b0:475:dde5:d91b with SMTP id 5b1f17b1804b1-483c9bbbe67mr25127485e9.17.1772178893155;
-        Thu, 26 Feb 2026 23:54:53 -0800 (PST)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2adfb69fff3sm50935475ad.48.2026.02.26.23.54.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 26 Feb 2026 23:54:52 -0800 (PST)
-Message-ID: <d2e3fb3e-d085-489f-bbf4-00e293ba4e75@suse.com>
-Date: Fri, 27 Feb 2026 18:24:44 +1030
+	s=arc-20240116; t=1772183518; c=relaxed/simple;
+	bh=zHYdbKnsq8dhCXkAKHSWS7m786Mc+pWJxumIZ3n3mhk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bWELCeYAG86rEl/6MVf2eD4ZDp32kTYt12LLvPm9n/u8LYc7yPNJhpWfCusRM5gwioq1vprVSbutRNx2ipTlGUu9hhbJ+THAEynjLKsniAKIwOeAcDw5spO7gMUtZzO84Oz4kJnf7FrYypvLqDpXrOppnAbFN+pOIOTBXVTilaE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=WsV8TR6r; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 61R42kun3100088;
+	Fri, 27 Feb 2026 09:10:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-type:date:from:in-reply-to:message-id:mime-version
+	:references:subject:to; s=pp1; bh=9fJNQ8hFc6Hs06NykvFdnbwjP22Qa4
+	Czsab7f5+iT/s=; b=WsV8TR6rk52sfgi0yEDU4EhQlIECmYdEVoCyjTqw7gZ3F3
+	eeHg+aJhMwLYBfRrvCTB+X1E8112JloZG505tr4YoHOHpsA+0VMCmikGSenHxCgI
+	8HXR4cEHiWmwwkzLwBscjDqpDZO3ne2k4EEE07xYvkotrBxJdXJpgPVvwn27muSf
+	xqBav/gaocnH+/b+cmw7rtzjfv7peKnbFuS/n+xyS+NBW6dWAjUvlxf2Z1nhGNyZ
+	JW8mx8qyfv8JeTYDboY2RdD3NfJMbMKBk4Cfsm9yXyMH2NxCMnd5vEs8SgkmIVEz
+	9iyvjXnemPAPNRZVT+C81oevbnLXFbPBfFIhRcFg==
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4cf34cjvka-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 27 Feb 2026 09:10:08 +0000 (GMT)
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 61R7xVgm027794;
+	Fri, 27 Feb 2026 09:10:07 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 4cfsr291xx-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 27 Feb 2026 09:10:07 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 61R9A3w526345784
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 27 Feb 2026 09:10:03 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 3E7ED20043;
+	Fri, 27 Feb 2026 09:10:03 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 88C6E20040;
+	Fri, 27 Feb 2026 09:10:00 +0000 (GMT)
+Received: from osiris (unknown [9.87.152.66])
+	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Fri, 27 Feb 2026 09:10:00 +0000 (GMT)
+Date: Fri, 27 Feb 2026 10:09:59 +0100
+From: Heiko Carstens <hca@linux.ibm.com>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Matt Turner <mattst88@gmail.com>, Magnus Lindholm <linmag7@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>,
+        Madhavan Srinivasan <maddy@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        "Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
+        Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andreas Larsson <andreas@gaisler.com>,
+        Richard Weinberger <richard@nod.at>,
+        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+        Johannes Berg <johannes@sipsolutions.net>,
+        Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Dan Williams <dan.j.williams@intel.com>, Chris Mason <clm@fb.com>,
+        David Sterba <dsterba@suse.com>, Arnd Bergmann <arnd@arndb.de>,
+        Song Liu <song@kernel.org>, Yu Kuai <yukuai@fnnas.com>,
+        Li Nan <linan122@huawei.com>, linux-alpha@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        loongarch@lists.linux.dev, linuxppc-dev@lists.ozlabs.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
+        linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-raid@vger.kernel.org
+Subject: Re: [PATCH 17/25] s390: move the XOR code to lib/raid/
+Message-ID: <20260227090959.10882Af7-hca@linux.ibm.com>
+References: <20260226151106.144735-1-hch@lst.de>
+ <20260226151106.144735-18-hch@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6.6 v2] btrfs: free path if inline extents in
- range_is_hole_in_parent()
-To: Hongbo Li <lihongbo22@huawei.com>, clm@fb.com, dsterba@suse.com,
- josef@toxicpanda.com
-Cc: fdmanana@suse.com, linux-btrfs@vger.kernel.org, sashal@kernel.org
-References: <20260227064414.2314529-1-lihongbo22@huawei.com>
- <20260227075219.2594937-1-lihongbo22@huawei.com>
-Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <20260227075219.2594937-1-lihongbo22@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260226151106.144735-18-hch@lst.de>
+X-TM-AS-GCONF: 00
+X-Proofpoint-Reinject: loops=2 maxloops=12
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMjI3MDA3OCBTYWx0ZWRfX82U5aVPSCKMj
+ b+0tJb22GfHqv9v4ECkZvrQTVdwe0NpyD3M0iH/J0+Xwr+YNeZjI36wIQPTa9rvjnE1UWrx9YkQ
+ JHFDvWeaZB3m0vLeSHPjQ41gZNyK3P7jz3/RMGU+PQUjTrl/esmjGZf3JQqOP9wpvYUJI8IGwZd
+ /XesnT0Fp6f7P6zmIK4NRyzDQXfXKB/frdS7KrKVpjV7P2YYv2qXUSwm17bcz6D+3OU43mCcNJw
+ VglTApNotpU5nP84m/1BO0OHu/I+7q5gBb6aF778m34dUw2mKpCO0GIw5iCL/18UvCIDVst+Cg2
+ or+7hBFh9lVuTlBEIYrN26hWcqnQmJk+cg6nVuLOR39apbYgayyTTwj8euDUuBGnNDky60OnBzo
+ zdR2VUTZDeHZGzwsBRd/sH8aRuZ3XZmPmK5c8OM2MVccRTGc8Hd/VLBtD8pqPq/pRTFgfAMLrBX
+ 75ZY0FEa+686cu8Lnvw==
+X-Proofpoint-ORIG-GUID: F8S8ZNtQow6uofq1eM08rQyj9jFeslmn
+X-Authority-Analysis: v=2.4 cv=F9lat6hN c=1 sm=1 tr=0 ts=69a15f71 cx=c_pps
+ a=aDMHemPKRhS1OARIsFnwRA==:117 a=aDMHemPKRhS1OARIsFnwRA==:17
+ a=kj9zAlcOel0A:10 a=HzLeVaNsDn8A:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=Mpw57Om8IfrbqaoTuvik:22 a=GgsMoib0sEa3-_RKJdDe:22 a=VnNF1IyMAAAA:8
+ a=HpkjO1BTjMN3Ce6vPK4A:9 a=CjuIK1q_8ugA:10
+X-Proofpoint-GUID: j1a5E8YeCxBUvXVfRM302zEA8A8N1Tzy
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.51,FMLib:17.12.100.49
+ definitions=2026-02-27_01,2026-02-26_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ impostorscore=0 phishscore=0 bulkscore=0 adultscore=0 spamscore=0
+ clxscore=1011 suspectscore=0 malwarescore=0 lowpriorityscore=0
+ priorityscore=1501 classifier=typeunknown authscore=0 authtc= authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2601150000
+ definitions=main-2602270078
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-1.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[ibm.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[ibm.com:s=pp1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[suse.com:+];
-	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[linux-foundation.org,linaro.org,gmail.com,armlinux.org.uk,arm.com,kernel.org,xen0n.name,linux.ibm.com,ellerman.id.au,dabbelt.com,eecs.berkeley.edu,ghiti.fr,davemloft.net,gaisler.com,nod.at,cambridgegreys.com,sipsolutions.net,redhat.com,alien8.de,linux.intel.com,zytor.com,gondor.apana.org.au,intel.com,fb.com,suse.com,arndb.de,fnnas.com,huawei.com,vger.kernel.org,lists.infradead.org,lists.linux.dev,lists.ozlabs.org];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[lst.de:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,linux.ibm.com:mid];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22057-lists,linux-btrfs=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-22058-lists,linux-btrfs=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-btrfs];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[ibm.com:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	MISSING_XM_UA(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[wqu@suse.com,linux-btrfs@vger.kernel.org];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	MID_RHS_MATCH_FROM(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[hca@linux.ibm.com,linux-btrfs@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_GT_50(0.00)[54];
+	TAGGED_RCPT(0.00)[linux-btrfs];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:mid,suse.com:dkim,suse.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,huawei.com:email]
-X-Rspamd-Queue-Id: 3E3301B4269
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_SEVEN(0.00)[11]
+X-Rspamd-Queue-Id: 46F1E1B4F70
 X-Rspamd-Action: no action
 
-
-
-在 2026/2/27 18:22, Hongbo Li 写道:
-> Commit f2dc6ab3a14c ("btrfs: send: check for inline extents in
-> range_is_hole_in_parent()") is a patch backported directly from
-> mainline to 6.6, it does not free the path in the inline extents case.
+On Thu, Feb 26, 2026 at 07:10:29AM -0800, Christoph Hellwig wrote:
+> Move the optimized XOR into lib/raid and include it it in xor.ko
+> instead of unconditionally building it into the main kernel image.
 > 
-> The original patch in mainline does not have this problem because
-> the former commit 4ca6f24a52c4 ("btrfs: more trivial BTRFS_PATH_AUTO_FREE
-> conversions") in 6.18-rc1 introduced scope-based auto-cleanup which
-> avoids this issue. Since some dependencies are missing and cannot
-> be directly backported, we choose to use a goto statement to avoid
-> the memory leak in inline extents case.
-> 
-> Fixes: f2dc6ab3a14c ("btrfs: send: check for inline extents in range_is_hole_in_parent()")
-> Signed-off-by: Hongbo Li <lihongbo22@huawei.com>
-
-Reviewed-by: Qu Wenruo <wqu@suse.com>
-
-Thanks,
-Qu
-
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 > ---
-> Changes since v1:
->    - Update commit message as Wenruo pointed out.
->    - Link to v1: https://lore.kernel.org/all/20260227064414.2314529-1-lihongbo22@huawei.com/
-> ---
->   fs/btrfs/send.c | 6 ++++--
->   1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-> index 6768e2231d61..b107a33dfd4d 100644
-> --- a/fs/btrfs/send.c
-> +++ b/fs/btrfs/send.c
-> @@ -6545,8 +6545,10 @@ static int range_is_hole_in_parent(struct send_ctx *sctx,
->   		extent_end = btrfs_file_extent_end(path);
->   		if (extent_end <= start)
->   			goto next;
-> -		if (btrfs_file_extent_type(leaf, fi) == BTRFS_FILE_EXTENT_INLINE)
-> -			return 0;
-> +		if (btrfs_file_extent_type(leaf, fi) == BTRFS_FILE_EXTENT_INLINE) {
-> +			ret = 0;
-> +			goto out;
-> +		}
->   		if (btrfs_file_extent_disk_bytenr(leaf, fi) == 0) {
->   			search_start = extent_end;
->   			goto next;
+>  arch/s390/lib/Makefile                     | 2 +-
+>  lib/raid/xor/Makefile                      | 1 +
+>  {arch/s390/lib => lib/raid/xor/s390}/xor.c | 2 --
+>  3 files changed, 2 insertions(+), 3 deletions(-)
+>  rename {arch/s390/lib => lib/raid/xor/s390}/xor.c (98%)
 
+FWIW:
+Acked-by: Heiko Carstens <hca@linux.ibm.com>
+
+However, I just had a look at the s390 implementation and just saw that the
+inline assembly constraints for xor_xc_2() are incorrect. "bytes", "p1",
+and "p2" are input operands, while all three of them are modified within
+the inline assembly. Given that the function consists only of this inline
+assembly I doubt that this causes any harm, however I still want to fix
+this now; but your patch should apply fine with or without this fixed.
 
