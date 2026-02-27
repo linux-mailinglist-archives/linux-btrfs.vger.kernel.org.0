@@ -1,115 +1,135 @@
-Return-Path: <linux-btrfs+bounces-22066-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-22067-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id IEjVMKWcoWl8ugQAu9opvQ
-	(envelope-from <linux-btrfs+bounces-22066-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Feb 2026 14:31:17 +0100
+	id SKkIC1iqoWm1vQQAu9opvQ
+	(envelope-from <linux-btrfs+bounces-22067-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Feb 2026 15:29:44 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CED11B7AE0
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Feb 2026 14:31:17 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id E30061B8F41
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Feb 2026 15:29:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 3C8873037926
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Feb 2026 13:31:10 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id A489130EAE04
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Feb 2026 14:15:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCACB2857EA;
-	Fri, 27 Feb 2026 13:31:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J+H7jAzE"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 543FF41C2FC;
+	Fri, 27 Feb 2026 14:13:19 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B74A19755B
-	for <linux-btrfs@vger.kernel.org>; Fri, 27 Feb 2026 13:31:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA5194218B0;
+	Fri, 27 Feb 2026 14:13:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772199067; cv=none; b=Ra9m3dwfxjKOkrxYQEbaYHP9o+ZNGtCT8VB0wbe0WX5JgIXJ5S/eDZ+kAFHfm56NvWPfjNifOjs92RSWv/RgRcsye9Ep/isLNhMvNYIvvZy1x0cv0XtXLOsuWjSSJGkr+kQ6ksNb6RvmmFPqMbwNfbNDvSMswN/b+YZ71+80aEQ=
+	t=1772201598; cv=none; b=HD875XPhnQy8Kp+rv8kdqPAsY4fsI37vxH5IfXlB40n0oMvDlo6kkEWbe/nbpRoZl2dNiZzVJmzT7M74O9X/fF8BCy7NEnLG11X+b0mqa7xmdjshsoUkamAIK0Zjm9b7Jqr2SMyIgxlYFtk8MBJLx3o7wtaDThflE0I3ecTrJxw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772199067; c=relaxed/simple;
-	bh=QA5bnNam1kU6vWzWgqPQu1A1iNsCY8+lB+Yy1q1wmkM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=JDPPbTw6XbLk2mJaQtKTCMAkIWECZMAY8w7TCQ9wWg36jOoZsB17yWZ3xe9dv6HPk0ObsGR+xaZXsADSdQ5fIrAZntD5C5yv6JSM2oRrcJne0IC6Sp1srHavccoi+fwHFJ1JTIQiruOzODBs21mRBwZ2Pthq3fgbj5G3bL2J7ig=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J+H7jAzE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5F10C116C6;
-	Fri, 27 Feb 2026 13:31:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772199067;
-	bh=QA5bnNam1kU6vWzWgqPQu1A1iNsCY8+lB+Yy1q1wmkM=;
-	h=Date:Subject:To:References:From:In-Reply-To:From;
-	b=J+H7jAzEeSXl9G/bRG1Gmq4GRSrIZbf8HOQLVO/tbmrOS94LB4I1AAATVXEBMKsqk
-	 ZNN23EnjilRHQpTTXAcJfXSOx9/1e3gislVSwVI4po9vA/Zf3wqQ7GlTbJNK5WA5Bd
-	 wFapI/p8m0nzbEmj6Xug+iBj9Cfmdvqz2G0bNQB6gsZ5somf73jaax7ZEIv0WnwSTp
-	 QGuc5CRfJjDqOvTrIWSDv6Hl8s1uEe332KWu3FKiAguFUXqdOWPqnIgO6CGmDGDAKz
-	 3gxQPz9Jw9EefccO/0KnfNOBFbjsYY46ds73N6oUK88nEOgwY3t9ao3+u+JLeas33F
-	 ZNhFOjLms1G2g==
-Message-ID: <0ed215c2-39ba-455e-9750-7f99dbcfe88f@kernel.org>
-Date: Fri, 27 Feb 2026 22:31:05 +0900
+	s=arc-20240116; t=1772201598; c=relaxed/simple;
+	bh=JuTht8SH6bc8ucM5gaQqR6Ab0QML/v1HzgC/i0mHYxc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FfrpjbE3hdQ7PiIUWRN6O0pS+h58walt/SmE4lkrZGtRvSBqQmeObJhynQPCl+haVmT+fMvuhNQAFg2EGKjO8Al38LlI0JLtVQTVrJyyUmM3Z6eFb+sNI5lYfiF8ahX2/hroLXTMd53a6SRxHw9q358xhZWSvHm1BlG2YoVTmKc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id 5A9ED68B05; Fri, 27 Feb 2026 15:13:11 +0100 (CET)
+Date: Fri, 27 Feb 2026 15:13:11 +0100
+From: Christoph Hellwig <hch@lst.de>
+To: Heiko Carstens <hca@linux.ibm.com>
+Cc: Christoph Hellwig <hch@lst.de>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Richard Henderson <richard.henderson@linaro.org>,
+	Matt Turner <mattst88@gmail.com>,
+	Magnus Lindholm <linmag7@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
+	Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Dan Williams <dan.j.williams@intel.com>, Chris Mason <clm@fb.com>,
+	David Sterba <dsterba@suse.com>, Arnd Bergmann <arnd@arndb.de>,
+	Song Liu <song@kernel.org>, Yu Kuai <yukuai@fnnas.com>,
+	Li Nan <linan122@huawei.com>, linux-alpha@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	loongarch@lists.linux.dev, linuxppc-dev@lists.ozlabs.org,
+	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
+	linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-arch@vger.kernel.org, linux-raid@vger.kernel.org
+Subject: Re: [PATCH 17/25] s390: move the XOR code to lib/raid/
+Message-ID: <20260227141311.GA22216@lst.de>
+References: <20260226151106.144735-1-hch@lst.de> <20260226151106.144735-18-hch@lst.de> <20260227090959.10882Af7-hca@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: pass 'verbose' parameter to
- btrfs_relocate_block_group
-To: Johannes Thumshirn <johannes.thumshirn@wdc.com>,
- linux-btrfs@vger.kernel.org
-References: <20260227131224.159801-1-johannes.thumshirn@wdc.com>
-Content-Language: en-US
-From: Damien Le Moal <dlemoal@kernel.org>
-Organization: Western Digital Research
-In-Reply-To: <20260227131224.159801-1-johannes.thumshirn@wdc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260227090959.10882Af7-hca@linux.ibm.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-1.36 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
+	DMARC_POLICY_SOFTFAIL(0.10)[lst.de : SPF not aligned (relaxed), No valid DKIM,none];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	RCPT_COUNT_TWO(0.00)[2];
-	HAS_ORG_HEADER(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22066-lists,linux-btrfs=lfdr.de];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	FREEMAIL_CC(0.00)[lst.de,linux-foundation.org,linaro.org,gmail.com,armlinux.org.uk,arm.com,kernel.org,xen0n.name,linux.ibm.com,ellerman.id.au,dabbelt.com,eecs.berkeley.edu,ghiti.fr,davemloft.net,gaisler.com,nod.at,cambridgegreys.com,sipsolutions.net,redhat.com,alien8.de,linux.intel.com,zytor.com,gondor.apana.org.au,intel.com,fb.com,suse.com,arndb.de,fnnas.com,huawei.com,vger.kernel.org,lists.infradead.org,lists.linux.dev,lists.ozlabs.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[dlemoal@kernel.org,linux-btrfs@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[linux-btrfs];
+	TAGGED_FROM(0.00)[bounces-22067-lists,linux-btrfs=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[wdc.com:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 5CED11B7AE0
+	RCVD_COUNT_THREE(0.00)[4];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	FROM_HAS_DN(0.00)[];
+	TAGGED_RCPT(0.00)[linux-btrfs];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[hch@lst.de,linux-btrfs@vger.kernel.org];
+	TO_DN_SOME(0.00)[];
+	RCPT_COUNT_GT_50(0.00)[55];
+	R_DKIM_NA(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	MID_RHS_MATCH_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[lst.de:mid,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: E30061B8F41
 X-Rspamd-Action: no action
 
-On 2/27/26 22:12, Johannes Thumshirn wrote:
-> Function `btrfs_relocate_chunk()` always passes verbose=true to
-> `btrfs_relocate_block_group()` instead of the `verbose` parameter passed
-> into it by it's callers.
-> 
-> While user initiated rebalancing should be logged in the Kernel's log
-> buffer. This causes excessive log spamming from automatic rebalancing,
-> e.g. on zoned filesystems running low on usable space.
-> 
-> Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+On Fri, Feb 27, 2026 at 10:09:59AM +0100, Heiko Carstens wrote:
+> However, I just had a look at the s390 implementation and just saw that the
+> inline assembly constraints for xor_xc_2() are incorrect. "bytes", "p1",
+> and "p2" are input operands, while all three of them are modified within
+> the inline assembly. Given that the function consists only of this inline
+> assembly I doubt that this causes any harm, however I still want to fix
+> this now; but your patch should apply fine with or without this fixed.
 
-Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
+Two comments on that: I thin kin the long run simply moving the
+implementation to a pure assembly file might be easier to maintain.
 
-
--- 
-Damien Le Moal
-Western Digital Research
+Also with this series you can now optimize for more than 5 stripes,
+which should be the mormal case.  I'll try to make sure we'll get
+units tests to help with that.
 
