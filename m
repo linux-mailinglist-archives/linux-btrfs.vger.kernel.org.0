@@ -1,143 +1,116 @@
-Return-Path: <linux-btrfs+bounces-22070-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-22071-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id yAS5GnWsoWm1vQQAu9opvQ
-	(envelope-from <linux-btrfs+bounces-22070-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Feb 2026 15:38:45 +0100
+	id OO4aBcO3oWm+vwQAu9opvQ
+	(envelope-from <linux-btrfs+bounces-22071-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Feb 2026 16:26:59 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFF6B1B91D4
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Feb 2026 15:38:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C71051B9C0A
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Feb 2026 16:26:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 366AA30768DF
-	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Feb 2026 14:36:46 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 4D3FF31F51BD
+	for <lists+linux-btrfs@lfdr.de>; Fri, 27 Feb 2026 15:19:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B844F2E7F20;
-	Fri, 27 Feb 2026 14:36:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 573C643900C;
+	Fri, 27 Feb 2026 15:18:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="KD1L4Etw"
+	dkim=pass (2048-bit key) header.d=mssola.com header.i=@mssola.com header.b="FniFIb8Y"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+Received: from mout-p-102.mailbox.org (mout-p-102.mailbox.org [80.241.56.152])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5B1F2D9797;
-	Fri, 27 Feb 2026 14:36:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 225EA280CE0;
+	Fri, 27 Feb 2026 15:18:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.152
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772203002; cv=none; b=gV7Oxq9AoXlZYlrWkep3dpZgHfaK/QSzV3lRm8z9/nP8ubmeRSsbL4eDFPuv6T1nY/sxJyNd8Sf+yJ+wytzB8tpZvJvylYQQdFBA6jzGxB5hhx9ozhYr/PmKo2ncrIyobiUOvKSN12FBXOW0/Pov+xC6V0Hfae07HCyMq5GTsuc=
+	t=1772205502; cv=none; b=H+AbkdJ6Ah5lyw3jjEtiy0RAMNbmzrqPlcXpTVxotAQcYddJwt+92MbkWPOIBtm2pyFp+TeXiTNScmk8aG3FutpkXNks9ddBdHGxe6rVSdxmqynPDbosMdu6/FMjZFb4N2BDIBN8c8b3McybBmCXI5/Hx2VoxAtttCxpbVb4+WY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772203002; c=relaxed/simple;
-	bh=sd4Dk0zWsQwDRJSs7bWqIQywpiYjqUPgxmAIc0fK68w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GCghZNygrWyJopCSOh/r7w4Y4NWkCo3g8vuySQIu7GaekB38qRGw/+RLyAvA64C69wTn+8Omvty9Um+myeC8GXil3CphhwddTkGyOHlGDr+Ef9JcZZ/FrVfTcSo9N2Wpq2Az5NPzEqDwL/ZDmCVPLhlrSOUuX+tDXak7BPT2Hto=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=KD1L4Etw; arc=none smtp.client-ip=90.155.92.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=sd4Dk0zWsQwDRJSs7bWqIQywpiYjqUPgxmAIc0fK68w=; b=KD1L4Etwagd1eSmxZlo6KzsMbM
-	fONwzvtpqLYChdBJfr8NDHR8cZXcrwPHL+6MIUnFqjzp0jZOeTwkR++VxiE9mZ1Fxo7dbV/s6M719
-	JXFDIXO8UCIWQEeT56dTega0MPjMh5tY7+yrFo7oX79K+n7Q70KOFxLusSqDmlcp0JTF6MuobaJLg
-	ZSmFE4SvOnGKM4aBqQQdA/ZFNBGOvBjLR8Shx1hs85uSqO4Qz/GeLsp1DyW7Ixx3MzD/enr49FEf0
-	39cX6Lvq4zVc/FsVzQUKO0QukCMVTZ+GAl9JRmO5cYgboNvRfsG10Yh9iL/+2tvOLVN16tQiiLj7h
-	ldkMSYYw==;
-Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
-	by desiato.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vvywq-0000000DG9M-0aeA;
-	Fri, 27 Feb 2026 14:36:08 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id AF18E300462; Fri, 27 Feb 2026 15:36:06 +0100 (CET)
-Date: Fri, 27 Feb 2026 15:36:06 +0100
-From: Peter Zijlstra <peterz@infradead.org>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Richard Henderson <richard.henderson@linaro.org>,
-	Matt Turner <mattst88@gmail.com>,
-	Magnus Lindholm <linmag7@gmail.com>,
-	Russell King <linux@armlinux.org.uk>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
-	WANG Xuerui <kernel@xen0n.name>,
-	Madhavan Srinivasan <maddy@linux.ibm.com>,
-	Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>,
-	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
-	Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>,
-	Heiko Carstens <hca@linux.ibm.com>,
-	Vasily Gorbik <gor@linux.ibm.com>,
-	Alexander Gordeev <agordeev@linux.ibm.com>,
-	Christian Borntraeger <borntraeger@linux.ibm.com>,
-	Sven Schnelle <svens@linux.ibm.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Andreas Larsson <andreas@gaisler.com>,
-	Richard Weinberger <richard@nod.at>,
-	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-	Johannes Berg <johannes@sipsolutions.net>,
-	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Herbert Xu <herbert@gondor.apana.org.au>,
-	Dan Williams <dan.j.williams@intel.com>, Chris Mason <clm@fb.com>,
-	David Sterba <dsterba@suse.com>, Arnd Bergmann <arnd@arndb.de>,
-	Song Liu <song@kernel.org>, Yu Kuai <yukuai@fnnas.com>,
-	Li Nan <linan122@huawei.com>, linux-alpha@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	loongarch@lists.linux.dev, linuxppc-dev@lists.ozlabs.org,
-	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
-	linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	linux-arch@vger.kernel.org, linux-raid@vger.kernel.org
-Subject: Re: [PATCH 25/25] xor: use static_call for xor_gen
-Message-ID: <20260227143606.GI1282955@noisy.programming.kicks-ass.net>
-References: <20260226151106.144735-1-hch@lst.de>
- <20260226151106.144735-26-hch@lst.de>
+	s=arc-20240116; t=1772205502; c=relaxed/simple;
+	bh=+cfb6IvSmOUNpAyIkQAjmb3z/qLAYFCDcKMtEcyfwbI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=VXJyBlY5BJRFb3+T3IQhFJF6BiPpk15fP2enOV/Orwkp/E9eM7oYtegyVokqGlZg3h9+bJvZXm0Le786ogFg4LxzjSkPeRSztT2uUmDi8KBDo5t6eLLxyv7loQBxxI0VhQyu08UzLLg7LBWEqSq1ApbxXagcElRBBuXJY+aNfbI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mssola.com; spf=fail smtp.mailfrom=mssola.com; dkim=pass (2048-bit key) header.d=mssola.com header.i=@mssola.com header.b=FniFIb8Y; arc=none smtp.client-ip=80.241.56.152
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mssola.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=mssola.com
+Received: from smtp1.mailbox.org (smtp1.mailbox.org [10.196.197.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mout-p-102.mailbox.org (Postfix) with ESMTPS id 4fMsQw2tDZz9vCV;
+	Fri, 27 Feb 2026 16:18:16 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mssola.com; s=MBO0001;
+	t=1772205496;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=gBbbdgxVzQwq3LWQYxOQfME49wY4rmVdfMiK2jHYQ8Y=;
+	b=FniFIb8YiSeACR6SPqMAmyi2CORp+DqLEZCtraUxgzEv6VIhJ0wi8IxTElxo6V739NAOe1
+	uVM53NrcBGfUp6BSfr8+1ezMVzDHgSN+Ynl3nImBvL4es+A48I5ISzs8fzrM/Vzc+geRSL
+	Ett7S/gInB6fuP3VCrfm+T0YzgEeoQu1etFEMYdSuEvOHTx5u/r5hgo02OVogoWJBtPwUN
+	TGyJFzUfBpz9UNTbXId7tBSf4EufbjN8iphkvnMTiqhR+YbgKv+FnkwT2U4yE/dHf7hmYD
+	wYRzcA4qmLJ6dmZ4JzAxHMw0LkaFR0HyWeTeq/RpySkxLG51hHLMWczz+Ex/kg==
+From: =?UTF-8?q?Miquel=20Sabat=C3=A9=20Sol=C3=A0?= <mssola@mssola.com>
+To: dsterba@suse.com
+Cc: clm@fb.com,
+	linux-btrfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	=?UTF-8?q?Miquel=20Sabat=C3=A9=20Sol=C3=A0?= <mssola@mssola.com>
+Subject: [PATCH 0/2] btrfs: return early in allocation failures
+Date: Fri, 27 Feb 2026 16:17:57 +0100
+Message-ID: <20260227151759.704838-1-mssola@mssola.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260226151106.144735-26-hch@lst.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.39 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[infradead.org,none];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MIXED_CHARSET(0.77)[subject];
+	DMARC_POLICY_ALLOW(-0.50)[mssola.com,none];
+	R_DKIM_ALLOW(-0.20)[mssola.com:s=MBO0001];
 	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[infradead.org:s=desiato.20200630];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[infradead.org:+];
+	TAGGED_FROM(0.00)[bounces-22071-lists,linux-btrfs=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[linux-foundation.org,linaro.org,gmail.com,armlinux.org.uk,arm.com,kernel.org,xen0n.name,linux.ibm.com,ellerman.id.au,dabbelt.com,eecs.berkeley.edu,ghiti.fr,davemloft.net,gaisler.com,nod.at,cambridgegreys.com,sipsolutions.net,redhat.com,alien8.de,linux.intel.com,zytor.com,gondor.apana.org.au,intel.com,fb.com,suse.com,arndb.de,fnnas.com,huawei.com,vger.kernel.org,lists.infradead.org,lists.linux.dev,lists.ozlabs.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22070-lists,linux-btrfs=lfdr.de];
-	MISSING_XM_UA(0.00)[];
-	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_THREE(0.00)[4];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
+	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[peterz@infradead.org,linux-btrfs@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	RCPT_COUNT_GT_50(0.00)[55];
-	TAGGED_RCPT(0.00)[linux-btrfs];
+	FROM_NEQ_ENVFROM(0.00)[mssola@mssola.com,linux-btrfs@vger.kernel.org];
+	DKIM_TRACE(0.00)[mssola.com:+];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[noisy.programming.kicks-ass.net:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,infradead.org:dkim]
-X-Rspamd-Queue-Id: DFF6B1B91D4
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	TAGGED_RCPT(0.00)[linux-btrfs];
+	RCPT_COUNT_FIVE(0.00)[5];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[mssola.com:mid,mssola.com:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: C71051B9C0A
 X-Rspamd-Action: no action
 
-On Thu, Feb 26, 2026 at 07:10:37AM -0800, Christoph Hellwig wrote:
-> Avoid the indirect call for xor_generation by using a static_call.
+Minor cleanups I saw when I was working on [1]. Both commits are related to
+a pattern where two pointers were being initialized and checked after that.
 
-Nice!
+[1] https://lore.kernel.org/linux-btrfs/20260223234451.277369-1-mssola@mssola.com/
+
+Miquel Sabaté Solà (2):
+  btrfs: return early if allocations fail on add_block_entry()
+  btrfs: return early if allocations fail on raid56
+
+ fs/btrfs/raid56.c     | 29 ++++++++++++++++++-----------
+ fs/btrfs/ref-verify.c | 10 ++++++----
+ 2 files changed, 24 insertions(+), 15 deletions(-)
+
+--
+2.53.0
 
