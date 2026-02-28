@@ -1,432 +1,239 @@
-Return-Path: <linux-btrfs+bounces-22114-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-22115-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id cBiVN6Jio2myBQUAu9opvQ
-	(envelope-from <linux-btrfs+bounces-22114-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Feb 2026 22:48:18 +0100
+	id YDCaKlp1o2mwDgUAu9opvQ
+	(envelope-from <linux-btrfs+bounces-22115-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Sun, 01 Mar 2026 00:08:10 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63D741C9401
-	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Feb 2026 22:48:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1232A1C9A0C
+	for <lists+linux-btrfs@lfdr.de>; Sun, 01 Mar 2026 00:08:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D8346316AE3B
-	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Feb 2026 20:37:08 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 74DFE3055940
+	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Feb 2026 23:07:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9562A2D781B;
-	Sat, 28 Feb 2026 20:37:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3966F3E0C58;
+	Sat, 28 Feb 2026 23:07:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="NmbSyxzt"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="VGXBbKPK";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="Ezg/kazO"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A03426C3BE
-	for <linux-btrfs@vger.kernel.org>; Sat, 28 Feb 2026 20:37:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772311026; cv=none; b=B776Rp9lw7k0Zzg5AtqjHKN7QJdZN9cD8AuCOiyOB70et8iOeP0reuOotAmF6jH6j/Ugp2as5tbij8l9JaE0oOEafKvpmzGQf/2DrduYHAeIkyCvbYLQyKnM8yaF4NqEl8dzc9WE2YgERSMHWDelXrZdEMw01HQIbKx1kNtC6T4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772311026; c=relaxed/simple;
-	bh=qX+mX02bg9Os5AIq0Z3ZS8CXIXhvKyPc3QAzLS9dmk8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rot++gDSoN/ZtGiTKWc3bk/pDZeoPNOX+7ncCMpQZ/kD2eqv8ph9uhyPFL+LOKwtrtUTzPXUGXa0CoZ7vrz4O/QWs4nO53zyGGx1o0nZ/qE+S/hc6GRaHq4YzOwhMNks0PexTbQI2JhnTUobfWvDsjpbZFerS299labawnAMZ+U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=NmbSyxzt; arc=none smtp.client-ip=209.85.128.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-48069a48629so34512275e9.0
-        for <linux-btrfs@vger.kernel.org>; Sat, 28 Feb 2026 12:37:05 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40EA7317156;
+	Sat, 28 Feb 2026 23:07:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1772320041; cv=fail; b=MdIAX6c4tkPaBboRcAMqVJaGRFSYUarc2+Vmj1B4NbJZXXnL3X3EkOyetCgPlCQ98yYvj/EqseoVF+uH3ZAZmsA7heKz9sfd8++eoYExadMHZNxsPvYH0T6voORIi4MVpAhG+jp8D1pMbFWzJXkEAwIr7jwXmeufwPAB1mGVzFg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1772320041; c=relaxed/simple;
+	bh=xdJqHtqheS7vSGwY2BnuL97JRi2EmaUDFfzSwSwM+PY=;
+	h=To:Cc:Subject:From:In-Reply-To:Message-ID:References:Date:
+	 Content-Type:MIME-Version; b=TatdmpzaYLh1E7aLdgPN7qGHIumzeljhPzCxfyLTzpunbSa4HGLxvVmsbb+sVh5w2RBu57CTva0tnclxUJFk1iq16pavtx0qZF4G8CsxynHMwxrQ5R85QiYAMtU310f46IFPo2PMZuro3LQ8DldoTE4KOO+IUj8/hj51tXZp09I=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=VGXBbKPK; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=Ezg/kazO; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 61SMp62T1623871;
+	Sat, 28 Feb 2026 23:06:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
+	:content-type:date:from:in-reply-to:message-id:mime-version
+	:references:subject:to; s=corp-2025-04-25; bh=u7YaqEKUoaTNuSIdfU
+	PGTpPEtauQ7HK2dA2vXYHcioo=; b=VGXBbKPKxr1sag8IX2iwaiG1sunWM6pNTM
+	t31qo/gjcLnnjUilYgpJlrxZo10fl5XmYNcc0rlNrxsQjILMWvLmBAncLYRMU4Yy
+	AcnusvTGrOveBcs4djuiOBvaYd7dc2WLJxsuVbwCbZKecb+o6vZ8cuy5o7TW+4+3
+	gh9hF+NF6d7Vr5PncPTZXNEYdYnQwIqaEH1YlnjOGssqRdpHY0wFfj/JQN2NalYB
+	LNzQS6Bj3TwlJ4CTQr9YjHu3kKJY0N4VyOAG/oVC4DEVDCSQOjVqDg9x6aahUZqp
+	tFUqrDVM9mnuPd7Ffuv4Y+FVG1gbioc7tGKuoexTMzQj3A2MPx5A==
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4cksg80mkr-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Sat, 28 Feb 2026 23:06:34 +0000 (GMT)
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 61SI4nXc034757;
+	Sat, 28 Feb 2026 23:06:33 GMT
+Received: from sj2pr03cu001.outbound.protection.outlook.com (mail-westusazon11012042.outbound.protection.outlook.com [52.101.43.42])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 4ckptbm923-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Sat, 28 Feb 2026 23:06:32 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=Bsy4Amhua3wRSQqQAOjiYfu3MuaOaMTpCxUUBlK30hZ7CiTjAGvzdEkCh4CUEMO3MyXKr+CaWh+9373C0hTjWR/pM+oYQRddk6APoASgYxLM6Pjw5BnU+znKv+48/8Aq23Xfya/bZmZXw1x28YoYxRURyZ4BWdooK0GIuT5DU5OUndlHbpGoVS0wHTBICYJzgstAiwr6d75iVnBQ1kXhpfsA69elc1GQnfmNtcPIVJlt9nYr7ZE4tQ8/vr4uKLjUtdy5TzoH2K9Ht7CDb0Rgv1kEUglQpWK0Xyv+ya4VZtEhqmKtgbG/X9oQSXdDlYlIsyaYiRAT6p22JN3dj6dnEQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=u7YaqEKUoaTNuSIdfUPGTpPEtauQ7HK2dA2vXYHcioo=;
+ b=E8+e6Koj5TUqDdW0oqe0a3IKAruvfQNZdtvCZN5L81Ya+8tkdpuj7FlbgHmATcEDZ5dpJzICyPKfMTGuDDgOWdl4umynnzUTenPqw1OZ6OH1lUjZLqp69X4eoN53XuFFURYvHGle0KrjCmjOyN92kE9IMHtq5ocncaduFbWaE0FsaB92X9miyQFjUb07S5BbByeetIEA5ZUGrneW5p6vh9boocjWoc6ggsh9twikQBrvXrx/BAbvM0teCfbbvY9n1yelLql8BXClonFr7tobBHjwlPh4m11t8RqaYR4BWf28CgfaxPbTCWymmmj1qO8M1xYu8yrwba4/3kayRPJYDw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1772311024; x=1772915824; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=UhOPMUn3MDPjH/riefoLNYpJcYKlthTSrTs8DhurUXw=;
-        b=NmbSyxztt6Eump8Jql5w+AMuQED4SPBA6zefhWe1pGS1YzLCI17ofcshN74csbI0Wh
-         2j2JPpXiCRidqh1vxJjXfB65FdmuAWN5Zkc7MMz9ZkbTYxTwDsvTITP0wcZnOT/UV2ms
-         UM8jIat7CbEv3frynCrRVf5Q150QLvY1xlTvRhm2w1VpbjwOkzqS58peSmJKpS8JNitO
-         XwYj9gOsQe847GQIWTo/sYmHk6KDLNii1FeFesXErRCHt3LLUnhMhYD/Wieq37GtWjC4
-         RBKHP1Vnnwm1bkJ5o+SgLwZWNKzNQVqZ3tDa6wZiR1WLwCN+y3UXkc92Xi51PmgFMe7h
-         RaCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772311024; x=1772915824;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UhOPMUn3MDPjH/riefoLNYpJcYKlthTSrTs8DhurUXw=;
-        b=VzJMCYNyj4htE59N7KUDzmhpLQcd44u+0ce7b1j567o+EqPwzwXgwfw3sgZ/o5cw00
-         jv7IGVx5SCG3pEna/1jDZJW5oA4bbixUhG7m+hdQW6Ng2VozVqBr7ogreP5U5M8Yx1/t
-         tfRlQWDQnR5WF5yYrIzydp+1vz/+FTyqEV+7d7MTF0KBESbo4y7gDWcx/iLmJTFck1r2
-         i+oxLQlJ5KAj520dZEODt/xTOnw7F+QVgYLJ9Hzboj7vwg7lP3Zsa683DZlNuonkhNJz
-         e2x6QGJM7XdPszQ7qNmmCjgFRKs+RgLHvIbQ4v5jb4gYY0f/PtdJKYFGtsvLA9RMnQe1
-         hnjA==
-X-Forwarded-Encrypted: i=1; AJvYcCVG5lZJIJWDnojIvGfFnGzESO7Jcx8Zxy35fbg9xE02OV0Fdg9BQRb1Z+v/x6J5ogIBH7e80Vi1dody/g==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwUYE0gb9JDf/4aT5w1nUxL/XxTRLANbpVdIXrSiSqETDSft5HK
-	u9UPQPgHOCFAYAmGaxTCx5RHlg+OMSyI8IOHyCMpMl5rNGsXt2cQiHQhhkFOphx5Uy8=
-X-Gm-Gg: ATEYQzx879DhSLsjPK6gvfwmUNxYQHR+gGi3Q0ZeSNkaGsebkSFxBDt4FMoQJ3hHFha
-	DaT/WhaThVN779M/Vc4oCtvjHCYeXo7EugqdxvZPgfh9nVrLbPrGp45Mjz+dKI7aNVKLanO4fWz
-	t/RPbSGsW7elDn06wr5RJG6FY5H9vSt7M5glu0VK8gcJuEX3wPBSGf3zeeknB4X6JWNhpqeiBrr
-	V1MmaNywsf+2E9oYz2fgP18o9COlZ+2lSUP73YueCH5Jwi5fliJUPouXOF0XmTJd3xyu6+W+A4L
-	s0N9WYY5qOTYULvzkaQ4uI9fcEvpgkaNEXGJ947tALN8+VRUX/keUz+ltEBOO3jOelqyU4L6ERo
-	Z35zAs3GC3CAfH8KTfVeepUTOqD57mAsGXYl+sS8NljshBn8jA4fbYpobWsxxAXYAvBtAphvmdU
-	6Z+OIIEITdS5Xv+EW8wgEoQLQDgwur5eEUPx30AVO88ngj8Cugn9o=
-X-Received: by 2002:a05:600c:6994:b0:477:c478:46d7 with SMTP id 5b1f17b1804b1-483c9c0b88amr122717255e9.22.1772311023611;
-        Sat, 28 Feb 2026 12:37:03 -0800 (PST)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2adfb6b4177sm94307705ad.62.2026.02.28.12.37.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 28 Feb 2026 12:37:03 -0800 (PST)
-Message-ID: <dff3a75f-61d7-42a0-944a-e06118eab8af@suse.com>
-Date: Sun, 1 Mar 2026 07:07:00 +1030
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=u7YaqEKUoaTNuSIdfUPGTpPEtauQ7HK2dA2vXYHcioo=;
+ b=Ezg/kazOQhf11I/OTY48SzO/KzqGCvQyCWA5n41is7gR2FTNuWJAc/IdDGZZj3A7/eSHzNRgibSBDuwE5HK0tSoKrp4NCQ0cUAKQhjQzGp49h+nnCU5f2HKx+pEzUAE+YVsYL8/xnLcInaCu3PyLKZlVChOk1e/O07tx9leA+xQ=
+Received: from CH0PR10MB5338.namprd10.prod.outlook.com (2603:10b6:610:cb::8)
+ by MW6PR10MB7659.namprd10.prod.outlook.com (2603:10b6:303:246::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9654.18; Sat, 28 Feb
+ 2026 23:06:29 +0000
+Received: from CH0PR10MB5338.namprd10.prod.outlook.com
+ ([fe80::e525:dd71:b002:6ad5]) by CH0PR10MB5338.namprd10.prod.outlook.com
+ ([fe80::e525:dd71:b002:6ad5%6]) with mapi id 15.20.9654.015; Sat, 28 Feb 2026
+ 23:06:29 +0000
+To: Damien Le Moal <dlemoal@kernel.org>
+Cc: Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        Song Liu
+ <song@kernel.org>, Yu Kuai <yukuai@fnnas.com>,
+        linux-raid@vger.kernel.org,
+        "Martin K . Petersen"
+ <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+        David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Chris Li <chrisl@kernel.org>, Kairui Song <kasong@tencent.com>,
+        linux-mm@kvack.org
+Subject: Re: [PATCH] block: remove bdev_nonrot()
+From: "Martin K. Petersen" <martin.petersen@oracle.com>
+In-Reply-To: <20260226075448.2229655-1-dlemoal@kernel.org> (Damien Le Moal's
+	message of "Thu, 26 Feb 2026 16:54:48 +0900")
+Organization: Oracle Corporation
+Message-ID: <yq1ikbg31uk.fsf@ca-mkp.ca.oracle.com>
+References: <20260226075448.2229655-1-dlemoal@kernel.org>
+Date: Sat, 28 Feb 2026 18:06:26 -0500
+Content-Type: text/plain
+X-ClientProxiedBy: YQBPR01CA0036.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:c01::44)
+ To CH0PR10MB5338.namprd10.prod.outlook.com (2603:10b6:610:cb::8)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] btrfs: replace BUG() and BUG_ON() with error
- handling in extent-tree.c
-To: Adarsh Das <adarshdas950@gmail.com>, clm@fb.com, dsterba@suse.com
-Cc: terrelln@fb.com, linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20260228090621.100841-1-adarshdas950@gmail.com>
- <20260228090621.100841-3-adarshdas950@gmail.com>
-Content-Language: en-US
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <20260228090621.100841-3-adarshdas950@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH0PR10MB5338:EE_|MW6PR10MB7659:EE_
+X-MS-Office365-Filtering-Correlation-Id: 53b1a183-2b01-45be-fe42-08de771e0129
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|7416014|376014|1800799024|366016;
+X-Microsoft-Antispam-Message-Info:
+	CjMsQKTL0VHrh1tYhxj9fmeIaR07K1f/36LbfoTsELnIEjR6tX9arQaCHS03k1Ic2metV+0+/2O/yg3Rvy3Z8YSWRuhzRRF9JB7rjoNl6ovym2xELhZghJovaF48osEn14elLVFIZh1RYUIGm0UxKxtczl48Tp5HWgnokVqSUczanZa3Hr6dO8jLgx+A+SGUlaNUwUKeqdlUtzkcY72lBs755gYw6tod/COq1z2Uutim6+JrMq/aGHMVIIMp/3Kgy0dynFgST/1gRWi9vcsCNgBuReuKgItv5Xixm3Wp7jYfkD0Df10vNo1++KGwXxPwhs9Jkz61znmU1Brgfn8dS7P0fXEhpFhTlYn1td4phduNdtuFPHjx6EBaJetJQIOzJAV5mKyLcjn8uhZEzoBU8rAu1uT3q3y47Qecq/GpiJKo0+r36KKzX3ar7z1o12/FKLxkTdCJqC85pdmVXfmU6uOQBpFgCIOE9lH9wJtncnohef8nw4IsqNgXeq2cqFO81TDrDAxw57z8AxRyD95emLX39ddsi6+rJUL2KV8Bk4nY9nYpKRUbAyo11krC/zl5KpnAVVkEq/2a99VtP5eLV11rXHld8nuykzwWPQH5tc5LM4i5k1UYLwLTbsdl9RPZ+BWpJDymRPqrodbQDXEpYaL4xXup0kzNt7/D5UjDdsBM4xMfI+0yYCi8ribYh1EKhnB4/Cb6hUj9feTJfZ52WZ0I1RDXKDCHyyYWTW1N7uA=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH0PR10MB5338.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(1800799024)(366016);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?poINlQp0cwOhEdL/+bPXbT2IR93F7u++4lNzqul6ItHFBxmBlgVNxf3l+X8v?=
+ =?us-ascii?Q?/zEsxm7iigQav+8YJrW29f+9kW8cZfX8UXJItzrGb6tbQQ7j+G3/NPk5lGTF?=
+ =?us-ascii?Q?mbbGFcSThEynpOnHsETrVM0fB0S8eLOGBxjfFt6NGZ9VhPflFVmDNRE++T5y?=
+ =?us-ascii?Q?uumMgBE5YH6B4wlcRleMITP/G26up2zZhiOy5CXAnW0OY//7wMPMfzwDFebc?=
+ =?us-ascii?Q?n8CO+4Lne1VhABOGlsTYWSsqvHDuQ5YUI9lHLPezc9smcjzhz8wX4ZXspmTf?=
+ =?us-ascii?Q?ahRlTHteQCWJxcmwx0zYm5O1XntLtmmPv/cq12WKmwOXMzf0JgwAEATthjig?=
+ =?us-ascii?Q?4f/Ls87Eu8AVONtB6yWhZLhohIt8ntBmvWc8fM+qlrWvUPhb1PCgU1gGnt3l?=
+ =?us-ascii?Q?kkehewYeytZjbUZ5csK7DAmoEsu7NomOcvxA+7h77jj3L2AjuD2hJ6u/VQwk?=
+ =?us-ascii?Q?23QJVt1NyaNM3oud83j9jUwRURlbquzZF0t92d9dey+IY46HztjZdHhNHPtw?=
+ =?us-ascii?Q?UBW6mruP0GV3LZDmpTcPrWFtbOVsMit/wfrxyzF4A/JzcZC3iq8FlQs1gYKd?=
+ =?us-ascii?Q?4npZzFUGE3njGoWtZ4uyVUfuEdakWmUMc6E1AlzHIXA96PMWGlA648pQMHdS?=
+ =?us-ascii?Q?wQWFY3FP3Q6SyFhER6o5Ozgndfr29goYlz+puMq8V5OxDmMYjtsoxK5hJBf3?=
+ =?us-ascii?Q?wjdjJMhVVW1Qh68pN7tkA2X5H8SI08eU6PLozEonBkH9Dnvdqp6dkvL6dwPY?=
+ =?us-ascii?Q?aucSjQh0++9WthklxcLMwv2Ijcpz8S+mwYrPTdtcK1apd07Dfw+BtupvekSW?=
+ =?us-ascii?Q?3KFaPpjJRoXkO9p5cuzdQOI70n0XVgm6lYZVMubT58vy6PoxldpHX8GTukQ6?=
+ =?us-ascii?Q?1aZrlMYF1n0/65Ga5Dc5ogN1WZPicQQOkeZZSvRaqz1NTgCkeG7szIeSKptT?=
+ =?us-ascii?Q?V/C6EW2/cxCXrc02bsjKPaPgZeaP49r4+yjS0C6z/kklpSp8KxKnXfuje6SC?=
+ =?us-ascii?Q?gvR1UaDplveTuadvHVzLwb0jWzoY01kaZy77eROkjmbcC492O2sx4od7sj36?=
+ =?us-ascii?Q?PLcsMhQ8x42zwTErnqn4cQ9fIp8cghn3pqXzGfraERtueKfG4qi55OQricmi?=
+ =?us-ascii?Q?cGoTF2LvAZG3BPQ40HPCAo7IEkth8UBAFJkjOt+/8wOoJQv4J4TuakLACJTg?=
+ =?us-ascii?Q?i2F3SwkPGl1CuVk8JiOQowE1bcotWbf7BwvORUoeSFkIsRCMHxQJWZNYa3O8?=
+ =?us-ascii?Q?e+QKSa3Yb8jPV42DpPkiN2bALJoRb0be5LUMBSNTkX7hwhZDbvZEEQdsWFB8?=
+ =?us-ascii?Q?hzow4uQ2duT3/sqsr2hmK6BgqeUgQWrMdIenlS1GLMuJ9+3+FMpSR57b5jiH?=
+ =?us-ascii?Q?DapcbmTe7ZBkjz5DHQfaStJSx38/p5DAZfCd7Rd8QIyQQUFVw1DgN4vVwQB4?=
+ =?us-ascii?Q?zgiPokJmlKHClQmgTXeaZQtR0/Cz2EZOOuYMPRI93OULgPJoAggySj/wNUW4?=
+ =?us-ascii?Q?LIcJFQpKbqAVsxviYExq6aevwAhzCWLniChgff0KCHIIeK85kmorp2Cia7m/?=
+ =?us-ascii?Q?LnvSk5sRHoOUQ6ZtDQkLSWxYylntfUH3beQbBss31kG1qIxZO9GZJolNScrS?=
+ =?us-ascii?Q?FJUqp5gboaB8a1vXSHZ/T5HEd07SrFB7PbZW9kWEvK6qvANI8Kbymn3gbrF/?=
+ =?us-ascii?Q?AOBnhqZO0f/EO3wNnkaTf7FIjR78Rz4vxzPFrN3xiuOuWedqqERpnJtaN2Or?=
+ =?us-ascii?Q?G8sC5YFcP/yn3d3Rao5T9bJYGLMktEA=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	Dal4dUQfnkRz4UynFrU13/mHqxX7t4KdW3Jjp0haqVamvTCE6YPZB2uv8Y9Ju85pGdbvITogXUweq4ybG1+GnAfpOercLmv3Z30OA8Y8AJ+5QStMj3lCib7BkVVIHVHQJZpAsHMS3X/F9UQ1P75L+LV8cTo+bmzSVPBmo8H4RcTlXai64m7fp+WD81WA+UEWt7xcsd/SegEf+SyrPiZByd1ygLov2kTTaGY+TNbQKoXHoncERm+eC2pIdU52259H64ldmVzoNr3G0K5GpAVHqicJVoh9eBIDX6d/xaSCyVWYiJ/lvwluG4eOTudvE0J2hDAz1hqfLL3vvc2Os14CA34DmsrVGEXzITGO5bqo6nQ/yFGl0rx7z2WPAsawjnJhOzFh2vCH80cdFqHmGXBuENkWzkJkQoajnDA9uZWT/S0HlV2HKNkckjbyqbjjy9JH7nq6hN+GM/Bfi5Nc3wHRBKcWAmR1TTHSOUGWEW3BuiGM/ziAw67ZBIq1WDtS/D05ZDdePgIvWtby8drtrdWzArUscyeZwaEaq7mfXa/5IfW67rFZcx4nQ3oTXiQJVev2RBL3wzx0ZizwSDCw1/3NXiyVU4hycA0YYYrgkP8+Zxg=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 53b1a183-2b01-45be-fe42-08de771e0129
+X-MS-Exchange-CrossTenant-AuthSource: CH0PR10MB5338.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Feb 2026 23:06:28.8485
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: hyT3j3vq4vN4u0bCSyxS8L2NA/aHB9b0pPI402HsfGL+nebFUgXl/tz4KhfpXJLYJvC0okUCrb7Nwx/FIyxYPlayUYvSMqyYyd5WcYCXgAw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW6PR10MB7659
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.51,FMLib:17.12.100.49
+ definitions=2026-02-28_07,2026-02-27_03,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0
+ malwarescore=0 mlxscore=0 phishscore=0 mlxlogscore=999 spamscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2602130000 definitions=main-2602280215
+X-Authority-Analysis: v=2.4 cv=bbJmkePB c=1 sm=1 tr=0 ts=69a374fa b=1 cx=c_pps
+ a=zPCbziy225d3KhSqZt3L1A==:117 a=zPCbziy225d3KhSqZt3L1A==:17
+ a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=z/mQ4Ysz8XfWz/Q5cLBRGdckG28=:19
+ a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=xqWC_Br6kY4A:10 a=HzLeVaNsDn8A:10
+ a=GoEa3M9JfhUA:10 a=VkNPw1HP01LnGYTKEx00:22 a=jiCTI4zE5U7BLdzWsZGv:22
+ a=7Gl3-_t3PgB9XO-mQDs3:22 a=yPCof4ZbAAAA:8 a=wrmydrnNtcTXJaWCz40A:9
+ a=MTAcVbZMd_8A:10 cc=ntf awl=host:12261
+X-Proofpoint-GUID: RCtAhHi8dso2TsurLMlOfxgsb1nHGR86
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMjI4MDIxNiBTYWx0ZWRfX1k/VdyluxSab
+ 57XNVqV8uRE4OpW/j1NgqUpsJZ4TjYOKBmQFO2ktC9HanFZJiZg/ExmTYWmpCVzZd9wM7I50HkG
+ emRRFHIYq9bjDh4m+DWtI1xT23GXpHrDtLCK+UorgSDbWh4tC4W1d/YKIR+QIFIHp/pYTiAkB49
+ 4OOpGEV+3UO+fyoeCMMW/aIeP2VHCt9If1wTMCKmwqVqH58EvD6d4l/5H5hXxlAT+a7J5H2pnmB
+ FgfZIxi1aV9r/OFBdNv2r3j1B2f4SWWB9A25vM3vy4MPYXc689MG81kYl+WjxiQHy+x9co+WXFm
+ xZPDKSH3qzehf07hbvQkEluJc2f0yW2jmZ8xbfr9VHYd2xuJhe5R9lDsSIUU0hTdXJ8qJvW/JNi
+ M6oyUE6vPtgjArNMBtvW6tLS9dRoUGIBgmzOhu1UpJAx6wUbJMXZmUFDqWdinBvnHZFk0pCKq2O
+ HRo5xb2Kc9w7h72Iyw3LdC0NtkxJI/BOCDbSajts=
+X-Proofpoint-ORIG-GUID: RCtAhHi8dso2TsurLMlOfxgsb1nHGR86
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
+X-Spamd-Result: default: False [0.34 / 15.00];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[oracle.com,reject];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
+	R_DKIM_ALLOW(-0.20)[oracle.com:s=corp-2025-04-25,oracle.onmicrosoft.com:s=selector2-oracle-onmicrosoft-com];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-22114-lists,linux-btrfs=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com,fb.com,suse.com];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[suse.com:+];
-	TO_DN_SOME(0.00)[];
 	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWELVE(0.00)[18];
+	HAS_ORG_HEADER(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-22115-lists,linux-btrfs=lfdr.de];
+	DKIM_TRACE(0.00)[oracle.com:+,oracle.onmicrosoft.com:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[wqu@suse.com,linux-btrfs@vger.kernel.org];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[martin.petersen@oracle.com,linux-btrfs@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[oracle.onmicrosoft.com:dkim,oracle.com:email,oracle.com:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns];
+	MID_RHS_MATCH_FROMTLD(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,suse.com:mid,suse.com:dkim]
-X-Rspamd-Queue-Id: 63D741C9401
+	RCVD_COUNT_SEVEN(0.00)[9]
+X-Rspamd-Queue-Id: 1232A1C9A0C
 X-Rspamd-Action: no action
 
 
+Damien,
 
-在 2026/2/28 19:36, Adarsh Das 写道:
-> v2:
-> - use ASSERT() instead of btrfs_err() + -EUCLEAN
-> - append ASSERTs in btrfs_add_delayed_data_ref() and btrfs_add_delayed_tree_ref() to validate action at insertion time instead of runtime
-> - fold coding style fixes into this patch
+> bdev_nonrot() is simply the negative return value of bdev_rot(). So
+> replace all call sites of bdev_nonrot() with calls to bdev_rot() and
+> remove bdev_nonrot().
 
-The same problem as patch 1.
+Reviewed-by: Martin K. Petersen <martin.petersen@oracle.com>
 
-> 
-> Signed-off-by: Adarsh Das <adarshdas950@gmail.com>
-> ---
->   fs/btrfs/delayed-ref.c |  8 ++++--
->   fs/btrfs/extent-tree.c | 62 ++++++++++++++++++++----------------------
->   2 files changed, 36 insertions(+), 34 deletions(-)
-> 
-> diff --git a/fs/btrfs/delayed-ref.c b/fs/btrfs/delayed-ref.c
-> index 3766ff29fbbb..d308c70228af 100644
-> --- a/fs/btrfs/delayed-ref.c
-> +++ b/fs/btrfs/delayed-ref.c
-> @@ -1113,7 +1113,9 @@ int btrfs_add_delayed_tree_ref(struct btrfs_trans_handle *trans,
->   			       struct btrfs_ref *generic_ref,
->   			       struct btrfs_delayed_extent_op *extent_op)
->   {
-> -	ASSERT(generic_ref->type == BTRFS_REF_METADATA && generic_ref->action);
-> +	ASSERT(generic_ref->type == BTRFS_REF_METADATA &&
-> +	       (generic_ref->action == BTRFS_ADD_DELAYED_REF ||
-> +					generic_ref->action == BTRFS_DROP_DELAYED_REF));
->   	return add_delayed_ref(trans, generic_ref, extent_op, 0);
->   }
->   
-> @@ -1124,7 +1126,9 @@ int btrfs_add_delayed_data_ref(struct btrfs_trans_handle *trans,
->   			       struct btrfs_ref *generic_ref,
->   			       u64 reserved)
->   {
-> -	ASSERT(generic_ref->type == BTRFS_REF_DATA && generic_ref->action);
-> +	ASSERT(generic_ref->type == BTRFS_REF_DATA &&
-> +	       (generic_ref->action == BTRFS_ADD_DELAYED_REF ||
-> +	        generic_ref->action == BTRFS_DROP_DELAYED_REF));
->   	return add_delayed_ref(trans, generic_ref, NULL, reserved);
->   }
->   
-> diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
-> index 03cf9f242c70..98bdf51774c4 100644
-> --- a/fs/btrfs/extent-tree.c
-> +++ b/fs/btrfs/extent-tree.c
-> @@ -604,7 +604,7 @@ static noinline int remove_extent_data_ref(struct btrfs_trans_handle *trans,
->   		return -EUCLEAN;
->   	}
->   
-> -	BUG_ON(num_refs < refs_to_drop);
-> +	ASSERT(num_refs >= refs_to_drop);
->   	num_refs -= refs_to_drop;
->   
->   	if (num_refs == 0) {
-> @@ -863,7 +863,7 @@ int lookup_inline_extent_backref(struct btrfs_trans_handle *trans,
->   
->   	if (flags & BTRFS_EXTENT_FLAG_TREE_BLOCK && !skinny_metadata) {
->   		ptr += sizeof(struct btrfs_tree_block_info);
-> -		BUG_ON(ptr > end);
-> +		ASSERT(ptr <= end);
->   	}
->   
->   	if (owner >= BTRFS_FIRST_FREE_OBJECTID)
-> @@ -1237,7 +1237,7 @@ static int remove_extent_backref(struct btrfs_trans_handle *trans,
->   {
->   	int ret = 0;
->   
-> -	BUG_ON(!is_data && refs_to_drop != 1);
-> +	ASSERT(is_data || refs_to_drop == 1);
->   	if (iref)
->   		ret = update_inline_extent_backref(trans, path, iref,
->   						   -refs_to_drop, NULL);
-> @@ -1451,10 +1451,9 @@ int btrfs_inc_extent_ref(struct btrfs_trans_handle *trans,
->   	struct btrfs_fs_info *fs_info = trans->fs_info;
->   	int ret;
->   
-> -	ASSERT(generic_ref->type != BTRFS_REF_NOT_SET &&
-> -	       generic_ref->action);
-> -	BUG_ON(generic_ref->type == BTRFS_REF_METADATA &&
-> -	       generic_ref->ref_root == BTRFS_TREE_LOG_OBJECTID);
-> +	ASSERT(generic_ref->type != BTRFS_REF_NOT_SET && generic_ref->action);
-> +	ASSERT(generic_ref->type != BTRFS_REF_METADATA ||
-> +	       generic_ref->ref_root != BTRFS_TREE_LOG_OBJECTID);
->   
->   	if (generic_ref->type == BTRFS_REF_METADATA)
->   		ret = btrfs_add_delayed_tree_ref(trans, generic_ref, NULL);
-> @@ -1621,8 +1620,6 @@ static int run_delayed_data_ref(struct btrfs_trans_handle *trans,
->   		ret = __btrfs_inc_extent_ref(trans, node, extent_op);
->   	} else if (node->action == BTRFS_DROP_DELAYED_REF) {
->   		ret = __btrfs_free_extent(trans, href, node, extent_op);
-> -	} else {
-> -		BUG();
->   	}
->   	return ret;
->   }
-> @@ -1639,7 +1636,7 @@ static void __run_delayed_extent_op(struct btrfs_delayed_extent_op *extent_op,
->   
->   	if (extent_op->update_key) {
->   		struct btrfs_tree_block_info *bi;
-> -		BUG_ON(!(flags & BTRFS_EXTENT_FLAG_TREE_BLOCK));
-> +		ASSERT(flags & BTRFS_EXTENT_FLAG_TREE_BLOCK);
->   		bi = (struct btrfs_tree_block_info *)(ei + 1);
->   		btrfs_set_tree_block_key(leaf, bi, &extent_op->key);
->   	}
-> @@ -1774,8 +1771,6 @@ static int run_delayed_tree_ref(struct btrfs_trans_handle *trans,
->   			ret = drop_remap_tree_ref(trans, node);
->   		else
->   			ret = __btrfs_free_extent(trans, href, node, extent_op);
-> -	} else {
-> -		BUG();
->   	}
->   	return ret;
->   }
-> @@ -2088,7 +2083,7 @@ static noinline int __btrfs_run_delayed_refs(struct btrfs_trans_handle *trans,
->   			 * head
->   			 */
->   			ret = cleanup_ref_head(trans, locked_ref, &bytes_processed);
-> -			if (ret > 0 ) {
-> +			if (ret > 0) {
->   				/* We dropped our lock, we need to loop. */
->   				ret = 0;
->   				continue;
-> @@ -2645,7 +2640,7 @@ int btrfs_pin_extent(struct btrfs_trans_handle *trans, u64 bytenr, u64 num_bytes
->   	struct btrfs_block_group *cache;
->   
->   	cache = btrfs_lookup_block_group(trans->fs_info, bytenr);
-> -	BUG_ON(!cache); /* Logic error */
-> +	ASSERT(cache);
->   
->   	pin_down_extent(trans, cache, bytenr, num_bytes, true);
->   
-> @@ -4119,20 +4114,25 @@ static int do_allocation(struct btrfs_block_group *block_group,
->   			 struct find_free_extent_ctl *ffe_ctl,
->   			 struct btrfs_block_group **bg_ret)
->   {
-> +	ASSERT(ffe_ctl->policy == BTRFS_EXTENT_ALLOC_CLUSTERED ||
-> +	       ffe_ctl->policy == BTRFS_EXTENT_ALLOC_ZONED);
->   	switch (ffe_ctl->policy) {
->   	case BTRFS_EXTENT_ALLOC_CLUSTERED:
->   		return do_allocation_clustered(block_group, ffe_ctl, bg_ret);
->   	case BTRFS_EXTENT_ALLOC_ZONED:
->   		return do_allocation_zoned(block_group, ffe_ctl, bg_ret);
-> -	default:
-> -		BUG();
->   	}
-> +	return -EUCLEAN;
->   }
->   
->   static void release_block_group(struct btrfs_block_group *block_group,
->   				struct find_free_extent_ctl *ffe_ctl,
->   				bool delalloc)
->   {
-> +	ASSERT(btrfs_bg_flags_to_raid_index(block_group->flags) ==
-> +	       ffe_ctl->index);
-> +	ASSERT(ffe_ctl->policy == BTRFS_EXTENT_ALLOC_CLUSTERED ||
-> +	       ffe_ctl->policy == BTRFS_EXTENT_ALLOC_ZONED);
->   	switch (ffe_ctl->policy) {
->   	case BTRFS_EXTENT_ALLOC_CLUSTERED:
->   		ffe_ctl->retry_uncached = false;
-> @@ -4140,12 +4140,8 @@ static void release_block_group(struct btrfs_block_group *block_group,
->   	case BTRFS_EXTENT_ALLOC_ZONED:
->   		/* Nothing to do */
->   		break;
-> -	default:
-> -		BUG();
->   	}
->   
-> -	BUG_ON(btrfs_bg_flags_to_raid_index(block_group->flags) !=
-> -	       ffe_ctl->index);
->   	btrfs_release_block_group(block_group, delalloc);
->   }
->   
-> @@ -4164,6 +4160,8 @@ static void found_extent_clustered(struct find_free_extent_ctl *ffe_ctl,
->   static void found_extent(struct find_free_extent_ctl *ffe_ctl,
->   			 struct btrfs_key *ins)
->   {
-> +	ASSERT(ffe_ctl->policy == BTRFS_EXTENT_ALLOC_CLUSTERED ||
-> +	       ffe_ctl->policy == BTRFS_EXTENT_ALLOC_ZONED);
->   	switch (ffe_ctl->policy) {
->   	case BTRFS_EXTENT_ALLOC_CLUSTERED:
->   		found_extent_clustered(ffe_ctl, ins);
-> @@ -4171,8 +4169,6 @@ static void found_extent(struct find_free_extent_ctl *ffe_ctl,
->   	case BTRFS_EXTENT_ALLOC_ZONED:
->   		/* Nothing to do */
->   		break;
-> -	default:
-> -		BUG();
->   	}
->   }
->   
-> @@ -4232,14 +4228,15 @@ static int can_allocate_chunk_zoned(struct btrfs_fs_info *fs_info,
->   static int can_allocate_chunk(struct btrfs_fs_info *fs_info,
->   			      struct find_free_extent_ctl *ffe_ctl)
->   {
-> +	ASSERT(ffe_ctl->policy == BTRFS_EXTENT_ALLOC_CLUSTERED ||
-> +	       ffe_ctl->policy == BTRFS_EXTENT_ALLOC_ZONED);
->   	switch (ffe_ctl->policy) {
->   	case BTRFS_EXTENT_ALLOC_CLUSTERED:
->   		return 0;
->   	case BTRFS_EXTENT_ALLOC_ZONED:
->   		return can_allocate_chunk_zoned(fs_info, ffe_ctl);
-> -	default:
-> -		BUG();
->   	}
-> +	return -EUCLEAN;
->   }
->   
->   /*
-> @@ -4310,8 +4307,7 @@ static int find_free_extent_update_loop(struct btrfs_fs_info *fs_info,
->   			if (ret == -ENOSPC) {
->   				ret = 0;
->   				ffe_ctl->loop++;
-> -			}
-> -			else if (ret < 0)
-> +			} else if (ret < 0)
->   				btrfs_abort_transaction(trans, ret);
->   			else
->   				ret = 0;
-> @@ -4441,15 +4437,16 @@ static int prepare_allocation(struct btrfs_fs_info *fs_info,
->   			      struct btrfs_space_info *space_info,
->   			      struct btrfs_key *ins)
->   {
-> +	ASSERT(ffe_ctl->policy == BTRFS_EXTENT_ALLOC_CLUSTERED ||
-> +	       ffe_ctl->policy == BTRFS_EXTENT_ALLOC_ZONED);
->   	switch (ffe_ctl->policy) {
->   	case BTRFS_EXTENT_ALLOC_CLUSTERED:
->   		return prepare_allocation_clustered(fs_info, ffe_ctl,
->   						    space_info, ins);
->   	case BTRFS_EXTENT_ALLOC_ZONED:
->   		return prepare_allocation_zoned(fs_info, ffe_ctl, space_info);
-> -	default:
-> -		BUG();
->   	}
-> +	return -EUCLEAN;
->   }
->   
->   /*
-> @@ -5260,6 +5257,8 @@ struct extent_buffer *btrfs_alloc_tree_block(struct btrfs_trans_handle *trans,
->   	bool skinny_metadata = btrfs_fs_incompat(fs_info, SKINNY_METADATA);
->   	u64 owning_root;
->   
-> +	ASSERT(parent <= 0);
-> +
->   #ifdef CONFIG_BTRFS_FS_RUN_SANITY_TESTS
->   	if (btrfs_is_testing(fs_info)) {
->   		buf = btrfs_init_new_buffer(trans, root, root->alloc_bytenr,
-> @@ -5292,8 +5291,7 @@ struct extent_buffer *btrfs_alloc_tree_block(struct btrfs_trans_handle *trans,
->   			parent = ins.objectid;
->   		flags |= BTRFS_BLOCK_FLAG_FULL_BACKREF;
->   		owning_root = reloc_src_root;
-> -	} else
-> -		BUG_ON(parent > 0);
-> +	}
->   
->   	if (root_objectid != BTRFS_TREE_LOG_OBJECTID) {
->   		struct btrfs_delayed_extent_op *extent_op;
-> @@ -5633,7 +5631,7 @@ static int check_ref_exists(struct btrfs_trans_handle *trans,
->   		 * If we get 0 then we found our reference, return 1, else
->   		 * return the error if it's not -ENOENT;
->   		 */
-> -		return (ret < 0 ) ? ret : 1;
-> +		return (ret < 0) ? ret : 1;
->   	}
->   
->   	/*
-> @@ -6437,7 +6435,7 @@ int btrfs_drop_subtree(struct btrfs_trans_handle *trans,
->   	int parent_level;
->   	int ret = 0;
->   
-> -	BUG_ON(btrfs_root_id(root) != BTRFS_TREE_RELOC_OBJECTID);
-> +	ASSERT(btrfs_root_id(root) == BTRFS_TREE_RELOC_OBJECTID);
->   
->   	path = btrfs_alloc_path();
->   	if (!path)
-
+-- 
+Martin K. Petersen
 
