@@ -1,50 +1,50 @@
-Return-Path: <linux-btrfs+bounces-22103-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-22104-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id AOkzM5eRommH4AQAu9opvQ
-	(envelope-from <linux-btrfs+bounces-22103-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Feb 2026 07:56:23 +0100
+	id cOw3JSeSommX4AQAu9opvQ
+	(envelope-from <linux-btrfs+bounces-22104-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Feb 2026 07:58:47 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FB091C0AE5
-	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Feb 2026 07:56:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F8501C0B35
+	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Feb 2026 07:58:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 6F94A309A13B
-	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Feb 2026 06:55:51 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 65CF13089577
+	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Feb 2026 06:58:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AD6233F363;
-	Sat, 28 Feb 2026 06:55:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F76433F363;
+	Sat, 28 Feb 2026 06:58:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="psiiY+mj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WZJvSmvp"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAE91368961;
-	Sat, 28 Feb 2026 06:55:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60D7DA932;
+	Sat, 28 Feb 2026 06:58:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772261747; cv=none; b=I92fzpoLVCXOTs+uEy8uW2CW57EFuHbv1WdVZni7Ay7+douH7OAqiFFZJg0NABinWCMsSJ3eKCGRWP0lGj99r/a8X/oQJJfJHC6XtBZeKGLRMlKj4tlYD1fjTtlo2E+ewt/IMJYT0RnqDLgvaOdKCGc9W4otnJ2QS03u1cMtIIQ=
+	t=1772261894; cv=none; b=fFH3olv2N9orNWYzKHereaaZHaznXrpzlsoGNtkHv9M6pdQ6QaOPMlbaCAG3arjiXxT6/ts1DFpMHod/iuhFXjBCrdEWCT5TG89vrQ0/kNjpfHk8Ol1bLKw4UGITn28OZp41jR+zsmS8qV2jAIVrLf8h2UhLDoFazo9DddN7Ho4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772261747; c=relaxed/simple;
-	bh=b4wWycMp/qA51ETIBAMbd3c8O+W0qcQO/Vfxz7HjaAs=;
+	s=arc-20240116; t=1772261894; c=relaxed/simple;
+	bh=OZ08akKAa75pF5HX8BdM2b9T1B4d2lEE9VTD0Yyikqo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IHslNw+hxdCgzAO3CIwWPwUGGXIhpaoFRTuebAAX4uk21iz0ytEfRcjqjIMHYARlLrQGEuUHRQcbuUu/iLSz46j9Hp7aj4EfRNeY+88n/pfo1pxjbxNA6BFEegb0Dk/YfUhiiGeOOIYVEecUN2qnErO3VLHvz+IQ7IXjS7hXjd8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=psiiY+mj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40A1AC116D0;
-	Sat, 28 Feb 2026 06:55:45 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=tvzG8AK3Ks2LQjdu3FkuSDT55SpdbEr9et6MFKLiSEyP2CeJtxVUdNY/lmPoYIf1Sy1Gs6ML7Pn0Ux8vtGlKVduMjtk37fzDANMZW/sRmFPpMblMdb4YNxIrhRF85Qm/p112ui3YTvIESQgSnB7+TjCzW2TSLWzhUAUgd+nw3C4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WZJvSmvp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3B51C116D0;
+	Sat, 28 Feb 2026 06:58:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772261747;
-	bh=b4wWycMp/qA51ETIBAMbd3c8O+W0qcQO/Vfxz7HjaAs=;
+	s=k20201202; t=1772261893;
+	bh=OZ08akKAa75pF5HX8BdM2b9T1B4d2lEE9VTD0Yyikqo=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=psiiY+mjJy9NDUUzgU6LpECxATrYP6E6WdOer+42b5zCn8ow/eyJXB/ug0mExA9cv
-	 6ePYSGlmoaHtHOi7qoSg0Q3QsHkOGGPNWPHKY6G4BOjm8G543wF1gbRSWkuG2NNNoX
-	 iKjLmRNvDQFISHuKPxgVP1X34FieZC9G4odogCmXjbvadUHK8R5eStFkTiEhfNFMtU
-	 4FNEJ616kUSHbRZxM+m3jm1NVk176WszihcTfvBODu+/0eL6+UG2HnIgUPOZLNLSj1
-	 WxX5AcZXlMJ9kqMb4ogEhdlpTjXL93m1Gw4Fm2Ba2sZDjbueHKzehZlPdBX5J/XiRb
-	 igjWvy5k/xF5A==
-Date: Fri, 27 Feb 2026 22:55:43 -0800
+	b=WZJvSmvpEC6sHP/zivxpALj3tLGejpdvAPR0eMYRI+scB+s1IF4OeEtX5WKMQOtse
+	 Y2O4u4bOc8GI/JkEy6r4u1efjOMWWhLBmlfPczD6cmniYI2bymYIkCjhEhIGubJ4gY
+	 U9xKn5Z26jVbpiN+tbnYvysYm7bGRQ8U3XJJKW5Mpnhlp7/c6eic5HbKU4NYZzTh4Y
+	 eWJy6kT6Z+zFjYDjttC40gAqyP1FxjjNb1CXpDAIZpiSYLp4Vl3s7MEe9JtyMARKCq
+	 OsKaO4PPgfcbgTDw33LPxpOolodGKsdhIykRymhYri+JeNTEZUGQdgg0r4NRhV+/z9
+	 uLwVU5xseRMgQ==
+Date: Fri, 27 Feb 2026 22:58:10 -0800
 From: Eric Biggers <ebiggers@kernel.org>
 To: Christoph Hellwig <hch@lst.de>
 Cc: Andrew Morton <akpm@linux-foundation.org>,
@@ -86,10 +86,10 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
 	linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
 	linux-arch@vger.kernel.org, linux-raid@vger.kernel.org
-Subject: Re: [PATCH 22/25] async_xor: use xor_gen
-Message-ID: <20260228065543.GI65277@quark>
+Subject: Re: [PATCH 24/25] xor: pass the entire operation to the low-level ops
+Message-ID: <20260228065810.GJ65277@quark>
 References: <20260226151106.144735-1-hch@lst.de>
- <20260226151106.144735-23-hch@lst.de>
+ <20260226151106.144735-25-hch@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -98,7 +98,7 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260226151106.144735-23-hch@lst.de>
+In-Reply-To: <20260226151106.144735-25-hch@lst.de>
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
@@ -109,7 +109,7 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-22103-lists,linux-btrfs=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-22104-lists,linux-btrfs=lfdr.de];
 	FREEMAIL_CC(0.00)[linux-foundation.org,linaro.org,gmail.com,armlinux.org.uk,arm.com,kernel.org,xen0n.name,linux.ibm.com,ellerman.id.au,dabbelt.com,eecs.berkeley.edu,ghiti.fr,davemloft.net,gaisler.com,nod.at,cambridgegreys.com,sipsolutions.net,redhat.com,alien8.de,linux.intel.com,zytor.com,gondor.apana.org.au,intel.com,fb.com,suse.com,arndb.de,fnnas.com,huawei.com,vger.kernel.org,lists.infradead.org,lists.linux.dev,lists.ozlabs.org];
 	RCVD_TLS_LAST(0.00)[];
 	FROM_HAS_DN(0.00)[];
@@ -127,20 +127,26 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-btrfs];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,lst.de:email]
-X-Rspamd-Queue-Id: 6FB091C0AE5
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 2F8501C0B35
 X-Rspamd-Action: no action
 
-On Thu, Feb 26, 2026 at 07:10:34AM -0800, Christoph Hellwig wrote:
-> Replace use of the loop around xor_blocks with the easier to use xor_gen
-> API.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  crypto/async_tx/async_xor.c | 16 ++--------------
->  1 file changed, 2 insertions(+), 14 deletions(-)
+On Thu, Feb 26, 2026 at 07:10:36AM -0800, Christoph Hellwig wrote:
+> +#define __DO_XOR_BLOCKS(_name, _handle1, _handle2, _handle3, _handle4)	\
+> +void								\
+> +xor_gen_##_name(void *dest, void **srcs, unsigned int src_cnt,		\
+> +		unsigned int bytes)					\
+> +{									\
+> +	unsigned int src_off = 0;					\
+> +									\
+> +	while (src_cnt > 0) {						\
+> +		unsigned int this_cnt = min(src_cnt, 4);		\
+> +		unsigned long *p1 = (unsigned long *)srcs[src_off];	\
+> +		unsigned long *p2 = (unsigned long *)srcs[src_off + 1];	\
+> +		unsigned long *p3 = (unsigned long *)srcs[src_off + 2];	\
+> +		unsigned long *p4 = (unsigned long *)srcs[src_off + 3];	\
 
-There are still comments in this file that refer to xor_blocks.
+This reads out of bounds if src_cnt isn't a multiple of 4.
 
 - Eric
 
