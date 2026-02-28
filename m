@@ -1,81 +1,81 @@
-Return-Path: <linux-btrfs+bounces-22109-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-22110-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 4L0xISqwomnk4wQAu9opvQ
-	(envelope-from <linux-btrfs+bounces-22109-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Feb 2026 10:06:50 +0100
+	id aAFPBimwomnk4wQAu9opvQ
+	(envelope-from <linux-btrfs+bounces-22110-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Feb 2026 10:06:49 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0C661C1964
-	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Feb 2026 10:06:49 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id B36A51C195D
+	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Feb 2026 10:06:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 9E5BB3038F3A
-	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Feb 2026 09:06:41 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id E49E5303DA15
+	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Feb 2026 09:06:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8DAE3EFD0C;
-	Sat, 28 Feb 2026 09:06:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CBEA3EFD12;
+	Sat, 28 Feb 2026 09:06:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jPBo45MT"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d/ZcHzDq"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 043263F0744
-	for <linux-btrfs@vger.kernel.org>; Sat, 28 Feb 2026 09:06:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7633F3EF0DA
+	for <linux-btrfs@vger.kernel.org>; Sat, 28 Feb 2026 09:06:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772269600; cv=none; b=p4G15AYmRmNqhQr49I8bJMKUTXD7JuKIat/HA+vvsHtjwOZLSut3b9OvXwuVG/6LGMLbWKWRqyt/bVJspsBUm582ROdDEtHZAr67gPJZlbV1xozz/TdLIARka57215zjWYHUZ6HeuAMvFTfiZzUx5/hPxBpXK5B57fzpIxJT8wo=
+	t=1772269603; cv=none; b=ik96ey/tqypGSt2pJPCGMCYJLB1jLZ8mciAVvIrWkO+xhj225cmVu4MZrGDuOOxzBes6qpaEpd1U2cvEOPeI53AsrmnDLCm/66iPihoY49TCmemuQjJogni0+wTzcvFjjCzpZH8qkb2ST9WBDEANuVpHyr+Fnu5A5SDxoMss0zo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772269600; c=relaxed/simple;
-	bh=p8A1Dkwi3C0NzjV0IGFQxl3s0g7d6zP1w1h4b33L508=;
+	s=arc-20240116; t=1772269603; c=relaxed/simple;
+	bh=SDkZ6OnP0DCX/zk8TiUybEOthpnqyryChtxIxiwvmrg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=B4OGKGO5bYymC5FQJJgNz4j2inK/RRNlOSJRQPCSdd1ahDQO2/+nz+ODti09U9nP2PXAfX5+KDuki0T7wss8qml++kwskMYQNRBH8pRuGux4x3o/NAqs6wEQl0y7ekmZ1d1qh7JPctRFr47lCfNOsWLox3fOwDdJ9HvGKZnse1k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jPBo45MT; arc=none smtp.client-ip=209.85.216.42
+	 MIME-Version; b=JUGD8h4Smaw4eHsCr/OmG0BHVbaM0udUGelqBZGYp5gJlCmb4apWYwPWCBi1+g2VqgTsJuU1uUPPdP5nBH95uLl82z6FVhEBORr0sy0b0F21KbEZCz5lnjNjpVPCvI5o9R9bxNjEqKOaHnqEtJiwUI0tMOIZqnn8+TAbaVgBDN8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=d/ZcHzDq; arc=none smtp.client-ip=209.85.216.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-358fb86de36so2479734a91.1
-        for <linux-btrfs@vger.kernel.org>; Sat, 28 Feb 2026 01:06:38 -0800 (PST)
+Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-3594d7b36bdso1008552a91.1
+        for <linux-btrfs@vger.kernel.org>; Sat, 28 Feb 2026 01:06:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1772269598; x=1772874398; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1772269602; x=1772874402; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=iAbrvZKE7mrL9ubvX/4PNKmQLVQgatjwm1rpQ10ifJk=;
-        b=jPBo45MTPZwS9Bw7fdkEO9feP9TqwysHz1xqMJv7BloAwFvTWMjRBl1cjK8hurBGw5
-         /VlHz4PCOd+b4ETjwfwVWVutDFWrfiIKoI9EhjvO1ZqulT9oQZIaeoEI+WWKD79ZdlwC
-         6NQJiGKiz0aDmtcrJ9roehZKc1+iis+9jRk+NjWKJ9YzzNCv9rJvxzdDdTj3eWeAlRhS
-         8f9maeBPgl2KJygGuJcoGU/nFRe521vVTXf+m6I8dGNgqyx98UoXTG+y7CsAQztGkqh7
-         9ivXpP4tRNni36Ir+4QctplbKHl+uwHJIlyK8rtxo9gm+9Sj4PlJlk9QJ5BEwP+oLzHq
-         HAIg==
+        bh=MMz6t2oyzUaXSrfBCyX2Xr2xba4aqzpY77uNKPyU2yQ=;
+        b=d/ZcHzDqP0IRBM8Brk0rsUc/PegvEc3xAizPbJVCtqLFn9/gdJCZRmsycffSGIxU0g
+         Q5cETySm/tSB3KaNpLsgIP2EU39gwc346eICHf2ci4ctW5K16nYl6jhUwsDyIN4bpJtb
+         VVvxMLl3Df7MUR6PZelg1VFt3QAnSqYlDINraRrbZVVo1Lca20cmTH/nb6EWSrl6SfNj
+         vazIBNSGmf9iePa16wuZCy2f0KwECcj9Sn3svR/e8uSNtLmZIU+W6zn46dshswSrTE4i
+         eMNhHsKpuncYm6XDyJ7AwtDWehiTdWdXMRQ222Z56eG54IYZuIXIuSF3K2bL5PbKPr5z
+         qrYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772269598; x=1772874398;
+        d=1e100.net; s=20230601; t=1772269602; x=1772874402;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=iAbrvZKE7mrL9ubvX/4PNKmQLVQgatjwm1rpQ10ifJk=;
-        b=HWhC+skb4Ugm6rkReSfchGwcDRjlDLUshUHL0/NtyrNhIxBjyflir3+GYcjSaryiwx
-         umDKQe71PWGbrvzJyqlUdxEgQou442h07h8udyehl8KhY8grGLZJjD2mYKp9cTb4t24X
-         si/gxGjTL0hX7g/qhKyb//STsdE0VbqkOUZ4ENXUKyD7UYcv2cz3ez5teQjEkVXL5bpN
-         g7ZlWwz0CJ+9VjolfEHax8Iw5x1OaMCR3EbfVtI1zNc9WTNcFEH/p7/L81S01ovmmXTA
-         tfZK8PmqiXRENqMfh91IP5lkAVgHR7A4pblPzHSD8UMNy63bvkre4cZMCL6JAZjw0nfT
-         MGnw==
-X-Forwarded-Encrypted: i=1; AJvYcCUln89TR2V9zw0lOKVydsAtniEznYFJyWXd9o2UShXzJGr9/CIPMhCqspXmcIQaCAHohjGg6JrkQARg4w==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxBAk8rSaGy+X6LIlpBB7SvNja9QS5+oxrKNUbjCvEH3utSvtn5
-	3E8y57tvkyU1IXyZe77+Sc4Ke0xg9Es8A2QKQDNYbiMczuoWVT+Eahtx
-X-Gm-Gg: ATEYQzy7wWS9ZsZtTI7T+bnUzdCgEOx46Tvq7mwRXKmxIzIjOmKisLtBtfAUB38RX6L
-	AGpaXds4FN2mxkL04km6SzKCwy1m0kqVhkVSTQtgZ0ZazjaSeTQI6eyRuNtJrp9TcFxPjSxHwHO
-	LhhbITYVSdWJuZTYh9KxkTnY/Nna33aT8+6ajhOBmnOmSmH3oOUCWWPlfdkn8mrWQgf0nJhEcdx
-	JK5n0tium0sZpO4m2O6zgy5fvTzXSUaroTYJasaw0Q8FgqjK2qdJeYRAm+weBqI1OOEG0B8RFno
-	F03pDerNb2RRvnUri0/Pupu8GzcaCmvAxeu3yY7KLq9WfGPaIDRghRAEJMzkOk5Lx51NWChrotP
-	U/WqoDcoYQXjg1cSTXVaCPDyizEko2ywvhprYmyQUjlLrMSrRq3ayUAf3uVmw/yWwTXQnTPVLTk
-	05dTysUiGyTqrahLTN0ia32JfP
-X-Received: by 2002:a17:90b:2e0b:b0:358:f0d0:1a19 with SMTP id 98e67ed59e1d1-35965c4965cmr5403279a91.12.1772269598272;
-        Sat, 28 Feb 2026 01:06:38 -0800 (PST)
+        bh=MMz6t2oyzUaXSrfBCyX2Xr2xba4aqzpY77uNKPyU2yQ=;
+        b=DXQEqx2zhAPoHo5FkF78CjOVc4OhS15Cye4FmliiiLKF3aLM1+FMwKyvHzJSDdMA4o
+         ijKVRVDIG7Dtz6iLaarOjhgtA11UFMYUMxNpttdIAxN/NfZJawa7oCtpb6PKJrzqy0MU
+         vJDhUwaHk7nLOk1J92c9FiHCTDt0BGImTNyrPoDfVTGgt3N/7SArKvv0haVHAaNiNMc3
+         P101aUfa6+EdtMGveWBiTZ4utTfek40YcWg2h48PsEoQgiTBnIZzglSa/YdXmIUty+GT
+         z3UzYRIvPifZJS595oOSriAZjDcvLqeEtlCC3pqTbNv8d5LSGlydKTrtUKcy361jfWI2
+         NgPg==
+X-Forwarded-Encrypted: i=1; AJvYcCXKeWfthS71cUhGhi/T1V/dtNWTH3V0m6aOV4p5kfuzAtePRa7AeekdJGoLRPkPF1D48oksi26Teq8n/Q==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy+jXOq53c1PV0B1cBFJiI4vzNjETD+X31HGh2X8L6EV0vz0/Qd
+	6+b573KTrAWKgRkeDxq4fVWOMKnfC4DuonkJCWLwjAHz805Iv99tEJLEjBvdgznNRpQ=
+X-Gm-Gg: ATEYQzwCAsQsMtweki4JIjoiClwKp77+rQWNNqvR7A+0qIQcgabiWKBRcgdB4Xu240H
+	XE3WT+BoEddLbrxAVziK09TFjF5nV1Xzdb62CAEcSAXkpe3Z0Ncu2MFvLcCsgtmmr8XysRR87km
+	qDL5LGCfOIW27fPDzhtf2g7SJxdZITY3jY9yZYbmLhUpQNvVZ8YdF8giMOhc5ZUOR4j5zrq+/1J
+	oNtFvxx6EFo18ZaCQSJiwztKTuxU1VcQ5uJlTz1YlDTgsae0F4DEv63vu2KQfa82AATACeXVFBY
+	VFvkSw2c2b0gfGCv9HOWz7erEkyrYSEak4vhgG2fNM4hzeNAZ7FoZArw1TJ8Il1+JGkblZ8aIdy
+	wSw09pnBp/PGB4MPHLZVFyQ4kKN5Mie9P7Qf67WlhiXBDg1AKCVgQ2Sfpi0M0lF7hCsWFzIaoLw
+	AHS8x6P+UOP6xI5xruAtyxNXDw
+X-Received: by 2002:a17:90b:47:b0:354:bf10:e69e with SMTP id 98e67ed59e1d1-35965c4164fmr4955190a91.9.1772269601742;
+        Sat, 28 Feb 2026 01:06:41 -0800 (PST)
 Received: from archlinux ([103.208.68.105])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3593dda5ec8sm7589488a91.12.2026.02.28.01.06.35
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3593dda5ec8sm7589488a91.12.2026.02.28.01.06.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Feb 2026 01:06:38 -0800 (PST)
+        Sat, 28 Feb 2026 01:06:41 -0800 (PST)
 From: Adarsh Das <adarshdas950@gmail.com>
 To: clm@fb.com,
 	dsterba@suse.com
@@ -83,9 +83,9 @@ Cc: terrelln@fb.com,
 	linux-btrfs@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Adarsh Das <adarshdas950@gmail.com>
-Subject: [PATCH v2 1/2] btrfs: replace BUG() with error handling in compression.c
-Date: Sat, 28 Feb 2026 14:36:20 +0530
-Message-ID: <20260228090621.100841-2-adarshdas950@gmail.com>
+Subject: [PATCH v2 2/2] btrfs: replace BUG() and BUG_ON() with error handling in extent-tree.c
+Date: Sat, 28 Feb 2026 14:36:21 +0530
+Message-ID: <20260228090621.100841-3-adarshdas950@gmail.com>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260228090621.100841-1-adarshdas950@gmail.com>
 References: <20260228090621.100841-1-adarshdas950@gmail.com>
@@ -102,242 +102,302 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	FREEMAIL_CC(0.00)[fb.com,vger.kernel.org,gmail.com];
-	TAGGED_FROM(0.00)[bounces-22109-lists,linux-btrfs=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	TO_DN_SOME(0.00)[];
 	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[fb.com,vger.kernel.org,gmail.com];
+	TO_DN_SOME(0.00)[];
+	TAGGED_FROM(0.00)[bounces-22110-lists,linux-btrfs=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	FREEMAIL_FROM(0.00)[gmail.com];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[adarshdas950@gmail.com,linux-btrfs@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
 	DKIM_TRACE(0.00)[gmail.com:+];
-	RCVD_COUNT_FIVE(0.00)[5];
-	TAGGED_RCPT(0.00)[linux-btrfs];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_FIVE(0.00)[6];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: F0C661C1964
+	TAGGED_RCPT(0.00)[linux-btrfs];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	FROM_HAS_DN(0.00)[]
+X-Rspamd-Queue-Id: B36A51C195D
 X-Rspamd-Action: no action
 
 v2:
 - use ASSERT() instead of btrfs_err() + -EUCLEAN
-- remove default: branches and add upfront ASSERT() for type validation
+- append ASSERTs in btrfs_add_delayed_data_ref() and btrfs_add_delayed_tree_ref() to validate action at insertion time instead of runtime
 - fold coding style fixes into this patch
 
 Signed-off-by: Adarsh Das <adarshdas950@gmail.com>
 ---
- fs/btrfs/compression.c | 74 ++++++++++++++----------------------------
- 1 file changed, 25 insertions(+), 49 deletions(-)
+ fs/btrfs/delayed-ref.c |  8 ++++--
+ fs/btrfs/extent-tree.c | 62 ++++++++++++++++++++----------------------
+ 2 files changed, 36 insertions(+), 34 deletions(-)
 
-diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-index 790518a8c803..0d8da8ce5fd3 100644
---- a/fs/btrfs/compression.c
-+++ b/fs/btrfs/compression.c
-@@ -36,9 +36,9 @@
- 
- static struct bio_set btrfs_compressed_bioset;
- 
--static const char* const btrfs_compress_types[] = { "", "zlib", "lzo", "zstd" };
-+static const char * const btrfs_compress_types[] = { "", "zlib", "lzo", "zstd" };
- 
--const char* btrfs_compress_type2str(enum btrfs_compression_type type)
-+const char *btrfs_compress_type2str(enum btrfs_compression_type type)
+diff --git a/fs/btrfs/delayed-ref.c b/fs/btrfs/delayed-ref.c
+index 3766ff29fbbb..d308c70228af 100644
+--- a/fs/btrfs/delayed-ref.c
++++ b/fs/btrfs/delayed-ref.c
+@@ -1113,7 +1113,9 @@ int btrfs_add_delayed_tree_ref(struct btrfs_trans_handle *trans,
+ 			       struct btrfs_ref *generic_ref,
+ 			       struct btrfs_delayed_extent_op *extent_op)
  {
- 	switch (type) {
- 	case BTRFS_COMPRESS_ZLIB:
-@@ -89,24 +89,21 @@ bool btrfs_compress_is_valid_type(const char *str, size_t len)
- static int compression_decompress_bio(struct list_head *ws,
- 				      struct compressed_bio *cb)
+-	ASSERT(generic_ref->type == BTRFS_REF_METADATA && generic_ref->action);
++	ASSERT(generic_ref->type == BTRFS_REF_METADATA &&
++	       (generic_ref->action == BTRFS_ADD_DELAYED_REF ||
++					generic_ref->action == BTRFS_DROP_DELAYED_REF));
+ 	return add_delayed_ref(trans, generic_ref, extent_op, 0);
+ }
+ 
+@@ -1124,7 +1126,9 @@ int btrfs_add_delayed_data_ref(struct btrfs_trans_handle *trans,
+ 			       struct btrfs_ref *generic_ref,
+ 			       u64 reserved)
  {
-+	ASSERT(cb->compress_type > BTRFS_COMPRESS_NONE &&
-+	       cb->compress_type < BTRFS_NR_COMPRESS_TYPES);
- 	switch (cb->compress_type) {
- 	case BTRFS_COMPRESS_ZLIB: return zlib_decompress_bio(ws, cb);
- 	case BTRFS_COMPRESS_LZO:  return lzo_decompress_bio(ws, cb);
- 	case BTRFS_COMPRESS_ZSTD: return zstd_decompress_bio(ws, cb);
--	case BTRFS_COMPRESS_NONE:
+-	ASSERT(generic_ref->type == BTRFS_REF_DATA && generic_ref->action);
++	ASSERT(generic_ref->type == BTRFS_REF_DATA &&
++	       (generic_ref->action == BTRFS_ADD_DELAYED_REF ||
++	        generic_ref->action == BTRFS_DROP_DELAYED_REF));
+ 	return add_delayed_ref(trans, generic_ref, NULL, reserved);
+ }
+ 
+diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+index 03cf9f242c70..98bdf51774c4 100644
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -604,7 +604,7 @@ static noinline int remove_extent_data_ref(struct btrfs_trans_handle *trans,
+ 		return -EUCLEAN;
+ 	}
+ 
+-	BUG_ON(num_refs < refs_to_drop);
++	ASSERT(num_refs >= refs_to_drop);
+ 	num_refs -= refs_to_drop;
+ 
+ 	if (num_refs == 0) {
+@@ -863,7 +863,7 @@ int lookup_inline_extent_backref(struct btrfs_trans_handle *trans,
+ 
+ 	if (flags & BTRFS_EXTENT_FLAG_TREE_BLOCK && !skinny_metadata) {
+ 		ptr += sizeof(struct btrfs_tree_block_info);
+-		BUG_ON(ptr > end);
++		ASSERT(ptr <= end);
+ 	}
+ 
+ 	if (owner >= BTRFS_FIRST_FREE_OBJECTID)
+@@ -1237,7 +1237,7 @@ static int remove_extent_backref(struct btrfs_trans_handle *trans,
+ {
+ 	int ret = 0;
+ 
+-	BUG_ON(!is_data && refs_to_drop != 1);
++	ASSERT(is_data || refs_to_drop == 1);
+ 	if (iref)
+ 		ret = update_inline_extent_backref(trans, path, iref,
+ 						   -refs_to_drop, NULL);
+@@ -1451,10 +1451,9 @@ int btrfs_inc_extent_ref(struct btrfs_trans_handle *trans,
+ 	struct btrfs_fs_info *fs_info = trans->fs_info;
+ 	int ret;
+ 
+-	ASSERT(generic_ref->type != BTRFS_REF_NOT_SET &&
+-	       generic_ref->action);
+-	BUG_ON(generic_ref->type == BTRFS_REF_METADATA &&
+-	       generic_ref->ref_root == BTRFS_TREE_LOG_OBJECTID);
++	ASSERT(generic_ref->type != BTRFS_REF_NOT_SET && generic_ref->action);
++	ASSERT(generic_ref->type != BTRFS_REF_METADATA ||
++	       generic_ref->ref_root != BTRFS_TREE_LOG_OBJECTID);
+ 
+ 	if (generic_ref->type == BTRFS_REF_METADATA)
+ 		ret = btrfs_add_delayed_tree_ref(trans, generic_ref, NULL);
+@@ -1621,8 +1620,6 @@ static int run_delayed_data_ref(struct btrfs_trans_handle *trans,
+ 		ret = __btrfs_inc_extent_ref(trans, node, extent_op);
+ 	} else if (node->action == BTRFS_DROP_DELAYED_REF) {
+ 		ret = __btrfs_free_extent(trans, href, node, extent_op);
+-	} else {
+-		BUG();
+ 	}
+ 	return ret;
+ }
+@@ -1639,7 +1636,7 @@ static void __run_delayed_extent_op(struct btrfs_delayed_extent_op *extent_op,
+ 
+ 	if (extent_op->update_key) {
+ 		struct btrfs_tree_block_info *bi;
+-		BUG_ON(!(flags & BTRFS_EXTENT_FLAG_TREE_BLOCK));
++		ASSERT(flags & BTRFS_EXTENT_FLAG_TREE_BLOCK);
+ 		bi = (struct btrfs_tree_block_info *)(ei + 1);
+ 		btrfs_set_tree_block_key(leaf, bi, &extent_op->key);
+ 	}
+@@ -1774,8 +1771,6 @@ static int run_delayed_tree_ref(struct btrfs_trans_handle *trans,
+ 			ret = drop_remap_tree_ref(trans, node);
+ 		else
+ 			ret = __btrfs_free_extent(trans, href, node, extent_op);
+-	} else {
+-		BUG();
+ 	}
+ 	return ret;
+ }
+@@ -2088,7 +2083,7 @@ static noinline int __btrfs_run_delayed_refs(struct btrfs_trans_handle *trans,
+ 			 * head
+ 			 */
+ 			ret = cleanup_ref_head(trans, locked_ref, &bytes_processed);
+-			if (ret > 0 ) {
++			if (ret > 0) {
+ 				/* We dropped our lock, we need to loop. */
+ 				ret = 0;
+ 				continue;
+@@ -2645,7 +2640,7 @@ int btrfs_pin_extent(struct btrfs_trans_handle *trans, u64 bytenr, u64 num_bytes
+ 	struct btrfs_block_group *cache;
+ 
+ 	cache = btrfs_lookup_block_group(trans->fs_info, bytenr);
+-	BUG_ON(!cache); /* Logic error */
++	ASSERT(cache);
+ 
+ 	pin_down_extent(trans, cache, bytenr, num_bytes, true);
+ 
+@@ -4119,20 +4114,25 @@ static int do_allocation(struct btrfs_block_group *block_group,
+ 			 struct find_free_extent_ctl *ffe_ctl,
+ 			 struct btrfs_block_group **bg_ret)
+ {
++	ASSERT(ffe_ctl->policy == BTRFS_EXTENT_ALLOC_CLUSTERED ||
++	       ffe_ctl->policy == BTRFS_EXTENT_ALLOC_ZONED);
+ 	switch (ffe_ctl->policy) {
+ 	case BTRFS_EXTENT_ALLOC_CLUSTERED:
+ 		return do_allocation_clustered(block_group, ffe_ctl, bg_ret);
+ 	case BTRFS_EXTENT_ALLOC_ZONED:
+ 		return do_allocation_zoned(block_group, ffe_ctl, bg_ret);
 -	default:
--		/*
--		 * This can't happen, the type is validated several times
--		 * before we get here.
--		 */
 -		BUG();
  	}
 +	return -EUCLEAN;
  }
  
- static int compression_decompress(int type, struct list_head *ws,
- 		const u8 *data_in, struct folio *dest_folio,
- 		unsigned long dest_pgoff, size_t srclen, size_t destlen)
+ static void release_block_group(struct btrfs_block_group *block_group,
+ 				struct find_free_extent_ctl *ffe_ctl,
+ 				bool delalloc)
  {
-+	ASSERT(type > BTRFS_COMPRESS_NONE && type < BTRFS_NR_COMPRESS_TYPES);
- 	switch (type) {
- 	case BTRFS_COMPRESS_ZLIB: return zlib_decompress(ws, data_in, dest_folio,
- 						dest_pgoff, srclen, destlen);
-@@ -114,14 +111,8 @@ static int compression_decompress(int type, struct list_head *ws,
- 						dest_pgoff, srclen, destlen);
- 	case BTRFS_COMPRESS_ZSTD: return zstd_decompress(ws, data_in, dest_folio,
- 						dest_pgoff, srclen, destlen);
--	case BTRFS_COMPRESS_NONE:
++	ASSERT(btrfs_bg_flags_to_raid_index(block_group->flags) ==
++	       ffe_ctl->index);
++	ASSERT(ffe_ctl->policy == BTRFS_EXTENT_ALLOC_CLUSTERED ||
++	       ffe_ctl->policy == BTRFS_EXTENT_ALLOC_ZONED);
+ 	switch (ffe_ctl->policy) {
+ 	case BTRFS_EXTENT_ALLOC_CLUSTERED:
+ 		ffe_ctl->retry_uncached = false;
+@@ -4140,12 +4140,8 @@ static void release_block_group(struct btrfs_block_group *block_group,
+ 	case BTRFS_EXTENT_ALLOC_ZONED:
+ 		/* Nothing to do */
+ 		break;
 -	default:
--		/*
--		 * This can't happen, the type is validated several times
--		 * before we get here.
--		 */
+-		BUG();
+ 	}
+ 
+-	BUG_ON(btrfs_bg_flags_to_raid_index(block_group->flags) !=
+-	       ffe_ctl->index);
+ 	btrfs_release_block_group(block_group, delalloc);
+ }
+ 
+@@ -4164,6 +4160,8 @@ static void found_extent_clustered(struct find_free_extent_ctl *ffe_ctl,
+ static void found_extent(struct find_free_extent_ctl *ffe_ctl,
+ 			 struct btrfs_key *ins)
+ {
++	ASSERT(ffe_ctl->policy == BTRFS_EXTENT_ALLOC_CLUSTERED ||
++	       ffe_ctl->policy == BTRFS_EXTENT_ALLOC_ZONED);
+ 	switch (ffe_ctl->policy) {
+ 	case BTRFS_EXTENT_ALLOC_CLUSTERED:
+ 		found_extent_clustered(ffe_ctl, ins);
+@@ -4171,8 +4169,6 @@ static void found_extent(struct find_free_extent_ctl *ffe_ctl,
+ 	case BTRFS_EXTENT_ALLOC_ZONED:
+ 		/* Nothing to do */
+ 		break;
+-	default:
+-		BUG();
+ 	}
+ }
+ 
+@@ -4232,14 +4228,15 @@ static int can_allocate_chunk_zoned(struct btrfs_fs_info *fs_info,
+ static int can_allocate_chunk(struct btrfs_fs_info *fs_info,
+ 			      struct find_free_extent_ctl *ffe_ctl)
+ {
++	ASSERT(ffe_ctl->policy == BTRFS_EXTENT_ALLOC_CLUSTERED ||
++	       ffe_ctl->policy == BTRFS_EXTENT_ALLOC_ZONED);
+ 	switch (ffe_ctl->policy) {
+ 	case BTRFS_EXTENT_ALLOC_CLUSTERED:
+ 		return 0;
+ 	case BTRFS_EXTENT_ALLOC_ZONED:
+ 		return can_allocate_chunk_zoned(fs_info, ffe_ctl);
+-	default:
 -		BUG();
  	}
 +	return -EUCLEAN;
- }
- 
- static int btrfs_decompress_bio(struct compressed_bio *cb);
-@@ -484,6 +475,7 @@ static noinline int add_ra_bio_pages(struct inode *inode,
- 
- 			if (zero_offset) {
- 				int zeros;
-+
- 				zeros = folio_size(folio) - zero_offset;
- 				folio_zero_range(folio, zero_offset, zeros);
- 			}
-@@ -697,33 +689,25 @@ static const struct btrfs_compress_levels * const btrfs_compress_levels[] = {
- 
- static struct list_head *alloc_workspace(struct btrfs_fs_info *fs_info, int type, int level)
- {
-+
-+	ASSERT(type >= BTRFS_COMPRESS_NONE && type < BTRFS_NR_COMPRESS_TYPES);
- 	switch (type) {
- 	case BTRFS_COMPRESS_NONE: return alloc_heuristic_ws(fs_info);
- 	case BTRFS_COMPRESS_ZLIB: return zlib_alloc_workspace(fs_info, level);
- 	case BTRFS_COMPRESS_LZO:  return lzo_alloc_workspace(fs_info);
- 	case BTRFS_COMPRESS_ZSTD: return zstd_alloc_workspace(fs_info, level);
--	default:
--		/*
--		 * This can't happen, the type is validated several times
--		 * before we get here.
--		 */
--		BUG();
- 	}
-+	return ERR_PTR(-EUCLEAN);
- }
- 
- static void free_workspace(int type, struct list_head *ws)
- {
-+	ASSERT(type >= BTRFS_COMPRESS_NONE && type < BTRFS_NR_COMPRESS_TYPES);
- 	switch (type) {
- 	case BTRFS_COMPRESS_NONE: return free_heuristic_ws(ws);
- 	case BTRFS_COMPRESS_ZLIB: return zlib_free_workspace(ws);
- 	case BTRFS_COMPRESS_LZO:  return lzo_free_workspace(ws);
- 	case BTRFS_COMPRESS_ZSTD: return zstd_free_workspace(ws);
--	default:
--		/*
--		 * This can't happen, the type is validated several times
--		 * before we get here.
--		 */
--		BUG();
- 	}
- }
- 
-@@ -792,7 +776,7 @@ struct list_head *btrfs_get_workspace(struct btrfs_fs_info *fs_info, int type, i
- 	struct workspace_manager *wsm = fs_info->compr_wsm[type];
- 	struct list_head *workspace;
- 	int cpus = num_online_cpus();
--	unsigned nofs_flag;
-+	unsigned int nofs_flag;
- 	struct list_head *idle_ws;
- 	spinlock_t *ws_lock;
- 	atomic_t *total_ws;
-@@ -868,18 +852,14 @@ struct list_head *btrfs_get_workspace(struct btrfs_fs_info *fs_info, int type, i
- 
- static struct list_head *get_workspace(struct btrfs_fs_info *fs_info, int type, int level)
- {
-+	ASSERT(type >= BTRFS_COMPRESS_NONE && type < BTRFS_NR_COMPRESS_TYPES);
- 	switch (type) {
- 	case BTRFS_COMPRESS_NONE: return btrfs_get_workspace(fs_info, type, level);
- 	case BTRFS_COMPRESS_ZLIB: return zlib_get_workspace(fs_info, level);
- 	case BTRFS_COMPRESS_LZO:  return btrfs_get_workspace(fs_info, type, level);
- 	case BTRFS_COMPRESS_ZSTD: return zstd_get_workspace(fs_info, level);
--	default:
--		/*
--		 * This can't happen, the type is validated several times
--		 * before we get here.
--		 */
--		BUG();
- 	}
-+	return ERR_PTR(-EUCLEAN);
  }
  
  /*
-@@ -919,17 +899,12 @@ void btrfs_put_workspace(struct btrfs_fs_info *fs_info, int type, struct list_he
- 
- static void put_workspace(struct btrfs_fs_info *fs_info, int type, struct list_head *ws)
+@@ -4310,8 +4307,7 @@ static int find_free_extent_update_loop(struct btrfs_fs_info *fs_info,
+ 			if (ret == -ENOSPC) {
+ 				ret = 0;
+ 				ffe_ctl->loop++;
+-			}
+-			else if (ret < 0)
++			} else if (ret < 0)
+ 				btrfs_abort_transaction(trans, ret);
+ 			else
+ 				ret = 0;
+@@ -4441,15 +4437,16 @@ static int prepare_allocation(struct btrfs_fs_info *fs_info,
+ 			      struct btrfs_space_info *space_info,
+ 			      struct btrfs_key *ins)
  {
-+	ASSERT(type >= BTRFS_COMPRESS_NONE && type < BTRFS_NR_COMPRESS_TYPES);
- 	switch (type) {
- 	case BTRFS_COMPRESS_NONE: return btrfs_put_workspace(fs_info, type, ws);
- 	case BTRFS_COMPRESS_ZLIB: return btrfs_put_workspace(fs_info, type, ws);
- 	case BTRFS_COMPRESS_LZO:  return btrfs_put_workspace(fs_info, type, ws);
- 	case BTRFS_COMPRESS_ZSTD: return zstd_put_workspace(fs_info, ws);
++	ASSERT(ffe_ctl->policy == BTRFS_EXTENT_ALLOC_CLUSTERED ||
++	       ffe_ctl->policy == BTRFS_EXTENT_ALLOC_ZONED);
+ 	switch (ffe_ctl->policy) {
+ 	case BTRFS_EXTENT_ALLOC_CLUSTERED:
+ 		return prepare_allocation_clustered(fs_info, ffe_ctl,
+ 						    space_info, ins);
+ 	case BTRFS_EXTENT_ALLOC_ZONED:
+ 		return prepare_allocation_zoned(fs_info, ffe_ctl, space_info);
 -	default:
--		/*
--		 * This can't happen, the type is validated several times
--		 * before we get here.
--		 */
 -		BUG();
  	}
++	return -EUCLEAN;
  }
  
-@@ -1181,17 +1156,17 @@ static u64 file_offset_from_bvec(const struct bio_vec *bvec)
-  * @buf:		The decompressed data buffer
-  * @buf_len:		The decompressed data length
-  * @decompressed:	Number of bytes that are already decompressed inside the
-- * 			compressed extent
-+ *			compressed extent
-  * @cb:			The compressed extent descriptor
-  * @orig_bio:		The original bio that the caller wants to read for
-  *
-  * An easier to understand graph is like below:
-  *
-- * 		|<- orig_bio ->|     |<- orig_bio->|
-- * 	|<-------      full decompressed extent      ----->|
-- * 	|<-----------    @cb range   ---->|
-- * 	|			|<-- @buf_len -->|
-- * 	|<--- @decompressed --->|
-+ *		|<- orig_bio ->|     |<- orig_bio->|
-+ *	|<-------      full decompressed extent      ----->|
-+ *	|<-----------    @cb range   ---->|
-+ *	|			|<-- @buf_len -->|
-+ *	|<--- @decompressed --->|
-  *
-  * Note that, @cb can be a subpage of the full decompressed extent, but
-  * @cb->start always has the same as the orig_file_offset value of the full
-@@ -1313,7 +1288,8 @@ static u32 shannon_entropy(struct heuristic_ws *ws)
- #define RADIX_BASE		4U
- #define COUNTERS_SIZE		(1U << RADIX_BASE)
+ /*
+@@ -5260,6 +5257,8 @@ struct extent_buffer *btrfs_alloc_tree_block(struct btrfs_trans_handle *trans,
+ 	bool skinny_metadata = btrfs_fs_incompat(fs_info, SKINNY_METADATA);
+ 	u64 owning_root;
  
--static u8 get4bits(u64 num, int shift) {
-+static u8 get4bits(u64 num, int shift)
-+{
- 	u8 low4bits;
++	ASSERT(parent <= 0);
++
+ #ifdef CONFIG_BTRFS_FS_RUN_SANITY_TESTS
+ 	if (btrfs_is_testing(fs_info)) {
+ 		buf = btrfs_init_new_buffer(trans, root, root->alloc_bytenr,
+@@ -5292,8 +5291,7 @@ struct extent_buffer *btrfs_alloc_tree_block(struct btrfs_trans_handle *trans,
+ 			parent = ins.objectid;
+ 		flags |= BTRFS_BLOCK_FLAG_FULL_BACKREF;
+ 		owning_root = reloc_src_root;
+-	} else
+-		BUG_ON(parent > 0);
++	}
  
- 	num >>= shift;
-@@ -1388,7 +1364,7 @@ static void radix_sort(struct bucket_item *array, struct bucket_item *array_buf,
+ 	if (root_objectid != BTRFS_TREE_LOG_OBJECTID) {
+ 		struct btrfs_delayed_extent_op *extent_op;
+@@ -5633,7 +5631,7 @@ static int check_ref_exists(struct btrfs_trans_handle *trans,
+ 		 * If we get 0 then we found our reference, return 1, else
+ 		 * return the error if it's not -ENOENT;
  		 */
- 		memset(counters, 0, sizeof(counters));
+-		return (ret < 0 ) ? ret : 1;
++		return (ret < 0) ? ret : 1;
+ 	}
  
--		for (i = 0; i < num; i ++) {
-+		for (i = 0; i < num; i++) {
- 			buf_num = array_buf[i].count;
- 			addr = get4bits(buf_num, shift);
- 			counters[addr]++;
+ 	/*
+@@ -6437,7 +6435,7 @@ int btrfs_drop_subtree(struct btrfs_trans_handle *trans,
+ 	int parent_level;
+ 	int ret = 0;
+ 
+-	BUG_ON(btrfs_root_id(root) != BTRFS_TREE_RELOC_OBJECTID);
++	ASSERT(btrfs_root_id(root) == BTRFS_TREE_RELOC_OBJECTID);
+ 
+ 	path = btrfs_alloc_path();
+ 	if (!path)
 -- 
 2.53.0
 
