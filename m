@@ -1,50 +1,50 @@
-Return-Path: <linux-btrfs+bounces-22104-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-22105-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id cOw3JSeSommX4AQAu9opvQ
-	(envelope-from <linux-btrfs+bounces-22104-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Feb 2026 07:58:47 +0100
+	id iG3XLRSWomn14AQAu9opvQ
+	(envelope-from <linux-btrfs+bounces-22105-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Feb 2026 08:15:32 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F8501C0B35
-	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Feb 2026 07:58:46 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 993941C0E4A
+	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Feb 2026 08:15:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 65CF13089577
-	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Feb 2026 06:58:18 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id C78473032042
+	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Feb 2026 07:15:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F76433F363;
-	Sat, 28 Feb 2026 06:58:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3286A36B072;
+	Sat, 28 Feb 2026 07:15:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WZJvSmvp"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Vz3k8kyT"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60D7DA932;
-	Sat, 28 Feb 2026 06:58:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A07E36605D;
+	Sat, 28 Feb 2026 07:15:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772261894; cv=none; b=fFH3olv2N9orNWYzKHereaaZHaznXrpzlsoGNtkHv9M6pdQ6QaOPMlbaCAG3arjiXxT6/ts1DFpMHod/iuhFXjBCrdEWCT5TG89vrQ0/kNjpfHk8Ol1bLKw4UGITn28OZp41jR+zsmS8qV2jAIVrLf8h2UhLDoFazo9DddN7Ho4=
+	t=1772262925; cv=none; b=E85MJKzW5wbD6FPtp5GJQxXaUXuwSqacnrky3jdWGW4C1+pCujIiHPpqGwKbsq2hmIDPDMXY2Ll4yeGey53CgPMmb2DEvj5Tk13JBtRt3UKtsR6y7TCqe8JpENDX1k6LQ94EHqQUQ50zvVsInXFmt92/mKGILP05zcvNu/h4Suk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772261894; c=relaxed/simple;
-	bh=OZ08akKAa75pF5HX8BdM2b9T1B4d2lEE9VTD0Yyikqo=;
+	s=arc-20240116; t=1772262925; c=relaxed/simple;
+	bh=zWqt8Joca1KvplCXgcwLYttswt0fM6g1E9UxDDRiVTY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tvzG8AK3Ks2LQjdu3FkuSDT55SpdbEr9et6MFKLiSEyP2CeJtxVUdNY/lmPoYIf1Sy1Gs6ML7Pn0Ux8vtGlKVduMjtk37fzDANMZW/sRmFPpMblMdb4YNxIrhRF85Qm/p112ui3YTvIESQgSnB7+TjCzW2TSLWzhUAUgd+nw3C4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WZJvSmvp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3B51C116D0;
-	Sat, 28 Feb 2026 06:58:11 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=ccZvmoEquZdZgekkulxpLeb2f/jW93Q0bGwHiZKDPp7cHDrReQIRGyBIGDQ7eGbeNaojwuYjhqIBHi/A4+RZsKVd7DOwP+I+GpQrWu+N8+W/GmHiSyx6p5R05RpcJyQhUnOWYobpmfgJt+M8QIU6KLBR/zI3y7gYbmP8xXbXBro=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Vz3k8kyT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39044C116D0;
+	Sat, 28 Feb 2026 07:15:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772261893;
-	bh=OZ08akKAa75pF5HX8BdM2b9T1B4d2lEE9VTD0Yyikqo=;
+	s=k20201202; t=1772262925;
+	bh=zWqt8Joca1KvplCXgcwLYttswt0fM6g1E9UxDDRiVTY=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=WZJvSmvpEC6sHP/zivxpALj3tLGejpdvAPR0eMYRI+scB+s1IF4OeEtX5WKMQOtse
-	 Y2O4u4bOc8GI/JkEy6r4u1efjOMWWhLBmlfPczD6cmniYI2bymYIkCjhEhIGubJ4gY
-	 U9xKn5Z26jVbpiN+tbnYvysYm7bGRQ8U3XJJKW5Mpnhlp7/c6eic5HbKU4NYZzTh4Y
-	 eWJy6kT6Z+zFjYDjttC40gAqyP1FxjjNb1CXpDAIZpiSYLp4Vl3s7MEe9JtyMARKCq
-	 OsKaO4PPgfcbgTDw33LPxpOolodGKsdhIykRymhYri+JeNTEZUGQdgg0r4NRhV+/z9
-	 uLwVU5xseRMgQ==
-Date: Fri, 27 Feb 2026 22:58:10 -0800
+	b=Vz3k8kyTWZXHMK5zn7xXibfO3tQ+c+PplCLKYAb/nEXG6XVyxylOPTDzXmct2v/wF
+	 WmaMWfVwV7ygt8481V3ntzFPARMBXxozM0S4vYM+fu8NTjVMCeXuO/SMU92oOtftWp
+	 YviS01hMbTL4Nkd5vseytV1ImcKk3TWqfzHY4gUzr3YvSM+tsz1IZkLgKG1gW+KaxO
+	 rZfmvPr+C7N697Fz2WWHkMDqBLHLN/FfRu//s+ea1lU/Ju8ebw+5Si06It93glm1Ff
+	 QePblciurUn+VamkBgtZHIFv4AD004DBjvXkKZVZLJlMvZ9IVJkH2jsgcBMJr2hP7p
+	 3dV2gvb5/dQtw==
+Date: Fri, 27 Feb 2026 23:15:21 -0800
 From: Eric Biggers <ebiggers@kernel.org>
 To: Christoph Hellwig <hch@lst.de>
 Cc: Andrew Morton <akpm@linux-foundation.org>,
@@ -86,10 +86,11 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
 	linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
 	linux-arch@vger.kernel.org, linux-raid@vger.kernel.org
-Subject: Re: [PATCH 24/25] xor: pass the entire operation to the low-level ops
-Message-ID: <20260228065810.GJ65277@quark>
+Subject: Re: [PATCH 09/25] xor: move generic implementations out of
+ asm-generic/xor.h
+Message-ID: <20260228071521.GK65277@quark>
 References: <20260226151106.144735-1-hch@lst.de>
- <20260226151106.144735-25-hch@lst.de>
+ <20260226151106.144735-10-hch@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -98,18 +99,18 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260226151106.144735-25-hch@lst.de>
+In-Reply-To: <20260226151106.144735-10-hch@lst.de>
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-22104-lists,linux-btrfs=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-22105-lists,linux-btrfs=lfdr.de];
 	FREEMAIL_CC(0.00)[linux-foundation.org,linaro.org,gmail.com,armlinux.org.uk,arm.com,kernel.org,xen0n.name,linux.ibm.com,ellerman.id.au,dabbelt.com,eecs.berkeley.edu,ghiti.fr,davemloft.net,gaisler.com,nod.at,cambridgegreys.com,sipsolutions.net,redhat.com,alien8.de,linux.intel.com,zytor.com,gondor.apana.org.au,intel.com,fb.com,suse.com,arndb.de,fnnas.com,huawei.com,vger.kernel.org,lists.infradead.org,lists.linux.dev,lists.ozlabs.org];
 	RCVD_TLS_LAST(0.00)[];
 	FROM_HAS_DN(0.00)[];
@@ -126,27 +127,33 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	NEURAL_HAM(-0.00)[-1.000];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 2F8501C0B35
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[lst.de:email,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 993941C0E4A
 X-Rspamd-Action: no action
 
-On Thu, Feb 26, 2026 at 07:10:36AM -0800, Christoph Hellwig wrote:
-> +#define __DO_XOR_BLOCKS(_name, _handle1, _handle2, _handle3, _handle4)	\
-> +void								\
-> +xor_gen_##_name(void *dest, void **srcs, unsigned int src_cnt,		\
-> +		unsigned int bytes)					\
-> +{									\
-> +	unsigned int src_off = 0;					\
-> +									\
-> +	while (src_cnt > 0) {						\
-> +		unsigned int this_cnt = min(src_cnt, 4);		\
-> +		unsigned long *p1 = (unsigned long *)srcs[src_off];	\
-> +		unsigned long *p2 = (unsigned long *)srcs[src_off + 1];	\
-> +		unsigned long *p3 = (unsigned long *)srcs[src_off + 2];	\
-> +		unsigned long *p4 = (unsigned long *)srcs[src_off + 3];	\
+On Thu, Feb 26, 2026 at 07:10:21AM -0800, Christoph Hellwig wrote:
+> Move the generic implementations from asm-generic/xor.h to
+> per-implementaion .c files in lib/raid.
+> 
+> Note that this would cause the second xor_block_8regs instance created by
+> arch/arm/lib/xor-neon.c to be generated instead of discarded as dead
+> code, so add a NO_TEMPLATE symbol to disable it for this case.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-This reads out of bounds if src_cnt isn't a multiple of 4.
+This makes the generic code always be included in xor.ko, even when the
+architecture doesn't need it.  For example, x86_64 doesn't need it,
+since it always selects either the AVX or SSE code.
+
+Have you considered putting the generic code in xor-core.c (or in
+headers included by it) before xor_arch.h is included, and putting
+__maybe_unused on the xor_block_template structs?  Then they'll still be
+available for arch_xor_init() to use, but any of them that aren't used
+in a particular build will be optimized out as dead code by the
+compiler.
+
+lib/crc/ and lib/crypto/ take a similar approach for most algorithms.
 
 - Eric
 
