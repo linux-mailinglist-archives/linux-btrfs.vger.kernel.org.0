@@ -1,50 +1,50 @@
-Return-Path: <linux-btrfs+bounces-22094-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-22095-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id qB29E3tvomlq3AQAu9opvQ
-	(envelope-from <linux-btrfs+bounces-22094-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Feb 2026 05:30:51 +0100
+	id 6IIzL5pwommf3AQAu9opvQ
+	(envelope-from <linux-btrfs+bounces-22095-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Feb 2026 05:35:38 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECBCC1C0485
-	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Feb 2026 05:30:50 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 777DB1C04D8
+	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Feb 2026 05:35:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 81E5330768C2
-	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Feb 2026 04:30:14 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id E3E2C30576CB
+	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Feb 2026 04:35:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 730A8362130;
-	Sat, 28 Feb 2026 04:30:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F0B9361660;
+	Sat, 28 Feb 2026 04:35:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Fyh0YCjc"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jvLMWT5Q"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CF0D33C502;
-	Sat, 28 Feb 2026 04:30:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3161155326;
+	Sat, 28 Feb 2026 04:35:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772253010; cv=none; b=m462VCxZ+e2KTSGfN4uWd5rp1nzv6rEFl8wKVbwJFtRDJFRUDYetZiS7PB3waZSQdpLeRVvkbJEyJS+lUuqrrP+udfvt+qRd6whJXV0qq0QvurFIpB06aHxc+vamsiHeQbnItIinCXJBWQVqGwRaBrtvTQd7hPhHWRukJcj8ZEc=
+	t=1772253327; cv=none; b=ZEvwRuLFawSSqNl52ClS3MzjQ5csyQiRVrzHO7Uz6IPAPIrFnBAjR9by3oP+a1maHE6Pro8Bu5OAjuA21/GQQxzTJl/Mmp4MIU08dtmOxic/AymIRORAMogirB32gqzY0nn1Y55FP6ey6bqPuQn7LXSIugQnBdKYGVvsto7laZ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772253010; c=relaxed/simple;
-	bh=NxIyVYtgLysk+spkHOyEoka9HT1s3BaoNbqWwqQmPXE=;
+	s=arc-20240116; t=1772253327; c=relaxed/simple;
+	bh=7zmaVKtAh2Ji/dO9zQKMopZe2cxR3kulm8/sTdUvOcA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HUvS67CHw80Mks59p1LuE/sx/g2hqWl4+f9JjCWSRaD0v6Wp9z/DKnKG0n6SQwCe3gu+uZymT4yM1GIxLPPDaZ0cPRXjKUOL9gdctunNNIec/fgxGLRckRXEI4xVd9/m30MRd2wYNRcuOGt3rEJvTPIhCL6KXO154j0dHWXiUrQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Fyh0YCjc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 198B3C116D0;
-	Sat, 28 Feb 2026 04:30:08 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=UXsB5Rbtl8PBt3AlmxENqyUrCGXrcl5iE9DLewYkp9RxO5RrWf80NCuM6S1q06Ntc+tpesUqJ04WA+yzAmV7s30pbQNQMkYDl4bQqolTBLxkRtrck0w6/k+54TtKCW2/TE1YOhlzHswSwIV/8S2jCscPioLFLvCgSQ3Ze4m5dwA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jvLMWT5Q; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 69FD3C116D0;
+	Sat, 28 Feb 2026 04:35:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772253010;
-	bh=NxIyVYtgLysk+spkHOyEoka9HT1s3BaoNbqWwqQmPXE=;
+	s=k20201202; t=1772253327;
+	bh=7zmaVKtAh2Ji/dO9zQKMopZe2cxR3kulm8/sTdUvOcA=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Fyh0YCjcPmsVmzz5h+F1Yy8gWejjphUUrGeKnqhIxGQ+qjYtEztmeP1kaQL7ddsRN
-	 jdkA6zr3qARSLzOxvszanCJtbGe6MxgPdM+Z6+dhb7aZQXTNmMRzbGAktPG2fY5fUl
-	 TBJYgxI6xb9qhwF67ngcAYU9OKtc/uqzcX+3yEYAKMVGlX0rGBTQLNzUCfh3Qw8tog
-	 0VEAgqbQJ3xpTSjCyP3w5YgI628hkJaD1By1DZb0TabsJZRA6BOO4+elbK3T8jYutF
-	 xqGj5SaKcx64Foh0YOFWYjXkw2x5ciOjaB0TEjg5I3513gVMPITkGZ7CF1NbrQ8JTi
-	 72nJ1I+TSmVTQ==
-Date: Fri, 27 Feb 2026 20:30:06 -0800
+	b=jvLMWT5QPfWf5fqwCu0b6jyf1JkY8VhTv+hzjbPZJIShl575Kc/hb2XB6K7qkymfN
+	 qwBqh029UG4QDt1k4o+yWv6HUuKWpWsplNNhaICJZz2k0ORPmJLnhkHAyONmX7M+TQ
+	 zDX6zjqvLirKpTtriXBUSdvtk9Yk8/30R2kYnR4XhUkO0qR3hMOqza11uJQ08QFz4S
+	 oQboCK+Z7P0MYthrxKSIcy3roPsAHLbVtIrOmNmHcNMgysOz0VoIhFow1SEkkuFGuP
+	 DaFupym5qTt9eY/XGsZgNFTL4RRcp5VoPtcdKHWNHmTzORlfM9TjONCOU+EFM4pkgz
+	 p45HIHdqNKblg==
+Date: Fri, 27 Feb 2026 20:35:23 -0800
 From: Eric Biggers <ebiggers@kernel.org>
 To: Christoph Hellwig <hch@lst.de>
 Cc: Andrew Morton <akpm@linux-foundation.org>,
@@ -86,10 +86,10 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
 	linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
 	linux-arch@vger.kernel.org, linux-raid@vger.kernel.org
-Subject: Re: [PATCH 03/25] um/xor: don't override XOR_SELECT_TEMPLATE
-Message-ID: <20260228043006.GA65277@quark>
+Subject: Re: [PATCH 04/25] xor: move to lib/raid/
+Message-ID: <20260228043523.GB65277@quark>
 References: <20260226151106.144735-1-hch@lst.de>
- <20260226151106.144735-4-hch@lst.de>
+ <20260226151106.144735-5-hch@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -98,18 +98,18 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260226151106.144735-4-hch@lst.de>
+In-Reply-To: <20260226151106.144735-5-hch@lst.de>
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-22094-lists,linux-btrfs=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-22095-lists,linux-btrfs=lfdr.de];
 	FREEMAIL_CC(0.00)[linux-foundation.org,linaro.org,gmail.com,armlinux.org.uk,arm.com,kernel.org,xen0n.name,linux.ibm.com,ellerman.id.au,dabbelt.com,eecs.berkeley.edu,ghiti.fr,davemloft.net,gaisler.com,nod.at,cambridgegreys.com,sipsolutions.net,redhat.com,alien8.de,linux.intel.com,zytor.com,gondor.apana.org.au,intel.com,fb.com,suse.com,arndb.de,fnnas.com,huawei.com,vger.kernel.org,lists.infradead.org,lists.linux.dev,lists.ozlabs.org];
 	RCVD_TLS_LAST(0.00)[];
 	FROM_HAS_DN(0.00)[];
@@ -126,51 +126,46 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	NEURAL_HAM(-0.00)[-1.000];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[lst.de:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: ECBCC1C0485
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 777DB1C04D8
 X-Rspamd-Action: no action
 
-On Thu, Feb 26, 2026 at 07:10:15AM -0800, Christoph Hellwig wrote:
-> XOR_SELECT_TEMPLATE is only ever called with a NULL argument, so all the
-> ifdef'ery doesn't do anything.  With our without this, the time travel
-> mode should work fine on CPUs that support AVX2, as the AVX2
-> implementation is forced in this case, and won't work otherwise.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  arch/um/include/asm/xor.h | 10 ----------
->  1 file changed, 10 deletions(-)
-> 
-> diff --git a/arch/um/include/asm/xor.h b/arch/um/include/asm/xor.h
-> index 647fae200c5d..c9ddedc19301 100644
-> --- a/arch/um/include/asm/xor.h
-> +++ b/arch/um/include/asm/xor.h
-> @@ -4,21 +4,11 @@
+On Thu, Feb 26, 2026 at 07:10:16AM -0800, Christoph Hellwig wrote:
+> diff --git a/lib/Kconfig b/lib/Kconfig
+> index 0f2fb9610647..5be57adcd454 100644
+> --- a/lib/Kconfig
+> +++ b/lib/Kconfig
+> @@ -138,6 +138,7 @@ config TRACE_MMIO_ACCESS
 >  
->  #ifdef CONFIG_64BIT
->  #undef CONFIG_X86_32
-> -#define TT_CPU_INF_XOR_DEFAULT (AVX_SELECT(&xor_block_sse_pf64))
->  #else
->  #define CONFIG_X86_32 1
-> -#define TT_CPU_INF_XOR_DEFAULT (AVX_SELECT(&xor_block_8regs))
->  #endif
->  
->  #include <asm/cpufeature.h>
->  #include <../../x86/include/asm/xor.h>
-> -#include <linux/time-internal.h>
-> -
-> -#ifdef CONFIG_UML_TIME_TRAVEL_SUPPORT
-> -#undef XOR_SELECT_TEMPLATE
-> -/* pick an arbitrary one - measuring isn't possible with inf-cpu */
-> -#define XOR_SELECT_TEMPLATE(x)	\
-> -	(time_travel_mode == TT_MODE_INFCPU ? TT_CPU_INF_XOR_DEFAULT : x)
-> -#endif
+>  source "lib/crc/Kconfig"
+>  source "lib/crypto/Kconfig"
+> +source "lib/raid/Kconfig"
 
-I'm not following this change.  Previously, in TT_MODE_INFCPU mode,
-XOR_SELECT_TEMPLATE(NULL) returned &xor_block_avx, &xor_block_sse_pf64,
-or &xor_block_8regs, causing the benchmark to be skipped.  After this
-change, the benchmark starts being done on CPUs that don't support AVX.
+This adds lib/raid/ alongside the existing lib/raid6/ directory.  Is
+that the intended final state, or is the intent for the code in
+lib/raid6/ to eventually be moved to a subdirectory of lib/raid/
+(alongside the "xor" subdirectory)?
+
+> diff --git a/lib/raid/Kconfig b/lib/raid/Kconfig
+> new file mode 100644
+> index 000000000000..4b720f3454a2
+> --- /dev/null
+> +++ b/lib/raid/Kconfig
+> @@ -0,0 +1,3 @@
+> +
+> +config XOR_BLOCKS
+> +	tristate
+> diff --git a/lib/raid/Makefile b/lib/raid/Makefile
+> new file mode 100644
+> index 000000000000..382f2d1694bd
+> --- /dev/null
+> +++ b/lib/raid/Makefile
+> @@ -0,0 +1,2 @@
+> +
+> +obj-y				+= xor/
+
+Probably should add an SPDX-License-Identifier to these new files.
 
 - Eric
 
