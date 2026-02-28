@@ -1,50 +1,50 @@
-Return-Path: <linux-btrfs+bounces-22101-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-22102-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id gDjjBJGOomk04AQAu9opvQ
-	(envelope-from <linux-btrfs+bounces-22101-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Feb 2026 07:43:29 +0100
+	id KGllCWWQomlq4AQAu9opvQ
+	(envelope-from <linux-btrfs+bounces-22102-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Feb 2026 07:51:17 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id A932F1C09CB
-	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Feb 2026 07:43:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B71821C0A95
+	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Feb 2026 07:51:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 6A7C7308CBDF
-	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Feb 2026 06:42:56 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id EAE453096A5E
+	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Feb 2026 06:50:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32D60346FB0;
-	Sat, 28 Feb 2026 06:42:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0361033B6C5;
+	Sat, 28 Feb 2026 06:50:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YClOM9Wk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iTFfr8oc"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A43A22157B;
-	Sat, 28 Feb 2026 06:42:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45F20368961;
+	Sat, 28 Feb 2026 06:50:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772260973; cv=none; b=DD0BsBK/X7ndaBvHidKZBvhs28v6clIjCGFw4qKlw6oAZEkrqCfR2NO3isNrj11c0pvbLJuHWzZnFtEr1SjrjXgob0e35EHTh/ZGJXje4pDjdYYyJ9lvN8JTV5hrwCc/R7V6PGn4/x2wE8j4JUbUjcB0RAMt04jJG1ETYcSQHdg=
+	t=1772261442; cv=none; b=ZOT8Qt11kjrKs5yFcxfb6wlkhUQW8MKwDso7iwOkpIz8bQqjokKEnrAuodEnmqDJSFVVSCQl4YIUnYsTD5FlkL9w2Ky9IwnWofF486X1FVp2GkNAfSPKW4NdL7WJKSjiGS1g+QVxpyTLXUyHUTbSdm1pjhXzi4dLkMKel02H5Hc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772260973; c=relaxed/simple;
-	bh=RjXh+3ODcjpkGCclxlZLerhUTxAgrS3+Qw6tdSUsizg=;
+	s=arc-20240116; t=1772261442; c=relaxed/simple;
+	bh=vPTEPlrxe6ytedqa6Me+M+hZkV+rGO8rrN4LIEvszKU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QuOxS9guKFDIlOM8yfkdMCyosDarWSmBWAw43uxnCVGJsA59jOGTpbafM/SSfBhyVhUs5/x67/KrKCaj0RVILGRsZUflscWcwliWdUg8Ymvj+N3YNFlqO2HwicRik5iCO2bGT0M1gBspmBXLGRt/Q/4cVL6ML9GaCPoCbGrNTus=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YClOM9Wk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32FCCC116D0;
-	Sat, 28 Feb 2026 06:42:51 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=EBrb+OIC5dybyKqJX7IwTQa46uEC/cVSYw2SLS6BACPM9zeIeHWE1q8ZTjOH3b6lzAHeFwincqCKqHdwE3YGtSEgbnyDnK65y1UL6A9q7vnralb5jb7OohtkYF/07hXMdX0RsxUq72N8MwBK3e0/5rVSIKR3F8FjljNH5LvUg78=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iTFfr8oc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11F92C116D0;
+	Sat, 28 Feb 2026 06:50:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772260973;
-	bh=RjXh+3ODcjpkGCclxlZLerhUTxAgrS3+Qw6tdSUsizg=;
+	s=k20201202; t=1772261441;
+	bh=vPTEPlrxe6ytedqa6Me+M+hZkV+rGO8rrN4LIEvszKU=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=YClOM9Wk3/7+pE7QyV7s9mlYuDllppl2YGLrTn0xkJ5pU3h4NtzzqxpXAgzhRI9N2
-	 JuGJGprSvbiCiYCR4+DPFVLVUesA+9zY/ql1wKLu6GOJbDRJOE72dBApORguyRvSk0
-	 Ip+z80iLf2XB3ZIQqPYK3ZEA4iixYi0/FOhgYq24wKd6cZqPgSNMaeZpzPpmIg/H3w
-	 0n7sJMgccYUbEkKSe7BVVGr7K1ToaaAdi9JBbH+YWUnyRyLa4C5j5ZLWu0XZjJO8MA
-	 f7GJPwidtEPGlIQhpocckRINXMDZxErl0fKAfQbViWFT5IVTuMqtgP4lHaU8x4cpN/
-	 +BKrl6+TlJfNA==
-Date: Fri, 27 Feb 2026 22:42:49 -0800
+	b=iTFfr8ocKEvs3vXYRewYWPSFe2kL3EkPqlXMH9SFlbuxla7B1++TfbbR29cAr/T69
+	 8RlajaFDOInAOiN+ZK7veFCGRmxjx3J7bE/ObG1rUVu/wJzBNzB68455fQxxkndpm2
+	 Tm8vLFnkUPRX5ZN0PkWUIEMTd4tfYl/XR8pSy9Z/UPR0Qpq83+piDFPoy0+TgckjTx
+	 fIBVNpnimUABvVb4nGDJC3hmwuwMOJKdRSInNWdlSTmxsPRa6fXgS00DoHU0JgsDRW
+	 lp50vbyxlZIuxosoVMrxCRj/2aCgMhGTMqw6gfvTpMznmcYFwDNIHqHcgooJXMIogZ
+	 UhhsWMu+jeEcw==
+Date: Fri, 27 Feb 2026 22:50:38 -0800
 From: Eric Biggers <ebiggers@kernel.org>
 To: Christoph Hellwig <hch@lst.de>
 Cc: Andrew Morton <akpm@linux-foundation.org>,
@@ -86,10 +86,10 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
 	linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
 	linux-arch@vger.kernel.org, linux-raid@vger.kernel.org
-Subject: Re: [PATCH 20/25] xor: make xor.ko self-contained in lib/raid/
-Message-ID: <20260228064249.GG65277@quark>
+Subject: Re: [PATCH 21/25] xor: add a better public API
+Message-ID: <20260228065038.GH65277@quark>
 References: <20260226151106.144735-1-hch@lst.de>
- <20260226151106.144735-21-hch@lst.de>
+ <20260226151106.144735-22-hch@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -98,7 +98,7 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260226151106.144735-21-hch@lst.de>
+In-Reply-To: <20260226151106.144735-22-hch@lst.de>
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
@@ -109,7 +109,7 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-22101-lists,linux-btrfs=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-22102-lists,linux-btrfs=lfdr.de];
 	FREEMAIL_CC(0.00)[linux-foundation.org,linaro.org,gmail.com,armlinux.org.uk,arm.com,kernel.org,xen0n.name,linux.ibm.com,ellerman.id.au,dabbelt.com,eecs.berkeley.edu,ghiti.fr,davemloft.net,gaisler.com,nod.at,cambridgegreys.com,sipsolutions.net,redhat.com,alien8.de,linux.intel.com,zytor.com,gondor.apana.org.au,intel.com,fb.com,suse.com,arndb.de,fnnas.com,huawei.com,vger.kernel.org,lists.infradead.org,lists.linux.dev,lists.ozlabs.org];
 	RCVD_TLS_LAST(0.00)[];
 	FROM_HAS_DN(0.00)[];
@@ -127,36 +127,74 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-btrfs];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: A932F1C09CB
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,lst.de:email]
+X-Rspamd-Queue-Id: B71821C0A95
 X-Rspamd-Action: no action
 
-On Thu, Feb 26, 2026 at 07:10:32AM -0800, Christoph Hellwig wrote:
-> diff --git a/arch/um/include/asm/xor.h b/lib/raid/xor/um/xor_arch.h
-> similarity index 61%
-> rename from arch/um/include/asm/xor.h
-> rename to lib/raid/xor/um/xor_arch.h
-> index c9ddedc19301..c75cd9caf792 100644
-> --- a/arch/um/include/asm/xor.h
-> +++ b/lib/raid/xor/um/xor_arch.h
-> @@ -1,7 +1,4 @@
->  /* SPDX-License-Identifier: GPL-2.0 */
-> -#ifndef _ASM_UM_XOR_H
-> -#define _ASM_UM_XOR_H
-> -
->  #ifdef CONFIG_64BIT
->  #undef CONFIG_X86_32
->  #else
->  #define CONFIG_X86_32 1
->  #endif
+On Thu, Feb 26, 2026 at 07:10:33AM -0800, Christoph Hellwig wrote:
+> xor_blocks is very annoying to use, because it is limited to 4 + 1
+> sources / destinations, has an odd argument order and is completely
+> undocumented.
+> 
+> Lift the code that loops around it from btrfs and async_tx/async_xor into
+> common code under the name xor_gen and properly document it.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  include/linux/raid/xor.h |  3 +++
+>  lib/raid/xor/xor-core.c  | 28 ++++++++++++++++++++++++++++
+>  2 files changed, 31 insertions(+)
+> 
+> diff --git a/include/linux/raid/xor.h b/include/linux/raid/xor.h
+> index 02bda8d99534..4735a4e960f9 100644
+> --- a/include/linux/raid/xor.h
+> +++ b/include/linux/raid/xor.h
+> @@ -7,4 +7,7 @@
+>  extern void xor_blocks(unsigned int count, unsigned int bytes,
+>  	void *dest, void **srcs);
+>  
+> +void xor_gen(void *dest, void **srcss, unsigned int src_cnt,
+> +		unsigned int bytes);
 
-Due to this change, the above code that sets CONFIG_X86_32 to the
-opposite of CONFIG_64BIT is no longer included in xor-sse.c, which uses
-CONFIG_X86_32.  So if the above code actually did anything, this change
-would have broken it for xor-sse.c.  However, based on
-arch/x86/um/Kconfig, CONFIG_X86_32 is always the opposite of
-CONFIG_64BIT, so the above code actually has no effect.  Does that sound
-right?
+srcss => srcs
+
+Ideally the source vectors would be 'const' as well.
+
+> +/**
+> + * xor_gen - generate RAID-style XOR information
+> + * @dest:	destination vector
+> + * @srcs:	source vectors
+> + * @src_cnt:	number of source vectors
+> + * @bytes:	length in bytes of each vector
+> + *
+> + * Performs bit-wise XOR operation into @dest for each of the @src_cnt vectors
+> + * in @srcs for a length of @bytes bytes.
+> + *
+> + * Note: for typical RAID uses, @dest either needs to be zeroed, or filled with
+> + * the first disk, which then needs to be removed from @srcs.
+> + */
+> +void xor_gen(void *dest, void **srcs, unsigned int src_cnt, unsigned int bytes)
+> +{
+> +	unsigned int src_off = 0;
+> +
+> +	while (src_cnt > 0) {
+> +		unsigned int this_cnt = min(src_cnt, MAX_XOR_BLOCKS);
+> +
+> +		xor_blocks(this_cnt, bytes, dest, srcs + src_off);
+> +
+> +		src_cnt -= this_cnt;
+> +		src_off += this_cnt;
+> +	}
+> +}
+> +EXPORT_SYMBOL(xor_gen);
+
+The alignment requirements on the vectors should be documented, as
+should which values of bytes are accepted.  It looks like, at the very
+least, the vectors have to be 32-byte aligned and the length has to be a
+nonzero multiple of 512 bytes.  But I didn't check every implementation.
+
+Also, the requirement on the calling context (e.g. !is_interrupt())
+should be documented as well.
 
 - Eric
 
