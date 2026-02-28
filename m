@@ -1,50 +1,50 @@
-Return-Path: <linux-btrfs+bounces-22096-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-22097-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 6NXPKxdyomnx3AQAu9opvQ
-	(envelope-from <linux-btrfs+bounces-22096-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Feb 2026 05:41:59 +0100
+	id 0PBGG7ByomkA3QQAu9opvQ
+	(envelope-from <linux-btrfs+bounces-22097-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Feb 2026 05:44:32 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D5AE1C0531
-	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Feb 2026 05:41:58 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 174411C059D
+	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Feb 2026 05:44:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 14065305AC9A
-	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Feb 2026 04:41:53 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 940DE30789C1
+	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Feb 2026 04:44:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03BC6364942;
-	Sat, 28 Feb 2026 04:41:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B995C364942;
+	Sat, 28 Feb 2026 04:43:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rOKkIgOd"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PuoEPD5d"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E4DC2C187;
-	Sat, 28 Feb 2026 04:41:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 058F62C187;
+	Sat, 28 Feb 2026 04:43:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772253709; cv=none; b=RalNmsDR6JGogG0PWKF/1I78NAmmxwl49Kge5wGx7D/PaKiiEp0lYE8xj01JbPw6KYVIDoEtZ0lIP3nEpfn4ogW7Y1UG+yatQgCR8dR9/EqeiDsm7uiZDRsUCcgGYH25GnpsoiKeUZeXPaNrcpflgJnGuAEm3EkGJuasyWP3nN0=
+	t=1772253839; cv=none; b=kzJLqA3IflFybZnFTfFzSjbdSlSjgbnakmVBy13DXYZYSWyD6+vEE8WLyvRCJUMwxUm9oVJVVlk0r9NuP2yACQeIyCXSeSwOM4kyOiZhBCzgwBtVH/Q5K+F/MMJR3nlHFYH9YACy0Uhpujn23jyiS5kiM1f2aToYU4d+Cmk8y2Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772253709; c=relaxed/simple;
-	bh=GTl5b4pj52hP0KVBkFlgMlumLNdyDtznBRe/1mAWWQw=;
+	s=arc-20240116; t=1772253839; c=relaxed/simple;
+	bh=yQS8EYr1F4rANaBe7v+3inxmWJU0zVKQEOlUsxymw4k=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=s3c5bN3AQur75TCEJqt7muvdSvP1cm2dIHGNQwwLU8hyUENWVJXs3GQvP0O1ks8akbHBoDW90Me5sI2t9aSmLdft3NeT1+Fnuy61hGUUFvgkXq6sJ5g1YJ8U922nQ4K33Ni8EJQxk/JR8i58QtUHyCbCwSPtx+NziI/yKj0Q034=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rOKkIgOd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4A79C116D0;
-	Sat, 28 Feb 2026 04:41:44 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=XMBaBCEeVKmGiLKX8utILiZkGnDg3M9PnsKS/2BRE0S6KmHUwZvXWpbbRv6Ue4rFJ0trgE+Ohp3L/hXd4VfgS+kl5mv5pFqK8oPGFl83vjXA2XL+RwFUziplSXl5hCZM83xuqsJyQx/uDUqCj1BbK4jVQNKl7sFyvaxG5YmLmAM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PuoEPD5d; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7B7EC116D0;
+	Sat, 28 Feb 2026 04:43:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772253708;
-	bh=GTl5b4pj52hP0KVBkFlgMlumLNdyDtznBRe/1mAWWQw=;
+	s=k20201202; t=1772253838;
+	bh=yQS8EYr1F4rANaBe7v+3inxmWJU0zVKQEOlUsxymw4k=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=rOKkIgOdBSzVWSzHxw5DOhxNn03a0Ygaw1woVlTjin4KLowyLELOm+OVhIowZs3Mi
-	 dqJMT1De+b8BARm6gDQusg4IahSRzGUQaRpIL79MWyistCvbIiMZ6GQa64miu3ZcRZ
-	 cmMCGr06kdASJAnWQFN5T5HEhrn2CSG3d0wt7lfBrAFCfHwD8AHIT6zDjcjgyWpudZ
-	 1T16tuC8Ef/5l0VtYfOtBa3/4cAwxmH1U8wP9gZSK6LcugatbAZqq7cuamim+FKLGl
-	 QGX36uRgBg/t7BIN5Yg+65x2RyzeJ36b/t9uuoaV9NMPtIM82r7BkkP953pZJg4x7P
-	 1Tdp6OJiWNiZw==
-Date: Fri, 27 Feb 2026 20:41:43 -0800
+	b=PuoEPD5dGKM2iOhSW+0my0D/f4VLvinBi2jt5Kbxbd81P1k+jWi0+KVciBAPrpL/g
+	 r4r2NT2v38o9qtnIhfBxVgmjQSQJywLVObj3muDNlyHJqSESQCTZhmJe/6Rzsk2R9M
+	 8ZnzLPFYGLtie7deDR1V8Pnkzre6yCwdaC1qBSQ9wNIL1XaAUgCSzSUwN7lW5l11mD
+	 VW2gjQBqijiFVLqfxqw/TTKXHQthqIgVue3hQeJ64rdHrmcizqorwLbqqoBbwNSZH4
+	 QorQ2T+BBBGPZMVwQBEeX4nOyWDWoKOqpyMPTJ5mdi+JknVW5oDrCxr9Qb4qEoWrJm
+	 UhY0/KMibUBXA==
+Date: Fri, 27 Feb 2026 20:43:55 -0800
 From: Eric Biggers <ebiggers@kernel.org>
 To: Christoph Hellwig <hch@lst.de>
 Cc: Andrew Morton <akpm@linux-foundation.org>,
@@ -86,10 +86,10 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
 	linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
 	linux-arch@vger.kernel.org, linux-raid@vger.kernel.org
-Subject: Re: [PATCH 06/25] xor: cleanup registration and probing
-Message-ID: <20260228044143.GC65277@quark>
+Subject: Re: [PATCH 07/25] xor: split xor.h
+Message-ID: <20260228044355.GD65277@quark>
 References: <20260226151106.144735-1-hch@lst.de>
- <20260226151106.144735-7-hch@lst.de>
+ <20260226151106.144735-8-hch@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -98,18 +98,18 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260226151106.144735-7-hch@lst.de>
+In-Reply-To: <20260226151106.144735-8-hch@lst.de>
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-22096-lists,linux-btrfs=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-22097-lists,linux-btrfs=lfdr.de];
 	FREEMAIL_CC(0.00)[linux-foundation.org,linaro.org,gmail.com,armlinux.org.uk,arm.com,kernel.org,xen0n.name,linux.ibm.com,ellerman.id.au,dabbelt.com,eecs.berkeley.edu,ghiti.fr,davemloft.net,gaisler.com,nod.at,cambridgegreys.com,sipsolutions.net,redhat.com,alien8.de,linux.intel.com,zytor.com,gondor.apana.org.au,intel.com,fb.com,suse.com,arndb.de,fnnas.com,huawei.com,vger.kernel.org,lists.infradead.org,lists.linux.dev,lists.ozlabs.org];
 	RCVD_TLS_LAST(0.00)[];
 	FROM_HAS_DN(0.00)[];
@@ -126,24 +126,27 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	NEURAL_HAM(-0.00)[-1.000];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 2D5AE1C0531
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[lst.de:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 174411C059D
 X-Rspamd-Action: no action
 
-On Thu, Feb 26, 2026 at 07:10:18AM -0800, Christoph Hellwig wrote:
->  /* Set of all registered templates.  */
->  static struct xor_block_template *__initdata template_list;
-> +static int __initdata xor_forced = false;
+On Thu, Feb 26, 2026 at 07:10:19AM -0800, Christoph Hellwig wrote:
+> Keep xor.h for the public API, and split the struct xor_block_template
+> definition that is only needed by the xor.ko core and
+> architecture-specific optimizations into a separate xor_impl.h header.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  arch/arm/lib/xor-neon.c       |  1 +
+>  arch/s390/lib/xor.c           |  2 +-
+>  include/linux/raid/xor.h      | 22 +---------------------
+>  include/linux/raid/xor_impl.h | 25 +++++++++++++++++++++++++
+>  lib/raid/xor/xor-core.c       |  1 +
+>  5 files changed, 29 insertions(+), 22 deletions(-)
+>  create mode 100644 include/linux/raid/xor_impl.h
 
-bool instead of int
-
->  	b1 = (void *) __get_free_pages(GFP_KERNEL, 2);
->  	if (!b1) {
-> -		printk(KERN_WARNING "xor: Yikes!  No memory available.\n");
-> +		pr_info("xor: Yikes!  No memory available.\n");
-
-pr_warn() instead of pr_info()
+arch/arm64/lib/xor-neon.c needs to be updated to include xor_impl.h.
 
 - Eric
 
