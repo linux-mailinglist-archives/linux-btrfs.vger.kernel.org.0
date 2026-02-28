@@ -1,202 +1,162 @@
-Return-Path: <linux-btrfs+bounces-22100-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-22101-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id h8eECT6Oomk04AQAu9opvQ
-	(envelope-from <linux-btrfs+bounces-22100-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Feb 2026 07:42:06 +0100
+	id gDjjBJGOomk04AQAu9opvQ
+	(envelope-from <linux-btrfs+bounces-22101-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Feb 2026 07:43:29 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B091C1C0985
-	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Feb 2026 07:42:05 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id A932F1C09CB
+	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Feb 2026 07:43:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id D31013028504
-	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Feb 2026 06:42:04 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6A7C7308CBDF
+	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Feb 2026 06:42:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E425342CBD;
-	Sat, 28 Feb 2026 06:42:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32D60346FB0;
+	Sat, 28 Feb 2026 06:42:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="RDcxk3vZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YClOM9Wk"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 239D022157B
-	for <linux-btrfs@vger.kernel.org>; Sat, 28 Feb 2026 06:41:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A43A22157B;
+	Sat, 28 Feb 2026 06:42:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772260920; cv=none; b=cntnxPaQ9qCL2+u21O4lneQvEFJpKiLj5HQE7n6m3lFogKcPubLaJxTvCmEulygFrJQ9bt5EXBuawGzMSUgOUNtQTMBM/bb9+g7BARdVOSdL8p5AtH/7uD/KAVXxcovkiwfE6v6bCXnAXWd0Mujwf8u1ufvsWrTdJko34YCtrnA=
+	t=1772260973; cv=none; b=DD0BsBK/X7ndaBvHidKZBvhs28v6clIjCGFw4qKlw6oAZEkrqCfR2NO3isNrj11c0pvbLJuHWzZnFtEr1SjrjXgob0e35EHTh/ZGJXje4pDjdYYyJ9lvN8JTV5hrwCc/R7V6PGn4/x2wE8j4JUbUjcB0RAMt04jJG1ETYcSQHdg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772260920; c=relaxed/simple;
-	bh=z+o81kn/ql89cKoZlXDAhxD6qUyiW0IvNUb6VG4euYs=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
-	 In-Reply-To:Content-Type; b=rJiJlRohta7gudgKILWi6pCD5Rs2A7xSVdtX5eHVgXhz+sn5YTX+TzbsYH68OD4aGEFIHnnSRQKDclWCifd0/if9IrHiOCqH86t970DqR1aiYyCdWyKstGWAogfy1djZ7vm1DWwx2CBrr/dO5NRWX52FlxgNUEJWuO/IDemvWiM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=RDcxk3vZ; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-48371119eacso32274615e9.2
-        for <linux-btrfs@vger.kernel.org>; Fri, 27 Feb 2026 22:41:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1772260917; x=1772865717; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :references:to:from:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=VJ4utVQjiEiAzRmrbINb4sFzSqLIX1TyQuUIo3ZnNQE=;
-        b=RDcxk3vZNEmlmqHi7GTmsitNHuMeJykKsdjpBEOSqHeFAwrmZCop5yBlj1/+ramiVE
-         J66da23HcgPYKgOEBROSSIaBhNDQz8/y+hbVA41QuEQIUoon/0LQu5O8REe+vfvtZac/
-         b9egbcxcNTaohAsSWPm+eO0zM+iOjZElE9gpVpLLei26gxbxR9ScTiC2hmW20wyqpVNt
-         DA5rGczZcoXfKpVRg+lhK4Oenq1niD8GJqktmmVKn1tpFrH1VxQMqq/FesrUhHPAtpVj
-         mIzQ6MVw8M/t1ADsWJuqkavS7QaGKnD/3vD2eN1Lt2+L1p3wyTloGKjABGroUznj3b5M
-         gjWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772260917; x=1772865717;
-        h=content-transfer-encoding:in-reply-to:autocrypt:content-language
-         :references:to:from:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VJ4utVQjiEiAzRmrbINb4sFzSqLIX1TyQuUIo3ZnNQE=;
-        b=YFF+/HuTd2mRb8N7b7257Y3BDOd1W6zBRs+QXjGyfIxJdfSb8XQSzvkMixNcA3pp+e
-         fYfEc5vbbWBxwquex8MFXAQVaLXoqkU3HSXJrBPf5fxZLOaGh7ZNo/zqYloH8oVVMedh
-         QH7W1HNvQrs9MohgTsoX31WnLGehG0e0OMsXU3Bp3vIogIzIAPSQi1NSY1gAGUjNpBFH
-         sW+zCJaMkbXyHwS3LEds9lVJqsFHOixfKY1/UqJO407tmyIuMt7EOce6imm1jRItudzn
-         ON9ElepTqOEvFiB4RGnwchUyHiFcl0WemWrdzG5xJYD4WcxUFzPRMgT3aMsGgBYmYh1t
-         SsGw==
-X-Gm-Message-State: AOJu0YydYbAb+Fw/UaquZRZZTOnM42NANPsB2XFIxZh4eN4DnlsKg6lg
-	arYQQ/mCrTK1wvZQT9IMcpBcTDLKoWXDhTzgK7QGS7H3l+GZOA/g7UbPULIB/HJMGqxqhYKhxOl
-	UWuFmIMQ=
-X-Gm-Gg: ATEYQzwtCvRYYVD/na6lQgg2idxmJmz8GAwtom7EQ1uOi/gHF8GhaWTLeqaIzFHNINY
-	KckEkqDlQPxas5AP3IagDvh4MR+drLBQaClgQHl9vQdP2zGoqcguQNQk/JJCYeZGsVCIRgC3Ntp
-	GlBRKmhIpk3fI5z4mPZ2aBTd4kCo1T+dzLEtYHGzmly36wi73Sogzo3Nq4cDvSbwTmJFb+JJiv8
-	U7w5gPOPl4VbCHkYO5NCzFLoxOohH1RZZUPPzt3PQZI/NFpZV4RzJ379qe9ul+Wswy20HAPvx3G
-	AhMddoU+Qis+A5CawPWBDYj9Lpz2SEBw8KLbHMXkhhVawaxPmw0vr5BNTdrnPQLHVghweZ9EdqU
-	73vRF0Mxn4lZURJyT2RrbcEf3Yv9Q43cuamBcRQsmFHEMDF2p81brNAa8j7M1Bl2+qGdEAZ1GKp
-	UNz0oQKfWb23eYMxZVMQdj9mUu89gDxn5GUGh6pIMEkr9Zbqsvzq0=
-X-Received: by 2002:a05:600c:c4a6:b0:483:4a95:66da with SMTP id 5b1f17b1804b1-483c9bc1d50mr90429325e9.13.1772260917295;
-        Fri, 27 Feb 2026 22:41:57 -0800 (PST)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-c70fa5ea0dcsm5899955a12.3.2026.02.27.22.41.54
-        for <linux-btrfs@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 27 Feb 2026 22:41:56 -0800 (PST)
-Message-ID: <67d965b7-9cf0-4ffa-8c87-664c30d48be2@suse.com>
-Date: Sat, 28 Feb 2026 17:11:51 +1030
+	s=arc-20240116; t=1772260973; c=relaxed/simple;
+	bh=RjXh+3ODcjpkGCclxlZLerhUTxAgrS3+Qw6tdSUsizg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QuOxS9guKFDIlOM8yfkdMCyosDarWSmBWAw43uxnCVGJsA59jOGTpbafM/SSfBhyVhUs5/x67/KrKCaj0RVILGRsZUflscWcwliWdUg8Ymvj+N3YNFlqO2HwicRik5iCO2bGT0M1gBspmBXLGRt/Q/4cVL6ML9GaCPoCbGrNTus=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YClOM9Wk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32FCCC116D0;
+	Sat, 28 Feb 2026 06:42:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1772260973;
+	bh=RjXh+3ODcjpkGCclxlZLerhUTxAgrS3+Qw6tdSUsizg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=YClOM9Wk3/7+pE7QyV7s9mlYuDllppl2YGLrTn0xkJ5pU3h4NtzzqxpXAgzhRI9N2
+	 JuGJGprSvbiCiYCR4+DPFVLVUesA+9zY/ql1wKLu6GOJbDRJOE72dBApORguyRvSk0
+	 Ip+z80iLf2XB3ZIQqPYK3ZEA4iixYi0/FOhgYq24wKd6cZqPgSNMaeZpzPpmIg/H3w
+	 0n7sJMgccYUbEkKSe7BVVGr7K1ToaaAdi9JBbH+YWUnyRyLa4C5j5ZLWu0XZjJO8MA
+	 f7GJPwidtEPGlIQhpocckRINXMDZxErl0fKAfQbViWFT5IVTuMqtgP4lHaU8x4cpN/
+	 +BKrl6+TlJfNA==
+Date: Fri, 27 Feb 2026 22:42:49 -0800
+From: Eric Biggers <ebiggers@kernel.org>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Richard Henderson <richard.henderson@linaro.org>,
+	Matt Turner <mattst88@gmail.com>,
+	Magnus Lindholm <linmag7@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
+	Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Dan Williams <dan.j.williams@intel.com>, Chris Mason <clm@fb.com>,
+	David Sterba <dsterba@suse.com>, Arnd Bergmann <arnd@arndb.de>,
+	Song Liu <song@kernel.org>, Yu Kuai <yukuai@fnnas.com>,
+	Li Nan <linan122@huawei.com>, linux-alpha@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	loongarch@lists.linux.dev, linuxppc-dev@lists.ozlabs.org,
+	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
+	linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-arch@vger.kernel.org, linux-raid@vger.kernel.org
+Subject: Re: [PATCH 20/25] xor: make xor.ko self-contained in lib/raid/
+Message-ID: <20260228064249.GG65277@quark>
+References: <20260226151106.144735-1-hch@lst.de>
+ <20260226151106.144735-21-hch@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/2] btrfs: fix unpaired compr folio allocation/freeing
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-References: <cover.1772238005.git.wqu@suse.com>
-Content-Language: en-US
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
- Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
- fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
- 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
- V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
- rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
- cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
- qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
- /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
- o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
- JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
-In-Reply-To: <cover.1772238005.git.wqu@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260226151106.144735-21-hch@lst.de>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[suse.com:+];
-	FROM_HAS_DN(0.00)[];
+	TAGGED_FROM(0.00)[bounces-22101-lists,linux-btrfs=lfdr.de];
+	FREEMAIL_CC(0.00)[linux-foundation.org,linaro.org,gmail.com,armlinux.org.uk,arm.com,kernel.org,xen0n.name,linux.ibm.com,ellerman.id.au,dabbelt.com,eecs.berkeley.edu,ghiti.fr,davemloft.net,gaisler.com,nod.at,cambridgegreys.com,sipsolutions.net,redhat.com,alien8.de,linux.intel.com,zytor.com,gondor.apana.org.au,intel.com,fb.com,suse.com,arndb.de,fnnas.com,huawei.com,vger.kernel.org,lists.infradead.org,lists.linux.dev,lists.ozlabs.org];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22100-lists,linux-btrfs=lfdr.de];
+	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_ONE(0.00)[1];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCPT_COUNT_GT_50(0.00)[55];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-btrfs@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[wqu@suse.com,linux-btrfs@vger.kernel.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	NEURAL_HAM(-0.00)[-1.000];
-	TO_DN_NONE(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,suse.com:mid,suse.com:dkim]
-X-Rspamd-Queue-Id: B091C1C0985
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: A932F1C09CB
 X-Rspamd-Action: no action
 
+On Thu, Feb 26, 2026 at 07:10:32AM -0800, Christoph Hellwig wrote:
+> diff --git a/arch/um/include/asm/xor.h b/lib/raid/xor/um/xor_arch.h
+> similarity index 61%
+> rename from arch/um/include/asm/xor.h
+> rename to lib/raid/xor/um/xor_arch.h
+> index c9ddedc19301..c75cd9caf792 100644
+> --- a/arch/um/include/asm/xor.h
+> +++ b/lib/raid/xor/um/xor_arch.h
+> @@ -1,7 +1,4 @@
+>  /* SPDX-License-Identifier: GPL-2.0 */
+> -#ifndef _ASM_UM_XOR_H
+> -#define _ASM_UM_XOR_H
+> -
+>  #ifdef CONFIG_64BIT
+>  #undef CONFIG_X86_32
+>  #else
+>  #define CONFIG_X86_32 1
+>  #endif
 
+Due to this change, the above code that sets CONFIG_X86_32 to the
+opposite of CONFIG_64BIT is no longer included in xor-sse.c, which uses
+CONFIG_X86_32.  So if the above code actually did anything, this change
+would have broken it for xor-sse.c.  However, based on
+arch/x86/um/Kconfig, CONFIG_X86_32 is always the opposite of
+CONFIG_64BIT, so the above code actually has no effect.  Does that sound
+right?
 
-在 2026/2/28 10:53, Qu Wenruo 写道:
-> With the recent *_compressed_bio() rework, we're using compressed_bio
-> everywhere for reads/writes (including regular and encoded).
-> 
-> However this requires us to allocate/free folios using
-> btrfs_alloc_compr_folio() and btrfs_free_compr_folio().
-
-Sorry, this is only a cosmetic fix.
-
-The btrfs_alloc_compr_folio() will only grab a folio from the 
-compr_pool, and after that the folio can be handled just like a regular one.
-
-It's recommended to use btrfs_free_compr_folio() so that pool can be 
-re-charged, but not strictly necessary.
-
-And even if exhausted the pool, we will just fallback to regular allocation.
-Even without exhaustion, the pool can still be fully reclaimed when the 
-shrinker is involved.
-
-So this series is not addressing the problem that David is hitting.
-
-I'm afraid the best way is just to get rid of the compr_pool completely.
-
-Thanks,
-Qu
-
-> 
-> Not using the later to release a folio allocated by
-> btrfs_alloc_compr_folio() can screw up the LRU list.
-> 
-> Fix the unpaired calls as a hot fix.
-> 
-> For the long run, I'd like to remove btrfs_(alloc|free)_compr_folios()
-> with regular folio_(alloc|put)() instead.
-> As I do not think the compr pool is that helpful compared to the extra
-> maintanance needed.
-> 
-> Qu Wenruo (2):
->    btrfs: fix the incorrect freeing of a compression folio in
->      btrfs_submit_compressed_read()
->    btrfs: fix the incorrect freeing of a compression folio in
->      btrfs_do_encoded_write()
-> 
->   fs/btrfs/compression.c | 2 +-
->   fs/btrfs/inode.c       | 4 ++--
->   2 files changed, 3 insertions(+), 3 deletions(-)
-> 
-
+- Eric
 
