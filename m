@@ -1,50 +1,50 @@
-Return-Path: <linux-btrfs+bounces-22098-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-22099-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id wAXGGX5/omlI3gQAu9opvQ
-	(envelope-from <linux-btrfs+bounces-22098-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Feb 2026 06:39:10 +0100
+	id UDvrKYeBommS3gQAu9opvQ
+	(envelope-from <linux-btrfs+bounces-22099-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Feb 2026 06:47:51 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0EB401C0703
-	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Feb 2026 06:39:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 527321C0770
+	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Feb 2026 06:47:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id CF1A030FCA19
-	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Feb 2026 05:37:38 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id F1DCB30AF5A1
+	for <lists+linux-btrfs@lfdr.de>; Sat, 28 Feb 2026 05:47:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50C2C33DED9;
-	Sat, 28 Feb 2026 05:37:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2479933BBB4;
+	Sat, 28 Feb 2026 05:47:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vJAxXZ8K"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZxnCfx5J"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87E042EB5AF;
-	Sat, 28 Feb 2026 05:37:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BBF3267B90;
+	Sat, 28 Feb 2026 05:47:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772257055; cv=none; b=eJvN/QXQHTmgxUR25TTfEGbJrx+9CbSuHaZGKvia5v1aLVmCZ6He/RMbLQ9SkfilzsvsuVuU4+2DkqJslcXhz28+8SM0lGcEnTLG24ql2aOhoA6AxHHjp8W/wyELnEyz66E7UlHk6xQH84c4oHRKFdnk6yW2Uz66UogMTT1IDH4=
+	t=1772257640; cv=none; b=EqLqeUXZnZa8Ynk0kcazSnR3+oyD0L3qOiChSuK+2J6MuqpreTeXnwqcFAc+9tmB97L9C9G/Mpe1Xt2JBLpotcExKREmeYiJnCw0U65hdhnDkF3kjslEJ7FFeVjxEjZqdA/pFAn7Fdfa/zfOQ/7uHr/9pnaGtZIoFJRlAHUaZkg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772257055; c=relaxed/simple;
-	bh=eqLNM+it9jPNWRs+scO49PSKMIRVyGiqn9NcqSlCp7w=;
+	s=arc-20240116; t=1772257640; c=relaxed/simple;
+	bh=3fhtDiEfYQIsR8xe5v1xLPzjOApnwt1LgQea0fiE/sk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=q/4XkdK9AuhzrwTLQlud7tjATmEfhZGZbtmeYjWmkRdxDVZ9XRkYeeThj1c8hMuUnP5cpDD53sXoJp4riVbhOYMnakmI29YmuLGzs9tRq3hyMUAQ5UmFKURd6ADH1DHpCYV2IIsm6vjYjXzeklov9WQVYaSJcMMuTl1ksM9kOko=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vJAxXZ8K; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE76EC116D0;
-	Sat, 28 Feb 2026 05:37:31 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=P3g7YYmSQm9GFVcyALJhpVvc8OvgQCFOp5TFm/wRdqsCmiNRDiYHJhIQDHzghxw1M4SjwYoHlEEWTUZb8ZRYHzjNsvLYDm6hNjLalKnqnBu6mpCJBs1B8oyblF/91fbhSika/eVuBYhHyUHWxPTjJfJY7rWdmH4ffayA/f9yCOU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZxnCfx5J; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6374C116D0;
+	Sat, 28 Feb 2026 05:47:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772257055;
-	bh=eqLNM+it9jPNWRs+scO49PSKMIRVyGiqn9NcqSlCp7w=;
+	s=k20201202; t=1772257640;
+	bh=3fhtDiEfYQIsR8xe5v1xLPzjOApnwt1LgQea0fiE/sk=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=vJAxXZ8Kz5WRI3FAqQiiWltyd3uQ9vRfiXCgBQwT4V+lApPXGfBKpNyhyElFSuB3u
-	 XB4VENMAfKNQt4jt5mepYgezGyP/JFcan/V5g78ruKQj4Ji3BOedSoLRvaGOzY6b7q
-	 Mc5XWWLUQF0PcVSlTTmo7S7Zck6GQKRu3zWFaP+B5XItpiitYzcZpUfca6qi8XUfOd
-	 6vh1cIQZcaLVpiV5n3ZguAWWWmPlxPcj2Nj9plSsomBCSSLqZZekWhAfjQ2YeYW7iu
-	 rDzWS5l+PL0z3I+4kxGk4sYmPecb+wzM6vyPcl7Y9d2Uxa1CYls2Am5BPUZnt/qH5z
-	 mB77YqO/RTn8A==
-Date: Fri, 27 Feb 2026 21:37:30 -0800
+	b=ZxnCfx5JDI332Qrr3aqcMLFE+Z8TXsT+uailOd+3AxcXf1coTOZ7vF5OtRVlFz27S
+	 I+XE3qJMsOy/NaWilUmpaeuY7J3oz+cG4Um71U6OgQ7NcFA0HIvDDJfrudH5EPWD3S
+	 jPn9xscU5HDErluyyxksFTvSuNR6X2vG6RGaNlRTZxMmerYr0sgLOhE7L00/8t5/MJ
+	 uNCGKSSPUVI6ufs4uUbVSf5rsbRTL4oD2BooogSyg1zZ0YWLvakCTY7IPYd2SyPwrp
+	 50+eB5Q59+IeVeLCa8yNWJbEZz5QSmLw3fDIRjKAzMjZdSuoZa7lO1W7LFFthLj2/W
+	 ELDld1Q34kANQ==
+Date: Fri, 27 Feb 2026 21:47:16 -0800
 From: Eric Biggers <ebiggers@kernel.org>
 To: Christoph Hellwig <hch@lst.de>
 Cc: Andrew Morton <akpm@linux-foundation.org>,
@@ -86,10 +86,10 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
 	linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
 	linux-arch@vger.kernel.org, linux-raid@vger.kernel.org
-Subject: Re: [PATCH 15/25] riscv: move the XOR code to lib/raid/
-Message-ID: <20260228053730.GE65277@quark>
+Subject: Re: [PATCH 16/25] sparc: move the XOR code to lib/raid/
+Message-ID: <20260228054716.GF65277@quark>
 References: <20260226151106.144735-1-hch@lst.de>
- <20260226151106.144735-16-hch@lst.de>
+ <20260226151106.144735-17-hch@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -98,7 +98,7 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260226151106.144735-16-hch@lst.de>
+In-Reply-To: <20260226151106.144735-17-hch@lst.de>
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
@@ -109,7 +109,7 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-22098-lists,linux-btrfs=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-22099-lists,linux-btrfs=lfdr.de];
 	FREEMAIL_CC(0.00)[linux-foundation.org,linaro.org,gmail.com,armlinux.org.uk,arm.com,kernel.org,xen0n.name,linux.ibm.com,ellerman.id.au,dabbelt.com,eecs.berkeley.edu,ghiti.fr,davemloft.net,gaisler.com,nod.at,cambridgegreys.com,sipsolutions.net,redhat.com,alien8.de,linux.intel.com,zytor.com,gondor.apana.org.au,intel.com,fb.com,suse.com,arndb.de,fnnas.com,huawei.com,vger.kernel.org,lists.infradead.org,lists.linux.dev,lists.ozlabs.org];
 	RCVD_TLS_LAST(0.00)[];
 	FROM_HAS_DN(0.00)[];
@@ -127,24 +127,42 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-btrfs];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,lst.de:email]
-X-Rspamd-Queue-Id: 0EB401C0703
+	DBL_BLOCKED_OPENRESOLVER(0.00)[davemloft.net:email]
+X-Rspamd-Queue-Id: 527321C0770
 X-Rspamd-Action: no action
 
-On Thu, Feb 26, 2026 at 07:10:27AM -0800, Christoph Hellwig wrote:
-> Move the optimized XOR into lib/raid and include it it in xor.ko
-> instead of always building it into the main kernel image.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  arch/riscv/include/asm/xor.h                 | 54 +------------------
->  arch/riscv/lib/Makefile                      |  1 -
->  lib/raid/xor/Makefile                        |  1 +
->  lib/raid/xor/riscv/xor-glue.c                | 56 ++++++++++++++++++++
->  {arch/riscv/lib => lib/raid/xor/riscv}/xor.S |  0
+On Thu, Feb 26, 2026 at 07:10:28AM -0800, Christoph Hellwig wrote:
+> diff --git a/arch/sparc/lib/xor.S b/lib/raid/xor/sparc/xor-niagara.S
+> similarity index 53%
+> rename from arch/sparc/lib/xor.S
+> rename to lib/raid/xor/sparc/xor-niagara.S
+> index 35461e3b2a9b..f8749a212eb3 100644
+> --- a/arch/sparc/lib/xor.S
+> +++ b/lib/raid/xor/sparc/xor-niagara.S
+> @@ -1,11 +1,8 @@
+>  /* SPDX-License-Identifier: GPL-2.0 */
+>  /*
+> - * arch/sparc64/lib/xor.S
+> - *
+>   * High speed xor_block operation for RAID4/5 utilizing the
+> - * UltraSparc Visual Instruction Set and Niagara store-init/twin-load.
+> + * Niagara store-init/twin-load.
+>   *
+> - * Copyright (C) 1997, 1999 Jakub Jelinek (jj@ultra.linux.cz)
+>   * Copyright (C) 2006 David S. Miller <davem@davemloft.net>
+>   */
+>  
+> @@ -16,343 +13,6 @@
+>  #include <asm/dcu.h>
+>  #include <asm/spitfire.h>
+>  
 
-The EXPORT_SYMBOL() statements in xor.S can be removed, since the
-functions are now located in the same module as their callers.
+<linux/export.h> can be removed from the two assembly files, since all
+the invocations of EXPORT_SYMBOL() in them were removed.
+
+Also, xor-niagara.S ended up without a .text directive at the beginning.
+Probably it was unnecessary anyway.  However, this seems unintentional,
+given that xor-vis.S still has it.
 
 - Eric
 
