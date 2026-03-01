@@ -1,57 +1,59 @@
-Return-Path: <linux-btrfs+bounces-22120-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-22121-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id +EHhBz6lo2lXJAUAu9opvQ
-	(envelope-from <linux-btrfs+bounces-22120-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Sun, 01 Mar 2026 03:32:30 +0100
+	id UI21DY6bo2l4IAUAu9opvQ
+	(envelope-from <linux-btrfs+bounces-22121-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Sun, 01 Mar 2026 02:51:10 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E5B41CDA7B
-	for <lists+linux-btrfs@lfdr.de>; Sun, 01 Mar 2026 03:32:29 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 56AA61CC044
+	for <lists+linux-btrfs@lfdr.de>; Sun, 01 Mar 2026 02:51:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 6DB3E316010A
-	for <lists+linux-btrfs@lfdr.de>; Sun,  1 Mar 2026 01:25:35 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 1CD1D304FB8B
+	for <lists+linux-btrfs@lfdr.de>; Sun,  1 Mar 2026 01:37:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4B10285CB3;
-	Sun,  1 Mar 2026 01:25:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 110D92DBF40;
+	Sun,  1 Mar 2026 01:36:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Nz4tVQz8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nlqJCpTu"
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 008A827B35B;
-	Sun,  1 Mar 2026 01:25:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F53A13B58A;
+	Sun,  1 Mar 2026 01:36:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772328330; cv=none; b=QgvIWYY547li9c84dBraE3i2cDlhp15E29j/3495TePL6DyZPczRuTO49Uf4p+rXlqOUP8i66wquLyoz/5AQowFyLf9echLDCoVGYw65+idUNjvr9+WbiGnwAv2XWJzuSfHin4OoMGxJqru9tKxhm+RNgOEFNVPw2IjrM89m5Ek=
+	t=1772328969; cv=none; b=XE0BIyaCoKlHAEqfLqRD78hTSjzL9GwQNaBCXs8BSCwYkJXQIKIhldNijtJtlbBNpQpmjDGSphbocWFnx82VNQXPqQ0SNbhCbjf2Lz0RWJEaTStrlrIpcxg9RSwX4emX3xKKDvZxRWKP7MGBVh4AGNYiIzDtQpzts6IcfXahI+Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772328330; c=relaxed/simple;
-	bh=limhvUWjzyraXTWmKwc9MTPmwl/cSO7q+/N9XDmYV74=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Pb5ssZm1sPbM6WPn6JjLB49bx+FpWZng8POC8tG7yyjCca3B8bg/rQUAwV2ZQtsFFiiFAwBApApm1bFJuybreeKnwe73RKVEwqSEpcSoes2tI4OVX2KdSPpq/1Qisr6OaSrTUtDDXNjyGyr2HFFFXyNGalROmGeE6kVEqImI/Rc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Nz4tVQz8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 525E1C19421;
-	Sun,  1 Mar 2026 01:25:29 +0000 (UTC)
+	s=arc-20240116; t=1772328969; c=relaxed/simple;
+	bh=dHcD7KHIKI1BD3fdlZA9nwFzglclRxSevT+5s2AVgZU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ip5h/RP9sfbm6VOIIi7m85ctODU5MTsvic7OZJ3fIfjvWvdtk4MQd4PqtsRHCk1whjyyR1qNAdNBoCS2J/PbcTTaV4NG7qQhiMP7wUZ024WeU0wdQ6Ct4huynG0ukJJEQmeKPWesYZr9n3sQZjgQfBMT2wgXAVFYVo94x9M/Qb4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nlqJCpTu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E889C19421;
+	Sun,  1 Mar 2026 01:36:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772328329;
-	bh=limhvUWjzyraXTWmKwc9MTPmwl/cSO7q+/N9XDmYV74=;
+	s=k20201202; t=1772328969;
+	bh=dHcD7KHIKI1BD3fdlZA9nwFzglclRxSevT+5s2AVgZU=;
 	h=From:To:Cc:Subject:Date:From;
-	b=Nz4tVQz8J4b/HT5v0/PyiGliBTLzgvPD+dgdCiOwNDzEuy56LPILpodkWhP05mljd
-	 eDzsMCWfAW2BOOWHAICbAjODUSCI/VZdJQvXDsjYWXhHGTciYSwd/kXhvHXAwXR8J3
-	 oVrRYZf1lJ9TfjeafaHPpE8oAS6FL8dpo7LVlOF2zBkmykDyqY2aWVwXReHLqaBbGl
-	 FWGslem8UACsf7ROJgt3S+rJIHsuk9tuLMWO13CuDyWZJ1PeVNelat1+NMUVnj9XsO
-	 2lPxub9FXBUTByxfFJ5kwC24p/HdXAYLqKQHPvF4o+XT2O/egzwpHPssdt7EClWYLF
-	 ABTEl0C+kR3uw==
+	b=nlqJCpTuDpYdatlZl1a8CUoYS7P9HV/6zU4MXKDAUV9KKhTf74kKJuTySFPKmdpcc
+	 FtsDAT5bV1FQ9piQcjIEG5jwrBMlBJhZGWeXMxVz7j7z3RvaiS2/Ys3UidOUR44Zae
+	 nK9bTBLIR8z4TmJ8s/AHOIWvdEQKRo1uw8UK36qaCNWrEODuW77sbbiVnmXbDTg0Q/
+	 9DUlinxg4zhHAw8kWKS+vBvyE6HZKo4LUixWm13XaE4KGT3G7P/nXr6tkfbhhtKKfu
+	 GRWPOj0vBvD75UmpCKRuxso+nwBAmLQH++tV652w/WfCrhnizk0s5HDw1QnGkNuPMu
+	 C3tPDeyO5K1KA==
 From: Sasha Levin <sashal@kernel.org>
 To: stable@vger.kernel.org,
-	naohiro.aota@wdc.com
-Cc: Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+	jinbaohong@synology.com
+Cc: Qu Wenruo <wqu@suse.com>,
+	Robbie Ko <robbieko@synology.com>,
+	Filipe Manana <fdmanana@suse.com>,
 	David Sterba <dsterba@suse.com>,
 	linux-btrfs@vger.kernel.org
-Subject: FAILED: Patch "btrfs: zoned: fixup last alloc pointer after extent removal for RAID0/10" failed to apply to 6.12-stable tree
-Date: Sat, 28 Feb 2026 20:25:27 -0500
-Message-ID: <20260301012528.1682573-1-sashal@kernel.org>
+Subject: FAILED: Patch "btrfs: continue trimming remaining devices on failure" failed to apply to 6.6-stable tree
+Date: Sat, 28 Feb 2026 20:36:07 -0500
+Message-ID: <20260301013607.1695989-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.51.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
@@ -64,36 +66,36 @@ X-stable: review
 Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
+	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22120-lists,linux-btrfs=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_SOME(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-22121-lists,linux-btrfs=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FROM_NEQ_ENVFROM(0.00)[sashal@kernel.org,linux-btrfs@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[sashal@kernel.org,linux-btrfs@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
+	RCPT_COUNT_SEVEN(0.00)[7];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	RCPT_COUNT_FIVE(0.00)[5];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,suse.com:email]
-X-Rspamd-Queue-Id: 6E5B41CDA7B
+	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,suse.com:email]
+X-Rspamd-Queue-Id: 56AA61CC044
 X-Rspamd-Action: no action
 
-The patch below does not apply to the 6.12-stable tree.
+The patch below does not apply to the 6.6-stable tree.
 If someone wants it applied there, or to any other stable or longterm
 tree, then please email the backport, including the original git commit
 id to <stable@vger.kernel.org>.
@@ -103,300 +105,45 @@ Sasha
 
 ------------------ original commit in Linus's tree ------------------
 
-From 52ee9965d09b2c56a027613db30d1fb20d623861 Mon Sep 17 00:00:00 2001
-From: Naohiro Aota <naohiro.aota@wdc.com>
-Date: Fri, 23 Jan 2026 21:41:36 +0900
-Subject: [PATCH] btrfs: zoned: fixup last alloc pointer after extent removal
- for RAID0/10
+From 912d1c6680bdb40b72b1b9204706f32b6eb842c3 Mon Sep 17 00:00:00 2001
+From: jinbaohong <jinbaohong@synology.com>
+Date: Wed, 28 Jan 2026 07:06:38 +0000
+Subject: [PATCH] btrfs: continue trimming remaining devices on failure
 
-When a block group is composed of a sequential write zone and a
-conventional zone, we recover the (pseudo) write pointer of the
-conventional zone using the end of the last allocated position.
+Commit 93bba24d4b5a ("btrfs: Enhance btrfs_trim_fs function to handle
+error better") intended to make device trimming continue even if one
+device fails, tracking failures and reporting them at the end. However,
+it used 'break' instead of 'continue', causing the loop to exit on the
+first device failure.
 
-However, if the last extent in a block group is removed, the last extent
-position will be smaller than the other real write pointer position.
-Then, that will cause an error due to mismatch of the write pointers.
+Fix this by replacing 'break' with 'continue'.
 
-We can fixup this case by moving the alloc_offset to the corresponding
-write pointer position.
-
-Fixes: 568220fa9657 ("btrfs: zoned: support RAID0/1/10 on top of raid stripe tree")
-CC: stable@vger.kernel.org # 6.12+
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Signed-off-by: Naohiro Aota <naohiro.aota@wdc.com>
+Fixes: 93bba24d4b5a ("btrfs: Enhance btrfs_trim_fs function to handle error better")
+CC: stable@vger.kernel.org # 5.4+
+Reviewed-by: Qu Wenruo <wqu@suse.com>
+Signed-off-by: Robbie Ko <robbieko@synology.com>
+Signed-off-by: jinbaohong <jinbaohong@synology.com>
+Reviewed-by: Filipe Manana <fdmanana@suse.com>
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+Reviewed-by: David Sterba <dsterba@suse.com>
 Signed-off-by: David Sterba <dsterba@suse.com>
 ---
- fs/btrfs/zoned.c | 194 +++++++++++++++++++++++++++++++++++++++++++----
- 1 file changed, 179 insertions(+), 15 deletions(-)
+ fs/btrfs/extent-tree.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/btrfs/zoned.c b/fs/btrfs/zoned.c
-index a10e1076c8816..7fa60a44d7166 100644
---- a/fs/btrfs/zoned.c
-+++ b/fs/btrfs/zoned.c
-@@ -1561,7 +1561,9 @@ static int btrfs_load_block_group_raid0(struct btrfs_block_group *bg,
- {
- 	struct btrfs_fs_info *fs_info = bg->fs_info;
- 	u64 stripe_nr = 0, stripe_offset = 0;
-+	u64 prev_offset = 0;
- 	u32 stripe_index = 0;
-+	bool has_partial = false, has_conventional = false;
- 
- 	if ((map->type & BTRFS_BLOCK_GROUP_DATA) && !fs_info->stripe_root) {
- 		btrfs_err(fs_info, "zoned: data %s needs raid-stripe-tree",
-@@ -1569,6 +1571,35 @@ static int btrfs_load_block_group_raid0(struct btrfs_block_group *bg,
- 		return -EINVAL;
- 	}
- 
-+	/*
-+	 * When the last extent is removed, last_alloc can be smaller than the other write
-+	 * pointer. In that case, last_alloc should be moved to the corresponding write
-+	 * pointer position.
-+	 */
-+	for (int i = 0; i < map->num_stripes; i++) {
-+		u64 alloc;
-+
-+		if (zone_info[i].alloc_offset == WP_MISSING_DEV ||
-+		    zone_info[i].alloc_offset == WP_CONVENTIONAL)
+diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+index a91bce05ffb4c..b63296e9abf48 100644
+--- a/fs/btrfs/extent-tree.c
++++ b/fs/btrfs/extent-tree.c
+@@ -6688,7 +6688,7 @@ int btrfs_trim_fs(struct btrfs_fs_info *fs_info, struct fstrim_range *range)
+ 		if (ret) {
+ 			dev_failed++;
+ 			dev_ret = ret;
+-			break;
 +			continue;
-+
-+		stripe_nr = zone_info[i].alloc_offset >> BTRFS_STRIPE_LEN_SHIFT;
-+		stripe_offset = zone_info[i].alloc_offset & BTRFS_STRIPE_LEN_MASK;
-+		if (stripe_offset == 0 && stripe_nr > 0) {
-+			stripe_nr--;
-+			stripe_offset = BTRFS_STRIPE_LEN;
-+		}
-+		alloc = ((stripe_nr * map->num_stripes + i) << BTRFS_STRIPE_LEN_SHIFT) +
-+			stripe_offset;
-+		last_alloc = max(last_alloc, alloc);
-+
-+		/* Partially written stripe found. It should be last. */
-+		if (zone_info[i].alloc_offset & BTRFS_STRIPE_LEN_MASK)
-+			break;
-+	}
-+	stripe_nr = 0;
-+	stripe_offset = 0;
-+
- 	if (last_alloc) {
- 		u32 factor = map->num_stripes;
- 
-@@ -1582,7 +1613,7 @@ static int btrfs_load_block_group_raid0(struct btrfs_block_group *bg,
- 			continue;
- 
- 		if (zone_info[i].alloc_offset == WP_CONVENTIONAL) {
--
-+			has_conventional = true;
- 			zone_info[i].alloc_offset = btrfs_stripe_nr_to_offset(stripe_nr);
- 
- 			if (stripe_index > i)
-@@ -1591,6 +1622,28 @@ static int btrfs_load_block_group_raid0(struct btrfs_block_group *bg,
- 				zone_info[i].alloc_offset += stripe_offset;
- 		}
- 
-+		/* Verification */
-+		if (i != 0) {
-+			if (unlikely(prev_offset < zone_info[i].alloc_offset)) {
-+				btrfs_err(fs_info,
-+				"zoned: stripe position disorder found in block group %llu",
-+					  bg->start);
-+				return -EIO;
-+			}
-+
-+			if (unlikely(has_partial &&
-+				     (zone_info[i].alloc_offset & BTRFS_STRIPE_LEN_MASK))) {
-+				btrfs_err(fs_info,
-+				"zoned: multiple partial written stripe found in block group %llu",
-+					  bg->start);
-+				return -EIO;
-+			}
-+		}
-+		prev_offset = zone_info[i].alloc_offset;
-+
-+		if ((zone_info[i].alloc_offset & BTRFS_STRIPE_LEN_MASK) != 0)
-+			has_partial = true;
-+
- 		if (test_bit(0, active) != test_bit(i, active)) {
- 			if (unlikely(!btrfs_zone_activate(bg)))
- 				return -EIO;
-@@ -1602,6 +1655,19 @@ static int btrfs_load_block_group_raid0(struct btrfs_block_group *bg,
- 		bg->alloc_offset += zone_info[i].alloc_offset;
- 	}
- 
-+	/* Check if all devices stay in the same stripe row. */
-+	if (unlikely(zone_info[0].alloc_offset -
-+		     zone_info[map->num_stripes - 1].alloc_offset > BTRFS_STRIPE_LEN)) {
-+		btrfs_err(fs_info, "zoned: stripe gap too large in block group %llu", bg->start);
-+		return -EIO;
-+	}
-+
-+	if (unlikely(has_conventional && bg->alloc_offset < last_alloc)) {
-+		btrfs_err(fs_info, "zoned: allocated extent stays beyond write pointers %llu %llu",
-+			  bg->alloc_offset, last_alloc);
-+		return -EIO;
-+	}
-+
- 	return 0;
- }
- 
-@@ -1612,8 +1678,11 @@ static int btrfs_load_block_group_raid10(struct btrfs_block_group *bg,
- 					 u64 last_alloc)
- {
- 	struct btrfs_fs_info *fs_info = bg->fs_info;
-+	u64 AUTO_KFREE(raid0_allocs);
- 	u64 stripe_nr = 0, stripe_offset = 0;
- 	u32 stripe_index = 0;
-+	bool has_partial = false, has_conventional = false;
-+	u64 prev_offset = 0;
- 
- 	if ((map->type & BTRFS_BLOCK_GROUP_DATA) && !fs_info->stripe_root) {
- 		btrfs_err(fs_info, "zoned: data %s needs raid-stripe-tree",
-@@ -1621,6 +1690,60 @@ static int btrfs_load_block_group_raid10(struct btrfs_block_group *bg,
- 		return -EINVAL;
- 	}
- 
-+	raid0_allocs = kcalloc(map->num_stripes / map->sub_stripes, sizeof(*raid0_allocs),
-+			       GFP_NOFS);
-+	if (!raid0_allocs)
-+		return -ENOMEM;
-+
-+	/*
-+	 * When the last extent is removed, last_alloc can be smaller than the other write
-+	 * pointer. In that case, last_alloc should be moved to the corresponding write
-+	 * pointer position.
-+	 */
-+	for (int i = 0; i < map->num_stripes; i += map->sub_stripes) {
-+		u64 alloc = zone_info[i].alloc_offset;
-+
-+		for (int j = 1; j < map->sub_stripes; j++) {
-+			int idx = i + j;
-+
-+			if (zone_info[idx].alloc_offset == WP_MISSING_DEV ||
-+			    zone_info[idx].alloc_offset == WP_CONVENTIONAL)
-+				continue;
-+			if (alloc == WP_MISSING_DEV || alloc == WP_CONVENTIONAL) {
-+				alloc = zone_info[idx].alloc_offset;
-+			} else if (unlikely(zone_info[idx].alloc_offset != alloc)) {
-+				btrfs_err(fs_info,
-+				"zoned: write pointer mismatch found in block group %llu",
-+					  bg->start);
-+				return -EIO;
-+			}
-+		}
-+
-+		raid0_allocs[i / map->sub_stripes] = alloc;
-+		if (alloc == WP_CONVENTIONAL)
-+			continue;
-+		if (unlikely(alloc == WP_MISSING_DEV)) {
-+			btrfs_err(fs_info,
-+			"zoned: cannot recover write pointer of block group %llu due to missing device",
-+				  bg->start);
-+			return -EIO;
-+		}
-+
-+		stripe_nr = alloc >> BTRFS_STRIPE_LEN_SHIFT;
-+		stripe_offset = alloc & BTRFS_STRIPE_LEN_MASK;
-+		if (stripe_offset == 0 && stripe_nr > 0) {
-+			stripe_nr--;
-+			stripe_offset = BTRFS_STRIPE_LEN;
-+		}
-+
-+		alloc = ((stripe_nr * (map->num_stripes / map->sub_stripes) +
-+			  (i / map->sub_stripes)) <<
-+			 BTRFS_STRIPE_LEN_SHIFT) + stripe_offset;
-+		last_alloc = max(last_alloc, alloc);
-+	}
-+	stripe_nr = 0;
-+	stripe_offset = 0;
-+
- 	if (last_alloc) {
- 		u32 factor = map->num_stripes / map->sub_stripes;
- 
-@@ -1630,24 +1753,51 @@ static int btrfs_load_block_group_raid10(struct btrfs_block_group *bg,
- 	}
- 
- 	for (int i = 0; i < map->num_stripes; i++) {
--		if (zone_info[i].alloc_offset == WP_MISSING_DEV)
--			continue;
-+		int idx = i / map->sub_stripes;
- 
--		if (test_bit(0, active) != test_bit(i, active)) {
--			if (unlikely(!btrfs_zone_activate(bg)))
--				return -EIO;
--		} else {
--			if (test_bit(0, active))
--				set_bit(BLOCK_GROUP_FLAG_ZONE_IS_ACTIVE, &bg->runtime_flags);
-+		if (raid0_allocs[idx] == WP_CONVENTIONAL) {
-+			has_conventional = true;
-+			raid0_allocs[idx] = btrfs_stripe_nr_to_offset(stripe_nr);
-+
-+			if (stripe_index > idx)
-+				raid0_allocs[idx] += BTRFS_STRIPE_LEN;
-+			else if (stripe_index == idx)
-+				raid0_allocs[idx] += stripe_offset;
- 		}
- 
--		if (zone_info[i].alloc_offset == WP_CONVENTIONAL) {
--			zone_info[i].alloc_offset = btrfs_stripe_nr_to_offset(stripe_nr);
-+		if ((i % map->sub_stripes) == 0) {
-+			/* Verification */
-+			if (i != 0) {
-+				if (unlikely(prev_offset < raid0_allocs[idx])) {
-+					btrfs_err(fs_info,
-+					"zoned: stripe position disorder found in block group %llu",
-+						  bg->start);
-+					return -EIO;
-+				}
- 
--			if (stripe_index > (i / map->sub_stripes))
--				zone_info[i].alloc_offset += BTRFS_STRIPE_LEN;
--			else if (stripe_index == (i / map->sub_stripes))
--				zone_info[i].alloc_offset += stripe_offset;
-+				if (unlikely(has_partial &&
-+					     (raid0_allocs[idx] & BTRFS_STRIPE_LEN_MASK))) {
-+					btrfs_err(fs_info,
-+					"zoned: multiple partial written stripe found in block group %llu",
-+						  bg->start);
-+					return -EIO;
-+				}
-+			}
-+			prev_offset = raid0_allocs[idx];
-+
-+			if ((raid0_allocs[idx] & BTRFS_STRIPE_LEN_MASK) != 0)
-+				has_partial = true;
-+		}
-+
-+		if (zone_info[i].alloc_offset == WP_MISSING_DEV ||
-+		    zone_info[i].alloc_offset == WP_CONVENTIONAL)
-+			zone_info[i].alloc_offset = raid0_allocs[idx];
-+
-+		if (test_bit(0, active) != test_bit(i, active)) {
-+			if (unlikely(!btrfs_zone_activate(bg)))
-+				return -EIO;
-+		} else if (test_bit(0, active)) {
-+			set_bit(BLOCK_GROUP_FLAG_ZONE_IS_ACTIVE, &bg->runtime_flags);
- 		}
- 
- 		if ((i % map->sub_stripes) == 0) {
-@@ -1656,6 +1806,20 @@ static int btrfs_load_block_group_raid10(struct btrfs_block_group *bg,
  		}
  	}
- 
-+	/* Check if all devices stay in the same stripe row. */
-+	if (unlikely(zone_info[0].alloc_offset -
-+		     zone_info[map->num_stripes - 1].alloc_offset > BTRFS_STRIPE_LEN)) {
-+		btrfs_err(fs_info, "zoned: stripe gap too large in block group %llu",
-+			  bg->start);
-+		return -EIO;
-+	}
-+
-+	if (unlikely(has_conventional && bg->alloc_offset < last_alloc)) {
-+		btrfs_err(fs_info, "zoned: allocated extent stays beyond write pointers %llu %llu",
-+			  bg->alloc_offset, last_alloc);
-+		return -EIO;
-+	}
-+
- 	return 0;
- }
- 
+ 	mutex_unlock(&fs_devices->device_list_mutex);
 -- 
 2.51.0
 
