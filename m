@@ -1,194 +1,257 @@
-Return-Path: <linux-btrfs+bounces-22125-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-22126-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id GElsGSb0o2mvSwUAu9opvQ
-	(envelope-from <linux-btrfs+bounces-22125-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Sun, 01 Mar 2026 09:09:10 +0100
+	id 8L9AI4ERpGlcWQUAu9opvQ
+	(envelope-from <linux-btrfs+bounces-22126-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Sun, 01 Mar 2026 11:14:25 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B77D1CECCB
-	for <lists+linux-btrfs@lfdr.de>; Sun, 01 Mar 2026 09:09:09 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 19B201CF0E8
+	for <lists+linux-btrfs@lfdr.de>; Sun, 01 Mar 2026 11:14:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 9B06B300F136
-	for <lists+linux-btrfs@lfdr.de>; Sun,  1 Mar 2026 08:09:07 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id CD99A301AD37
+	for <lists+linux-btrfs@lfdr.de>; Sun,  1 Mar 2026 10:14:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59AE533032A;
-	Sun,  1 Mar 2026 08:09:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55A403358BA;
+	Sun,  1 Mar 2026 10:14:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WCMXtbGq"
+	dkim=pass (2048-bit key) header.d=zadara.com header.i=@zadara.com header.b="JtAqwDd8"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06D0F15539A
-	for <linux-btrfs@vger.kernel.org>; Sun,  1 Mar 2026 08:08:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772352539; cv=none; b=YXksPo1TA9+XGfjcOZ34ppkMOKvMryiMRDHgXgPBB1c5fz9SQX9xJo8f7kX4bjDLMXPLKs6EDJIU+MrOKvUKRDEPdsww+jmM28pM++rqEK7HTGu4cuY9Et7SCArqYgdR7v8HD6jYx1sr2LJMKYiQiaOOVlTVFPkO4QJ90urkt6c=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772352539; c=relaxed/simple;
-	bh=7iOYDwCgKMgH1ttBNtFMfrgKVvwATVLXflWE6ATV4fs=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Ju+c5DJ2GqXavUxIjIJe6TlfbtR7xjw7lNXyGovahyBShJslkzXyUCbauorfXBboa7ce0xovTNo27YINcUkFzFbmp6QXDGH2dGrGRqUNP9Qui6Pjy1GvoI+vDFhk4jP4gZQV1clqlY4WLdAizf8mGI1XYWBX2VzcUmh7OjxgT7U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WCMXtbGq; arc=none smtp.client-ip=209.85.216.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-3562e858da5so1467365a91.2
-        for <linux-btrfs@vger.kernel.org>; Sun, 01 Mar 2026 00:08:57 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6276F335081
+	for <linux-btrfs@vger.kernel.org>; Sun,  1 Mar 2026 10:14:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.216.45
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1772360055; cv=pass; b=lDEr5DbcRHN0p9wcQUhpXEJz5ZVGFqX8UrTuqmD92HUud8rkvgM478SvUpVWrXPhQEEKUNYDQ9CT1NPdtJ0SPUhb1MsLtbQJnX/SKv6KRTCEF5/w9Q8wOFqAXKpBmw4/oRZyyJgcx9hDcXk34w2Qo9u3AiW4S54sxROVwvh04A8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1772360055; c=relaxed/simple;
+	bh=K/p9SY7vSgSqQ5XG2GaZI4QLUqPntDGJHVhob7W34Kc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=EkAGe/Dtl3PDK8j3myxSbVVGohi0dj7roqQJbb690qCUa0NOw8NVXkuv1M5YGHj98Q7CNq4TMqKome+lzbys6qTJul7l89vUXVgGBRHlwMgJC39W1OzIl0EBNd7fWFaBsaT2zcWjUR2252pvBH35tb7TEwtyutVy3k+qr7Sq6Ec=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zadara.com; spf=pass smtp.mailfrom=zadarastorage.com; dkim=pass (2048-bit key) header.d=zadara.com header.i=@zadara.com header.b=JtAqwDd8; arc=pass smtp.client-ip=209.85.216.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zadara.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zadarastorage.com
+Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-3598c1ad542so58722a91.0
+        for <linux-btrfs@vger.kernel.org>; Sun, 01 Mar 2026 02:14:14 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1772360054; cv=none;
+        d=google.com; s=arc-20240605;
+        b=QgIiad4rIAVZuV1qiRyJarlAOnxdjCMQO6LqT2dNO/uwqltsLkGt7kFAtNaTZMG+eL
+         heMwyYEdI2tXcwQeUZhYRJ/mZgH1oTKB8qDVHPTBbgWMvbtHJeMPqT7/eJD1ubcp4+ig
+         qi/gcMKN2BDQI0fq8iAUtHckQDBtkTLQb7FtQO59G8NVht7onj3qbN/MiP1PgSlm5KVw
+         V7aAZE7K/yABLjrTH9RNKavUAOt8gfXPhSJSMTkf0OZyblrsvsxda4iyOshJkuhqmN7h
+         YRoQgUv+01C16MAHD7hKjYqLILBLk7Bmp8QEwDEyWyXZgRsE3XfW7YeTGfJuT3d2I4Jd
+         /JcQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=3BHa1keyf1xGo8dvWfdTC9xT5rJbBYIj5M2HtnsQ4yY=;
+        fh=ANJS8JfboSysVOj/a7dOgD6pYSGBivnuEzxRLMjiVIo=;
+        b=YxVo32143MC6vBU5n8AGE3LhOSoMfIhbQ0RWXYOA1AbD67+r0polMBVWIqDrgDAlVQ
+         jT4YrIPjqaRk+HSqVToGpukrXRCowQJhBUobMjr5F8MU6bUkL3JZpivyodu6curwT39R
+         0gntIYtmZTjWhPkuj20o9lJVWuJQDG+zpZg3D8TYDxY1c2b8C+qUyLcSKspIg4wetP/o
+         ADOCHf09T4nl/ozIV8JN2zUYcJWt+3crmr4YYZ4fDf6fPEgqePLzTC+4Yq70SQWhYZrj
+         /vXzHAisRD1j0hE/YgEFBx5CtMTNEtO/HvSL2HgFRGIqMkJeUMaEAkLsK+MllmN02+27
+         qxNA==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1772352537; x=1772957337; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=khxUoYDm3JEEBakTGGDixS5AmQe5irgmRZaJ0irTmec=;
-        b=WCMXtbGqYAeUJqxM38/+LXBqhrPmn0wZlO0i5H/ew60TIjYG2i9h6p/jZLegO88Ady
-         t0gIUzC+wOmyIrD42hJ70jpAI/0Ss3SP9KEYc95zH8olI+YUMb+Wc+FuIB7SPfV0rKIX
-         29bPVB8YeAwDlOyb7zJLaiHgSuyz9xL10C0DIJDLVSn5Nbx0jrk0iin3374J8KA9XOzE
-         tV9uUptL5YjP3uWgQqqgPDDlZ8Hqy/1rp8kj8A6Rs2JHVoXHiQ0heOc6Af5NOE/Hk9u7
-         bzLWk/50xGDyPmqRLSVD88Xdbvm4AAQXCRLp+Rb4+uInkqGqF17spMLSjBkFU7x4Nw7n
-         be5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772352537; x=1772957337;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=zadara.com; s=google; t=1772360054; x=1772964854; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=khxUoYDm3JEEBakTGGDixS5AmQe5irgmRZaJ0irTmec=;
-        b=GAkIngqoJEBJIF7WK25XFrbt9Obn9vqIfb5eYfyQWNwncGg/8jVTJPFMlKj25lIqRh
-         M2KkA0FOzBNqzV1fPpPjlAcSHOBHevXJj8UiF/DXog/9raEpfoZ/m0Vpwt9ngTtrxPO5
-         WjNqr7dpYrDK4tky5y7TqLQzEszUVB3DiuIkGokZgr5TSecOH8fGlYfgJgzHAtrPLkTq
-         i5rNE0FuKJEHPyySyNnq3VtTyMYeP7Q3qK0eLSOEMKpKnT1yROff/JrfuMPQ00gqxCXQ
-         uc+btet/H7SnsA1oFCWUhQvSyd5D2Vw9Zccj6voPpAWYSkOSRRsN/ye9fYTe7rhyny/1
-         FLyw==
-X-Gm-Message-State: AOJu0YxR7LGCVV8JUMLCkxotlYXRqmW9oDVYKPIYBgfU7fogsvSJOMqT
-	ZwXxTgU3JdM/Reaq1xpcdx6C4sgnJNJKGq1lomZnfFD7hRPhGkz+QxkK
-X-Gm-Gg: ATEYQzyI9mKU5ev/1XVPeVne5sYvGQ3hDVTXKtPRw3mrP79NHt8SFhYFWEhH5lxd84c
-	KhL8+Q3//whtxL711Bbufk4wwhitayr6yoftwsW8ianC5Im7tbWQcEXOUUhVkzmhRK7Blkfi0gB
-	biJRbk1vcawwVtAe127FnQbalfej2S7s7jKqOIP9KKLTQnN1x3T8IjKFsWo7tv8b37gsghKCKV5
-	xN3qNIgHTtOMY6Sbadqb9Na7rv382FUOVSx7RZql9ZBaktFp9PaojTz+pKjLv3kOEU3X7Lq21mM
-	+Tj3YqueZWySA6f0G2/erw5HEqNOrnIXAI+aaXVouf2p2gGWqQqCx/FD5Wpctl4N2/psyPGid1o
-	715x+6YZdg7vkV6T/xPq/DAwlZJwe3QJeOpN3BrUEPCjaDI2IH6RT5FbaUKK8EbSZbBwNxoNSbh
-	odfMfB31fX7EgdzHSTGmJn5Bsf
-X-Received: by 2002:a17:90b:5205:b0:356:22b5:704f with SMTP id 98e67ed59e1d1-35965c4fd27mr7748479a91.15.1772352537349;
-        Sun, 01 Mar 2026 00:08:57 -0800 (PST)
-Received: from archlinux ([103.208.68.234])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-c70fa82dab1sm8336442a12.27.2026.03.01.00.08.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 01 Mar 2026 00:08:57 -0800 (PST)
-From: Adarsh Das <adarshdas950@gmail.com>
-To: clm@fb.com,
-	dsterba@suse.com
-Cc: linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Adarsh Das <adarshdas950@gmail.com>,
-	syzbot+6d30e046bbd449d3f6f1@syzkaller.appspotmail.com
-Subject: [PATCH] btrfs: don't add delayed refs to an aborted transaction
-Date: Sun,  1 Mar 2026 13:38:47 +0530
-Message-ID: <20260301080847.16153-1-adarshdas950@gmail.com>
-X-Mailer: git-send-email 2.53.0
+        bh=3BHa1keyf1xGo8dvWfdTC9xT5rJbBYIj5M2HtnsQ4yY=;
+        b=JtAqwDd8y9U8MpVsXivOWI3Q+j07jgYEHQw9ZpSXylQmFv2ijHQMPW5tYApbE5bREQ
+         vKAUDUb2Wf2Y5TTeNO/O5tgT5uf8gRUL9LPniR7sSTqx88N6wcPDe9A/oSa8hR88PcM2
+         iaF1AXhUATbPr2vdOEnhxyVOGPtOixReqdOWlZhA3/ypHcYb96VgR2acIDLoBpTI+oln
+         RGWZcRvDExXyy1pXcJ3LRYxaRxPTw8o0hLmdMiFuYUyWQxFWSAL66gQ+lFQJXvkA6OTH
+         0nTP/iYLWZbY1ncnhi1G/3WPgEHziS9X9zLNdFtT2pjDCVhTD8at1WJAYtkjUL/KKlnM
+         3aNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1772360054; x=1772964854;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=3BHa1keyf1xGo8dvWfdTC9xT5rJbBYIj5M2HtnsQ4yY=;
+        b=bqx6LVfx3DkRc1wssH2SkxlOZaEveq1Ou+gPhJZwKZFi8KQ+wb81H+tWrXOzaLV8bd
+         fvIwEPQi5N1r3fJbajNKTMbOrZMC8GWoh/SnN8q9P7wI7JjAKlUjLfThE8ZggXjVtcOE
+         fXtSKhUeMNyTyrG92+bH/Z+yNwWCE2Cl/JrgGtqxvjnVI9O2VophJ5LsrqqkXz8adEIv
+         T/bhhJmWrSD1MQRfyScr+oxwlMjgYvYZj5X8KgcFmws24qZzqJQlkiJ/3ZQfbGhjDVhv
+         gvuHr8pjKWt47MresjFphgD3NY/FDssPvGk8TPqKdElpbBi3nx3HsMhd0gtSsKe0dZ31
+         yMIA==
+X-Gm-Message-State: AOJu0YzdHx09e6j/Wg+Np4a2G6Bjcz9Z2CMWs+h9llr4AbLT+KU38r0b
+	qk6C2G7xiRHE8yrE8N0cR3eFs7w9jI3IAWb/bkySionewjbChKmdzwWDiT5HQATs5FtTWfC/DKt
+	F5JZ4cEbJFhb/McKATksHpNLzbaLspexeihjii8YyDm7vX71eZLTEDYM=
+X-Gm-Gg: ATEYQzxwzySOc1oT1RvROuISKU/2yhDzsuyL5+8ooD5U9VOGnG7WC6OU9h5xOm4UM16
+	C6XPUcDC/IjlFTqLw5R50j5Zdyar3bgUFATfEc8dRRVDqQGpRlPvdEdgJv9qEUCRF4AsijicBqb
+	wKoGzoIXrTiUvWJYqDP4vArJwjsQu4/IsnjJJhMZYD6e2JzujVJp5eozMzpzaSsoYDINbDP6JXn
+	KdQp8apvfUZ93yBrWkA30Hd5lyQ1Ru8HcJiX9CnTe0UOMiqvheJScdxY7kfNSC+xaEGedkiTv/h
+	6dAv9iEz
+X-Received: by 2002:a17:90a:dfce:b0:336:9dcf:ed14 with SMTP id
+ 98e67ed59e1d1-35965ceb193mr8186360a91.23.1772360053721; Sun, 01 Mar 2026
+ 02:14:13 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20260226113419.28687-1-alex.lyakas@zadara.com>
+ <20260226173746.GA2968189@zen.localdomain> <20260226182915.GA2992537@zen.localdomain>
+In-Reply-To: <20260226182915.GA2992537@zen.localdomain>
+From: Alex Lyakas <alex.lyakas@zadara.com>
+Date: Sun, 1 Mar 2026 12:14:09 +0200
+X-Gm-Features: AaiRm52BDsC1KVPDRidKF4rdEjaAXdvF-2qnqkrqDK-UUQbt89NQb84w--MDkMk
+Message-ID: <CAOcd+r31fvMHskN93LNjbXrhpL0hF1kZd6rkVuhcEAgXHtcW-A@mail.gmail.com>
+Subject: Re: [PATCH-RFC] btrfs: for unclustered allocation don't consider ffe_ctl->empty_cluster
+To: Boris Burkov <boris@bur.io>
+Cc: linux-btrfs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.84 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[zadara.com,none];
+	R_DKIM_ALLOW(-0.20)[zadara.com:s=google];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[vger.kernel.org,gmail.com,syzkaller.appspotmail.com];
 	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
+	RCPT_COUNT_TWO(0.00)[2];
+	TAGGED_FROM(0.00)[bounces-22126-lists,linux-btrfs=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
-	TO_DN_SOME(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22125-lists,linux-btrfs=lfdr.de];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[adarshdas950@gmail.com,linux-btrfs@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	RCVD_COUNT_FIVE(0.00)[5];
-	TAGGED_RCPT(0.00)[linux-btrfs,6d30e046bbd449d3f6f1];
+	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[alex.lyakas@zadara.com,linux-btrfs@vger.kernel.org];
+	DKIM_TRACE(0.00)[zadara.com:+];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 0B77D1CECCB
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TAGGED_RCPT(0.00)[linux-btrfs];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,zadara.com:email,zadara.com:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,bur.io:email]
+X-Rspamd-Queue-Id: 19B201CF0E8
 X-Rspamd-Action: no action
 
-When a transaction aborts, cleanup_transaction() calls
-btrfs_cleanup_one_transaction() which drains all pending delayed refs
-via btrfs_destroy_delayed_refs().
+Hi Boris,
 
-But, btrfs_cleanup_one_transaction() then wakes up tasks waiting
-on transaction_blocked_wait and sets the transaction state to
-TRANS_STATE_UNBLOCKED. These woken tasks can then call btrfs_add_delayed_tree_ref(),
-btrfs_add_delayed_data_ref(), or btrfs_add_delayed_extent_op() on the
-already-aborted transaction, inserting new entries into the head_refs
-xarray after it was just drained.
+On Thu, Feb 26, 2026 at 8:28=E2=80=AFPM Boris Burkov <boris@bur.io> wrote:
+>
+> On Thu, Feb 26, 2026 at 09:37:46AM -0800, Boris Burkov wrote:
+> > On Thu, Feb 26, 2026 at 01:34:19PM +0200, Alex Lyakas wrote:
+> > > I encountered an issue when performing unclustered allocation for met=
+adata:
+> > >
+> > > free_space_ctl->free_space =3D 2MB
+> > > ffe_ctl->num_bytes =3D 4096
+> > > ffe_ctl->empty_cluster =3D 2MB
+> > > ffe_ctl->empty_size =3D 0
+> > >
+> > > So early check for free_space_ctl->free_space skips the block group, =
+even though
+> > > it has enough space to do the allocation.
+> > > I think when doing unclustered allocation we should not look at ffe_c=
+tl->empty_cluster.
+> >
+> > I see what you are saying, and a the level of this situation and this
+> > line of code, I think you are right.
+> >
+> > But as-is, this change does not contain enough reasoning about the
+> > semantics of the allocation algorithm to realistically be anything
+> > but exchanging one bug for two new ones.
+> >
 
-When btrfs_put_transaction() subsequently drops the refcount to zero, it
-hits:
+Thank you for your review and your comments below.
 
-  WARN_ON(!xa_empty(&transaction->delayed_refs.head_refs));
+However, I am not sure what is it that you are actually requesting.
+Do you expect me to describe the whole mechanics of find_free_extent()
+and how its state is tracked through ffe_ctl?
 
-This patch fixes this by checking TRANS_ABORTED() at the start of add_delayed_ref()
-and btrfs_add_delayed_extent_op() before inserting into the xarray.
-btrfs_abort_transaction() is called at the start of cleanup_transaction(),
-before btrfs_destroy_delayed_refs(), so the aborted flag should always be set
-before any wakeups occur.
+> > What is empty_cluster modelling? Why is it included in this calculation=
+?
+> > Why should it not be included? Where else is empty_cluster used and
+> > should it change under this new interpretation? Does any of this change
+> > if there is actually a cluster active for clustered allocations?
+I am not changing the meaning of any field of ffe_ctl, which tracks
+the state of every call to find_free_extent().
 
-Reported-by: syzbot+6d30e046bbd449d3f6f1@syzkaller.appspotmail.com
-Signed-off-by: Adarsh Das <adarshdas950@gmail.com>
----
- fs/btrfs/delayed-ref.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+I found an issue where "empty_cluster" is used erroneously in my opinion.
 
-diff --git a/fs/btrfs/delayed-ref.c b/fs/btrfs/delayed-ref.c
-index 3766ff29fbbb..b994f9702c32 100644
---- a/fs/btrfs/delayed-ref.c
-+++ b/fs/btrfs/delayed-ref.c
-@@ -327,7 +327,7 @@ static int cmp_refs_node(const struct rb_node *new, const struct rb_node *exist)
- 	return comp_refs(new_node, exist_node, true);
- }
- 
--static struct btrfs_delayed_ref_node* tree_insert(struct rb_root_cached *root,
-+static struct btrfs_delayed_ref_node *tree_insert(struct rb_root_cached *root,
- 		struct btrfs_delayed_ref_node *ins)
- {
- 	struct rb_node *node = &ins->ref_node;
-@@ -1025,6 +1025,10 @@ static int add_delayed_ref(struct btrfs_trans_handle *trans,
- 	}
- 
- 	delayed_refs = &trans->transaction->delayed_refs;
-+	if (TRANS_ABORTED(trans->transaction)) {
-+		ret = -EIO;
-+		goto free_head_ref;
-+	}
- 
- 	if (btrfs_qgroup_full_accounting(fs_info) && !generic_ref->skip_qgroup) {
- 		record = kzalloc_obj(*record, GFP_NOFS);
-@@ -1153,6 +1157,10 @@ int btrfs_add_delayed_extent_op(struct btrfs_trans_handle *trans,
- 	head_ref->extent_op = extent_op;
- 
- 	delayed_refs = &trans->transaction->delayed_refs;
-+	if (TRANS_ABORTED(trans->transaction)) {
-+		kmem_cache_free(btrfs_delayed_ref_head_cachep, head_ref);
-+		return -EIO;
-+	}
- 
- 	ret = xa_reserve(&delayed_refs->head_refs, index, GFP_NOFS);
- 	if (ret) {
--- 
-2.53.0
+According to the code, "empty_cluster" describes the minimal amount of
+free space in the block group, which we are considering to allocate a
+cluster from. I am not changing the meaning of it.
 
+My fix is suggesting that "empty_cluster" should not be used when
+looking at free space in a block group during unclustered allocation.
+Nothing else is changed. In the issue that I saw, this bug prevented
+us from allocating a metadata block from a block group, when the block
+group still had enough space to make a 4Kb allocation.
+
+I tagged the patch as RFC, because I am unable to test it on the
+latest mainline kernel, and I tested it on a stable LTS kernel 6.6.
+
+Thanks,
+Alex.
+
+
+
+
+
+> >
+> > etc. etc.
+> >
+> > Thanks,
+> > Boris
+> >
+>
+> I missed the RFC tag in the patch, so I would like to apologize for my
+> negativity. In my experience with other bugs, the interplay between the
+> clustered algorithm and the unclustered algorithm is under-specified so
+> I think it is likely you have indeed found a bug.
+>
+> If you want to fix it, I would proceed along the lines I complained
+> about in my first response and try to define the relationships between
+> the variables in a consistent way that explains why we shouldn't count
+> that variable here.
+>
+> If you do go through with sharpening the definition of empty_cluster,
+> I would be happy to review that work and help get it in.
+>
+
+
+
+> Thanks,
+> Boris
+>
+> > >
+> > > I tested this on stable kernel 6.6.
+> > >
+> > > Signed-off-by: Alex Lyakas <alex.lyakas@zadara.com>
+> > > ---
+> > >  fs/btrfs/extent-tree.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+> > > index 03cf9f242c70..84b340a67882 100644
+> > > --- a/fs/btrfs/extent-tree.c
+> > > +++ b/fs/btrfs/extent-tree.c
+> > > @@ -3885,7 +3885,7 @@ static int find_free_extent_unclustered(struct =
+btrfs_block_group *bg,
+> > >             free_space_ctl =3D bg->free_space_ctl;
+> > >             spin_lock(&free_space_ctl->tree_lock);
+> > >             if (free_space_ctl->free_space <
+> > > -               ffe_ctl->num_bytes + ffe_ctl->empty_cluster +
+> > > +               ffe_ctl->num_bytes +
+> > >                 ffe_ctl->empty_size) {
+> > >                     ffe_ctl->total_free_space =3D max_t(u64,
+> > >                                     ffe_ctl->total_free_space,
+> > > --
+> > > 2.43.0
+> > >
 
