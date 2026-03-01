@@ -1,373 +1,167 @@
-Return-Path: <linux-btrfs+bounces-22128-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-22129-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id aDiDIockpGn5YQUAu9opvQ
-	(envelope-from <linux-btrfs+bounces-22128-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Sun, 01 Mar 2026 12:35:35 +0100
+	id mcRgDlMupGnwZwUAu9opvQ
+	(envelope-from <linux-btrfs+bounces-22129-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Sun, 01 Mar 2026 13:17:23 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06F371CF5B1
-	for <lists+linux-btrfs@lfdr.de>; Sun, 01 Mar 2026 12:35:34 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 851991CF8FE
+	for <lists+linux-btrfs@lfdr.de>; Sun, 01 Mar 2026 13:17:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 192CA301AB8F
-	for <lists+linux-btrfs@lfdr.de>; Sun,  1 Mar 2026 11:35:13 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C1A713011BEB
+	for <lists+linux-btrfs@lfdr.de>; Sun,  1 Mar 2026 12:17:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28864320CD3;
-	Sun,  1 Mar 2026 11:35:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1CA61A9F8C;
+	Sun,  1 Mar 2026 12:17:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IKnVcvnn"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="rNd5fygB"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from esa5.hgst.iphmx.com (esa5.hgst.iphmx.com [216.71.153.144])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E62342E3AF1
-	for <linux-btrfs@vger.kernel.org>; Sun,  1 Mar 2026 11:35:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D26AD430B97
+	for <linux-btrfs@vger.kernel.org>; Sun,  1 Mar 2026 12:17:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.71.153.144
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772364905; cv=none; b=JzVCYhPHqJi60GF4MTQG+TFbID4hzItPniEbZB0TzkpL/r29+2uCkrfI3aXxGD61M409QyDfZ1bB8bIrC4QB2xG4L5sMDLYJwdkpHK+4WOY3bfAfo2IYCDO8oJb/FTY29sMOqFHticcjo4ikSFm/hhG0+1jfKi6+k3s41Dl8n3s=
+	t=1772367434; cv=none; b=KJV0YgnjrmjobYJdjDO4oLXrfS6AKFaapIMpWstg/bLAqCnMYCEP6KbGRe0fo0xHTvTt/Qi7erB1452P/NF+aN3PP/tpdbdnD/ZIn0P4HzxF8k2eGsXtKZmR/Fh3jcuTuaQLq+nVNPyBsezW66BC+KlQuiK3Afq9OR5FZ+TeXs8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772364905; c=relaxed/simple;
-	bh=qnLLFG/SZGZn4csT7tprzSg7zh1mbGI6yaIY7sH+hIw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Q/gTt49ObDPfu/t28Tny1JSyb0vTM85z7LGxed595cXG3oRDZXmLVsUTOKa3M80++Xei1rtr6F/CA+WgrpbDrjS8HN8OCGoKSJG3ULDtmgF6fI3JdHSkgxgCjjF2kGNrcSt1IbYtrlJlc4PDPt7/VXQU2OawTtQn6Rt/LHC8xyQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IKnVcvnn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1B7FC2BC9E
-	for <linux-btrfs@vger.kernel.org>; Sun,  1 Mar 2026 11:35:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772364904;
-	bh=qnLLFG/SZGZn4csT7tprzSg7zh1mbGI6yaIY7sH+hIw=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=IKnVcvnnTW8vrfz5wFOfRC4iQ9RJDy+6pG9VfmSZVmfQgqS3uFU8I7lbgvaLLY+5u
-	 LSyHGBwzpPmloo5snj9YwvyOnFbEMLKVM83bSZXNxdh263bZJl7BcBydB3S2fgDph8
-	 jRP7sLY1KKi4+ZV4yJ7Cwri2GJytH6vGoC8oOHQkIxwqJ4NcRhs8RqFILttxgdKL6v
-	 Wlg9XvEs8PQ7Gz+ve30EVdF+fFdZGNojOuGXX/Ib/YTA/7F56j7G/iGkhjF2wqJ3h3
-	 /Z5LU6BBrlZ1uBpDpCXOAdp1YA1j9TUaxFdD7UjjMECIYZ7yfm5uUPhRoS3ey+M7SX
-	 308KpsW3O+a4Q==
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-b9381e78a31so301178966b.2
-        for <linux-btrfs@vger.kernel.org>; Sun, 01 Mar 2026 03:35:04 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCU0Ri3snkFEikBcIw4y3LFRoRTDgkS4Qv/Slf/M+JlbLoRyTOsErCglUs2eyOcf7sQ828TnBu1rTlxMkg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzIqcG1YZJi5j/ylEDa7QmjL3GEfnCaqVeuof5tC1sqnGZLM06B
-	dbqlstQ2UphlH3hjK6fOAhAdqiEJmHL0MNgYlWy4Mt7y8KPlw7aM2oO47Cqrrsgts1Q2rvudVBa
-	WXLqCKjhQrz5siuSpyd7f6eXD+5iUepA=
-X-Received: by 2002:a17:907:da9:b0:b93:8460:4a3 with SMTP id
- a640c23a62f3a-b9384600779mr503132366b.56.1772364903279; Sun, 01 Mar 2026
- 03:35:03 -0800 (PST)
+	s=arc-20240116; t=1772367434; c=relaxed/simple;
+	bh=aVMKVbg7J8AqNsFOqt1vQHnzImYq3Db/nw4Gs57TjbI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=oUa32V4JoCRv/A4WpNyA04SUhmd8nzX4aOUbYJsvm3XSUwiCAj803AsFPXT5tTeqIeQ6Ck1XXt4BzuquMmKlMZ3wVWj1CniKyAehT85RG2eu/ga4nVD3AShEjoeUqWaSh2F0PY001jf1BV0L7IpUQGJDGR1htqRFWeqpCVSvlaM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=rNd5fygB; arc=none smtp.client-ip=216.71.153.144
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1772367432; x=1803903432;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=aVMKVbg7J8AqNsFOqt1vQHnzImYq3Db/nw4Gs57TjbI=;
+  b=rNd5fygBa1oPUpi7XGBZmuOebi6rjGGPMdzR7j0nCghE1QoA/JOVxEKw
+   mQU3R+3MdSnq3TCuCbCuNUCMG3OlmuqG1cJEU0zW0BFpAtCqvln64Etfq
+   POLwEBnqusgMKl+MUs+auDKLMY4+u1uStR+q+gHNKRLohu/0jSNBp06fm
+   XjqKkfsbzEK8/ZOQjw1UjO365lezgYOswV1X6rjurVL/jo7y9o+b4NAey
+   eVTnNeOqBNxFX05+TLA8XV6RxAI3G5arYkdmpVDiwE4rISYj8VUjBMYfV
+   UfB1CTQiztEJQZWRhLQEVhaOYexnTVyY5WQpykZwxiTY50dJOcbcROycp
+   g==;
+X-CSE-ConnectionGUID: u8v8hq0YRweW+FkzOCkP0A==
+X-CSE-MsgGUID: r08QSHFVSq238N7yBQae/Q==
+X-IronPort-AV: E=Sophos;i="6.21,318,1763395200"; 
+   d="scan'208";a="141282996"
+Received: from uls-op-cesaip01.wdc.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 01 Mar 2026 20:17:06 +0800
+IronPort-SDR: 69a42e42_06nBoGKv/Mki6lg1ZYla5SgfLPIhRCXMU7i8pMXU0E4QsEm
+ qe+6/tzllewuVd3CX/oIHeOJimSfplAjwD5P8lQ==
+Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 01 Mar 2026 04:17:06 -0800
+WDCIronportException: Internal
+Received: from wdap-scnfrotg6q.ad.shared (HELO shinmob.wdc.com) ([10.224.105.28])
+  by uls-op-cesaip01.wdc.com with ESMTP; 01 Mar 2026 04:17:05 -0800
+From: Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+To: linux-btrfs@vger.kernel.org,
+	David Sterba <dsterba@suse.com>
+Cc: Naohiro Aota <Naohiro.Aota@wdc.com>,
+	Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+	Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+Subject: [PATCH] btrfs: fix leak of kobject name for sub-group space_info
+Date: Sun,  1 Mar 2026 21:17:04 +0900
+Message-ID: <20260301121704.45115-1-shinichiro.kawasaki@wdc.com>
+X-Mailer: git-send-email 2.53.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260228090621.100841-1-adarshdas950@gmail.com> <20260228090621.100841-2-adarshdas950@gmail.com>
-In-Reply-To: <20260228090621.100841-2-adarshdas950@gmail.com>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Sun, 1 Mar 2026 11:34:26 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H73KNJSCZQN8R_uSrCnsPZUqOdiyszuwjhjtFV7d4VPzw@mail.gmail.com>
-X-Gm-Features: AaiRm52lgCnBcpkR4m_bvQcPSn8jz_hJlaCQziCVqYErNUhha4pddSUBvBa9tZ4
-Message-ID: <CAL3q7H73KNJSCZQN8R_uSrCnsPZUqOdiyszuwjhjtFV7d4VPzw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] btrfs: replace BUG() with error handling in compression.c
-To: Adarsh Das <adarshdas950@gmail.com>
-Cc: clm@fb.com, dsterba@suse.com, terrelln@fb.com, linux-btrfs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[wdc.com,quarantine];
+	R_DKIM_ALLOW(-0.20)[wdc.com:s=dkim.wdc.com];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-22128-lists,linux-btrfs=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[fdmanana@kernel.org,linux-btrfs@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-22129-lists,linux-btrfs=lfdr.de];
+	DKIM_TRACE(0.00)[wdc.com:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCPT_COUNT_FIVE(0.00)[5];
+	FROM_NEQ_ENVFROM(0.00)[shinichiro.kawasaki@wdc.com,linux-btrfs@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	RCPT_COUNT_FIVE(0.00)[6];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid]
-X-Rspamd-Queue-Id: 06F371CF5B1
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,wdc.com:mid,wdc.com:dkim,wdc.com:email]
+X-Rspamd-Queue-Id: 851991CF8FE
 X-Rspamd-Action: no action
 
-On Sat, Feb 28, 2026 at 9:07=E2=80=AFAM Adarsh Das <adarshdas950@gmail.com>=
- wrote:
->
-> v2:
-> - use ASSERT() instead of btrfs_err() + -EUCLEAN
-> - remove default: branches and add upfront ASSERT() for type validation
-> - fold coding style fixes into this patch
->
-> Signed-off-by: Adarsh Das <adarshdas950@gmail.com>
-> ---
->  fs/btrfs/compression.c | 74 ++++++++++++++----------------------------
->  1 file changed, 25 insertions(+), 49 deletions(-)
->
-> diff --git a/fs/btrfs/compression.c b/fs/btrfs/compression.c
-> index 790518a8c803..0d8da8ce5fd3 100644
-> --- a/fs/btrfs/compression.c
-> +++ b/fs/btrfs/compression.c
-> @@ -36,9 +36,9 @@
->
->  static struct bio_set btrfs_compressed_bioset;
->
-> -static const char* const btrfs_compress_types[] =3D { "", "zlib", "lzo",=
- "zstd" };
-> +static const char * const btrfs_compress_types[] =3D { "", "zlib", "lzo"=
-, "zstd" };
+When create_space_info_sub_group() allocates elements of
+space_info->sub_group[], kobject_init_and_add() is called for each
+element via btrfs_sysfs_add_space_info_type(). However, when
+check_removing_space_info() frees these elements, it does not call
+btrfs_sysfs_remove_space_info() on them. As a result, kobject_put() is
+not called and the associated kobj->name objects are leaked.
 
-Please don't do that.
+This memory leak is reproduced by running the blktests test case
+zbd/009 on kernels built with CONFIG_DEBUG_KMEMLEAK. The kmemleak
+feature reports the following error:
 
-You are changing a lot of lines in this patch, and the next one, just
-to change coding style.
-We don't do that in btrfs: we only fix the coding style of a line when
-we need to change it anyway due to a bug fix, refactoring, cleanup,
-implementing something new, etc.
+unreferenced object 0xffff888112877d40 (size 16):
+  comm "mount", pid 1244, jiffies 4294996972
+  hex dump (first 16 bytes):
+    64 61 74 61 2d 72 65 6c 6f 63 00 c4 c6 a7 cb 7f  data-reloc......
+  backtrace (crc 53ffde4d):
+    __kmalloc_node_track_caller_noprof+0x619/0x870
+    kstrdup+0x42/0xc0
+    kobject_set_name_vargs+0x44/0x110
+    kobject_init_and_add+0xcf/0x150
+    btrfs_sysfs_add_space_info_type+0xfc/0x210 [btrfs]
+    create_space_info_sub_group.constprop.0+0xfb/0x1b0 [btrfs]
+    create_space_info+0x211/0x320 [btrfs]
+    btrfs_init_space_info+0x15a/0x1b0 [btrfs]
+    open_ctree+0x33c7/0x4a50 [btrfs]
+    btrfs_get_tree.cold+0x9f/0x1ee [btrfs]
+    vfs_get_tree+0x87/0x2f0
+    vfs_cmd_create+0xbd/0x280
+    __do_sys_fsconfig+0x3df/0x990
+    do_syscall_64+0x136/0x1540
+    entry_SYSCALL_64_after_hwframe+0x76/0x7e
 
-Also don't send patches to fix only coding style.
+To avoid the leak, call btrfs_sysfs_remove_space_info() instead of
+kfree() for the elements.
 
-Thanks.
+Fixes: f92ee31e031c ("btrfs: introduce btrfs_space_info sub-group")
+Closes: https://lore.kernel.org/linux-block/b9488881-f18d-4f47-91a5-3c9bf63955a5@wdc.com/
+Signed-off-by: Shin'ichiro Kawasaki <shinichiro.kawasaki@wdc.com>
+---
+ fs/btrfs/block-group.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->
-> -const char* btrfs_compress_type2str(enum btrfs_compression_type type)
-> +const char *btrfs_compress_type2str(enum btrfs_compression_type type)
->  {
->         switch (type) {
->         case BTRFS_COMPRESS_ZLIB:
-> @@ -89,24 +89,21 @@ bool btrfs_compress_is_valid_type(const char *str, si=
-ze_t len)
->  static int compression_decompress_bio(struct list_head *ws,
->                                       struct compressed_bio *cb)
->  {
-> +       ASSERT(cb->compress_type > BTRFS_COMPRESS_NONE &&
-> +              cb->compress_type < BTRFS_NR_COMPRESS_TYPES);
->         switch (cb->compress_type) {
->         case BTRFS_COMPRESS_ZLIB: return zlib_decompress_bio(ws, cb);
->         case BTRFS_COMPRESS_LZO:  return lzo_decompress_bio(ws, cb);
->         case BTRFS_COMPRESS_ZSTD: return zstd_decompress_bio(ws, cb);
-> -       case BTRFS_COMPRESS_NONE:
-> -       default:
-> -               /*
-> -                * This can't happen, the type is validated several times
-> -                * before we get here.
-> -                */
-> -               BUG();
->         }
-> +       return -EUCLEAN;
->  }
->
->  static int compression_decompress(int type, struct list_head *ws,
->                 const u8 *data_in, struct folio *dest_folio,
->                 unsigned long dest_pgoff, size_t srclen, size_t destlen)
->  {
-> +       ASSERT(type > BTRFS_COMPRESS_NONE && type < BTRFS_NR_COMPRESS_TYP=
-ES);
->         switch (type) {
->         case BTRFS_COMPRESS_ZLIB: return zlib_decompress(ws, data_in, des=
-t_folio,
->                                                 dest_pgoff, srclen, destl=
-en);
-> @@ -114,14 +111,8 @@ static int compression_decompress(int type, struct l=
-ist_head *ws,
->                                                 dest_pgoff, srclen, destl=
-en);
->         case BTRFS_COMPRESS_ZSTD: return zstd_decompress(ws, data_in, des=
-t_folio,
->                                                 dest_pgoff, srclen, destl=
-en);
-> -       case BTRFS_COMPRESS_NONE:
-> -       default:
-> -               /*
-> -                * This can't happen, the type is validated several times
-> -                * before we get here.
-> -                */
-> -               BUG();
->         }
-> +       return -EUCLEAN;
->  }
->
->  static int btrfs_decompress_bio(struct compressed_bio *cb);
-> @@ -484,6 +475,7 @@ static noinline int add_ra_bio_pages(struct inode *in=
-ode,
->
->                         if (zero_offset) {
->                                 int zeros;
-> +
->                                 zeros =3D folio_size(folio) - zero_offset=
-;
->                                 folio_zero_range(folio, zero_offset, zero=
-s);
->                         }
-> @@ -697,33 +689,25 @@ static const struct btrfs_compress_levels * const b=
-trfs_compress_levels[] =3D {
->
->  static struct list_head *alloc_workspace(struct btrfs_fs_info *fs_info, =
-int type, int level)
->  {
-> +
-> +       ASSERT(type >=3D BTRFS_COMPRESS_NONE && type < BTRFS_NR_COMPRESS_=
-TYPES);
->         switch (type) {
->         case BTRFS_COMPRESS_NONE: return alloc_heuristic_ws(fs_info);
->         case BTRFS_COMPRESS_ZLIB: return zlib_alloc_workspace(fs_info, le=
-vel);
->         case BTRFS_COMPRESS_LZO:  return lzo_alloc_workspace(fs_info);
->         case BTRFS_COMPRESS_ZSTD: return zstd_alloc_workspace(fs_info, le=
-vel);
-> -       default:
-> -               /*
-> -                * This can't happen, the type is validated several times
-> -                * before we get here.
-> -                */
-> -               BUG();
->         }
-> +       return ERR_PTR(-EUCLEAN);
->  }
->
->  static void free_workspace(int type, struct list_head *ws)
->  {
-> +       ASSERT(type >=3D BTRFS_COMPRESS_NONE && type < BTRFS_NR_COMPRESS_=
-TYPES);
->         switch (type) {
->         case BTRFS_COMPRESS_NONE: return free_heuristic_ws(ws);
->         case BTRFS_COMPRESS_ZLIB: return zlib_free_workspace(ws);
->         case BTRFS_COMPRESS_LZO:  return lzo_free_workspace(ws);
->         case BTRFS_COMPRESS_ZSTD: return zstd_free_workspace(ws);
-> -       default:
-> -               /*
-> -                * This can't happen, the type is validated several times
-> -                * before we get here.
-> -                */
-> -               BUG();
->         }
->  }
->
-> @@ -792,7 +776,7 @@ struct list_head *btrfs_get_workspace(struct btrfs_fs=
-_info *fs_info, int type, i
->         struct workspace_manager *wsm =3D fs_info->compr_wsm[type];
->         struct list_head *workspace;
->         int cpus =3D num_online_cpus();
-> -       unsigned nofs_flag;
-> +       unsigned int nofs_flag;
->         struct list_head *idle_ws;
->         spinlock_t *ws_lock;
->         atomic_t *total_ws;
-> @@ -868,18 +852,14 @@ struct list_head *btrfs_get_workspace(struct btrfs_=
-fs_info *fs_info, int type, i
->
->  static struct list_head *get_workspace(struct btrfs_fs_info *fs_info, in=
-t type, int level)
->  {
-> +       ASSERT(type >=3D BTRFS_COMPRESS_NONE && type < BTRFS_NR_COMPRESS_=
-TYPES);
->         switch (type) {
->         case BTRFS_COMPRESS_NONE: return btrfs_get_workspace(fs_info, typ=
-e, level);
->         case BTRFS_COMPRESS_ZLIB: return zlib_get_workspace(fs_info, leve=
-l);
->         case BTRFS_COMPRESS_LZO:  return btrfs_get_workspace(fs_info, typ=
-e, level);
->         case BTRFS_COMPRESS_ZSTD: return zstd_get_workspace(fs_info, leve=
-l);
-> -       default:
-> -               /*
-> -                * This can't happen, the type is validated several times
-> -                * before we get here.
-> -                */
-> -               BUG();
->         }
-> +       return ERR_PTR(-EUCLEAN);
->  }
->
->  /*
-> @@ -919,17 +899,12 @@ void btrfs_put_workspace(struct btrfs_fs_info *fs_i=
-nfo, int type, struct list_he
->
->  static void put_workspace(struct btrfs_fs_info *fs_info, int type, struc=
-t list_head *ws)
->  {
-> +       ASSERT(type >=3D BTRFS_COMPRESS_NONE && type < BTRFS_NR_COMPRESS_=
-TYPES);
->         switch (type) {
->         case BTRFS_COMPRESS_NONE: return btrfs_put_workspace(fs_info, typ=
-e, ws);
->         case BTRFS_COMPRESS_ZLIB: return btrfs_put_workspace(fs_info, typ=
-e, ws);
->         case BTRFS_COMPRESS_LZO:  return btrfs_put_workspace(fs_info, typ=
-e, ws);
->         case BTRFS_COMPRESS_ZSTD: return zstd_put_workspace(fs_info, ws);
-> -       default:
-> -               /*
-> -                * This can't happen, the type is validated several times
-> -                * before we get here.
-> -                */
-> -               BUG();
->         }
->  }
->
-> @@ -1181,17 +1156,17 @@ static u64 file_offset_from_bvec(const struct bio=
-_vec *bvec)
->   * @buf:               The decompressed data buffer
->   * @buf_len:           The decompressed data length
->   * @decompressed:      Number of bytes that are already decompressed ins=
-ide the
-> - *                     compressed extent
-> + *                     compressed extent
->   * @cb:                        The compressed extent descriptor
->   * @orig_bio:          The original bio that the caller wants to read fo=
-r
->   *
->   * An easier to understand graph is like below:
->   *
-> - *             |<- orig_bio ->|     |<- orig_bio->|
-> - *     |<-------      full decompressed extent      ----->|
-> - *     |<-----------    @cb range   ---->|
-> - *     |                       |<-- @buf_len -->|
-> - *     |<--- @decompressed --->|
-> + *             |<- orig_bio ->|     |<- orig_bio->|
-> + *     |<-------      full decompressed extent      ----->|
-> + *     |<-----------    @cb range   ---->|
-> + *     |                       |<-- @buf_len -->|
-> + *     |<--- @decompressed --->|
->   *
->   * Note that, @cb can be a subpage of the full decompressed extent, but
->   * @cb->start always has the same as the orig_file_offset value of the f=
-ull
-> @@ -1313,7 +1288,8 @@ static u32 shannon_entropy(struct heuristic_ws *ws)
->  #define RADIX_BASE             4U
->  #define COUNTERS_SIZE          (1U << RADIX_BASE)
->
-> -static u8 get4bits(u64 num, int shift) {
-> +static u8 get4bits(u64 num, int shift)
-> +{
->         u8 low4bits;
->
->         num >>=3D shift;
-> @@ -1388,7 +1364,7 @@ static void radix_sort(struct bucket_item *array, s=
-truct bucket_item *array_buf,
->                  */
->                 memset(counters, 0, sizeof(counters));
->
-> -               for (i =3D 0; i < num; i ++) {
-> +               for (i =3D 0; i < num; i++) {
->                         buf_num =3D array_buf[i].count;
->                         addr =3D get4bits(buf_num, shift);
->                         counters[addr]++;
-> --
-> 2.53.0
->
->
+diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
+index c284f48cfae4..35e65e277f53 100644
+--- a/fs/btrfs/block-group.c
++++ b/fs/btrfs/block-group.c
+@@ -4548,7 +4548,7 @@ static void check_removing_space_info(struct btrfs_space_info *space_info)
+ 		for (int i = 0; i < BTRFS_SPACE_INFO_SUB_GROUP_MAX; i++) {
+ 			if (space_info->sub_group[i]) {
+ 				check_removing_space_info(space_info->sub_group[i]);
+-				kfree(space_info->sub_group[i]);
++				btrfs_sysfs_remove_space_info(space_info->sub_group[i]);
+ 				space_info->sub_group[i] = NULL;
+ 			}
+ 		}
+-- 
+2.53.0
+
 
