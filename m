@@ -1,365 +1,337 @@
-Return-Path: <linux-btrfs+bounces-22132-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-22133-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id wIStKxE8pGlnawUAu9opvQ
-	(envelope-from <linux-btrfs+bounces-22132-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Sun, 01 Mar 2026 14:16:01 +0100
+	id iGK+LppfpGkcfAUAu9opvQ
+	(envelope-from <linux-btrfs+bounces-22133-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Sun, 01 Mar 2026 16:47:38 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E6F21CFD88
-	for <lists+linux-btrfs@lfdr.de>; Sun, 01 Mar 2026 14:16:01 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22DC21D0780
+	for <lists+linux-btrfs@lfdr.de>; Sun, 01 Mar 2026 16:47:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 2D40130101EC
-	for <lists+linux-btrfs@lfdr.de>; Sun,  1 Mar 2026 13:16:00 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id B1219301465C
+	for <lists+linux-btrfs@lfdr.de>; Sun,  1 Mar 2026 15:47:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C7A93B1BD;
-	Sun,  1 Mar 2026 13:15:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 004A4274B4A;
+	Sun,  1 Mar 2026 15:47:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Imd7PUpA"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=pj.world@gmx.com header.b="E6LbVuLP"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BE8015539A
-	for <linux-btrfs@vger.kernel.org>; Sun,  1 Mar 2026 13:15:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D2A4430BB5
+	for <linux-btrfs@vger.kernel.org>; Sun,  1 Mar 2026 15:47:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772370957; cv=none; b=mf29WtgxL5dEzsSAFMn5hYn34Ej5oENTfZ7ZsY0TIbXTewYEzK3sJCeUbJgXGr3JMpg/WUTnh087UCqm6Q6Jlm6xdFIu9ovPKljDkLjVbLdbr/DSHV1mgLu+vP6NVvoEJD6yqr/iTaG18/yMBe7wm0vPeSPYZEUGc1GaY7z+oHI=
+	t=1772380049; cv=none; b=lP8Z22hXbR8djstzXTeJX6SHXzQDQNR+jEJUHmVpUh2nBZT617Gu74YXwg7HWvfD242915E7NnG6hWMp+L4uyTi2dHIicUQIIIAINw2qRoTU4Ih4kTVCGM3WXYinkm1acpdobaAb4/ZbJxi262q/9BzEcTB3QHPql1IWTPCCDuY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772370957; c=relaxed/simple;
-	bh=ZLZQE0GXeHZvnuR3V3ClHur20ND39tVVF7L8YuUrOM4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oa6CUeBmzo+X57cSrubM5Gt2d0ZGfMIEZFc+C51XUeMCNrozRYB6SJJ84lVfQJIkimyQ9edbE8yEYbd82GwYyPw5gz2LBIcGncPjZac3E+9Nj8ni1SwO/i086WJ0gd0QicWOsLWkXhYUOT9kbfh0oNJH9S3wOkf/6EAbe8v7Te8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Imd7PUpA; arc=none smtp.client-ip=209.85.218.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-b9381e78a31so307857766b.2
-        for <linux-btrfs@vger.kernel.org>; Sun, 01 Mar 2026 05:15:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1772370954; x=1772975754; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=kZuHbNxrjmmINf1/XZXGIBer5llHrVS+trrV0cr48Gc=;
-        b=Imd7PUpAx5LizhFfyaFyReG0dwWtsm2/CbGzRc88/Mwjsd6QRJnR9b8RhV4Pu84VJI
-         suv3MAJFGAlRbqgASpEP+PQnTWd14JM811thsOr7ZRSpFIYn+YwXsWiHKOQzdn95nYcZ
-         FgcZxfTxAgv0bQhpRrUT6TGfIYP6cn2Vghr9MX6A76sMcFsKxQlQ39afmurWDp32jr1v
-         TyRNr5U7UsTWoh4O4Ioc2+HV4D91aptkTUcKDYJdKHUFrPY52QxWKFxb9cK/fNmgieku
-         8PwgXVkh+Ce4o1BlFv6Et1tDt5PAzE5e89anQ83fZCxpnTqD5HH8riYqo2GxpbDBXH9K
-         IXeA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772370954; x=1772975754;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kZuHbNxrjmmINf1/XZXGIBer5llHrVS+trrV0cr48Gc=;
-        b=N+GMR5OZaj4jPB1TH0EgI8TfynROxmaLpd2dx041jKsNHe0DAYITANil1jlgAN4F8m
-         6rwgep1KGJot0I+ZBic6CbVldLg4/QiiGq+pL1a7OYBP1yPheunvXIjWHJabMijqiPaQ
-         L+I8GQghYEQxjtQxZExFI2PEGHZqmMENIlJ+bMkRKEcQI3kkUYPZ1mSg0Zyha3FrA9Ig
-         mXqW7yyWBmN60eGTlLzSylcdjJ+E2FC6FehDOMzrXYkEXzrwaHUUZ0TXEtGacwj4cFqZ
-         QJeAiKTzYTahP+VJcHf5Ni+1BGuuEYrpW06Bh4ZsVyhS7z9Y9BYiY1YVFVIo9ufa4Jk9
-         FBaQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUlH9Qz3/i+3XHhoBScfAaInZOT3AZN/Dolf+w83JYW+i/7qq2ZSjEHEzTZH66s/iB7bnHod116Q/D9lw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YxcXIPPIOqKs1OrIe9uF62CFbPjImEqoSJqTypUTPwbUTE1kF+s
-	5NqixEhqd1hT4SOPj0AtGHu3gCDjPg7QiUGfZNo9gzTXc9X3syG5tftf
-X-Gm-Gg: ATEYQzxzZOVcYmHJ9V4yVwWlJFgIVu9sP/fk6Vb0867nSYbm/gUcjp3a65f7ojFWGgp
-	8EQI2h/jrEOt2Wh7YimgEooSGeWnNkmPmaGmiEKYHnsfwYzVYqHQmw9NosfUbf6yLBSr5D+cl8g
-	xTg19iTy9fNoJz5D7pMq/zcGwhDrU83CwxTf+SfjZ/ekTkrgzXyr9gjYABB/3FRdGoKqfZ4vhUP
-	w0D5xudXDQrUoHQY8WGbCVCqfQbJLIZdomVMPx8uDAb/Yoqe6+3ja2ko4qRLNg/R8ZFZANYF88x
-	jAdwfpKgH3aSIDMOUvQhReu79FVf0WpYNUfbhFArucioAII1ocSRNS9bG34atidECsSLkpjJB0I
-	Ezub8X+Cyd7jTbOSdkiVLjm/phlzZt6L2VAeCAlOQj2jbunpwMyrjI/k6GMVGsOg1BGrQULf1/A
-	hc2SWlFO5XvsuAwM52ElpeWBPH9wFYV4e28tZFpcPXJgCi7F7gMN3FbuqS44uMqBSYO1RfEESNr
-	2sB3K1GJTdIl/FjRoLCj5p1dcE7
-X-Received: by 2002:a17:906:ad7:b0:b88:775c:bd6b with SMTP id a640c23a62f3a-b9376553e7amr432998666b.46.1772370953329;
-        Sun, 01 Mar 2026 05:15:53 -0800 (PST)
-Received: from localhost (2001-1c00-570d-ee00-d118-5ff5-6236-8e43.cable.dynamic.v6.ziggo.nl. [2001:1c00:570d:ee00:d118:5ff5:6236:8e43])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b935ac51431sm360050666b.17.2026.03.01.05.15.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 01 Mar 2026 05:15:52 -0800 (PST)
-Date: Sun, 1 Mar 2026 14:15:52 +0100
-From: Amir Goldstein <amir73il@gmail.com>
-To: Anand Jain <asj@kernel.org>
-Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-	Jan Kara <jack@suse.cz>
-Subject: Re: [PATCH 5/9] fstests: verify fanotify isolation on cloned
- filesystems
-Message-ID: <aaQ8CB7C4FjDuedR@amir-ThinkPad-T480>
-References: <cover.1772095513.git.asj@kernel.org>
- <b54dea5e72585db5f5c3d74ce399f9d839965821.1772095513.git.asj@kernel.org>
+	s=arc-20240116; t=1772380049; c=relaxed/simple;
+	bh=03HYBv225Rz9T/p6xzFxto5gWzkBRqalNzSM/EtMi+A=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=V1FJWbtOYkccHBDkcCJIUoeKLJHWvR3XzA7X11hqcP8/OgUo+VeETm67Mbh/9VVWWLf/JBrU0ZTWLfWxJDsx+FmGBqyJc3xpN26+5OTg76uI/tC3OPhCSsg1FK1rGnSivEz5PPNzivVlZaLWqSNIRXzO+sl+4D+89EeoYwsIAnk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=pj.world@gmx.com header.b=E6LbVuLP; arc=none smtp.client-ip=212.227.17.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1772380045; x=1772984845; i=pj.world@gmx.com;
+	bh=03HYBv225Rz9T/p6xzFxto5gWzkBRqalNzSM/EtMi+A=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=E6LbVuLPY9jF7k1qT1YXNUmq6g1F8gYwG/NYddU62KoWdovK8AIKFqEY1I3SIrCr
+	 d1PmJ01kDLuKfkW4G1xqpDO/XzSiQ5C5k2agTzq4A0ukeq6eFf7O32/cAIIE1YgG8
+	 1XgPwu3JMK0DEvL14xeY9VkVVqMrlsiRGdiGadDaQWKhSPU01ncMVw00o6Ha6kqnb
+	 k/RuPUfBaifoDijvTrOcPd1eF91IFFhyu36Rbrk6YjXynx0qu5YFylDbHVZrLt1Ja
+	 ZEThLM9iNGPU5ryCg8DK1AdJzJOfSUHj1e9zdjwWzuuOd0RaqSI9VyhUVo/JHb534
+	 Tf/s299F0p+nVmpgug==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from client.hidden.invalid by mail.gmx.net (mrgmx104
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1MLzFx-1wEWse0flx-00WGwQ; Sun, 01
+ Mar 2026 16:47:25 +0100
+Message-ID: <0afbb856-6d28-4307-98c1-a8f78987e52e@gmx.com>
+Date: Sun, 1 Mar 2026 09:47:23 -0600
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b54dea5e72585db5f5c3d74ce399f9d839965821.1772095513.git.asj@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: Stuck subvolume removal:
+To: Qu Wenruo <wqu@suse.com>, Qu Wenruo <quwenruo.btrfs@gmx.com>,
+ linux-btrfs@vger.kernel.org
+References: <1c371732-db4f-49ad-bc00-876b3be0fe98@gmx.com>
+ <4b4fc981-912d-40cd-945b-d4acf14198e1@gmx.com>
+ <01f8b560-fb57-4861-8382-141c39655478@gmx.com>
+ <0ed6fdf0-842a-4641-90e4-5239b5049e4b@gmx.com>
+ <121b0011-8076-4a0b-baff-384b6ec62986@gmx.com>
+ <8adc2517-a0fa-497d-ac3b-8700d39bb085@suse.com>
+Content-Language: en-US
+From: Paul Graff <pj.world@gmx.com>
+In-Reply-To: <8adc2517-a0fa-497d-ac3b-8700d39bb085@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:/XORFW0HqCiEjrx8U+Q54u+vZXD+xew8h+SBKdPcdX2zXn9GUYz
+ otKb1/fZ+1Qc16po5DM/NwuIFT2y5OPr3n6yTViBtzLfvGBhSAWVsu5TUzAv46lCk1yswpc
+ BDoBOgutCUR++HsdKcJ82+chZwa6adwccppbm053J/byL07a/0K7U/mx3M+9uPGxmLkZZnY
+ kQks1BkUKBfyy+sfGJkxA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:wED7vtmtmY8=;+oL4z0QxA7g1uDXpAVN5fCYX8Ts
+ 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
+ PkqaF7gA=
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[gmx.com,quarantine];
+	R_DKIM_ALLOW(-0.20)[gmx.com:s=s31663417];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-22133-lists,linux-btrfs=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22132-lists,linux-btrfs=lfdr.de];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	FREEMAIL_TO(0.00)[suse.com,gmx.com,vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[amir73il@gmail.com,linux-btrfs@vger.kernel.org];
-	DKIM_TRACE(0.00)[gmail.com:+];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_THREE(0.00)[3];
+	FREEMAIL_FROM(0.00)[gmx.com];
 	NEURAL_HAM(-0.00)[-1.000];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[pj.world@gmx.com,linux-btrfs@vger.kernel.org];
+	DKIM_TRACE(0.00)[gmx.com:+];
+	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	RCPT_COUNT_FIVE(0.00)[6];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,popdir.pl:url,popattr.py:url]
-X-Rspamd-Queue-Id: 6E6F21CFD88
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 22DC21D0780
 X-Rspamd-Action: no action
 
-On Thu, Feb 26, 2026 at 10:41:46PM +0800, Anand Jain wrote:
-> Verify that fanotify events are correctly routed to the appropriate
-> watcher when cloned filesystems are mounted.
-> Helps verify kernel's event notification distinguishes between devices
-> sharing the same FSID/UUID.
-> 
-> Signed-off-by: Anand Jain <asj@kernel.org>
-> ---
->  .gitignore            |  1 +
->  src/Makefile          |  2 +-
->  src/fanotify.c        | 66 +++++++++++++++++++++++++++++++++
->  tests/generic/791     | 86 +++++++++++++++++++++++++++++++++++++++++++
->  tests/generic/791.out |  7 ++++
->  5 files changed, 161 insertions(+), 1 deletion(-)
->  create mode 100644 src/fanotify.c
->  create mode 100644 tests/generic/791
->  create mode 100644 tests/generic/791.out
-> 
-> diff --git a/.gitignore b/.gitignore
-> index 82c57f415301..7f91310ce58b 100644
-> --- a/.gitignore
-> +++ b/.gitignore
-> @@ -212,6 +212,7 @@ tags
->  /src/dio-writeback-race
->  /src/unlink-fsync
->  /src/file_attr
-> +/src/fanotify
->  
->  # Symlinked files
->  /tests/generic/035.out
-> diff --git a/src/Makefile b/src/Makefile
-> index d0a4106e6be8..ff71cde936a7 100644
-> --- a/src/Makefile
-> +++ b/src/Makefile
-> @@ -36,7 +36,7 @@ LINUX_TARGETS = xfsctl bstat t_mtab getdevicesize preallo_rw_pattern_reader \
->  	fscrypt-crypt-util bulkstat_null_ocount splice-test chprojid_fail \
->  	detached_mounts_propagation ext4_resize t_readdir_3 splice2pipe \
->  	uuid_ioctl t_snapshot_deleted_subvolume fiemap-fault min_dio_alignment \
-> -	rw_hint
-> +	rw_hint fanotify
 
-Check if you already have fsnotifywait installed on your system
-most likely you do. It was added to inotify-tools quite some time ago.
-Could save you from adding a custom prog.
-Not 100% sure about fsnotifywait, but quite sure that
-fsnotifywatch --verbose prints the FSID of events.
 
-Thanks,
-Amir.
+On 1/28/26 2:49 AM, Qu Wenruo wrote:
+>=20
+>=20
+> =E5=9C=A8 2026/1/28 19:12, Paul Graff =E5=86=99=E9=81=93:
+> [...]
+>>> Unfortunately btrfs-progs doesn't have the ability to repair it yet,=
+=20
+>>> I'll craft a branch of btrfs-progs with the repair ability soon.
+>>>
+>>> Meanwhile please prepare an environment to compile btrfs-progs.
+>>>
+>>> Thanks,
+>>> Qu
+>>
+>> Hi, I would like to ask if there is a solution to the "dropped ghost=20
+>> subvolume" the filesystem on machine here exhibits as of yet?
+>=20
+> My bad, forgot to inform you about the fix.
+>=20
+> In fact the fix is already merged into btrfs-progs, but not yet included=
+=20
+> in any release.
+>=20
+> If you can compile btrfs-progs, please fetch and compile the latest=20
+> devel branch:
+>=20
+> https://github.com/kdave/btrfs-progs/tree/devel
+>=20
+> After compiling the devel branch, you can use `btrfs check --repair` to=
+=20
+> fix the problem, which will add back the missing orphan item for those=
+=20
+> ghost subvolumes.
+>=20
+I did not know how to compile from the devel branch, this is=20
+unfortunate. I waited until openSUSE Tumbleweed btrfsprogs Version=20
+6.19-1.1 was included in a snapshot which took a while but seems to have=
+=20
+worked. I first ran # btrfs check --repair /dev/mapper/system-root from=20
+a openSUSE Rescue CD image, it completed. I then ran # btrfs balance=20
+start / yesterday when the drive was mounted and it took 12 hours or so=20
+but did complete. I think this problem is finally fixed?
 
->  
->  EXTRA_EXECS = dmerror fill2attr fill2fs fill2fs_check scaleread.sh \
->  	      btrfs_crc32c_forged_name.py popdir.pl popattr.py \
-> diff --git a/src/fanotify.c b/src/fanotify.c
-> new file mode 100644
-> index 000000000000..e30c48dc0e52
-> --- /dev/null
-> +++ b/src/fanotify.c
-> @@ -0,0 +1,66 @@
-> +/*
-> + * SPDX-License-Identifier: GPL-2.0
-> + * Copyright (c) 2026 Anand Jain <asj@kernel.org>.  All Rights Reserved.
-> + *
-> + * Simple fanotify monitor to verify mount-point event isolation.
-> + */
-> +#include <stdio.h>
-> +#include <stdlib.h>
-> +#include <fcntl.h>
-> +#include <unistd.h>
-> +#include <errno.h>
-> +#include <string.h>
-> +#include <stdint.h>
-> +#include <sys/fanotify.h>
-> +
-> +int main(int argc, char *argv[])
-> +{
-> +	int fd;
-> +	char buf[4096] __attribute__((aligned(8)));
-> +	setlinebuf(stdout);
-> +
-> +	if (argc < 2) {
-> +		fprintf(stderr, "Usage: %s <path>\n", argv[0]);
-> +		return 1;
-> +	}
-> +
-> +	// Initialize with FID reporting
-> +	fd = fanotify_init(FAN_CLASS_NOTIF | FAN_REPORT_FID, O_RDONLY);
-> +	if (fd < 0) {
-> +		perror("fanotify_init");
-> +		return 1;
-> +	}
-> +
-> +	if (fanotify_mark(fd, FAN_MARK_ADD | FAN_MARK_FILESYSTEM,
-> +			  FAN_CREATE, AT_FDCWD, argv[1]) < 0) {
-> +		perror("fanotify_mark");
-> +		return 1;
-> +	}
-> +
-> +	printf("Listening for events on %s...\n", argv[1]);
-> +	while (1) {
-> +		struct fanotify_event_metadata *metadata = (struct fanotify_event_metadata *)buf;
-> +		ssize_t len = read(fd, buf, sizeof(buf));
-> +
-> +		if (len <= 0) break;
-> +
-> +		while (FAN_EVENT_OK(metadata, len)) {
-> +			// metadata_len is the offset to the first info record
-> +			if (metadata->event_len > metadata->metadata_len) {
-> +				struct fanotify_event_info_header *hdr =
-> +(struct fanotify_event_info_header *)((char *)metadata + metadata->metadata_len);
-> +
-> +				if (hdr->info_type == FAN_EVENT_INFO_TYPE_FID) {
-> +					struct fanotify_event_info_fid *fid = (struct fanotify_event_info_fid *)hdr;
-> +					printf("FSID: %08x%08x\n",
-> +						fid->fsid.val[0], fid->fsid.val[1]);
-> +				}
-> +			}
-> +			metadata = FAN_EVENT_NEXT(metadata, len);
-> +		}
-> +	}
-> +
-> +	fflush(stdout);
-> +	close(fd);
-> +	return 0;
-> +}
-> diff --git a/tests/generic/791 b/tests/generic/791
-> new file mode 100644
-> index 000000000000..fe8109083732
-> --- /dev/null
-> +++ b/tests/generic/791
-> @@ -0,0 +1,86 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2026 Anand Jain <asj@kernel.org>.  All Rights Reserved.
-> +#
-> +# FS QA Test 791
-> +# Verify fanotify FID functionality on cloned filesystems by setting up
-> +# watchers and making sure notifications are in the correct logs files.
-> +
-> +. ./common/preamble
-> +
-> +_begin_fstest auto quick mount clone
-> +
-> +_require_test
-> +_require_scratch_dev_pool 2
-> +
-> +[ "$FSTYP" = "ext4" ] && _fixed_by_kernel_commit xxxxxxxxxxxx \
-> +	"ext4: derive f_fsid from block device to avoid collisions"
-> +
-> +_cleanup()
-> +{
-> +	cd /
-> +	rm -r -f $tmp.*
-> +	umount $mnt1 $mnt2 2>/dev/null
-> +	_scratch_dev_pool_put
-> +}
-> +
-> +_scratch_dev_pool_get 2
-> +_scratch_mkfs_sized_clone >$seqres.full 2>&1
-> +devs=($SCRATCH_DEV_POOL)
-> +mnt2=$TEST_DIR/mnt2
-> +mkdir -p $mnt2
-> +
-> +_scratch_mount $(_clone_mount_option)
-> +_mount $(_common_dev_mount_options) $(_clone_mount_option) ${devs[1]} $mnt2 || \
-> +						_fail "Failed to mount dev2"
-> +
-> +fsid1=$(stat -f -c "%i" $SCRATCH_MNT)
-> +fsid2=$(stat -f -c "%i" $mnt2)
-> +
-> +[[ "$fsid1" == "$fsid2" ]] && \
-> +	_notrun "Require clone filesystem with unique f_fsid"
-> +
-> +log1=$tmp.fanotify1
-> +log2=$tmp.fanotify2
-> +
-> +echo "Setup FID fanotify watchers on both SCRATCH_MNT and mnt2"
-> +$here/src/fanotify $SCRATCH_MNT > $log1 2>&1 &
-> +pid1=$!
-> +$here/src/fanotify $mnt2 > $log2 2>&1 &
-> +pid2=$!
-> +sleep 2
-> +
-> +echo "Trigger file creation on SCRATCH_MNT"
-> +touch $SCRATCH_MNT/file_on_scratch_mnt
-> +sync
-> +sleep 1
-> +
-> +echo "Trigger file creation on mnt2"
-> +touch $mnt2/file_on_mnt2
-> +sync
-> +sleep 1
-> +
-> +echo "Verify fsid in the fanotify"
-> +kill $pid1 $pid2
-> +wait $pid1 $pid2 2>/dev/null
-> +
-> +echo fsid1=$fsid1 fsid2=$fsid2 >> $seqres.full
-> +cat $log1 >> $seqres.full
-> +cat $log2 >> $seqres.full
-> +
-> +if grep -q "${fsid1}" $log1 && ! grep -q "${fsid2}" $log1; then
-> +	echo "SUCCESS: SCRATCH_MNT events found"
-> +else
-> +	[ ! -s $log1 ] && echo "  - SCRATCH_MNT received no events."
-> +	grep -q "${fsid2}" $log1 && echo "  - SCRATCH_MNT received event from mnt2."
-> +fi
-> +
-> +if grep -q "${fsid2}" $log2 && ! grep -q "${fsid1}" $log2; then
-> +	echo "SUCCESS: mnt2 events found"
-> +else
-> +	[ ! -s $log2 ] && echo "  - mnt2 received no events."
-> +	grep -q "${fsid1}" $log2 && echo "  - mnt2 received event from SCRATCH_MNT."
-> +fi
-> +
-> +status=0
-> +exit
-> diff --git a/tests/generic/791.out b/tests/generic/791.out
-> new file mode 100644
-> index 000000000000..9725c99bcb4b
-> --- /dev/null
-> +++ b/tests/generic/791.out
-> @@ -0,0 +1,7 @@
-> +QA output created by 791
-> +Setup FID fanotify watchers on both SCRATCH_MNT and mnt2
-> +Trigger file creation on SCRATCH_MNT
-> +Trigger file creation on mnt2
-> +Verify fsid in the fanotify
-> +SUCCESS: SCRATCH_MNT events found
-> +SUCCESS: mnt2 events found
-> -- 
-> 2.43.0
-> 
+Thanks for helping with this.
+Paul
+
+> Thanks,
+> Qu
+>=20
+>>
+>> -Thanks
+>>
+>> Paul Graff
+>>
+>>>
+>>>>
+>>>> [6/7] checking root refs (0:00:01 elapsed, 94 items checked)
+>>>>
+>>>> ERROR: errors found in root refs
+>>>>
+>>>> found 496776130741 bytes used, error(s) found
+>>>>
+>>>> total csum bytes: 465839608
+>>>>
+>>>> total tree bytes: 16133832704
+>>>>
+>>>> total fs tree bytes: 14983905280
+>>>>
+>>>> total extent tree bytes: 624771072
+>>>>
+>>>> btree space waste bytes: 3613129770
+>>>>
+>>>> file data blocks allocated: 1062495817728
+>>>>
+>>>> referenced 976540409856
+>>>>
+>>>> :~ #
+>>>>
+>>>>
+>>>>>
+>>>>> Thanks,
+>>>>> Qu
+>>>>>
+>>>> -Greatest Hopes
+>>>> Paul
+>>>>>>
+>>>>>> After passing,
+>>>>>>
+>>>>>> |:~> sudo btrfs subvolume sync / [sudo] password for root:=20
+>>>>>> hightower- i5-6600k:~> |
+>>>>>>
+>>>>>> the command returned to prompt very, very quickly.
+>>>>>>
+>>>>>> A second balance attempt results with the following output:
+>>>>>>
+>>>>>> |:~> sudo btrfs balance start / WARNING: Full balance without=20
+>>>>>> filters requested. This operation is very intense and takes=20
+>>>>>> potentially very long. It is recommended to use the balance=20
+>>>>>> filters to narrow down the scope of balance. Use 'btrfs balance=20
+>>>>>> start -- full-balance' option to skip this warning. The operation=
+=20
+>>>>>> will start in 10 seconds. Use Ctrl-C to stop it. 10 9 8 7 6 5 4 3=
+=20
+>>>>>> 2 1 Starting balance without any filters. ERROR: error during=20
+>>>>>> balancing '/': Structure needs cleaning There may be more info in=
+=20
+>>>>>> syslog - try dmesg | tail hightower- i5-6600k:~> |
+>>>>>>
+>>>>>> |:~> dmesg | tail [93689.781162] [ T69656] BTRFS info (device=20
+>>>>>> dm-2): found 16 extents, stage: update data pointers=20
+>>>>>> [93690.667290] [ T69656] BTRFS info (device dm-2): relocating=20
+>>>>>> block group 1495819878400 flags data [93703.323923] [ T69656]=20
+>>>>>> BTRFS info (device dm-2): found 33 extents, stage: move data=20
+>>>>>> extents [93705.575991] [ T69656] BTRFS info (device dm-2): found=20
+>>>>>> 33 extents, stage: update data pointers [93706.769453] [ T69656]=20
+>>>>>> BTRFS info (device dm-2): relocating block group 1494746136576=20
+>>>>>> flags data [93725.570642] [ T69656] BTRFS info (device dm-2):=20
+>>>>>> found 39 extents, stage: move data extents [93727.449779]=20
+>>>>>> [ T69656] BTRFS info (device dm-2): found 39 extents, stage:=20
+>>>>>> update data pointers [93728.465650] [ T69656] BTRFS info (device=20
+>>>>>> dm-2): relocating block group 60294168576 flags metadata|dup=20
+>>>>>> [93736.722689] [ T69656] BTRFS error (device dm-2): cannot=20
+>>>>>> relocate partially dropped subvolume 490, drop progress key=20
+>>>>>> (853588 108 0) [93750.594559] [ T69656] BTRFS info (device dm-2):=
+=20
+>>>>>> balance: ended with status: -117 hightower- i5-6600k:~> |
+>>>>>>
+>>>>>> Please see the following referenced, prior posting for stuck=20
+>>>>>> subvolume removal similarity. https://lore.kernel.org/linux-=20
+>>>>>> btrfs/9f936d59- d782-1f48-bbb7-dd1c8dae2615@gmail.com/
+>>>>>>
+>>>>>> Is there a patch for btrfsprogs? If so can the patch be merged?|
+>>>>>> |
+>>>>>>
+>>>>>> What are your thoughts on this?
+>>>>>>
+>>>>>>
+>>>>>>
+>>>>>>
+>>>>>>
+>>>>>
+>>>>
+>>>
+>>
+>=20
+
 
