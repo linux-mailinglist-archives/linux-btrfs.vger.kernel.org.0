@@ -1,199 +1,282 @@
-Return-Path: <linux-btrfs+bounces-22154-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-22155-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id xRz1J+XapWkvHgAAu9opvQ
-	(envelope-from <linux-btrfs+bounces-22154-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Mon, 02 Mar 2026 19:45:57 +0100
+	id UKwSD2HopWlLHwAAu9opvQ
+	(envelope-from <linux-btrfs+bounces-22155-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Mon, 02 Mar 2026 20:43:29 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E4981DE72B
-	for <lists+linux-btrfs@lfdr.de>; Mon, 02 Mar 2026 19:45:57 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 907D11DEEA1
+	for <lists+linux-btrfs@lfdr.de>; Mon, 02 Mar 2026 20:43:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E9F0C3051D29
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Mar 2026 18:45:44 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id B85443033207
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Mar 2026 19:43:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC2F03431E6;
-	Mon,  2 Mar 2026 18:45:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA0BE47DD5E;
+	Mon,  2 Mar 2026 19:43:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="lorCphJx";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Zcu8in6P"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com [209.85.161.70])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fhigh-b2-smtp.messagingengine.com (fhigh-b2-smtp.messagingengine.com [202.12.124.153])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B83C430BAA
-	for <linux-btrfs@vger.kernel.org>; Mon,  2 Mar 2026 18:45:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECC1147DD49
+	for <linux-btrfs@vger.kernel.org>; Mon,  2 Mar 2026 19:43:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.153
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772477143; cv=none; b=SDPkItYSMmO2snhl7mvWGs+WzFmruDAiHQST09Ja3gOEatEpNSlMNTWCQlgH1RlbhQrZOv4t/2BzvETGKrE2cORcjp8NU/ljMcp6MAZgYXZZ6f2ZzNR/uiBBjPXB4UM5oINQ8N2bd8315EhODnv1q9pTrsvv6H7OOvZbD9iL0rg=
+	t=1772480599; cv=none; b=DADORumppeKa1O815LxyBx49f4Edzl/smVATjA4L6LcAtNDzw6siiCUcWfbb6NwSA36lQ9qR4ZB9P/W2jqjcBX2dj0fxGRBnlycBhzDyNOkydRbczBMBoMR1EmltgfP4Vs/3273Mbh3Y2A1DqgVmf8Ijv/RfFxBSgOpbR9H/oCM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772477143; c=relaxed/simple;
-	bh=BNQWtdRHuO3S+gGOscSXOqbfLFQhgJQr/6SBZrjZhek=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=D0DZx0kknIJsYfVR/kGCu+BaN3FYKG0SbKeCGVDJDAGaoKQX8HNbcmz7L6DKrq/lkd1tJoygJLRG5zHwxI+VPmdFW8ER6eATAJ/s8RgdbJhyaf1Fpfv3OuORdMmA9oIB3tSo/HxbU48CUe/mSaep4m1rawQSZO7nl0eXC7/JLP8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.161.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-oo1-f70.google.com with SMTP id 006d021491bc7-679dda090fbso97352362eaf.2
-        for <linux-btrfs@vger.kernel.org>; Mon, 02 Mar 2026 10:45:42 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772477141; x=1773081941;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=KKp7i17aMM9L6WuRWWndlSaZEHbB7jCUXWvpqpj5i2M=;
-        b=bjI1jExgWBswQHmn63pmIMQ93+EVTqQCDDcrsjzsJyAYwQbsHGxhRqk+XXgUSHawzM
-         BKxjDZN40Fe4ALQ+KlGjcdMHRqmolThQs7IRoENphkGJMWI9jOld7HneNEZXcbX8POvQ
-         0spXTtuUuy/TnWe9d5eyDdwd6DRRjpwKldvPb2ZYFcE3GEBTlaeeMMK7tqEBlALga4/S
-         WHowJl1lTVTIueAuDW9Cs+QoT8KZvcJkbCm8dMlhAcVO89nKBHXF0F/1YS6LhbcBLDv5
-         O/gO9yZXDziXHaC8PXnBLud4dpdXKQ4DS5hJkVYgx8VeiQYZYsjfUsHJK/KFpIGUmdQe
-         AW0w==
-X-Forwarded-Encrypted: i=1; AJvYcCX/oRo+YwGreULF3Rn8YexlVx+Y6Zg11/GlzF9vaPI0ybLlzLWtvrW5TiOD4PrKFMSZ1CPwBpjPGn6DZA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzoX3jCfziGSJQRIPpwTYlORkYm/79blMWAgGSS5BcjYLix2Zzf
-	QOfEXDt755ALkXUnbdvbdjN4GC2BGRmzZ9jQWz/P4kp32iRtBsOPsczPHBoJWlhlkEXHEaBdphB
-	4vbq0/5xwBfVGtfNk17yxGWODh98fbJ8BTuQlT/rKKlyDy2HUmDBYw+0JLZ0=
+	s=arc-20240116; t=1772480599; c=relaxed/simple;
+	bh=Bg45ZHscA/lmojNktzCgiMEZ8JM0bjR3IOlq50idl/Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sAtLQ0Qb4DDEo+4etAi8LclV3Ic24mZu5TPIxuXcsx1wKibHjtqjzljb7Y59QxsFQ0SPoPpiOZEkTiQj7LvPoaLPlNBs3FAe4rkMisegsSM9hkxrJEtYYWifAKcsATf7avyoiRO9IfhZzsre7ccas8aQHkTF+UyN/y7StLa6aYc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=lorCphJx; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Zcu8in6P; arc=none smtp.client-ip=202.12.124.153
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
+Received: from phl-compute-04.internal (phl-compute-04.internal [10.202.2.44])
+	by mailfhigh.stl.internal (Postfix) with ESMTP id DBB8F7A0068;
+	Mon,  2 Mar 2026 14:43:14 -0500 (EST)
+Received: from phl-frontend-04 ([10.202.2.163])
+  by phl-compute-04.internal (MEProxy); Mon, 02 Mar 2026 14:43:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
+	:content-transfer-encoding:content-type:content-type:date:date
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm2; t=1772480594;
+	 x=1772566994; bh=xt22U4CVExrOCrqaenKk6yR+KigYVT/WNjg1I9nACsE=; b=
+	lorCphJxbB+hBAh9WBWUP/lVpYtK3uWLepLlxSPiRTijSmC6JcHRHemIhz7zR5Gh
+	ImAplXR7gKz5DKCv776q9ahK9f25wSvg2yDPqpRDjePLucMEnfOK2yHwEiGrd4KA
+	oQ5H5DISKxemxT0U7gppD3w1aP9+EXnOE3fMrYwd0z8oTlmTIyBoRYMMHj563iyQ
+	ixDySL97xa+rDk2oyzFDE0XiK/DKZwuSwEllIOUGbr3HCBKJUxdbT4w+urX+LvNS
+	Kxumb/HN5jJsQAPk4tJ4goRDwfqohia0KgQ1RbIXrcqc9ShMk9D1729wyktUaJYy
+	Px2P7m8rItzkp7jb5HdFCw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1772480594; x=
+	1772566994; bh=xt22U4CVExrOCrqaenKk6yR+KigYVT/WNjg1I9nACsE=; b=Z
+	cu8in6PSOUSlNkmSbRqZpGYDoch/Ytcy+OdHMwXGiOqc7CXrW2GUsp0eFVcxEAKF
+	DXrBmwr2l0RBobka3/OX0y8bYD/EhuI4Q4I5+Zcr2Bke673XXqhAbih4QW8FxLF1
+	W90O/zo1DuOLo1Kx1MoMcAPsxeQZ8Bt3u7u4Si2Gg6n0OraTrVFXdLBZOS2UNyB5
+	6bnxLzyoz9QONbVRqkl0pxGYtaxN/KEDLu2OCg9B99gZ0chH6ZUP1ryXLTZdg9nF
+	Sv6sWH+q0deRWiK3/YNsUPyHN0pVz+9zmugva/KoQB0gWaWx9WIRwOltISdizZgt
+	64XfvdsV3YMGquyJCCyjg==
+X-ME-Sender: <xms:UuilaUqMALsabL-TldIEXP0mfkvmtwJr8zXZ5OlE20Pkqq2PHHo3vA>
+    <xme:UuilaQrXEXZCFddM7pBQBspRVCHVssdslDFK7Z32fU7Hv3V38XoIBuDijLbChh22T
+    eKSMl2d_eSUayI_1h1f64b1PCXE1L6hFVcMnUPfqsk_cBX2sdYn1VS8>
+X-ME-Received: <xmr:UuilaW2BTGrLVRSgCRbmDawR2n6W3ITC1BQW7sgRLKTeNPRzQaIHvdjththwIQprUHxLJxGxLwNRtfW5JtWeMmc_diM>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddvheekheehucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
+    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
+    gurhepfffhvfevuffkfhggtggugfgjsehtkeertddttdejnecuhfhrohhmpeeuohhrihhs
+    uceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhepud
+    elhfdthfetuddvtefhfedtiedtteehvddtkedvledtvdevgedtuedutdeitdeinecuvehl
+    uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessg
+    hurhdrihhopdhnsggprhgtphhtthhopedvpdhmohguvgepshhmthhpohhuthdprhgtphht
+    thhopegrlhgvgidrlhihrghkrghsseiirggurghrrgdrtghomhdprhgtphhtthhopehlih
+    hnuhigqdgsthhrfhhssehvghgvrhdrkhgvrhhnvghlrdhorhhg
+X-ME-Proxy: <xmx:UuilaXBSMf1enQHDzcIUyw2uObbACTNbnvZ8mZM64KMSa921qDpi8g>
+    <xmx:UuilaWc3FyfvHfndiT3f7v1O4eX5ooI4OVVBnvsEwhjS0BIcbWmfOQ>
+    <xmx:UuilaUgMNYMb334LIcZo1z5oQ78srK0XuAIS7lHVCGNwC3ClD83XdA>
+    <xmx:UuilaWqdkyRx89dRyXaaaz5AYGPRN2dsN8jTu-d9XU7Xo8gG_EjI_Q>
+    <xmx:UuiladxsZb65NwMxDjuqvhSiy7s25YaknvA1IvmLB6KjW-l2r2ZZHEpR>
+Feedback-ID: i083147f8:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 2 Mar 2026 14:43:14 -0500 (EST)
+Date: Mon, 2 Mar 2026 11:43:59 -0800
+From: Boris Burkov <boris@bur.io>
+To: Alex Lyakas <alex.lyakas@zadara.com>
+Cc: linux-btrfs@vger.kernel.org
+Subject: Re: [PATCH-RFC] btrfs: for unclustered allocation don't consider
+ ffe_ctl->empty_cluster
+Message-ID: <20260302194359.GA1173790@zen.localdomain>
+References: <20260226113419.28687-1-alex.lyakas@zadara.com>
+ <20260226173746.GA2968189@zen.localdomain>
+ <20260226182915.GA2992537@zen.localdomain>
+ <CAOcd+r31fvMHskN93LNjbXrhpL0hF1kZd6rkVuhcEAgXHtcW-A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6820:98e:b0:662:f91f:4a98 with SMTP id
- 006d021491bc7-679faf3a953mr7150262eaf.41.1772477141288; Mon, 02 Mar 2026
- 10:45:41 -0800 (PST)
-Date: Mon, 02 Mar 2026 10:45:41 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <69a5dad5.a70a0220.b118c.0001.GAE@google.com>
-Subject: [syzbot] [btrfs?] WARNING: suspicious RCU usage in btrfs_device_init_dev_stats
-From: syzbot <syzbot+d4957dbe80e471232035@syzkaller.appspotmail.com>
-To: clm@fb.com, dsterba@suse.com, linux-btrfs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Rspamd-Queue-Id: 3E4981DE72B
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOcd+r31fvMHskN93LNjbXrhpL0hF1kZd6rkVuhcEAgXHtcW-A@mail.gmail.com>
+X-Rspamd-Queue-Id: 907D11DEEA1
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.36 / 15.00];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=98a1e192f758c1c1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[bur.io:s=fm2,messagingengine.com:s=fm1];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
-	DMARC_POLICY_SOFTFAIL(0.10)[appspotmail.com : SPF not aligned (relaxed), No valid DKIM,none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-22154-lists,linux-btrfs=lfdr.de,d4957dbe80e471232035];
+	TAGGED_FROM(0.00)[bounces-22155-lists,linux-btrfs=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	SUBJECT_HAS_QUESTION(0.00)[];
-	REDIRECTOR_URL(0.00)[goo.gl];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[syzbot@syzkaller.appspotmail.com,linux-btrfs@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[5];
-	TO_DN_NONE(0.00)[];
-	R_DKIM_NA(0.00)[];
-	NEURAL_HAM(-0.00)[-0.937];
+	RCPT_COUNT_TWO(0.00)[2];
+	DMARC_NA(0.00)[bur.io];
+	DKIM_TRACE(0.00)[bur.io:+,messagingengine.com:+];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[boris@bur.io,linux-btrfs@vger.kernel.org];
+	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[goo.gl:url,googlegroups.com:email,appspotmail.com:email,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,storage.googleapis.com:url,syzkaller.appspot.com:url]
+	NEURAL_HAM(-0.00)[-0.998];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[messagingengine.com:dkim,zen.localdomain:mid]
 X-Rspamd-Action: no action
 
-Hello,
+On Sun, Mar 01, 2026 at 12:14:09PM +0200, Alex Lyakas wrote:
+> Hi Boris,
+> 
+> On Thu, Feb 26, 2026 at 8:28 PM Boris Burkov <boris@bur.io> wrote:
+> >
+> > On Thu, Feb 26, 2026 at 09:37:46AM -0800, Boris Burkov wrote:
+> > > On Thu, Feb 26, 2026 at 01:34:19PM +0200, Alex Lyakas wrote:
+> > > > I encountered an issue when performing unclustered allocation for metadata:
+> > > >
+> > > > free_space_ctl->free_space = 2MB
+> > > > ffe_ctl->num_bytes = 4096
+> > > > ffe_ctl->empty_cluster = 2MB
+> > > > ffe_ctl->empty_size = 0
+> > > >
+> > > > So early check for free_space_ctl->free_space skips the block group, even though
+> > > > it has enough space to do the allocation.
+> > > > I think when doing unclustered allocation we should not look at ffe_ctl->empty_cluster.
+> > >
+> > > I see what you are saying, and a the level of this situation and this
+> > > line of code, I think you are right.
+> > >
+> > > But as-is, this change does not contain enough reasoning about the
+> > > semantics of the allocation algorithm to realistically be anything
+> > > but exchanging one bug for two new ones.
+> > >
+> 
+> Thank you for your review and your comments below.
+> 
+> However, I am not sure what is it that you are actually requesting.
+> Do you expect me to describe the whole mechanics of find_free_extent()
+> and how its state is tracked through ffe_ctl?
 
-syzbot found the following issue on:
+To be confident that this change does not introduce a different,
+potentially more serious, bug, it is important to demonstrate why this
+transformation is reasonable, safe, and fits the existing model. That
+implies some level of explanation of the mechanisms of the existing
+model.
 
-HEAD commit:    7d6661873f6b Add linux-next specific files for 20260226
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=105ad1aa580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=98a1e192f758c1c1
-dashboard link: https://syzkaller.appspot.com/bug?extid=d4957dbe80e471232035
-compiler:       Debian clang version 21.1.8 (++20251221033036+2078da43e25a-1~exp1~20251221153213.50), Debian LLD 21.1.8
+> 
+> > > What is empty_cluster modelling? Why is it included in this calculation?
+> > > Why should it not be included? Where else is empty_cluster used and
+> > > should it change under this new interpretation? Does any of this change
+> > > if there is actually a cluster active for clustered allocations?
+> I am not changing the meaning of any field of ffe_ctl, which tracks
+> the state of every call to find_free_extent().
+> 
+> I found an issue where "empty_cluster" is used erroneously in my opinion.
+> 
 
-Unfortunately, I don't have any reproducer for this issue yet.
+At this point, in my opinion, you have a useful insight and a good lead
+for a fix, but have not done enough work to justify the change you want
+to make.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/4cd2824adb8a/disk-7d666187.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/bbdd4a130d86/vmlinux-7d666187.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/6e3bea3e96f8/bzImage-7d666187.xz
+> According to the code, "empty_cluster" describes the minimal amount of
+> free space in the block group, which we are considering to allocate a
+> cluster from. I am not changing the meaning of it.
+> 
+> My fix is suggesting that "empty_cluster" should not be used when
+> looking at free space in a block group during unclustered allocation.
+> Nothing else is changed. In the issue that I saw, this bug prevented
+> us from allocating a metadata block from a block group, when the block
+> group still had enough space to make a 4Kb allocation.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+d4957dbe80e471232035@syzkaller.appspotmail.com
+At a minimum level, I would like to see an analysis of why the
+empty_cluster may have been included in the calculation and some
+reasoning about why excluding it ought to be safe and not cause issues
+in other situations. Aside from improving the behavior in the conditions
+you observed.
 
-=============================
-WARNING: suspicious RCU usage
-syzkaller #0 Not tainted
------------------------------
-fs/btrfs/volumes.h:872 suspicious rcu_dereference_check() usage!
+i.e., a general demonstration of an understanding of how the change fits
+into the code at a wider level than just changing the one thing you care
+about right now.
 
-other info that might help us debug this:
+> 
+> I tagged the patch as RFC, because I am unable to test it on the
+> latest mainline kernel, and I tested it on a stable LTS kernel 6.6.
 
+Why are you unable to test it on the latest mainline kernel? I can run
+it through fstests for you, if that would be helpful.
 
-rcu_scheduler_active = 2, debug_locks = 1
-3 locks held by syz.2.1057/8526:
- #0: ffff88807cc920e0 (&type->s_umount_key#58/1){+.+.}-{4:4}, at: alloc_super+0x28c/0xab0 fs/super.c:345
- #1: ffff888057f2e0d8 (&fs_devs->device_list_mutex){+.+.}-{4:4}, at: btrfs_init_dev_stats+0x5b/0x190 fs/btrfs/volumes.c:8157
- #2: ffff8880772940f8 (btrfs-dev-00){.+.+}-{4:4}, at: btrfs_tree_read_lock_nested+0x33/0x250 fs/btrfs/locking.c:146
+> 
+> Thanks,
+> Alex.
 
-stack backtrace:
-CPU: 0 UID: 0 PID: 8526 Comm: syz.2.1057 Not tainted syzkaller #0 PREEMPT(full) 
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/12/2026
-Call Trace:
- <TASK>
- dump_stack_lvl+0xe8/0x150 lib/dump_stack.c:120
- lockdep_rcu_suspicious+0x13f/0x1d0 kernel/locking/lockdep.c:6876
- btrfs_dev_name fs/btrfs/volumes.h:872 [inline]
- btrfs_dev_stat_print_on_load fs/btrfs/volumes.c:8302 [inline]
- btrfs_device_init_dev_stats+0x971/0xb90 fs/btrfs/volumes.c:8140
- btrfs_init_dev_stats+0x8e/0x190 fs/btrfs/volumes.c:8159
- open_ctree+0x1be9/0x2e40 fs/btrfs/disk-io.c:3534
- btrfs_fill_super+0x187/0x2e0 fs/btrfs/super.c:981
- btrfs_get_tree_super fs/btrfs/super.c:1944 [inline]
- btrfs_get_tree_subvol fs/btrfs/super.c:2087 [inline]
- btrfs_get_tree+0xe77/0x1370 fs/btrfs/super.c:2121
- vfs_get_tree+0x92/0x2a0 fs/super.c:1754
- fc_mount fs/namespace.c:1193 [inline]
- do_new_mount_fc fs/namespace.c:3763 [inline]
- do_new_mount+0x341/0xd30 fs/namespace.c:3839
- do_mount fs/namespace.c:4172 [inline]
- __do_sys_mount fs/namespace.c:4361 [inline]
- __se_sys_mount+0x31d/0x420 fs/namespace.c:4338
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0x14d/0xf80 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f197b19da0a
-Code: 48 c7 c2 e8 ff ff ff f7 d8 64 89 02 b8 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 e8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f197bf8be58 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007f197bf8bee0 RCX: 00007f197b19da0a
-RDX: 0000200000005100 RSI: 0000200000000040 RDI: 00007f197bf8bea0
-RBP: 0000200000005100 R08: 00007f197bf8bee0 R09: 0000000000a08811
-R10: 0000000000a08811 R11: 0000000000000246 R12: 0000200000000040
-R13: 00007f197bf8bea0 R14: 0000000000005163 R15: 0000200000000100
- </TASK>
-BTRFS info (device loop2 state ECS): bdev /dev/loop2 errs: wr 150994944, rd 0, flush 0, corrupt 0, gen 0
-BTRFS info (device loop2 state ECS): setting nodatasum
-BTRFS info (device loop2 state ECS): disabling tree log
-BTRFS info (device loop2 state ECS): enabling free space tree
-BTRFS info (device loop2 state ECS): ignoring bad roots
-BTRFS info (device loop2 state ECS): ignoring meta csums
+Thanks,
+Boris
 
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+> 
+> 
+> 
+> 
+> 
+> > >
+> > > etc. etc.
+> > >
+> > > Thanks,
+> > > Boris
+> > >
+> >
+> > I missed the RFC tag in the patch, so I would like to apologize for my
+> > negativity. In my experience with other bugs, the interplay between the
+> > clustered algorithm and the unclustered algorithm is under-specified so
+> > I think it is likely you have indeed found a bug.
+> >
+> > If you want to fix it, I would proceed along the lines I complained
+> > about in my first response and try to define the relationships between
+> > the variables in a consistent way that explains why we shouldn't count
+> > that variable here.
+> >
+> > If you do go through with sharpening the definition of empty_cluster,
+> > I would be happy to review that work and help get it in.
+> >
+> 
+> 
+> 
+> > Thanks,
+> > Boris
+> >
+> > > >
+> > > > I tested this on stable kernel 6.6.
+> > > >
+> > > > Signed-off-by: Alex Lyakas <alex.lyakas@zadara.com>
+> > > > ---
+> > > >  fs/btrfs/extent-tree.c | 2 +-
+> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > >
+> > > > diff --git a/fs/btrfs/extent-tree.c b/fs/btrfs/extent-tree.c
+> > > > index 03cf9f242c70..84b340a67882 100644
+> > > > --- a/fs/btrfs/extent-tree.c
+> > > > +++ b/fs/btrfs/extent-tree.c
+> > > > @@ -3885,7 +3885,7 @@ static int find_free_extent_unclustered(struct btrfs_block_group *bg,
+> > > >             free_space_ctl = bg->free_space_ctl;
+> > > >             spin_lock(&free_space_ctl->tree_lock);
+> > > >             if (free_space_ctl->free_space <
+> > > > -               ffe_ctl->num_bytes + ffe_ctl->empty_cluster +
+> > > > +               ffe_ctl->num_bytes +
+> > > >                 ffe_ctl->empty_size) {
+> > > >                     ffe_ctl->total_free_space = max_t(u64,
+> > > >                                     ffe_ctl->total_free_space,
+> > > > --
+> > > > 2.43.0
+> > > >
 
