@@ -1,286 +1,199 @@
-Return-Path: <linux-btrfs+bounces-22153-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-22154-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id iCTbHTajpWngCwAAu9opvQ
-	(envelope-from <linux-btrfs+bounces-22153-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Mon, 02 Mar 2026 15:48:22 +0100
+	id xRz1J+XapWkvHgAAu9opvQ
+	(envelope-from <linux-btrfs+bounces-22154-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Mon, 02 Mar 2026 19:45:57 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D2A01DB21B
-	for <lists+linux-btrfs@lfdr.de>; Mon, 02 Mar 2026 15:48:21 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E4981DE72B
+	for <lists+linux-btrfs@lfdr.de>; Mon, 02 Mar 2026 19:45:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id D0CF13030058
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Mar 2026 14:40:06 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id E9F0C3051D29
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Mar 2026 18:45:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C63693FFAB6;
-	Mon,  2 Mar 2026 14:39:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="HXt5LTRE"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC2F03431E6;
+	Mon,  2 Mar 2026 18:45:43 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from esa5.hgst.iphmx.com (esa5.hgst.iphmx.com [216.71.153.144])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com [209.85.161.70])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB62C401488
-	for <linux-btrfs@vger.kernel.org>; Mon,  2 Mar 2026 14:39:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.71.153.144
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B83C430BAA
+	for <linux-btrfs@vger.kernel.org>; Mon,  2 Mar 2026 18:45:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772462398; cv=none; b=RCXkz508jNjZ3u25Es7biZUT1p+Jcv2mSc+mAhx+/r8ySBekR60dujN7VTH1pmZ+K2wf2RagbXd8NSOL5/DZvb/lBiYp8iF96vDHp/X+aS3FCyCq1TC2rqeOfUieERdl1VCqKaxlTirlS19YVzUD2dsA7ht6Uf+fXtfCE7p6DD8=
+	t=1772477143; cv=none; b=SDPkItYSMmO2snhl7mvWGs+WzFmruDAiHQST09Ja3gOEatEpNSlMNTWCQlgH1RlbhQrZOv4t/2BzvETGKrE2cORcjp8NU/ljMcp6MAZgYXZZ6f2ZzNR/uiBBjPXB4UM5oINQ8N2bd8315EhODnv1q9pTrsvv6H7OOvZbD9iL0rg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772462398; c=relaxed/simple;
-	bh=R2jRRZR89ZyjH2k3RcGt0wbjC/35yRHZup/v9h3wPbc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=uJxdgBl/973U679tmHp9Cci05e8I1DmDBEI+7w89jEMgrYTYJapPtDbPtw8LfAaTvjSRrMc0MkaivK7C2EnaL3wl/epzqUCF81an6HICWGwVn1cXNSCXqTC1a4k4+w4Zc9SoQsmDKUFDUM2x0VIPT/SBqPLwvSJG1GicH7s8dGQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=HXt5LTRE; arc=none smtp.client-ip=216.71.153.144
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1772462396; x=1803998396;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=R2jRRZR89ZyjH2k3RcGt0wbjC/35yRHZup/v9h3wPbc=;
-  b=HXt5LTREWoATJ/agMsLmaQ4RpxMD168ujs8zejBz9NwAewGP6arHukiT
-   PMyj3kSg5neqku8m5Q9efQNYfoonpTqDJ4WVJG8Qe3XgxHCAOspgEiE84
-   XCjt50FOAIxcMVPN8FI+PRV9jRH7feeM1Fg+js2PfSD4JuaQPcHBverP0
-   GZKee7Xzid6TO87a+MyYLjPn7mk59Js6W4sF838mYnT6V307m5A5W+ZDV
-   fTt5zRwGnPJb5bOSzQfg7CvAjUyuFginiw3VugBBiO4bC8WnUFmE1quLN
-   iRyYYmbe9iQmIqgyg/EsYzYokS8y5vvjCVaCxnmZu4ezTJStOVakFx5o1
-   A==;
-X-CSE-ConnectionGUID: VjRgTyWSSOW7FvjbL3rSDw==
-X-CSE-MsgGUID: amn9k9osSA6HfHyvB8s8OA==
-X-IronPort-AV: E=Sophos;i="6.21,320,1763395200"; 
-   d="scan'208";a="141343848"
-Received: from h199-255-45-15.hgst.com (HELO uls-op-cesaep03.wdc.com) ([199.255.45.15])
-  by ob1.hgst.iphmx.com with ESMTP; 02 Mar 2026 22:39:51 +0800
-IronPort-SDR: 69a5a137_uqFbBcgStZR9ApPIRQa9EANb7oJoTQKtsF8oQSiFdqmCoWr
- g5lqL7NSqquGL4cD7Q2AX56FKuC4E8nBX2ia4gA==
-Received: from uls-op-cesaip01.wdc.com ([10.248.3.36])
-  by uls-op-cesaep03.wdc.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 02 Mar 2026 06:39:51 -0800
-WDCIronportException: Internal
-Received: from unknown (HELO neo.wdc.com) ([10.224.28.176])
-  by uls-op-cesaip01.wdc.com with ESMTP; 02 Mar 2026 06:39:50 -0800
-From: Johannes Thumshirn <johannes.thumshirn@wdc.com>
-To: linux-btrfs@vger.kernel.org
-Cc: Naohiro Aota <naohiro.aota@wdc.com>,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Subject: [PATCH 3/3] btrfs: zoned: limit number of zones reclaimed in flush_space
-Date: Mon,  2 Mar 2026 15:39:42 +0100
-Message-ID: <20260302143942.115619-4-johannes.thumshirn@wdc.com>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260302143942.115619-1-johannes.thumshirn@wdc.com>
-References: <20260302143942.115619-1-johannes.thumshirn@wdc.com>
+	s=arc-20240116; t=1772477143; c=relaxed/simple;
+	bh=BNQWtdRHuO3S+gGOscSXOqbfLFQhgJQr/6SBZrjZhek=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=D0DZx0kknIJsYfVR/kGCu+BaN3FYKG0SbKeCGVDJDAGaoKQX8HNbcmz7L6DKrq/lkd1tJoygJLRG5zHwxI+VPmdFW8ER6eATAJ/s8RgdbJhyaf1Fpfv3OuORdMmA9oIB3tSo/HxbU48CUe/mSaep4m1rawQSZO7nl0eXC7/JLP8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.161.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-oo1-f70.google.com with SMTP id 006d021491bc7-679dda090fbso97352362eaf.2
+        for <linux-btrfs@vger.kernel.org>; Mon, 02 Mar 2026 10:45:42 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1772477141; x=1773081941;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=KKp7i17aMM9L6WuRWWndlSaZEHbB7jCUXWvpqpj5i2M=;
+        b=bjI1jExgWBswQHmn63pmIMQ93+EVTqQCDDcrsjzsJyAYwQbsHGxhRqk+XXgUSHawzM
+         BKxjDZN40Fe4ALQ+KlGjcdMHRqmolThQs7IRoENphkGJMWI9jOld7HneNEZXcbX8POvQ
+         0spXTtuUuy/TnWe9d5eyDdwd6DRRjpwKldvPb2ZYFcE3GEBTlaeeMMK7tqEBlALga4/S
+         WHowJl1lTVTIueAuDW9Cs+QoT8KZvcJkbCm8dMlhAcVO89nKBHXF0F/1YS6LhbcBLDv5
+         O/gO9yZXDziXHaC8PXnBLud4dpdXKQ4DS5hJkVYgx8VeiQYZYsjfUsHJK/KFpIGUmdQe
+         AW0w==
+X-Forwarded-Encrypted: i=1; AJvYcCX/oRo+YwGreULF3Rn8YexlVx+Y6Zg11/GlzF9vaPI0ybLlzLWtvrW5TiOD4PrKFMSZ1CPwBpjPGn6DZA==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzoX3jCfziGSJQRIPpwTYlORkYm/79blMWAgGSS5BcjYLix2Zzf
+	QOfEXDt755ALkXUnbdvbdjN4GC2BGRmzZ9jQWz/P4kp32iRtBsOPsczPHBoJWlhlkEXHEaBdphB
+	4vbq0/5xwBfVGtfNk17yxGWODh98fbJ8BTuQlT/rKKlyDy2HUmDBYw+0JLZ0=
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 8D2A01DB21B
+X-Received: by 2002:a05:6820:98e:b0:662:f91f:4a98 with SMTP id
+ 006d021491bc7-679faf3a953mr7150262eaf.41.1772477141288; Mon, 02 Mar 2026
+ 10:45:41 -0800 (PST)
+Date: Mon, 02 Mar 2026 10:45:41 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <69a5dad5.a70a0220.b118c.0001.GAE@google.com>
+Subject: [syzbot] [btrfs?] WARNING: suspicious RCU usage in btrfs_device_init_dev_stats
+From: syzbot <syzbot+d4957dbe80e471232035@syzkaller.appspotmail.com>
+To: clm@fb.com, dsterba@suse.com, linux-btrfs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Rspamd-Queue-Id: 3E4981DE72B
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [-0.36 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[wdc.com,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
-	R_DKIM_ALLOW(-0.20)[wdc.com:s=dkim.wdc.com];
+	URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=98a1e192f758c1c1];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
+	DMARC_POLICY_SOFTFAIL(0.10)[appspotmail.com : SPF not aligned (relaxed), No valid DKIM,none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DKIM_TRACE(0.00)[wdc.com:+];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22153-lists,linux-btrfs=lfdr.de];
-	RCPT_COUNT_THREE(0.00)[4];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	TO_DN_SOME(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[johannes.thumshirn@wdc.com,linux-btrfs@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-22154-lists,linux-btrfs=lfdr.de,d4957dbe80e471232035];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	SUBJECT_HAS_QUESTION(0.00)[];
+	REDIRECTOR_URL(0.00)[goo.gl];
 	PRECEDENCE_BULK(0.00)[];
-	NEURAL_HAM(-0.00)[-0.999];
-	RCVD_COUNT_FIVE(0.00)[6];
+	FROM_NEQ_ENVFROM(0.00)[syzbot@syzkaller.appspotmail.com,linux-btrfs@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[5];
+	TO_DN_NONE(0.00)[];
+	R_DKIM_NA(0.00)[];
+	NEURAL_HAM(-0.00)[-0.937];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[wdc.com:dkim,wdc.com:email,wdc.com:mid,sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[goo.gl:url,googlegroups.com:email,appspotmail.com:email,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,storage.googleapis.com:url,syzkaller.appspot.com:url]
 X-Rspamd-Action: no action
 
-Limit the number of zones reclaimed in flush_space()'s RECLAIM_ZONES
-state.
+Hello,
 
-This prevents possibly long running reclaim sweeps to block other tasks in
-the system, while the system is under preassure anyways, causing the
-tasks to hang.
+syzbot found the following issue on:
 
-An example of this can be seen here, triggered by fstests generic/551:
+HEAD commit:    7d6661873f6b Add linux-next specific files for 20260226
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=105ad1aa580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=98a1e192f758c1c1
+dashboard link: https://syzkaller.appspot.com/bug?extid=d4957dbe80e471232035
+compiler:       Debian clang version 21.1.8 (++20251221033036+2078da43e25a-1~exp1~20251221153213.50), Debian LLD 21.1.8
 
-generic/551        [   27.042349] run fstests generic/551 at 2026-02-27 11:05:30
- BTRFS: device fsid 78c16e29-20d9-4c8e-bc04-7ba431be38ff devid 1 transid 8 /dev/vdb (254:16) scanned by mount (806)
- BTRFS info (device vdb): first mount of filesystem 78c16e29-20d9-4c8e-bc04-7ba431be38ff
- BTRFS info (device vdb): using crc32c checksum algorithm
- BTRFS info (device vdb): host-managed zoned block device /dev/vdb, 64 zones of 268435456 bytes
- BTRFS info (device vdb): zoned mode enabled with zone size 268435456
- BTRFS info (device vdb): checking UUID tree
- BTRFS info (device vdb): enabling free space tree
- INFO: task kworker/u38:1:90 blocked for more than 120 seconds.
-       Not tainted 7.0.0-rc1+ #345
- "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
- task:kworker/u38:1   state:D stack:0     pid:90    tgid:90    ppid:2      task_flags:0x4208060 flags:0x00080000
- Workqueue: events_unbound btrfs_async_reclaim_data_space
- Call Trace:
-  <TASK>
-  __schedule+0x34f/0xe70
-  schedule+0x41/0x140
-  schedule_timeout+0xa3/0x110
-  ? mark_held_locks+0x40/0x70
-  ? lockdep_hardirqs_on_prepare+0xd8/0x1c0
-  ? trace_hardirqs_on+0x18/0x100
-  ? lockdep_hardirqs_on+0x84/0x130
-  ? _raw_spin_unlock_irq+0x33/0x50
-  wait_for_completion+0xa4/0x150
-  ? __flush_work+0x24c/0x550
-  __flush_work+0x339/0x550
-  ? __pfx_wq_barrier_func+0x10/0x10
-  ? wait_for_completion+0x39/0x150
-  flush_space+0x243/0x660
-  ? find_held_lock+0x2b/0x80
-  ? kvm_sched_clock_read+0x11/0x20
-  ? local_clock_noinstr+0x17/0x110
-  ? local_clock+0x15/0x30
-  ? lock_release+0x1b7/0x4b0
-  do_async_reclaim_data_space+0xe8/0x160
-  btrfs_async_reclaim_data_space+0x19/0x30
-  process_one_work+0x20a/0x5f0
-  ? lock_is_held_type+0xcd/0x130
-  worker_thread+0x1e2/0x3c0
-  ? __pfx_worker_thread+0x10/0x10
-  kthread+0x103/0x150
-  ? __pfx_kthread+0x10/0x10
-  ret_from_fork+0x20d/0x320
-  ? __pfx_kthread+0x10/0x10
-  ret_from_fork_asm+0x1a/0x30
-  </TASK>
+Unfortunately, I don't have any reproducer for this issue yet.
 
- Showing all locks held in the system:
- 1 lock held by khungtaskd/67:
-  #0: ffffffff824d58e0 (rcu_read_lock){....}-{1:3}, at: debug_show_all_locks+0x3d/0x194
- 2 locks held by kworker/u38:1/90:
-  #0: ffff8881000aa158 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work+0x3c4/0x5f0
-  #1: ffffc90000c17e58 ((work_completion)(&fs_info->async_data_reclaim_work)){+.+.}-{0:0}, at: process_one_work+0x1c0/0x5f0
- 5 locks held by kworker/u39:1/191:
-  #0: ffff8881000aa158 ((wq_completion)events_unbound){+.+.}-{0:0}, at: process_one_work+0x3c4/0x5f0
-  #1: ffffc90000dfbe58 ((work_completion)(&fs_info->reclaim_bgs_work)){+.+.}-{0:0}, at: process_one_work+0x1c0/0x5f0
-  #2: ffff888101da0420 (sb_writers#9){.+.+}-{0:0}, at: process_one_work+0x20a/0x5f0
-  #3: ffff88811040a648 (&fs_info->reclaim_bgs_lock){+.+.}-{4:4}, at: btrfs_reclaim_bgs_work+0x1de/0x770
-  #4: ffff888110408a18 (&fs_info->cleaner_mutex){+.+.}-{4:4}, at: btrfs_relocate_block_group+0x95a/0x20f0
- 1 lock held by aio-dio-write-v/980:
-  #0: ffff888110093008 (&sb->s_type->i_mutex_key#15){++++}-{4:4}, at: btrfs_inode_lock+0x51/0xb0
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/4cd2824adb8a/disk-7d666187.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/bbdd4a130d86/vmlinux-7d666187.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/6e3bea3e96f8/bzImage-7d666187.xz
 
- =============================================
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+d4957dbe80e471232035@syzkaller.appspotmail.com
 
-To prevent these long running reclaims from blocking the system, only
-reclaim 5 block_groups in the RECLAIM_ZONES state of flush_space(). Also
-as these reclaims are now constrained, it opens up the use for a
-synchronous call to brtfs_reclaim_block_groups(), eliminating the need
-to place the reclaim task on a workqueue and then flushing the workqueue
-again.
+=============================
+WARNING: suspicious RCU usage
+syzkaller #0 Not tainted
+-----------------------------
+fs/btrfs/volumes.h:872 suspicious rcu_dereference_check() usage!
 
-Signed-off-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>
+other info that might help us debug this:
+
+
+rcu_scheduler_active = 2, debug_locks = 1
+3 locks held by syz.2.1057/8526:
+ #0: ffff88807cc920e0 (&type->s_umount_key#58/1){+.+.}-{4:4}, at: alloc_super+0x28c/0xab0 fs/super.c:345
+ #1: ffff888057f2e0d8 (&fs_devs->device_list_mutex){+.+.}-{4:4}, at: btrfs_init_dev_stats+0x5b/0x190 fs/btrfs/volumes.c:8157
+ #2: ffff8880772940f8 (btrfs-dev-00){.+.+}-{4:4}, at: btrfs_tree_read_lock_nested+0x33/0x250 fs/btrfs/locking.c:146
+
+stack backtrace:
+CPU: 0 UID: 0 PID: 8526 Comm: syz.2.1057 Not tainted syzkaller #0 PREEMPT(full) 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/12/2026
+Call Trace:
+ <TASK>
+ dump_stack_lvl+0xe8/0x150 lib/dump_stack.c:120
+ lockdep_rcu_suspicious+0x13f/0x1d0 kernel/locking/lockdep.c:6876
+ btrfs_dev_name fs/btrfs/volumes.h:872 [inline]
+ btrfs_dev_stat_print_on_load fs/btrfs/volumes.c:8302 [inline]
+ btrfs_device_init_dev_stats+0x971/0xb90 fs/btrfs/volumes.c:8140
+ btrfs_init_dev_stats+0x8e/0x190 fs/btrfs/volumes.c:8159
+ open_ctree+0x1be9/0x2e40 fs/btrfs/disk-io.c:3534
+ btrfs_fill_super+0x187/0x2e0 fs/btrfs/super.c:981
+ btrfs_get_tree_super fs/btrfs/super.c:1944 [inline]
+ btrfs_get_tree_subvol fs/btrfs/super.c:2087 [inline]
+ btrfs_get_tree+0xe77/0x1370 fs/btrfs/super.c:2121
+ vfs_get_tree+0x92/0x2a0 fs/super.c:1754
+ fc_mount fs/namespace.c:1193 [inline]
+ do_new_mount_fc fs/namespace.c:3763 [inline]
+ do_new_mount+0x341/0xd30 fs/namespace.c:3839
+ do_mount fs/namespace.c:4172 [inline]
+ __do_sys_mount fs/namespace.c:4361 [inline]
+ __se_sys_mount+0x31d/0x420 fs/namespace.c:4338
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0x14d/0xf80 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f197b19da0a
+Code: 48 c7 c2 e8 ff ff ff f7 d8 64 89 02 b8 ff ff ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 e8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f197bf8be58 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007f197bf8bee0 RCX: 00007f197b19da0a
+RDX: 0000200000005100 RSI: 0000200000000040 RDI: 00007f197bf8bea0
+RBP: 0000200000005100 R08: 00007f197bf8bee0 R09: 0000000000a08811
+R10: 0000000000a08811 R11: 0000000000000246 R12: 0000200000000040
+R13: 00007f197bf8bea0 R14: 0000000000005163 R15: 0000200000000100
+ </TASK>
+BTRFS info (device loop2 state ECS): bdev /dev/loop2 errs: wr 150994944, rd 0, flush 0, corrupt 0, gen 0
+BTRFS info (device loop2 state ECS): setting nodatasum
+BTRFS info (device loop2 state ECS): disabling tree log
+BTRFS info (device loop2 state ECS): enabling free space tree
+BTRFS info (device loop2 state ECS): ignoring bad roots
+BTRFS info (device loop2 state ECS): ignoring meta csums
+
+
 ---
- fs/btrfs/block-group.c | 12 ++++++++----
- fs/btrfs/block-group.h |  1 +
- fs/btrfs/space-info.c  |  3 +--
- 3 files changed, 10 insertions(+), 6 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/fs/btrfs/block-group.c b/fs/btrfs/block-group.c
-index f0e4a1dd812f..169496d2b3c5 100644
---- a/fs/btrfs/block-group.c
-+++ b/fs/btrfs/block-group.c
-@@ -1909,7 +1909,7 @@ static bool should_reclaim_block_group(const struct btrfs_block_group *bg, u64 b
- 	return true;
- }
- 
--static int btrfs_reclaim_block_group(struct btrfs_block_group *bg)
-+static int btrfs_reclaim_block_group(struct btrfs_block_group *bg, int *reclaimed)
- {
- 	struct btrfs_fs_info *fs_info = bg->fs_info;
- 	struct btrfs_space_info *space_info = bg->space_info;
-@@ -2036,15 +2036,17 @@ static int btrfs_reclaim_block_group(struct btrfs_block_group *bg)
- 	if (space_info->total_bytes < old_total)
- 		btrfs_set_periodic_reclaim_ready(space_info, true);
- 	spin_unlock(&space_info->lock);
-+	(*reclaimed)++;
- 
- 	return ret;
- }
- 
--static void btrfs_reclaim_block_groups(struct btrfs_fs_info *fs_info)
-+void btrfs_reclaim_block_groups(struct btrfs_fs_info *fs_info, unsigned int limit)
- {
- 	struct btrfs_block_group *bg;
- 	struct btrfs_space_info *space_info;
- 	LIST_HEAD(retry_list);
-+	int reclaimed = 0;
- 
- 	if (!btrfs_should_reclaim(fs_info))
- 		return;
-@@ -2080,7 +2082,7 @@ static void btrfs_reclaim_block_groups(struct btrfs_fs_info *fs_info)
- 
- 		space_info = bg->space_info;
- 		spin_unlock(&fs_info->unused_bgs_lock);
--		ret = btrfs_reclaim_block_group(bg);
-+		ret = btrfs_reclaim_block_group(bg, &reclaimed);
- 
- 		if (ret && !READ_ONCE(space_info->periodic_reclaim))
- 			btrfs_link_bg_list(bg, &retry_list);
-@@ -2099,6 +2101,8 @@ static void btrfs_reclaim_block_groups(struct btrfs_fs_info *fs_info)
- 		if (!mutex_trylock(&fs_info->reclaim_bgs_lock))
- 			goto end;
- 		spin_lock(&fs_info->unused_bgs_lock);
-+		if (reclaimed >= limit)
-+			break;
- 	}
- 	spin_unlock(&fs_info->unused_bgs_lock);
- 	mutex_unlock(&fs_info->reclaim_bgs_lock);
-@@ -2114,7 +2118,7 @@ void btrfs_reclaim_bgs_work(struct work_struct *work)
- 	struct btrfs_fs_info *fs_info =
- 		container_of(work, struct btrfs_fs_info, reclaim_bgs_work);
- 
--	btrfs_reclaim_block_groups(fs_info);
-+	btrfs_reclaim_block_groups(fs_info, -1);
- }
- 
- void btrfs_reclaim_bgs(struct btrfs_fs_info *fs_info)
-diff --git a/fs/btrfs/block-group.h b/fs/btrfs/block-group.h
-index c03e04292900..0504cb357992 100644
---- a/fs/btrfs/block-group.h
-+++ b/fs/btrfs/block-group.h
-@@ -350,6 +350,7 @@ int btrfs_remove_block_group(struct btrfs_trans_handle *trans,
- 			     struct btrfs_chunk_map *map);
- void btrfs_delete_unused_bgs(struct btrfs_fs_info *fs_info);
- void btrfs_mark_bg_unused(struct btrfs_block_group *bg);
-+void btrfs_reclaim_block_groups(struct btrfs_fs_info *fs_info, unsigned int limit);
- void btrfs_reclaim_bgs_work(struct work_struct *work);
- void btrfs_reclaim_bgs(struct btrfs_fs_info *fs_info);
- void btrfs_mark_bg_to_reclaim(struct btrfs_block_group *bg);
-diff --git a/fs/btrfs/space-info.c b/fs/btrfs/space-info.c
-index 0e5274c3b988..57b74d0608ae 100644
---- a/fs/btrfs/space-info.c
-+++ b/fs/btrfs/space-info.c
-@@ -918,8 +918,7 @@ static void flush_space(struct btrfs_space_info *space_info, u64 num_bytes,
- 		if (btrfs_is_zoned(fs_info)) {
- 			btrfs_reclaim_sweep(fs_info);
- 			btrfs_delete_unused_bgs(fs_info);
--			btrfs_reclaim_bgs(fs_info);
--			flush_work(&fs_info->reclaim_bgs_work);
-+			btrfs_reclaim_block_groups(fs_info, 5);
- 			ASSERT(current->journal_info == NULL);
- 			ret = btrfs_commit_current_transaction(root);
- 		} else {
--- 
-2.53.0
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
