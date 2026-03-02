@@ -1,206 +1,152 @@
-Return-Path: <linux-btrfs+bounces-22157-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-22158-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 4PnnAS8LpmkJJgAAu9opvQ
-	(envelope-from <linux-btrfs+bounces-22157-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Mon, 02 Mar 2026 23:11:59 +0100
+	id qFEsB9kOpmmFJgAAu9opvQ
+	(envelope-from <linux-btrfs+bounces-22158-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Mon, 02 Mar 2026 23:27:37 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 723411E4F60
-	for <lists+linux-btrfs@lfdr.de>; Mon, 02 Mar 2026 23:11:58 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25CC41E5658
+	for <lists+linux-btrfs@lfdr.de>; Mon, 02 Mar 2026 23:27:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 257853133383
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Mar 2026 21:37:11 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id AFA0D326D2D8
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Mar 2026 21:38:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D955939A07C;
-	Mon,  2 Mar 2026 20:56:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 330911A6818;
+	Mon,  2 Mar 2026 21:04:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="Z4Bzo0Wf"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com [209.85.161.71])
+Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C987039150B
-	for <linux-btrfs@vger.kernel.org>; Mon,  2 Mar 2026 20:56:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC9E01A681C
+	for <linux-btrfs@vger.kernel.org>; Mon,  2 Mar 2026 21:04:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772484995; cv=none; b=oh/kya0mLA2S1WPbNyHaU33B55ztzYJHpvDj84xg7oM5P1GZKfOwuO8pvpRBwRFHRuTrIFrvFXhe7G6YPe4K9qRhKIVgsDdgSaPHaJyhASciYchvyAiBwuRO7MRCjvjfM5zzoiRhUrXsQIL/XQB5ut43ZoGTBZKIbJ7Xms002Bw=
+	t=1772485447; cv=none; b=k1zvbydA25fimqnfrweO7aIBDlxYTC9q0FGgRugocjU22nM5D6ti/JzHs/+sslj6Ug5NU8s1OHduB8ntOpj3R3IWKnDOMsoLA69mgkz8onbIWo72ChaoE2WRcM2Z49iwbm+GO5kNzKfM0Bm9FqOXlRqpgTbOdfTIZ70lKXvbhck=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772484995; c=relaxed/simple;
-	bh=A6XT5fgeQ+H4C/SBbDw41iSARhcu700961Qjp3KTlNk=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=rcIjsIlOESEvfNNSAhIbg3ZDlLv4yl5FjQde9V/i+AfM6ujAoc+QLsz0jwruRGYXflxewHAuC5uds6UVuNbKLT+n0fGBPImmoyhfKqm6ne+5Ucwc0Fk/05OzGLQ0cVGm+ZoaHU044WSXkpsByxNDKmNJkfX+NdczPotQbWJ9lHE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.161.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-oo1-f71.google.com with SMTP id 006d021491bc7-679caf7ec07so100037975eaf.1
-        for <linux-btrfs@vger.kernel.org>; Mon, 02 Mar 2026 12:56:33 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772484993; x=1773089793;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+	s=arc-20240116; t=1772485447; c=relaxed/simple;
+	bh=UwKN828bpYjsATwe/PFNfBBgDEwwJJjZ3GciXwnOP1g=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=L4CI/dRwgsGF7x056EeFixNJwbk9oty0C5VE5I1OnlM3vIT0y9FSy96Vbbx12Hci7ggHkUpQf9MdTjgR+smyeQrXcDDY6rV4/20Atvwym0BGYh4p0I5Nm0AW8q/RKADtkVL4dXT4ON8wG0nYeibyZtjPZ3XLkVCRVhdNTPtGCo4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=Z4Bzo0Wf; arc=none smtp.client-ip=209.85.167.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-oi1-f170.google.com with SMTP id 5614622812f47-463208653d6so3971175b6e.3
+        for <linux-btrfs@vger.kernel.org>; Mon, 02 Mar 2026 13:04:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1772485445; x=1773090245; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=oeJWXL/8B80nLFtn/+/euC6blDjZ5NumAyIyoN6ge8Q=;
-        b=accEkvjFj58Gn/OTUehowu1qCqvDbTAwOp42Ag9/DHllT43qTi5dFfc8rXxc+/RPy3
-         N2U6aS2GETuyxGs61UNwiW9t3QrKtmkjSEqsf5HlXmPF1CW6P2f/i9yo7ACovrRYtk2a
-         aTRmuEGL4dTEFjqB9DDjBG+w35vLugQBnjzQcFPYaeb0qyP40Nf5pybIZKOTzSmW2Hud
-         b0+wqpHyrHDGaRcHlZS9ilobvQ/42plaZRYcKvLUTMG5ODnCdmzyrmefKQ77xsRt6Bw2
-         o4hgwKI+c7zm1uqux1on22UWhq7lMEhZnHDonqkDx35V09GGD2o+k7h1/kcC5g1XA7fL
-         JPTw==
-X-Forwarded-Encrypted: i=1; AJvYcCWw5ixDynuLY5ItZzSO6GnvGUkG/DJfnVUy6+qWBKA1YBeXmNdPc0noE8hv/TBgTsGlGmq6mJ2xyzoDNg==@vger.kernel.org
-X-Gm-Message-State: AOJu0YweqaeTgm4RCfmtAet7Vu2OLv+JR3oLFM1GOplVmaPEN7FqXoxy
-	4ceik1pnPRMoRA0K6MfQF+73unvvKG3TM2BBp0qiDjCbYsCOr6la3SlSHVVmXukWXxKCrjG4uLs
-	WmguVhfMwcmS03zmzORPWFZ1SUG2pYcD6HFw+/GdNx8Q7YG4Wq4x1Sl8DBdE=
+        bh=UvIDDVWC3amChzTdZaAU+7HRWfu0rMD4zIP/5WJSg4Y=;
+        b=Z4Bzo0Wf3G+d2z5kyswDxW3jW+NPZDiVyYZwCcqN83Y49dvLqgm1fj0D+2nh2e/7HK
+         y8XgjjOFWG50GRCh2srXXbYtnH1gxt5oudR0awiokKqFJBqFV+75vqF0fXZcb9O37PzB
+         ssP/XV05YlZsYh2QLF+rBPyBu9kralV3P1u67TnrC4Gq176kdbtB+q+Yzk7rNrtA2DyL
+         JNxO+m04ssNNgDdJS5SdTjn5rlUQGzbyEPyhUWsMrh4R0eemKB2xMgXYGgCtad/ThjyD
+         pZvO5pkjXBF07tjJWmuzdzaOoLCD/n7CQeuwzhnCm1zeTQbegrjQte7JAmiotc4r7I1y
+         akRQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1772485445; x=1773090245;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=UvIDDVWC3amChzTdZaAU+7HRWfu0rMD4zIP/5WJSg4Y=;
+        b=jK9yemsERDx1hfIyu1hjvj6q4wBtHUnrY8Sp5owAhW7EPk39hbuisDo4aGUlmMnJYw
+         KTSCc/WWNYQrsV7kxl4HbyodkfGt7biZSCamyLNa4TVpExpNsW1mBThocNtUrJr/mYv+
+         1DqqFFJ2hkJADmT30HHPMHd+A7ARjvYvRzOdAkmaaMwhR8BvuSNpKRA35VG/HF7Y2cCR
+         /mobU0Cgpu8kH7MuYmY/1c4sFFMFKNauA7ZbaUuAJ6/2bsOpOQO0i5GIIk7kbAQ3hQgl
+         b4A+yrrjQl+gRclDH5G4tCfApR72d9ZsrQa3wotcMq1wJMCYmSPg2VJ5Lu8hvxOg+ugf
+         hjpA==
+X-Forwarded-Encrypted: i=1; AJvYcCW3bK4NPbs0VeRmC+MEkumGTuw3tqBjCBZnxlzeNMW6brqTnVZqNsPD/rddRq6RXnlbL4f03Fq4HOcP0g==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyRqDKHjE+6UPCBbNy4wYKv3QT4V6iCPrqepxYtAb7Z2eqrnABc
+	gUo5iFEHattYo0/mzo/teCOP16Q1Vwr58GTwPVSTw90tOyDJsnD4ZNlJp6+yiJDQowI=
+X-Gm-Gg: ATEYQzwQEPNXsSuRZaZ1FFjrk7trNUAxtBtgeVSUb3iVWG1ydPLGQ4/rb8+WCiSJhpB
+	wCWt6YBOwRoN7qpOorGpVX+DxTbrbnZt93xn9jyF2lhUe0jsDH9ig6E8rq0MeZk8P+duh38uVTZ
+	r5NJtSmWr3zz95r4FGjz7kuIgO4/BNL2kCwnnpq8Iy12jp56NSPz5kMfzIyiwkreSZP5/t+sdjb
+	iFV8ZvGcUopKwKL+8VLO67QP4KZzoahNthmW87uEhcxbGA9HcZ30y5eGBEUAFEfOVClS91Rvw/v
+	EMj3F+C/kq94rPt/flZTBRdQFhbOEuVxzmHjuZM6VCEnVEgZ/8pI5ErtkOiiM4/K5bMotFvVHGS
+	SFIdk3QjlGo/5K+FgNfY6Fqu1R02IDUAwZjVWEt3Rg9gGP24YY7TssQKbwwvKcFa++BbeBzFhuR
+	IY8hRRAaiA1p3W4jajjUYXEopkY5mjD0OY9tGNG0598xD3Raz3rCLdGS8WS6Hd20hXkV5QjrhpA
+	HzSZBd7/iQVuW/7ih5U
+X-Received: by 2002:a05:6808:8281:b0:463:b4bd:5287 with SMTP id 5614622812f47-464be921973mr6434178b6e.11.1772485444663;
+        Mon, 02 Mar 2026 13:04:04 -0800 (PST)
+Received: from [192.168.1.150] ([198.8.77.157])
+        by smtp.gmail.com with ESMTPSA id 5614622812f47-464bb3ab302sm8292175b6e.7.2026.03.02.13.04.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Mar 2026 13:04:03 -0800 (PST)
+Message-ID: <40e13629-aa4c-45ba-a2da-b7614961def0@kernel.dk>
+Date: Mon, 2 Mar 2026 14:04:01 -0700
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6820:81c4:b0:66f:75e5:e886 with SMTP id
- 006d021491bc7-679faf93119mr8109196eaf.66.1772484992883; Mon, 02 Mar 2026
- 12:56:32 -0800 (PST)
-Date: Mon, 02 Mar 2026 12:56:32 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <69a5f980.a70a0220.b118c.0004.GAE@google.com>
-Subject: [syzbot] [btrfs?] WARNING: suspicious RCU usage in btrfs_dev_stat_inc_and_print
-From: syzbot <syzbot+2c45a55710ac9b888efc@syzkaller.appspotmail.com>
-To: clm@fb.com, dsterba@suse.com, linux-btrfs@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Rspamd-Queue-Id: 723411E4F60
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] block: remove bdev_nonrot()
+To: Damien Le Moal <dlemoal@kernel.org>, Paul Menzel <pmenzel@molgen.mpg.de>
+Cc: linux-block@vger.kernel.org, Song Liu <song@kernel.org>,
+ Yu Kuai <yukuai@fnnas.com>, linux-raid@vger.kernel.org,
+ "Martin K . Petersen" <martin.petersen@oracle.com>,
+ linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
+ David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+ Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+ Andreas Dilger <adilger.kernel@dilger.ca>,
+ Andrew Morton <akpm@linux-foundation.org>, Chris Li <chrisl@kernel.org>,
+ Kairui Song <kasong@tencent.com>, linux-mm@kvack.org
+References: <20260226075448.2229655-1-dlemoal@kernel.org>
+ <5b8c1811-c9d9-469a-b8d0-992814a11b9a@molgen.mpg.de>
+ <a2993605-2cdb-42b2-85fc-b071f07af4c3@kernel.org>
+Content-Language: en-US
+From: Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <a2993605-2cdb-42b2-85fc-b071f07af4c3@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: 25CC41E5658
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.36 / 15.00];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=98a1e192f758c1c1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_DKIM_ALLOW(-0.20)[kernel-dk.20230601.gappssmtp.com:s=20230601];
 	MAILLIST(-0.15)[generic];
-	DMARC_POLICY_SOFTFAIL(0.10)[appspotmail.com : SPF not aligned (relaxed), No valid DKIM,none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22157-lists,linux-btrfs=lfdr.de,2c45a55710ac9b888efc];
+	RCPT_COUNT_TWELVE(0.00)[18];
+	TAGGED_FROM(0.00)[bounces-22158-lists,linux-btrfs=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	DMARC_NA(0.00)[kernel.dk];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[kernel-dk.20230601.gappssmtp.com:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	MISSING_XM_UA(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[5];
-	TO_DN_NONE(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[syzbot@syzkaller.appspotmail.com,linux-btrfs@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	NEURAL_HAM(-0.00)[-0.945];
+	FROM_NEQ_ENVFROM(0.00)[axboe@kernel.dk,linux-btrfs@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	R_DKIM_NA(0.00)[];
-	REDIRECTOR_URL(0.00)[goo.gl];
-	SUBJECT_HAS_QUESTION(0.00)[]
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-Hello,
+On 2/26/26 5:27 AM, Damien Le Moal wrote:
+>   > Is it worth the change, as it looks quite subjective if you prefer the
+>> one or the other way?
+> 
+> I think it is a nice cleanup, but I will let Jens and other
+> maintainers decide on the worth of this patch.
 
-syzbot found the following issue on:
+It's a bit of pointless churn, but I kind of suspected this was coming
+when we added the bdev_rot() helper and now had both of them. So I guess
+we may as well finish it, as we're half-way there anyway.
 
-HEAD commit:    7d6661873f6b Add linux-next specific files for 20260226
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1753c202580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=98a1e192f758c1c1
-dashboard link: https://syzkaller.appspot.com/bug?extid=2c45a55710ac9b888efc
-compiler:       Debian clang version 21.1.8 (++20251221033036+2078da43e25a-1~exp1~20251221153213.50), Debian LLD 21.1.8
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/4cd2824adb8a/disk-7d666187.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/bbdd4a130d86/vmlinux-7d666187.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/6e3bea3e96f8/bzImage-7d666187.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+2c45a55710ac9b888efc@syzkaller.appspotmail.com
-
-loop0: detected capacity change from 32768 to 0
-=============================
-WARNING: suspicious RCU usage
-syzkaller #0 Not tainted
------------------------------
-fs/btrfs/volumes.h:872 suspicious rcu_dereference_check() usage!
-
-other info that might help us debug this:
-
-
-rcu_scheduler_active = 2, debug_locks = 1
-6 locks held by syz.0.680/8076:
- #0: ffff888078859278 (&f->f_pos_lock){+.+.}-{4:4}, at: fdget_pos+0x246/0x320 fs/file.c:1261
- #1: ffff888034360420 (sb_writers#24){.+.+}-{0:0}, at: file_start_write include/linux/fs.h:2710 [inline]
- #1: ffff888034360420 (sb_writers#24){.+.+}-{0:0}, at: vfs_write+0x227/0xb90 fs/read_write.c:684
- #2: ffff888034360610 (sb_internal#4){.+.+}-{0:0}, at: btrfs_sync_file+0xcaa/0x1230 fs/btrfs/file.c:1724
- #3: ffff88805386a6f8 (btrfs_trans_num_writers){++++}-{0:0}, at: join_transaction+0x41b/0xd60 fs/btrfs/transaction.c:298
- #4: ffff88805386a720 (btrfs_trans_num_extwriters){++++}-{0:0}, at: join_transaction+0x41b/0xd60 fs/btrfs/transaction.c:298
- #5: ffff888034a383a8 (&root->log_mutex){+.+.}-{4:4}, at: btrfs_sync_log+0x21a/0x28a0 fs/btrfs/tree-log.c:3335
-
-stack backtrace:
-CPU: 0 UID: 0 PID: 8076 Comm: syz.0.680 Not tainted syzkaller #0 PREEMPT(full) 
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/12/2026
-Call Trace:
- <TASK>
- dump_stack_lvl+0xe8/0x150 lib/dump_stack.c:120
- lockdep_rcu_suspicious+0x13f/0x1d0 kernel/locking/lockdep.c:6876
- btrfs_dev_name fs/btrfs/volumes.h:872 [inline]
- btrfs_dev_stat_inc_and_print+0x328/0x400 fs/btrfs/volumes.c:8282
- btrfs_log_dev_io_error fs/btrfs/bio.c:-1 [inline]
- btrfs_simple_end_io+0x1e6/0x3e0 fs/btrfs/bio.c:399
- btrfs_submit_chunk fs/btrfs/bio.c:848 [inline]
- btrfs_submit_bbio+0x1316/0x1ea0 fs/btrfs/bio.c:906
- btree_writepages+0xb68/0x1260 fs/btrfs/extent_io.c:2390
- do_writepages+0x32e/0x550 mm/page-writeback.c:2554
- filemap_writeback mm/filemap.c:387 [inline]
- filemap_fdatawrite_range+0x1ef/0x2f0 mm/filemap.c:412
- btrfs_write_marked_extents+0x1ac/0x300 fs/btrfs/transaction.c:1174
- btrfs_sync_log+0x9bd/0x28a0 fs/btrfs/tree-log.c:3386
- btrfs_sync_file+0xdaf/0x1230 fs/btrfs/file.c:1769
- generic_write_sync include/linux/fs.h:2640 [inline]
- btrfs_do_write_iter+0x72e/0x880 fs/btrfs/file.c:1468
- new_sync_write fs/read_write.c:595 [inline]
- vfs_write+0x61d/0xb90 fs/read_write.c:688
- ksys_write+0x150/0x270 fs/read_write.c:740
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0x14d/0xf80 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f6c42f9c799
-Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 e8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f6c43e09028 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 00007f6c43215fa0 RCX: 00007f6c42f9c799
-RDX: 000000000000fea7 RSI: 0000200000000200 RDI: 0000000000000005
-RBP: 00007f6c43032bd9 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007f6c43216038 R14: 00007f6c43215fa0 R15: 00007fffadae2ee8
- </TASK>
-BTRFS error (device loop0): bdev /dev/loop0 errs: wr 1, rd 0, flush 0, corrupt 0, gen 0
-BTRFS error (device loop0): bdev /dev/loop0 errs: wr 2, rd 0, flush 0, corrupt 0, gen 0
-BTRFS error (device loop0 state A): Transaction aborted (error -5)
-BTRFS: error (device loop0 state A) in __btrfs_run_delayed_items:1162: errno=-5 IO failure
-BTRFS info (device loop0 state EA): forced readonly
-BTRFS warning (device loop0 state EA): Skipping commit of aborted transaction.
-BTRFS: error (device loop0 state EA) in cleanup_transaction:2042: errno=-5 IO failure
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+-- 
+Jens Axboe
 
