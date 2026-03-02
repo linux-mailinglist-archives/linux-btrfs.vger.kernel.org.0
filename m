@@ -1,278 +1,383 @@
-Return-Path: <linux-btrfs+bounces-22143-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-22144-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id CCGqJ3pspWk4AgYAu9opvQ
-	(envelope-from <linux-btrfs+bounces-22143-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Mon, 02 Mar 2026 11:54:50 +0100
+	id uM+7DGZupWlXAgYAu9opvQ
+	(envelope-from <linux-btrfs+bounces-22144-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Mon, 02 Mar 2026 12:03:02 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 216AC1D6EFC
-	for <lists+linux-btrfs@lfdr.de>; Mon, 02 Mar 2026 11:54:49 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 969341D71E7
+	for <lists+linux-btrfs@lfdr.de>; Mon, 02 Mar 2026 12:03:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 30327303D2FF
-	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Mar 2026 10:51:40 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id E2CEA302F41F
+	for <lists+linux-btrfs@lfdr.de>; Mon,  2 Mar 2026 11:02:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 272B63590A4;
-	Mon,  2 Mar 2026 10:51:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E917835FF5B;
+	Mon,  2 Mar 2026 11:02:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="MjKNEMr8";
-	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="p6h42r8N"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C7Q9RUkr"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from esa5.hgst.iphmx.com (esa5.hgst.iphmx.com [216.71.153.144])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AA58359A6F
-	for <linux-btrfs@vger.kernel.org>; Mon,  2 Mar 2026 10:51:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=216.71.153.144
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772448697; cv=fail; b=qpRSMg8ocxMhUQF9fpfbtIyrz2wAnUq6rjZ/OAzrn+hMlHhvtOE3Q67E+Y0NPUBZqPgLsoD/BASfLoqvIdI4UoVQkJsOeRqn0ZdXHCuv5nLy3qO+C7abmGB53RuL4WCWLQ5x9qmuaQSPzIFjqy8aICWn41HI5YExhv/ETnlKlVw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772448697; c=relaxed/simple;
-	bh=ey1R1G2PaXqgq7J/kTECVyl4wrCesIm9lRktBuwSRfg=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=Lx48EQKbkjJu5U/sJfPZKKOJkO1m5CoqvZX3vniACR5jP5X7okYTDk9zosVtWJwVYEa0+NJAHTd0JcuzjRuOtZ9pmz8CpOA3rpHwdiRkNLpol1KL/0CURT9vzWF/BQkpS5AgWvdfS5epvTF5h708Rxsu3KtXmTqTmPrXkFvS93A=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=MjKNEMr8; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=p6h42r8N; arc=fail smtp.client-ip=216.71.153.144
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1772448696; x=1803984696;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=ey1R1G2PaXqgq7J/kTECVyl4wrCesIm9lRktBuwSRfg=;
-  b=MjKNEMr8rZGRNiALq5/M5Etq1PS6tBMSkqcbV0IUh9kNd7eBlvn/Dzfe
-   uJigDu+akwOP9pjhNedPQKb24UoP8OnICz8RlW6f3BfF/B6A5bLa003M5
-   eNmtavsRJ5RUiUfZTvROIR2AeQTccS2hjQATlGqIhnWCnkkrAUKTG0Ucq
-   mN71idkYYnMh7IjaTQU3apD9bmxWQhvvWlyhiRxhmAAShulCMTgBG9GBM
-   /zOvFeEW2/R7+wCZL0x/dZrYqSTDROLlcAuQnM7p51zEqokXe5A7CB4X+
-   Ta+H40pWvrtUAgqlCdMAhP2+86Z27tucg+CBgY2YuMb6wDxZB7INI8PGx
-   g==;
-X-CSE-ConnectionGUID: INGQ7klcT82QjVqIPXjoEQ==
-X-CSE-MsgGUID: AZD/yzGbQNSqIeB/3Mm32g==
-X-IronPort-AV: E=Sophos;i="6.21,319,1763395200"; 
-   d="scan'208";a="141332283"
-Received: from mail-westusazon11012008.outbound.protection.outlook.com (HELO SJ2PR03CU001.outbound.protection.outlook.com) ([52.101.43.8])
-  by ob1.hgst.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 02 Mar 2026 18:51:35 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=XpP78mjr3hHACtY/U6+RlpFrfefV3nF1imBg47/gkGRy2PaW7bO6rv1hwsD40ptMNfll4AN3GA5JglSIbTeQZksXJj8LYQw/IvtzwPeM6Mx5UkuwAK8TtmCux/R36l0GPHzEDC1fbqSJh16Fd/r9TIxfAManEOAnU+RFQeDjLnwfxr9aVMtKlEz4upbDtBr+dA/fnOOPrXgkcv0lK6Q4EKQyL1Aj5g7xl3wzE4GRcErL5xbrTsxoyl2kj6qZERQ8EK0pU1QAmy46S2W/Cq7q+oLpkPXxjdMvQIqEkn0sKXiit7nb7zRJYbPcV1mHsM/pHNcQz7IYCQ1NsWGkGiwN4g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ey1R1G2PaXqgq7J/kTECVyl4wrCesIm9lRktBuwSRfg=;
- b=r9+UDcD+hnuYqb4rws6cLiBm98HEt4UYgMZeMbnkcSsYWPjBRaXewnU5EO3glZJsJpZQHulNtZ9ws0WomzF8WusFPdJu86DMYsgzSgc/qfjAgY7KbxYxcUkQVCdW1fh/A2D/oAIIe1g2l0GbqTbpyiTBmcfwYBEuckHGs5AmWwSUwhXcvv4mIAkcXjnEDrjuos8yn346UiFdWWfKGdXZir6qBdiv8YRzqYyMABLuSu30gJRbtaU57gRRrbL9zmcQ+1SMovQuLe3CHJ/P2O6oS46NKUyorQO/b8UoQc9uGJ06TVWvCPcIUoLJwcyVSM+7fiAG1G1Rl4E2FDcpIvOHVg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE40A2C3768
+	for <linux-btrfs@vger.kernel.org>; Mon,  2 Mar 2026 11:02:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1772449334; cv=none; b=QoCSB086/0JvaBZiQrXKkydSjkZEC/VqJzk2IC3xSNei/RgqftAq6PMMHRMSKedBpolrLvW4QsE6ndMR/a3+MI3UjBQHJ6LocqxY7E9gbPWlA4pc1YMMd1OMUyeaRWCuKSh5iS92oTThULRjoqh9S9EW7RbK7lag63MHegRgTrY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1772449334; c=relaxed/simple;
+	bh=W1WwmP5aJ1KE7cx4ZzvWX4vVJqhG08ahAHgDEbONfEQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=o4B9+ERzIFhCuTf6Y08ERDTZS4SuxMkmhAJ/fdalccrDyVnol9GsuoOB8UNvRSWa4DLgRmfFPTSqxpSV+LfJalymS+4uaXtD46nrS8gATc0pMLGTlsubQthcHp41b1DVGAc3kP2WfRiI85U2SlH/mekw85WHIB6HuZrbbgORovE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C7Q9RUkr; arc=none smtp.client-ip=209.85.214.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-2ae56e68216so3930145ad.2
+        for <linux-btrfs@vger.kernel.org>; Mon, 02 Mar 2026 03:02:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ey1R1G2PaXqgq7J/kTECVyl4wrCesIm9lRktBuwSRfg=;
- b=p6h42r8Nd1nXOzm1PeBEB2V9iFOKDw4Sh04E1uyl4CPURZHBZBeg/rSqP59+cIrwYCLfCaFgCgmPi6+Up75HpwaY9lTflE0yRsyGAgD5NuGxbqkdcrw83kgDsWjT69JoUQY6NUoJiMRUhqbouEP3sS7GhKrNzKfNO5FkU7CeOqA=
-Received: from SN7PR04MB8532.namprd04.prod.outlook.com (2603:10b6:806:350::6)
- by MW6PR04MB9028.namprd04.prod.outlook.com (2603:10b6:303:24b::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9654.14; Mon, 2 Mar
- 2026 10:51:32 +0000
-Received: from SN7PR04MB8532.namprd04.prod.outlook.com
- ([fe80::ce42:7775:2df8:8729]) by SN7PR04MB8532.namprd04.prod.outlook.com
- ([fe80::ce42:7775:2df8:8729%6]) with mapi id 15.20.9678.011; Mon, 2 Mar 2026
- 10:51:32 +0000
-From: Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-To: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-CC: Filipe Manana <fdmanana@kernel.org>, "linux-btrfs@vger.kernel.org"
-	<linux-btrfs@vger.kernel.org>, David Sterba <dsterba@suse.com>, Naohiro Aota
-	<Naohiro.Aota@wdc.com>
-Subject: Re: [PATCH] btrfs: fix leak of kobject name for sub-group space_info
-Thread-Topic: [PATCH] btrfs: fix leak of kobject name for sub-group space_info
-Thread-Index: AQHcqXVW7cpADFhhPEO07dEkv4KoSbWbCHUAgAAAt4CAAAj4gA==
-Date: Mon, 2 Mar 2026 10:51:32 +0000
-Message-ID: <aaVp3NoSv-95J8XR@shinmob>
-References: <20260301121704.45115-1-shinichiro.kawasaki@wdc.com>
- <CAL3q7H7KgBd7cKMSWLdu2pe-f8SRPCjOhPCvyHrVYDnjsDTr7A@mail.gmail.com>
- <613fe925-b0db-408f-8086-74b2822e278e@wdc.com>
-In-Reply-To: <613fe925-b0db-408f-8086-74b2822e278e@wdc.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SN7PR04MB8532:EE_|MW6PR04MB9028:EE_
-x-ms-office365-filtering-correlation-id: 421042eb-9e16-4714-8ef6-08de7849aa8f
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam:
- BCL:0;ARA:13230040|366016|376014|19092799006|1800799024|38070700021;
-x-microsoft-antispam-message-info:
- VDqAGoJnbIKyVBAVifozRxk40Bi/4zSRggFeLIu9OuHqcfRVmJvBwL/UHFDUDv/aCHCp7OJBviYZVVdrwGD492mkbAw8tYESvdVT9ihZqcdqZTpgUBzV035WEhCFx+mAPH+V601JhzA9ND0DqZElrEDi+75Gef8kI7FZMKmNOoy5b2+GB+H691HAjVJYiKmOYsBd80v/okS0z1U7aF81JjqS9PhyKSFv6JNgo4wknyoAQnlTBRxoAmcqPgDlqD5VdK+KRlYBmF/yG/ny+i4UEN8tWGQYVgUYVb3hx8+yEdge8S+rr+ZMkwgJgk48NLQZfsxA5+IWi6j84NNkFYno0wcWT3o/pe7Bhlfns+cbNLBRXJW4HSZZ+9mARdBM8gTNsEBd5u58AU1phBXW1DPEQXtHpDJyOJ6JQil1NeMCsbp21/d2zavSfh+O3YiT6UkY0NaLTHd/AFWqL+MzR+i4gSIcelIGOG0Uc/4xiRkoP59iR+THKZgRjhgXA+c0/Tza2oilmqi1rJcJyvYvaXR+mvaCC/N6C8km48L2YV4BE/hzsbWnfJG0594qxqyUW1MFImrScjBk9K1Fk6SL0huDVMs3amuncoYUosjzfzS7zKIlBGxdsconupzBAPr1klAmF2qmcjRfMqqunytMyNoeE3kHt2wjdWN9k7J/f/xym6Gq0rJYNmFP3DTocQKmO/7tHobM5w5+t7OfPPczf+z5ajf8SuSRW6kaytqyEuv6/rHbZ0s82jzotRcvPW5aa6DtV0P09t1UrhVZ3V8/tWNW7krlWEtv+wRBk8O2tUHAT3s=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN7PR04MB8532.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(19092799006)(1800799024)(38070700021);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?ZjV0Mkd1ZDdqUXlFWmRIRW4xR1RHcktjLzlNZU90MnUwYTVzWTZ4bTZhb0Nx?=
- =?utf-8?B?ZmluN0t2WEpCeHpPQnhXZWNrQStmQWdnNmJjM05BQ2pJeFU2Um1pWFJBTHBy?=
- =?utf-8?B?SW1jZkJoS0R5TjI4V2dyc2VxL2RWOUtmMlRtektYYklJZitxL3Y2VmRDUE1G?=
- =?utf-8?B?dDFwQVpwTEhEcElUQmpsOGFNbmFLT3ByMWxvV1M3TEdQNGdHZUpJVWpOekVD?=
- =?utf-8?B?R3BQMkNWOVJNZjVWZzA4NTFRblJIeTNGWnBSSnJxbHBFYkwyUGx2eUZmTGlM?=
- =?utf-8?B?Sm55T0FSWGx4c1VJTWVzVjdhOXpiVytIdUVjQTNMK3J1SWVKbWxxaVg3dUtE?=
- =?utf-8?B?ak5mMmVNbFQ5czFyUS95R1ZOTDNMRXdBYjJFLytiVEZJT2EwOXFaY1hua3VT?=
- =?utf-8?B?NmJydVB1ZURldEdSKy9BcEM4d00rWmRSd3FiNmRIOG1UeEhpcWpxY0k2ZHZa?=
- =?utf-8?B?ZXZldmxLMVB0bFhNRU5iWlZCeXpyZXpYMlhLdFdsOXhjRzZVblZ0Q0Y5S05k?=
- =?utf-8?B?aENCYm5JU3dDL1E3ZlIzRmJKOUFiVnR1NnZwblRJeHo0REVCVWZadFRaUHc0?=
- =?utf-8?B?K1JxdGMxNS8ySUV4ZnNjbjRLbFY3Q3MzcFdXV1h2WnR6cXlNaDM2eTBqOGlG?=
- =?utf-8?B?d1NwSzExbVpQZjE1aDY3ODQ5R0ZpNnNwWDhKOVkxd0IrRUd6T2gxQlJUUVFK?=
- =?utf-8?B?OUFncUZpSDkwWERGamo5aGNrdzVYb2ZRdmcrbjNDY1d5eFNGTHE0YUJ3S0lX?=
- =?utf-8?B?d0ZhUWtvSjhKQkRLNUtEQ1VyRzJPSzh4MCtuZ2w0Z0N2WkZaZzhkVnZBanpZ?=
- =?utf-8?B?Um83YTMxdXlUczN1c21hb2hmR2lHZE5jN285NVVMWGlDQnBrY21aQzkwbG50?=
- =?utf-8?B?cmdvNGZvbFJOUi93Z2N3MG9HM0JucFBwOGdEeUxyTXVhWWF1Ni9mQVB0NTV2?=
- =?utf-8?B?L2NTVDBYUXpJbE5rRE5aOTEySGZyemx3aDBsY3dHV0U0UnFUOE4zVEk4V05z?=
- =?utf-8?B?dTV4TEVxcTN6RnF6K0o1U2RNMzlqM1ZCVGtwWkRibHVDYm1zMVFXcDFPcXJ0?=
- =?utf-8?B?ZE1lRFI1eVp6dlJqN2EzNGpHdlphN0Z1Vi9GOU93VE8yZGxOak1IWXY2NW1k?=
- =?utf-8?B?eWI1ekZ0K1dCK0t0d2llbGh6M1pRajg0YVJPSjB4MXNTYklXTWZWSm54TXZw?=
- =?utf-8?B?Rmc5WVI3ejRpSEh1SEp5c0xxeVVXUkZYaTl4YVk2OU5ReXNUTlJQTmZtS01I?=
- =?utf-8?B?VklKQ1lrTnR1aXZ1aHFnbEhUVVdTL2lHOFQ0SjRhM1BzYW0wWWxCVlJudTNP?=
- =?utf-8?B?TUVFemh2YythaGUyL1ZNUFViZGw3OXRRcFJ5b2E0UkxFQktMTUE1SFNwOFZ1?=
- =?utf-8?B?TGN1cVBHZGJ6NWdLU2IzcUR1ek00Qnpqc2EyU1NlRHU4RHgzYUxlRUpLbW1G?=
- =?utf-8?B?eHVFcWJkMDFuWlVkWmMyQkpnRnlCMmZneGJiVnNZdDFxaHN3bkpkYlFzc3Rp?=
- =?utf-8?B?WSs5aFJVSDQyV3BQTElHSVNnR3d3eDZEaUZIVk0vWjFXc0dXTUs0RmZ3RmNa?=
- =?utf-8?B?RVFJQUZtY256UjduTnJGeHAwNmprbmYvMFpJS1pwaFVyL0xYaVlmOFl5TmUx?=
- =?utf-8?B?ZVljSG5WdUMzemlOMHE3czJDYjdlTXZMVGdleDdnZHdaU21YY2d5SFphN2lh?=
- =?utf-8?B?R0ZzaEJyOHpLK1FKVDE3aFpwVVFNdU1SUHlSeTI0L29Sb3FvMUsvUzNkTWY3?=
- =?utf-8?B?aHJScFZ2QjVIdmhROGIyY0todmJ2TzZKbU1hc3VjeVIwQk91QWpqbGYxMVZF?=
- =?utf-8?B?eTZGeVMrUTczZkdzSkU0bnU4MnNHNzFGRlJ3YldYUU9yRGdubFFaYzlOVFJ3?=
- =?utf-8?B?OTVjTXJrWmc0cGEvWmVxL2dOdFhscThJMWs5U3BMR0xnTGNlNUtXNVVXZXFM?=
- =?utf-8?B?ZmMzWW5zZGJ6YkJiY0Uya1FJajlXSmEzYkVIQjV2Q1JubTJtWXpDV2ZjVmpJ?=
- =?utf-8?B?SE5VUTUrb1hpSUgyWS9YTGdFK1JJZkJrY3ljQ2FHb1N1UWllUXR4U3YrTFhZ?=
- =?utf-8?B?TUl5TTZCVjBnYWNNdkFOT0lEZnZubkV3akp2RTRyT1hPclMxMmZXb1RQazBz?=
- =?utf-8?B?WXE5cjE4L0NhWHovb1BlSEZVWjQ5NjhuUDIzUE1xK2QvTEZ3ZVdCUlpwMmxz?=
- =?utf-8?B?RkVQMlRMMDA5STFJUWdsYnhEeGFjMFFjUWdJQlhITjNzYitoM0RaelVTQmhZ?=
- =?utf-8?B?ZllHb3ExUW9MS3ord2ZwamJpT0plc1dmQjBqVlE2Y2pnVDJaMlVzdW54RUJM?=
- =?utf-8?B?bXBIa2dRMUM4aEdVZ05paTRYUU03VEFxWFY5WVNJTm1pYjczNEtvY2hFeHdz?=
- =?utf-8?Q?/x1aAk0RfdorxEiI=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <15E45911A0A9D648971ACAC70D2F8768@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        d=gmail.com; s=20230601; t=1772449332; x=1773054132; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=QjSDr8Fr2oepwc4Mx3IXKrXZ+k0JPB3LhIeNvnnVUws=;
+        b=C7Q9RUkrlwEwILXAxzkQw7xVz8X4843Y+cMigkk/y2Lh+PLtVrK4DA0vFrasxQe1WW
+         Ugs3zH5+hOZJ/Z8QBVhKkzpB5kdLEL3Ekmpigr3Vz+F10HL933L+WFTSFArQAeFFrFjj
+         8oSDG3Fa4J3d0KuUPlGNFh+j4pWMWJq5hyf4rI/1vZSwCMJV8MvkDJpsMktLttyomTNy
+         VXO9DDvZ5hhMinrebj14s8T0kpLaICI9fRqNeYuipYe/DeXJW+jKQHNjcVN9EOKVtioO
+         qWu/MK54vyBgZ2kfwCPpKnia/RtPhTyaumm5LwM8VUg0FUIdaIJuIBt562+0kqm1fHkY
+         Ad2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1772449332; x=1773054132;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QjSDr8Fr2oepwc4Mx3IXKrXZ+k0JPB3LhIeNvnnVUws=;
+        b=kix/CG+WttNZAsx/nx+oO7Ilwx542+bUNHuZ7xlcdEVJjD4YZ4L9vSHbNhOLjuvR2B
+         B0JagDMffYU3lE9fkuHMvoOJRRqILWqggSAHuCaPu01lSnTth7WAy6YkABo0ZhxB5ULt
+         GHxgKfiPeA6TcNz022NHHZUlkUpLHEQfau53tCoT9Q50VejezEF7L+vR06DimQvxixVW
+         A7/WElcgpTkryTxG/kAETDN8mSXP0Nq25i9RtkSUClS30G/wfunRudU8wE+nnnppgObk
+         iYw02gxaqy0smRj/pTR6IKm9Esx5JTOo88lDMrWAFdlzYQx388VznouLwGnKibW6+irZ
+         +e9A==
+X-Gm-Message-State: AOJu0YyRQvR5P/VcBsWSVSb83tKdG2mQhKGus6zbF6ZNrAjss//wwz/i
+	5aU8oOg3eJZUK3IkIIZ+9RRPM4E64SCxgxZQuJeLBmmHAG+sKC6u398nBcce72LToHI=
+X-Gm-Gg: ATEYQzyeO0JyhWhxmHcwdKfc+WCtC2lSOxTlFNIKek1jIBow1hIy+oigtZa5/7in2lL
+	j0U7CVWRFk1QhRBtIrkksnrw3zcQZlZ9Ey5M7UiJ4oPlOUMqtmkt3Ny8hEVV4Qa5t3NZ2wYKwLc
+	/ned+GelKChVsKPYKdSyp5z5nfHWlb4KrHAS3tyOWe39q4I7xiU/rcky/Jod+seyEXdKuM3pzuL
+	1zLW6EJUkXu2JKplLqKEHhy4thChY6WdrNGI8SbMSERETNdR32v3fiz5nVmXHSGmhk6+LgaYkI5
+	W994GkjhKX5zPhjtjA8qBmVMxdKCeq2I5/DcGW5lC1sKj5xWY7hC9kl68YCrZQ6HRsapOP8R7s5
+	YKgOdwWWgs5WPuKgt2qTGVBU1059Amxprb2srRcMGsp/5PnEtNShet4brpX9HYcu6oXYMxTVBbB
+	cSd85ta8Y8+tXzSy83NRlQDHKA
+X-Received: by 2002:a17:902:f542:b0:2ae:5a28:cbac with SMTP id d9443c01a7336-2ae5a28d4c1mr8414055ad.32.1772449331692;
+        Mon, 02 Mar 2026 03:02:11 -0800 (PST)
+Received: from kernel-fuzz.. ([103.172.183.54])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2adfb5b22fesm187403355ad.2.2026.03.02.03.02.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Mar 2026 03:02:11 -0800 (PST)
+From: ZhengYuan Huang <gality369@gmail.com>
+To: linux-btrfs@vger.kernel.org
+Cc: clm@fb.com,
+	dsterba@suse.com,
+	josef@toxicpanda.com,
+	linux-kernel@vger.kernel.org,
+	baijiaju1990@gmail.com,
+	r33s3n6@gmail.com,
+	zzzccc427@gmail.com,
+	ZhengYuan Huang <gality369@gmail.com>,
+	stable@vger.kernel.org
+Subject: [PATCH] btrfs: reject global extent/csum roots without offset 0 when extent_tree_v2 is off
+Date: Mon,  2 Mar 2026 19:02:02 +0800
+Message-ID: <20260302110202.790279-1-gality369@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	A05e7AwpvVugTrRZ3gbkfR2YsOVfwTu+hqgHs1EB4oA1cVRb+uo+YcofLFJwEAz6n9Vbw1VxtcKmZRKB1aAprfm4eqtd2KwfKh2Oqw7pjcdLTrhEkwNZnlzLo7RhLyTgno5wc90gwvz5bCa3li7xmlCJl0++2T8QFIJk5a6Xo++nI775lNRV2ZaW8MJ+7n7kWrfNU1V+GvXdtKrhHQU6fayD3Fv38ny1lvXojroFR1gxS6s9pSjUzojBqlkGPa0MqDHeC3RHf/h+A3r+3OjOCpbkkIm4C5NzZOlLw6rCZFY3dIMkdCWiq6eX5hUxEeg6kYTXEKN0vjvD1MeapJZHXq8W2l6lLMKBmUhmUN6Z1ZjwA/W2AEnTUEHGxxyzXGxLZAAdb/MlrZxJoBnqIDkJ4CLrEUrmejm6q2Vq32mQnfYmBvVmRExRxiE6ApKfYtzGMrI8KNRO6x/pJxwiFhTS8q60ZiXgasHM94NJA3b1E2PEuo/+NZEESZ5LKgQG+C3YSFARP9LQww3XGKyn4Q5S/iQ5Hz4wAYHmNjs3+sHbptGU/zARDxMwqArwN1MipjlDdzwMfj8XBPRwqPNru9bMRFAGRGS0bRVGMUns+rx7PBzbZE/N62Y5++WE97aKnsr8
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN7PR04MB8532.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 421042eb-9e16-4714-8ef6-08de7849aa8f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Mar 2026 10:51:32.2468
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: bvrnSbphrffBsyI23UAmUaJzyO4Yxnl/mnS7owJeSv/KfqLu7bqHCeY7G+DAbkG+PGktclW0Nu6OkO0TuNlu+dz0VY2PiS8Wmh1fyWtmjJQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW6PR04MB9028
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.44 / 15.00];
-	ARC_REJECT(1.00)[cv is fail on i=2];
-	DMARC_POLICY_ALLOW(-0.50)[wdc.com,quarantine];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[wdc.com:s=dkim.wdc.com,sharedspace.onmicrosoft.com:s=selector2-sharedspace-onmicrosoft-com];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
-	MIME_BASE64_TEXT(0.10)[];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-22143-lists,linux-btrfs=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[fb.com,suse.com,toxicpanda.com,vger.kernel.org,gmail.com];
+	TAGGED_FROM(0.00)[bounces-22144-lists,linux-btrfs=lfdr.de];
+	RCVD_COUNT_FIVE(0.00)[5];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[wdc.com:+,sharedspace.onmicrosoft.com:+];
+	TO_DN_SOME(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[gality369@gmail.com,linux-btrfs@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[shinichiro.kawasaki@wdc.com,linux-btrfs@vger.kernel.org];
-	RCPT_COUNT_FIVE(0.00)[5];
-	NEURAL_HAM(-0.00)[-0.997];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCPT_COUNT_SEVEN(0.00)[10];
+	NEURAL_HAM(-0.00)[-1.000];
+	DKIM_TRACE(0.00)[gmail.com:+];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,sharedspace.onmicrosoft.com:dkim]
-X-Rspamd-Queue-Id: 216AC1D6EFC
+	FREEMAIL_FROM(0.00)[gmail.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 969341D71E7
 X-Rspamd-Action: no action
 
-T24gTWFyIDAyLCAyMDI2IC8gMTA6MTksIEpvaGFubmVzIFRodW1zaGlybiB3cm90ZToNCj4gT24g
-My8yLzI2IDExOjE3IEFNLCBGaWxpcGUgTWFuYW5hIHdyb3RlOg0KPiA+IE9uIFN1biwgTWFyIDEs
-IDIwMjYgYXQgMTI6MTfigK9QTSBTaGluJ2ljaGlybyBLYXdhc2FraQ0KPiA+IDxzaGluaWNoaXJv
-Lmthd2FzYWtpQHdkYy5jb20+IHdyb3RlOg0KPiA+PiBXaGVuIGNyZWF0ZV9zcGFjZV9pbmZvX3N1
-Yl9ncm91cCgpIGFsbG9jYXRlcyBlbGVtZW50cyBvZg0KPiA+PiBzcGFjZV9pbmZvLT5zdWJfZ3Jv
-dXBbXSwga29iamVjdF9pbml0X2FuZF9hZGQoKSBpcyBjYWxsZWQgZm9yIGVhY2gNCj4gPj4gZWxl
-bWVudCB2aWEgYnRyZnNfc3lzZnNfYWRkX3NwYWNlX2luZm9fdHlwZSgpLiBIb3dldmVyLCB3aGVu
-DQo+ID4+IGNoZWNrX3JlbW92aW5nX3NwYWNlX2luZm8oKSBmcmVlcyB0aGVzZSBlbGVtZW50cywg
-aXQgZG9lcyBub3QgY2FsbA0KPiA+PiBidHJmc19zeXNmc19yZW1vdmVfc3BhY2VfaW5mbygpIG9u
-IHRoZW0uIEFzIGEgcmVzdWx0LCBrb2JqZWN0X3B1dCgpIGlzDQo+ID4+IG5vdCBjYWxsZWQgYW5k
-IHRoZSBhc3NvY2lhdGVkIGtvYmotPm5hbWUgb2JqZWN0cyBhcmUgbGVha2VkLg0KPiA+Pg0KPiA+
-PiBUaGlzIG1lbW9yeSBsZWFrIGlzIHJlcHJvZHVjZWQgYnkgcnVubmluZyB0aGUgYmxrdGVzdHMg
-dGVzdCBjYXNlDQo+ID4+IHpiZC8wMDkgb24ga2VybmVscyBidWlsdCB3aXRoIENPTkZJR19ERUJV
-R19LTUVNTEVBSy4gVGhlIGttZW1sZWFrDQo+ID4+IGZlYXR1cmUgcmVwb3J0cyB0aGUgZm9sbG93
-aW5nIGVycm9yOg0KPiA+Pg0KPiA+PiB1bnJlZmVyZW5jZWQgb2JqZWN0IDB4ZmZmZjg4ODExMjg3
-N2Q0MCAoc2l6ZSAxNik6DQo+ID4+ICAgIGNvbW0gIm1vdW50IiwgcGlkIDEyNDQsIGppZmZpZXMg
-NDI5NDk5Njk3Mg0KPiA+PiAgICBoZXggZHVtcCAoZmlyc3QgMTYgYnl0ZXMpOg0KPiA+PiAgICAg
-IDY0IDYxIDc0IDYxIDJkIDcyIDY1IDZjIDZmIDYzIDAwIGM0IGM2IGE3IGNiIDdmICBkYXRhLXJl
-bG9jLi4uLi4uDQo+ID4+ICAgIGJhY2t0cmFjZSAoY3JjIDUzZmZkZTRkKToNCj4gPj4gICAgICBf
-X2ttYWxsb2Nfbm9kZV90cmFja19jYWxsZXJfbm9wcm9mKzB4NjE5LzB4ODcwDQo+ID4+ICAgICAg
-a3N0cmR1cCsweDQyLzB4YzANCj4gPj4gICAgICBrb2JqZWN0X3NldF9uYW1lX3ZhcmdzKzB4NDQv
-MHgxMTANCj4gPj4gICAgICBrb2JqZWN0X2luaXRfYW5kX2FkZCsweGNmLzB4MTUwDQo+ID4+ICAg
-ICAgYnRyZnNfc3lzZnNfYWRkX3NwYWNlX2luZm9fdHlwZSsweGZjLzB4MjEwIFtidHJmc10NCj4g
-Pj4gICAgICBjcmVhdGVfc3BhY2VfaW5mb19zdWJfZ3JvdXAuY29uc3Rwcm9wLjArMHhmYi8weDFi
-MCBbYnRyZnNdDQo+ID4+ICAgICAgY3JlYXRlX3NwYWNlX2luZm8rMHgyMTEvMHgzMjAgW2J0cmZz
-XQ0KPiA+PiAgICAgIGJ0cmZzX2luaXRfc3BhY2VfaW5mbysweDE1YS8weDFiMCBbYnRyZnNdDQo+
-ID4+ICAgICAgb3Blbl9jdHJlZSsweDMzYzcvMHg0YTUwIFtidHJmc10NCj4gPj4gICAgICBidHJm
-c19nZXRfdHJlZS5jb2xkKzB4OWYvMHgxZWUgW2J0cmZzXQ0KPiA+PiAgICAgIHZmc19nZXRfdHJl
-ZSsweDg3LzB4MmYwDQo+ID4+ICAgICAgdmZzX2NtZF9jcmVhdGUrMHhiZC8weDI4MA0KPiA+PiAg
-ICAgIF9fZG9fc3lzX2ZzY29uZmlnKzB4M2RmLzB4OTkwDQo+ID4+ICAgICAgZG9fc3lzY2FsbF82
-NCsweDEzNi8weDE1NDANCj4gPj4gICAgICBlbnRyeV9TWVNDQUxMXzY0X2FmdGVyX2h3ZnJhbWUr
-MHg3Ni8weDdlDQo+ID4+DQo+ID4+IFRvIGF2b2lkIHRoZSBsZWFrLCBjYWxsIGJ0cmZzX3N5c2Zz
-X3JlbW92ZV9zcGFjZV9pbmZvKCkgaW5zdGVhZCBvZg0KPiA+PiBrZnJlZSgpIGZvciB0aGUgZWxl
-bWVudHMuDQo+ID4+DQo+ID4+IEZpeGVzOiBmOTJlZTMxZTAzMWMgKCJidHJmczogaW50cm9kdWNl
-IGJ0cmZzX3NwYWNlX2luZm8gc3ViLWdyb3VwIikNCj4gPj4gQ2xvc2VzOiBodHRwczovL2xvcmUu
-a2VybmVsLm9yZy9saW51eC1ibG9jay9iOTQ4ODg4MS1mMThkLTRmNDctOTFhNS0zYzliZjYzOTU1
-YTVAd2RjLmNvbS8NCj4gPj4gU2lnbmVkLW9mZi1ieTogU2hpbidpY2hpcm8gS2F3YXNha2kgPHNo
-aW5pY2hpcm8ua2F3YXNha2lAd2RjLmNvbT4NCj4gPj4gLS0tDQo+ID4+ICAgZnMvYnRyZnMvYmxv
-Y2stZ3JvdXAuYyB8IDIgKy0NCj4gPj4gICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyks
-IDEgZGVsZXRpb24oLSkNCj4gPj4NCj4gPj4gZGlmZiAtLWdpdCBhL2ZzL2J0cmZzL2Jsb2NrLWdy
-b3VwLmMgYi9mcy9idHJmcy9ibG9jay1ncm91cC5jDQo+ID4+IGluZGV4IGMyODRmNDhjZmFlNC4u
-MzVlNjVlMjc3ZjUzIDEwMDY0NA0KPiA+PiAtLS0gYS9mcy9idHJmcy9ibG9jay1ncm91cC5jDQo+
-ID4+ICsrKyBiL2ZzL2J0cmZzL2Jsb2NrLWdyb3VwLmMNCj4gPj4gQEAgLTQ1NDgsNyArNDU0OCw3
-IEBAIHN0YXRpYyB2b2lkIGNoZWNrX3JlbW92aW5nX3NwYWNlX2luZm8oc3RydWN0IGJ0cmZzX3Nw
-YWNlX2luZm8gKnNwYWNlX2luZm8pDQo+ID4+ICAgICAgICAgICAgICAgICAgZm9yIChpbnQgaSA9
-IDA7IGkgPCBCVFJGU19TUEFDRV9JTkZPX1NVQl9HUk9VUF9NQVg7IGkrKykgew0KPiA+PiAgICAg
-ICAgICAgICAgICAgICAgICAgICAgaWYgKHNwYWNlX2luZm8tPnN1Yl9ncm91cFtpXSkgew0KPiA+
-PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjaGVja19yZW1vdmluZ19zcGFjZV9p
-bmZvKHNwYWNlX2luZm8tPnN1Yl9ncm91cFtpXSk7DQo+ID4+IC0gICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAga2ZyZWUoc3BhY2VfaW5mby0+c3ViX2dyb3VwW2ldKTsNCj4gPj4gKyAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICBidHJmc19zeXNmc19yZW1vdmVfc3BhY2VfaW5mbyhz
-cGFjZV9pbmZvLT5zdWJfZ3JvdXBbaV0pOw0KPiA+IFRoaXMgZG9lc24ndCBmZWVsIHJpZ2h0Lg0K
-PiA+DQo+ID4gVGhlIGtmcmVlKCkgc2hvdWxkIHN0aWxsIGJlIHRoZXJlLCB3ZSBqdXN0IG5lZWQg
-dG8gY2FsbA0KPiA+IGJ0cmZzX3N5c2ZzX3JlbW92ZV9zcGFjZV9pbmZvKCkgYmVmb3JlIHRoZSBr
-ZnJlZS4NCj4gPiBPdGhlcndpc2UgaG93IGRvIHlvdSByZWxlYXNlIHRoZSBtZW1vcnkgZm9yIHRo
-ZSBzdWIgZ3JvdXAgd2UgYWxsb2NhdGVkDQo+ID4gd2l0aCBremFsbG9jX29iaigpIGluIGNyZWF0
-ZV9zcGFjZV9pbmZvX3N1Yl9ncm91cCgpPw0KPiBObywgSSB0aG91Z2h0IHNvIGFzIHdlbGwsIGJ1
-dCB0aGVuIFNoaW4naWNoaXJvIHRvbGQgbWUgaGUgZGlkIHRoYXQgdG9vLCANCj4gYnV0IHRoZW4g
-S0FTQU4gY29tcGxhaW5zIGFib3V0IGEgZG91YmxlLWZyZWUuDQoNClJpZ2h0LCBJIG9ic2VydmVk
-IHRoZSBkb3VibGUtZnJlZSB3aGVuIEkgbGVmdCB0aGUga2ZyZWUoKSBjYWxsLg0KDQpJIHRoaW5r
-IHRoZSBtZW1vcnkgaXMgcmVsZWFzZWQgYnkgc3BhY2VfaW5mb19yZWxlYXNlKCksIHdoaWNoIGlz
-IHRoZSBtZW1iZXIgb2YNCidzdGF0aWMgY29uc3Qgc3RydWN0IGtvYmpfdHlwZSBzcGFjZV9pbmZv
-X2t0eXBlJy4gVGhpcyBrdHlwZSBpcyByZWdpc3RlcmVkIHRvDQp0aGUga29iamVjdCB3aGVuIGJ0
-cmZzX3N5c2ZzX2FkZF9zcGFjZV9pbmZvX3R5cGUoKSBjYWxscw0Ka29iamVjdF9pbml0X2FuZF90
-eXBlKCkuIFdoZW4gYnRyZnNfc3lzZnNfcmVtb3ZlX3NwYWNlX2luZm8oKSBjYWxscw0Ka29iamVj
-dF9wdXQoKSwgdGhlIGxhc3QgcmVmZXJlbmNlIGlzIGdvbmUgYW5kIHRoZSBtZW1vcnkgaXMgcmVs
-ZWFzZWQuDQo=
+Without EXTENT_TREE_V2, btrfs_extent_root() and btrfs_csum_root() always
+look up the global roots at offset 0. A crafted image can provide only
+non-zero offsets for the extent/csum global roots, so the offset 0 lookup
+returns NULL and later leads to a NULL dereference
+(e.g. in backup_super_roots()).
+
+Fix this by detecting this at mount time: when loading extent/csum
+global roots without EXTENT_TREE_V2, require that an offset 0 root item
+exists, otherwise fail the mount with -EUCLEAN.
+
+Tested with a crafted image that has only non-zero offset global roots,
+which triggers the KASAN null-ptr-deref in backup_super_roots() before
+the fix, and fails the mount with -EUCLEAN after the fix.
+
+Fixes: f7238e509404 ("btrfs: add support for multiple global roots")
+Cc: stable@vger.kernel.org # v5.18+
+Signed-off-by: ZhengYuan Huang <gality369@gmail.com>
+---
+A KASAN null-ptr-deref was triggered when mounting a crafted btrfs
+image and then doing a simple write/rename workload (e.g. moving any
+file into the mountpoint). The crash happens later during a transaction
+commit, in the super backup roots path.
+
+Root cause
+==========
+
+backup_super_roots() looks up both the extent and csum roots through
+the "global roots" rb-tree:
+
+extent_root = btrfs_extent_root(fs_info, 0);
+csum_root = btrfs_csum_root(fs_info, 0);
+
+and then unconditionally dereferences extent_root->node and
+csum_root->node.
+
+Both btrfs_extent_root() and btrfs_csum_root() build a key with:
+
+.offset = btrfs_global_root_id(fs_info, bytenr)
+
+and btrfs_global_root_id() returns 0 when the filesystem does not have
+the EXTENT_TREE_V2 incompat feature. This means that for
+non-extent_tree_v2 filesystems, the implementation assumes that there is
+always a global root item for:
+
+(BTRFS_EXTENT_TREE_OBJECTID, BTRFS_ROOT_ITEM_KEY, offset=0)
+(BTRFS_CSUM_TREE_OBJECTID, BTRFS_ROOT_ITEM_KEY, offset=0)
+
+However, an image without an offset = 0 root item can still be
+successfully mounted. The mount-time validation logic for the csum tree
+resides in load_global_roots_objectid(). Currently,
+load_global_roots_objectid() loads whatever root items exist for
+a given objectid, but it does not validate that offset = 0
+exists when EXTENT_TREE_V2 is not enabled. With a crafted image,
+the first (and only) root item for the csum tree (and similarly for
+extent) can have a large non-zero offset (e.g. 0x10000000000).
+load_global_roots_objectid() inserts that root into the rb-tree, but
+there is no entry for offset 0. Later, btrfs_csum_root(..., 0) looks up
+offset 0, returns NULL, and backup_super_roots() dereferences it,
+causing the crash.
+
+So the bug is an invariant mismatch:
+
+- lookup side (btrfs_{extent,csum}_root) assumes offset=0 exists when
+extent_tree_v2 is off
+
+- load side (load_global_roots_objectid) does not enforce that assumption
+
+Fix
+===
+Teach load_global_roots_objectid() to enforce the "offset 0 must exist"
+invariant for the extent and csum trees when EXTENT_TREE_V2 is not enabled.
+If at least one root item is found but none has offset 0, fail the mount
+with -EUCLEAN and emit an explicit error message. This prevents later
+NULL dereferences and also avoids propagating a corrupted/unsupported
+global-root layout into runtime.
+
+Note: extent_root is subject to the same assumption and is fixed by the
+same check (backup_super_roots dereferences extent_root->node as well).
+
+KASAN report
+============
+Oops: general protection fault, probably for non-canonical address 0xdffffc0000000003: 0000 [#1] SMP KASAN NOPTI
+KASAN: null-ptr-deref in range [0x0000000000000018-0x000000000000001f]
+CPU: 0 UID: 0 PID: 34 Comm: kworker/u8:1 Tainted: G           OE       6.18.0 #1 PREEMPT(voluntary)
+Tainted: [O]=OOT_MODULE, [E]=UNSIGNED_MODULE
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+Workqueue: events_unbound btrfs_async_reclaim_data_space
+RIP: 0010:backup_super_roots fs/btrfs/disk-io.c:1680 [inline]
+RIP: 0010:write_all_supers+0x2d56/0x4980 fs/btrfs/disk-io.c:4022
+Code: 40 38 f2 7f 08 84 d2 0f 85 72 19 00 00 49 8d 7c 24 18 41 88 9e 9a 00 00 00 48 ba 00 00 00 00 00 fc ff df 48 89 fe 48 c1 ee 03 <80> 3c 16 00 0f 85 33 19 00 00 48 ba 00 00 00 00 00 fc ff df 49 8b
+RSP: 0018:ffff88800a617758 EFLAGS: 00010216
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: dffffc0000000000 RSI: 0000000000000003 RDI: 0000000000000018
+RBP: ffff88800a617898 R08: 1ffff110023f53a8 R09: 0000000000000000
+R10: ffff8880173a8000 R11: 0000000000000001 R12: 0000000000000000
+R13: ffff888000000000 R14: ffff88800b676d23 R15: ffffea0000000000
+FS:  0000000000000000(0000) GS:ffff8880e4d3e000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00005baa3c26f678 CR3: 000000000e9b8000 CR4: 00000000000006f0
+Call Trace:
+<TASK>
+? __pfx_write_all_supers+0x10/0x10 fs/btrfs/disk-io.c:3980
+? btrfs_commit_transaction+0x2818/0x3d90 fs/btrfs/transaction.c:2526
+? __lock_release kernel/locking/lockdep.c:5574 [inline]
+? lock_release+0x122/0x2a0 kernel/locking/lockdep.c:5889
+btrfs_commit_transaction+0x28cc/0x3d90 fs/btrfs/transaction.c:2541
+? __pfx_btrfs_commit_transaction+0x10/0x10 fs/btrfs/transaction.c:1919
+? start_transaction+0x244/0x1740 fs/btrfs/transaction.c:780
+btrfs_commit_current_transaction+0x55/0xf0 fs/btrfs/transaction.c:2010
+flush_space+0x7d1/0xc40 fs/btrfs/space-info.c:888
+? mark_usage kernel/locking/lockdep.c:4674 [inline]
+? __lock_acquire+0x43e/0x21e0 kernel/locking/lockdep.c:5191
+? __pfx_flush_space+0x10/0x10 include/trace/events/btrfs.h:2362
+? instrument_atomic_read_write include/linux/instrumented.h:96 [inline]
+? atomic_try_cmpxchg_acquire include/linux/atomic/atomic-instrumented.h:1301 [inline]
+? queued_spin_lock include/asm-generic/qspinlock.h:111 [inline]
+? do_raw_spin_lock+0x133/0x290 kernel/locking/spinlock_debug.c:116
+? find_held_lock+0x31/0x90 kernel/locking/lockdep.c:5350
+? spin_unlock include/linux/spinlock.h:391 [inline]
+? do_async_reclaim_data_space+0x369/0x5e0 fs/btrfs/space-info.c:1441
+? __kasan_check_read+0x11/0x20 mm/kasan/shadow.c:31
+? instrument_atomic_read include/linux/instrumented.h:68 [inline]
+? atomic_read include/linux/atomic/atomic-instrumented.h:32 [inline]
+? queued_spin_is_locked include/asm-generic/qspinlock.h:57 [inline]
+? debug_spin_unlock kernel/locking/spinlock_debug.c:101 [inline]
+? do_raw_spin_unlock+0x59/0x200 kernel/locking/spinlock_debug.c:141
+do_async_reclaim_data_space+0x3c1/0x5e0 fs/btrfs/space-info.c:1410
+btrfs_async_reclaim_data_space+0x3f/0xb0 fs/btrfs/space-info.c:1458
+process_one_work+0x8e0/0x1980 kernel/workqueue.c:3263
+? __pfx_process_one_work+0x10/0x10 include/linux/list.h:226
+? move_linked_works+0x1a8/0x2c0 kernel/workqueue.c:1165
+? assign_work+0x19d/0x240 kernel/workqueue.c:1206
+? __lock_is_held kernel/locking/lockdep.c:5601 [inline]
+? lock_is_held_type+0xa3/0x130 kernel/locking/lockdep.c:5940
+process_scheduled_works kernel/workqueue.c:3346 [inline]
+worker_thread+0x683/0xf80 kernel/workqueue.c:3427
+? __pfx_worker_thread+0x10/0x10 kernel/workqueue.c:3570
+kthread+0x3f0/0x850 kernel/kthread.c:463
+? __pfx_kthread+0x10/0x10 arch/x86/include/asm/bitops.h:202
+? trace_hardirqs_on+0x53/0x60 kernel/trace/trace_preemptirq.c:79
+? __raw_spin_unlock_irq include/linux/spinlock_api_smp.h:159 [inline]
+? _raw_spin_unlock_irq+0x27/0x70 kernel/locking/spinlock.c:202
+? spin_unlock_irq include/linux/spinlock.h:401 [inline]
+? calculate_sigpending+0x7c/0xb0 kernel/signal.c:194
+? __pfx_kthread+0x10/0x10 arch/x86/include/asm/bitops.h:202
+ret_from_fork+0x50f/0x610 arch/x86/kernel/process.c:158
+? __pfx_kthread+0x10/0x10 arch/x86/include/asm/bitops.h:202
+ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+</TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:backup_super_roots fs/btrfs/disk-io.c:1680 [inline]
+RIP: 0010:write_all_supers+0x2d56/0x4980 fs/btrfs/disk-io.c:4022
+Code: 40 38 f2 7f 08 84 d2 0f 85 72 19 00 00 49 8d 7c 24 18 41 88 9e 9a 00 00 00 48 ba 00 00 00 00 00 fc ff df 48 89 fe 48 c1 ee 03 <80> 3c 16 00 0f 85 33 19 00 00 48 ba 00 00 00 00 00 fc ff df 49 8b
+RSP: 0018:ffff88800a617758 EFLAGS: 00010216
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: dffffc0000000000 RSI: 0000000000000003 RDI: 0000000000000018
+RBP: ffff88800a617898 R08: 1ffff110023f53a8 R09: 0000000000000000
+R10: ffff8880173a8000 R11: 0000000000000001 R12: 0000000000000000
+R13: ffff888000000000 R14: ffff88800b676d23 R15: ffffea0000000000
+FS:  0000000000000000(0000) GS:ffff8880e4d3e000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00005baa3c26f678 CR3: 000000000e9b8000 CR4: 00000000000006f0
+----------------
+Code disassembly (best guess):
+   0:	40 38 f2             	cmp    %sil,%dl
+   3:	7f 08                	jg     0xd
+   5:	84 d2                	test   %dl,%dl
+   7:	0f 85 72 19 00 00    	jne    0x197f
+   d:	49 8d 7c 24 18       	lea    0x18(%r12),%rdi
+  12:	41 88 9e 9a 00 00 00 	mov    %bl,0x9a(%r14)
+  19:	48 ba 00 00 00 00 00 	movabs $0xdffffc0000000000,%rdx
+  20:	fc ff df
+  23:	48 89 fe             	mov    %rdi,%rsi
+  26:	48 c1 ee 03          	shr    $0x3,%rsi
+* 2a:	80 3c 16 00          	cmpb   $0x0,(%rsi,%rdx,1) <-- trapping instruction
+  2e:	0f 85 33 19 00 00    	jne    0x1967
+  34:	48 ba 00 00 00 00 00 	movabs $0xdffffc0000000000,%rdx
+  3b:	fc ff df
+  3e:	49                   	rex.WB
+  3f:	8b                   	.byte 0x8b
+
+Reproduction (v6.18, x86_64, KASAN)
+===================================
+1. Download the crafted image (tested with Linux v6.18 + KASAN):
+  https://drive.google.com/file/d/1xV0pjI3N-D83IzH62dphWCAD0RR-sV4U/view
+2. Attach it as a block device (example assumes it shows up as /dev/vda),
+then mount it read-write:
+  mkdir -p /mnt/btrfs
+  mount /dev/vda /mnt/btrfs
+3. Trigger any metadata update, e.g. move a file into the mountpoint:
+  echo test > /tmp/1.txt
+  mv /tmp/1.txt /mnt/btrfs/
+4. Result:
+The system hits a NULL pointer dereference in the commit path, with KASAN
+reporting the fault at backup_super_roots() (fs/btrfs/disk-io.c).
+
+Thanks,
+ZhengYuan Huang
+---
+ fs/btrfs/disk-io.c | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
+
+diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+index 0aa7e5d1b05f..900e462d8ea1 100644
+--- a/fs/btrfs/disk-io.c
++++ b/fs/btrfs/disk-io.c
+@@ -2119,6 +2119,18 @@ static int load_global_roots_objectid(struct btrfs_root *tree_root,
+ 	};
+ 	bool found = false;
+ 
++	/*
++	 * Without EXTENT_TREE_V2 we only have a single global extent/csum root.
++	 * btrfs_extent_root() and btrfs_csum_root() always look it up with offset
++	 * 0 (btrfs_global_root_id() returns 0). If we load only non-zero offsets
++	 * here, later users will see NULL and can crash (e.g. when backing up
++	 * super roots during a commit).
++	 */
++	bool need_offset0 = !btrfs_fs_incompat(fs_info, EXTENT_TREE_V2) &&
++		      (objectid == BTRFS_EXTENT_TREE_OBJECTID ||
++		       objectid == BTRFS_CSUM_TREE_OBJECTID);
++	bool found_offset0 = false;
++
+ 	/* If we have IGNOREDATACSUMS skip loading these roots. */
+ 	if (objectid == BTRFS_CSUM_TREE_OBJECTID &&
+ 	    btrfs_test_opt(fs_info, IGNOREDATACSUMS)) {
+@@ -2144,6 +2156,8 @@ static int load_global_roots_objectid(struct btrfs_root *tree_root,
+ 		btrfs_item_key_to_cpu(path->nodes[0], &key, path->slots[0]);
+ 		if (key.objectid != objectid)
+ 			break;
++		if (need_offset0 && key.offset == 0)
++			found_offset0 = true;
+ 		btrfs_release_path(path);
+ 
+ 		/*
+@@ -2169,6 +2183,13 @@ static int load_global_roots_objectid(struct btrfs_root *tree_root,
+ 	}
+ 	btrfs_release_path(path);
+ 
++	if (need_offset0 && found && !found_offset0) {
++		btrfs_err(fs_info,
++			  "missing global %s root item with offset 0 (extent_tree_v2 not enabled)",
++			  name);
++		return -EUCLEAN;
++	}
++
+ 	if (objectid == BTRFS_EXTENT_TREE_OBJECTID)
+ 		fs_info->nr_global_roots = max_global_id + 1;
+ 
+-- 
+2.43.0
+
 
