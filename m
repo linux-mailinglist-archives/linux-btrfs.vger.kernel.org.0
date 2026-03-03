@@ -1,42 +1,42 @@
-Return-Path: <linux-btrfs+bounces-22178-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-22179-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MCIWEJ8Gp2k7bgAAu9opvQ
-	(envelope-from <linux-btrfs+bounces-22178-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Tue, 03 Mar 2026 17:04:47 +0100
+	id KAnNJGsHp2k7bgAAu9opvQ
+	(envelope-from <linux-btrfs+bounces-22179-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Tue, 03 Mar 2026 17:08:11 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9389E1F334B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 03 Mar 2026 17:04:46 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id E49B01F34A6
+	for <lists+linux-btrfs@lfdr.de>; Tue, 03 Mar 2026 17:08:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id F10A6304EF43
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Mar 2026 16:01:08 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id EF3D3301C580
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Mar 2026 16:01:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F147495504;
-	Tue,  3 Mar 2026 16:01:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFB0B49551D;
+	Tue,  3 Mar 2026 16:01:51 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
 Received: from verein.lst.de (verein.lst.de [213.95.11.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85C0E4949F4;
-	Tue,  3 Mar 2026 16:01:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 497F4494A0D;
+	Tue,  3 Mar 2026 16:01:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772553665; cv=none; b=r2CjDofs+3X1lpffHG9DUXX2QKVM4JCzMiIaffTWk0IjY68AwMbU3g0ZcMNgQWszf47gCrZvbdfp6HRKFuO4zkkfIdm6O0rwmKWSbbRfBckOAwv+EgulFvka+2heC9y0EJeyJoKxD5crFhU6HJqdmBIuL5QJ2zJXrWBPHpjEVsw=
+	t=1772553711; cv=none; b=IlMR4HBN7LlHKmG3AEAaF0c+2wFyJJ3LOqIJmhQVb89EROUgq6CtLE0Fbtfs13+x0tZ8RCzF0L/2uh9fOg4w8d6h44OxFpBCu1B0AfzeJtl/8JonKHDXasg3ZTrNNrSclazpYYI1NS8Go45duUouHifXmmemPt0YM9234mlmQfA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772553665; c=relaxed/simple;
-	bh=mTiv9QtnxAmDU7iBPLuvPKwF8m82DFxtJ9m30zudKqY=;
+	s=arc-20240116; t=1772553711; c=relaxed/simple;
+	bh=uemFPhsC15cjBKDQX1TwcqeqGp4FNOmPfJ/DABL8c3g=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=p+BDHkJLd/ofyqJwviZvcVTkEz2TlstWbNlSTCcV+J3EhdvVWY3r5MDpwU6MrydizEZ+rhBrE98jUhZYdaXYkdtLSwG8V+3HeT/fLg/qvlplLHZiVCjZUz51Cnlg+IJt0vRYQgydAsWsAf3i4+4lW+Q9IXY14nWam1ck7rqnUu4=
+	 Content-Type:Content-Disposition:In-Reply-To; b=WWM6EDBwiMd3FZC6j2bPt1brOJf1n81ZYSLbXMLyMzvQ/V/54II8GRV7GEuU7oWVBByoBISCoDlIK5aQfAZtkXv91PmEaQhxC3KaOXs6PySfvJRSvuy9jzs4m5ArQDhqmwUKsR1ioQjrGhRQIlaWn8D9dSSnZiJuKWi+1JTKrV8=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
 Received: by verein.lst.de (Postfix, from userid 2407)
-	id 89BBD68BFE; Tue,  3 Mar 2026 17:00:51 +0100 (CET)
-Date: Tue, 3 Mar 2026 17:00:50 +0100
+	id E4F5368BFE; Tue,  3 Mar 2026 17:01:45 +0100 (CET)
+Date: Tue, 3 Mar 2026 17:01:45 +0100
 From: Christoph Hellwig <hch@lst.de>
-To: Peter Zijlstra <peterz@infradead.org>
+To: Eric Biggers <ebiggers@kernel.org>
 Cc: Christoph Hellwig <hch@lst.de>,
 	Andrew Morton <akpm@linux-foundation.org>,
 	Richard Henderson <richard.henderson@linaro.org>,
@@ -77,10 +77,9 @@ Cc: Christoph Hellwig <hch@lst.de>,
 	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
 	linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
 	linux-arch@vger.kernel.org, linux-raid@vger.kernel.org
-Subject: Re: [PATCH 01/25] xor: assert that xor_blocks is not called from
- interrupt context
-Message-ID: <20260303160050.GB7021@lst.de>
-References: <20260226151106.144735-1-hch@lst.de> <20260226151106.144735-2-hch@lst.de> <20260227142455.GG1282955@noisy.programming.kicks-ass.net>
+Subject: Re: [PATCH 04/25] xor: move to lib/raid/
+Message-ID: <20260303160145.GC7021@lst.de>
+References: <20260226151106.144735-1-hch@lst.de> <20260226151106.144735-5-hch@lst.de> <20260228043523.GB65277@quark>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
@@ -89,25 +88,25 @@ List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260227142455.GG1282955@noisy.programming.kicks-ass.net>
+In-Reply-To: <20260228043523.GB65277@quark>
 User-Agent: Mutt/1.5.17 (2007-11-01)
-X-Rspamd-Queue-Id: 9389E1F334B
+X-Rspamd-Queue-Id: E49B01F34A6
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.36 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	DMARC_POLICY_SOFTFAIL(0.10)[lst.de : SPF not aligned (relaxed), No valid DKIM,none];
 	HAS_LIST_UNSUB(-0.01)[];
 	FREEMAIL_CC(0.00)[lst.de,linux-foundation.org,linaro.org,gmail.com,armlinux.org.uk,arm.com,kernel.org,xen0n.name,linux.ibm.com,ellerman.id.au,dabbelt.com,eecs.berkeley.edu,ghiti.fr,davemloft.net,gaisler.com,nod.at,cambridgegreys.com,sipsolutions.net,redhat.com,alien8.de,linux.intel.com,zytor.com,gondor.apana.org.au,intel.com,fb.com,suse.com,arndb.de,fnnas.com,huawei.com,vger.kernel.org,lists.infradead.org,lists.linux.dev,lists.ozlabs.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22178-lists,linux-btrfs=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-22179-lists,linux-btrfs=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	FROM_HAS_DN(0.00)[];
 	TAGGED_RCPT(0.00)[linux-btrfs];
 	PRECEDENCE_BULK(0.00)[];
@@ -117,28 +116,16 @@ X-Spamd-Result: default: False [-1.36 / 15.00];
 	R_DKIM_NA(0.00)[];
 	NEURAL_HAM(-0.00)[-0.993];
 	MID_RHS_MATCH_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,lst.de:mid]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[lst.de:mid,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-On Fri, Feb 27, 2026 at 03:24:55PM +0100, Peter Zijlstra wrote:
-> >  	unsigned long *p1, *p2, *p3, *p4;
-> >  
-> > +	WARN_ON_ONCE(in_interrupt());
-> 
-> Your changelog makes it sound like you want:
-> 
-> 	WARN_ON_ONCE(!in_task());
-> 
-> But perhaps something like so:
-> 
-> 	lockdep_assert_preempt_enabled();
-> 
-> Would do? That ensures we are in preemptible context, which is much the
-> same. That also ensures the cost of this assertion is only paid on debug
-> kernels.
+On Fri, Feb 27, 2026 at 08:35:23PM -0800, Eric Biggers wrote:
+> This adds lib/raid/ alongside the existing lib/raid6/ directory.  Is
+> that the intended final state, or is the intent for the code in
+> lib/raid6/ to eventually be moved to a subdirectory of lib/raid/
+> (alongside the "xor" subdirectory)?
 
-No idea honestly.  The kernel FPU/vector helpers generally don't work
-from irq context, and I want to assert that.  Happy to do whatever
-version works best for that.
+Yes, the raid6 code will get a dutup and move after this.  And we'll
+also plan to add a library for more than 2 parities eventually.
 
 
