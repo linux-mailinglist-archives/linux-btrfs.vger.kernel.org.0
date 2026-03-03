@@ -1,205 +1,176 @@
-Return-Path: <linux-btrfs+bounces-22192-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-22193-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id uJQtDbYPp2k0cwAAu9opvQ
-	(envelope-from <linux-btrfs+bounces-22192-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Tue, 03 Mar 2026 17:43:34 +0100
+	id 2Hw+DXEYp2m+dgAAu9opvQ
+	(envelope-from <linux-btrfs+bounces-22193-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Tue, 03 Mar 2026 18:20:49 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id D79E91F4014
-	for <lists+linux-btrfs@lfdr.de>; Tue, 03 Mar 2026 17:43:33 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEC081F4884
+	for <lists+linux-btrfs@lfdr.de>; Tue, 03 Mar 2026 18:20:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id EDA663035E3E
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Mar 2026 16:42:14 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id E2EA03033885
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Mar 2026 17:19:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 090293264F0;
-	Tue,  3 Mar 2026 16:42:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 355BE42F561;
+	Tue,  3 Mar 2026 17:19:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="luj3ENW3"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WeVTOkUb"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3102D370D6E
-	for <linux-btrfs@vger.kernel.org>; Tue,  3 Mar 2026 16:42:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 860DE37B025
+	for <linux-btrfs@vger.kernel.org>; Tue,  3 Mar 2026 17:19:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772556125; cv=none; b=b2uUYgdV7/9MYIPbR8Grq8eptxiM9b3qM+gFaXmGR76L0IdkixXAkSUIuM3J5KKk6M463f0ux32hnv0UwxWLokLEoVi2Xmc7SHdvN/WSLQdoARPY/YuEaWl+hQCIpYBO2S/bZBjFi7aRD9UBL+MlWtB1R7TOXy2OkO1fwpL55s4=
+	t=1772558392; cv=none; b=SKczqP9XYn5GwXa9w+LKpNsubIUd6MlgA285gDeJNoy2h8BT08/LCUMBXyeja1DLSws3YL0H8gstbQFYsCJbuGZ6kyyPXQ6nOeX4g/kVK0OxDagIdSossQlgUEsTjdJGrMHKBWraWwgCwIJj5eRxGRkdM87ugRTlT6PN836sYmU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772556125; c=relaxed/simple;
-	bh=rFQaSuWNtH9Qrnd75MRPuGQFSvJF/6cXdLlHAR/5dGc=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:Content-Type; b=MyDZxMdNaNoYrQzaqzAHEhISJxDIcHwBGFub+ihrzu7RwJ42sul0GUmmLkzwOHdFdpMlph5Yc2nu9aX7cJ4B4qgxOz1hfauUkOET5mPQHDVGXylhVOr6fbfxwM7Tx+X+vvjzIVXvWBv+bix6nZLfpJE/K3lKldklZwZUOloSsyU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=luj3ENW3; arc=none smtp.client-ip=209.85.208.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-3870df2331aso33225381fa.1
-        for <linux-btrfs@vger.kernel.org>; Tue, 03 Mar 2026 08:42:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1772556122; x=1773160922; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-language:cc:to:subject:from
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zTmOPKz1yOxTxeVLqX9puCNS+ZO1YkE6imS9w0aptKM=;
-        b=luj3ENW3bloK/RIpoQzbdMMCEVpGlXGRVWhtdbxYclrvFDot+nz0L/CdevsatYN9dk
-         MXR4CEYhKXHkwUzitnL9YL7O7zVbFNaxn+PCVNy+Q9rEGbuZMXCa95khwSdnIOdbs+5v
-         0pE4EVecLMfHyl5R7NtLjtdrSOtTBMGVwOPMCX9/KlWZCsa03QCRXy2v7J9vaz98G+6k
-         QIgILXFuIxnPVE6GqCGVfEDX3TPLAxOtoPGyxHAukBldM3Lpwuem/vl4dD8lrembTGhm
-         cdweMkukX8NbNaiIj8rXYpE2cxSF2ARWsgD32drhOmD2PtE3aFr8BnJAIz35uewJ0y0X
-         NKCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772556122; x=1773160922;
-        h=content-transfer-encoding:content-language:cc:to:subject:from
-         :user-agent:mime-version:date:message-id:x-gm-gg:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zTmOPKz1yOxTxeVLqX9puCNS+ZO1YkE6imS9w0aptKM=;
-        b=UJv4yOs9GuWVSU/FwZAzj34Ch55iFSfxzJpVclO1MAGjK+8cJWcqXKKfH4htUa+ieI
-         USOcJm9ldIbIvSJpSoYn62QEi4daPya9XBWokqV95f0g+YnRIckcEBoSnwjDwZ4Ikgr+
-         BhCWjXrMZOD/uZDiVLWs03RAMyE6gHpeXUjEJGaguagDoKouqd0oFEWYXjo/3UeHSF5d
-         fJ4JkzkfyzT5MPzqkBzGwjEkaiD/JngozhhwkCungEFOujc3RaeIQFuyG+2b+XKwPRto
-         GEoczhHn+cZ4LJbqhKso/wpBxYW7Eb/5YvwjC38FFsq43js+62J4HTbYFs7Ya+NSQeYa
-         XyWw==
-X-Gm-Message-State: AOJu0Ywdpag3JoJGzu15jkLCen8KWrDepdLTx01J4ffbw0H+dbNPKFzm
-	qh51OnqvjIZi0CR1LBHC/zrj9GhIghuzrM7mQE2kFpU64vhPlxUvR9Mi
-X-Gm-Gg: ATEYQzww3eb+CoM0ZS7Oh/AVMQHhSnyGwktEXVxxTSD61rsXOQxSSCp0a+Ycj4PpJs4
-	/NBYA2he0dq/9QwsOVL3w5x5vbJgXvczViOmPfQHC8EuT0/TOsYmznRa3j5noUzbg58A8ZjJW0F
-	4RlchdUdvlP0lwoSKo6slJyECv2jdQKnaSlYQkrpZPgVC3eF3LUVESUWKw7MA75uwL+eHT2pgIq
-	CfHehG0034N/JRqHE1GxpKabD0WR/GBWV8szxlzy6rx98kEMZiLepQRfR4TcIRCjFQ/dsIQu6iV
-	bk0GteTARaZ0fBTGM0L3/tY/t0VfjvOwLxOQNJAfzaw+rpyJmzTNrczL2llI8PIW4ebs5BiyuuX
-	55xF0pY3pcVIFaCATaYXqMcGwkRZKtR1TyGDeoaGUruYhHI472dGgg2IAKOmfYonQLruY9mJ4lF
-	T3Yi2iSZeMvkzMQg93V01FSQp+iaXj8ZunrwysM/1qaA==
-X-Received: by 2002:a2e:ae0a:0:10b0:387:a16:ee83 with SMTP id 38308e7fff4ca-38a1c40121emr17269641fa.11.1772556122075;
-        Tue, 03 Mar 2026 08:42:02 -0800 (PST)
-Received: from [10.74.67.179] ([193.143.64.247])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-5a1244e0ccesm478286e87.56.2026.03.03.08.42.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 03 Mar 2026 08:42:01 -0800 (PST)
-Message-ID: <2d514275-d2dc-4c0b-a7bd-3adf9415711b@gmail.com>
-Date: Tue, 3 Mar 2026 19:41:53 +0300
+	s=arc-20240116; t=1772558392; c=relaxed/simple;
+	bh=0AnxHAtTwZdpZ17TUy+idd0Ym04+NlcpUvUABFCzoBY=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=l7hYy1bZxnQyTKpDdPk8VgVFPQ6/fhSZM/c0g6Ml2PmvdIVyXMBa5EqgquWGH91CC3g6XPcq2g7ksR1n7ojnIRv4Sm1aJDiMT4eXVaXbXG0vecaaQ3Ely/0rKvYgqaKcSauLiQvCcD7rzdMnklFzVxzVmqlcpKIB7skudWI+5As=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WeVTOkUb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B108AC116C6
+	for <linux-btrfs@vger.kernel.org>; Tue,  3 Mar 2026 17:19:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1772558392;
+	bh=0AnxHAtTwZdpZ17TUy+idd0Ym04+NlcpUvUABFCzoBY=;
+	h=From:To:Subject:Date:From;
+	b=WeVTOkUbKhfbMTbof40b0jTTjOpoOiMgCQff3zx97Yy5FTf0qo3wlx+HrkzvIR98l
+	 N2mivGXxE25a4pZudntL8LtrvNrQMV+ul1EY9gKdWDAZYrNrbw/SvTdw4EAuVHKvl8
+	 VAvfU0u2s4dRPF6Y8vFOteLsuTEuQ7YVaHBIC52RtHzp0Io6op7xmMO5d4ASbzUwtW
+	 elt8Cf6spkgE9cnuzs8HPE+Vi+RyYPucQ/U3ve16otKMF/yCoRdfZeOYLY9qiVcv+X
+	 iRzCACfsml/QM/TwiEwhEB1k24lBAnV9shhwfUsPl6bVfAUCtlK559HozNe1DUYLw3
+	 JjpXA5bxuUfXA==
+From: fdmanana@kernel.org
+To: linux-btrfs@vger.kernel.org
+Subject: [PATCH] btrfs: log new dentries when logging parent dir of a conflicting inode
+Date: Tue,  3 Mar 2026 17:19:48 +0000
+Message-ID: <9a367f025abf4ea19c96aead75d206e129b2c56e.1772558089.git.fdmanana@suse.com>
+X-Mailer: git-send-email 2.47.2
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Vyacheslav Kovalevsky <slava.kovalevskiy.2014@gmail.com>
-Subject: File permissions are not persisted after creating hard link if system
- crashes
-To: clm@fb.com, dsterba@suse.com
-Cc: linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: D79E91F4014
+X-Rspamd-Queue-Id: BEC081F4884
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22192-lists,linux-btrfs=lfdr.de];
+	RCPT_COUNT_ONE(0.00)[1];
 	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-22193-lists,linux-btrfs=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_THREE(0.00)[4];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[slavakovalevskiy2014@gmail.com,linux-btrfs@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[fdmanana@kernel.org,linux-btrfs@vger.kernel.org];
+	FROM_NO_DN(0.00)[];
 	TO_DN_NONE(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo]
+	NEURAL_HAM(-0.00)[-0.999];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,suse.com:mid,suse.com:email]
 X-Rspamd-Action: no action
 
-Detailed description
-====================
+From: Filipe Manana <fdmanana@suse.com>
 
-Hello, there seems to be an issue with btrfs crash behavior:
+If we log the parent directory of a conflicting inode, we are not logging
+the new dentries of the directory, so when we finish we have the parent
+directory's inode marked as logged but we did not log its new dentries.
+As a consequence if the parent directory is explicitly fsynced later and
+it does not have any new changes since we logged it, the fsync is a no-op
+and after a power failure the new dentries are missing.
 
-1. Create and sync a new file.
-2. Open the file and change permissions.
-3. Sync the file.
-4. Create new hard link to file.
-5. Sync the root directory.
+Example scenario:
 
-After crash the file will have old (original) permissions, though the 
-changes were synced.
+ $ mkdir foo
 
+ $ sync
 
-System info
-===========
+ $rmdir foo
 
-Linux version 7.0-rc2, also tested on 6.19.2
+ $ mkdir dir1
+ $ mkdir dir2
 
+ # A file with the same name and parent as the directory we just deleted
+ # and was persisted in a past transaction. So the deleted directory's
+ # inode is a conflicting inode of this new file's inode.
+ $ touch foo
 
-How to reproduce
-================
+ $ ln foo dir2/link
 
-```
-#include <errno.h>
-#include <fcntl.h>
-#include <stdio.h>
-#include <string.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <unistd.h>
+ # The fsync on dir2 will log the parent directory (".") because the
+ # conflicting inode (deleted directory) does not exists anymore, but it
+ # it does not log its new dentries (dir1).
+ $ xfs_io -c "fsync" dir2
 
-int main() {
-   int status;
-   int file_fd0;
-   int file_fd1;
-   int root_fd;
+ # This fsync on the parent directory is no-op, since the previous fsync
+ # logged it (but without logging its new dentries).
+ $ xfs_io -c "fsync" .
 
-   status = creat("file1", S_IRWXU | S_IRGRP | S_IXGRP | S_IXOTH);
-   printf("CREAT: %d\n", status);
-   file_fd0 = status;
+ <power failure>
 
-   status = close(file_fd0);
-   printf("CLOSE: %d\n", status);
+ # After log replay dir1 is missing.
 
-   sync();
+Fix this by ensuring we log new dir dentries whenever we log the parent
+directory of a no longer existing conflicting inode.
 
-   status = open("file1", O_RDONLY);
-   printf("OPEN: %d\n", status);
-   file_fd1 = status;
+A test case for fstests will follow soon.
 
-   status = fchmod(file_fd1, S_IRWXU | S_IRWXG | S_IRWXO);
-   printf("FCHMOD: %d\n", status);
+Reported-by: Vyacheslav Kovalevsky <slava.kovalevskiy.2014@gmail.com>
+Link: https://lore.kernel.org/linux-btrfs/182055fa-e9ce-4089-9f5f-4b8a23e8dd91@gmail.com/
+Signed-off-by: Filipe Manana <fdmanana@suse.com>
+---
+ fs/btrfs/tree-log.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-   status = fsync(file_fd1);
-   printf("FSYNC: %d\n", status);
-
-   status = link("file1", "file2");
-   printf("LINK: %d\n", status);
-
-   status = open(".", O_RDONLY);
-   printf("OPEN: %d\n", status);
-   root_fd = status;
-
-   status = fsync(root_fd);
-   printf("FSYNC: %d\n", status);
-}
-// after crash file `file1` / `file2` has old permissions (0751 instead 
-of 0777)
-```
-
-Steps:
-
-1. Create and mount new btrfs file system in default configuration.
-2. Change directory to root of the file system and run the compiled test.
-3. Cause hard system crash (e.g. QEMU `system_reset` command).
-4. Remount file system after crash.
-5. Observe that file permissions were not persisted.
+diff --git a/fs/btrfs/tree-log.c b/fs/btrfs/tree-log.c
+index e011786cbd94..af8de67d1304 100644
+--- a/fs/btrfs/tree-log.c
++++ b/fs/btrfs/tree-log.c
+@@ -6246,6 +6246,7 @@ static int log_conflicting_inodes(struct btrfs_trans_handle *trans,
+ 				  struct btrfs_root *root,
+ 				  struct btrfs_log_ctx *ctx)
+ {
++	const bool orig_log_new_dentries = ctx->log_new_dentries;
+ 	int ret = 0;
+ 
+ 	/*
+@@ -6307,7 +6308,11 @@ static int log_conflicting_inodes(struct btrfs_trans_handle *trans,
+ 			 * dir index key range logged for the directory. So we
+ 			 * must make sure the deletion is recorded.
+ 			 */
++			ctx->log_new_dentries = false;
+ 			ret = btrfs_log_inode(trans, inode, LOG_INODE_ALL, ctx);
++			if (!ret && ctx->log_new_dentries)
++				ret = log_new_dir_dentries(trans, inode, ctx);
++
+ 			btrfs_add_delayed_iput(inode);
+ 			if (ret)
+ 				break;
+@@ -6342,6 +6347,7 @@ static int log_conflicting_inodes(struct btrfs_trans_handle *trans,
+ 			break;
+ 	}
+ 
++	ctx->log_new_dentries = orig_log_new_dentries;
+ 	ctx->logging_conflict_inodes = false;
+ 	if (ret)
+ 		free_conflicting_inodes(ctx);
+-- 
+2.47.2
 
 
