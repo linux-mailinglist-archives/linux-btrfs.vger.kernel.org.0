@@ -1,202 +1,144 @@
-Return-Path: <linux-btrfs+bounces-22177-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-22178-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 6LLqJDb2pmmgawAAu9opvQ
-	(envelope-from <linux-btrfs+bounces-22177-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Tue, 03 Mar 2026 15:54:46 +0100
+	id MCIWEJ8Gp2k7bgAAu9opvQ
+	(envelope-from <linux-btrfs+bounces-22178-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Tue, 03 Mar 2026 17:04:47 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1A9161F1D7B
-	for <lists+linux-btrfs@lfdr.de>; Tue, 03 Mar 2026 15:54:46 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9389E1F334B
+	for <lists+linux-btrfs@lfdr.de>; Tue, 03 Mar 2026 17:04:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 0C49D308C56A
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Mar 2026 14:53:23 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id F10A6304EF43
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Mar 2026 16:01:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B4DB47DFA6;
-	Tue,  3 Mar 2026 14:53:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="TJgviTHu";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="TJgviTHu"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F147495504;
+	Tue,  3 Mar 2026 16:01:06 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F60747DD6C
-	for <linux-btrfs@vger.kernel.org>; Tue,  3 Mar 2026 14:53:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85C0E4949F4;
+	Tue,  3 Mar 2026 16:01:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772549593; cv=none; b=ELd1i4UhWyDHZgEIUrpMSOowfEo5HVyMZfWJOu9q2fEANcABusLbw1nBwGbwP/QvMG21OI67L92e74s3z8YaVJ1R0aZazIabQScNORR+Rg/3zATauS9Z7bgI/5ujX5sRseD3gSVTLoYWLoWgiD6RtqGDMVf6GtADAlQyMk27RiE=
+	t=1772553665; cv=none; b=r2CjDofs+3X1lpffHG9DUXX2QKVM4JCzMiIaffTWk0IjY68AwMbU3g0ZcMNgQWszf47gCrZvbdfp6HRKFuO4zkkfIdm6O0rwmKWSbbRfBckOAwv+EgulFvka+2heC9y0EJeyJoKxD5crFhU6HJqdmBIuL5QJ2zJXrWBPHpjEVsw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772549593; c=relaxed/simple;
-	bh=MUFJqJnSGzne40SLMLpwFkq/L3tHoDO2iG5U4N0+lTI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=AZJmxHdsvwSLSUq91oh5+qW6ofT8p0P0wg954rltARjpNB+8TPYU1Eka9TuTBU5GFJHIfof3bJrqi1xc0TC59Kya0TMpSAjLSUUaWIPcZ9hJNBcBX3Q66UmSHGGq+QCnvX8zlVFc4EbiHjkfa3FVzrtPd/ujPuW65exZ96Y4G9s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=TJgviTHu; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=TJgviTHu; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 9AF6C3F915;
-	Tue,  3 Mar 2026 14:53:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1772549590; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=qAV5wkv8YIpiQHa/dKOAxo4USIMHz3BOFHLJXcOtIOI=;
-	b=TJgviTHuL48bYydisRAXJ31pDPyKgsxd2r+Cl/Yz2mTSe60YlkR62Fk/s+LHLXJGksqPHM
-	bUhaXlfN0sXGWHUmb6EDAVVCUYtUHghLYk/ftaMIqhEbIfxpU33CUZDVgtK7Rrofbw4frW
-	4ot4R157uoYRsyEfGxLII9Hz5kC0PmY=
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=TJgviTHu
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1772549590; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=qAV5wkv8YIpiQHa/dKOAxo4USIMHz3BOFHLJXcOtIOI=;
-	b=TJgviTHuL48bYydisRAXJ31pDPyKgsxd2r+Cl/Yz2mTSe60YlkR62Fk/s+LHLXJGksqPHM
-	bUhaXlfN0sXGWHUmb6EDAVVCUYtUHghLYk/ftaMIqhEbIfxpU33CUZDVgtK7Rrofbw4frW
-	4ot4R157uoYRsyEfGxLII9Hz5kC0PmY=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 942D23EA69;
-	Tue,  3 Mar 2026 14:53:10 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 8qwlJNb1pmmyKQAAD6G6ig
-	(envelope-from <dsterba@suse.com>); Tue, 03 Mar 2026 14:53:10 +0000
-From: David Sterba <dsterba@suse.com>
-To: torvalds@linux-foundation.org
-Cc: David Sterba <dsterba@suse.com>,
-	linux-btrfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Btrfs fixes for 7.0-rc3
-Date: Tue,  3 Mar 2026 15:53:08 +0100
-Message-ID: <cover.1772547600.git.dsterba@suse.com>
-X-Mailer: git-send-email 2.51.0
+	s=arc-20240116; t=1772553665; c=relaxed/simple;
+	bh=mTiv9QtnxAmDU7iBPLuvPKwF8m82DFxtJ9m30zudKqY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=p+BDHkJLd/ofyqJwviZvcVTkEz2TlstWbNlSTCcV+J3EhdvVWY3r5MDpwU6MrydizEZ+rhBrE98jUhZYdaXYkdtLSwG8V+3HeT/fLg/qvlplLHZiVCjZUz51Cnlg+IJt0vRYQgydAsWsAf3i4+4lW+Q9IXY14nWam1ck7rqnUu4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id 89BBD68BFE; Tue,  3 Mar 2026 17:00:51 +0100 (CET)
+Date: Tue, 3 Mar 2026 17:00:50 +0100
+From: Christoph Hellwig <hch@lst.de>
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: Christoph Hellwig <hch@lst.de>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Richard Henderson <richard.henderson@linaro.org>,
+	Matt Turner <mattst88@gmail.com>,
+	Magnus Lindholm <linmag7@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
+	Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>,
+	Heiko Carstens <hca@linux.ibm.com>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Dan Williams <dan.j.williams@intel.com>, Chris Mason <clm@fb.com>,
+	David Sterba <dsterba@suse.com>, Arnd Bergmann <arnd@arndb.de>,
+	Song Liu <song@kernel.org>, Yu Kuai <yukuai@fnnas.com>,
+	Li Nan <linan122@huawei.com>, linux-alpha@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	loongarch@lists.linux.dev, linuxppc-dev@lists.ozlabs.org,
+	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
+	linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-arch@vger.kernel.org, linux-raid@vger.kernel.org
+Subject: Re: [PATCH 01/25] xor: assert that xor_blocks is not called from
+ interrupt context
+Message-ID: <20260303160050.GB7021@lst.de>
+References: <20260226151106.144735-1-hch@lst.de> <20260226151106.144735-2-hch@lst.de> <20260227142455.GG1282955@noisy.programming.kicks-ass.net>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Flag: NO
-X-Spam-Score: -3.51
-X-Spam-Level: 
-X-Rspamd-Queue-Id: 1A9161F1D7B
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260227142455.GG1282955@noisy.programming.kicks-ass.net>
+User-Agent: Mutt/1.5.17 (2007-11-01)
+X-Rspamd-Queue-Id: 9389E1F334B
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.16 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-1.36 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
+	DMARC_POLICY_SOFTFAIL(0.10)[lst.de : SPF not aligned (relaxed), No valid DKIM,none];
 	HAS_LIST_UNSUB(-0.01)[];
-	DKIM_TRACE(0.00)[suse.com:+];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-22177-lists,linux-btrfs=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_THREE(0.00)[4];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[dsterba@suse.com,linux-btrfs@vger.kernel.org];
+	FREEMAIL_CC(0.00)[lst.de,linux-foundation.org,linaro.org,gmail.com,armlinux.org.uk,arm.com,kernel.org,xen0n.name,linux.ibm.com,ellerman.id.au,dabbelt.com,eecs.berkeley.edu,ghiti.fr,davemloft.net,gaisler.com,nod.at,cambridgegreys.com,sipsolutions.net,redhat.com,alien8.de,linux.intel.com,zytor.com,gondor.apana.org.au,intel.com,fb.com,suse.com,arndb.de,fnnas.com,huawei.com,vger.kernel.org,lists.infradead.org,lists.linux.dev,lists.ozlabs.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
+	TAGGED_FROM(0.00)[bounces-22178-lists,linux-btrfs=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	FROM_HAS_DN(0.00)[];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,suse.com:dkim,suse.com:mid]
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[hch@lst.de,linux-btrfs@vger.kernel.org];
+	TO_DN_SOME(0.00)[];
+	RCPT_COUNT_GT_50(0.00)[56];
+	R_DKIM_NA(0.00)[];
+	NEURAL_HAM(-0.00)[-0.993];
+	MID_RHS_MATCH_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,lst.de:mid]
 X-Rspamd-Action: no action
 
-Hi,
+On Fri, Feb 27, 2026 at 03:24:55PM +0100, Peter Zijlstra wrote:
+> >  	unsigned long *p1, *p2, *p3, *p4;
+> >  
+> > +	WARN_ON_ONCE(in_interrupt());
+> 
+> Your changelog makes it sound like you want:
+> 
+> 	WARN_ON_ONCE(!in_task());
+> 
+> But perhaps something like so:
+> 
+> 	lockdep_assert_preempt_enabled();
+> 
+> Would do? That ensures we are in preemptible context, which is much the
+> same. That also ensures the cost of this assertion is only paid on debug
+> kernels.
 
-please pull the following btrfs fixes. There are one-liners or short
-fixes of minor/moderate problems reported recently. Thanks.
+No idea honestly.  The kernel FPU/vector helpers generally don't work
+from irq context, and I want to assert that.  Happy to do whatever
+version works best for that.
 
-- fixes or level adjustments of error messages
-
-- fix leaked transaction handles after aborted transactions, when using
-  the remap tree feature
-
-- fix a few leaked chunk maps after errors
-
-- fix leaked page array in io_uring encoded read if an error occurs and
-  the 'finished' is not called
-
-- fix double release of reserved extents when doing a range COW
-
-- don't commit super block when the filesystem is in shutdown state
-
-- fix squota accounting condition when checking members vs parent usage
-
-- other error handling fixes
-
-----------------------------------------------------------------
-The following changes since commit ecb7c2484cfc83a93658907580035a8adf1e0a92:
-
-  btrfs: fix invalid leaf access in btrfs_quota_enable() if ref key not found (2026-02-18 15:25:54 +0100)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git tags/for-7.0-rc2-tag
-
-for you to fetch changes up to f8db8009ea65297dba7786668d4561f6dbd99678:
-
-  btrfs: check block group lookup in remove_range_from_remap_tree() (2026-02-26 15:03:29 +0100)
-
-----------------------------------------------------------------
-Boris Burkov (1):
-      btrfs: fix referenced/exclusive check in squota_check_parent_usage()
-
-Filipe Manana (5):
-      btrfs: change warning messages to error level in open_ctree()
-      btrfs: remove redundant warning message in btrfs_check_uuid_tree()
-      btrfs: remove btrfs_handle_fs_error() after failure to recover log trees
-      btrfs: convert log messages to error level in btrfs_replay_log()
-      btrfs: remove pointless WARN_ON() in cache_save_setup()
-
-Jingkai Tan (1):
-      btrfs: handle discard errors in in btrfs_finish_extent_commit()
-
-Mark Harmstone (10):
-      btrfs: fix error message order of parameters in btrfs_delete_delayed_dir_index()
-      btrfs: fix incorrect key offset in error message in check_dev_extent_item()
-      btrfs: fix objectid value in error message in check_extent_data_ref()
-      btrfs: fix warning in scrub_verify_one_metadata()
-      btrfs: print correct subvol num if active swapfile prevents deletion
-      btrfs: fix compat mask in error messages in btrfs_check_features()
-      btrfs: fix chunk map leak in btrfs_map_block() after btrfs_chunk_map_num_copies()
-      btrfs: fix chunk map leak in btrfs_map_block() after btrfs_translate_remap()
-      btrfs: fix transaction handle leaks in btrfs_last_identity_remap_gone()
-      btrfs: check block group lookup in remove_range_from_remap_tree()
-
-Miquel Sabaté Solà (2):
-      btrfs: free pages on error in btrfs_uring_read_extent()
-      btrfs: don't commit the super block when unmounting a shutdown filesystem
-
-Qu Wenruo (1):
-      btrfs: fix a double release on reserved extents in cow_one_range()
-
- fs/btrfs/block-group.c   |  1 -
- fs/btrfs/delayed-inode.c |  2 +-
- fs/btrfs/disk-io.c       | 36 +++++++++++++++++++++---------------
- fs/btrfs/extent-tree.c   |  8 +++++++-
- fs/btrfs/inode.c         | 19 +++++++++++++++++--
- fs/btrfs/ioctl.c         |  7 ++++++-
- fs/btrfs/qgroup.c        |  2 +-
- fs/btrfs/relocation.c    |  6 ++++++
- fs/btrfs/scrub.c         |  2 +-
- fs/btrfs/tree-checker.c  |  4 ++--
- fs/btrfs/volumes.c       |  8 +++++---
- 11 files changed, 67 insertions(+), 28 deletions(-)
 
