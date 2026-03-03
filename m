@@ -1,156 +1,121 @@
-Return-Path: <linux-btrfs+bounces-22163-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-22164-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id QFNKDmU9pmkZNAAAu9opvQ
-	(envelope-from <linux-btrfs+bounces-22163-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Tue, 03 Mar 2026 02:46:13 +0100
+	id SE5cA65spmnMPgAAu9opvQ
+	(envelope-from <linux-btrfs+bounces-22164-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Tue, 03 Mar 2026 06:07:58 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id C69001E7CDB
-	for <lists+linux-btrfs@lfdr.de>; Tue, 03 Mar 2026 02:46:12 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FCF41E91D6
+	for <lists+linux-btrfs@lfdr.de>; Tue, 03 Mar 2026 06:07:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 668473039F51
-	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Mar 2026 01:46:07 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 1FF163040692
+	for <lists+linux-btrfs@lfdr.de>; Tue,  3 Mar 2026 05:07:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F794363C4D;
-	Tue,  3 Mar 2026 01:46:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B33D32FE579;
+	Tue,  3 Mar 2026 05:07:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="tEV8xS9N"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tdQvKpp2"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from xmbghk7.mail.qq.com (xmbghk7.mail.qq.com [43.163.128.48])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDE1A19CD0A;
-	Tue,  3 Mar 2026 01:45:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=43.163.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 099F7201278;
+	Tue,  3 Mar 2026 05:07:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772502362; cv=none; b=uZiTR/GWMxCFBQNhsZwjn1DoRXFttBJZuYClI8ZN6N8DUQ0I+d1n9uFETm0E3bGx4DhwJe+bj1+rItKc/TMROqgksO4TVTgGTb0HLKQU+I58tHYnhHh2aehsRPm+rt6SmE279+eXc0rk4bK835KzUkA60/fle/1ll/Nk7zrzRIE=
+	t=1772514460; cv=none; b=Q7QUtAGrmgc10vyp7ljvip8UopkSGIYKoBjmc/Y+h9fS/ERGlwqDedcLnSkK7r1Eu3hSM1hZSR6x23eva1RpUNs+olPmt7ny+2dO6qS726rZBTWmQYCSwaCR7qH95ynEDdqLb8/xcBUpaWZ5CgmCVgA26Kxe9/9GT7KOGR9tKvM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772502362; c=relaxed/simple;
-	bh=QCQGDvW+Nr1ARK1MamhfGuYRf4HyjQ1yWH2xs4BcAxU=;
-	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=gVnY+1278b+UMw+nPXgiBsrBKHEBdq/duhB6FgZOZgaR5Rt45RNcjVgwMISG6o1aWlpXXFRLkzv0xx7O60PYUXwWrge6Nf20DLid6pbJSA/X+F3lDDGuUfO+9VSQbeM+Rpf0/LRgdGEAKx+4F3i8f5IeOzUVrWWaeyEkJ5Ndwu8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=tEV8xS9N; arc=none smtp.client-ip=43.163.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-	s=s201512; t=1772502350;
-	bh=hZxK6yPiXLJKf9NexCfa/9nJkEBZ5VgwLq8zk3x+Cbw=;
-	h=From:To:Cc:Subject:Date;
-	b=tEV8xS9NNc2/kz4bPupCYQHcSYRKo/GuMhaH/37xN75rhgGa/stADhJ3CqXarGGlF
-	 OlCsHElywInCgPvKjuYaXJm5igq0LKqxeJqda/l4+RFnfP5WqrMOWXC+oeAWSwwBiD
-	 GzYTpNE80w9uMIlBZkQ1zaKXUTK0hMBOmGwfgxP8=
-Received: from China-team ([60.247.85.88])
-	by newxmesmtplogicsvrszb51-0.qq.com (NewEsmtp) with SMTP
-	id B66B864F; Tue, 03 Mar 2026 09:45:38 +0800
-X-QQ-mid: xmsmtpt1772502338t7ioimsuj
-Message-ID: <tencent_E33A07070D66A4018456A326E0C34932DE05@qq.com>
-X-QQ-XMAILINFO: N2MqhO5su2b5lytw7Fdqz0j/Rg51/kJo53Jl+lOgNhT2cIgn504KFm6d/ve/vB
-	 T1XnlTJ04jgWAxLPd9mcoNaRCHaVvfU084txcIgOsJG+pf8ervGaijBSd5ySu3ozbv2Zl9EIYYDo
-	 /KooOg0IG9+N7hqLl0CsO9d5xWJQec5ub8JjzIXce5lMWkEmw4HcM75S7Tp7jmHnqoCEIBQSM2Or
-	 aq4idPBNNnDaH3ZnWRoyOICIN5+Ts4Cf3JQXK2AQ2BWyXnChtZR3o78eLs3JFEjM4usDT8trMwtG
-	 y7hh2x8Kd0/ec2R9G9QsacmASsU+c+PI7FfW2ovgtaJWaoc6m+ruo4SssB99nVh9bEilIQaxk5Iw
-	 tLC5Zkd4AvtQ19L1QV0BnuFHK52PjYWIL9yvEc1RdRsVp6RLfRxm7xc0ArOphdkR9aqR2Znb1Epm
-	 fBJKZL1kNnaNfwozLPnkWMcST6L0OH80ztFZ4KGhDCcg1BTaqeP71OOJeX7tbtbtt3AgSKlB8WXB
-	 BmT0f/oVuqHx3+EvhDzjFTXvQ5mKJ3gxSBaQfjBw4k6hPc5qkY649q6UKuYZmq4vGL85QhccQwSb
-	 VZBEvO9AC8a55aZ/l47Ve173EIVm2nq0QQWTdwpxBKNRBxkK1lnFYiSMh0JFDpna+rIcG3GLBjfx
-	 vW7OyNimciBY97GkWQxU+IDmlTd2V/Kdgzt6umbo/cWKSTqUTPo3rjbiUQn2/UhG5Pr/e8u+w9d8
-	 WsYX9J2D5LVXO74yhPbudw1uXk/2EAYHDu04sn5pBYlAL3/uHPM9Re/v0dqq/xl2Iu/n2ibr30Pj
-	 KfLLDPdfDyLUl95of6or+8Nm/wYhawzxKxigSgdcaW1OxyGgOxmmulwAps0OaVnrDjo15eP4jFYR
-	 adCR8p06jrErP59C2sZOvEHZLi7zbVk8VyeM1ajFyT0A/tBPtkWHg2LFeUKLVCmrRQIm0G66xpMs
-	 q077lV21PjKvJFElmCpKZxfc19eaMIEpX70tFKygj8yH4eITkbJd4+qny1MTOLnYcZslZ8qEt6/M
-	 JSxMT2ph4TvESUrrtyM8sdbdK6fV5SHrSx8pYcyJzPen0elT8Rb+yjScdcKu2GpX1cJRL9aQ==
-X-QQ-XMRINFO: OWPUhxQsoeAVwkVaQIEGSKwwgKCxK/fD5g==
-From: Alva Lan <alvalan9@foxmail.com>
-To: gregkh@linuxfoundation.org,
-	stable@vger.kernel.org
-Cc: linux-btrfs@vger.kernel.org,
-	Qu Wenruo <wqu@suse.com>,
-	Filipe Manana <fdmanana@suse.com>,
-	David Sterba <dsterba@suse.com>,
-	Alva Lan <alvalan9@foxmail.com>
-Subject: [PATCH 5.15.y] btrfs: send: check for inline extents in range_is_hole_in_parent()
-Date: Tue,  3 Mar 2026 09:45:22 +0800
-X-OQ-MSGID: <20260303014522.1551857-1-alvalan9@foxmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1772514460; c=relaxed/simple;
+	bh=1+kKr9w9x1B4o6FcZ1XAvN36pB8iYMy5wzHr3wwx+6k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sjLg6iKyXOkPIoDlIUBa5kvG4S3pagF8RGrlxy5V4hYAILBRyJf/eRW3ntZkMQuSoB/VXUQr02msJDeZvdH7lj+orrFqRKBxPjZEZfEczvGbZduYU/6RrbbJhlekZm+A28snzOEQcflqn5z9Dy+htfvsYU6WmBTU2oi/yOC/IuQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tdQvKpp2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9718C116C6;
+	Tue,  3 Mar 2026 05:07:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1772514459;
+	bh=1+kKr9w9x1B4o6FcZ1XAvN36pB8iYMy5wzHr3wwx+6k=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=tdQvKpp2K/r35zCm0W6gRUwl4ZY8UaHyBvOYJzXsf+L4J1r9LKC9hjhf65BPuwGyT
+	 yFqYzMK3vuokKly0l+YjMr6k9NLrJqehKXW6ixHMLnjx0Td9v48Id/KH88HW2Qr3dX
+	 gZJiIgJImQMR05aCpC/CSHA9uu2aW7xULTrYcoYfdKxDvrf0C89CM68j5f0Y2NBExz
+	 YAyM1VTwIUq9LfTSzFFm5csRWadKv1uqGQCDYG9T6IexWwAWJsxzPcOxhHI3l4l40n
+	 NJWMj2kZ6/NzBXgrX4gJu32wP6r0+aZ9FdYIT+GQetCDHQeo09ckyuhro60zCH/OPH
+	 AjlXlLdik735A==
+Date: Mon, 2 Mar 2026 21:06:44 -0800
+From: Eric Biggers <ebiggers@kernel.org>
+To: fsverity@lists.linux.dev
+Cc: linux-fsdevel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+	Arnd Bergmann <arnd@arndb.de>, linux-ext4@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net, linux-btrfs@vger.kernel.org,
+	linux-xfs@vger.kernel.org
+Subject: Re: [PATCH] fsverity: add dependency on 64K or smaller pages
+Message-ID: <20260303050644.GC5238@sol>
+References: <20260221204525.30426-1-ebiggers@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: C69001E7CDB
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260221204525.30426-1-ebiggers@kernel.org>
+X-Rspamd-Queue-Id: 8FCF41E91D6
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[foxmail.com,none];
-	R_DKIM_ALLOW(-0.20)[foxmail.com:s=s201512];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-22163-lists,linux-btrfs=lfdr.de];
-	FREEMAIL_CC(0.00)[vger.kernel.org,suse.com,foxmail.com];
 	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-22164-lists,linux-btrfs=lfdr.de];
+	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FREEMAIL_FROM(0.00)[foxmail.com];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	MISSING_XM_UA(0.00)[];
+	NEURAL_HAM(-0.00)[-0.999];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[alvalan9@foxmail.com,linux-btrfs@vger.kernel.org];
-	DKIM_TRACE(0.00)[foxmail.com:+];
-	NEURAL_HAM(-0.00)[-1.000];
+	FROM_NEQ_ENVFROM(0.00)[ebiggers@kernel.org,linux-btrfs@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	FROM_HAS_DN(0.00)[]
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,lst.de:email]
 X-Rspamd-Action: no action
 
-From: Qu Wenruo <wqu@suse.com>
+On Sat, Feb 21, 2026 at 12:45:25PM -0800, Eric Biggers wrote:
+> Currently, all filesystems that support fsverity (ext4, f2fs, and btrfs)
+> cache the Merkle tree in the pagecache at a 64K aligned offset after the
+> end of the file data.  This offset needs to be a multiple of the page
+> size, which is guaranteed only when the page size is 64K or smaller.
+> 
+> 64K was chosen to be the "largest reasonable page size".  But it isn't
+> the largest *possible* page size: the hexagon and powerpc ports of Linux
+> support 256K pages, though that configuration is rarely used.
+> 
+> For now, just disable support for FS_VERITY in these odd configurations
+> to ensure it isn't used in cases where it would have incorrect behavior.
+> 
+> Fixes: 671e67b47e9f ("fs-verity: add Kconfig and the helper functions for hashing")
+> Reported-by: Christoph Hellwig <hch@lst.de>
+> Closes: https://lore.kernel.org/r/20260119063349.GA643@lst.de
+> Signed-off-by: Eric Biggers <ebiggers@kernel.org>
+> ---
+>  fs/verity/Kconfig | 3 +++
+>  1 file changed, 3 insertions(+)
 
-[ Upstream commit 08b096c1372cd69627f4f559fb47c9fb67a52b39 ]
+Applied to https://git.kernel.org/pub/scm/fs/fsverity/linux.git/log/?h=for-current
 
-Before accessing the disk_bytenr field of a file extent item we need
-to check if we are dealing with an inline extent.
-This is because for inline extents their data starts at the offset of
-the disk_bytenr field. So accessing the disk_bytenr
-means we are accessing inline data or in case the inline data is less
-than 8 bytes we can actually cause an invalid
-memory access if this inline extent item is the first item in the leaf
-or access metadata from other items.
-
-Fixes: 82bfb2e7b645 ("Btrfs: incremental send, fix unnecessary hole writes for sparse files")
-Reviewed-by: Filipe Manana <fdmanana@suse.com>
-Signed-off-by: Qu Wenruo <wqu@suse.com>
-Reviewed-by: David Sterba <dsterba@suse.com>
-Signed-off-by: David Sterba <dsterba@suse.com>
-[ Avoid leaking the path by using { ret = 0; goto out; } instead of
-returning directly. ]
-Signed-off-by: Alva Lan <alvalan9@foxmail.com>
----
- fs/btrfs/send.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/fs/btrfs/send.c b/fs/btrfs/send.c
-index a46076788bd7..68c62b34d6f0 100644
---- a/fs/btrfs/send.c
-+++ b/fs/btrfs/send.c
-@@ -5892,6 +5892,10 @@ static int range_is_hole_in_parent(struct send_ctx *sctx,
- 		extent_end = btrfs_file_extent_end(path);
- 		if (extent_end <= start)
- 			goto next;
-+		if (btrfs_file_extent_type(leaf, fi) == BTRFS_FILE_EXTENT_INLINE) {
-+			ret = 0;
-+			goto out;
-+		}
- 		if (btrfs_file_extent_disk_bytenr(leaf, fi) == 0) {
- 			search_start = extent_end;
- 			goto next;
--- 
-2.43.0
-
+- Eric
 
