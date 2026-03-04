@@ -1,118 +1,140 @@
-Return-Path: <linux-btrfs+bounces-22225-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-22226-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id yMkXM7dMqGmvsgAAu9opvQ
-	(envelope-from <linux-btrfs+bounces-22225-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Wed, 04 Mar 2026 16:16:07 +0100
+	id iM+XLpROqGmvsgAAu9opvQ
+	(envelope-from <linux-btrfs+bounces-22226-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Wed, 04 Mar 2026 16:24:04 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
 Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DEE1202653
-	for <lists+linux-btrfs@lfdr.de>; Wed, 04 Mar 2026 16:16:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 246F6202962
+	for <lists+linux-btrfs@lfdr.de>; Wed, 04 Mar 2026 16:24:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id E2C213150CAB
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Mar 2026 15:07:42 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id D02D0307CF2F
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Mar 2026 15:09:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51D1E370D4A;
-	Wed,  4 Mar 2026 15:04:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hTdgbq+h"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DE4C34404E;
+	Wed,  4 Mar 2026 15:07:14 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A711349AF5
-	for <linux-btrfs@vger.kernel.org>; Wed,  4 Mar 2026 15:04:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3700C26E6FA;
+	Wed,  4 Mar 2026 15:07:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772636655; cv=none; b=OBehhp1MXoI9oHNw5jbPTOmVZo4ao/sF19gVBwbrI3Hvw++LLKpDO6kNqbQB0/XYAd1Oo9moyZApLuJ9zObuctf64bP7pJGE1EznjRBkqLX31cGUW+BgRf9CNCQDOqo76KiblI7om8ByHLjC2PV+XdGz7HmfjU9ZDXoChi9Tfps=
+	t=1772636833; cv=none; b=Zizcy9+HZcX+QCSHBGB17arXsIc4jpUwiLVuklir2zbhiuSCS52x0R44BVql0S+WQ8q0dWn6opLpLVf8s9/Pygv83TAJ6VCtTfYCKaBX04NDg2ZbvklICRpU2w2XPrKOw6LyMk7WQt4oeavksoonr8rYAERY57Mn1XPmtuc7Teg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772636655; c=relaxed/simple;
-	bh=5Ye0REItnKBcxlfOVIDs+PLE4HBkZCQkGC/PocV9s5A=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ERWRpljHoIYSKa8wcV8U7FrSSt+ZwAPyXl/ZH/E6rGYtnSQB4cfsQJGiVNbxyNEut8YvbtHTREB5doBuAaRaaftx2+PuvhP+Nnfy5zQToFm9Wko7uL75QReZXk0hLAWWegtgwDtqZzmve/vRx39vqjaKQIwf0b59gdERkEHHbQ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hTdgbq+h; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53FC5C4AF09
-	for <linux-btrfs@vger.kernel.org>; Wed,  4 Mar 2026 15:04:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772636655;
-	bh=5Ye0REItnKBcxlfOVIDs+PLE4HBkZCQkGC/PocV9s5A=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=hTdgbq+hXzi5ueu4SsWtofpmaY9pLRU6em8FMtVwgzc57f/4Mzl4NiNegenRp+YcY
-	 SZCKRCD+hOVYnbixCzoiWDoMlCixy4H0CnqKUV9fo4kRKZLhiSNu9C1U5WLl2IaLaX
-	 8s6eOPTZUt61/i8gbNTZIFdxcKUx7AUM/BeqJqTRdFQL834j3xUIDr7FxueXvlD1bo
-	 ekrp2HLXc0j5V1vtsVZ8R5M17Ok19b0hKEQxmCQnI4zqg6VBQonrsgPmwCX8xA2Gco
-	 F0n2eRkrENjb9Irb0a66yOcroybmiIlodfy1OgqXnGbicSb9yE0jVSrIkJcSrA6TM2
-	 E2+GA6JNEzfCw==
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-660d2e48383so2233216a12.1
-        for <linux-btrfs@vger.kernel.org>; Wed, 04 Mar 2026 07:04:15 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUjwUcCT3Au9LPlMyWJMS+6QEXDTmdplHQDE5Fh7tPHbq27sUAHACwgbbuF6d4Pkpxx3P4r90iZZ7aDuA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwFcPf6cVfZ/IptU6zpLka8x19Q4o10L2cQ4o6cdrKR1VAbndYG
-	Bx+tmfToxMkO55YsVO0nzBiQZ/YijaSOX2mI0jLKW1cnsmiZeVjfnY1t2kCSUN3BKCc6VW7IyxW
-	9uCgz6hEJmkKpWI6r7dRtD/XpbIfoW1Q=
-X-Received: by 2002:a17:906:d555:b0:b86:edb9:c01b with SMTP id
- a640c23a62f3a-b93f11eb22emr133964966b.8.1772636653834; Wed, 04 Mar 2026
- 07:04:13 -0800 (PST)
+	s=arc-20240116; t=1772636833; c=relaxed/simple;
+	bh=9SXhtW4k3MBZjjq2Mkcj04AbBIFzwpuFY2VgDt3g+5E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jg3O8GpBgjdKoZD94vGXT/o6rsrw7ITakRdWYxmQFLCLkb3s87/3JG+Bh1L+5fEh+ZXgitV8N81XEexJaHNvQtgQPL2LeciylfjKpuBm4wkefMxEC7wQIfIBASWpRr2UzrrLa0P1MypqRJzMaIDXbw0YSjoe8/Mu5jMLpkg9IZw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id 61CD968AFE; Wed,  4 Mar 2026 16:06:59 +0100 (CET)
+Date: Wed, 4 Mar 2026 16:06:59 +0100
+From: Christoph Hellwig <hch@lst.de>
+To: Heiko Carstens <hca@linux.ibm.com>
+Cc: Eric Biggers <ebiggers@kernel.org>, Christoph Hellwig <hch@lst.de>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Richard Henderson <richard.henderson@linaro.org>,
+	Matt Turner <mattst88@gmail.com>,
+	Magnus Lindholm <linmag7@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>, Huacai Chen <chenhuacai@kernel.org>,
+	WANG Xuerui <kernel@xen0n.name>,
+	Madhavan Srinivasan <maddy@linux.ibm.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	"Christophe Leroy (CS GROUP)" <chleroy@kernel.org>,
+	Paul Walmsley <pjw@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>, Alexandre Ghiti <alex@ghiti.fr>,
+	Vasily Gorbik <gor@linux.ibm.com>,
+	Alexander Gordeev <agordeev@linux.ibm.com>,
+	Christian Borntraeger <borntraeger@linux.ibm.com>,
+	Sven Schnelle <svens@linux.ibm.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Andreas Larsson <andreas@gaisler.com>,
+	Richard Weinberger <richard@nod.at>,
+	Anton Ivanov <anton.ivanov@cambridgegreys.com>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Thomas Gleixner <tglx@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	"H. Peter Anvin" <hpa@zytor.com>,
+	Herbert Xu <herbert@gondor.apana.org.au>,
+	Dan Williams <dan.j.williams@intel.com>, Chris Mason <clm@fb.com>,
+	David Sterba <dsterba@suse.com>, Arnd Bergmann <arnd@arndb.de>,
+	Song Liu <song@kernel.org>, Yu Kuai <yukuai@fnnas.com>,
+	Li Nan <linan122@huawei.com>, linux-alpha@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	loongarch@lists.linux.dev, linuxppc-dev@lists.ozlabs.org,
+	linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+	sparclinux@vger.kernel.org, linux-um@lists.infradead.org,
+	linux-crypto@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-arch@vger.kernel.org, linux-raid@vger.kernel.org
+Subject: Re: [PATCH 01/25] xor: assert that xor_blocks is not called from
+ interrupt context
+Message-ID: <20260304150659.GA23393@lst.de>
+References: <20260226151106.144735-1-hch@lst.de> <20260226151106.144735-2-hch@lst.de> <20260227142455.GG1282955@noisy.programming.kicks-ass.net> <20260303160050.GB7021@lst.de> <20260303195517.GC2846@sol> <20260304150142.10892A0b-hca@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <8e3c1626b6e49678976db67a861cb5dcfdb532c0.1772558357.git.fdmanana@suse.com>
- <7997e07a4f530bc52edd1b93e662907c4cd07377.1772561118.git.fdmanana@suse.com> <aaguMUK6TgYfwtZk@infradead.org>
-In-Reply-To: <aaguMUK6TgYfwtZk@infradead.org>
-From: Filipe Manana <fdmanana@kernel.org>
-Date: Wed, 4 Mar 2026 15:03:37 +0000
-X-Gmail-Original-Message-ID: <CAL3q7H44GTr+S91rYVfHcasWh9=QBe3dU9wLTRL4LJcinRE=VA@mail.gmail.com>
-X-Gm-Features: AaiRm51pf_gXyYDLOI2VE-Og2RSp-fCBAuxc8B85haNQVkRPrBuMSlH-h84aFcM
-Message-ID: <CAL3q7H44GTr+S91rYVfHcasWh9=QBe3dU9wLTRL4LJcinRE=VA@mail.gmail.com>
-Subject: Re: [PATCH v2] btrfs: test a directory fsync scenaro after replacing
- a subdir with a file
-To: Christoph Hellwig <hch@infradead.org>
-Cc: fstests@vger.kernel.org, linux-btrfs@vger.kernel.org, 
-	Filipe Manana <fdmanana@suse.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Rspamd-Queue-Id: 6DEE1202653
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260304150142.10892A0b-hca@linux.ibm.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
+X-Rspamd-Queue-Id: 246F6202962
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-1.36 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
+	DMARC_POLICY_SOFTFAIL(0.10)[lst.de : SPF not aligned (relaxed), No valid DKIM,none];
 	HAS_LIST_UNSUB(-0.01)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[kernel.org,lst.de,infradead.org,linux-foundation.org,linaro.org,gmail.com,armlinux.org.uk,arm.com,xen0n.name,linux.ibm.com,ellerman.id.au,dabbelt.com,eecs.berkeley.edu,ghiti.fr,davemloft.net,gaisler.com,nod.at,cambridgegreys.com,sipsolutions.net,redhat.com,alien8.de,linux.intel.com,zytor.com,gondor.apana.org.au,intel.com,fb.com,suse.com,arndb.de,fnnas.com,huawei.com,vger.kernel.org,lists.infradead.org,lists.linux.dev,lists.ozlabs.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-22226-lists,linux-btrfs=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_THREE(0.00)[4];
-	TAGGED_FROM(0.00)[bounces-22225-lists,linux-btrfs=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
 	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[fdmanana@kernel.org,linux-btrfs@vger.kernel.org];
-	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
+	FROM_HAS_DN(0.00)[];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo]
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[hch@lst.de,linux-btrfs@vger.kernel.org];
+	TO_DN_SOME(0.00)[];
+	RCPT_COUNT_GT_50(0.00)[57];
+	R_DKIM_NA(0.00)[];
+	NEURAL_HAM(-0.00)[-0.992];
+	MID_RHS_MATCH_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,lst.de:mid]
 X-Rspamd-Action: no action
 
-On Wed, Mar 4, 2026 at 1:05=E2=80=AFPM Christoph Hellwig <hch@infradead.org=
-> wrote:
->
-> The subject is wrong, this is actually a generic test.
+On Wed, Mar 04, 2026 at 04:01:42PM +0100, Heiko Carstens wrote:
+> > Because of that CPU feature check, I don't think
+> > "WARN_ON_ONCE(!may_use_simd())" would actually be correct here.
+> > 
+> > How about "WARN_ON_ONCE(!preemptible())"?  I think that covers the union
+> > of the context restrictions correctly.  (Compared to in_task(), it
+> > handles the cases where hardirqs or softirqs are disabled.)
+> 
+> I guess, this is not true, since there is at least one architecture which
+> allows to run simd code in interrupt context (but which missed to implement
+> may_use_simd()).
 
-Yes, I'm sure Zorro can replace "btrfs:" with "generic:" when he picks this=
-.
-
-Thanks.
-
->
+I'd rather have a strict upper limit that is generally applicable.
+Currently there is no non-task user of this code, and while maybe doing
+XOR recovery for tiny blocks from irq context would be nice, let's defer
+that until we need it.  There is much bigger fish to fry in terms of
+raid performance at the moment.
 
