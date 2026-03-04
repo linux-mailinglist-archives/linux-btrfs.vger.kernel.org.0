@@ -1,217 +1,373 @@
-Return-Path: <linux-btrfs+bounces-22216-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-22217-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id kCbKKRfXp2kRkQAAu9opvQ
-	(envelope-from <linux-btrfs+bounces-22216-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Wed, 04 Mar 2026 07:54:15 +0100
+	id ILEgLOrZp2kRkQAAu9opvQ
+	(envelope-from <linux-btrfs+bounces-22217-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Wed, 04 Mar 2026 08:06:18 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id B43B01FB531
-	for <lists+linux-btrfs@lfdr.de>; Wed, 04 Mar 2026 07:54:14 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 644A21FB5DC
+	for <lists+linux-btrfs@lfdr.de>; Wed, 04 Mar 2026 08:06:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 8B2723020983
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Mar 2026 06:54:11 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 715ED302DE45
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Mar 2026 07:06:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A091E37F012;
-	Wed,  4 Mar 2026 06:54:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4317B361DA7;
+	Wed,  4 Mar 2026 07:06:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="WhJ5VDTg";
-	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="AhjnDmPy"
+	dkim=pass (2048-bit key) header.d=icloud.com header.i=@icloud.com header.b="J8UyIE5q"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from esa2.hgst.iphmx.com (esa2.hgst.iphmx.com [68.232.143.124])
+Received: from cu-gy11p00im-quki08153201.gy.silu.net (cu-gy11p00im-quki08153201.gy.silu.net [157.255.1.67])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B87E129B8D9
-	for <linux-btrfs@vger.kernel.org>; Wed,  4 Mar 2026 06:54:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=68.232.143.124
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772607250; cv=fail; b=JRIHCknqo/FrmtRDk1Ay52aah4S+IZYpqLEMh8SJL8Sbna0D6q22uy6+8/ytjz94wNkDvnptPph9ElOyLSdF0K5YLQd3rlug2N/41gWpNFBhKfLMYtaaxK9ZlG1oqShxu7P70iyORuAqZ9B+9OdkojzklXksdHF3GykTsxx73Lg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772607250; c=relaxed/simple;
-	bh=PSZIQptiEMxQQvaEwuUAR9dOf/twKq3yDhX6YFNNUMM=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=jcxud7g5NmPg+Cs13Zg/slz43NrsSfm19vHYkdNcZL4TKxQYTmZBOPADWEfF/daXnhinTjNMjtPHPodW07d+Qy1T975F4WvJJ7P6PIwVmuPSoRr1qHMN7q5ONZ5bDv3ZxW5zv4IYjtr315fTKHv0gYrX6AX01/7U7qt3eefLZTk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=WhJ5VDTg; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=AhjnDmPy; arc=fail smtp.client-ip=68.232.143.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1772607248; x=1804143248;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=PSZIQptiEMxQQvaEwuUAR9dOf/twKq3yDhX6YFNNUMM=;
-  b=WhJ5VDTg+kG2SYeYjT+IvWz6hkAC+xDLPx0w7W8FA4knq7Tpr4/v4Vr/
-   mcS3FILjNOs5ObzatESQ0J5WaNgb6wyRsMB+P8aBzcUqomC9IG81UFpaS
-   omHvL4RaBla4I/1O6P7rnX79DZj08IdpPBmBuct1NN5oVYAcYbvQgKdWU
-   wkoAU9NnXF6/Dalfz2O1VKu02nxu6XB+KB1kT7bdzi+apRNifyvDvNG6F
-   FJYFqDpjheRpTFfmAwqMyEkOxvZsPn4/XnRKdhkBIAfe/NzMIU/jkL+Qm
-   nY/AnFhG6RqlkMRnLEd0EL9tWbr1niiIQcM2TePnT4JFITjUaCEu780Ti
-   Q==;
-X-CSE-ConnectionGUID: Ldkp1wi6Su2xKXZJjrtEVw==
-X-CSE-MsgGUID: iA2zonpSQqaiI7EroLAT9A==
-X-IronPort-AV: E=Sophos;i="6.21,323,1763395200"; 
-   d="scan'208";a="142998359"
-Received: from mail-centralusazon11010006.outbound.protection.outlook.com (HELO DM1PR04CU001.outbound.protection.outlook.com) ([52.101.61.6])
-  by ob1.hgst.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 04 Mar 2026 14:54:07 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=bOHsAO/gmjyMwfx0Fd5QEuWU00kHZ6VuxNUnRcS/Kx7s/fRL5n4W/8h63fyfskAeJB/opE/O10I8NoloUJvgsQ1S3IrszT9ZN4/NMOinQCX/KehSwx3KbPMnVAokfOT4wIqJ3EjakYmXwlxYHQb5Ueis1IxGv0mU0jPVs9HRHV1qzi/XgatiV05cQXMHGjlg2f+IePB78VsOyyonDyjO0oHgUtc/ElVNPetJvJ+7IuYJ4QKd1n4BpAtwsUFYsX7ApanAUfi6DMjNIWfPq2k4nplu6P9eTkS7ZXxAhHMVJSAgEUVDdsbvccCkPd4o//MipyCPX3Uq1W6ZYxeJ/LvkOg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=PSZIQptiEMxQQvaEwuUAR9dOf/twKq3yDhX6YFNNUMM=;
- b=x5KE9hwHzI2OKcyi1EQkt/jLZPeWzzg7/h5waSmm/ZrbwburLst0B20jrGBQQTxcYZWN516raHRGvkaLn9bwlnq/LO4cr6GsMaXll6xuXbt7s90690JmYYbv5bRsSIhmGh8fF1CCoz4TsL+xYUHR72vqCT1SEt0l205ywZlkdValohLDeJUw2azxxI5cDY9CYId8XgfOI6lxHNunvgz0U+zj2DQTkQk4YkgVkJf9Z0kSHph3l3WBNVzhJ/ynBUNVzbLXAti9i4nnIUPHIfsxkPBNOAk2R6gFXJ8erH6EhJweI+QCp9Yjn0nEec6Mx+o9HiRMhNFvmeDv4jIOG07WkA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PSZIQptiEMxQQvaEwuUAR9dOf/twKq3yDhX6YFNNUMM=;
- b=AhjnDmPy1iLLaHBvqLPksMxoKcS8z4aaQbaI6czboQaOvTJ8NqEdvJDJipRouPjxRBxf0x2cf3gJoBBNtUb94/y/vk96j+NGuu7gmLrh6m37Qio4LQ2EpQvnTxGjXv5YMVTzT0Y9Z35oRNN4Xn3QuiSa/8kxRejUnkvJrAZP0Bg=
-Received: from LV8PR04MB8984.namprd04.prod.outlook.com (2603:10b6:408:18b::13)
- by SJ0PR04MB7885.namprd04.prod.outlook.com (2603:10b6:a03:3aa::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9678.16; Wed, 4 Mar
- 2026 06:54:06 +0000
-Received: from LV8PR04MB8984.namprd04.prod.outlook.com
- ([fe80::14a1:5b7a:6cf4:31a3]) by LV8PR04MB8984.namprd04.prod.outlook.com
- ([fe80::14a1:5b7a:6cf4:31a3%3]) with mapi id 15.20.9678.016; Wed, 4 Mar 2026
- 06:54:05 +0000
-From: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To: Damien Le Moal <dlemoal@kernel.org>, "linux-btrfs@vger.kernel.org"
-	<linux-btrfs@vger.kernel.org>
-CC: Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>, Naohiro Aota
-	<Naohiro.Aota@wdc.com>
-Subject: Re: [PATCH] btrfs: don't take device_list_mutext when quering zone
- info
-Thread-Topic: [PATCH] btrfs: don't take device_list_mutext when quering zone
- info
-Thread-Index: AQHcqvwIxlw4Vig0Q0aLh3/Hy4muarWdkmUAgABfAwA=
-Date: Wed, 4 Mar 2026 06:54:05 +0000
-Message-ID: <aaaf5965-235d-4dbd-a854-b13be2a7a8ec@wdc.com>
-References: <20260303105346.215439-1-johannes.thumshirn@wdc.com>
- <4586e122-f97b-4db8-940a-05dcf04fafaa@kernel.org>
-In-Reply-To: <4586e122-f97b-4db8-940a-05dcf04fafaa@kernel.org>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Mozilla Thunderbird
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=wdc.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: LV8PR04MB8984:EE_|SJ0PR04MB7885:EE_
-x-ms-office365-filtering-correlation-id: e9dc78f0-758d-455a-66dd-08de79bad397
-wdcipoutbound: EOP-TRUE
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam:
- BCL:0;ARA:13230040|366016|10070799003|1800799024|19092799006|376014|38070700021;
-x-microsoft-antispam-message-info:
- HVMvlODEIALe1SIgSrB89Gor8a7731zCnzKSqMHOjBattRaMqJKYLmCIZIPs64gI+FR2QOLRkPxTszQsVTGqI0Y1GJfLWJ36+9vLwBQCJ6cUZ821UW9ZeJEP4hSy5BimYau2OHKyoVAjOskqfB5ISGDTusxx0Xr/BuwQR4wE5teVxkho2DNzjnQ/01i3WM2DDctHk5KfG04+NPb3fJfrtgVCrVNb/zD6DlDMgg39DH4f00vH3w2HOZdtMBr12V0rXEy/bZY9JAWrg9Iy2HvKXabH4/Hobz+DJ43qWnE67y4zMa8zCzGeYuDhSJb75WDf+FZZTzzFVooFITVb9y5HKegL7Z+s0RZqHCCalPCcsKTrY1NRE3Qt3QZPPEQRLNAbuNpt7Xy+zDDQ199Vvocbe/Tl5GwQg9ISzeKHOoVI3QQ1b81ZxnzzKn1qKxE2excIw5Pp9IUaOOrHmXskux+nfOiewkC/9ru3l9yquvtt1SwlJrVebCCup0WqFZK3o+t4AwnQeiY5cX99uHl3lupdpV5zh7TYhgv6cqJ0hRZvFwLdxde3xDa6wd3aR27dG7CzdBiNwMvVoxrcp1SykmIt6p9UdB+9+bMFper8AX42AHWtQIUtCKAFx+8sLHbWeKK3vm3uUjDijCMOVCu3LXcdpV6edRHiuD5vZbvhd67uCrzXDFYv2jhbQSbdJMDcKZNvRX1LQvq+uioIAYmJki4EVDdcTBcA5V25wFvBzSMMFLeLPKCPkAQlLlE3cI/QF5IIxE0tl4Q6G822uOgtCT+QmiF7tzupxLgI8ld7PcvWh6I=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV8PR04MB8984.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(10070799003)(1800799024)(19092799006)(376014)(38070700021);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 2
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?QnMrR3RjQjFLeURoMkNibGJhSkZrWncyRlZ2NVcxS1Y2SEQva2tGbS9EOG1Y?=
- =?utf-8?B?YUkySjhFcTN2MXI2cWtqZW94TVdxb05GT04yMEtwQitHQ3czc0lsb0ZPNXVz?=
- =?utf-8?B?amNnbUJSMXI3T0RvV0ZzV1FXWU5xNDVkdWwwZmFUMnBVUDdXZUNURnBicldG?=
- =?utf-8?B?SnNBcnp3cG5Fd2dyR0xtbitZMDV2QUZNaklzWVJwb1B3eVJhREtCWjN3dVJJ?=
- =?utf-8?B?eHVMSHVPVUhRdVNpNW1WUEpiZ2I2dWdKVDE5MkZqSzBYd0lmVVhDdEZLblR5?=
- =?utf-8?B?cC9XNVU0bUJuMVd4ZHVhZHFRQlhjTUNXVGdaMXY2eFhyS1V6OU5YZVpXWmlw?=
- =?utf-8?B?SXluQjhHdXE0dzRieE40eGkzanQzdnNwTEhZQkFiVlp2VWFScHExR1dVUDJw?=
- =?utf-8?B?OENYVlpwaS9jbzYvWXpPYXRtemZmRW5LejhBaEpROFhsMTM2T2lyUGtoR0xj?=
- =?utf-8?B?a0pjZ3NRZlJ1MXFzYVRnTk16b0ZPOUxTL1FxOFRTMlN4ejFscFR4TFZyMVZZ?=
- =?utf-8?B?dWJJTi9UTFd3R1FyRDFyaHQwYTdlbEQzYXh6eUtXbHhiN3NDOTgwRXJGd25J?=
- =?utf-8?B?TFYwREpyMUdZY1pZMXdzKzVkb1pEa1lzM3lCU0lPb3RGVFRNU3kzcXlCd1Ny?=
- =?utf-8?B?T01Xb2YyUXRoUndWVGVhM1djU25zS3U3dUFINUVrYTRSRWZ2aGplWUZ4UERs?=
- =?utf-8?B?U2V3d0ZjM0xqei8valNJNDE3d1hsMExoVWdpNExzdE9RbHNzVHY0aFdkQ1VO?=
- =?utf-8?B?YkgzNEVZWi9iS0NFdXJDQ01QTkdYWmZRaFluVGNMZThuUUs4WUs2U1ZEdXNW?=
- =?utf-8?B?QmlXd2RmcHhNdFRHZ2FvVlpHTkE0cTUwQTBISGZpVDVDZGpoUGFVQlB6MGhw?=
- =?utf-8?B?RDFmdzdHZWRQUWN0T1hXR0xja3hqZExLTkZVREw0ZW5Od1M4ejRVUU50TXM5?=
- =?utf-8?B?dHZuTTlTSzl1U1lrd05BWDdqeERsMXNMSHZKSkQ1M2RmRFYxKzhTS016SHlG?=
- =?utf-8?B?elVPL3FPVXozaXhFNFIwWGJ5OXc2Mm9NZDY5Y0dMandwcFVoM0tzUjArdFdU?=
- =?utf-8?B?bVVUZHh5eHFtb1RtVG1qNHpFRHl5LzNZMEptdzdrUTI0aDZmZGNwbTFialpF?=
- =?utf-8?B?RzZGWUdGSEhyZ3V5MkRFOFhPTm1IYkw0NFFEUFVhZGsrZHIyNFpoQ2VpN0F6?=
- =?utf-8?B?eGlEdnhEWmo5TThMTFhic3ladFgzTkZlcEdlVjdhYURQa3FXYWRJUGxTVnV0?=
- =?utf-8?B?QTFmMEh3VWxJMFdsQTYvbU54OXRRQ3FHQlU0Y3lsMEIxK3JDN0YvRUpzeUdu?=
- =?utf-8?B?ak9DL2ZuSURaajRaZGZJUGFjYTh5MnJJMlpqZkpYNGUyYnVaTlpVOXB5VVlG?=
- =?utf-8?B?d2tLMksvZU16NGM5TytaVFM1VHBIc3VJb1N3QUlmeVgzTSswL0NwajNjKzR5?=
- =?utf-8?B?QnY4SFdJUXlsSm1ucnhVcHQ5NXBwaXd3ZUplQk5vSmJYMmlMV1VOTnFkbldP?=
- =?utf-8?B?bVNza1B4Z3NEV0NtamlhWGRYcnJXVFZqbHdOZmIrS09kcUswWHljZjJ0NVl5?=
- =?utf-8?B?S094aXNONmtRcno3YzMvaHRlTVFZb1NCUnM0NU5ndVhkYlh4bzZ0U2NZV2Fv?=
- =?utf-8?B?c251R3ZPQ2h1cGF6RVdNSUFVUUN0eVcrcEVCcmRXY1JYaVhuNWxCS2d2UlBB?=
- =?utf-8?B?VGp0TGxHQWlVUXFrM0FXTlN5S0RxQlNzU2NKNWJWZmhjSXhVeGViYmpMNkR1?=
- =?utf-8?B?b1dJM3Q3N09QK2Y2ekV0QlM1dTEyRlF1eDVXaXZlaXJDbEtSa0xuTS9MZTBo?=
- =?utf-8?B?cVp1RHI4MnhwNkE4aW54Slp1T3lxdGttODVSeVVqeTdCNUpRdEVucUtmRXl6?=
- =?utf-8?B?N1lUaWlNbndKd0lzckUzR0czSWxKZkZENVhkaWhMV2duTDA4S1NDc0V4enUz?=
- =?utf-8?B?WndCQXRHcGV2RzJTWm5DdFNUdU5jMm5YdWlSUlBETDl3RXQwN3YxZDF2WTdv?=
- =?utf-8?B?bUZQRG5wMVdhQWlmN2lMYVVTM0Z1R3FrRmVqZkxaWnNKZHhVOW5tbE5XUFFL?=
- =?utf-8?B?VjBNcTFYelFvQ3BURkp6US9IOFJNY21jNzF3bGNCOFVqTmQ2UGF4S2JyK0to?=
- =?utf-8?B?M3dJUVRZRHBITTIybUlNdHR5TzNpaTVVT3J0ZWlEa2tsdUMxdi9yMi91V1Rv?=
- =?utf-8?B?QzJrQTBKK3hoZGVmeFA4OVdxSHZYMnVGMjh5NkF4TmMzSEpqNWVhSUp2QVk1?=
- =?utf-8?B?VU9OMGtMMXNXUUlCMU5SQUhkMVc2SXZzTmNrc2Y3a1I0dmJYVmQzVFhsK0ZF?=
- =?utf-8?B?NndOdmhUa2tEL1JUNnE0TlE2ZnlZSzl0RzBGSFBraU1GZ0JIVXg3TzFoeTMx?=
- =?utf-8?Q?C2w8ZXcjEMelrL5/Rd4MhYdxF/xnkeaOnWnPhviF/AZG3?=
-x-ms-exchange-antispam-messagedata-1: UbVqUT9mDEXkF4EimqgXGq/yIeOLCNU8wU8=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <81A449A15C3B534496B7566248A6C6EB@namprd04.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C00804207A;
+	Wed,  4 Mar 2026 07:06:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=157.255.1.67
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1772607966; cv=none; b=VOsw+5GkTpTkHUK6cjRVfjJSGDyI+E4wP//pxyypUwIX4/j4fE193oI3DMrtNcUrYUu72PZ1oRSF/8NxOjwDSeOPbZeZ9KZJIemYwMBV8ZTFBgo9/Ktqarkkfc13W4AGg94Mwhahwzp7/aO504NMi9IQoFw9EXH/I+yLR4kZi3Q=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1772607966; c=relaxed/simple;
+	bh=WZruq0YHiH+dtTjy6hNP4WuwgaSNfc0s0mN3ECUQPqM=;
+	h=From:Content-Type:Mime-Version:Subject:Message-Id:Date:Cc:To; b=aH6+gcykniFw59o8Ca1TappfFcUNEwDPfyFWE+GtCet8Za1HcAAfxc7VlRyCqHU542RK8Txm9IAMCOHLx/4E0s1x8yOahMizyfTOx+l43lu8oNvmyHZN3O2yk7jloCy9JgmDhjeyhN7MHCf3GniP5Np9/YwvleVoOMbRKR9iVHw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=icloud.com; spf=pass smtp.mailfrom=icloud.com; dkim=pass (2048-bit key) header.d=icloud.com header.i=@icloud.com header.b=J8UyIE5q; arc=none smtp.client-ip=157.255.1.67
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=icloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=icloud.com
+Received: from smtpclient.apple (gy11p00im-asmtpcmvip.gy.silu.net [112.19.199.76])
+	by gy11p00im-quki08153201.gy.silu.net (Postfix) with ESMTPS id E52F8246000B;
+	Wed,  4 Mar 2026 07:05:57 +0000 (UTC)
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=icloud.com; s=1a1hai; t=1772607962; x=1775199962; bh=8VNf1gnZtuE/OBBqVJjNNUwEXder+/33LlrRF7sRZRo=; h=From:Content-Type:Mime-Version:Subject:Message-Id:Date:To:x-icloud-hme; b=J8UyIE5qQwACZUQWJvo+2aZ7FOjlH4AUN7gNCFfXypLfdNajhkH4HytLafncdlJQwBDXgd738/jRDVIRS8DHW+NkZX49hpx5Vcne3D4MGZNBulHUsdCWClCWBFh1PABDhHYbv4tj+a+bF2gy1qr8TiWmsu1bD3DKDjUXhLTCW+KFo1YDK8onQ0/5zNJ3S5oKU8vEoIIIZCAVgm2CX48d+c+W31T0bUAGj0/VKSB9326vrAfqATMFj5GF7EHZr8NBtq59UjUAdaMirYG4C2RgKyZY7Q6auE1mFCLe/9AuY6J+9kFvMkMrur+QtOA4+G4nxzOMdn8lNdLbDgd8FYg8zQ==
+From: wheatfox17@icloud.com
+Content-Type: text/plain;
+	charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	LjqX9RRuIoDQ+Wzt6ipke6OT75q44+dlUx3ercckXxfxnNyJoMHD3EBqq6nfLqcgo3VTf8jMZwe87HXvx06pVTT5c1mldDiClWV6U/E9Dn2m2dgEo7l3Qi9YwaRq50H0sJWxpkiviq2HNMiyISO5mg69aeZSMkxypMRWrbHZtrqwFOrF2mqECSM0Gi8Xr3vHeiXdwJSUKRDZTc5oPmfp2D4elj3bB/DlaN5iBmqrMwI1/GrqDBQMthRl4+p+hKX7HqoMFPd3FIoFRNP1wWzK0WPsK3D2zZGkQoViW2NXMPVQShDeez5/F3l3WQcAL1a0S3Za67yUHUZJM3xUEiR5J9JsQaSEby8HwB29K34oZRopNVZ7nwymP/LoOUqNQVa7vvEfx2QvpNtQr+q1G7nieNZtGf/qwCQkoPgFoGkZfDCVx04dZLPtDJqKa1BjHmLwWS8/XaCSzohAk/0q+0Q8aV9rv76XTmXWshqwlqmbjBrAuf3Hw0+bCP3SwJu+cS0xgbSdsv7JR8Jq9jvJchN/me1RFY08ZGkhG/O7CWiITi+a5l1ep/6Y28cZofMn64NIgXLLo0isp4V1Gx0IE6RsYERXaswxW2Lwv5WPML5KEkEaY1YXp7vbL9KE5qqQzuyq
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: LV8PR04MB8984.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e9dc78f0-758d-455a-66dd-08de79bad397
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 Mar 2026 06:54:05.3908
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 2z+jvCYvlcmpZRg4PNPaalB1RdutIZ+Lb4zDiN5kCdvMYLKhFVOsxgJ91WnGfz76jqrciyUquyP4Ydh/OQGCvK6OReopIq7drhThyZVP7WI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR04MB7885
-X-Rspamd-Queue-Id: B43B01FB531
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3864.400.21\))
+Subject: [BUG] btrfs: circular locking dependency in zoned mode (mmap_lock <->
+ kernfs_rwsem)
+Message-Id: <45B9FF84-9FC0-4AE7-BA9E-B2B60F1E4F7B@icloud.com>
+Date: Wed, 4 Mar 2026 15:05:46 +0800
+Cc: David Sterba <dsterba@suse.com>,
+ Chris Mason <clm@fb.com>
+To: linux-kernel@vger.kernel.org,
+ linux-btrfs@vger.kernel.org
+X-Mailer: Apple Mail (2.3864.400.21)
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMzA0MDAzOCBTYWx0ZWRfX/aC6lrEkIy2q
+ 28dINJwH0C+wwYtfwjO2LtwZ94zb4bOR/GyR34G1S8CntT7c+5m5VeQSCcS+2Yb1xmmdMtbjD5J
+ uQY67hIGC3625NR4sr4dZpxK+HHB6KbAH6OwBjZpKrutqEW9KiT642HasgeKN9jUgwpG/6Web2s
+ 8rSb6UmNWqSNr6H/j9m8NEWZSTbUcrIHAUKm0ysMr+MxIA4pQ65iWT6kB01TUxTiB5o4vDmO1zq
+ VchXkOXE8O6MFNaolqmXj6ToqWgWXg62/3ElYPxbxcfXHgvKoOs73L/gm7IyNw528ha2giOSiGZ
+ KW+wxLr++BlGb8WksMwQEx6ytN9Jp7ufQSQ12kPUQ==
+X-Proofpoint-GUID: XWgcckUhbl1gvRY5fx_mguQiCHGxcjMb
+X-Proofpoint-ORIG-GUID: XWgcckUhbl1gvRY5fx_mguQiCHGxcjMb
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.51,FMLib:17.12.100.49
+ definitions=2026-03-04_02,2026-03-03_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0
+ malwarescore=0 suspectscore=0 mlxlogscore=999 phishscore=0 spamscore=0
+ adultscore=0 clxscore=-2147483648 lowpriorityscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.22.0-2601150000
+ definitions=main-2603040038
+X-Rspamd-Queue-Id: 644A21FB5DC
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.94 / 15.00];
-	MIME_BASE64_TEXT_BOGUS(1.00)[];
-	ARC_REJECT(1.00)[cv is fail on i=2];
-	DMARC_POLICY_ALLOW(-0.50)[wdc.com,quarantine];
-	R_DKIM_ALLOW(-0.20)[wdc.com:s=dkim.wdc.com,sharedspace.onmicrosoft.com:s=selector2-sharedspace-onmicrosoft-com];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[icloud.com,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[icloud.com:s=1a1hai];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
-	MIME_BASE64_TEXT(0.10)[];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-22216-lists,linux-btrfs=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[wdc.com:+,sharedspace.onmicrosoft.com:+];
-	RCPT_COUNT_THREE(0.00)[4];
-	RCVD_COUNT_FIVE(0.00)[6];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[Johannes.Thumshirn@wdc.com,linux-btrfs@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-22217-lists,linux-btrfs=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FROM_NEQ_ENVFROM(0.00)[wheatfox17@icloud.com,linux-btrfs@vger.kernel.org];
+	FROM_NO_DN(0.00)[];
+	RCPT_COUNT_THREE(0.00)[4];
 	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[linux-btrfs];
 	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,wdc.com:dkim,wdc.com:mid,sharedspace.onmicrosoft.com:dkim]
+	PRECEDENCE_BULK(0.00)[];
+	DKIM_TRACE(0.00)[icloud.com:+];
+	APPLE_MAILER_COMMON(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	TAGGED_RCPT(0.00)[linux-btrfs];
+	FREEMAIL_FROM(0.00)[icloud.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,icloud.com:dkim,icloud.com:email,icloud.com:mid,qemu.org:url]
 X-Rspamd-Action: no action
 
-T24gMy80LzI2IDI6MTQgQU0sIERhbWllbiBMZSBNb2FsIHdyb3RlOg0KPiBzL2FkZGVkIHRvIHJl
-bW92ZWQgZnJvbS9hZGRlZCB0byBvciByZW1vdmVkIGZyb20NCj4NCj4NCkZpeGVkIGFuZCBwdXNo
-ZWQgdG8gZm9yLW5leHQuDQoNCg==
+There=E2=80=99s a circular locking dependency detected by lockdep when =
+running Syzkaller
+on a Btrfs filesystem with zoned mode. The deadlock involves a =
+four-stage dependency
+chain starting from mmap_lock and ending back at it via kernfs_rwsem.
+
+Upstream commit: 7.0.0-rc2, 0031c06807cfa8aa51a759ff8aa09e1aa48149af
+Kernel Architecture: x86_64
+Kernel Config: https://pastebin.com/CAZu430t
+Hardware: FEMU b3272c0130faa5fd04826303541a831731a8dfb2 ZNS SSD mode
+
+Reported-by: Yulong Han <wheatfox17@icloud.com>
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
+        SYZKALLER BUG REPORT AND REPRODUCER
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
+
+Syzkaller hit 'possible deadlock in lock_mm_and_find_vma' bug.
+
+syz-executor (436) used greatest stack depth: 24176 bytes left
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
+WARNING: possible circular locking dependency detected
+7.0.0-rc2-g0031c06807cf #7 Not tainted
+------------------------------------------------------
+syz.3.82/1572 is trying to acquire lock:
+ffff88811270e140 (&mm->mmap_lock){++++}-{4:4}, at: =
+mmap_read_lock_killable include/linux/mmap_lock.h:601 [inline]
+ffff88811270e140 (&mm->mmap_lock){++++}-{4:4}, at: =
+get_mmap_lock_carefully mm/mmap_lock.c:450 [inline]
+ffff88811270e140 (&mm->mmap_lock){++++}-{4:4}, at: =
+lock_mm_and_find_vma+0x485/0x1200 mm/mmap_lock.c:501
+
+but task is already holding lock:
+ffff88810021e988 (&root->kernfs_rwsem){++++}-{4:4}, at: =
+kernfs_fop_readdir+0x15b/0x990 fs/kernfs/dir.c:1898
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #3 (&root->kernfs_rwsem){++++}-{4:4}:
+       lock_acquire kernel/locking/lockdep.c:5868 [inline]
+       lock_acquire+0x194/0x300 kernel/locking/lockdep.c:5825
+       down_write+0x8b/0x1e0 kernel/locking/rwsem.c:1590
+       kernfs_add_one+0x38/0x850 fs/kernfs/dir.c:796
+       kernfs_create_dir_ns+0xfc/0x1a0 fs/kernfs/dir.c:1098
+       sysfs_create_dir_ns+0x13a/0x2b0 fs/sysfs/dir.c:59
+       create_dir lib/kobject.c:73 [inline]
+       kobject_add_internal+0x247/0x8f0 lib/kobject.c:240
+       kobject_add_varg lib/kobject.c:374 [inline]
+       kobject_add+0x16a/0x1e0 lib/kobject.c:426
+       btrfs_sysfs_add_block_group_type+0x246/0x500 =
+fs/btrfs/sysfs.c:1866
+       btrfs_create_pending_block_groups+0xfb0/0x1820 =
+fs/btrfs/block-group.c:2876
+       __btrfs_end_transaction+0xf5/0x8e0 fs/btrfs/transaction.c:1080
+       btrfs_zoned_reserve_data_reloc_bg+0x62c/0x930 =
+fs/btrfs/zoned.c:2836
+       open_ctree+0x423d/0x5f52 fs/btrfs/disk-io.c:3597
+       btrfs_fill_super fs/btrfs/super.c:981 [inline]
+       btrfs_get_tree_super fs/btrfs/super.c:1944 [inline]
+       btrfs_get_tree_subvol fs/btrfs/super.c:2087 [inline]
+       btrfs_get_tree.cold+0xe1/0x2b7 fs/btrfs/super.c:2121
+       vfs_get_tree+0x92/0x320 fs/super.c:1754
+       vfs_cmd_create+0xd7/0x2a0 fs/fsopen.c:231
+       vfs_fsconfig_locked fs/fsopen.c:295 [inline]
+       __do_sys_fsconfig+0x55a/0xcb0 fs/fsopen.c:463
+       do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+       do_syscall_64+0xfc/0x670 arch/x86/entry/syscall_64.c:94
+       entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+-> #2 (btrfs_trans_num_extwriters){.+.+}-{0:0}:
+       lock_acquire kernel/locking/lockdep.c:5868 [inline]
+       lock_acquire+0x194/0x300 kernel/locking/lockdep.c:5825
+       join_transaction+0x149/0xf40 fs/btrfs/transaction.c:323
+       start_transaction+0x3c4/0x1fe0 fs/btrfs/transaction.c:708
+       btrfs_zoned_reserve_data_reloc_bg+0x5bc/0x930 =
+fs/btrfs/zoned.c:2827
+       open_ctree+0x423d/0x5f52 fs/btrfs/disk-io.c:3597
+       btrfs_fill_super fs/btrfs/super.c:981 [inline]
+       btrfs_get_tree_super fs/btrfs/super.c:1944 [inline]
+       btrfs_get_tree_subvol fs/btrfs/super.c:2087 [inline]
+       btrfs_get_tree.cold+0xe1/0x2b7 fs/btrfs/super.c:2121
+       vfs_get_tree+0x92/0x320 fs/super.c:1754
+       vfs_cmd_create+0xd7/0x2a0 fs/fsopen.c:231
+       vfs_fsconfig_locked fs/fsopen.c:295 [inline]
+       __do_sys_fsconfig+0x55a/0xcb0 fs/fsopen.c:463
+       do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+       do_syscall_64+0xfc/0x670 arch/x86/entry/syscall_64.c:94
+       entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+-> #1 (btrfs_trans_num_writers){.+.+}-{0:0}:
+       reacquire_held_locks+0xce/0x1e0 kernel/locking/lockdep.c:5385
+       __lock_release kernel/locking/lockdep.c:5574 [inline]
+       lock_release kernel/locking/lockdep.c:5889 [inline]
+       lock_release+0x11f/0x2c0 kernel/locking/lockdep.c:5875
+       percpu_up_read include/linux/percpu-rwsem.h:112 [inline]
+       __sb_end_write include/linux/fs/super.h:14 [inline]
+       sb_end_intwrite include/linux/fs/super.h:101 [inline]
+       __btrfs_end_transaction+0x5c7/0x8e0 fs/btrfs/transaction.c:1085
+       btrfs_dirty_inode+0x131/0x200 fs/btrfs/inode.c:6443
+       btrfs_update_time fs/btrfs/inode.c:6468 [inline]
+       btrfs_update_time+0xc4/0x100 fs/btrfs/inode.c:6454
+       touch_atime+0x255/0x780 fs/inode.c:2271
+       file_accessed include/linux/fs.h:2263 [inline]
+       btrfs_file_mmap_prepare+0x206/0x280 fs/btrfs/file.c:2051
+       vfs_mmap_prepare include/linux/fs.h:2075 [inline]
+       call_mmap_prepare mm/vma.c:2644 [inline]
+       __mmap_region+0xe0d/0x2980 mm/vma.c:2743
+       mmap_region+0x2e0/0x3b0 mm/vma.c:2837
+       do_mmap+0xc53/0x12d0 mm/mmap.c:559
+       vm_mmap_pgoff+0x201/0x390 mm/util.c:581
+       ksys_mmap_pgoff+0x466/0x5b0 mm/mmap.c:605
+       __do_sys_mmap arch/x86/kernel/sys_x86_64.c:89 [inline]
+       __se_sys_mmap arch/x86/kernel/sys_x86_64.c:82 [inline]
+       __x64_sys_mmap+0x125/0x190 arch/x86/kernel/sys_x86_64.c:82
+       do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+       do_syscall_64+0xfc/0x670 arch/x86/entry/syscall_64.c:94
+       entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+-> #0 (&mm->mmap_lock){++++}-{4:4}:
+       check_prev_add+0xeb/0xce0 kernel/locking/lockdep.c:3165
+       check_prevs_add kernel/locking/lockdep.c:3284 [inline]
+       validate_chain kernel/locking/lockdep.c:3908 [inline]
+       __lock_acquire+0x128f/0x1a50 kernel/locking/lockdep.c:5237
+       lock_acquire kernel/locking/lockdep.c:5868 [inline]
+       lock_acquire+0x194/0x300 kernel/locking/lockdep.c:5825
+       down_read_killable+0x9c/0x490 kernel/locking/rwsem.c:1560
+       mmap_read_lock_killable include/linux/mmap_lock.h:601 [inline]
+       get_mmap_lock_carefully mm/mmap_lock.c:450 [inline]
+       lock_mm_and_find_vma+0x485/0x1200 mm/mmap_lock.c:501
+       do_user_addr_fault+0x333/0xe90 arch/x86/mm/fault.c:1357
+       handle_page_fault arch/x86/mm/fault.c:1474 [inline]
+       exc_page_fault+0x66/0xc0 arch/x86/mm/fault.c:1527
+       asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:618
+       filldir+0x1ec/0x650 fs/readdir.c:296
+       dir_emit include/linux/fs.h:3566 [inline]
+       kernfs_fop_readdir+0x40c/0x990 fs/kernfs/dir.c:1915
+       iterate_dir+0x1e0/0x5e0 fs/readdir.c:108
+       __do_sys_getdents fs/readdir.c:327 [inline]
+       __se_sys_getdents fs/readdir.c:312 [inline]
+       __x64_sys_getdents+0x13b/0x2b0 fs/readdir.c:312
+       do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+       do_syscall_64+0xfc/0x670 arch/x86/entry/syscall_64.c:94
+       entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+other info that might help us debug this:
+
+Chain exists of:
+  &mm->mmap_lock --> btrfs_trans_num_extwriters --> &root->kernfs_rwsem
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  rlock(&root->kernfs_rwsem);
+                               lock(btrfs_trans_num_extwriters);
+                               lock(&root->kernfs_rwsem);
+  rlock(&mm->mmap_lock);
+
+ *** DEADLOCK ***
+
+3 locks held by syz.3.82/1572:
+ #0: ffff8881035db7b8 (&f->f_pos_lock){+.+.}-{4:4}, at: =
+fdget_pos+0x2aa/0x380 fs/file.c:1261
+ #1: ffff888106bb99f8 (&type->i_mutex_dir_key#6){++++}-{4:4}, at: =
+iterate_dir+0xdc/0x5e0 fs/readdir.c:101
+ #2: ffff88810021e988 (&root->kernfs_rwsem){++++}-{4:4}, at: =
+kernfs_fop_readdir+0x15b/0x990 fs/kernfs/dir.c:1898
+
+stack backtrace:
+CPU: 3 UID: 0 PID: 1572 Comm: syz.3.82 Not tainted =
+7.0.0-rc2-g0031c06807cf #7 PREEMPT(full)=20
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS =
+rel-1.17.0-0-gb52ca86e094d-prebuilt.qemu.org 04/01/2014
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:94 [inline]
+ dump_stack_lvl+0xba/0x110 lib/dump_stack.c:120
+ print_circular_bug.cold+0x178/0x1be kernel/locking/lockdep.c:2043
+ check_noncircular+0x146/0x160 kernel/locking/lockdep.c:2175
+ check_prev_add+0xeb/0xce0 kernel/locking/lockdep.c:3165
+ check_prevs_add kernel/locking/lockdep.c:3284 [inline]
+ validate_chain kernel/locking/lockdep.c:3908 [inline]
+ __lock_acquire+0x128f/0x1a50 kernel/locking/lockdep.c:5237
+ lock_acquire kernel/locking/lockdep.c:5868 [inline]
+ lock_acquire+0x194/0x300 kernel/locking/lockdep.c:5825
+ down_read_killable+0x9c/0x490 kernel/locking/rwsem.c:1560
+ mmap_read_lock_killable include/linux/mmap_lock.h:601 [inline]
+ get_mmap_lock_carefully mm/mmap_lock.c:450 [inline]
+ lock_mm_and_find_vma+0x485/0x1200 mm/mmap_lock.c:501
+ do_user_addr_fault+0x333/0xe90 arch/x86/mm/fault.c:1357
+ handle_page_fault arch/x86/mm/fault.c:1474 [inline]
+ exc_page_fault+0x66/0xc0 arch/x86/mm/fault.c:1527
+ asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:618
+RIP: 0010:filldir+0x1ec/0x650 fs/readdir.c:296
+Code: 0f 01 cb 0f ae e8 48 8b 44 24 08 49 89 46 08 e8 6a 2b b6 ff 4c 8b =
+74 24 30 48 8b 44 24 10 49 89 06 e8 58 2b b6 ff 44 8b 24 24 <66> 45 89 =
+66 10 e8 4a 2b b6 ff 8b 44 24 04 49 63 cc 48 89 4c 24 08
+RSP: 0018:ffff88810ebbfce0 EFLAGS: 00050293
+RAX: 0000000000000000 RBX: ffff88810ebbfe70 RCX: ffffffff8ed596f8
+RDX: ffff888111c0c480 RSI: 0000200000001fd0 RDI: 0000000000000006
+RBP: ffff888107f8ad00 R08: 0000000000000000 R09: ffff888111c0c480
+R10: 0000200000002010 R11: 0000000000000003 R12: 0000000000000020
+R13: ffff88810ebbfe94 R14: 0000200000001ff0 R15: 0000000000000008
+ dir_emit include/linux/fs.h:3566 [inline]
+ kernfs_fop_readdir+0x40c/0x990 fs/kernfs/dir.c:1915
+ iterate_dir+0x1e0/0x5e0 fs/readdir.c:108
+ __do_sys_getdents fs/readdir.c:327 [inline]
+ __se_sys_getdents fs/readdir.c:312 [inline]
+ __x64_sys_getdents+0x13b/0x2b0 fs/readdir.c:312
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0xfc/0x670 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f1010d9acf9
+Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89 =
+f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 =
+f0 ff ff 73 01 c3 48 c7 c1 e8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f1010bff028 EFLAGS: 00000246 ORIG_RAX: 000000000000004e
+RAX: ffffffffffffffda RBX: 00007f1011005fa0 RCX: 00007f1010d9acf9
+RDX: 0000000000001000 RSI: 0000200000001ac0 RDI: 0000000000000003
+RBP: 00007f1010e08bf7 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007f1011006038 R14: 00007f1011005fa0 R15: 00007ffd376f51d8
+ </TASK>
+----------------
+Code disassembly (best guess):
+   0:	0f 01 cb             	stac
+   3:	0f ae e8             	lfence
+   6:	48 8b 44 24 08       	mov    0x8(%rsp),%rax
+   b:	49 89 46 08          	mov    %rax,0x8(%r14)
+   f:	e8 6a 2b b6 ff       	call   0xffb62b7e
+  14:	4c 8b 74 24 30       	mov    0x30(%rsp),%r14
+  19:	48 8b 44 24 10       	mov    0x10(%rsp),%rax
+  1e:	49 89 06             	mov    %rax,(%r14)
+  21:	e8 58 2b b6 ff       	call   0xffb62b7e
+  26:	44 8b 24 24          	mov    (%rsp),%r12d
+* 2a:	66 45 89 66 10       	mov    %r12w,0x10(%r14) <-- trapping =
+instruction
+  2f:	e8 4a 2b b6 ff       	call   0xffb62b7e
+  34:	8b 44 24 04          	mov    0x4(%rsp),%eax
+  38:	49 63 cc             	movslq %r12d,%rcx
+  3b:	48 89 4c 24 08       	mov    %rcx,0x8(%rsp)
+
+
+Syzkaller reproducer:
+# {Threaded:true Repeat:true RepeatTimes:0 Procs:1 Slowdown:1 =
+Sandbox:none SandboxArg:0 Leak:false NetInjection:false NetDevices:true =
+NetReset:true Cgroups:true BinfmtMisc:true CloseFDs:true KCSAN:false =
+DevlinkPCI:false NicVF:false USB:false VhciInjection:false Wifi:false =
+IEEE802154:false Sysctl:true Swap:false UseTmpDir:true HandleSegv:true =
+Trace:false CallComments:true LegacyOptions:{Collide:false Fault:false =
+FaultCall:0 FaultNth:0}}
+r0 =3D openat(0xffffffffffffff9c, &(0x7f0000000280)=3D'./cgroup\x00', =
+0x0, 0x0)
+getdents(r0, &(0x7f0000001ac0)=3D""/4096, 0x1000) (async)
+fstat(0xffffffffffffffff, 0x0)
+newfstatat(0xffffffffffffff9c, 0x0, 0x0, 0x0)
+
+
 
