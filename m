@@ -1,116 +1,116 @@
-Return-Path: <linux-btrfs+bounces-22220-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-22221-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id mOcPEdM0qGm+pQAAu9opvQ
-	(envelope-from <linux-btrfs+bounces-22220-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Wed, 04 Mar 2026 14:34:11 +0100
+	id qEgFLQ47qGkTqgAAu9opvQ
+	(envelope-from <linux-btrfs+bounces-22221-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Wed, 04 Mar 2026 15:00:46 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9FFE2007C3
-	for <lists+linux-btrfs@lfdr.de>; Wed, 04 Mar 2026 14:34:10 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B0C2200DFF
+	for <lists+linux-btrfs@lfdr.de>; Wed, 04 Mar 2026 15:00:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A8A3C3181B91
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Mar 2026 13:28:21 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 012873124CC4
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Mar 2026 13:54:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F59136997C;
-	Wed,  4 Mar 2026 13:28:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AC613A8727;
+	Wed,  4 Mar 2026 13:54:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="B9wXMS43"
+	dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b="KYmys5yj"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [80.241.56.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F1CE352F95;
-	Wed,  4 Mar 2026 13:28:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52DED396596
+	for <linux-btrfs@vger.kernel.org>; Wed,  4 Mar 2026 13:54:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772630898; cv=none; b=MaFjLMHqUHRVwMKPm32KE+U0YQfQ6LRPV46VjvVwiVnL0wYsQXWKMHi8RYVZEVwQz5h/1kIy5Wx5fY/KMfItSfIvuB6bw/ZoHRkUKEQRAadLNePx3UJARJntOYWEm2NqcH8lYz6VY58cOwcgXqbhjyDJn1qY6gq4ukcS81ck71U=
+	t=1772632457; cv=none; b=XiiqIdI/LJkrIWoNO2ltscF1mkaFW8B1LkO9WejCVWtu70MFQh1YVbQ8mEZiQMJ2BieLvf8bPR9rJQzjZllF/k3TRKu/GCUa6vfK17iIOOPT1/KoRttXDzPFAaquA+eGrhwHtoN6aIkuON24Exa5u79om/sfPKnRFp+7SIHSHUs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772630898; c=relaxed/simple;
-	bh=SVOIZ+ZQm6umt0dgDvXK33VRlElbT4kLC7JaxnoN+0A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=s/6Urr3Ti3NM40Nf1jae4BhUtxzqT4D1gjH+y82TlVd4D/X17JM9HbBJ1IXHGWGobpasFq4O3igH4xvzqntsMdZL8hOWocA3PyOizOGY6yWipzgw1pw6+TrGLWJK5kUWqHuSR6RW5YkBXE8QwFZAdkSc9rzk3fLn1ecTPaXQsHQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=B9wXMS43; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=u4tDNrsfmkN1jCpPN9zt23p6IPrJrTgXec+c+UsxUz0=; b=B9wXMS43baSn2tXBwUe7m8IBeu
-	5IXVC89bWglrmU2qDRUbibxmLfgTXUoaasP32IEISDvcx05r3AOf7sDiKMsdl5kUXYOph2nLd5tTG
-	buu4i4HnIELFf30YTYO6QHIUYLpKA9M8qBWH3s752P9SbJQ83MsgEQS3BJoyXZtz8YxRtQN5YCGF/
-	J0JOLbLCppR4AenYRt+btPFy189yONESl5VvZrUzk6eTxvjfEXWqHziyWHs8XateJ07X5qW0sylRH
-	nhweam1Y8mQHwfbYpk8OjEId4m0R/rufevmN6Sh6k1UCVa/V0W/yAu5Rm45XDrQ/NFY9y0TD8wWS+
-	pXmadYAQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vxmGv-0000000HFKG-0F3o;
-	Wed, 04 Mar 2026 13:28:17 +0000
-Date: Wed, 4 Mar 2026 05:28:17 -0800
-From: Christoph Hellwig <hch@infradead.org>
-To: Anand Jain <asj@kernel.org>
-Cc: linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 0/3] fix s_uuid and f_fsid consistency for cloned
- filesystems
-Message-ID: <aagzcbj_CohXgIXe@infradead.org>
-References: <cover.1772095546.git.asj@kernel.org>
+	s=arc-20240116; t=1772632457; c=relaxed/simple;
+	bh=xvdRkZj57oc8RHWeWgbR6cK30VjNYlk6ZDbpmNzXzBY=;
+	h=Date:From:To:Message-ID:Subject:MIME-Version:Content-Type; b=n7JXxmkLsHKITGA+oPj5Xcky2M5/9WHsPBYr2XDMWO3rjdaGud1YMlm3h0zCVafPMVxDRtHmoWkj9AAs+BOr9ECR9JivbCtAuC4vkZFrN+grUXsgbyLqmYAjc39TFF2EGhLitp4YTylNpmW8y9uoSeR9NkX4tArsgyU2i3KDA/U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mailbox.org; spf=pass smtp.mailfrom=mailbox.org; dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b=KYmys5yj; arc=none smtp.client-ip=80.241.56.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mailbox.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mailbox.org
+Received: from smtp102.mailbox.org (smtp102.mailbox.org [10.196.197.102])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4fQvKb0F7Wz9tB3;
+	Wed,  4 Mar 2026 14:54:11 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+	t=1772632451;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=xvdRkZj57oc8RHWeWgbR6cK30VjNYlk6ZDbpmNzXzBY=;
+	b=KYmys5yjHTYJUpVPB+5m89JkyHwVhZ4IW+TtY/gdEnr9+KVc9sFLAD7KTQn1SJ0olIm/HG
+	QzUoBEzC85dcLrwllnilgXJ0d7L6feAHrPhHf69Y/BTdZJG8VwdOz7+dEsyivjA5oPDnjj
+	SMx7UKj7PJW4mgl0AT7/Cmsc3cX88VqUW66NPoopxN2A7DJfUMrkdNaTwYNKkWrRqcHCsO
+	cNdrVBMdveU2/eDR0P3AhHq2LOhJLs0125XXiDrCn80SlsGLnG6Gs0hzmXKcZNN69DIDGk
+	0R9shRkcwcpu2KhV7q6GFoIUgJlGYlAmjdlYpEs8AaCWBWucMt8el/1r7DxA0w==
+Date: Wed, 4 Mar 2026 14:54:08 +0100 (CET)
+From: torvic9@mailbox.org
+To: "sunk67188@gmail.com" <sunk67188@gmail.com>,
+	"clm@meta.com" <clm@meta.com>,
+	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+	"dsterba@suse.com" <dsterba@suse.com>
+Message-ID: <1333479338.178488.1772632448830@app.mailbox.org>
+Subject: btrfs: fix periodic reclaim condition - missing patch in stable?
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1772095546.git.asj@kernel.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
-X-Rspamd-Queue-Id: C9FFE2007C3
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Priority: 3
+Importance: Normal
+X-MBO-RS-META: ubz6gzxth61czkmji3gfu5hqgwy7nba7
+X-MBO-RS-ID: c53b355a4e8d3d92018
+X-Rspamd-Queue-Id: 0B0C2200DFF
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-1.16 / 15.00];
+	SUBJECT_ENDS_QUESTION(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[infradead.org,none];
-	R_DKIM_ALLOW(-0.20)[infradead.org:s=bombadil.20210309];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	DMARC_POLICY_ALLOW(-0.50)[mailbox.org,reject];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[mailbox.org:s=mail20150812];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DKIM_TRACE(0.00)[infradead.org:+];
-	TAGGED_FROM(0.00)[bounces-22220-lists,linux-btrfs=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_TO(0.00)[gmail.com,meta.com,vger.kernel.org,suse.com];
+	TO_DN_EQ_ADDR_ALL(0.00)[];
+	HAS_X_PRIO_THREE(0.00)[3];
+	TAGGED_FROM(0.00)[bounces-22221-lists,linux-btrfs=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_THREE(0.00)[3];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[hch@infradead.org,linux-btrfs@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FROM_NEQ_ENVFROM(0.00)[torvic9@mailbox.org,linux-btrfs@vger.kernel.org];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_THREE(0.00)[4];
+	MID_RHS_MATCH_FROMTLD(0.00)[];
+	NEURAL_HAM(-0.00)[-0.999];
+	PRECEDENCE_BULK(0.00)[];
+	DKIM_TRACE(0.00)[mailbox.org:+];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,infradead.org:dkim,infradead.org:mid]
+	FROM_NO_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	MIME_TRACE(0.00)[0:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,app.mailbox.org:mid]
 X-Rspamd-Action: no action
 
-On Thu, Feb 26, 2026 at 10:23:32PM +0800, Anand Jain wrote:
-> This series resolves the tradeoff by aligning btrfs and ext4 behaviour
-> with XFS: f_fsid incorporates device identity (devt) to remain unique
-> across clones, while s_uuid is preserved consistently matching the on-disk
-> uuid.
+Hello,
 
-While I like fixing this up, switching the f_fsid construction to a
-different method might break things.  Is there a way to only change
-it for cloned file systems to reduce the surface of this change?
+Commit "btrfs: fix periodic reclaim condition" (25ecb24405928d3f5db48029c2237b2c7cefb479) was added to stable,
+however it seems that a subsequent locking fix [1] to that patch was not added, possibly due to a missing stable tag.
+Shouldn't that fix also be included in stable?
 
-> Patches
-> -------
-> Patch 1/3: btrfs: fix f_fsid to include rootid and devt
-> Patch 2/3: btrfs: fix s_uuid to be stable across mounts for cloned filesystems  
-> Patch 3/3: ext4: fix f_fsid to use devt instead of s_uuid
+Cheers,
+Tor
 
-I don't really see that patch 3 in my inbox on linux-btrfs.
-
+[1] https://lore.kernel.org/linux-btrfs/20260209130248.29418-1-sunk67188@gmail.com/
 
