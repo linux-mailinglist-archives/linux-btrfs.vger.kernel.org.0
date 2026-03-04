@@ -1,116 +1,150 @@
-Return-Path: <linux-btrfs+bounces-22221-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-22222-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id qEgFLQ47qGkTqgAAu9opvQ
-	(envelope-from <linux-btrfs+bounces-22221-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Wed, 04 Mar 2026 15:00:46 +0100
+	id aDCXEWJBqGn8rgAAu9opvQ
+	(envelope-from <linux-btrfs+bounces-22222-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Wed, 04 Mar 2026 15:27:46 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B0C2200DFF
-	for <lists+linux-btrfs@lfdr.de>; Wed, 04 Mar 2026 15:00:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DB2822016E8
+	for <lists+linux-btrfs@lfdr.de>; Wed, 04 Mar 2026 15:27:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 012873124CC4
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Mar 2026 13:54:32 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 8B4F1324F9F1
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Mar 2026 14:18:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AC613A8727;
-	Wed,  4 Mar 2026 13:54:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 599DD3A875B;
+	Wed,  4 Mar 2026 14:15:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b="KYmys5yj"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RsZASIBT"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [80.241.56.151])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oa1-f66.google.com (mail-oa1-f66.google.com [209.85.160.66])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52DED396596
-	for <linux-btrfs@vger.kernel.org>; Wed,  4 Mar 2026 13:54:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8794D3A5E67
+	for <linux-btrfs@vger.kernel.org>; Wed,  4 Mar 2026 14:15:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772632457; cv=none; b=XiiqIdI/LJkrIWoNO2ltscF1mkaFW8B1LkO9WejCVWtu70MFQh1YVbQ8mEZiQMJ2BieLvf8bPR9rJQzjZllF/k3TRKu/GCUa6vfK17iIOOPT1/KoRttXDzPFAaquA+eGrhwHtoN6aIkuON24Exa5u79om/sfPKnRFp+7SIHSHUs=
+	t=1772633752; cv=none; b=WZCLFBBmHhZYTyIswtfbOrZ5MOPtRVer4/t1YF91J4za2IWpSkgqM+6U0gfMrgraqwEFnvXq67hgGOxmdO1DpR1heWMlCPcTFJaBumHTYaa6OnDLnt/+7/rXoqiLsumgrdn0RDpE0QbNTK2fGwAIeLlhRFQnXfHiKAB8DdU8eZI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772632457; c=relaxed/simple;
-	bh=xvdRkZj57oc8RHWeWgbR6cK30VjNYlk6ZDbpmNzXzBY=;
-	h=Date:From:To:Message-ID:Subject:MIME-Version:Content-Type; b=n7JXxmkLsHKITGA+oPj5Xcky2M5/9WHsPBYr2XDMWO3rjdaGud1YMlm3h0zCVafPMVxDRtHmoWkj9AAs+BOr9ECR9JivbCtAuC4vkZFrN+grUXsgbyLqmYAjc39TFF2EGhLitp4YTylNpmW8y9uoSeR9NkX4tArsgyU2i3KDA/U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mailbox.org; spf=pass smtp.mailfrom=mailbox.org; dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b=KYmys5yj; arc=none smtp.client-ip=80.241.56.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mailbox.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mailbox.org
-Received: from smtp102.mailbox.org (smtp102.mailbox.org [10.196.197.102])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4fQvKb0F7Wz9tB3;
-	Wed,  4 Mar 2026 14:54:11 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-	t=1772632451;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=xvdRkZj57oc8RHWeWgbR6cK30VjNYlk6ZDbpmNzXzBY=;
-	b=KYmys5yjHTYJUpVPB+5m89JkyHwVhZ4IW+TtY/gdEnr9+KVc9sFLAD7KTQn1SJ0olIm/HG
-	QzUoBEzC85dcLrwllnilgXJ0d7L6feAHrPhHf69Y/BTdZJG8VwdOz7+dEsyivjA5oPDnjj
-	SMx7UKj7PJW4mgl0AT7/Cmsc3cX88VqUW66NPoopxN2A7DJfUMrkdNaTwYNKkWrRqcHCsO
-	cNdrVBMdveU2/eDR0P3AhHq2LOhJLs0125XXiDrCn80SlsGLnG6Gs0hzmXKcZNN69DIDGk
-	0R9shRkcwcpu2KhV7q6GFoIUgJlGYlAmjdlYpEs8AaCWBWucMt8el/1r7DxA0w==
-Date: Wed, 4 Mar 2026 14:54:08 +0100 (CET)
-From: torvic9@mailbox.org
-To: "sunk67188@gmail.com" <sunk67188@gmail.com>,
-	"clm@meta.com" <clm@meta.com>,
-	"linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
-	"dsterba@suse.com" <dsterba@suse.com>
-Message-ID: <1333479338.178488.1772632448830@app.mailbox.org>
-Subject: btrfs: fix periodic reclaim condition - missing patch in stable?
+	s=arc-20240116; t=1772633752; c=relaxed/simple;
+	bh=wnReTIbGoBNjVOFyvAk3qw6qq+Q7yDnBKy75UH83jho=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=mVTxy7zHP4gYfhHPaFSXEFNQUFU8uqs++mEqWoGIKFZj40AGstSDtbspwWUexYJw0LjVUeZ9G6DC01pZIZTCKao+d/fvJylafBb1YyXPVfzhpopUyK8U48rmf66X3Ze37OFFjABLAPp7TnZcVZoBmqHKbQzbNU94kLyPxUPMfUQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RsZASIBT; arc=none smtp.client-ip=209.85.160.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f66.google.com with SMTP id 586e51a60fabf-40eed9b9737so84539fac.3
+        for <linux-btrfs@vger.kernel.org>; Wed, 04 Mar 2026 06:15:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1772633750; x=1773238550; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=ZtiOowYUkDPB/UaApFrZZ2mgwfTv25eQUAy9Go/j8Dc=;
+        b=RsZASIBTU9r1jkx0mc5WhDcjTScHhePf+VzXAxuzkh4cVQfyOfuZiutRpXwTKsNZAl
+         nvcbFGwO0s0Ds1XdDNxvFUC8mpC6skLapdNCKosRYmFc9sX7kpgq7qHKp0KRJ4pGIAS8
+         Nmt/KUNICb5eFxlbP4mhz/Jnz1PWgbgkQiBLZXiiwFx5VPE8U/PPupmCmdoPQq10wnZt
+         g3VUXiy3LJPK/KBHPhBCxdHzXuzw4Ep4qHjMmJqR8oWwHNbcEthDZw88+7xQgfCQahEP
+         plrY0+JEG81/4Z4rgIkliNhZa1cOsl2mYXlmiBdlzqZcBsG7SZRatiZdyfHT29itwNhA
+         u54w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1772633750; x=1773238550;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZtiOowYUkDPB/UaApFrZZ2mgwfTv25eQUAy9Go/j8Dc=;
+        b=IzgT0nzUk48RvCKXhaNDJ/sJU1027B2ltdKe7LNU9LR+reNsqaK+zdX6vLikPGcnhu
+         TVAEblFsOa60iRJIF6HNhxML9OxretC5ELbsldbxToS+Wpp8T/DtGJeIQY0j9m1zdy9E
+         WeBovu5NEhFdu8MH03oxJwKcFHuTS98QZrhvwrKx0OuRTMM6EkROml9RIB/HHFDkko4S
+         d1i88/P+3vZlZFgSZfWBhyh5J9xYQcsHNCEQ+D8dPJgyETV3XEDYOSfUcHEvAc/laSj6
+         PXtmUWI6Dp7H54XPCI6iKhDY9VqAe/VGJFQtBW/OKjz/PLkwk2Lec3nshkdtpS6LRpIZ
+         32dw==
+X-Forwarded-Encrypted: i=1; AJvYcCX9s+d7mpUb3Ie/pq6WM1MllpBmnVQQ2P9GAU6Vnsf/GL/npveWqcXk4200U+MuSeJb0g/0A1OGkRRKlQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YwvQbkR7KavvgmGpsskZxQiDUnQsa+75N0Pdm7VfZAeESLwH7ga
+	VuYThJShY5iusM+CwCPv1EP1hquoZLc9KOlDPWYSXRmyz996bUM4DRpg
+X-Gm-Gg: ATEYQzyaGFTNCCEYipYSSzz+VXkq00MvbtMJJ4Orf/55rnA5cUeHcPE2R5rVmD8IWsq
+	FDQ/zgCTp1a6Hmf6PTttgQ2YW4/4Wbm1EpVz3Mu/lEaJIORJCYMD3RtVXPTm5e4iv6oUzqUAMCh
+	scJp1g80Cq+oVgB9OBWaBmWCc6yxGNbLjOQbtrPuwdU1rL1ShtGpjuepcrquccErqf9YTnLrM9i
+	U+9Uyc4DZ0ntQ4HUl4aAZ5iPkskEnXdnfVT87BbJAo15f2g9XhRGnDBF0QI68VMVYYoLg4Fy6aQ
+	rKk9eesu/pyNqkcZO0gt+kP7d2VRmIY3ohH5giR9Q7+T/mOAxSV1XMtm6ZV7uqDk4gPN92Ugv09
+	3KVEzDz6viYY+J6sf30tHefgbknPtjRrzAj7p6foyN7ULMde2CZ7PybgDA0ZQUee5dIoiQqIylK
+	8yrW8LrHLhN62ocMjv7t4nHL4ivNGeefjsWT4QNw==
+X-Received: by 2002:a05:6870:9e99:b0:3e0:de76:31da with SMTP id 586e51a60fabf-416abafb611mr929021fac.4.1772633750225;
+        Wed, 04 Mar 2026 06:15:50 -0800 (PST)
+Received: from [192.168.1.13] ([103.173.155.177])
+        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-4160cf239e0sm18601281fac.1.2026.03.04.06.15.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 04 Mar 2026 06:15:49 -0800 (PST)
+Message-ID: <8738c4c9-d8e2-4085-b68c-fc1adc49dd59@gmail.com>
+Date: Wed, 4 Mar 2026 22:15:43 +0800
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla Thunderbird
+Subject: Re: btrfs: fix periodic reclaim condition - missing patch in stable?
+To: torvic9@mailbox.org, "clm@meta.com" <clm@meta.com>,
+ "linux-btrfs@vger.kernel.org" <linux-btrfs@vger.kernel.org>,
+ "dsterba@suse.com" <dsterba@suse.com>
+References: <1333479338.178488.1772632448830@app.mailbox.org>
+Content-Language: en-US
+From: Sun YangKai <sunk67188@gmail.com>
+In-Reply-To: <1333479338.178488.1772632448830@app.mailbox.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Priority: 3
-Importance: Normal
-X-MBO-RS-META: ubz6gzxth61czkmji3gfu5hqgwy7nba7
-X-MBO-RS-ID: c53b355a4e8d3d92018
-X-Rspamd-Queue-Id: 0B0C2200DFF
+X-Rspamd-Queue-Id: DB2822016E8
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.16 / 15.00];
-	SUBJECT_ENDS_QUESTION(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[mailbox.org,reject];
+	SUBJECT_ENDS_QUESTION(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[mailbox.org:s=mail20150812];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_TO(0.00)[gmail.com,meta.com,vger.kernel.org,suse.com];
-	TO_DN_EQ_ADDR_ALL(0.00)[];
-	HAS_X_PRIO_THREE(0.00)[3];
-	TAGGED_FROM(0.00)[bounces-22221-lists,linux-btrfs=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FROM_NEQ_ENVFROM(0.00)[torvic9@mailbox.org,linux-btrfs@vger.kernel.org];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_THREE(0.00)[4];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
-	NEURAL_HAM(-0.00)[-0.999];
-	PRECEDENCE_BULK(0.00)[];
-	DKIM_TRACE(0.00)[mailbox.org:+];
-	TAGGED_RCPT(0.00)[linux-btrfs];
-	FROM_NO_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	MIME_TRACE(0.00)[0:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,app.mailbox.org:mid]
+	FREEMAIL_FROM(0.00)[gmail.com];
+	TAGGED_FROM(0.00)[bounces-22222-lists,linux-btrfs=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	RCPT_COUNT_THREE(0.00)[4];
+	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[sunk67188@gmail.com,linux-btrfs@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	NEURAL_HAM(-0.00)[-1.000];
+	TAGGED_RCPT(0.00)[linux-btrfs];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[mailbox.org:email,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-Hello,
 
-Commit "btrfs: fix periodic reclaim condition" (25ecb24405928d3f5db48029c2237b2c7cefb479) was added to stable,
-however it seems that a subsequent locking fix [1] to that patch was not added, possibly due to a missing stable tag.
-Shouldn't that fix also be included in stable?
 
-Cheers,
-Tor
+On 2026/3/4 21:54, torvic9@mailbox.org wrote:
+> Hello,
+> 
+> Commit "btrfs: fix periodic reclaim condition" (25ecb24405928d3f5db48029c2237b2c7cefb479) was added to stable,
+> however it seems that a subsequent locking fix [1] to that patch was not added, possibly due to a missing stable tag.
+> Shouldn't that fix also be included in stable?
 
-[1] https://lore.kernel.org/linux-btrfs/20260209130248.29418-1-sunk67188@gmail.com/
+Yes, I think that fix should also be included in stable.
+
+Thanks,
+Sun YangKai
+
+> Cheers,
+> Tor
+> 
+> [1] https://lore.kernel.org/linux-btrfs/20260209130248.29418-1-sunk67188@gmail.com/
+
 
