@@ -1,511 +1,481 @@
-Return-Path: <linux-btrfs+bounces-22213-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-22215-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id PSrUF9PAp2ldjgAAu9opvQ
-	(envelope-from <linux-btrfs+bounces-22213-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Wed, 04 Mar 2026 06:19:15 +0100
+	id qNQeHszRp2l7kAAAu9opvQ
+	(envelope-from <linux-btrfs+bounces-22215-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Wed, 04 Mar 2026 07:31:40 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5D3F1FAD74
-	for <lists+linux-btrfs@lfdr.de>; Wed, 04 Mar 2026 06:19:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 150301FB2DD
+	for <lists+linux-btrfs@lfdr.de>; Wed, 04 Mar 2026 07:31:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 5EFB330859F0
-	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Mar 2026 05:19:08 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 5D54A3058E37
+	for <lists+linux-btrfs@lfdr.de>; Wed,  4 Mar 2026 06:31:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 244AA3264F4;
-	Wed,  4 Mar 2026 05:19:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82665351C1E;
+	Wed,  4 Mar 2026 06:31:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="DM+bZFmY";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="DM+bZFmY"
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="fTxfhkIR"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F6323368BD
-	for <linux-btrfs@vger.kernel.org>; Wed,  4 Mar 2026 05:19:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B009C18A92F
+	for <linux-btrfs@vger.kernel.org>; Wed,  4 Mar 2026 06:31:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772601546; cv=none; b=mS633NWD6oo0erjNwj5V+VyeWpTA4u5qsdYMqadbdM1IWxtMW5K+6so172Kq45oSST5cygsl552MIea9zhpZzUTVw/bKLzuBJN8+J0ez6ATSdorQ6Tb0/FzTpnC3iC1178bAhky3Pd8hBaA7+dTjNqbvS2bjUVp00cXVphO+zuU=
+	t=1772605887; cv=none; b=LWpH56W46EhMcfMKv+Mb/FvJ/s3w0NmBvLgsQR+I7RVeMmmoQHyV78dLV1gCTEX2MUOkRtkULJ76PRvGnV/Ss8lH+dqYrUyQF80q/9FyY+bRwIqGTWQFfTPX9Iw5prNBYzjMLJF3/cHPicziLqYyX5yBlXULASUdicDigDvKSKY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772601546; c=relaxed/simple;
-	bh=sS7IooesauSYnzSnR2MEgpt4XXugSFp2QkgtJbrcOdg=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version; b=h6+wFWpb+RpEubLuGWUTKQRxy2qKg9ZvqdyNkOel/8snJlOfdgf7PM8Bwuk20ZDBtcJkxxtfHoi8jeP2+LdJtS9CQivVe/6CUPeLtDeA4KPonmaUkQoqralk8d2QMlFrKwap0CYoFmsKojZxZjc9vFPrG/XtVbroMGn6wTsuXDo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=DM+bZFmY; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=DM+bZFmY; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 9ABC95BD8C
-	for <linux-btrfs@vger.kernel.org>; Wed,  4 Mar 2026 05:19:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1772601542; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=8/PYH3vz3rRA+eZ45C8nAUQlSediZs11CftAOfiSuJA=;
-	b=DM+bZFmYrEdkwZSboU25OqTGcTnjA6bZ43tKKJSXPpzcaqLXzlYpIexYaZdoIA0l83WKOn
-	dQf4QkvRJBUvRayeqVHeyM21YSYY2DuduDie2L0+d91/tZMJxh/VvlWSatiB74Q13qQ17F
-	O5KfBm7EjFdtjk/ORzLXug6YDuEXMeI=
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1772601542; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=8/PYH3vz3rRA+eZ45C8nAUQlSediZs11CftAOfiSuJA=;
-	b=DM+bZFmYrEdkwZSboU25OqTGcTnjA6bZ43tKKJSXPpzcaqLXzlYpIexYaZdoIA0l83WKOn
-	dQf4QkvRJBUvRayeqVHeyM21YSYY2DuduDie2L0+d91/tZMJxh/VvlWSatiB74Q13qQ17F
-	O5KfBm7EjFdtjk/ORzLXug6YDuEXMeI=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D560A3EA69
-	for <linux-btrfs@vger.kernel.org>; Wed,  4 Mar 2026 05:19:01 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 6QuTJcXAp2m5SgAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Wed, 04 Mar 2026 05:19:01 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH v5] btrfs: extract inlined creation into a dedicated delalloc helper
-Date: Wed,  4 Mar 2026 15:48:44 +1030
-Message-ID: <c47f725a3f9677216b031a6ae4530647e5b471f5.1772601410.git.wqu@suse.com>
-X-Mailer: git-send-email 2.53.0
+	s=arc-20240116; t=1772605887; c=relaxed/simple;
+	bh=oWcalOwV1+wWZR59J1Y5MQcWh9Djsdjvza+OXO9E1Yk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fUw4afXmk7Dp3Oc0p3wDKcIDDWY8EcNkfr5EcPl0k0cz5HorG9g/SBoZYeMNWxMM3ortvbz1+1of4YJP1TrMZOPZXubW2HnjwYZUh0Dt61hgWdbKLOoKM+7JfifmuUVcYNuVtscMuZAQCm/fDt8w6Zbpep4nVInwzNZ4LY5TPs8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=fTxfhkIR; arc=none smtp.client-ip=212.227.15.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1772605883; x=1773210683; i=quwenruo.btrfs@gmx.com;
+	bh=Kn6JhPICb2PLDhdZSSPhOYNKzdBtUI0Tnpv5AEhbXyk=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=fTxfhkIRrxdLFMihwZQVDPUj3vdLVAjhqq8CeJU0sa6Ru0EPUmkzHYnOxmP5Jrtl
+	 2M6HRlL16PSToOAoNhEyqBtObKpCZgz/woW1SlQjySkO1WgsCmeB54e1YglAEj140
+	 HnkNvf8MRFcpb/gwRHdTkxbrbi87brpE+xT3YAf6jJKS5VvKgRaY49pFQtD89vk/I
+	 Zk6ol9FZhDC5qi/WYXmg+ATt3/MwQFKFRtJSwpY3P74vHkXvBUieEDxGdH4SROzTO
+	 R41t4vnnFuwrJK4bCmm1wGGx9jEAqH5u6KKqfVj7fU3PBnYm61gNZlV3mqXRw9KZY
+	 eJjkqCV6cJTKvioO6Q==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from client.hidden.invalid by mail.gmx.net (mrgmx005
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MyKHm-1vlMXO3dHw-014naV; Wed, 04
+ Mar 2026 07:31:23 +0100
+Message-ID: <3f85a632-d062-4006-8bd7-1048c60197ef@gmx.com>
+Date: Wed, 4 Mar 2026 17:01:19 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 1/3] btrfs: skip COW for written extent buffers
+ allocated in current transaction
+To: Leo Martins <loemra.dev@gmail.com>, linux-btrfs@vger.kernel.org,
+ kernel-team@fb.com
+Cc: Filipe Manana <fdmanana@suse.com>, Sun YangKai <sunk67188@gmail.com>
+References: <cover.1772097864.git.loemra.dev@gmail.com>
+ <e8e4f5e396d821ba9ed6a4eee073ae8628d52aeb.1772097864.git.loemra.dev@gmail.com>
+Content-Language: en-US
+From: Qu Wenruo <quwenruo.btrfs@gmx.com>
+Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
+ BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
+ sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
+ xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
+ naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
+ tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
+ 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
+ VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
+ CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
+ /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
+ GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
+ q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
+ ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
+ CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
+ B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
+ Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
+ +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
+ HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
+In-Reply-To: <e8e4f5e396d821ba9ed6a4eee073ae8628d52aeb.1772097864.git.loemra.dev@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:tcbzw1I/fUd8nwKIayNNR6j7QWFwmPGUo0HD2soSFJXNVtxa3O3
+ xzVrCkh2toEC7OVDgh9IWBgcaqj9G/uSVLY8/b6x7XPCDY/snLDZ9008D2AZrNOO9y7KLHK
+ /HQ99+UaIOwfnStco9sXeHIYl0UXcZk2SvtNXYkMUHUy/nYiLLE3pWmn+EgWqvN2mEroMaX
+ FCZ0vb61BrxBgGulLBrYQ==
 X-Spam-Flag: NO
-X-Spam-Score: -2.80
-X-Spam-Level: 
-X-Rspamd-Queue-Id: B5D3F1FAD74
+UI-OutboundReport: notjunk:1;M01:P0:S5C6hwn4mcA=;z2hCf6VcvB09S+52V//nsTdaqSw
+ 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
+X-Rspamd-Queue-Id: 150301FB2DD
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
-	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[gmx.com,quarantine];
+	R_DKIM_ALLOW(-0.20)[gmx.com:s=s31663417];
 	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DKIM_TRACE(0.00)[suse.com:+];
-	TAGGED_FROM(0.00)[bounces-22213-lists,linux-btrfs=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-22215-lists,linux-btrfs=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FREEMAIL_TO(0.00)[gmail.com,vger.kernel.org,fb.com];
+	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[wqu@suse.com,linux-btrfs@vger.kernel.org];
+	FREEMAIL_FROM(0.00)[gmx.com];
+	TO_DN_SOME(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	RCVD_COUNT_FIVE(0.00)[6];
-	NEURAL_HAM(-0.00)[-0.999];
-	TO_DN_NONE(0.00)[];
+	DKIM_TRACE(0.00)[gmx.com:+];
+	RCPT_COUNT_FIVE(0.00)[5];
+	NEURAL_HAM(-0.00)[-0.997];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[quwenruo.btrfs@gmx.com,linux-btrfs@vger.kernel.org];
+	FREEMAIL_CC(0.00)[suse.com,gmail.com];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,suse.com:dkim,suse.com:email,suse.com:mid]
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,suse.com:email,gmx.com:dkim,gmx.com:mid]
 X-Rspamd-Action: no action
 
-Currently we call cow_file_range_inline() in different situations, from
-regular cow_file_range() to compress_file_range().
 
-This is because inline extent creation has different conditions based on
-whether it's a compressed one or not.
 
-But on the other hand, inline extent creation shouldn't be so
-distributed, we can just have a dedicated branch in
-btrfs_run_delalloc_range().
+=E5=9C=A8 2026/2/26 20:21, Leo Martins =E5=86=99=E9=81=93:
+> When memory pressure causes writeback of a recently COW'd buffer,
+> btrfs sets BTRFS_HEADER_FLAG_WRITTEN on it. Subsequent
+> btrfs_search_slot() restarts then see the WRITTEN flag and re-COW
+> the buffer unnecessarily, causing COW amplification that can exhaust
+> block reservations and degrade throughput.
+>=20
+> Overwriting in place is crash-safe because the committed superblock
+> does not reference buffers allocated in the current (uncommitted)
+> transaction, so no on-disk tree points to this block yet.
+>=20
+> When should_cow_block() encounters a WRITTEN buffer whose generation
+> matches the current transaction, instead of requesting a COW, re-dirty
+> the buffer and re-register its range in the transaction's dirty_pages.
+>=20
+> Both are necessary because btrfs tracks dirty metadata through two
+> independent mechanisms. set_extent_buffer_dirty() sets the
+> EXTENT_BUFFER_DIRTY flag and the buffer_tree xarray PAGECACHE_TAG_DIRTY
+> mark, which is what background writeback (btree_write_cache_pages) uses
+> to find and write dirty buffers. The transaction's dirty_pages io tree
+> is a separate structure used by btrfs_write_and_wait_transaction() at
+> commit time to ensure all buffers allocated during the transaction are
+> persisted. The dirty_pages range was originally registered in
+> btrfs_init_new_buffer() when the block was first allocated. Normally
+> dirty_pages is only cleared at commit time by
+> btrfs_write_and_wait_transaction(), but if qgroups are enabled and
+> snapshots are being created, qgroup_account_snapshot() may have already
+> called btrfs_write_and_wait_transaction() and released the range before
+> the final commit-time call.
+>=20
+> Keep BTRFS_HEADER_FLAG_WRITTEN set so that btrfs_free_tree_block()
+> correctly pins the block if it is freed later.
+>=20
+> Relax the lockdep assertion in btrfs_mark_buffer_dirty() from
+> btrfs_assert_tree_write_locked() to lockdep_assert_held() so that it
+> accepts either a read or write lock. should_cow_block() may be called
+> from btrfs_search_slot() when only a read lock is held (nodes above
+> write_lock_level are read-locked). The write lock assertion previously
+> documented the caller convention that buffer content was being modified
+> under exclusive access, but btrfs_mark_buffer_dirty() and
+> set_extent_buffer_dirty() themselves only perform independently
+> synchronized operations: atomic bit ops on bflags, folio_mark_dirty()
+> (kernel-internal folio locking), xarray mark updates (xarray spinlock),
+> and percpu counter updates. The read lock is sufficient because it
+> prevents lock_extent_buffer_for_io() from acquiring the write lock and
+> racing on the dirty state. Since rw_semaphore permits concurrent
+> readers, multiple threads can enter btrfs_mark_buffer_dirty()
+> simultaneously for the same buffer; this is safe because
+> test_and_set_bit(EXTENT_BUFFER_DIRTY) ensures only one thread performs
+> the full dirty state transition.
+>=20
+> Remove the CONFIG_BTRFS_DEBUG assertion in set_extent_buffer_dirty()
+> that checked folio_test_dirty() after marking the buffer dirty. This
+> assertion assumed exclusive access (only one thread in
+> set_extent_buffer_dirty() at a time), which held when the only caller
+> was btrfs_mark_buffer_dirty() under write lock. With concurrent readers
+> calling through should_cow_block(), a thread that loses the
+> test_and_set_bit race sees was_dirty=3Dtrue and skips the folio dirty
+> marking, but the winning thread may not have called
+> btrfs_meta_folio_set_dirty() yet, causing the assertion to fire. This
+> is a benign race: the winning thread will complete the folio dirty
+> marking, and no writeback can clear it while readers hold their locks.
+>=20
+> Hoist the EXTENT_BUFFER_WRITEBACK, BTRFS_HEADER_FLAG_RELOC, and
+> BTRFS_ROOT_FORCE_COW checks before the WRITTEN block since they apply
+> regardless of whether the buffer has been written back. This
+> consolidates the exclusion logic and simplifies the WRITTEN path to
+> only handle log trees and zoned devices. Moving the RELOC checks
+> before the smp_mb__before_atomic() barrier is safe because both
+> btrfs_root_id() (immutable) and BTRFS_HEADER_FLAG_RELOC (set at COW
+> time under tree lock) are stable values not subject to concurrent
+> modification; the barrier is only needed for BTRFS_ROOT_FORCE_COW
+> which is set concurrently by create_pending_snapshot().
+>=20
+> Exclude cases where in-place overwrite is not safe:
+>   - EXTENT_BUFFER_WRITEBACK: buffer is mid-I/O
+>   - Zoned devices: require sequential writes
+>   - Log trees: log blocks are immediately referenced by a committed
+>     superblock via btrfs_sync_log(), so overwriting could corrupt the
+>     committed log
+>   - BTRFS_ROOT_FORCE_COW: snapshot in progress
+>   - BTRFS_HEADER_FLAG_RELOC: block being relocated
+>=20
+> Signed-off-by: Leo Martins <loemra.dev@gmail.com>
+> Reviewed-by: Filipe Manana <fdmanana@suse.com>
+> Reviewed-by: Sun YangKai <sunk67188@gmail.com>
 
-It will become more obvious for compressed inline cases, it makes no
-sense to go through all the complex async extent mechanism just to
-inline a single block.
+Unfortunately this patch is making btrfs/232 fail.
+Bisection lead to this one.
 
-So here we introduce a dedicated run_delalloc_inline() helper, and
-remove all inline related handling from cow_file_range() and
-compress_file_range().
+I have hit the following errors during btrfs/232 run with this patch,=20
+but not the commit before it:
 
-There is a special update to inode_need_compress(), that a new
-@check_inline parameter is introduced.
-This is to allow inline specific checks to be done inside
-run_delalloc_inline(), which allows single block compression, but
-other call sites should always reject single block compression.
+- Write time tree-checker errors
+   From first key mismatch to bad key order.
 
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
-Changelog:
-v5:
-- Fix a bug if there is not enougn metadata space
-  If the metadata space is not enough to insert the inlined extent, the
-  old code will fallback to regular COW/NOCOW path, but the new code
-  will treat it as successfully insert.
+- Fsck errors
+   From missing inode item other problems.
+   AKA, on-disk corruption, which is never a good sign.
 
-- Add comments about the return value of __cow_file_range_inline()
-  Which follows the new run_delalloc_inline().
+One thing to note is, that test case itself can lead to a false alerts=20
+from DEBUG_WARN() inside btrfs_remove_qgroup(), thus you may need to=20
+manually remove that DEBUG_WARN() or check the failure dmesg to be extra=
+=20
+sure.
 
-- Cleanup compressed bio structure early
-  So that we do not need extra cleanup later.
+Thanks,
+Qu
 
-v4:
-- Reorder with the patch "btrfs: do compressed bio size roundup and zeroing in one go"
-  That patch is a pure cleanup, should not depend on this intrusive
-  patch.
-
-- Remove the comment of ret > 0 case of cow_file_range()
-  As that function can no longer create inlined extent.
-
-v3:
-- Fix a grammar error in the commit message
-
-v2:
-- Fix a bug exposed in btrfs/344
-  Where the inode_need_compress() check allows single block to be
-  compressed.
-  Update inode_need_compress() to accept a new @check_inline parameter,
-  so that only inode_need_compress() in run_delalloc_inline() will allow
-  single block to be compressed, meanwhile all other call sites will
-  reject single block compression.
-
-- Fix a leak of extent_state
----
- fs/btrfs/inode.c | 220 +++++++++++++++++++++++------------------------
- 1 file changed, 110 insertions(+), 110 deletions(-)
-
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index 89ab33c5b940..c1abeb72069c 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -74,7 +74,6 @@
- #include "delayed-inode.h"
- 
- #define COW_FILE_RANGE_KEEP_LOCKED	(1UL << 0)
--#define COW_FILE_RANGE_NO_INLINE	(1UL << 1)
- 
- struct btrfs_iget_args {
- 	u64 ino;
-@@ -622,6 +621,10 @@ static bool can_cow_file_range_inline(struct btrfs_inode *inode,
-  *
-  * If being used directly, you must have already checked we're allowed to cow
-  * the range by getting true from can_cow_file_range_inline().
-+ *
-+ * Return 0 if the inlined extent is created successfully.
-+ * Return <0 for critical error, and should be considered as an writeback error.
-+ * Return >0 if can not create an inlined extent (mostly due to lack of meta space).
-  */
- static noinline int __cow_file_range_inline(struct btrfs_inode *inode,
- 					    u64 size, size_t compressed_size,
-@@ -703,55 +706,6 @@ static noinline int __cow_file_range_inline(struct btrfs_inode *inode,
- 	return ret;
- }
- 
--static noinline int cow_file_range_inline(struct btrfs_inode *inode,
--					  struct folio *locked_folio,
--					  u64 offset, u64 end,
--					  size_t compressed_size,
--					  int compress_type,
--					  struct folio *compressed_folio,
--					  bool update_i_size)
--{
--	struct extent_state *cached = NULL;
--	unsigned long clear_flags = EXTENT_DELALLOC | EXTENT_DELALLOC_NEW |
--		EXTENT_DEFRAG | EXTENT_DO_ACCOUNTING | EXTENT_LOCKED;
--	u64 size = min_t(u64, i_size_read(&inode->vfs_inode), end + 1);
--	int ret;
--
--	if (!can_cow_file_range_inline(inode, offset, size, compressed_size))
--		return 1;
--
--	btrfs_lock_extent(&inode->io_tree, offset, end, &cached);
--	ret = __cow_file_range_inline(inode, size, compressed_size,
--				      compress_type, compressed_folio,
--				      update_i_size);
--	if (ret > 0) {
--		btrfs_unlock_extent(&inode->io_tree, offset, end, &cached);
--		return ret;
--	}
--
--	/*
--	 * In the successful case (ret == 0 here), cow_file_range will return 1.
--	 *
--	 * Quite a bit further up the callstack in extent_writepage(), ret == 1
--	 * is treated as a short circuited success and does not unlock the folio,
--	 * so we must do it here.
--	 *
--	 * In the failure case, the locked_folio does get unlocked by
--	 * btrfs_folio_end_all_writers, which asserts that it is still locked
--	 * at that point, so we must *not* unlock it here.
--	 *
--	 * The other two callsites in compress_file_range do not have a
--	 * locked_folio, so they are not relevant to this logic.
--	 */
--	if (ret == 0)
--		locked_folio = NULL;
--
--	extent_clear_unlock_delalloc(inode, offset, end, locked_folio, &cached,
--				     clear_flags, PAGE_UNLOCK |
--				     PAGE_START_WRITEBACK | PAGE_END_WRITEBACK);
--	return ret;
--}
--
- struct async_extent {
- 	u64 start;
- 	u64 ram_size;
-@@ -797,7 +751,7 @@ static int add_async_extent(struct async_chunk *cow, u64 start, u64 ram_size,
-  * options, defragmentation, properties or heuristics.
-  */
- static inline int inode_need_compress(struct btrfs_inode *inode, u64 start,
--				      u64 end)
-+				      u64 end, bool check_inline)
- {
- 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
- 
-@@ -812,8 +766,9 @@ static inline int inode_need_compress(struct btrfs_inode *inode, u64 start,
- 	 * and will always fallback to regular write later.
- 	 */
- 	if (end + 1 - start <= fs_info->sectorsize &&
--	    (start > 0 || end + 1 < inode->disk_i_size))
-+	    (!check_inline || (start > 0 || end + 1 < inode->disk_i_size)))
- 		return 0;
-+
- 	/* Defrag ioctl takes precedence over mount options and properties. */
- 	if (inode->defrag_compress == BTRFS_DEFRAG_DONT_COMPRESS)
- 		return 0;
-@@ -928,7 +883,6 @@ static void compress_file_range(struct btrfs_work *work)
- 		container_of(work, struct async_chunk, work);
- 	struct btrfs_inode *inode = async_chunk->inode;
- 	struct btrfs_fs_info *fs_info = inode->root->fs_info;
--	struct address_space *mapping = inode->vfs_inode.i_mapping;
- 	struct compressed_bio *cb = NULL;
- 	u64 blocksize = fs_info->sectorsize;
- 	u64 start = async_chunk->start;
-@@ -1000,7 +954,7 @@ static void compress_file_range(struct btrfs_work *work)
- 	 * been flagged as NOCOMPRESS.  This flag can change at any time if we
- 	 * discover bad compression ratios.
- 	 */
--	if (!inode_need_compress(inode, start, end))
-+	if (!inode_need_compress(inode, start, end, false))
- 		goto cleanup_and_bail_uncompressed;
- 
- 	if (0 < inode->defrag_compress && inode->defrag_compress < BTRFS_NR_COMPRESS_TYPES) {
-@@ -1021,35 +975,6 @@ static void compress_file_range(struct btrfs_work *work)
- 	total_compressed = cb->bbio.bio.bi_iter.bi_size;
- 	total_in = cur_len;
- 
--	/*
--	 * Try to create an inline extent.
--	 *
--	 * If we didn't compress the entire range, try to create an uncompressed
--	 * inline extent, else a compressed one.
--	 *
--	 * Check cow_file_range() for why we don't even try to create inline
--	 * extent for the subpage case.
--	 */
--	if (total_in < actual_end)
--		ret = cow_file_range_inline(inode, NULL, start, end, 0,
--					    BTRFS_COMPRESS_NONE, NULL, false);
--	else
--		ret = cow_file_range_inline(inode, NULL, start, end, total_compressed,
--					    compress_type,
--					    bio_first_folio_all(&cb->bbio.bio), false);
--	if (ret <= 0) {
--		cleanup_compressed_bio(cb);
--		if (ret < 0)
--			mapping_set_error(mapping, -EIO);
--		return;
--	}
--	/*
--	 * If a single block at file offset 0 cannot be inlined, fall back to
--	 * regular writes without marking the file incompressible.
--	 */
--	if (start == 0 && end <= blocksize)
--		goto cleanup_and_bail_uncompressed;
--
- 	/*
- 	 * We aren't doing an inline extent. Round the compressed size up to a
- 	 * block size boundary so the allocator does sane things.
-@@ -1427,11 +1352,6 @@ static int cow_one_range(struct btrfs_inode *inode, struct folio *locked_folio,
-  *
-  * When this function fails, it unlocks all folios except @locked_folio.
-  *
-- * When this function successfully creates an inline extent, it returns 1 and
-- * unlocks all folios including locked_folio and starts I/O on them.
-- * (In reality inline extents are limited to a single block, so locked_folio is
-- * the only folio handled anyway).
-- *
-  * When this function succeed and creates a normal extent, the folio locking
-  * status depends on the passed in flags:
-  *
-@@ -1475,25 +1395,6 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
- 	ASSERT(num_bytes <= btrfs_super_total_bytes(fs_info->super_copy));
- 
- 	inode_should_defrag(inode, start, end, num_bytes, SZ_64K);
--
--	if (!(flags & COW_FILE_RANGE_NO_INLINE)) {
--		/* lets try to make an inline extent */
--		ret = cow_file_range_inline(inode, locked_folio, start, end, 0,
--					    BTRFS_COMPRESS_NONE, NULL, false);
--		if (ret <= 0) {
--			/*
--			 * We succeeded, return 1 so the caller knows we're done
--			 * with this page and already handled the IO.
--			 *
--			 * If there was an error then cow_file_range_inline() has
--			 * already done the cleanup.
--			 */
--			if (ret == 0)
--				ret = 1;
--			goto done;
--		}
--	}
--
- 	alloc_hint = btrfs_get_extent_allocation_hint(inode, start, num_bytes);
- 
- 	/*
-@@ -1571,7 +1472,6 @@ static noinline int cow_file_range(struct btrfs_inode *inode,
- 	}
- 	extent_clear_unlock_delalloc(inode, orig_start, end, locked_folio, &cached,
- 				     EXTENT_LOCKED | EXTENT_DELALLOC, page_ops);
--done:
- 	if (done_offset)
- 		*done_offset = end;
- 	return ret;
-@@ -1874,7 +1774,7 @@ static int fallback_to_cow(struct btrfs_inode *inode,
- 	 * a locked folio, which can race with writeback.
- 	 */
- 	ret = cow_file_range(inode, locked_folio, start, end, NULL,
--			     COW_FILE_RANGE_NO_INLINE | COW_FILE_RANGE_KEEP_LOCKED);
-+			     COW_FILE_RANGE_KEEP_LOCKED);
- 	ASSERT(ret != 1);
- 	return ret;
- }
-@@ -2425,6 +2325,91 @@ static bool should_nocow(struct btrfs_inode *inode, u64 start, u64 end)
- 	return false;
- }
- 
-+/*
-+ * Return 0 if an inlined extent is created successfully.
-+ * Return <0 if critical error happened.
-+ * Return >0 if an inline extent can not be created.
-+ */
-+static int run_delalloc_inline(struct btrfs_inode *inode, struct folio *locked_folio)
-+{
-+	struct btrfs_fs_info *fs_info = inode->root->fs_info;
-+	struct compressed_bio *cb = NULL;
-+	struct extent_state *cached = NULL;
-+	const u64 i_size = i_size_read(&inode->vfs_inode);
-+	const u32 blocksize = fs_info->sectorsize;
-+	int compress_type = fs_info->compress_type;
-+	int compress_level = fs_info->compress_level;
-+	u32 compressed_size = 0;
-+	int ret;
-+
-+	ASSERT(folio_pos(locked_folio) == 0);
-+
-+	if (btrfs_inode_can_compress(inode) &&
-+	    inode_need_compress(inode, 0, blocksize, true)) {
-+		if (inode->defrag_compress > 0 &&
-+		    inode->defrag_compress < BTRFS_NR_COMPRESS_TYPES) {
-+			compress_type = inode->defrag_compress;
-+			compress_level = inode->defrag_compress_level;
-+		} else if (inode->prop_compress) {
-+			compress_type = inode->prop_compress;
-+		}
-+		cb = btrfs_compress_bio(inode, 0, blocksize, compress_type, compress_level, 0);
-+		if (IS_ERR(cb)) {
-+			cb = NULL;
-+			/* Just fall back to non-compressed case. */
-+		} else {
-+			compressed_size = cb->bbio.bio.bi_iter.bi_size;
-+		}
-+	}
-+	if (!can_cow_file_range_inline(inode, 0, i_size, compressed_size)) {
-+		if (cb)
-+			cleanup_compressed_bio(cb);
-+		return 1;
-+	}
-+
-+	btrfs_lock_extent(&inode->io_tree, 0, blocksize - 1, &cached);
-+	if (cb) {
-+		ret = __cow_file_range_inline(inode, i_size, compressed_size, compress_type,
-+					      bio_first_folio_all(&cb->bbio.bio), false);
-+		cleanup_compressed_bio(cb);
-+		cb = NULL;
-+	} else {
-+		ret = __cow_file_range_inline(inode, i_size, 0, BTRFS_COMPRESS_NONE,
-+					      NULL, false);
-+	}
-+	/*
-+	 * We failed to insert inline extent due to lack of meta space.
-+	 * Just unlock the extent io range and fallback to regular COW/NOCOW path.
-+	 */
-+	if (ret > 0) {
-+		btrfs_unlock_extent(&inode->io_tree, 0, blocksize - 1, &cached);
-+		return ret;
-+	}
-+
-+	/*
-+	 * In the successful case (ret == 0 here), btrfs_run_delalloc_range()
-+	 * will return 1.
-+	 *
-+	 * Quite a bit further up the callstack in extent_writepage(), ret == 1
-+	 * is treated as a short circuited success and does not unlock the folio,
-+	 * so we must do it here.
-+	 *
-+	 * For failure case, the @locked_folio does get unlocked by
-+	 * btrfs_folio_end_lock_bitmap(), so we must *not* unlock it here.
-+	 *
-+	 * So if ret == 0, we let extent_clear_unlock_delalloc() to unlock the
-+	 * folio by passing NULL as @locked_folio.
-+	 * Otherwise pass @locked_folio as usual.
-+	 */
-+	if (ret == 0)
-+		locked_folio = NULL;
-+	extent_clear_unlock_delalloc(inode, 0, blocksize - 1, locked_folio, &cached,
-+				     EXTENT_DELALLOC | EXTENT_DELALLOC_NEW | EXTENT_DEFRAG |
-+				     EXTENT_DO_ACCOUNTING | EXTENT_LOCKED,
-+				     PAGE_UNLOCK | PAGE_START_WRITEBACK | PAGE_END_WRITEBACK);
-+	return ret;
-+}
-+
- /*
-  * Function to process delayed allocation (create CoW) for ranges which are
-  * being touched for the first time.
-@@ -2441,11 +2426,26 @@ int btrfs_run_delalloc_range(struct btrfs_inode *inode, struct folio *locked_fol
- 	ASSERT(!(end <= folio_pos(locked_folio) ||
- 		 start >= folio_next_pos(locked_folio)));
- 
-+	if (start == 0 && end + 1 <= inode->root->fs_info->sectorsize &&
-+	    end + 1 >= inode->disk_i_size) {
-+		int ret;
-+
-+		ret = run_delalloc_inline(inode, locked_folio);
-+		if (ret < 0)
-+			return ret;
-+		if (ret == 0)
-+			return 1;
-+		/*
-+		 * Continue regular handling if we can not create an
-+		 * inlined extent.
-+		 */
-+	}
-+
- 	if (should_nocow(inode, start, end))
- 		return run_delalloc_nocow(inode, locked_folio, start, end);
- 
- 	if (btrfs_inode_can_compress(inode) &&
--	    inode_need_compress(inode, start, end) &&
-+	    inode_need_compress(inode, start, end, false) &&
- 	    run_delalloc_compressed(inode, locked_folio, start, end, wbc))
- 		return 1;
- 
--- 
-2.53.0
+> ---
+>   fs/btrfs/ctree.c     | 87 ++++++++++++++++++++++++++++++++++----------
+>   fs/btrfs/disk-io.c   |  2 +-
+>   fs/btrfs/extent_io.c |  4 --
+>   3 files changed, 69 insertions(+), 24 deletions(-)
+>=20
+> diff --git a/fs/btrfs/ctree.c b/fs/btrfs/ctree.c
+> index 7267b2502665..ea7cfc3a9e89 100644
+> --- a/fs/btrfs/ctree.c
+> +++ b/fs/btrfs/ctree.c
+> @@ -599,29 +599,40 @@ int btrfs_force_cow_block(struct btrfs_trans_handl=
+e *trans,
+>   	return ret;
+>   }
+>  =20
+> -static inline bool should_cow_block(const struct btrfs_trans_handle *tr=
+ans,
+> +/*
+> + * Check if @buf needs to be COW'd.
+> + *
+> + * Returns true if COW is required, false if the block can be reused
+> + * in place.
+> + *
+> + * We do not need to COW a block if:
+> + * 1) the block was created or changed in this transaction;
+> + * 2) the block does not belong to TREE_RELOC tree;
+> + * 3) the root is not forced COW.
+> + *
+> + * Forced COW happens when we create a snapshot during transaction comm=
+it:
+> + * after copying the src root, we must COW the shared block to ensure
+> + * metadata consistency.
+> + *
+> + * When returning false for a WRITTEN buffer allocated in the current
+> + * transaction, re-dirties the buffer for in-place overwrite instead
+> + * of requesting a new COW.
+> + */
+> +static inline bool should_cow_block(struct btrfs_trans_handle *trans,
+>   				    const struct btrfs_root *root,
+> -				    const struct extent_buffer *buf)
+> +				    struct extent_buffer *buf)
+>   {
+>   	if (btrfs_is_testing(root->fs_info))
+>   		return false;
+>  =20
+> -	/*
+> -	 * We do not need to cow a block if
+> -	 * 1) this block is not created or changed in this transaction;
+> -	 * 2) this block does not belong to TREE_RELOC tree;
+> -	 * 3) the root is not forced COW.
+> -	 *
+> -	 * What is forced COW:
+> -	 *    when we create snapshot during committing the transaction,
+> -	 *    after we've finished copying src root, we must COW the shared
+> -	 *    block to ensure the metadata consistency.
+> -	 */
+> -
+>   	if (btrfs_header_generation(buf) !=3D trans->transid)
+>   		return true;
+>  =20
+> -	if (btrfs_header_flag(buf, BTRFS_HEADER_FLAG_WRITTEN))
+> +	if (test_bit(EXTENT_BUFFER_WRITEBACK, &buf->bflags))
+> +		return true;
+> +
+> +	if (btrfs_root_id(root) !=3D BTRFS_TREE_RELOC_OBJECTID &&
+> +	    btrfs_header_flag(buf, BTRFS_HEADER_FLAG_RELOC))
+>   		return true;
+>  =20
+>   	/* Ensure we can see the FORCE_COW bit. */
+> @@ -629,11 +640,49 @@ static inline bool should_cow_block(const struct b=
+trfs_trans_handle *trans,
+>   	if (test_bit(BTRFS_ROOT_FORCE_COW, &root->state))
+>   		return true;
+>  =20
+> -	if (btrfs_root_id(root) =3D=3D BTRFS_TREE_RELOC_OBJECTID)
+> -		return false;
+> +	if (btrfs_header_flag(buf, BTRFS_HEADER_FLAG_WRITTEN)) {
+> +		/*
+> +		 * The buffer was allocated in this transaction and has been
+> +		 * written back to disk (WRITTEN is set). Normally we'd COW
+> +		 * it again, but since the committed superblock doesn't
+> +		 * reference this buffer (it was allocated in this transaction),
+> +		 * we can safely overwrite it in place.
+> +		 *
+> +		 * We keep BTRFS_HEADER_FLAG_WRITTEN set. The block has been
+> +		 * persisted at this bytenr and will be again after the
+> +		 * in-place update. This is important so that
+> +		 * btrfs_free_tree_block() correctly pins the block if it is
+> +		 * freed later (e.g., during tree rebalancing or FORCE_COW).
+> +		 *
+> +		 * Log trees and zoned devices cannot use this optimization:
+> +		 * - Log trees: log blocks are written and immediately
+> +		 *   referenced by a committed superblock via
+> +		 *   btrfs_sync_log(), bypassing the normal transaction
+> +		 *   commit. Overwriting in place could corrupt the
+> +		 *   committed log.
+> +		 * - Zoned devices: require sequential writes.
+> +		 */
+> +		if (btrfs_root_id(root) =3D=3D BTRFS_TREE_LOG_OBJECTID ||
+> +		    btrfs_is_zoned(root->fs_info))
+> +			return true;
+>  =20
+> -	if (btrfs_header_flag(buf, BTRFS_HEADER_FLAG_RELOC))
+> -		return true;
+> +		/*
+> +		 * Re-register this block's range in the current transaction's
+> +		 * dirty_pages so that btrfs_write_and_wait_transaction()
+> +		 * writes it. The range was originally registered when the
+> +		 * block was allocated. Normally dirty_pages is only cleared
+> +		 * at commit time by btrfs_write_and_wait_transaction(), but
+> +		 * if qgroups are enabled and snapshots are being created,
+> +		 * qgroup_account_snapshot() may have already called
+> +		 * btrfs_write_and_wait_transaction() and released the range
+> +		 * before the final commit-time call.
+> +		 */
+> +		btrfs_set_extent_bit(&trans->transaction->dirty_pages,
+> +				     buf->start,
+> +				     buf->start + buf->len - 1,
+> +				     EXTENT_DIRTY, NULL);
+> +		btrfs_mark_buffer_dirty(trans, buf);
+> +	}
+>  =20
+>   	return false;
+>   }
+> diff --git a/fs/btrfs/disk-io.c b/fs/btrfs/disk-io.c
+> index 32fffb0557e5..bee8f76fbfea 100644
+> --- a/fs/btrfs/disk-io.c
+> +++ b/fs/btrfs/disk-io.c
+> @@ -4491,7 +4491,7 @@ void btrfs_mark_buffer_dirty(struct btrfs_trans_ha=
+ndle *trans,
+>   #endif
+>   	/* This is an active transaction (its state < TRANS_STATE_UNBLOCKED).=
+ */
+>   	ASSERT(trans->transid =3D=3D fs_info->generation);
+> -	btrfs_assert_tree_write_locked(buf);
+> +	lockdep_assert_held(&buf->lock);
+>   	if (unlikely(transid !=3D fs_info->generation)) {
+>   		btrfs_abort_transaction(trans, -EUCLEAN);
+>   		btrfs_crit(fs_info,
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index dfc17c292217..ff1fc699a6ca 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -3791,10 +3791,6 @@ void set_extent_buffer_dirty(struct extent_buffer=
+ *eb)
+>   					 eb->len,
+>   					 eb->fs_info->dirty_metadata_batch);
+>   	}
+> -#ifdef CONFIG_BTRFS_DEBUG
+> -	for (int i =3D 0; i < num_extent_folios(eb); i++)
+> -		ASSERT(folio_test_dirty(eb->folios[i]));
+> -#endif
+>   }
+>  =20
+>   void clear_extent_buffer_uptodate(struct extent_buffer *eb)
 
 
