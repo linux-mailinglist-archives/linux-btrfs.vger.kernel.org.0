@@ -1,196 +1,187 @@
-Return-Path: <linux-btrfs+bounces-22263-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-22264-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id YEFCEqcHqmlwJwEAu9opvQ
-	(envelope-from <linux-btrfs+bounces-22263-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Thu, 05 Mar 2026 23:45:59 +0100
+	id gF10Eh+jqml6UwEAu9opvQ
+	(envelope-from <linux-btrfs+bounces-22264-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Fri, 06 Mar 2026 10:49:19 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B10C2190BE
-	for <lists+linux-btrfs@lfdr.de>; Thu, 05 Mar 2026 23:45:58 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0159D21E36E
+	for <lists+linux-btrfs@lfdr.de>; Fri, 06 Mar 2026 10:49:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 81D5B303205A
-	for <lists+linux-btrfs@lfdr.de>; Thu,  5 Mar 2026 22:45:23 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id DE5D93019152
+	for <lists+linux-btrfs@lfdr.de>; Fri,  6 Mar 2026 09:48:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 873903644D5;
-	Thu,  5 Mar 2026 22:45:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C684734A3C9;
+	Fri,  6 Mar 2026 09:48:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b="EgvSVOOn";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Btw5cDYn"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Cb3P6FId"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from fout-a7-smtp.messagingengine.com (fout-a7-smtp.messagingengine.com [103.168.172.150])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19F3435F166
-	for <linux-btrfs@vger.kernel.org>; Thu,  5 Mar 2026 22:45:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.150
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A38052DF134
+	for <linux-btrfs@vger.kernel.org>; Fri,  6 Mar 2026 09:48:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772750721; cv=none; b=N5ObZ79RCT1IzG8K9qXIdIepgLGkXe2IPaWTLg4fin2N02fQB3pC1Shne7HZ25KH3xC44Qmg0+MvwlLQnOfALPMVLEerhxvw2HOYe/z+4a+Z0jfLkqrqnMOGMEQT02Xol1Y3kFKZI+QcQOaOvxCRrlyUMiJL6cxVydOUqe2Jk70=
+	t=1772790517; cv=none; b=oyTs7AUFemlswUOKLpjdzEZTg9TJPDpEC7fiHex4/H0PMoUUiQAUcrKHuZqYPeDIgv4ddaAU4g1v+vBnTXr294F/AynUw/Kxc26rLB0JH1bmoJ/1dUx2nZ0qhkHiLzV0SkQ/h9D5w63+EvbpCj8oQJNydrjxt6yDftHWW0TD0uY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772750721; c=relaxed/simple;
-	bh=eOnqKVQvOW9/WQ0L18NvJIN3dIUQDNmoTteUsqdMUBI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IYEh9wPneyCKPSEDiJUAU7XanV7ynyE+bNnQzFz7MtSQhQygrZwJ9VVJQnVSPgA6mqPZ6y7HbfOLVS8uNsGU03o+UvQtV3qEJEvbY4pse90e7LiBsAPmJGNqSBWf3dPxCHe/dVX0Ey2gO0SpurWqoaIdiOehM9bNZyoWHV1Cqn0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io; spf=pass smtp.mailfrom=bur.io; dkim=pass (2048-bit key) header.d=bur.io header.i=@bur.io header.b=EgvSVOOn; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Btw5cDYn; arc=none smtp.client-ip=103.168.172.150
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bur.io
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bur.io
-Received: from phl-compute-05.internal (phl-compute-05.internal [10.202.2.45])
-	by mailfout.phl.internal (Postfix) with ESMTP id 6ED0DEC022F;
-	Thu,  5 Mar 2026 17:45:19 -0500 (EST)
-Received: from phl-frontend-04 ([10.202.2.163])
-  by phl-compute-05.internal (MEProxy); Thu, 05 Mar 2026 17:45:19 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=cc:cc
-	:content-transfer-encoding:content-type:content-type:date:date
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm2; t=1772750719;
-	 x=1772837119; bh=Q5fpQF0WKsKxy3HOhYQ1rSBFkdMtOke4x4LF5xrTLZg=; b=
-	EgvSVOOnq6Ho2zxt2kXYB/g44Hz72cNDxQdTfWoLKQjjnY9Z9r+BhXZR4S1sFN8S
-	mkw9heuLAZcpTCxNaOclQcRhwrz/JwZWlNElir+VbBE9bI81HVsoAxcf4gTRrj76
-	sYlIDxbpFrqluUyUQrC0q5Cw+meSMsIGJUtefm/5QsrMPUdxWNU9s3D/WDcBpQL4
-	S/NdPWeysmx63OJnaofxWFuEGgbMmp4f6snMnL/H0ZZGAKzSzsh8jtW/q/nLjbhw
-	w8boiTycUPtjsb0tWREDHHZSVeZsJgULzamVakAe5gP1rX1ZhpGv+XhA/n3SiA30
-	sOz2CkxLlSzZJNnNm3wcfg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1772750719; x=
-	1772837119; bh=Q5fpQF0WKsKxy3HOhYQ1rSBFkdMtOke4x4LF5xrTLZg=; b=B
-	tw5cDYnc8SDUGELHLKYc6BGllrZ8OVmnjQT/GjiCWOITvLoUJPXgaPQ41ObcZpO2
-	5VuInNdqyTR8nG7VFI3MNHLMlOrvTg1JZbcDJQt1pa6bdkVf83QIPecXMVai2/12
-	ZOt2J+O/StREuLGjGaZvcYa/tIlw2PvJta/4fW3AjMWh9ECbOQDdImt+vYGUMR2C
-	QSWKf5QI/nllUuGmamRxynlGCG1few2zYOY+BAle7+aXksw3OiUypW2fJG997dZc
-	WWwCP+r2kaEtTcjt4kSooah83600aqhxK4NhrMPd/7TYYpSeAZA4T9NE62u1PPee
-	bAdkLoM5qDGgMcVCASITg==
-X-ME-Sender: <xms:fweqaW1MYhSm4MuFT6f7ULyUloL-FIs0EnXTJ6p41fI-6W_Lj-Mmnw>
-    <xme:fweqaQE5L1z4IFYwuOynbyNcLN8CV1xsgWwBCzDmwX3oUZEOab4Hf3NnC-vDmAmKC
-    SP3G9boL_E-KX-e-34r8PSaS8PRj75OD2owxbQAlgdmnJizmf6iRgLU>
-X-ME-Received: <xmr:fweqaT45KIaStGXrGvpL87wxJFMe_VAp8VDHdrNMUkiZyep3jBs5aPU2JBPKBj-1irZNEw5XWIcp1DZXoy2lwpSoaEo>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefgedrtddtgddvieejieegucetufdoteggodetrf
-    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
-    rghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujf
-    gurhepfffhvfevuffkfhggtggugfgjsehtkeertddttdejnecuhfhrohhmpeeuohhrihhs
-    uceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhepud
-    elhfdthfetuddvtefhfedtiedtteehvddtkedvledtvdevgedtuedutdeitdeinecuvehl
-    uhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghorhhishessg
-    hurhdrihhopdhnsggprhgtphhtthhopeegpdhmohguvgepshhmthhpohhuthdprhgtphht
-    thhopehquhifvghnrhhuohdrsghtrhhfshesghhmgidrtghomhdprhgtphhtthhopegush
-    htvghrsggrsehsuhhsvgdrtgiipdhrtghpthhtohepfihquhesshhushgvrdgtohhmpdhr
-    tghpthhtoheplhhinhhugidqsghtrhhfshesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:fweqaWsh1qQ_bvXR2cLw19ABm9ukuCITBZiNUfLXkIJAKFgzvZV8eQ>
-    <xmx:fweqaU6SF9egqwZBUr926Q2NixfVUbpjLRHHP_30Ni6IYJnUZ3LMkg>
-    <xmx:fweqaRWt-ZQUEpngB28Sw_R45YI71lmvzmkZrI0GAf6tVFiFLfFNKw>
-    <xmx:fweqaW-jFg19dp3WHRtMwFARcJ-dLylnhB_D3HDeuPbBs94m36-Kig>
-    <xmx:fweqaZICDL25yHX07IavfOLh41tX03jhYsTh4slRReI-CvLzZsTXJeRv>
-Feedback-ID: i083147f8:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 5 Mar 2026 17:45:18 -0500 (EST)
-Date: Thu, 5 Mar 2026 14:45:58 -0800
-From: Boris Burkov <boris@bur.io>
-To: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Cc: David Sterba <dsterba@suse.cz>, Qu Wenruo <wqu@suse.com>,
-	linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH RFC] btrfs: get rid of btrfs_(alloc|free)_compr_folio()
-Message-ID: <20260305224558.GA1293763@zen.localdomain>
-References: <ddcbb67a60d1bc87bc2f45cbd6f830880a5076ae.1772438228.git.wqu@suse.com>
- <20260305025611.GC5735@twin.jikos.cz>
- <20260305174609.GC926642@zen.localdomain>
- <63e3b64e-e344-4d90-bcfa-ecc686b85c5f@gmx.com>
+	s=arc-20240116; t=1772790517; c=relaxed/simple;
+	bh=hLgE1vbadUrmtpG0IpiFGB9UqdqGXFOyNHT09CKyNXw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=socztdbA2kzUw91QC4lODd1vaOg6A2n/y7vaITVe2mDtduGC6XoN4dMHPj2UiMz3AfG/YIP7JArAiMjp7tBcJ4KhSbLWf3Xd6iAoNJ/XCLbqNBbn31QgzqgTxjg3H+62JOSGD3sMBJ2mdpio8YX6G7F502/1X+iUJ1UepftOif4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Cb3P6FId; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-4806f3fc50bso98297145e9.0
+        for <linux-btrfs@vger.kernel.org>; Fri, 06 Mar 2026 01:48:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1772790514; x=1773395314; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=LnbCXnhVRMYJgIjMb62TyOwMasEqzN2MIUietSO74W4=;
+        b=Cb3P6FIdrZ6vGTfPlPYwIo7kecOP4pkATopgCEEk+JPhYtz4X7sJHr/S0NxFhy5BPm
+         JDlyU/8ZA1B5IQsC2pltnFNWpDPbTfk0dwncBECByZYCKKeUjz2jaONAeK77kVbOYEKv
+         qpdsbK8udZ84lQj3Ko60Pd2kfxelkkT2+HUsU2XTLopifXX4lpsF1HwSYnBkd67O+ZkW
+         Y/v27ybhjXDicFaWfMrKZ+AaEsi2y8iE9fRXGAn6q/2J5im9zuZLnEy+3LUCNbS2oTQz
+         C/0GkBM0whQHOn03pKKlQU8I1Vzr1lbOKDghu3+rzM8GaD6IRe1URCnG/yIrmkYd8mwK
+         Swlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1772790514; x=1773395314;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LnbCXnhVRMYJgIjMb62TyOwMasEqzN2MIUietSO74W4=;
+        b=upfpEeVrxM5+RSamwT36gE8188HxccpKecOTTuQDIkwQkrhMOO/o8HwIHGmBpU9xVK
+         ZJn4n6jw5DWZP/DuzqpJ7K54ZreOQMkG+secb0+sjqohu6Bp+X8mIlbrbtX7e0/TNbP7
+         EENuWWxL406Ax3YCnqWIv/L7duqhVvKrol8gMKc0s6KaNpuAorIDKeYhp8saYAqN40EM
+         bTJSnFAV+Ggs7PxScumjo6vN4+Uk69INbXJ5sWx2Y7VDSUylYnZoi8C2K+pvxVlMCIRc
+         q9dSRTpyaKUGtszBSCIfH4u+OGY8rn6Qe4u4bhAxFu3qtfBmlrl/f7uQFxojgz5/m7/O
+         iVyA==
+X-Forwarded-Encrypted: i=1; AJvYcCW0K3JopkfZaLLL6iNXBYPVlRCSwAzd916CPRUie8uRpOv/2MU/jj8alvjR4fEnOJOTnj5edv2ZZV3Vnw==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzqni/iRwvdiKK4wz+SUAj+bG2r2iznxO72Y221VPqYRO43bdDz
+	vNujqzwuEHQ0hX8vjEcCJo2O9Eco2mKtvtgutDDTrnFv3tl6bbfiLIwDRSWozqePoaI=
+X-Gm-Gg: ATEYQzzoQHTlTaXnReHjgujTabxHfvKYZqdcQQZM8420PkFzPZ3G+nAceNI10Coe1ys
+	qUBA8cc3BqcykeEHwLl8YpsxCTUzlbasiDJdVnATQrZQ9RdH5LNy6T8m9o7rfxKNS0ObQ0xwnuv
+	cQ1Mv/zyAVSsK0kSM/KO7rzT+x4+pE5J7FlEg8V7VV8m72zxi8DbXX+bgAiNc4jRlmBjzRQOHyQ
+	XKX5u6ybX1FPjnI06cXLpuiD5ryaY2V5WgKQE11DUma4vPuEJjfd/PueEUSDlFsjYgiZyLvb+U2
+	NfAHkB7LxUJb2iwoSyRkh21cGNdKOeukWqwbzaDztO0VyBbTCZVaRmrDvODeZSDs5nxfek7WKtI
+	0QMknBWHd7fDUqg9udaxfoojoKySMOOP7LeI0q5D/kkF0PX9pjpghtN+jszJcLnV8pPbS9L7ce8
+	mh6V8hf4qcywk/zAwbuZVKOPIz8fzPgq+61cCac445j8bdopVYEj7mZ9rjZWTvsg==
+X-Received: by 2002:a05:600c:4591:b0:477:9b4a:a82 with SMTP id 5b1f17b1804b1-4852697969fmr19875355e9.35.1772790513927;
+        Fri, 06 Mar 2026 01:48:33 -0800 (PST)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-359c01541a2sm1300301a91.9.2026.03.06.01.48.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 06 Mar 2026 01:48:32 -0800 (PST)
+Message-ID: <c78d4c9a-4c6a-449d-b548-890d6f5ae700@suse.com>
+Date: Fri, 6 Mar 2026 20:18:28 +1030
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: kernel BUG in close_ctree
+To: =?UTF-8?B?5p2c5LmJ5oGS?= <duyiheng@tju.edu.cn>,
+ linux-btrfs <linux-btrfs@vger.kernel.org>
+Cc: syzkaller@googlegroups.com
+References: <ACwALQAQKKJNZcvdY35lEKpy.1.1772788011237.Hmail.3019244382@tju.edu.cn>
+Content-Language: en-US
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXVgBQkQ/lqxAAoJEMI9kfOh
+ Jf6o+jIH/2KhFmyOw4XWAYbnnijuYqb/obGae8HhcJO2KIGcxbsinK+KQFTSZnkFxnbsQ+VY
+ fvtWBHGt8WfHcNmfjdejmy9si2jyy8smQV2jiB60a8iqQXGmsrkuR+AM2V360oEbMF3gVvim
+ 2VSX2IiW9KERuhifjseNV1HLk0SHw5NnXiWh1THTqtvFFY+CwnLN2GqiMaSLF6gATW05/sEd
+ V17MdI1z4+WSk7D57FlLjp50F3ow2WJtXwG8yG8d6S40dytZpH9iFuk12Sbg7lrtQxPPOIEU
+ rpmZLfCNJJoZj603613w/M8EiZw6MohzikTWcFc55RLYJPBWQ+9puZtx1DopW2jOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJnEXWBBQkQ/lrSAAoJEMI9kfOhJf6o
+ cakH+QHwDszsoYvmrNq36MFGgvAHRjdlrHRBa4A1V1kzd4kOUokongcrOOgHY9yfglcvZqlJ
+ qfa4l+1oxs1BvCi29psteQTtw+memmcGruKi+YHD7793zNCMtAtYidDmQ2pWaLfqSaryjlzR
+ /3tBWMyvIeWZKURnZbBzWRREB7iWxEbZ014B3gICqZPDRwwitHpH8Om3eZr7ygZck6bBa4MU
+ o1XgbZcspyCGqu1xF/bMAY2iCDcq6ULKQceuKkbeQ8qxvt9hVxJC2W3lHq8dlK1pkHPDg9wO
+ JoAXek8MF37R8gpLoGWl41FIUb3hFiu3zhDDvslYM4BmzI18QgQTQnotJH8=
+In-Reply-To: <ACwALQAQKKJNZcvdY35lEKpy.1.1772788011237.Hmail.3019244382@tju.edu.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <63e3b64e-e344-4d90-bcfa-ecc686b85c5f@gmx.com>
-X-Rspamd-Queue-Id: 6B10C2190BE
+X-Rspamd-Queue-Id: 0159D21E36E
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_DKIM_ALLOW(-0.20)[bur.io:s=fm2,messagingengine.com:s=fm1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-22263-lists,linux-btrfs=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
+	RCPT_COUNT_THREE(0.00)[3];
+	DKIM_TRACE(0.00)[suse.com:+];
 	FROM_HAS_DN(0.00)[];
-	DMARC_NA(0.00)[bur.io];
-	FREEMAIL_TO(0.00)[gmx.com];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-22264-lists,linux-btrfs=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[bur.io:+,messagingengine.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[boris@bur.io,linux-btrfs@vger.kernel.org];
-	RCPT_COUNT_THREE(0.00)[4];
-	NEURAL_HAM(-0.00)[-0.995];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[wqu@suse.com,linux-btrfs@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	RCVD_COUNT_FIVE(0.00)[5];
+	MID_RHS_MATCH_FROM(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,messagingengine.com:dkim,bur.io:dkim,zen.localdomain:mid]
+	TO_DN_SOME(0.00)[]
 X-Rspamd-Action: no action
 
-On Fri, Mar 06, 2026 at 09:13:23AM +1030, Qu Wenruo wrote:
-> 
-> 
-> 在 2026/3/6 04:16, Boris Burkov 写道:
-> [...]
-> > > So I stand by the reason of the pool but with the evolution of folios
-> > > and bs < ps the cost could be too high. I can still see the pool for a
-> > > subset of the combinations for some common scenario like 4K block size
-> > > on 64K page host (e.g. ARM).
-> > > 
-> > 
-> > FWIW, we do already see issues with allocation in compressed IO in
-> > production, so I am hesitant to support this change.
-> 
-> May I ask how frequent the problem is, and what's the CPU arch?
-> Finally is it only happening after commit 6f706f34fc4c ("btrfs: switch to
-> btrfs_compress_bio() interface for compressed writes"), aka v7.0 kernel.
-> 
-> I tried my best locally to introduce extra ASSERT()s to make sure every
-> folio inside a compressed bio has a ref of 1, but it hasn't yet triggered
-> inside zlib_compress_bio().
-> 
-> Thanks,
-> Qu
-> 
 
-I'm sorry, I didn't mean to give you the wrong impression.
 
-I have not seen the bug you and Dave have been hunting.
+在 2026/3/6 19:36, 杜义恒 写道:
+> Dear Linux maintainers and reviewers:
+> 
+> We are reporting a Linux kernel bug titled **kernel BUG in 
+> close_ctree**, discovered using a modified version of Syzkaller.
+> 
+> Linux version: ccd1cdca5cd433c8a5dff78b69a79b31d9b77ee1
+> 
+> The bisection log shows the first introduced commit is 169aaaf2e0be615ffd4a12adc02db5eb86e8eee1
 
-I meant generic allocation issues in more complex paths involving
-writeback/reclaim/page faults, etc that Dave was warning about with
-removing the compr pool.
+Totally wrong bisection result.
+
+And do everyone a favor, Cc it to the proper mailing list, other than 
+syzbot.
+
+That commit is allowing the damn fuzzed image to be mounted, other wise 
+it won't even be mounted.
+
+
+[...]
+> BTRFS warning (device loop1 state CS): transaction 9 (with 12288 dirty metadata bytes) is not committed
+> assertion failed: !found :: 0, in fs/btrfs/disk-io.c:4188
+> ------------[ cut here ]------------
+> kernel BUG at fs/btrfs/disk-io.c:4188!
+> Oops: invalid opcode: 0000 [#1] SMP KASAN NOPTI
+> CPU: 1 UID: 0 PID: 35067 Comm: syz-executor Tainted: G S                  6.17.0-rc2-gcf6fc5eefc5b #3 PREEMPT(full)
+
+Try the latest upstream first.
+
+6.17 is not LTS, and it's already EOL, you're wasting time of everyone.
 
 Thanks,
-Boris
-
-> > 
-> > On the one hand, we have the issues so the pool is not completely saving
-> > us anyway. On the other hand, removing it seems likely to make this worse
-> > in the way that you predict, Dave.
-> > 
-> > If we do move forward with this, I will try to watch such errors closely
-> > on the first release of a kernel without the pool.
-> > 
-> > Thanks,
-> > Boris
-> > 
-> > > > And hopefully this will address David's recent crash (as usual I'm not
-> > > > able to reproduce locally).
-> > > 
-> > > I'll run the test with this patch.
-> > 
-> 
+Qu
 
