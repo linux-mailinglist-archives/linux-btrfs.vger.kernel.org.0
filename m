@@ -1,185 +1,202 @@
-Return-Path: <linux-btrfs+bounces-22291-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-22292-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id yBKaA4oMr2nHMwIAu9opvQ
-	(envelope-from <linux-btrfs+bounces-22291-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Mon, 09 Mar 2026 19:08:10 +0100
+	id mCZKELMOr2njNAIAu9opvQ
+	(envelope-from <linux-btrfs+bounces-22292-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Mon, 09 Mar 2026 19:17:23 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE5A423E413
-	for <lists+linux-btrfs@lfdr.de>; Mon, 09 Mar 2026 19:08:09 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id E76CF23E7A7
+	for <lists+linux-btrfs@lfdr.de>; Mon, 09 Mar 2026 19:17:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id AB95330B0E02
-	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Mar 2026 18:03:51 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 7F999303F54E
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Mar 2026 18:09:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FD88332637;
-	Mon,  9 Mar 2026 18:00:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b="0cpJv2ug"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97BC52E4247;
+	Mon,  9 Mar 2026 18:09:30 +0000 (UTC)
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from mail.burntcomma.com (mail2.burntcomma.com [217.169.27.34])
+Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com [209.85.161.71])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C04BB333424
-	for <linux-btrfs@vger.kernel.org>; Mon,  9 Mar 2026 18:00:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.169.27.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4DD8285C80
+	for <linux-btrfs@vger.kernel.org>; Mon,  9 Mar 2026 18:09:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773079242; cv=none; b=cVI/WBjgX0aLUQ3WdLoLwPHM4YJ2d2afpoP25/NTiCkoPOAqYxC9cmnkddP0EVmP69c9vhJ/m+rZANHFAx2UjoPcz3MZ2y97LCPUQFnO4mTVBxZmWUy/lqcObtFOpa1JtCH6/x2hKXM08+rCmOaHg9a2FPlEX2ojkrlhI71bTBU=
+	t=1773079770; cv=none; b=QVmzSIp6c5PBygEDfY8eR3/m8eOfwa+LIZio2C56hJPMVJ+4YxfmPlWAEhX0Ezr7O09POWUWiOx3iaeBaafXwf65d6evXttCL37CQsMOeBFGgK7RJ/rW90Q/gvvJSCHZtUEn5OholYXrnGgkDvt9rgYx/MdPHtIksESe6ImGTec=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773079242; c=relaxed/simple;
-	bh=uGiYQ6h/nhF6bZkkUhtP8e/i4EOwZmeQ0vvaLjNAvCE=;
-	h=Message-ID:Date:Mime-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=d9dnVCP1PIUa5qk8fY7qpjIZCTsk5KQEhTmgtrLI/SCFTzFVcO+0QuV3PVAqYeVU0gSIyoQX9/a1pRBKAU01c9hEqMf86pR4M20gX1kYfarn76yPb41l5tFjchlPu5qwu2mAcpmcS8cbf4eivAnG2WH7hIBFQMtw+NIBYllG3VA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com; spf=pass smtp.mailfrom=harmstone.com; dkim=pass (1024-bit key) header.d=harmstone.com header.i=@harmstone.com header.b=0cpJv2ug; arc=none smtp.client-ip=217.169.27.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=harmstone.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=harmstone.com
-Received: from [IPV6:2a02:8012:8cf0:0:ce28:aaff:fe0d:6db2] (beren.burntcomma.com [IPv6:2a02:8012:8cf0:0:ce28:aaff:fe0d:6db2])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256
-	 client-signature RSA-PSS (2048 bits) client-digest SHA256)
-	(Client CN "hellas", Issuer "burntcomma.com" (verified OK))
-	by mail.burntcomma.com (Postfix) with ESMTPS id 3EE1930CF2D;
-	Mon,  9 Mar 2026 18:00:30 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=harmstone.com;
-	s=mail; t=1773079230;
-	bh=eS67G69q/id9NK+d6/4APAYJggX0eaNwKU4Kx5FAxOI=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=0cpJv2ugHKTirbY4yz88OCA7UnCuATQ6WAVrvZ0kvtBgJjb8xLmGrgzxZg11bMBHM
-	 AL3spEuUGSK3r2wvnaYmQmkg2GO8VH/79BL7L5lbxF7QdmJuhOxodGFC3FKWidIZVN
-	 ap8V3GwA+Gn1XhYEfybwnuhkEA1kwL8hsmYLvu1Q=
-Message-ID: <1bbe10ea-90f2-45f2-915e-5895bd0039cf@harmstone.com>
-Date: Mon, 9 Mar 2026 18:00:30 +0000
+	s=arc-20240116; t=1773079770; c=relaxed/simple;
+	bh=SznvAvqNCRElUNPMzSkqSUSr8mKELL3XsKc1SwggWmw=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=NksgcnNxMGn+LQMXirCobt1UHm9/rzSvZlJSzhf8If2mL4c82V/BneMIiEgcHSMCdVoCY54v+UjF50W44rRCJKcRO7nenUIqpDYglIFDeOLgM7RJ1p83tpcj4wQ8oWB3149jjwLA9EBlKx6dd/y9owVDukJ7878gh8N9jlGfrKw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.161.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-oo1-f71.google.com with SMTP id 006d021491bc7-67bb77eb9f8so9409573eaf.1
+        for <linux-btrfs@vger.kernel.org>; Mon, 09 Mar 2026 11:09:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1773079768; x=1773684568;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=fMD6/Q/SdweF5qLhXKzO6kQHbt/0bKCUTR88DfHKC0k=;
+        b=VCcPYvZVTFye+vav68OQNaaytjFlm6dEAeBfb6w6QGZFMqvV8f1RUBzd/gAjKI9CaN
+         R4RJfggEH1DA4TSkRYZEQ57+8lRnjc8Qv3+9uENH+icbhAzSyhQvbioRjYjdiFLlGNQC
+         65y6cC1EfZGyb6mPGGfdewRaV/onG9QQPUMPx0bE0C+TfV4ZBG4Vi5s2gySPOWVn/1Wq
+         zELma0dm9LzUtfm+QdTMG5JNNblYRTBZV772rBOoboOQZ/1DEQW3eD+wAF9qXZAIDr/y
+         VNLQp7WbN5Z+wg2DcnPfU4bdWVO0lQQOmW6S/Q5fG0bTlpSXGDK9kUugzl6zUKhQcuRa
+         j2UA==
+X-Forwarded-Encrypted: i=1; AJvYcCU2JTMR5RP1/OCHM0/DzbLZFcJXYtGsAo5JmMfAUf5iJHoJ6Vsk2CDwMMFKm1+B4BP+5HO7OyW36One5g==@vger.kernel.org
+X-Gm-Message-State: AOJu0YyoXYKMJTqjxdfhOD5ErgJMJ9XrKDegruvN9+CeVss0UbIwYEaY
+	O7QKoLXz8E+ZBFLJaudsUIoHTw9XCGhDEq4nd5ryHFRfx08jCrQQgTffdWWhBhxRZYrGc00DEOV
+	tUbkPhRTTBp0c5TU/nu4Khcbb8xm1MYC8hACeJIQdxS7I4QddNZHyHuEqA6E=
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Subject: Re: [PATCH] btrfs: fix potential segfault in balance_remap_chunks()
-To: Filipe Manana <fdmanana@kernel.org>, dsterba@suse.cz,
- Johannes Thumshirn <johannes.thumshirn@wdc.com>
-Cc: linux-btrfs@vger.kernel.org, boris@bur.io, Chris Mason <clm@fb.com>
-References: <20260225103535.18430-1-mark@harmstone.com>
- <20260225150835.GF26902@twin.jikos.cz>
- <CAL3q7H4dT5aXaw7UsNfWNLccme=HcvbsrgCMuXzNZQRxV1mxjQ@mail.gmail.com>
-Content-Language: en-US
-From: Mark Harmstone <mark@harmstone.com>
-Autocrypt: addr=mark@harmstone.com; keydata=
- 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
-In-Reply-To: <CAL3q7H4dT5aXaw7UsNfWNLccme=HcvbsrgCMuXzNZQRxV1mxjQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: DE5A423E413
+MIME-Version: 1.0
+X-Received: by 2002:a05:6820:4d09:b0:67b:aa33:408f with SMTP id
+ 006d021491bc7-67baa33467amr4720903eaf.55.1773079767903; Mon, 09 Mar 2026
+ 11:09:27 -0700 (PDT)
+Date: Mon, 09 Mar 2026 11:09:27 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <69af0cd7.050a0220.310d8.0030.GAE@google.com>
+Subject: [syzbot] [btrfs?] kernel BUG in btrfs_backref_release_cache (3)
+From: syzbot <syzbot+128c98b49b7ffb4c8fa3@syzkaller.appspotmail.com>
+To: clm@fb.com, dsterba@suse.com, linux-btrfs@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Rspamd-Queue-Id: E76CF23E7A7
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-0.36 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[harmstone.com,none];
-	MV_CASE(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74];
-	R_DKIM_ALLOW(-0.20)[harmstone.com:s=mail];
+	URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=c5c49ee0942d1cdb];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
+	DMARC_POLICY_SOFTFAIL(0.10)[appspotmail.com : SPF not aligned (relaxed), No valid DKIM,none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-22291-lists,linux-btrfs=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_THREE(0.00)[4];
-	TO_DN_SOME(0.00)[];
-	DKIM_TRACE(0.00)[harmstone.com:+];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	MISSING_XM_UA(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[mark@harmstone.com,linux-btrfs@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-22292-lists,linux-btrfs=lfdr.de,128c98b49b7ffb4c8fa3];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	SUBJECT_HAS_QUESTION(0.00)[];
+	REDIRECTOR_URL(0.00)[goo.gl];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[syzbot@syzkaller.appspotmail.com,linux-btrfs@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[5];
+	TO_DN_NONE(0.00)[];
+	R_DKIM_NA(0.00)[];
+	NEURAL_HAM(-0.00)[-0.998];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_FIVE(0.00)[6];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[goo.gl:url,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,storage.googleapis.com:url,googlegroups.com:email,appspotmail.com:email,syzkaller.appspot.com:url]
 X-Rspamd-Action: no action
 
-On 25/02/2026 3.17 pm, Filipe Manana wrote:
-> On Wed, Feb 25, 2026 at 3:10 PM David Sterba <dsterba@suse.cz> wrote:
->>
->> On Wed, Feb 25, 2026 at 10:35:31AM +0000, Mark Harmstone wrote:
->>> Fix a potential segfault in balance_remap_chunks(): if we quit early
->>> because btrfs_inc_block_group_ro() fails, all the remaining items in the
->>> chunks list will still have their bg value set to NULL. It's thus not
->>> safe to dereference this pointer without checking first.
->>>
->>> Link: https://lore.kernel.org/linux-btrfs/20260125120717.1578828-1-clm@meta.com/
->>> Reported-by: Chris Mason <clm@fb.com>
->>> Fixes: 81e5a4551c32 ("btrfs: allow balancing remap tree")
->>> Signed-off-by: Mark Harmstone <mark@harmstone.com>
->>> ---
->>>   fs/btrfs/volumes.c | 18 ++++++++++--------
->>>   1 file changed, 10 insertions(+), 8 deletions(-)
->>>
->>> diff --git a/fs/btrfs/volumes.c b/fs/btrfs/volumes.c
->>> index e15e138c515b..18911cdd2895 100644
->>> --- a/fs/btrfs/volumes.c
->>> +++ b/fs/btrfs/volumes.c
->>> @@ -4288,17 +4288,19 @@ static int balance_remap_chunks(struct btrfs_fs_info *fs_info, struct btrfs_path
->>>
->>>                rci = list_first_entry(chunks, struct remap_chunk_info, list);
->>>
->>> -             spin_lock(&rci->bg->lock);
->>> -             is_unused = !btrfs_is_block_group_used(rci->bg);
->>> -             spin_unlock(&rci->bg->lock);
->>> +             if (rci->bg) {
->>> +                     spin_lock(&rci->bg->lock);
->>> +                     is_unused = !btrfs_is_block_group_used(rci->bg);
->>> +                     spin_unlock(&rci->bg->lock);
->>>
->>> -             if (is_unused)
->>> -                     btrfs_mark_bg_unused(rci->bg);
->>
->> Not related to the patch but isn't this pattern inherently racy?
->>
->> The "used" is read under lock but then btrfs_mark_bg_unused() is outside
->> of the lock so the status can change. This can be seen it more places,
->> but they seem to be related to the remap tree feature.
-> 
-> It's not a problem since when attempting to delete unused bgs we skip
-> any if they are actually used.
-> It's done not just for this type of race but also for the case where
-> after added to the unused list, it becomes used before the cleaner
-> kthread runs to delete unused bgs.
+Hello,
 
-Yes, the unused list means less "these BGs are definitely unused", more 
-"these BGs are worth considering as maybe unused".
+syzbot found the following issue on:
 
-Johannes, your suggestion that we add a bg variable is a good one - I'll 
-send another patch doing that.
+HEAD commit:    c107785c7e8d Merge tag 'modules-7.0-rc3.fixes' of git://gi..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=12d0ab5a580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c5c49ee0942d1cdb
+dashboard link: https://syzkaller.appspot.com/bug?extid=128c98b49b7ffb4c8fa3
+compiler:       Debian clang version 21.1.8 (++20251221033036+2078da43e25a-1~exp1~20251221153213.50), Debian LLD 21.1.8
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/d900f083ada3/non_bootable_disk-c107785c.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/f3bc281ac705/vmlinux-c107785c.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/ecd5165e5812/bzImage-c107785c.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+128c98b49b7ffb4c8fa3@syzkaller.appspotmail.com
+
+BTRFS info (device loop0): balance: start -d -m
+BTRFS info (device loop0): relocating block group 6881280 flags data|metadata
+BTRFS info (device loop0): found 1 extents, stage: move data extents
+BTRFS info (device loop0): relocating block group 5242880 flags data|metadata
+BTRFS info (device loop0): found 10 extents, stage: move data extents
+assertion failed: !cache->nr_nodes :: 0, in fs/btrfs/backref.c:3151
+------------[ cut here ]------------
+kernel BUG at fs/btrfs/backref.c:3151!
+Oops: invalid opcode: 0000 [#1] SMP KASAN NOPTI
+CPU: 0 UID: 0 PID: 5318 Comm: syz.0.0 Not tainted syzkaller #0 PREEMPT(full) 
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+RIP: 0010:btrfs_backref_release_cache+0x234/0x260 fs/btrfs/backref.c:3151
+Code: 0f 0b e8 6f 74 bd fd 48 c7 c7 e0 96 17 8c 48 c7 c6 00 9e 17 8c 31 d2 48 c7 c1 80 97 17 8c 41 b8 4f 0c 00 00 e8 9d 85 1f fd 90 <0f> 0b e8 45 74 bd fd 48 c7 c7 e0 96 17 8c 48 c7 c6 40 9e 17 8c 31
+RSP: 0018:ffffc9000dd477a8 EFLAGS: 00010246
+RAX: 0000000000000043 RBX: ffff8880434c6020 RCX: e86cf94f153c5b00
+RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
+RBP: 0000000000000002 R08: ffffc9000dd47527 R09: 1ffff92001ba8ea4
+R10: dffffc0000000000 R11: fffff52001ba8ea5 R12: dffffc0000000000
+R13: 1ffff11008698c04 R14: ffff8880434c60f0 R15: 1ffff11008698c21
+FS:  00007f83542826c0(0000) GS:ffff88808ca56000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055819b279168 CR3: 0000000044955000 CR4: 0000000000352ef0
+Call Trace:
+ <TASK>
+ relocate_block_group+0xb80/0xe90 fs/btrfs/relocation.c:3628
+ do_nonremap_reloc+0xa8/0x5b0 fs/btrfs/relocation.c:5251
+ btrfs_relocate_block_group+0x75b/0xae0 fs/btrfs/relocation.c:5410
+ btrfs_relocate_chunk+0x10f/0x810 fs/btrfs/volumes.c:3590
+ __btrfs_balance+0x1dab/0x2ae0 fs/btrfs/volumes.c:4492
+ btrfs_balance+0xafa/0x11f0 fs/btrfs/volumes.c:4879
+ btrfs_ioctl_balance+0x3d3/0x610 fs/btrfs/ioctl.c:3445
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:597 [inline]
+ __se_sys_ioctl+0xfc/0x170 fs/ioctl.c:583
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0x14d/0xf80 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f835339c799
+Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 e8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f8354281fe8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007f8353616090 RCX: 00007f835339c799
+RDX: 0000200000000180 RSI: 00000000c4009420 RDI: 0000000000000006
+RBP: 00007f8353432bd9 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007f8353616128 R14: 00007f8353616090 R15: 00007ffd7d2ef558
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:btrfs_backref_release_cache+0x234/0x260 fs/btrfs/backref.c:3151
+Code: 0f 0b e8 6f 74 bd fd 48 c7 c7 e0 96 17 8c 48 c7 c6 00 9e 17 8c 31 d2 48 c7 c1 80 97 17 8c 41 b8 4f 0c 00 00 e8 9d 85 1f fd 90 <0f> 0b e8 45 74 bd fd 48 c7 c7 e0 96 17 8c 48 c7 c6 40 9e 17 8c 31
+RSP: 0018:ffffc9000dd477a8 EFLAGS: 00010246
+RAX: 0000000000000043 RBX: ffff8880434c6020 RCX: e86cf94f153c5b00
+RDX: 0000000000000000 RSI: 0000000080000000 RDI: 0000000000000000
+RBP: 0000000000000002 R08: ffffc9000dd47527 R09: 1ffff92001ba8ea4
+R10: dffffc0000000000 R11: fffff52001ba8ea5 R12: dffffc0000000000
+R13: 1ffff11008698c04 R14: ffff8880434c60f0 R15: 1ffff11008698c21
+FS:  00007f83542826c0(0000) GS:ffff88808ca56000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055819b279168 CR3: 0000000044955000 CR4: 0000000000352ef0
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
