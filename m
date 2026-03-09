@@ -1,261 +1,214 @@
-Return-Path: <linux-btrfs+bounces-22285-lists+linux-btrfs=lfdr.de@vger.kernel.org>
+Return-Path: <linux-btrfs+bounces-22286-lists+linux-btrfs=lfdr.de@vger.kernel.org>
 Delivered-To: lists+linux-btrfs@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id uJ6LBIMArmnF+gEAu9opvQ
-	(envelope-from <linux-btrfs+bounces-22285-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
-	for <lists+linux-btrfs@lfdr.de>; Mon, 09 Mar 2026 00:04:35 +0100
+	id CMeVGDxtrmmaEAIAu9opvQ
+	(envelope-from <linux-btrfs+bounces-22286-lists+linux-btrfs=lfdr.de@vger.kernel.org>)
+	for <lists+linux-btrfs@lfdr.de>; Mon, 09 Mar 2026 07:48:28 +0100
 X-Original-To: lists+linux-btrfs@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71CF02329BE
-	for <lists+linux-btrfs@lfdr.de>; Mon, 09 Mar 2026 00:04:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BDF622345F5
+	for <lists+linux-btrfs@lfdr.de>; Mon, 09 Mar 2026 07:48:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 5D99A3034DCE
-	for <lists+linux-btrfs@lfdr.de>; Sun,  8 Mar 2026 23:03:44 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 57543300F500
+	for <lists+linux-btrfs@lfdr.de>; Mon,  9 Mar 2026 06:48:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D1E7351C25;
-	Sun,  8 Mar 2026 23:03:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0524362152;
+	Mon,  9 Mar 2026 06:48:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="acJxGjxi";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="ipdJbC60"
+	dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b="UCNwHr5U";
+	dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b="gFWfJ1kJ"
 X-Original-To: linux-btrfs@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from esa4.hgst.iphmx.com (esa4.hgst.iphmx.com [216.71.154.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0307303A12
-	for <linux-btrfs@vger.kernel.org>; Sun,  8 Mar 2026 23:03:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773011022; cv=none; b=WT4FPStJgJAsMWuU9SwK0ZW3KI64OxJlFQOa7v/M+KzgmZHWtiIdsQ2R8zlXlmcIrH/Gbe4BDjmgcTvHEr1JPkXRPsWtiQ/PFQrlul8buzxJfe9Gy2przW5FugT94u6NPG8U9TvRKJzCMJgqrg/Bu/P0rrJLyYKMfMsZckj4+rs=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773011022; c=relaxed/simple;
-	bh=uSp5NDJjoHpnClZ1oc+Z9E4eiPwiHD4ALvN13oU6vyU=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DNzYe3HQ0GRqdXyybb/mG60xkST0t/86jKI6eLQOrPOa1/Q1Ymskctk7B/5S6JROZEDcsOxzVg7yyWYYWaGWfBwdNXHyIZNC2Kn0HXF+1tbSatYrGARA/BY9pd62I78T3olonM3AGDEkSgKNEnd4zvPPg3qfgpQyNOI1tQehOjQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=acJxGjxi; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=ipdJbC60; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id A8EF04D1D7
-	for <linux-btrfs@vger.kernel.org>; Sun,  8 Mar 2026 23:03:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1773011006; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Aqz4DCePzAgCI0GjM1/Dzp3tH5kMoXKLz8m7OH5QkcA=;
-	b=acJxGjxijML5ya+qHreuoUaV/3M2i2SOO5UZOGB6mW3kRv9I8yr98B3XLec3Fia/yfxZBc
-	0DAWQrDuPxUSF+YGgNDgbPmBPs/Oz+fLFDYT8a8Zi24wrjnT5Zt6/0TWZACQlSsk1LN4z0
-	HRZ8Pnh6eK1XPuI1mRijx2VhEkWdcys=
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.com header.s=susede1 header.b=ipdJbC60
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1773011005; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Aqz4DCePzAgCI0GjM1/Dzp3tH5kMoXKLz8m7OH5QkcA=;
-	b=ipdJbC60FwSZ9KVLLAwMCDxzTR2v9tCeJLWccbXTzIgo/ZlQtVIb/ld0qhvxEavQrBDEyZ
-	vQjpc+aMLuvvvmZp/Q3BC2EhgjLNCPZ4zNR8r9qwyPdWAQdMCI6X9I+iWmJctsDy0RDiMt
-	GCpukwnxJ8+p8nmTV8j57BRy2oBJZKE=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E6B783EBA8
-	for <linux-btrfs@vger.kernel.org>; Sun,  8 Mar 2026 23:03:24 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id +MzjKTwArmkNbgAAD6G6ig
-	(envelope-from <wqu@suse.com>)
-	for <linux-btrfs@vger.kernel.org>; Sun, 08 Mar 2026 23:03:24 +0000
-From: Qu Wenruo <wqu@suse.com>
-To: linux-btrfs@vger.kernel.org
-Subject: [PATCH PoC 6/6] btrfs: enable experimental delayed compression support
-Date: Mon,  9 Mar 2026 09:32:55 +1030
-Message-ID: <4ef3cb29b01c8354e5ca389ef0754a2c6caa1088.1773009120.git.wqu@suse.com>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <cover.1773009120.git.wqu@suse.com>
-References: <cover.1773009120.git.wqu@suse.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5BF736213E
+	for <linux-btrfs@vger.kernel.org>; Mon,  9 Mar 2026 06:48:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=216.71.154.42
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1773038899; cv=fail; b=V6vI8R2muekJpamin82vpYUM+YLQ57s7rCJ8+8r1HajbxdVX7b+aA7E4cJXXcSUBkhGRjt1nPqTGxMKbtM0bkH6YLeIzmxmGW+xxX7UlE1zVC3BYYjZ08myTy1VYlYL0K7lK2yQYVEOJhyB13GKhG6dYeVhu3wAMH4oElfZHC5A=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1773038899; c=relaxed/simple;
+	bh=f+z6ql9M5JhawzkmfcJJBxApS2D5ls0dv54BOWw8ja8=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=srxUPSH9mQup7B9KJ0aZmyAwxYgiQkb7/0j/a+nVJHHr25AA6C+BDrBfscJblZzBn/1cHp6FAvQopO8Hfna7w8y2Y0mpGmXgwg9kri/h+i3jGLm8SXnjzhClHGBWT5PTX5i2bbhwX4GlsYFGBhDMzFICyUHlGUOJPX+6QOUAIAg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com; spf=pass smtp.mailfrom=wdc.com; dkim=pass (2048-bit key) header.d=wdc.com header.i=@wdc.com header.b=UCNwHr5U; dkim=pass (1024-bit key) header.d=sharedspace.onmicrosoft.com header.i=@sharedspace.onmicrosoft.com header.b=gFWfJ1kJ; arc=fail smtp.client-ip=216.71.154.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wdc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wdc.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1773038897; x=1804574897;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=f+z6ql9M5JhawzkmfcJJBxApS2D5ls0dv54BOWw8ja8=;
+  b=UCNwHr5U5omlwsTPQlpf9axqtSfLBjfNSYMMOhzHuGtdNTn/2YAJ25sn
+   ourzwatVCHaPk2N18ktnA2TglX1twDKSsiV096KUnph9G4rgFC7Tg8WJ3
+   DXUBFcYcQdSKPefu/vl/IYoeiSZmXWpBaxWa+Ai+3a30p9FHQuKC5jXlF
+   1u3HjtfiOtGztxI4CYGFdc3Kx+6CuLr7JrJSO6hyWpXFRGTDbV53dej/z
+   06aCjpukA/3ARfmwDSV8qxNbAiHdOSDgoxJBlkihNAOVXv6TiX/CunN9L
+   vdFRxOQ7SgSYQ3l8Z+pmowHe31RAJz7rAtin6XsgEnHbaYEPa9k2DSpZk
+   g==;
+X-CSE-ConnectionGUID: qq+hsIJMT6+IND8ZxM28SQ==
+X-CSE-MsgGUID: pnm4zJElTVqnAtg/lxJQcw==
+X-IronPort-AV: E=Sophos;i="6.23,109,1770566400"; 
+   d="scan'208";a="138530508"
+Received: from mail-westus3azon11012051.outbound.protection.outlook.com (HELO PH8PR06CU001.outbound.protection.outlook.com) ([40.107.209.51])
+  by ob1.hgst.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 09 Mar 2026 14:48:11 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=lfk29RW9c2UKo6J9RmAvulum9KgveYUH51F3KZr6Z2th0dxjFIkfkwYTWhR3bfZ9/yi4qNk2omiRC2xW/xlTiLB46tMpTZfylnkvFru8pQuxqjENqdO2lplODkGhso4ph4nNeKuZpNKPlw0j7dSee4aGCOiqf6iY5F7TUf1PtYB/z1HLkdPduiKTV3ExOic1lPP6nCGJCz4sydnilv+0OF2t6crxAIwFLNy0KS9S+cRkwf2R3aDmdtKIj16CDSeKTEECcxTYRo7TRdyD0zhT7rJaYIKzC1KrCDYpX/Tu/cMz7rRq6gGsTnWuM5XFcNHafxM8szZ7JQOAY1P/Ut92Ng==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=f+z6ql9M5JhawzkmfcJJBxApS2D5ls0dv54BOWw8ja8=;
+ b=HAzHn5BXp/l4DDKUIKp8qurnVs8+hd8JCdKk9JtYSoOxNUxfM8HrLzSRiMajF0z9kyMX9fDpBj8fJlg9hfKYURki8rKj1z7HSz++IohxD3B7rref3pizdng+odhkGj+mRCx59gULs9sK9HIuTST281j2hfmU7wkom3nB24SOAx3JR/SfQ+qIwh0eolxuH1vx7glJKD8O84AkCfljSFuWDtKOFpBHVzD/M6/JVvd+fWwbg5blfu+TcZ/RmMN0mhADRvdp8qS1ou2waP0PNtK0CF384JH2DmudrTA43qeuZG45TeLK7XrqXcRP/9wIZdyUC7pARj0Q6SEXwv0HxKcdBA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=f+z6ql9M5JhawzkmfcJJBxApS2D5ls0dv54BOWw8ja8=;
+ b=gFWfJ1kJVrLk91oyzwp5xkHpoZeSWLUDjraL8u0j7vQfrW/DtE9qdXTavKlKiti6LRC0+VZF6Zrxv64Si822fucZXNIHeBdWrz3qaQeITh0lQm3oCbgqQedCIi9a0XxoK7IJtQ9PsDRg7hrgqdUlY7szIrMwd3PG0pjH86LGOxw=
+Received: from LV8PR04MB8984.namprd04.prod.outlook.com (2603:10b6:408:18b::13)
+ by PH0PR04MB7590.namprd04.prod.outlook.com (2603:10b6:510:52::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9678.25; Mon, 9 Mar
+ 2026 06:48:08 +0000
+Received: from LV8PR04MB8984.namprd04.prod.outlook.com
+ ([fe80::14a1:5b7a:6cf4:31a3]) by LV8PR04MB8984.namprd04.prod.outlook.com
+ ([fe80::14a1:5b7a:6cf4:31a3%3]) with mapi id 15.20.9678.023; Mon, 9 Mar 2026
+ 06:48:08 +0000
+From: Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
+To: Mark Harmstone <mark@harmstone.com>, "linux-btrfs@vger.kernel.org"
+	<linux-btrfs@vger.kernel.org>
+CC: Chris Mason <clm@fb.com>
+Subject: Re: [PATCH v2] btrfs: fix use-after-free in move_existing_remap()
+Thread-Topic: [PATCH v2] btrfs: fix use-after-free in move_existing_remap()
+Thread-Index: AQHcrXQuZRmRfL43hUavWSTIIx/ljrWlxncA
+Date: Mon, 9 Mar 2026 06:48:08 +0000
+Message-ID: <003a7e9d-62cc-4a3d-b542-6117f8fda0ae@wdc.com>
+References: <20260306141843.27186-1-mark@harmstone.com>
+In-Reply-To: <20260306141843.27186-1-mark@harmstone.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Mozilla Thunderbird
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=wdc.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: LV8PR04MB8984:EE_|PH0PR04MB7590:EE_
+x-ms-office365-filtering-correlation-id: 8d269c63-5399-4f18-bdad-08de7da7d307
+wdcipoutbound: EOP-TRUE
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|19092799006|376014|10070799003|366016|1800799024|38070700021;
+x-microsoft-antispam-message-info:
+ NdfMLah8qj6vuwxwwuYp//NvLqL8uHQQUeNCUoPYOdL1ooQaKvDn8/vS2sHeGABO6eOu8/ArNZcD7ekIQ2Vgt0rTnLVe81HFlQF12M2h7HJ7FaC8/fnWGFFeGVyQpHrNIOU8gTUAwUYDUWyfBscOkS1QGnHY+VMkIwV4ITrR43ghWziv2E0LpnQVhcY74s7bqlUkxSuCTjbibdonJ5Billezxz5DV65bZveM4SXnTp4ZtrLGdyYWNHkVtp8KSTCkTxBpS/HUSrcDotHZmZsTm74iuBSpAjVDZRQZIIGr8iJvHRLR6+ScOwwDVDawFhAtx+kCYXXfYTRGJPUS5gkujb+0/IrXi5AifJcysnkTSGtcBu7bZY8JsqTTMcWZjm7BCqn2hrhIXkd4ceIrbuKOJ+7hUFnKQcGPbzb6Tm6GDXlDAVEQk+Td/z2vznpb87Py17cnthHEtPWyuMm5YYu+t8yqDL0am5lJrCrHburDAhFthE+WuhUXca8zYb5s8MaOmC/ZtfMLm1WtLX4Fz74H0KOHIWO+VKp9Pkch37uMVcf1SheXrDyfkH+i9ACBPsGcmBJsLerMxwTa+POPhS8ebaeJSCQgvbVTmPD/cqVEx4Dggs3Avur2UlkguYs2zfxKhg1nyUxE3G1HlVuRVkslfJZuFiDMPXoUj8jXtPuSQPCSqjqSncvS8IHZtue5zb/bSeNpWEyAw/j6y/g96vYRXeNKWkMdXEII7WbEjIYNHGydTYcN4R5LqFrmilLlZ92FNVsOaXWraE3CyqrHn7nG5NtNaAeQ/06aYGhIcU4Cz1I=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV8PR04MB8984.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(19092799006)(376014)(10070799003)(366016)(1800799024)(38070700021);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 2
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?VnViUlI5TjA2L1ZzT0o0LzJhejhFMTZML1g1amcrazZKajlybURUOHUvSms3?=
+ =?utf-8?B?RDA4YlpEVC9EUUZJWEpteTAvb1pkMjBhK2lzaWJZTVpzdkZjd1F1aEgrM2RU?=
+ =?utf-8?B?UFFLT0syRVY4MTFmcUUvcXJRb1lZQ3VVU3dKaTFJaTJqU0pUSThFbTc2OWlW?=
+ =?utf-8?B?WkJrV1poMkY3ekZrSDhrejgzOU5GckI3WHhQWGJxOG9Bd2pqeDRhdFArZTRK?=
+ =?utf-8?B?OStOWU1HaFlNV0Q1NGhqeDdhOFM1SEhiV0I3Mzd1QXZrRC9iRWtVeHlNZ1Er?=
+ =?utf-8?B?d2FsYkx1U2FaeHlxdUhYT2VYc05nbHg4dkYzc2orZWxMVnhsRERSTFlibEZs?=
+ =?utf-8?B?cHdXU3BuUEE3ZGpUdXYyUlU5RnQ4dHFQOFF4bUk1N2lhNnVxQm5HYjZzcEpL?=
+ =?utf-8?B?K0ZhOGllek1xZldHdXAxekFhVTJqK05XVWVDYkFTeGYzbU5ncWMxSVpZMFdT?=
+ =?utf-8?B?NVI4aW41ZDNPQk1NNGZjcEVDeENIRWJnNWx3Mmo4SjhReDEyS0JJOXhBWWV1?=
+ =?utf-8?B?RDUwS25nNXVXZnplbVY4ZG41czB2N0VCQ1VoUi91L3BBR2JhZEdSK0lhSXFt?=
+ =?utf-8?B?c0RGMWtBSGE2TndSNEd1QTZLWTZIMEg5YVBCMnZXSWNMZVVpRUhPQzN0dzdQ?=
+ =?utf-8?B?YXhWK2l6ejBSMDlNVG51SWxiUGJZS3FzclZsUXRtdWZ2UWk3bDd6d0dEMWVz?=
+ =?utf-8?B?OU5ESEVqOThPNWl0VVF5cEtHU1pKY1M1TWxwdlZpYThCMTZld2NOQUlQNmw4?=
+ =?utf-8?B?VE5VL1EzN2ZwbHo3ellhV0dWODZ1d0NWR25DQnMxRHBFSzUrWGlkSG9nVVJz?=
+ =?utf-8?B?aE1CbVlLQU5iOGdsSWZ5eDJXZTlOckVyYXg4VlhHTnh3QnNVWmVrOC9YVXZV?=
+ =?utf-8?B?cW1oOHk1VGJvWi91ZElmNmlhWXEyUnpoNEk4cnkyb2ppeWx0ZGNFaERYQzM3?=
+ =?utf-8?B?WkRTUm5DckZyK0hyTU5NemdORi9BTWpPYncydU96elJVOVQ1aGlaZGFwbTBp?=
+ =?utf-8?B?VHNjaDhibHpmUHVmSXlWemRGODFBS0owb09LcWkzODFiSlRBWWt2cUUveHBp?=
+ =?utf-8?B?cVJLSHNLVnNEeWN1aHZENmQyQVBibzhsb21DMGJjUlI4S1BDZGJib0tOZy9w?=
+ =?utf-8?B?NUlJS0ZLK3hGdktSUVRSeUN4VGk1OEVCU1FycytacFZyTktnMUQ5U25CdmtX?=
+ =?utf-8?B?bGY0cUJDejNxYXdjSExaSk8rWjM1bEhDYVR6YzhvQUFiM3F1MEVaTS85dmZy?=
+ =?utf-8?B?UFd5dlZ0SFdPaHdNMVRxMkJsSTUyeHRwczI5TmtsMUtLaWpNd3BNVDV1Q3J5?=
+ =?utf-8?B?SXhtdC81Y25sblN4TS9ENDBkeTVpVjBnOVh5VVBFQko4M09CUGg4UUp3S0tT?=
+ =?utf-8?B?MnFEVnlsSVVWWkJVazNYMU5uUGl3NTkwNHdiakRsMzI3WmpXb0RkcGlBVU1t?=
+ =?utf-8?B?VXUwdHRwMXhTYlV4azlwTFBqcHIvNFFpZ0Fwa1hUY1JlMTB4SUd0VkMxWVBj?=
+ =?utf-8?B?Z1JCbUhIZmhtbWFjRFp5a0VBK0U4TmVud3Jqc3VobG9KSHhrckhGTnhwTE5Y?=
+ =?utf-8?B?SUgvS0hZcTBnWW5KaFlkeUY2M2FqcnN1dWNCOUM4bFB3ME1kYkNhd1VrWHZY?=
+ =?utf-8?B?S3lhSUY2MFNZelEwZXU1eVo4c3k4MkUxaFpDSXA0RktOOXFMU1Z4WVhvSXVa?=
+ =?utf-8?B?RWE5S0Nqb25DL2dCUjN6NWxYakJSaHVWaXQvbDRzNkVHWWtOK0U2SFVRMzdW?=
+ =?utf-8?B?OUJNOUxMcnROZDlRVi9qQnVsbDRQU2dTRy9QMGEwVUVBdXYwYTV4S0YwVkhM?=
+ =?utf-8?B?V3kxdlZjU2h3ZVNjdiswcjYxUlRsa0RWNVAzUGRUSnRTbkNBUkxQdGlzRm1R?=
+ =?utf-8?B?MGE0cjBydFhLZTM5ekdLQW16dkdCWERBSlVPSXVGRnJWaVBKRlpXOHI0enkw?=
+ =?utf-8?B?cERjQVk5Q2ZiVmQ4eFlpdW92Ymx0RDk5c1pPRlErRGZGaEpqKzlYdWJ2c0FX?=
+ =?utf-8?B?TEpEQ29aa2VrZktmcFAwWDlGaTZMYXlFMWU4bmI1Y2RyYTMxdy9YSWIyS0cz?=
+ =?utf-8?B?Zis3VGFRdVQ0cTF2MTVNS09DdmZMNW90M0dRaXJ2TVdFRmRGcm85aFp0OVVm?=
+ =?utf-8?B?STRmdGtHcy9VNnpoQldWdXlNMkg4MUtVK0JNSy9ObC9QeEZILzYxZ0Job0Nj?=
+ =?utf-8?B?dFFwRUg1eTNiZUZxU0N3dUQramJhVnB5TEw2SFhlWFdJVEh5SVJtYlBrcDgr?=
+ =?utf-8?B?b0toR1JVUW5HZS9PWnVNN0dZaGJsME9rUkJoZy9vUkJTdVNPQ21vUDl3bU0z?=
+ =?utf-8?B?UjlrTEJsQS9XcnR2NTRXYjVUdUpaWXRoYlZ6Y2xDTXgwbncvdUdJdy9QeHVK?=
+ =?utf-8?Q?EgiHr6UG6hlAjrYmdVpaPX/wu558a+fIedyCOv+8P9K3h?=
+x-ms-exchange-antispam-messagedata-1: jPKssqteY8TngXlJkKBEqzQREyuA3Ye+XBo=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <CCE81B248E1D0F4785D28C4AB9953BB0@namprd04.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-btrfs@vger.kernel.org
 List-Id: <linux-btrfs.vger.kernel.org>
 List-Subscribe: <mailto:linux-btrfs+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-btrfs+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Flag: NO
-X-Spam-Score: -3.01
-X-Spam-Level: 
-X-Rspamd-Queue-Id: 71CF02329BE
+X-Exchange-RoutingPolicyChecked:
+	ilHA1gMs2WNy/Pb9cTIJOKi8u/tESarbuvr3PJcC8lROLbt5UWGAaWDjei6GRf1llunk+vaW2Y7VHacvheoakP7zzFbBVV0J5sZMEBzjUl5h/slrecajQeEBAIJbs8TMDnfnh1fR05Un0BfD0+q+D8UKkOOrdYCk8vtV+4xmPettTSeHBhyvN6MR2vpUY9iSA7rnmidvWpQkX3TqBtFFBOJDZZqLU2wouCvhyvYMj19eeQh9D1zwq5MrjNNOPrMjq0lGJuZhXX66kK/vCTT71Q2+g3wI0eIfPj8OkiTBCDSqqq+81E2mQehpL5XnD1KY0BnqhHAj4DGUoWq5sNDbbw==
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	ATPfcNDtbp/FBhLQ7Nem04IaktwGyEKyHxQ9muTvefSnd1pU7D/rC84UKxrbgmCG3E0WW2o6v+JgGEZnMBQ0J7DkLPnCAsdgIHfhebjgPsEfyWGE/+DUX9MUCWviXx6YPLcMxpxk47sFcsyNIXV9uRaDe0XpeLdtlVs5FSwIi6112la/4S/sZgz+QSQB6YRqyUhTDC7gf+Y7PZtK8JgCmxjNUtlCHLpn5mHcXsxoen8xkTKYpiyXbBeHcLOJpBnWb9nSg21F+uFFghcB096P+C3JuIHs0Eh+LYirC9jgOMBd1aAmlgy1NltmUw9acb74g8r8UtGMZLbFBisNxtb+OQ2Mh2zIEcMsComU/0niA1zPDg6QI5qp25rMTRQ05d117eC2Y651CqrY1QsHxsekbLYjhFmDnCPaWDeESac/v1kTzBi4u7n+jIIgbfVISH3dMpb8ef4z9n45URyksDB56FAg0uj7gmw1v4KS0ljkFwzuqqUojnsGwveDI5PHR8+tcac/I2U/pVdz8AHE8WojMJlALTpLFACFXHZrnRBMMkg+NcRRUWzhoB7V3rAWI//22ovptox3da7yMQ2+IdbzEx5TYULxLiG04YNHArFKp4rAsOZB4DPx0JhLK0AcXPew
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: LV8PR04MB8984.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8d269c63-5399-4f18-bdad-08de7da7d307
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Mar 2026 06:48:08.6445
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Wrt09AgSvwAUCEznHblK5kQCtwshkLTFuCFjKN8udOITEJG2EGu2XVekWIliVFaNLTNknEl3ieTnKdK+3Q6cYKLKYa+082lPY+4vLnAD4d8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR04MB7590
+X-Rspamd-Queue-Id: BDF622345F5
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
-	R_MISSING_CHARSET(0.50)[];
+X-Spamd-Result: default: False [0.94 / 15.00];
+	MIME_BASE64_TEXT_BOGUS(1.00)[];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	DMARC_POLICY_ALLOW(-0.50)[wdc.com,quarantine];
+	R_DKIM_ALLOW(-0.20)[wdc.com:s=dkim.wdc.com,sharedspace.onmicrosoft.com:s=selector2-sharedspace-onmicrosoft-com];
 	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=susede1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
+	MIME_BASE64_TEXT(0.10)[];
 	HAS_LIST_UNSUB(-0.01)[];
-	DKIM_TRACE(0.00)[suse.com:+];
-	TAGGED_FROM(0.00)[bounces-22285-lists,linux-btrfs=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-22286-lists,linux-btrfs=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_ONE(0.00)[1];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[wqu@suse.com,linux-btrfs@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[wdc.com:+,sharedspace.onmicrosoft.com:+];
+	RCPT_COUNT_THREE(0.00)[3];
 	RCVD_COUNT_FIVE(0.00)[6];
-	NEURAL_HAM(-0.00)[-0.995];
-	TO_DN_NONE(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[Johannes.Thumshirn@wdc.com,linux-btrfs@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[linux-btrfs];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,suse.com:dkim,suse.com:email,suse.com:mid]
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sharedspace.onmicrosoft.com:dkim,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-!!! WIP !!!
-
-There are still a lot of bugs that need to be resolved, this is just a
-proof-of-concept patch for now.
-
-Instead of the existing async submission path, the new delayed bbio will
-handle compressed write by:
-
-- Allocating delayed em/oe at run_delalloc_*() time
-  Thus no data extent is reserved at that time.
-
-- Delayed bbio will be assembled at extent_writepage_io() time
-
-- Delayed bbio will be intercepted
-  Which will run compression (or fallback to uncompressed write).
-  Data extents will only be reserved at that time, and the delayed em
-  will be replaced by real ones.
-
-  Meanwhile the real OE will be added as a child of the parent delayed
-  OE, and when the parent OE finishes, the child OE will be finished
-  with their file extents inserted.
-
-This has some benefits:
-
-- Higher concurrency
-  Previously async submission will hold the folio and io tree range
-  locked, this means we can not even read the uptodate folio.
-
-  Furthermore although the compressed write is queued into a workqueue
-  for submission and extent_writepage_io() will skip the compressed
-  range, when we need to write the next folio of the compressed range,
-  we will need to wait for the folio to be unlocked.
-
-  This makes async submission less async.
-
-- Future DONTCACHE writes support
-  We do not support DONTCACHE because that flag requires write back path
-  to clear the folio dirty and submit them sequentially.
-
-  Meanwhile async submission makes the writeback async, breaking the
-  sequential submission requirement.
-
-  This is also why we need a complex per-block tracking for writeback
-  flags, meanwhile iomap only requires a counter tracking.
-
-Unfortunately there are still quite some known bugs that I'm still
-debugging:
-
-- Em leaks
-- Busy inode after umount
-- Metadata bytes_mayuse leak
-
-Signed-off-by: Qu Wenruo <wqu@suse.com>
----
- fs/btrfs/inode.c | 59 +++++++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 56 insertions(+), 3 deletions(-)
-
-diff --git a/fs/btrfs/inode.c b/fs/btrfs/inode.c
-index cefeacd6c15b..2299c9631ac6 100644
---- a/fs/btrfs/inode.c
-+++ b/fs/btrfs/inode.c
-@@ -1673,6 +1673,56 @@ static bool run_delalloc_compressed(struct btrfs_inode *inode,
- 	return true;
- }
- 
-+static int run_delalloc_delayed(struct btrfs_inode *inode, struct folio *locked_folio,
-+				u64 start, u64 end)
-+{
-+	struct btrfs_root *root = inode->root;
-+	struct btrfs_fs_info *fs_info = root->fs_info;
-+	struct extent_state *cached = NULL;
-+	u64 cur = start;
-+	int ret;
-+
-+	if (btrfs_is_shutdown(fs_info)) {
-+		ret = -EIO;
-+		goto error;
-+	}
-+	while (cur < end) {
-+		struct extent_map *em;
-+		struct btrfs_ordered_extent *oe;
-+		u32 cur_len = min_t(u64, end + 1 - cur, BTRFS_MAX_COMPRESSED);
-+
-+		btrfs_lock_extent(&inode->io_tree, cur, cur + cur_len - 1, &cached);
-+		em = btrfs_create_delayed_em(inode, cur, cur_len);
-+		if (IS_ERR(em)) {
-+			ret = PTR_ERR(em);
-+			goto error;
-+		}
-+		btrfs_free_extent_map(em);
-+		oe = btrfs_alloc_delayed_ordered_extent(inode, cur, cur_len);
-+		if (IS_ERR(oe)) {
-+			btrfs_drop_extent_map_range(inode, cur, cur + cur_len - 1, false);
-+			ret = PTR_ERR(em);
-+			goto error;
-+		}
-+
-+		cur += cur_len;
-+	}
-+	extent_clear_unlock_delalloc(inode, start, end, locked_folio, &cached,
-+				     EXTENT_LOCKED | EXTENT_DELALLOC,
-+				     PAGE_UNLOCK | PAGE_SET_ORDERED);
-+	return 0;
-+error:
-+	/* We have to drop any created delayed extent maps. */
-+	if (start < cur)
-+		btrfs_drop_extent_map_range(inode, start, cur - 1, false);
-+	/* No range has any extent reserved, just clear them all. */
-+	extent_clear_unlock_delalloc(inode, start, end, locked_folio, &cached,
-+			EXTENT_LOCKED | EXTENT_DELALLOC | EXTENT_DELALLOC_NEW |
-+			EXTENT_DEFRAG | EXTENT_DO_ACCOUNTING,
-+			PAGE_UNLOCK | PAGE_START_WRITEBACK | PAGE_END_WRITEBACK);
-+	return ret;
-+}
-+
- /*
-  * Run the delalloc range from start to end, and write back any dirty pages
-  * covered by the range.
-@@ -2436,9 +2486,12 @@ int btrfs_run_delalloc_range(struct btrfs_inode *inode, struct folio *locked_fol
- 		return run_delalloc_nocow(inode, locked_folio, start, end);
- 
- 	if (btrfs_inode_can_compress(inode) &&
--	    inode_need_compress(inode, start, end, false) &&
--	    run_delalloc_compressed(inode, locked_folio, start, end, wbc))
--		return 1;
-+	    inode_need_compress(inode, start, end, false)) {
-+		if (IS_ENABLED(CONFIG_BTRFS_EXPERIMENTAL))
-+			return run_delalloc_delayed(inode, locked_folio, start, end);
-+		else if (run_delalloc_compressed(inode, locked_folio, start, end, wbc))
-+			return 1;
-+	}
- 
- 	if (zoned)
- 		return run_delalloc_cow(inode, locked_folio, start, end, wbc, true);
--- 
-2.53.0
-
+TG9va3MgZ29vZCwNCg0KUmV2aWV3ZWQtYnk6IEpvaGFubmVzIFRodW1zaGlybiA8am9oYW5uZXMu
+dGh1bXNoaXJuQHdkYy5jb20+DQoNCg==
 
